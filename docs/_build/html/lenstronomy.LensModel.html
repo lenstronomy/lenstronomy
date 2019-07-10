@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.LensModel package &#8212; lenstronomy 0.9.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -71,8 +71,10 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.cnfw">lenstronomy.LensModel.Profiles.cnfw module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.convergence">lenstronomy.LensModel.Profiles.convergence module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.coreBurkert">lenstronomy.LensModel.Profiles.coreBurkert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.critical_curve">lenstronomy.LensModel.Profiles.critical_curve module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.flexionfg">lenstronomy.LensModel.Profiles.flexionfg module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gauss_decomposition">lenstronomy.LensModel.Profiles.gauss_decomposition module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.gaussian_ellipse_potential">lenstronomy.LensModel.Profiles.gaussian_ellipse_potential module</a></li>
@@ -91,7 +93,6 @@
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.p_jaffe_ellipse">lenstronomy.LensModel.Profiles.p_jaffe_ellipse module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.point_mass">lenstronomy.LensModel.Profiles.point_mass module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic">lenstronomy.LensModel.Profiles.sersic module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec">lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_ellipse_kappa">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_ellipse_potential">lenstronomy.LensModel.Profiles.sersic_ellipse_potential module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lenstronomy.LensModel.Profiles.html#module-lenstronomy.LensModel.Profiles.sersic_utils">lenstronomy.LensModel.Profiles.sersic_utils module</a></li>
@@ -128,7 +129,7 @@
 <span id="lenstronomy-lensmodel-lens-model-module"></span><h2>lenstronomy.LensModel.lens_model module<a class="headerlink" href="#module-lenstronomy.LensModel.lens_model" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.lens_model.LensModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_model.</code><code class="descname">LensModel</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em>, <em>observed_convention_index=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model.html#LensModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model.LensModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle an arbitrary list of lens models</p>
 <dl class="method">
@@ -598,15 +599,24 @@ A = 1 - d^2phi/d_ij</p>
 <div class="section" id="module-lenstronomy.LensModel.multi_plane">
 <span id="lenstronomy-lensmodel-multi-plane-module"></span><h2>lenstronomy.LensModel.multi_plane module<a class="headerlink" href="#module-lenstronomy.LensModel.multi_plane" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.multi_plane.MultiPlane">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">MultiPlane</code><span class="sig-paren">(</span><em>z_source</em>, <em>lens_model_list</em>, <em>lens_redshift_list</em>, <em>cosmo=None</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.multi_plane.LensedLocation">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">LensedLocation</code><span class="sig-paren">(</span><em>multiplane_instance</em>, <em>observed_convention_index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#LensedLocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.LensedLocation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Multi-plane lensing class</p>
+<p>center_x and center_y kwargs correspond to observed (lensed) locations of deflectors
+given a model for the line of sight structure, compute the angular position of the deflector without lensing
+contribution along the LOS</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LensModel.multi_plane.MultiPlane">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">MultiPlane</code><span class="sig-paren">(</span><em>z_source</em>, <em>lens_model_list</em>, <em>lens_redshift_list</em>, <em>cosmo=None</em>, <em>numerical_alpha_class=None</em>, <em>observed_convention_index=None</em>, <em>ignore_observed_positions=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Multi-plane lensing class with option to assign positions of a selected set of lens models in the observed plane.</p>
 <p>The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the
-sourde redshift of the class instance.</p>
+source redshift of the class instance.</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane.alpha">
-<code class="descname">alpha</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.alpha" title="Permalink to this definition">¶</a></dt>
+<code class="descname">alpha</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em>, <em>check_convention=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.alpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>reduced deflection angle</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -616,6 +626,7 @@ sourde redshift of the class instance.</p>
 <li><strong>theta_x</strong> – angle in x-direction</li>
 <li><strong>theta_y</strong> – angle in y-direction</li>
 <li><strong>kwargs_lens</strong> – lens model kwargs</li>
+<li><strong>check_convention</strong> – flag to check the image position convention (leave this alone)</li>
 </ul>
 </td>
 </tr>
@@ -628,7 +639,7 @@ sourde redshift of the class instance.</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane.arrival_time">
-<code class="descname">arrival_time</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.arrival_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.arrival_time" title="Permalink to this definition">¶</a></dt>
+<code class="descname">arrival_time</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em>, <em>check_convention=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.arrival_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.arrival_time" title="Permalink to this definition">¶</a></dt>
 <dd><p>light travel time relative to a straight path through the coordinate (0,0)
 Negative sign means earlier arrival time</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -651,7 +662,7 @@ Negative sign means earlier arrival time</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em>, <em>diff=1e-08</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em>, <em>diff=1e-08</em>, <em>check_convention=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -673,8 +684,23 @@ Negative sign means earlier arrival time</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.multi_plane.MultiPlane.observed2physical_convention">
+<code class="descname">observed2physical_convention</code><span class="sig-paren">(</span><em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.observed2physical_convention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.observed2physical_convention" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens</strong> – keyword argument list of lens model parameters in the observed convention</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">kwargs_lens in physical convention</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting">
-<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting" title="Permalink to this definition">¶</a></dt>
+<code class="descname">ray_shooting</code><span class="sig-paren">(</span><em>theta_x</em>, <em>theta_y</em>, <em>kwargs_lens</em>, <em>k=None</em>, <em>check_convention=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.ray_shooting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting" title="Permalink to this definition">¶</a></dt>
 <dd><p>ray-tracing (backwards light cone)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -684,6 +710,7 @@ Negative sign means earlier arrival time</p>
 <li><strong>theta_x</strong> – angle in x-direction on the image</li>
 <li><strong>theta_y</strong> – angle in y-direction on the image</li>
 <li><strong>kwargs_lens</strong> – </li>
+<li><strong>check_convention</strong> – flag to check the image position convention (leave this alone)</li>
 </ul>
 </td>
 </tr>
@@ -696,9 +723,9 @@ Negative sign means earlier arrival time</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial">
-<code class="descname">ray_shooting_partial</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_x</em>, <em>alpha_y</em>, <em>z_start</em>, <em>z_stop</em>, <em>kwargs_lens</em>, <em>keep_range=False</em>, <em>include_z_start=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.ray_shooting_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial" title="Permalink to this definition">¶</a></dt>
-<dd><p>ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-and then backwards to redshfit z_stop</p>
+<code class="descname">ray_shooting_partial</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_x</em>, <em>alpha_y</em>, <em>z_start</em>, <em>z_stop</em>, <em>kwargs_lens</em>, <em>include_z_start=False</em>, <em>check_convention=True</em>, <em>T_ij_start=None</em>, <em>T_ij_end=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.ray_shooting_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial" title="Permalink to this definition">¶</a></dt>
+<dd><p>ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
+and then backwards to redshift z_stop</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -711,7 +738,10 @@ and then backwards to redshfit z_stop</p>
 <li><strong>z_start</strong> – redshift of start of computation</li>
 <li><strong>z_stop</strong> – redshift where output is computed</li>
 <li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
-<li><strong>keep_range</strong> – bool, if True, only computes the angular diameter ratio between the first and last step once</li>
+<li><strong>include_z_start</strong> – bool, if True, includes the computation of the deflection angle at the same redshift as the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed! This can lead to duplications in the computation of deflection angles.</li>
+<li><strong>check_convention</strong> – flag to check the image position convention (leave this alone)</li>
+<li><strong>T_ij_start</strong> – transverse angular distance between the starting redshift to the first lens plane to follow. If not set, will compute the distance each time this function gets executed.</li>
+<li><strong>T_ij_end</strong> – transverse angular distance between the last lens plane being computed and z_end. If not set, will compute the distance each time this function gets executed.</li>
 </ul>
 </td>
 </tr>
@@ -723,29 +753,21 @@ and then backwards to redshfit z_stop</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial_steps">
-<code class="descname">ray_shooting_partial_steps</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_x</em>, <em>alpha_y</em>, <em>z_start</em>, <em>z_stop</em>, <em>kwargs_lens</em>, <em>include_z_start=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.ray_shooting_partial_steps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial_steps" title="Permalink to this definition">¶</a></dt>
-<dd><p>ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-and then backwards to redshfit z_stop.</p>
-<p>This function differs from ‘ray_shooting_partial’ in that it returns the angular position of the ray
-at each lens plane.</p>
+<dt id="lenstronomy.LensModel.multi_plane.MultiPlane.transverse_distance_start_stop">
+<code class="descname">transverse_distance_start_stop</code><span class="sig-paren">(</span><em>z_start</em>, <em>z_stop</em>, <em>include_z_start=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#MultiPlane.transverse_distance_start_stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.MultiPlane.transverse_distance_start_stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the transverse distance (T_ij) that is required by the ray-tracing between the starting redshift and
+the first deflector afterwards and the last deflector before the end of the ray-tracing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – co-moving position [Mpc]</li>
-<li><strong>y</strong> – co-moving position [Mpc]</li>
-<li><strong>alpha_x</strong> – ray angle at z_start [arcsec]</li>
-<li><strong>alpha_y</strong> – ray angle at z_start [arcsec]</li>
-<li><strong>z_start</strong> – redshift of start of computation</li>
-<li><strong>z_stop</strong> – redshift where output is computed</li>
-<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
-<li><strong>keep_range</strong> – bool, if True, only computes the angular diameter ratio between the first and last step once</li>
+<li><strong>z_start</strong> – redshift of the start of the ray-tracing</li>
+<li><strong>z_stop</strong> – stop of ray-tracing</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">co-moving position and angles at redshift z_stop</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">T_ij_start, T_ij_end</p>
 </td>
 </tr>
 </tbody>
@@ -754,12 +776,19 @@ at each lens plane.</p>
 
 </dd></dl>
 
+<dl class="class">
+<dt id="lenstronomy.LensModel.multi_plane.PhysicalLocation">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.multi_plane.</code><code class="descname">PhysicalLocation</code><a class="reference internal" href="_modules/lenstronomy/LensModel/multi_plane.html#PhysicalLocation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.multi_plane.PhysicalLocation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>center_x and center_y kwargs correspond to angular location of deflectors without lensing along the LOS</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-lenstronomy.LensModel.numeric_lens_differentials">
 <span id="lenstronomy-lensmodel-numeric-lens-differentials-module"></span><h2>lenstronomy.LensModel.numeric_lens_differentials module<a class="headerlink" href="#module-lenstronomy.LensModel.numeric_lens_differentials" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.numeric_lens_differentials.NumericLens">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.numeric_lens_differentials.</code><code class="descname">NumericLens</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>cosmo=None</em>, <em>multi_plane=False</em>, <em>numerical_alpha_class=None</em>, <em>observed_convention_index=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/numeric_lens_differentials.html#NumericLens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.numeric_lens_differentials.NumericLens" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.lens_model.LensModel" title="lenstronomy.LensModel.lens_model.LensModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.lens_model.LensModel</span></code></a></p>
 <p>this class computes numerical differentials of lens model quantities</p>
 <dl class="attribute">
@@ -1114,7 +1143,7 @@ at each lens plane.</p>
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

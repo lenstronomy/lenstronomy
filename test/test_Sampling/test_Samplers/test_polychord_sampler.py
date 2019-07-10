@@ -101,7 +101,6 @@ class TestDyPolyChordSampler(object):
 
         kwargs_likelihood = {
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -140,7 +139,7 @@ class TestDyPolyChordSampler(object):
             'nlive_const': 3,
         }
         dynamic_goal = 0.8
-        samples, means, logZ, logZ_err, logL = self.sampler.run(dynamic_goal, kwargs_run)
+        samples, means, logZ, logZ_err, logL, results = self.sampler.run(dynamic_goal, kwargs_run)
         assert len(means) == 1
         if not all_installed:
             # trivial test when dypolychord is not installed properly

@@ -33,7 +33,7 @@ class TestFittingSequence(object):
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
         psf_gaussian = PSF(**kwargs_psf_gaussian)
-        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
         psf_class = PSF(**self.kwargs_psf)
         # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -88,7 +88,6 @@ class TestFittingSequence(object):
 
         self.kwargs_likelihood = {'force_no_add_image': True,
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -132,7 +131,7 @@ class TestFittingSequence(object):
         # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-linear'}
+        kwargs_data_joint = {'multi_band_list': multi_band_list, 'multi_band_type': 'multi-linear'}
         fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
@@ -186,7 +185,7 @@ class TestFittingSequence(object):
         # further decrease the parameter space for nested samplers to run faster
         fitting_list2 = []
         kwargs_update2 = {'ps_add_fixed': [[0, ['ra_source', 'dec_source'], [0, 0]]],
-                          'lens_light_add_fixed': [[0, ['R_sersic', 'center_x', 'center_y'], [.1, 0, 0]]],
+                          'lens_light_add_fixed': [[0, ['n_sersic', 'R_sersic', 'center_x', 'center_y'], [4, .1, 0, 0]]],
                           'source_add_fixed': [[0, ['R_sersic', 'e1', 'e2', 'center_x', 'center_y'], [.6, .1, .1, 0, 0]]],
                           'lens_add_fixed': [[0, ['gamma', 'theta_E', 'e1', 'e2', 'center_x', 'center_y'], [1.8, 1., .1, .1, 0, 0]],
                                              [1, ['e1', 'e2'], [0.01, 0.01]]],
@@ -195,6 +194,7 @@ class TestFittingSequence(object):
         }
         fitting_list2.append(['update_settings', kwargs_update2])
         kwargs_multinest = {
+            'sampler_type': 'MULTINEST',
             'kwargs_run': {
                 'n_live_points': 10,
                 'evidence_tolerance': 0.5,
@@ -205,8 +205,9 @@ class TestFittingSequence(object):
             },
             'remove_output_dir': True,
         }
-        fitting_list2.append(['MultiNest', kwargs_multinest])
+        fitting_list2.append(['nested_sampling', kwargs_multinest])
         kwargs_dynesty = {
+            'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
                 'nlive_init': 3,
@@ -214,16 +215,17 @@ class TestFittingSequence(object):
                 'maxbatch': 1,
             },
         }
-        fitting_list2.append(['Dynesty', kwargs_dynesty])
+        fitting_list2.append(['nested_sampling', kwargs_dynesty])
         kwargs_dypolychord = {
+            'sampler_type': 'DYPOLYCHORD',
             'kwargs_run': {
-                'ninit': 2, 
-                'nlive_const': 3,
+                'ninit': 8,
+                'nlive_const': 10,
             },
-            'dynamic_goal': 0.8, 
+            'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
             'remove_output_dir': True,
         }
-        fitting_list2.append(['DyPolyChord', kwargs_dypolychord])
+        fitting_list2.append(['nested_sampling', kwargs_dypolychord])
 
         chain_list2 = fittingSequence.fit_sequence(fitting_list2)
         kwargs_fixed = fittingSequence.kwargs_fixed()

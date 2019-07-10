@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 0.9.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" accesskey="U">lenstronomy.ImSim package</a> &#187;</li> 
       </ul>
@@ -273,6 +273,31 @@ decoupled linear parameters and the option to pass/select different light models
 ‘lens_light_model_index’ as bool arrays of the size of the total source model types and lens light model types,
 specifying which model is evaluated for which band.</p>
 <dl class="method">
+<dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.error_map_source">
+<code class="descname">error_map_source</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>x_grid</em>, <em>y_grid</em>, <em>cov_param</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.error_map_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.error_map_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>variance of the linear source reconstruction in the source plane coordinates,
+computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
+of the basis set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_source</strong> – keyword arguments of source model</li>
+<li><strong>x_grid</strong> – x-axis of positions to compute error map</li>
+<li><strong>y_grid</strong> – y-axis of positions to compute error map</li>
+<li><strong>cov_param</strong> – covariance matrix of liner inversion parameters</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">diagonal covariance errors at the positions (x_grid, y_grid)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.image_linear_solve">
 <code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
@@ -330,6 +355,29 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>compute_bool</strong> – </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">number of linear coefficients to be solved for in the linear inversion</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs">
+<code class="descname">select_kwargs</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.select_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>select subset of kwargs lists referenced to this imaging band</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_ps</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -406,7 +454,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" >lenstronomy.ImSim package</a> &#187;</li> 
       </ul>

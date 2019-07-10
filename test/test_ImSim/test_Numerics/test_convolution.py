@@ -50,6 +50,19 @@ class TestSubgridKernelConvolution(object):
         kernel_sub = lightModel.surface_brightness(x_sub, y_sub, kwargs_kernel)
         self.kernel_sub = util.array2image(kernel_sub) / np.sum(kernel_sub)
 
+    def test_fft_scipy_static(self):
+
+        supersampling_factor = 2
+        conv_sicpy = SubgridKernelConvolution(self.kernel, supersampling_factor, supersampling_kernel_size=None,
+                                        convolution_type='fft')
+
+        conv_static = SubgridKernelConvolution(self.kernel, supersampling_factor, supersampling_kernel_size=None,
+                                                  convolution_type='fft_static')
+
+        model_conv_scipy = conv_sicpy.convolution2d(self.model)
+        model_conv_static = conv_static.convolution2d(self.model)
+        npt.assert_almost_equal(model_conv_static, model_conv_scipy, decimal=3)
+
     def test_convolve2d(self):
         #kernel_supersampled = kernel_util.subgrid_kernel(self.kernel, self.supersampling_factor, odd=True, num_iter=5)
         subgrid_conv = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=None, convolution_type='fft')
@@ -61,6 +74,7 @@ class TestSubgridKernelConvolution(object):
         model_conv = conv.convolution2d(self.model)
         npt.assert_almost_equal(np.sum(model_subgrid_conv), np.sum(model_conv), decimal=1)
         npt.assert_almost_equal(model_subgrid_conv, model_conv, decimal=1)
+
 
         #kernel_supersampled = kernel_util.subgrid_kernel(self.kernel, self.supersampling_factor, odd=True, num_iter=5)
         subgrid_conv_split = SubgridKernelConvolution(self.kernel_sub, self.supersampling_factor, supersampling_kernel_size=5,

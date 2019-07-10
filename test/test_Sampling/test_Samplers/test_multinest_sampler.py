@@ -90,7 +90,6 @@ class TestMultiNestSampler(object):
 
         kwargs_likelihood = {
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -118,7 +117,7 @@ class TestMultiNestSampler(object):
             'multimodal': True,
             'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
         }
-        samples, means, logZ, logZ_err, logL = self.sampler.run(kwargs_run)
+        samples, means, logZ, logZ_err, logL, results = self.sampler.run(kwargs_run)
         assert len(means) == 16
         if not pymultinest_installed:
             # trivial test when pymultinest is not installed properly

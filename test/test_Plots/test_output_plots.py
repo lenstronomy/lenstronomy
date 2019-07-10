@@ -90,7 +90,8 @@ class TestOutputPlots(object):
     def test_lensModelPlot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
-                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat",
+                             multi_band_type='single-band')
 
         lensPlot.plot_main(with_caustics=True)
         plt.close()
@@ -106,6 +107,10 @@ class TestOutputPlots(object):
         plt.close()
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensPlot.deflection_plot(ax=ax, with_caustics=True, axis=1)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.subtract_from_data_plot(ax=ax)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
@@ -152,6 +157,32 @@ class TestOutputPlots(object):
         samples_mcmc = np.random.random((10, 1000))
         dist_mcmc = np.random.random(1000)
         output_plots.plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=10)
+        plt.close()
+
+    def test_chain_list(self):
+        param = ['a', 'b']
+
+        X2_list = [1, 1, 2]
+        pos_list = [[1, 0], [2, 0], [3, 0]]
+        vel_list = [[-1, 0], [0, 0], [1, 0]]
+        chain = X2_list, pos_list, vel_list, None
+
+        samples_mcmc = np.random.random((10, 1000))
+        dist_mcmc = np.random.random(1000)
+
+        chain_list = [['PSO', chain, param],
+                      ['COSMOHAMMER', samples_mcmc, param, dist_mcmc],
+                      ['EMCEE', samples_mcmc, param],
+                      ['MULTINEST', samples_mcmc, param, dist_mcmc]
+                      ]
+
+        output_plots.plot_chain_list(chain_list, index=0)
+        plt.close()
+        output_plots.plot_chain_list(chain_list, index=1, num_average=10)
+        plt.close()
+        output_plots.plot_chain_list(chain_list, index=2, num_average=10)
+        plt.close()
+        output_plots.plot_chain_list(chain_list, index=3, num_average=10)
         plt.close()
 
     def test_scale_bar(self):
@@ -235,7 +266,6 @@ class TestOutputPlots(object):
         plt.close()
 
 
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):
@@ -264,6 +294,8 @@ class TestRaise(unittest.TestCase):
                                  kwargs_ps=[],
                                  arrow_size=0.02, cmap_string="gist_heat")
             lensPlot._select_band(band_index=0)
+        with self.assertRaises(ValueError):
+            output_plots.plot_chain_list(chain_list=[['WRONG']], index=0)
 
 
 if __name__ == '__main__':

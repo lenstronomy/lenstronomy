@@ -150,7 +150,7 @@ class LightModel(object):
             if k is None or k == i:
                 if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                     new = {'amp': 1}
                     kwargs_new = kwargs_list[i].copy()
                     kwargs_new.update(new)
@@ -179,30 +179,44 @@ class LightModel(object):
                     raise ValueError('model type %s not valid!' % model)
         return response, n
 
-    def num_param_linear(self, kwargs_list=None):
+    def num_param_linear(self, kwargs_list, list_return=False):
         """
 
+        :param kwargs_list: list of keyword arguments of the light profiles
+        :param list_return: bool, if True returns list of individual number of parameters
         :return: number of linear basis set coefficients
         """
-        n = 0
+        n_list = self.num_param_linear_list(kwargs_list)
+        if not list_return:
+            return np.sum(n_list)
+        return n_list
+
+    def num_param_linear_list(self, kwargs_list):
+        """
+        returns the list (in order of the light profiles) of the number of linear components per model
+
+        :param kwargs_list: list of keyword arguments of the light profiles
+        :return: number of linear basis set coefficients
+        """
+        n_list = []
         for i, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
-                n += 1
+                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                n_list += [1]
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
-                n += num
+                n_list += [num]
             elif model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP']:
                 n_max = kwargs_list[i]['n_max']
                 if model in ['SHAPELETS_POLAR_EXP']:
                     num_param = int((n_max+1)**2)
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
-                n += num_param
+                n_list += [num_param]
             else:
                 raise ValueError('model type %s not valid!' % model)
-        return n
+        return n_list
 
     def update_linear(self, param, i, kwargs_list):
         """
@@ -215,7 +229,7 @@ class LightModel(object):
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'DOUBLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
+                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                 kwargs_list[k]['amp'] = param[i]
                 i += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
@@ -277,5 +291,6 @@ class LightModel(object):
                 else:
                     raise ValueError("profile %s does not support flux normlization." % model)
                 #  TODO implement total flux for e.g. 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                    # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'UNIFORM'
+                    # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON' ,
+                # 'TRIPLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list

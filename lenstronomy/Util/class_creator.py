@@ -7,7 +7,7 @@ from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 
 
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
-                           multi_plane=False, observed_convention_index=False, source_light_model_list=[],
+                           multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
                            additional_images_list=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
                            num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
@@ -15,9 +15,9 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            index_lens_light_model_list=None, index_point_source_model_list=None, band_index=0):
     """
 
-    :param lens_model_list:
-    :param z_lens:
-    :param z_source:
+    :param lens_model_list: list of strings indicating the type of lens models
+    :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
+    :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param lens_redshift_list:
     :param multi_plane:
     :param observed_convention_index:
@@ -37,6 +37,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_source_light_model_list:
     :param index_lens_light_model_list:
     :param index_point_source_model_list:
+    :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :return:
     """
     if index_lens_model_list is None:
@@ -49,7 +50,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
             lens_redshift_list_i = [lens_redshift_list[k] for k in index_lens_model_list[band_index]]
         else:
             lens_redshift_list_i = lens_redshift_list
-        if observed_convention_index is not False:
+        if observed_convention_index is not None:
             counter = 0
             observed_convention_index_i = []
             for k in index_lens_model_list[band_index]:
@@ -86,7 +87,6 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     else:
         lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
     lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i)
-
 
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list

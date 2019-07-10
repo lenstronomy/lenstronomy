@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.cnfw &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.cnfw &#8212; lenstronomy 0.9.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,9 +52,9 @@
 <span class="sd">    rho = rho0 * (r + r_core)^-1 * (r + rs)^-2</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;theta_Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;theta_Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
-    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;theta_Rs&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
+    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -63,13 +63,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nfw</span> <span class="o">=</span> <span class="n">NFW</span><span class="p">()</span>
 
-<div class="viewcode-block" id="CNFW.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CNFW.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x: angular position</span>
 <span class="sd">        :param y: angular position</span>
 <span class="sd">        :param Rs: angular turn over point</span>
-<span class="sd">        :param theta_Rs: deflection at Rs</span>
+<span class="sd">        :param alpha_Rs: deflection at Rs</span>
 <span class="sd">        :param center_x: center of halo</span>
 <span class="sd">        :param center_y: center of halo</span>
 <span class="sd">        :return:</span>
@@ -78,7 +78,7 @@
                       <span class="s1">&#39;Using the expression for the NFW &#39;</span>
                       <span class="s1">&#39;potential instead.&#39;</span><span class="p">)</span>
 
-        <span class="n">pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="n">pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">pot</span></div>
 
@@ -197,9 +197,9 @@
 
             <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">output</span>
 
-<div class="viewcode-block" id="CNFW.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CNFW.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 
-        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">theta_Rs</span><span class="o">=</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
             <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0000001</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
@@ -208,14 +208,14 @@
         <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfwAlpha</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0_input</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
-<div class="viewcode-block" id="CNFW.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CNFW.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 
         <span class="c1">#raise Exception(&#39;Hessian for truncated nfw profile not yet implemented.&#39;)</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">theta_Rs</span><span class="o">=</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0001</span><span class="p">:</span>
             <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0001</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
@@ -365,13 +365,13 @@
 
         <span class="k">return</span> <span class="n">m_2d</span></div>
 
-    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
 
         <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
 
-        <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="k">return</span> <span class="n">rho0</span>
 
@@ -380,9 +380,7 @@
         <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
         <span class="n">alpha</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">*</span><span class="n">rho0</span>
-
         <span class="k">return</span> <span class="n">alpha</span></div>
-
 </pre></div>
 
           </div>
@@ -415,7 +413,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

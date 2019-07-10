@@ -5,7 +5,6 @@ mpmath
 cosmohammer>=0.6.1
 emcee
 matplotlib
-corner
 sklearn
 numba>=0.43.1
 future

@@ -454,6 +454,17 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
+    def source(self, band_index=0, **kwargs):
+        """
+
+        :param numPix: number of grid points per axis
+        :param deltaPix: width of grid points
+        :param band_index: index of band
+        :return: 2d array of source surface brightness
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.source(**kwargs)
+
 
 class ModelBandPlot(object):
     """
@@ -671,6 +682,26 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
+    def source(self, numPix, deltaPix):
+        """
+
+        :param numPix: number of pixels per axes
+        :param deltaPix: pixel size
+        :return: 2d surface brightness grid of the reconstructed source
+        """
+        x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
+                                                                  self._coords.transform_pix2angle * deltaPix / self._deltaPix)
+        if len(self._kwargs_source_partial) > 0:
+            x_center = self._kwargs_source_partial[0]['center_x']
+            y_center = self._kwargs_source_partial[0]['center_y']
+            x_grid_source += x_center
+            y_grid_source += y_center
+
+        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
+                                                               self._kwargs_source_partial)
+        source = util.array2image(source) * deltaPix ** 2
+        return source
+
     def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
                     font_size=15, plot_scale='log',
@@ -696,19 +727,7 @@ class ModelBandPlot(object):
         if v_max is None:
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
-        x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
-                                                                  self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
-        if len(self._kwargs_source_partial) > 0:
-            x_center = self._kwargs_source_partial[0]['center_x']
-            y_center = self._kwargs_source_partial[0]['center_y']
-            x_grid_source += x_center
-            y_grid_source += y_center
-        coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
-                                    dec_at_xy_0=y_grid_source[0])
-
-        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source_partial)
-        source = util.array2image(source) * deltaPix_source**2
-
+        source = self.source(numPix, deltaPix_source)
         if plot_scale == 'log':
             source_scale = np.log10(source)
         elif plot_scale == 'linear':
@@ -724,6 +743,12 @@ class ModelBandPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+
+        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix_source)
+        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0,
+                                    dec_at_xy_0=dec_at_xy_0)
+
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list,

@@ -232,6 +232,13 @@ class TestOutputPlots(object):
                     fsize=15, plot_scale='linear')
         plt.close()
 
+    def test_source(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
+        source = lensPlot.source(band_index=0, numPix=10, deltaPix=0.1)
+        assert len(source) == 10
+
     def test_joint_linear(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics], [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,

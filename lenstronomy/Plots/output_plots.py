@@ -682,15 +682,25 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
-    def source(self, numPix, deltaPix):
+    def source(self, numPix, deltaPix, image_orientation=True):
         """
 
         :param numPix: number of pixels per axes
         :param deltaPix: pixel size
-        :return: 2d surface brightness grid of the reconstructed source
+        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
+        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
         """
-        x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
-                                                                  self._coords.transform_pix2angle * deltaPix / self._deltaPix)
+        if image_orientation is True:
+            Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
+            x_grid_source, y_grid_source = util.make_grid_transformed(numPix, Mpix2Angle=Mpix2coord)
+            ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
+        else:
+            x_grid_source, y_grid_source, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
+            numPix, deltaPix)
+        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0,
+                                    dec_at_xy_0=dec_at_xy_0)
+
         if len(self._kwargs_source_partial) > 0:
             x_center = self._kwargs_source_partial[0]['center_x']
             y_center = self._kwargs_source_partial[0]['center_y']
@@ -700,7 +710,7 @@ class ModelBandPlot(object):
         source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
                                                                self._kwargs_source_partial)
         source = util.array2image(source) * deltaPix ** 2
-        return source
+        return source, coords_source
 
     def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
@@ -727,7 +737,7 @@ class ModelBandPlot(object):
         if v_max is None:
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
-        source = self.source(numPix, deltaPix_source)
+        source, coords_source = self.source(numPix, deltaPix_source)
         if plot_scale == 'log':
             source_scale = np.log10(source)
         elif plot_scale == 'linear':
@@ -744,10 +754,7 @@ class ModelBandPlot(object):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
 
-        x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix, deltaPix_source)
-        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
-                                    ra_at_xy_0=ra_at_xy_0,
-                                    dec_at_xy_0=dec_at_xy_0)
+
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()

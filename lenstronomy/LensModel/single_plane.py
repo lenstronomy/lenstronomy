@@ -267,6 +267,9 @@ class SinglePlane(object):
         elif lens_type == 'DOUBLE_CHAMELEON':
             from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
             return DoubleChameleon()
+        elif lens_type == 'TRIPLE_CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
+            return TripleChameleon()
         elif lens_type == 'SPEP':
             from lenstronomy.LensModel.Profiles.spep import SPEP
             return SPEP()
@@ -282,12 +285,18 @@ class SinglePlane(object):
         elif lens_type == 'NFW_ELLIPSE':
             from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
             return NFW_ELLIPSE()
+        elif lens_type == 'NFW_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import NFWEllipseGaussDec
+            return NFWEllipseGaussDec()
         elif lens_type == 'TNFW':
             from lenstronomy.LensModel.Profiles.tnfw import TNFW
             return TNFW()
         elif lens_type == 'CNFW':
             from lenstronomy.LensModel.Profiles.cnfw import CNFW
             return CNFW()
+        elif lens_type == 'CTNFW_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
+            return CTNFWGaussDec()
         elif lens_type == 'SERSIC':
             from lenstronomy.LensModel.Profiles.sersic import Sersic
             return Sersic()
@@ -301,9 +310,6 @@ class SinglePlane(object):
             from lenstronomy.LensModel.Profiles.gauss_decomposition \
                 import SersicEllipseGaussDec
             return SersicEllipseGaussDec()
-        elif lens_type == 'COMPOSITE_DISK':
-            from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
-            return CompDisk()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
             return PJaffe()

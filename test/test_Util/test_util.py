@@ -309,6 +309,5 @@ class TestRaise(unittest.TestCase):
             util.selectBest(array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True)
 
 
-
 if __name__ == '__main__':
     pytest.main()

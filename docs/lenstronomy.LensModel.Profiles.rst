@@ -44,6 +44,14 @@ lenstronomy.LensModel.Profiles.coreBurkert module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.critical\_curve module
+-----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.critical_curve
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.dipole module
 --------------------------------------------
 
@@ -56,6 +64,14 @@ lenstronomy.LensModel.Profiles.flexion module
 ---------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.flexion
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.flexionfg module
+-----------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.flexionfg
     :members:
     :undoc-members:
     :show-inheritance:
@@ -200,14 +216,6 @@ lenstronomy.LensModel.Profiles.sersic module
 --------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.sersic
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy.LensModel.Profiles.sersic\_ellipse\_gauss\_dec module
------------------------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec
     :members:
     :undoc-members:
     :show-inheritance:

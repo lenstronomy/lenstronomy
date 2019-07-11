@@ -165,6 +165,10 @@ class TestCosmoLikelihood(object):
         prior, bool = self.cosmoL.prior_omega_mh2(h=1, omega_m=2, h_max=2)
         assert bool is False
 
+    def test_prior_omega_m(self):
+        penalty, bool = self.cosmoL.prior_omega_m(omega_m=0, omega_m_min=0.05, omega_m_max=1)
+        assert bool is False
+
     def test_call(self):
         self.cosmoL.sampling_option = 'H0_only'
         a = [70]

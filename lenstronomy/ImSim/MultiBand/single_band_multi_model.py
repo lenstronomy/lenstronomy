@@ -52,7 +52,6 @@ class SingleBandMultiModel(ImageLinearFit):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-
         kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i = self.select_kwargs(kwargs_lens,
                                                                                               kwargs_source,
                                                                                               kwargs_lens_light,

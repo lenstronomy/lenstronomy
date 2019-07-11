@@ -72,6 +72,7 @@ class TestNumerics(object):
                                                   'supersampling_kernel_size': None,
                                                   # does not matter for supersampling_factor=1
                                                   'supersampled_indexes': self._conv_pixels_partial,
+                                                       'convolution_kernel_size': 9,
                                                   }
 
         # low resolution convolution with a subset of pixels with high resolution ray-tracing and high resoluton convolution on smaller kernel size
@@ -81,6 +82,7 @@ class TestNumerics(object):
                                          # does not matter for supersampling_factor=1
                                          'supersampling_kernel_size': 5,  # does not matter for supersampling_factor=1
                                          'supersampled_indexes': self._conv_pixels_partial,
+                                              'convolution_kernel_size': 9,
                                          }
 
         # low resolution convolution and low resolution ray tracing, the simplest calculation
@@ -88,6 +90,7 @@ class TestNumerics(object):
                                    'compute_mode': 'regular',
                                    'supersampling_convolution': False,  # does not matter for supersampling_factor=1
                                    'supersampling_kernel_size': None,  # does not matter for supersampling_factor=1
+                                        'convolution_kernel_size': 9,
                                    }
 
         flux_evaluate_indexes = np.zeros((numPix, numPix), dtype=bool)
@@ -99,6 +102,7 @@ class TestNumerics(object):
                                         # does not matter for supersampling_factor=1
                                         'supersampling_kernel_size': None,  # does not matter for supersampling_factor=1
                                         'flux_evaluate_indexes': flux_evaluate_indexes,
+                                        'convolution_kernel_size': 9
                                         }
 
 

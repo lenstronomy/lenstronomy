@@ -10,8 +10,8 @@ class Chameleon(object):
 
     """
     param_names = ['alpha_1', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'alpha_1': 0, 'w_c': 0, 'w_t': 0, 'e1': -0.8, 'e2': -0.8, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'alpha_1': 100, 'w_c': 100, 'w_t': 100, 'e1': 0.8, 'e2': 0.8, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.nie = NIE()
@@ -99,6 +99,7 @@ class Chameleon(object):
         :param w_t: see Suyu+2014
         :return:
         """
+        #TODO remove this switch
         if not w_t > w_c:
             w_t, w_c = w_c, w_t
         s_scale_1 = w_c
@@ -116,10 +117,10 @@ class DoubleChameleon(object):
 
     """
     param_names = ['alpha_1', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
+    lower_limit_default = {'alpha_1': 0, 'ratio': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
                            'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
                            'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'ratio': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
+    upper_limit_default = {'alpha_1': 100, 'ratio': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
                            'w_c2': 100, 'w_t2': 100, 'e12': 0.8, 'e22': 0.8,
                            'center_x': 100, 'center_y': 100}
 
@@ -194,6 +195,107 @@ class DoubleChameleon(object):
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
 
 
+class TripleChameleon(object):
+    """
+    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+
+    """
+    param_names = ['alpha_1', 'ratio12', 'ratio13', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'w_c3', 'w_t3', 'e13',
+                   'e23', 'center_x', 'center_y']
+    lower_limit_default = {'alpha_1': 0, 'ratio12': 0, 'ratio13': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8, 'e21': -0.8,
+                           'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
+                           'w_c3': 0, 'w_t3': 0, 'e13': -0.8, 'e23': -0.8,
+                           'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'alpha_1': 100, 'ratio12': 100, 'ratio13': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
+                           'w_c2': 100, 'w_t2': 100, 'e12': 0.8, 'e22': 0.8,
+                           'w_c3': 100, 'w_t3': 100, 'e13': 0.8, 'e23': 0.8,
+                           'center_x': 100, 'center_y': 100}
+
+    def __init__(self):
+        self.chameleon = Chameleon()
+
+    def function(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplidute
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        amp1 = alpha_1 / (1. + 1. / ratio12 + 1. / ratio13)
+        amp2 = amp1 / ratio12
+        amp3 = amp1 / ratio13
+        f_1 = self.chameleon.function(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.function(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_3 = self.chameleon.function(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_1 + f_2 + f_3
+
+    def derivatives(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplidute
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        amp1 = alpha_1 / (1. + 1. / ratio12 + 1. / ratio13)
+        amp2 = amp1 / ratio12
+        amp3 = amp1 / ratio13
+        f_x1, f_y1 = self.chameleon.derivatives(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_x2, f_y2 = self.chameleon.derivatives(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_x3, f_y3 = self.chameleon.derivatives(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_x1 + f_x2 + f_x3, f_y1 + f_y2 + f_y3
+
+    def hessian(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplidute
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        amp1 = alpha_1 / (1. + 1. / ratio12 + 1. / ratio13)
+        amp2 = amp1 / ratio12
+        amp3 = amp1 / ratio13
+        f_xx1, f_yy1, f_xy1 = self.chameleon.hessian(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_xx3, f_yy3, f_xy3 = self.chameleon.hessian(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_xx1 + f_xx2 + f_xx3, f_yy1 + f_yy2 + f_yy3, f_xy1 + f_xy2 + f_xy3
+
+
 class DoubleChameleonPointMass(object):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -201,6 +303,12 @@ class DoubleChameleonPointMass(object):
     """
     param_names = ['alpha_1', 'ratio_chameleon', 'ratio_pointmass', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2',
                    'e12', 'e22', 'center_x', 'center_y']
+    lower_limit_default = {'alpha_1': 0, 'ratio_chameleon': 0, 'ratio_pointmass': 0, 'w_c1': 0, 'w_t1': 0, 'e11': -0.8,
+                           'e21': -0.8, 'w_c2': 0, 'w_t2': 0, 'e12': -0.8, 'e22': -0.8,
+                           'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'alpha_1': 100, 'ratio_chameleon': 100, 'ratio_pointmass': 100, 'w_c1': 100, 'w_t1': 100, 'e11': 0.8, 'e21': 0.8,
+                           'w_c2': 100, 'w_t2': 100, 'e12': 0.8, 'e22': 0.8,
+                           'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.chameleon = DoubleChameleon()

@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     lenstronomy.Sampling.Likelihoods
+    lenstronomy.Sampling.Samplers
 
 Submodules
 ----------

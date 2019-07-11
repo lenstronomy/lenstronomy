@@ -117,6 +117,14 @@ class TestData(object):
         kernel_pixel = psf_kernel.kernel_pixel
         npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(psf_kernel.kernel_point_source), decimal=9)
 
+    def test_psf_error_map(self):
+        deltaPix = 1.
+        fwhm = 5.6
+        kwargs = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        psf_kernel = PSF(**kwargs)
+        error_map = psf_kernel.psf_error_map
+        assert error_map.all() == 0
+
 
 class TestRaise(unittest.TestCase):
 

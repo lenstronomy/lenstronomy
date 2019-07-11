@@ -58,15 +58,9 @@ class LikelihoodModule(object):
         :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
         and returns a logL (punishing) value.
         """
-        multi_band_list = kwargs_data_joint.get('multi_band_list', [])
+        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
-        multi_band_type = kwargs_data_joint.get('image_type', 'single-band')
-        time_delays_measured = kwargs_data_joint.get('time_delays_measured', None)
-        time_delays_uncertainties = kwargs_data_joint.get('time_delays_uncertainties', None)
-
-        flux_ratios = kwargs_data_joint.get('flux_ratios', None)
-        flux_ratio_errors = kwargs_data_joint.get('flux_ratio_errors', None)
 
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
@@ -81,7 +75,7 @@ class LikelihoodModule(object):
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:
-            self.image_likelihood = ImageLikelihood(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
+            self.image_likelihood = ImageLikelihood(multi_band_list, image_type, kwargs_model, bands_compute=bands_compute,
                                                     likelihood_mask_list=image_likelihood_mask_list,
                                                     source_marg=source_marg,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
@@ -97,6 +91,20 @@ class LikelihoodModule(object):
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
         self._condition_definition = condition_definition
+
+    def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
+                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None):
+        """
+
+        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
+        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
+        :param time_delays_measured: measured time delays (units of days)
+        :param time_delays_uncertainties: uncertainties in time-delay measurement
+        :param flux_ratios: flux ratios of point sources
+        :param flux_ratio_errors: error in flux ratio measurement
+        :return:
+        """
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors
 
     def _reset_point_source_cache(self, bool=True):
         self.PointSource.delete_lens_model_cache()

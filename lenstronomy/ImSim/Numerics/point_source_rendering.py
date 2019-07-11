@@ -25,7 +25,6 @@ class PointSourceRendering(object):
         :param ra_pos:
         :param dec_pos:
         :param amp:
-        :param subgrid:
         :return:
         """
         subgrid = self._supersampling_factor

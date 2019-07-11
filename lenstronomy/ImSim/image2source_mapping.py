@@ -90,7 +90,9 @@ class Image2SourceMapping(object):
                 y_source = y - y_alpha * scale_factor
             else:
                 z_stop = self._source_redshift_list[index_source]
-                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(0, 0, x, y,
+                x_ = np.zeros_like(x)
+                y_ = np.zeros_like(y)
+                x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_, y_, x, y,
                                                                                                      0, z_stop,
                                                                                                      kwargs_lens,
                                                                                                      include_z_start=False)
@@ -125,20 +127,21 @@ class Image2SourceMapping(object):
             else:
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
-                alpha_x = x
-                alpha_y = y
+                alpha_x, alpha_y = x, y
+                x_source, y_source = alpha_x, alpha_y
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start = self._T_ij_start_list[i]
-                    T_ij_end = self._T_ij_end_list[i]
-                    x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
-                                                                    kwargs_lens, include_z_start=False,
-                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+                    if z_stop > z_start:
+                        T_ij_start = self._T_ij_start_list[i]
+                        T_ij_end = self._T_ij_end_list[i]
+                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov, y_comov, alpha_x, alpha_y, z_start, z_stop,
+                                                                        kwargs_lens, include_z_start=False,
+                                                                        T_ij_start=T_ij_start, T_ij_end=T_ij_end)
 
-                    T_z = self._T0z_list[index_source]
-                    x_source = x_comov / T_z
-                    y_source = y_comov / T_z
+                        T_z = self._T0z_list[index_source]
+                        x_source = x_comov / T_z
+                        y_source = y_comov / T_z
                     if k is None or k == i:
                         flux += self._lightModel.surface_brightness(x_source, y_source, kwargs_source, k=index_source)
                     z_start = z_stop
@@ -169,27 +172,32 @@ class Image2SourceMapping(object):
                     response += response_i
                     n += n_i
             else:
+                n_i_list = []
                 x_comov = np.zeros_like(x)
                 y_comov = np.zeros_like(y)
-                alpha_x = x
-                alpha_y = y
+                alpha_x, alpha_y = x, y
+                x_source, y_source = alpha_x, alpha_y
                 z_start = 0
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start = self._T_ij_start_list[i]
-                    T_ij_end = self._T_ij_end_list[i]
-                    x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
-                                                            y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                                                            include_z_start=False, T_ij_start=T_ij_start,
-                                                            T_ij_end=T_ij_end)
-                    T_z = self._T0z_list[index_source]
-                    x_source = x_comov / T_z
-                    y_source = y_comov / T_z
+                    if z_stop > z_start:
+                        T_ij_start = self._T_ij_start_list[i]
+                        T_ij_end = self._T_ij_end_list[i]
+                        x_comov, y_comov, alpha_x, alpha_y = self._lensModel.lens_model.ray_shooting_partial(x_comov,
+                                                                y_comov, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                                                                include_z_start=False, T_ij_start=T_ij_start,
+                                                                T_ij_end=T_ij_end)
+                        T_z = self._T0z_list[index_source]
+                        x_source = x_comov / T_z
+                        y_source = y_comov / T_z
                     response_i, n_i = self._lightModel.functions_split(x_source, y_source, kwargs_source, k=index_source)
+                    n_i_list.append(n_i)
                     response += response_i
                     n += n_i
                     z_start = z_stop
-                response = self._re_order_split(response)
+                n_list = self._lightModel.num_param_linear_list(kwargs_source)
+                response = self._re_order_split(response, n_list)
+
             return response, n
 
     @staticmethod
@@ -197,19 +205,31 @@ class Image2SourceMapping(object):
         """
 
         :param redshift_list: list of redshifts
-        :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
+        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
         sort_index = np.argsort(redshift_list)
         return sort_index
 
-    def _re_order_split(self, response):
+    def _re_order_split(self, response, n_list):
         """
 
         :param response: splitted functions in order of redshifts
+        :param n_list: list of number of response vectors per model in order of the model list (not redshift ordered)
         :return: reshuffled array in order of the function definition
         """
+        counter_regular = 0
+        n_sum_list_regular = []
+
+        for i in range(len(self._source_redshift_list)):
+            n_sum_list_regular += [counter_regular]
+            counter_regular += n_list[i]
+
         reshuffled = np.zeros_like(response)
-        for i, idex in enumerate(self._sorted_source_redshift_index):
-            reshuffled[idex] = response[i]
+        n_sum_sorted = 0
+        for i, index in enumerate(self._sorted_source_redshift_index):
+            n_i = n_list[index]
+            n_sum = n_sum_list_regular[index]
+            reshuffled[n_sum:n_sum + n_i] = response[n_sum_sorted:n_sum_sorted + n_i]
+            n_sum_sorted += n_i
         return reshuffled

@@ -13,7 +13,7 @@ class ImageModel(object):
     """
     this class uses functions of lens_model and source_model to make a lensed image
     """
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
@@ -35,17 +35,12 @@ class ImageModel(object):
         if point_source_class is None:
             point_source_class = PointSource(point_source_type_list=[])
         self.PointSource = point_source_class
-        if self.PointSource is not None:
-            self.PointSource.update_lens_model(lens_model_class=lens_model_class)
-            x_center, y_center = self.Data.center
-            self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center,
+        self.PointSource.update_lens_model(lens_model_class=lens_model_class)
+        x_center, y_center = self.Data.center
+        self.PointSource.update_search_window(search_window=np.max(self.Data.width), x_center=x_center,
                                                   y_center=y_center, min_distance=self.Data.pixel_width)
-            if self.PSF.psf_error_map is not None:
-                self._psf_error_map = True
-            else:
-                self._psf_error_map = False
-        else:
-            self._psf_error_map = False
+        self._psf_error_map = self.PSF.psf_error_map_bool
+
         if source_model_class is None:
             source_model_class = LightModel(light_model_list=[])
         self.SourceModel = source_model_class
@@ -108,8 +103,6 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
         """
-        if self.LensLightModel is None:
-            return np.zeros((self.Data.num_pixel_axes))
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)

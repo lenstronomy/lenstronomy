@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 0.9.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -152,6 +152,59 @@
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.upper_limit_default">
 <code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e11': 0.8, 'e12': 0.8, 'e21': 0.8, 'e22': 0.8, 'ratio': 100, 'w_c1': 100, 'w_c2': 100, 'w_t1': 100, 'w_t2': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">TripleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#TripleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>ratio12</em>, <em>ratio13</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>w_c3</em>, <em>w_t3</em>, <em>e13</em>, <em>e23</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#TripleChameleon.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>amp</strong> – </li>
+<li><strong>ratio12</strong> – ratio of first to second amplitude</li>
+<li><strong>ratio13</strong> – ratio of first to third amplidute</li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e11': -0.8, 'e12': -0.8, 'e13': -0.8, 'e21': -0.8, 'e22': -0.8, 'e23': -0.8, 'ratio12': 0, 'ratio13': 0.0, 'w_c1': 0, 'w_c2': 0, 'w_c3': 0, 'w_t1': 0, 'w_t2': 0, 'w_t3': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'ratio12', 'ratio13', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'w_c3', 'w_t3', 'e13', 'e23', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'center_x': 100, 'center_y': 100, 'e11': 0.8, 'e12': 0.8, 'e13': 0.8, 'e21': 0.8, 'e22': 0.8, 'e23': 0.8, 'ratio12': 100, 'ratio13': 100, 'w_c1': 100, 'w_c2': 100, 'w_c3': 100, 'w_t1': 100, 'w_t2': 100, 'w_t3': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1379,7 +1432,7 @@ this should be faster and numerically stable</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

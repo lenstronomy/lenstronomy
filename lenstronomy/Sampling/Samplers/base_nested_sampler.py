@@ -8,7 +8,7 @@ class NestedSampler(object):
     Base class for nested samplers
     """
 
-    def __init__(self, likelihood_module, prior_type, 
+    def __init__(self, likelihood_module, prior_type,
                  prior_means, prior_sigmas, width_scale, sigma_scale):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
@@ -37,7 +37,6 @@ class NestedSampler(object):
         self.prior_type = prior_type
         self._has_warned = False
 
-
     def prior(self, u):
         """
         compute the mapping between the unit cube and parameter cube
@@ -47,7 +46,6 @@ class NestedSampler(object):
         """
         raise NotImplementedError("Method not be implemented in base class")
 
-
     def log_likelihood(self, x):
         """
         compute the log-likelihood given list of parameters
@@ -56,7 +54,6 @@ class NestedSampler(object):
         :return: log-likelihood (from the likelihood module)
         """
         raise NotImplementedError("Method not be implemented in base class")
-
 
     def run(self, kwargs_run):
         """run the nested sampling algorithm"""

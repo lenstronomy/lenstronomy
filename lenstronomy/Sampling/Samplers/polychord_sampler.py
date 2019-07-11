@@ -47,18 +47,18 @@ class DyPolyChordSampler(NestedSampler):
         self._use_mpi = use_mpi
 
         self._output_dir= output_dir
+        self._is_master = True
 
         if self._use_mpi:
             from mpi4py import MPI
             self._comm = MPI.COMM_WORLD
 
-            if self._comm.Get_rank() == 0:
-                if os.path.exists(self._output_dir):
-                    shutil.rmtree(self._output_dir, ignore_errors=True)
-                os.mkdir(self._output_dir)
+            if self._comm.Get_rank() != 0:
+                self._is_master = False
         else:
             self._comm = None
 
+        if self._is_master:
             if os.path.exists(self._output_dir):
                 shutil.rmtree(self._output_dir, ignore_errors=True)
             os.mkdir(self._output_dir)
@@ -126,7 +126,7 @@ class DyPolyChordSampler(NestedSampler):
         """
         print("prior type :", self.prior_type)
         print("parameter names :", self.param_names)
-        
+
         if self._all_installed:
             # TODO : put a default dynamic_goal ?
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
@@ -135,7 +135,8 @@ class DyPolyChordSampler(NestedSampler):
                                               self.settings,
                                               comm=self._comm, **kwargs_run)
 
-            ns_run = self._ns_process_run(self.settings['file_root'], 
+            if self._is_master:
+                ns_run = self._ns_process_run(self.settings['file_root'],
                                            self.settings['base_dir'])
 
         else:
@@ -151,22 +152,25 @@ class DyPolyChordSampler(NestedSampler):
             }
             self._write_equal_weights(ns_run['theta'], ns_run['logl'])
 
-        samples, logL = self._get_equal_weight_samples()
-        # logL     = ns_run['logl']
-        # samples_w = ns_run['theta']
-        logZ     = ns_run['output']['logZ']
-        logZ_err = ns_run['output']['logZerr']
-        means    = ns_run['output']['param_means']
+        if self._is_master:
+            samples, logL = self._get_equal_weight_samples()
+            # logL     = ns_run['logl']
+            # samples_w = ns_run['theta']
+            logZ     = ns_run['output']['logZ']
+            logZ_err = ns_run['output']['logZerr']
+            means    = ns_run['output']['param_means']
 
-        print('The log evidence estimate using the first run is {}'
-              .format(logZ))
-        print('The estimated mean of the first parameter is {}'
-              .format(means[0]))
+            print('The log evidence estimate using the first run is {}'
+                  .format(logZ))
+            print('The estimated mean of the first parameter is {}'
+                  .format(means[0]))
 
-        if self._rm_output:
-            shutil.rmtree(self._output_dir, ignore_errors=True)
+            if self._rm_output:
+                shutil.rmtree(self._output_dir, ignore_errors=True)
 
-        return samples, means, logZ, logZ_err, logL, ns_run
+            return samples, means, logZ, logZ_err, logL, ns_run
+        else:
+            return None
 
     def _get_equal_weight_samples(self):
         """

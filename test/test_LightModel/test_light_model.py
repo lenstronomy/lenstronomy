@@ -69,8 +69,11 @@ class TestLightModel(object):
         assert len(self.light_model_list) == len(param_name_list)
 
     def test_num_param_linear(self):
-        num = self.LightModel.num_param_linear(self.kwargs)
+        num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
         assert num == 18
+
+        num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
+        assert num_list[0] == 1
 
     def test_update_linear(self):
         response, n = self.LightModel.functions_split(1, 1, self.kwargs)

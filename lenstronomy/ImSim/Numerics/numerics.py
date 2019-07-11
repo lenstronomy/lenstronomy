@@ -13,7 +13,8 @@ class Numerics(PointSourceRendering):
     """
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
-                 compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None):
+                 compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None,
+                 convolution_type='fft_static'):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -34,9 +35,8 @@ class Numerics(PointSourceRendering):
         convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
         consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing
-        :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of
-        point_source_kernel
-
+        :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of point_source_kernel
+        :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
         """
         # if no super sampling, turn the supersampling convolution off
         self._psf_type = psf.psf_type
@@ -72,12 +72,12 @@ class Numerics(PointSourceRendering):
                                                                   supersampling_factor)
                 self._conv = SubgridKernelConvolution(kernel_super, supersampling_factor,
                                                       supersampling_kernel_size=supersampling_kernel_size,
-                                                      convolution_type='fft')
+                                                      convolution_type=convolution_type)
             else:
                 kernel = psf.kernel_point_source
                 kernel = self._supersampling_cut_kernel(kernel, convolution_kernel_size,
                                                               supersampling_factor=1)
-                self._conv = PixelKernelConvolution(kernel, convolution_type='fft')
+                self._conv = PixelKernelConvolution(kernel, convolution_type=convolution_type)
 
         elif self._psf_type == 'GAUSSIAN':
             pixel_scale = pixel_grid.pixel_width

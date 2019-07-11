@@ -90,7 +90,8 @@ class TestOutputPlots(object):
     def test_lensModelPlot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_lens, self.kwargs_source,
-                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat")
+                             self.kwargs_lens_light, self.kwargs_ps, arrow_size=0.02, cmap_string="gist_heat",
+                             multi_band_type='single-band')
 
         lensPlot.plot_main(with_caustics=True)
         plt.close()

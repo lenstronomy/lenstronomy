@@ -211,7 +211,15 @@ class LikelihoodModule(object):
         return self.logL(a)
 
     def likelihood(self, a):
-        return self.logL(a)
+        try:
+            return self.logL(a)
+        except:
+            print('The parameter array during error: {}'.format(a))
+            from mpi4py import MPI
+            print('Worker: {}'.format(MPI.COMM_WORLD.Get_rank()))
+            logL = self.logL(a)
+            print('log-likelihood:'.format(logL))
+            return logL
 
 
     def computeLikelihood(self, ctx):

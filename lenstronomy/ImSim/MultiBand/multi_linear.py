@@ -43,7 +43,8 @@ class MultiLinear(MultiDataBase):
                 param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False
+                                    , linear_prior=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -55,9 +56,12 @@ class MultiLinear(MultiDataBase):
         """
         # generate image
         logL = 0
+        if linear_prior is None:
+            linear_prior = [None for i in range(self._num_bands)]
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                              kwargs_lens_light, kwargs_ps,
-                                                                             source_marg=source_marg)
+                                                                             source_marg=source_marg,
+                                                                             linear_prior=linear_prior[i])
         return logL

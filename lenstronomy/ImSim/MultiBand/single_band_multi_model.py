@@ -61,7 +61,8 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                      inv_bool=inv_bool)
         return wls_model, error_map, cov_param, param
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
+                                    linear_prior=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -78,7 +79,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_ps)
         logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i,
                                                             kwargs_lens_light_i, kwargs_ps_i,
-                                                            source_marg=source_marg)
+                                                            source_marg=source_marg, linear_prior=linear_prior)
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):

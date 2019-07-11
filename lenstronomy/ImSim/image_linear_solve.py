@@ -23,6 +23,7 @@ class ImageLinearFit(ImageModel):
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
         being applied to the point sources.
+        :param linear_prior: prior range in linear parameter (width) to cap a marginalization over the linear inversion if uncertainties are exceeding.
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
@@ -116,7 +117,8 @@ class ImageLinearFit(ImageModel):
         C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
         return C_D_response, psf_model_error
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
+                                    linear_prior=None):
         """
 
         computes the likelihood of the data given a model
@@ -128,9 +130,11 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: log likelihood (natural logarithm)
         """
-        return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg)
+        return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg,
+                                                 linear_prior=linear_prior)
 
-    def _likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def _likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
+                                     linear_prior=None):
         """
 
         computes the likelihood of the data given a model
@@ -140,6 +144,7 @@ class ImageLinearFit(ImageModel):
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param source_marg: bool, performs a marginalization over the linear parameters
         :return: log likelihood (natural logarithm)
         """
         # generate image
@@ -149,9 +154,7 @@ class ImageLinearFit(ImageModel):
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         if cov_matrix is not None and source_marg:
-            marg_const = de_lens.marginalisation_const(cov_matrix)
-            # if marg_const + logL > 0:
-            # logL = np.log(np.exp(logL) + np.exp(marg_const))
+            marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         return logL
 

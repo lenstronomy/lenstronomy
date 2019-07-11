@@ -21,7 +21,7 @@ class LikelihoodModule(object):
     """
     def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True, check_solver=False,
                  astrometric_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
-                 solver_tolerance=0.001, force_no_add_image=False, source_marg=False, restrict_image_number=False,
+                 solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
@@ -47,6 +47,8 @@ class LikelihoodModule(object):
         images predicted than modelled, a punishment occures
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
         linear coefficients
+        :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
+        linear amplitude priors when computing the marginalization term.
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
         images predicted than indicated in max_num_images, a punishment occures
         :param max_num_images: int, see restrict_image_number
@@ -77,7 +79,7 @@ class LikelihoodModule(object):
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(multi_band_list, image_type, kwargs_model, bands_compute=bands_compute,
                                                     likelihood_mask_list=image_likelihood_mask_list,
-                                                    source_marg=source_marg,
+                                                    source_marg=source_marg, linear_prior=linear_prior,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
                                                     flux_min=flux_min)
         self._position_likelihood = PositionLikelihood(point_source_class, param_class, astrometric_likelihood,

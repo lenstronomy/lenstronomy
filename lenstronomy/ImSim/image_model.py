@@ -5,6 +5,7 @@ from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 
 import numpy as np
 
@@ -14,7 +15,7 @@ class ImageModel(object):
     this class uses functions of lens_model and source_model to make a lensed image
     """
     def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
         :param psf_class: instance of PSF() class
@@ -50,6 +51,9 @@ class ImageModel(object):
         self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
         self.num_bands = 1
         self._kwargs_numerics = kwargs_numerics
+        if extinction_class is None:
+            extinction_class = DifferentialExtinction(optical_depth_model=[])
+        self._extinction = extinction_class
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -73,15 +77,18 @@ class ImageModel(object):
         self.PSF.set_pixel_size(self.Data.pixel_width)
         self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
-    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, unconvolved=False,
+                                  de_lensed=False, k=None):
         """
 
         computes the source surface brightness distribution
 
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 1d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
@@ -89,6 +96,7 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
+            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction)
         else:
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
@@ -125,11 +133,11 @@ class ImageModel(object):
             point_source_image += self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
         return point_source_image
 
-    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
-              source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+              kwargs_extinction=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
-        make a image with a realisation of linear parameter values "param"
+        make an image with a realisation of linear parameter values "param"
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
@@ -143,7 +151,8 @@ class ImageModel(object):
         """
         model = np.zeros((self.Data.num_pixel_axes))
         if source_add is True:
-            model += self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
+            model += self.source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
+                                                    unconvolved=unconvolved)
         if lens_light_add is True:
             model += self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         if point_source_add is True:

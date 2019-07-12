@@ -96,7 +96,7 @@ class TestParam(object):
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
                                        kwargs_cosmo={'D_dt': 1000})
-        assert param_class.cosmoParams._D_dt_sampling is True
+        assert param_class.specialParams._D_dt_sampling is True
 
     def test_mass_scaling(self):
         kwargs_model = {'lens_model_list': ['SIS', 'NFW', 'NFW', 'SIS', 'SERSIC', 'HERNQUIST']}

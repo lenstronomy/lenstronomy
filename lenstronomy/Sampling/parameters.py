@@ -163,11 +163,11 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.cosmoParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
-                                        kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
-                                        kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
-                                        point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                        source_size=source_size)
+        self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
+                                          kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
+                                          kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
+                                          point_source_offset=self._point_source_offset, num_images=self._num_images,
+                                          source_size=source_size)
 
     @property
     def num_point_source_images(self):
@@ -184,7 +184,7 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
-        kwargs_cosmo, i = self.cosmoParams.getParams(args, i)
+        kwargs_cosmo, i = self.specialParams.getParams(args, i)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
@@ -222,7 +222,7 @@ class Param(object):
         args += self.souceParams.setParams(kwargs_source)
         args += self.lensLightParams.setParams(kwargs_lens_light)
         args += self.pointSourceParams.setParams(kwargs_ps)
-        args += self.cosmoParams.setParams(kwargs_cosmo)
+        args += self.specialParams.setParams(kwargs_cosmo)
         return args
 
     def param_limits(self):
@@ -234,12 +234,12 @@ class Param(object):
                                        kwargs_source=self.souceParams.lower_limit,
                                        kwargs_lens_light=self.lensLightParams.lower_limit,
                                        kwargs_ps=self.pointSourceParams.lower_limit,
-                                       kwargs_cosmo=self.cosmoParams.lower_limit)
+                                       kwargs_cosmo=self.specialParams.lower_limit)
         upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
                                        kwargs_source=self.souceParams.upper_limit,
                                        kwargs_lens_light=self.lensLightParams.upper_limit,
                                        kwargs_ps=self.pointSourceParams.upper_limit,
-                                       kwargs_cosmo=self.cosmoParams.upper_limit)
+                                       kwargs_cosmo=self.specialParams.upper_limit)
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -257,7 +257,7 @@ class Param(object):
         _num, _list = self.pointSourceParams.num_param()
         num += _num
         list += _list
-        _num, _list = self.cosmoParams.num_param()
+        _num, _list = self.specialParams.num_param()
         num += _num
         list += _list
         return num, list

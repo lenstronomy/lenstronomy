@@ -1,8 +1,9 @@
 
 
-class CosmoParam(object):
+class SpecialParam(object):
     """
-    class that handles the cosmology relevant parameters
+    class that handles special parameters that are not directly part of a specific model component.
+    These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed={}, kwargs_lower=None,

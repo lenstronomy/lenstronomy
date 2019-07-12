@@ -33,18 +33,18 @@ class TestClassCreator(object):
         self.kwargs_data = {'image_data': np.ones((10, 10))}
 
     def test_create_class_instances(self):
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(**self.kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**self.kwargs_model)
         assert lens_model_class.lens_model_list[0] == 'SIS'
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(
             **self.kwargs_model_2)
         assert lens_model_class.lens_model_list[0] == 'SIS'
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(
             **self.kwargs_model_3)
         assert lens_model_class.lens_model_list[0] == 'SIS'
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(
             **self.kwargs_model_4)
         assert lens_model_class.lens_model_list[0] == 'SIS'
         assert lens_model_class.lens_model._observed_convention_index[0] == 0

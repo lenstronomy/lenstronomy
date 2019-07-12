@@ -54,10 +54,9 @@ class TestLikelihoodModule(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         self.kwargs_cosmo = {'D_dt': 1000}
         kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'gaussian'}
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(**kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
-                                lens_light_model_class,
-                                point_source_class, kwargs_numerics=kwargs_numerics)
+                                lens_light_model_class, point_source_class, extinction_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
 

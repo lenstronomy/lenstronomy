@@ -20,7 +20,7 @@ class SingleBandMultiModel(ImageLinearFit):
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
             likelihood_mask_list = [None for i in range(len(multi_band_list))]
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(band_index=band_index, **kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(band_index=band_index, **kwargs_model)
         kwargs_data = multi_band_list[band_index][0]
         kwargs_psf = multi_band_list[band_index][1]
         kwargs_numerics = multi_band_list[band_index][2]
@@ -37,7 +37,7 @@ class SingleBandMultiModel(ImageLinearFit):
         self._index_point_source = index_point_source_list[band_index]
 
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
-                                                   lens_light_model_class, point_source_class,
+                                                   lens_light_model_class, point_source_class, extinction_class,
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index])
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
@@ -82,7 +82,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                             source_marg=source_marg)
         return logL
 
-    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
         """
 
         :param compute_bool:
@@ -128,7 +128,7 @@ class SingleBandMultiModel(ImageLinearFit):
             kwargs_source_i = [kwargs_source[k] for k in self._index_source]
         return self._error_map_source(kwargs_source_i, x_grid, y_grid, cov_param)
 
-    def select_kwargs(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def select_kwargs(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
         """
         select subset of kwargs lists referenced to this imaging band
 

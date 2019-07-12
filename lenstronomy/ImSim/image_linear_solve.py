@@ -9,7 +9,7 @@ class ImageLinearFit(ImageModel):
     linear version class, inherits ImageModel
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}, likelihood_mask=None,
+                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
                  psf_error_map_bool_list=None):
         """
 
@@ -32,7 +32,7 @@ class ImageLinearFit(ImageModel):
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
-                                             point_source_class=point_source_class, kwargs_numerics=kwargs_numerics)
+                                             point_source_class=point_source_class, extinction_class=extinction_class, kwargs_numerics=kwargs_numerics)
         if psf_error_map_bool_list is None:
             psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
         self._psf_error_map_bool_list = psf_error_map_bool_list

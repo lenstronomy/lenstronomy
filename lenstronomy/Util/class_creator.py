@@ -3,6 +3,7 @@ from lenstronomy.Data.psf import PSF
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 
 
@@ -12,7 +13,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            additional_images_list=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
                            num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
-                           index_lens_light_model_list=None, index_point_source_model_list=None, band_index=0):
+                           index_lens_light_model_list=None, index_point_source_model_list=None, optical_depth_model=[],
+                           band_index=0):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -37,6 +39,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_source_light_model_list:
     :param index_lens_light_model_list:
     :param index_point_source_model_list:
+    :param optical_depth_model: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :return:
     """
@@ -103,7 +106,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                                      additional_images_list=additional_images_list_i, min_distance=min_distance,
                                      search_window=search_window, precision_limit=precision_limit,
                                      num_iter_max=num_iter_max)
-    return lens_model_class, source_model_class, lens_light_model_class, point_source_class
+    extinction_class = DifferentialExtinction(optical_depth_model=optical_depth_model)
+    return lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
 
 
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, likelihood_mask=None):
@@ -117,9 +121,9 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, l
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
-    lens_model_class, source_model_class, lens_light_model_class, point_source_class = create_class_instances(**kwargs_model)
+    lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(**kwargs_model)
     imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                point_source_class, kwargs_numerics, likelihood_mask=likelihood_mask)
+                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=likelihood_mask)
     return imageModel
 
 

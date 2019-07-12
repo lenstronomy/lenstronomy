@@ -64,7 +64,7 @@ class LikelihoodModule(object):
 
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_reator.create_class_instances(**kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_reator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
         self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo)

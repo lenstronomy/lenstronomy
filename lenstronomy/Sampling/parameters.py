@@ -7,7 +7,7 @@ from lenstronomy.LensModel.Solver.solver import Solver
 from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
-from lenstronomy.Cosmo.cosmo_param import CosmoParam
+from lenstronomy.Sampling.special_param import SpecialParam
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.lens_model import LensModel
 
@@ -163,11 +163,11 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.cosmoParams = CosmoParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
-                                      kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
-                                      kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
-                                      point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                      source_size=source_size)
+        self.cosmoParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
+                                        kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
+                                        kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
+                                        point_source_offset=self._point_source_offset, num_images=self._num_images,
+                                        source_size=source_size)
 
     @property
     def num_point_source_images(self):

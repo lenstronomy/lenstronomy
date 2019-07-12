@@ -52,7 +52,7 @@ class ImageLinearFit(ImageModel):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=inv_bool)
 
     def _image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            inv_bool=False):

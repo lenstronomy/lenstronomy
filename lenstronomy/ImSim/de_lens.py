@@ -63,8 +63,8 @@ def marginalization_new(M_inv, d_prior=None):
     v, w = np.linalg.eig(M_inv)
     sign_v = np.sign(v)
     v_abs = np.abs(v)
-    print(np.diag(M_inv), M_inv.max())
-    print(v, v.max())
+    #print(np.diag(M_inv), M_inv.max())
+    #print(v, v.max())
     v_abs[v_abs > d_prior**2] = d_prior**2
     log_det = np.sum(np.log(v_abs)) * np.prod(sign_v)
     if np.isnan(log_det):

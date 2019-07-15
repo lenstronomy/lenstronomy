@@ -14,7 +14,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None, optical_depth_model=[],
-                           band_index=0):
+                           band_index=0, all_models=False):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -41,9 +41,10 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_point_source_model_list:
     :param optical_depth_model: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
+    :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
     :return:
     """
-    if index_lens_model_list is None:
+    if index_lens_model_list is None or all_models is True:
         lens_model_list_i = lens_model_list
         lens_redshift_list_i = lens_redshift_list
         observed_convention_index_i = observed_convention_index
@@ -67,7 +68,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                                  multi_plane=multi_plane, cosmo=cosmo,
                                  observed_convention_index=observed_convention_index_i)
 
-    if index_source_light_model_list is None:
+    if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
         source_deflection_scaling_list_i = source_deflection_scaling_list
         source_redshift_list_i = source_redshift_list
@@ -85,7 +86,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                                     deflection_scaling_list=source_deflection_scaling_list_i,
                                     source_redshift_list=source_redshift_list_i)
 
-    if index_lens_light_model_list is None:
+    if index_lens_light_model_list is None or all_models is True:
         lens_light_model_list_i = lens_light_model_list
     else:
         lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
@@ -95,7 +96,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     fixed_magnification_list_i = fixed_magnification_list
     additional_images_list_i = additional_images_list
 
-    if index_point_source_model_list is not None:
+    if index_point_source_model_list is not None and not all_models:
         point_source_model_list_i = [point_source_model_list[k] for k in index_point_source_model_list[band_index]]
         if fixed_magnification_list is not None:
             fixed_magnification_list_i = [fixed_magnification_list[k] for k in index_point_source_model_list[band_index]]

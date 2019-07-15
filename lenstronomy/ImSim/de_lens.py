@@ -63,9 +63,9 @@ def marginalization_new(M_inv, d_prior=None):
     v, w = np.linalg.eig(M_inv)
     sign_v = np.sign(v)
     v_abs = np.abs(v)
-
-    v_abs[v_abs > d_prior] = d_prior
+    v_abs[v_abs > d_prior**2] = d_prior**2
     log_det = np.sum(np.log(v_abs)) * np.prod(sign_v)
     if np.isnan(log_det):
         return -10**15
-    return log_det / 2
+    m = len(v)
+    return log_det / 2 + m/2. * np.log(np.pi/2.) - m * np.log(d_prior)

@@ -185,7 +185,7 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
-        kwargs_cosmo, i = self.specialParams.getParams(args, i)
+        kwargs_special, i = self.specialParams.getParams(args, i)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
@@ -193,25 +193,25 @@ class Param(object):
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
         # update lens model joint parameters (including scaling)
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
-        kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens)
+        kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
+            x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
-        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_cosmo,
+        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,
                                                                         image_plane=bijective)
         # update source joint with source
         kwargs_source = self._update_joint_param(kwargs_source, kwargs_source, self._joint_source_with_source)
         # optional revert lens_scaling for bijective
 
         if bijective is True:
-            kwargs_lens = self.update_lens_scaling(kwargs_cosmo, kwargs_lens, inverse=True)
+            kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens, inverse=True)
 
-        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special
 
-    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_cosmo=None):
+    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
@@ -223,7 +223,7 @@ class Param(object):
         args += self.souceParams.setParams(kwargs_source)
         args += self.lensLightParams.setParams(kwargs_lens_light)
         args += self.pointSourceParams.setParams(kwargs_ps)
-        args += self.specialParams.setParams(kwargs_cosmo)
+        args += self.specialParams.setParams(kwargs_special)
         return args
 
     def param_limits(self):
@@ -235,12 +235,12 @@ class Param(object):
                                        kwargs_source=self.souceParams.lower_limit,
                                        kwargs_lens_light=self.lensLightParams.lower_limit,
                                        kwargs_ps=self.pointSourceParams.lower_limit,
-                                       kwargs_cosmo=self.specialParams.lower_limit)
+                                       kwargs_special=self.specialParams.lower_limit)
         upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
                                        kwargs_source=self.souceParams.upper_limit,
                                        kwargs_lens_light=self.lensLightParams.upper_limit,
                                        kwargs_ps=self.pointSourceParams.upper_limit,
-                                       kwargs_cosmo=self.specialParams.upper_limit)
+                                       kwargs_special=self.specialParams.upper_limit)
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -292,7 +292,7 @@ class Param(object):
                     kwargs['center_y'] = y_mapped
         return kwargs_source_copy
 
-    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_cosmo, image_plane=False):
+    def _update_source_joint_with_point_source(self, kwargs_lens_list, kwargs_source_list, kwargs_ps, kwargs_special, image_plane=False):
         kwargs_source_list = self.image2source_plane(kwargs_source_list, kwargs_lens_list, image_plane=image_plane)
 
         for setting in self._joint_source_with_point_source:
@@ -302,7 +302,7 @@ class Param(object):
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
-                x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_cosmo)
+                x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
                                                                             index_source=k_source)
             for param_name in param_list:
@@ -360,7 +360,7 @@ class Param(object):
                 kwargs_list_2_update[k_2][param_name] = 0
         return kwargs_list_2_update
 
-    def update_lens_scaling(self, kwargs_cosmo, kwargs_lens, inverse=False):
+    def update_lens_scaling(self, kwargs_special, kwargs_lens, inverse=False):
         """
         multiplies the scaling parameters of the profiles
 
@@ -373,9 +373,9 @@ class Param(object):
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
         if self._mass_scaling is False:
             return kwargs_lens_updated
-        scale_factor_list = np.array(kwargs_cosmo['scale_factor'])
+        scale_factor_list = np.array(kwargs_special['scale_factor'])
         if inverse is True:
-            scale_factor_list = 1. / np.array(kwargs_cosmo['scale_factor'])
+            scale_factor_list = 1. / np.array(kwargs_special['scale_factor'])
         for i, kwargs in enumerate(kwargs_lens_updated):
             if self._mass_scaling_list[i] is not False:
                 scale_factor = scale_factor_list[self._mass_scaling_list[i] - 1]
@@ -399,7 +399,7 @@ class Param(object):
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         return kwargs_fixed_update
 
-    def check_solver(self, kwargs_lens, kwargs_ps, kwargs_cosmo={}):
+    def check_solver(self, kwargs_lens, kwargs_ps, kwargs_special={}):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
@@ -408,7 +408,7 @@ class Param(object):
         """
         if self._solver is True:
             image_x, image_y = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_cosmo)
+            image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_special)
             dist = self._solver_module.check_solver(image_x, image_y, kwargs_lens)
             return np.max(dist)
         else:
@@ -423,15 +423,15 @@ class Param(object):
         else:
             return False
 
-    def real_image_positions(self, x, y, kwargs_cosmo):
+    def real_image_positions(self, x, y, kwargs_special):
         """
 
         :param kwargs_ps: point source kwargs
-        :param kwargs_cosmo: cosmo kwargs (or other kwargs)
+        :param kwargs_special: special kwargs (or other kwargs)
         :return: position where time delays are evaluated and solver is solved for
         """
         if self._point_source_offset is True:
-            delta_x, delta_y = kwargs_cosmo['delta_x_image'], kwargs_cosmo['delta_y_image']
+            delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
             return x + delta_x, y + delta_y
         else:
             return x, y

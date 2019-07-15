@@ -60,7 +60,7 @@ class TestParam(object):
                                   'amp': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
         kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_cosmo = [{}]
-        args = self.param_class.kwargs2args(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps, kwargs_cosmo=kwargs_cosmo)
+        args = self.param_class.kwargs2args(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps, kwargs_special=kwargs_cosmo)
         lens_dict_list, source_dict, lens_light_dic, ps_dict, cosmos_dict = self.param_class.args2kwargs(args)
         lens_dict = lens_dict_list[0]
         assert lens_dict['theta_E'] == 1.
@@ -95,7 +95,7 @@ class TestParam(object):
         kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         args = param_class.kwargs2args(kwargs_true_lens, kwargs_true_source,
                                        kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps,
-                                       kwargs_cosmo={'D_dt': 1000})
+                                       kwargs_special={'D_dt': 1000})
         assert param_class.specialParams._D_dt_sampling is True
 
     def test_mass_scaling(self):
@@ -117,7 +117,7 @@ class TestParam(object):
         kwargs_ps = []
         mass_scale = 2
         kwargs_cosmo = {'scale_factor': [mass_scale]}
-        args = param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo=kwargs_cosmo)
+        args = param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special=kwargs_cosmo)
         assert args[-1] == mass_scale
 
 

@@ -107,7 +107,7 @@ class TestLikelihoodModule(object):
 
     def test_logL(self):
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL, _ = self.Likelihood.logL(args, verbose=True)
         num_data_evaluate = self.Likelihood.num_data
@@ -118,7 +118,7 @@ class TestLikelihoodModule(object):
                              }
         likelihood = LikelihoodModule(kwargs_data_joint=self.kwargs_data, kwargs_model=self.kwargs_model, param_class=self.param_class, **kwargs_likelihood)
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL, _ = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -3080.29, decimal=-1)

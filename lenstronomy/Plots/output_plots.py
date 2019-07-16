@@ -476,7 +476,7 @@ class ModelBandPlot(object):
 
         self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
-        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial = self.bandmodel.select_kwargs(kwargs_lens, kwargs_source,
+        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, kwargs_extinction_partial = self.bandmodel.select_kwargs(kwargs_lens, kwargs_source,
                  kwargs_lens_light, kwargs_ps)
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)

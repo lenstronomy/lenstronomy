@@ -55,7 +55,7 @@ class LikelihoodModule(object):
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions have positive flux
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
-        :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+        :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
         and returns a logL (punishing) value.
         """
         multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors = self._unpack_data(**kwargs_data_joint)

@@ -98,9 +98,8 @@ class ImageModel(object):
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         else:
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
-            if kwargs_special is not None and kwargs_extinction is not None:
-                source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
-                                                        tau0_list=kwargs_special.get('tau0_list', None))
+            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        kwargs_special=kwargs_special)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 

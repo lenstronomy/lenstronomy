@@ -23,7 +23,7 @@ class TestParam(object):
         self.param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens,
                                  kwargs_fixed_source=kwargs_fixed_source,
                                  kwargs_fixed_lens_light=kwargs_fixed_lens_light, kwargs_fixed_ps=kwargs_fixed_ps,
-                                 kwargs_fixed_cosmo=kwargs_fixed_cosmo, **kwargs_param)
+                                 kwargs_fixed_special=kwargs_fixed_cosmo, **kwargs_param)
         self.param_class.print_setting()
 
     def test_num_param(self):
@@ -84,8 +84,8 @@ class TestParam(object):
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = {'D_dt': 1000}
         param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_source=kwargs_fixed_source,
-                                 kwargs_fixed_lens_light=kwargs_fixed_lens_light, kwargs_fixed_ps=kwargs_fixed_ps,
-                            kwargs_fixed_cosmo=kwargs_fixed_cosmo, **kwargs_param)
+                            kwargs_fixed_lens_light=kwargs_fixed_lens_light, kwargs_fixed_ps=kwargs_fixed_ps,
+                            kwargs_fixed_special=kwargs_fixed_cosmo, **kwargs_param)
 
         kwargs_true_lens = [
             {'theta_E': 1., 'gamma': 1.9, 'e1':0.01, 'e2':-0.01, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
@@ -106,7 +106,7 @@ class TestParam(object):
         kwargs_fixed_lens = [{}, {'alpha_Rs': 0.1}, {'alpha_Rs': 0.3}, {'theta_E': 0.1},
                              {'k_eff': 0.3}, {'sigma0': 1}]
         kwargs_fixed_cosmo = {}
-        param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_cosmo=kwargs_fixed_cosmo
+        param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens, kwargs_fixed_special=kwargs_fixed_cosmo
                             , **kwargs_constraints)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
                        {'alpha_Rs': 0.1, 'Rs': 5, 'center_x': 1., 'center_y': 0},

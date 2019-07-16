@@ -9,7 +9,6 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-import sys
 
 
 class FittingSequence(object):

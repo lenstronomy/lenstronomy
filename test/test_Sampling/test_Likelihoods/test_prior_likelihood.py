@@ -7,7 +7,7 @@ class TestImageLikelihood(object):
 
     def setup(self):
         self.prior = PriorLikelihood(prior_lens=[[0, 'gamma', 2, 0.1]], prior_source=[], prior_lens_light=[], prior_ps=[],
-                                     prior_cosmo=[['source_size', 1, 0.1]])
+                                     prior_special=[['source_size', 1, 0.1]])
 
     def test_logL(self):
         kwargs_lens = [{'gamma': 2}]

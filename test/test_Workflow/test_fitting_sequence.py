@@ -174,7 +174,7 @@ class TestFittingSequence(object):
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
-        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed = fittingSequence._updateManager._fixed_kwargs
+        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager._fixed_kwargs
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)

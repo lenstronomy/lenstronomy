@@ -21,7 +21,7 @@ class DifferentialExtinction(object):
             self._compute_bool = True
         self._tau0_index = tau0_index
 
-    def extinction(self, x, y, kwargs_extinction=None, tau0_list=None):
+    def extinction(self, x, y, kwargs_extinction=None, kwargs_special=None):
         """
 
         :param x: coordinate in image plane of flux intensity
@@ -33,6 +33,7 @@ class DifferentialExtinction(object):
         if self._compute_bool is False or kwargs_extinction is None:
             return 1
         tau = self._profile.surface_brightness(x, y, kwargs_list=kwargs_extinction)
+        tau0_list = kwargs_special.get('tau0_list', None)
         if tau0_list is not None:
             tau0 = tau0_list[self._tau0_index]
         else:

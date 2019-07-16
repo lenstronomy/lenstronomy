@@ -9,8 +9,6 @@ from lenstronomy.LensModel.lens_param import LensParam
 from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Sampling.special_param import SpecialParam
-#from lenstronomy.LightModel.light_model import LightModel
-#from lenstronomy.LensModel.lens_model import LensModel
 
 
 class Param(object):
@@ -53,11 +51,11 @@ class Param(object):
 
     def __init__(self, kwargs_model,
                  kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
-                 kwargs_fixed_cosmo=None,
+                 kwargs_fixed_special=None, kwargs_fixed_extinction=None,
                  kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,
-                 kwargs_lower_cosmo=None,
+                 kwargs_lower_special=None, kwargs_lower_extinction=None,
                  kwargs_upper_lens=None, kwargs_upper_source=None, kwargs_upper_lens_light=None, kwargs_upper_ps=None,
-                 kwargs_upper_cosmo=None,
+                 kwargs_upper_special=None, kwargs_upper_extinction=None,
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
@@ -72,6 +70,7 @@ class Param(object):
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
+        self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
 
         lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
         #source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []),
@@ -94,8 +93,8 @@ class Param(object):
             kwargs_fixed_lens_light = [{} for i in range(len(self._lens_light_model_list))]
         if kwargs_fixed_ps is None:
             kwargs_fixed_ps = [{} for i in range(len(self._point_source_model_list))]
-        if kwargs_fixed_cosmo is None:
-            kwargs_fixed_cosmo = {}
+        if kwargs_fixed_special is None:
+            kwargs_fixed_special = {}
 
         self._joint_lens_with_lens = joint_lens_with_lens
         self._joint_lens_light_with_lens_light = joint_lens_light_with_lens_light
@@ -164,9 +163,12 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
+        self.extinctionParams = LightParam(self._optical_depth_model_list, kwargs_fixed_extinction,
+                                           kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
+                                           linear_solver=False)
         self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
-                                          kwargs_fixed=kwargs_fixed_cosmo, num_scale_factor=self._num_scale_factor,
-                                          kwargs_lower=kwargs_lower_cosmo, kwargs_upper=kwargs_upper_cosmo,
+                                          kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
+                                          kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
                                           source_size=source_size)
 
@@ -186,6 +188,7 @@ class Param(object):
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_special, i = self.specialParams.getParams(args, i)
+        kwargs_extinction, i = self.extinctionParams.getParams(args, i)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
@@ -210,10 +213,11 @@ class Param(object):
             kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens, inverse=True)
         kwargs_return = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
                          'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
-                         'kwargs_special': kwargs_special}
+                         'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
         return kwargs_return
 
-    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None):
+    def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                    kwargs_special=None, kwargs_extinction=None):
         """
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
@@ -226,6 +230,7 @@ class Param(object):
         args += self.lensLightParams.setParams(kwargs_lens_light)
         args += self.pointSourceParams.setParams(kwargs_ps)
         args += self.specialParams.setParams(kwargs_special)
+        args += self.extinctionParams.setParams(kwargs_extinction)
         return args
 
     def param_limits(self):
@@ -237,12 +242,14 @@ class Param(object):
                                        kwargs_source=self.souceParams.lower_limit,
                                        kwargs_lens_light=self.lensLightParams.lower_limit,
                                        kwargs_ps=self.pointSourceParams.lower_limit,
-                                       kwargs_special=self.specialParams.lower_limit)
+                                       kwargs_special=self.specialParams.lower_limit,
+                                       kwargs_extinction=self.extinctionParams.lower_limit)
         upper_limit = self.kwargs2args(kwargs_lens=self.lensParams.upper_limit,
                                        kwargs_source=self.souceParams.upper_limit,
                                        kwargs_lens_light=self.lensLightParams.upper_limit,
                                        kwargs_ps=self.pointSourceParams.upper_limit,
-                                       kwargs_special=self.specialParams.upper_limit)
+                                       kwargs_special=self.specialParams.upper_limit,
+                                       kwargs_extinction=self.extinctionParams.upper_limit)
         return lower_limit, upper_limit
 
     def num_param(self):
@@ -261,6 +268,9 @@ class Param(object):
         num += _num
         list += _list
         _num, _list = self.specialParams.num_param()
+        num += _num
+        list += _list
+        _num, _list = self.extinctionParams.num_param()
         num += _num
         list += _list
         return num, list

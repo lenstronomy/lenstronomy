@@ -61,7 +61,9 @@ class TestParam(object):
         kwargs_true_ps = [{'point_amp': [1, 1], 'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_cosmo = [{}]
         args = self.param_class.kwargs2args(kwargs_true_lens, kwargs_true_source, kwargs_lens_light=kwargs_true_lens_light, kwargs_ps=kwargs_true_ps, kwargs_special=kwargs_cosmo)
-        lens_dict_list, source_dict, lens_light_dic, ps_dict, cosmos_dict = self.param_class.args2kwargs(args)
+        kwargs_return = self.param_class.args2kwargs(args)
+        lens_dict_list = kwargs_return['kwargs_lens']
+        lens_light_dict_list = kwargs_return['kwargs_lens_light']
         lens_dict = lens_dict_list[0]
         assert lens_dict['theta_E'] == 1.
         assert lens_dict['gamma'] == 1.9
@@ -69,7 +71,7 @@ class TestParam(object):
         assert lens_dict['e2'] == -0.01
         assert lens_dict['center_x'] == 0.
         assert lens_dict['center_y'] == 0.
-        assert lens_light_dic[0]['center_x'] == -0.06
+        assert lens_light_dict_list[0]['center_x'] == -0.06
 
     def test_get_cosmo(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
@@ -121,7 +123,8 @@ class TestParam(object):
         assert args[-1] == mass_scale
 
 
-        kwargs_lens, _, _, _, _ = param_class.args2kwargs(args)
+        kwargs_return = param_class.args2kwargs(args)
+        kwargs_lens = kwargs_return['kwargs_lens']
         print(kwargs_lens, 'test')
         assert kwargs_lens[0]['theta_E'] == 1
         assert kwargs_lens[1]['alpha_Rs'] == 0.1 * mass_scale
@@ -130,7 +133,8 @@ class TestParam(object):
         assert kwargs_lens[4]['k_eff'] == 0.3 * mass_scale
         assert kwargs_lens[5]['sigma0'] == 1 * mass_scale
 
-        kwargs_lens, _, _, _, _ = param_class.args2kwargs(args, bijective=True)
+        kwargs_return = param_class.args2kwargs(args, bijective=True)
+        kwargs_lens = kwargs_return['kwargs_lens']
         assert kwargs_lens[0]['theta_E'] == 1
         assert kwargs_lens[1]['alpha_Rs'] == 0.1
         assert kwargs_lens[2]['alpha_Rs'] == 0.3
@@ -143,7 +147,9 @@ class TestParam(object):
         kwargs_lens_light = [{'amp': 1, 'w_t': 0.5, 'w_c': 0.1, 'center_x': 0, 'center_y': 0.3, 'e1': 0.1, 'e2': -0.2}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
-        kwargs_lens_out, _, kwargs_lens_light_out, _, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens_light']
+        kwargs_lens_light_out = kwargs_return['kwargs_lens_light']
         assert kwargs_lens_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
         assert kwargs_lens_light_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
 
@@ -155,7 +161,10 @@ class TestParam(object):
         kwargs_lens_light = [{'amp': 1, 'R_sersic': 0.5, 'n_sersic': 2, 'center_x': 1, 'center_y': 1}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
-        kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
+        #kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+
         assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
         assert kwargs_lens_out[0]['center_x'] == kwargs_lens_light[0]['center_x']
 
@@ -169,7 +178,10 @@ class TestParam(object):
         kwargs_ps = [{'ra_source': 0.5, 'dec_source': 0.5}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, kwargs_ps=kwargs_ps)
-        kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+        kwargs_source_out = kwargs_return['kwargs_source']
+        #kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
         assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
         assert kwargs_source_out[0]['center_x'] == kwargs_ps[0]['ra_source']
 
@@ -182,7 +194,10 @@ class TestParam(object):
         kwargs_ps = [{'ra_image': [0.5], 'dec_image': [0.5]}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, kwargs_ps=kwargs_ps)
-        kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
+        #kwargs_lens_out, kwargs_source_out, _, kwargs_ps_out, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+        kwargs_source_out = kwargs_return['kwargs_source']
         assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
         npt.assert_almost_equal(kwargs_source_out[0]['center_x'], -0.207, decimal=2)
 
@@ -200,7 +215,9 @@ class TestParam(object):
         kwargs_ps = [{'ra_image': [0.5], 'dec_image': [0.5]}]
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, kwargs_lens_light=kwargs_lens_light, kwargs_ps=kwargs_ps)
-        kwargs_lens_out, kwargs_source_out, kwargs_lens_light_out, kwargs_ps_out, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_light_out = kwargs_return['kwargs_lens_light']
+        kwargs_ps_out = kwargs_return['kwargs_ps']
         assert kwargs_lens_light_out[0]['center_x'] == kwargs_ps_out[0]['ra_image']
 
     def test_with_solver(self):
@@ -220,7 +237,10 @@ class TestParam(object):
         param = Param(kwargs_model=kwargs_model, kwargs_lens_init=kwargs_lens, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source,
                                  kwargs_lens_light=kwargs_lens_light, kwargs_ps=kwargs_ps)
-        kwargs_lens_out, kwargs_source_out, kwargs_lens_light_out, kwargs_ps_out, _ = param.args2kwargs(args)
+        #kwargs_lens_out, kwargs_source_out, kwargs_lens_light_out, kwargs_ps_out, _ = param.args2kwargs(args)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+        kwargs_ps_out = kwargs_return['kwargs_ps']
         dist = param.check_solver(kwargs_lens=kwargs_lens_out, kwargs_ps=kwargs_ps_out)
         npt.assert_almost_equal(dist, 0, decimal=10)
 

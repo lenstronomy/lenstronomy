@@ -41,7 +41,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index])
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_extinction=None, inv_bool=False):
+                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
@@ -58,11 +58,11 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_ps)
         wls_model, error_map, cov_param, param = self._image_linear_solve(kwargs_lens_i, kwargs_source_i,
                                                                           kwargs_lens_light_i, kwargs_ps_i,
-                                                                          kwargs_extinction, inv_bool=inv_bool)
+                                                                          kwargs_extinction, kwargs_special, inv_bool=inv_bool)
         return wls_model, error_map, cov_param, param
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, source_marg=False):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -77,9 +77,8 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_source,
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps)
-        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i,
-                                                            kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction,
-                                                            source_marg=source_marg)
+        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
+                                                 kwargs_extinction,  kwargs_special, source_marg=source_marg)
         return logL
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
@@ -93,7 +92,7 @@ class SingleBandMultiModel(ImageLinearFit):
         return num
 
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                               kwargs_extinction=None):
+                               kwargs_extinction=None, kwargs_special=None):
         """
         computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
 
@@ -107,7 +106,8 @@ class SingleBandMultiModel(ImageLinearFit):
                                                                                               kwargs_source,
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps)
-        A = self._linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction)
+        A = self._linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
+                                         kwargs_extinction, kwargs_special)
         return A
 
     def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):

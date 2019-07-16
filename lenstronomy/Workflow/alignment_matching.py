@@ -12,13 +12,11 @@ class AlignmentFitting(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                 band_index=0, likelihood_mask_list=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_params, band_index=0, likelihood_mask_list=None):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = AlignmentLikelihood(multi_band_list, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light,
-                                         kwargs_ps, band_index, likelihood_mask_list)
+        self.chain = AlignmentLikelihood(multi_band_list, kwargs_model, kwargs_params, band_index, likelihood_mask_list)
 
     def pso(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1, mpi=False, print_key='default'):
         """
@@ -67,8 +65,7 @@ class AlignmentFitting(object):
 
 class AlignmentLikelihood(object):
 
-    def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                 band_index=0, likelihood_mask_list=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_params, band_index=0, likelihood_mask_list=None):
         """
         initializes all the classes needed for the chain
         """
@@ -81,7 +78,7 @@ class AlignmentLikelihood(object):
         self._source_marg = False
         self._band_index = band_index
         self._likelihood_mask_list = likelihood_mask_list
-        self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else = kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+        self._kwargs_params = kwargs_params
 
     def _likelihood(self, args):
         """
@@ -91,7 +88,7 @@ class AlignmentLikelihood(object):
         multi_band_list = self.update_multi_band(args)
         image_model = SingleBandMultiModel(multi_band_list, self._kwargs_model,
                                            likelihood_mask_list=self._likelihood_mask_list, band_index=self._band_index)
-        logL = image_model.likelihood_data_given_model(self._kwargs_lens, self._kwargs_source, self._kwargs_lens_light, self._kwargs_else, source_marg=self._source_marg)
+        logL = image_model.likelihood_data_given_model(source_marg=self._source_marg, **self._kwargs_params)
         return logL, None
 
     def __call__(self, a):

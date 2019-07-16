@@ -117,7 +117,12 @@ class LikelihoodModule(object):
         routine to compute X2 given variable parameters for a MCMC/PSO chain
         """
         #extract parameters
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.param.args2kwargs(args)
+        kwargs_return = self.param.args2kwargs(args)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = kwargs_return['kwargs_lens'], \
+                                                                                   kwargs_return['kwargs_source'], \
+                                                                                   kwargs_return['kwargs_lens_light'], \
+                                                                                   kwargs_return['kwargs_ps'], \
+                                                                                   kwargs_return['kwargs_special']
         #generate image and computes likelihood
         self._reset_point_source_cache(bool=True)
         logL = 0
@@ -127,12 +132,12 @@ class LikelihoodModule(object):
             if bound_hit:
                 return logL, None
         if self._image_likelihood is True:
-            logL_image = self.image_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            logL_image = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
             if verbose is True:
                 print('image logL = %s' % logL_image)
         if self._time_delay_likelihood is True:
-            logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo)
+            logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special)
             logL += logL_time_delay
             if verbose is True:
                 print('time-delay logL = %s' % logL_time_delay)
@@ -145,18 +150,18 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
                                                                             kwargs_lens=kwargs_lens)
-            x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_cosmo)
-            logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_cosmo)
+            x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_special)
+            logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_special)
             logL += logL_flux_ratios
             if verbose is True:
                 print('time-delay logL = %s' % logL_flux_ratios)
-        logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_cosmo, verbose=verbose)
-        logL_prior = self._prior_likelihood.logL(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+        logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
+        logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior
         if verbose is True:
             print('Prior likelihood = %s' % logL_prior)
         if self._condition_definition is not None:
-            logL_cond = self._condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo)
+            logL_cond = self._condition_definition(**kwargs_return)
             logL += logL_cond
             if verbose is True:
                 print('Condition definition logL = %s' % logL_cond)
@@ -195,13 +200,13 @@ class LikelihoodModule(object):
     def param_limits(self):
         return self._lower_limit, self._upper_limit
 
-    def effectiv_num_data_points(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def effectiv_num_data_points(self, **kwargs):
         """
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value
         """
         num_linear = 0
         if self._image_likelihood is True:
-            num_linear = self.image_likelihood.num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            num_linear = self.image_likelihood.num_param_linear(**kwargs)
         num_param, _ = self.param.num_param()
         return self.num_data - num_param - num_linear
 

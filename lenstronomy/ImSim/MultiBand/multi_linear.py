@@ -19,7 +19,7 @@ class MultiLinear(MultiDataBase):
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_extinction=None, inv_bool=False):
+                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
@@ -38,6 +38,7 @@ class MultiLinear(MultiDataBase):
                                                                                                      kwargs_lens_light,
                                                                                                      kwargs_ps,
                                                                                                      kwargs_extinction,
+                                                                                                     kwargs_special,
                                                                                                      inv_bool=inv_bool)
                 wls_list.append(wls_model)
                 error_map_list.append(error_map)
@@ -46,7 +47,7 @@ class MultiLinear(MultiDataBase):
         return wls_list, error_map_list, cov_param_list, param_list
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, source_marg=False):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -62,6 +63,6 @@ class MultiLinear(MultiDataBase):
             if self._compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                              kwargs_lens_light, kwargs_ps,
-                                                                             kwargs_extinction,
+                                                                             kwargs_extinction, kwargs_special,
                                                                              source_marg=source_marg)
         return logL

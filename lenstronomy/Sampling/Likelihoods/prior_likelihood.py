@@ -18,7 +18,7 @@ class PriorLikelihood(object):
         self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_cosmo = \
             prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo
 
-    def logL(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+    def logL(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special):
         """
 
         :param kwargs_lens: lens model parameter list
@@ -29,7 +29,7 @@ class PriorLikelihood(object):
         logL += self._prior_kwargs_list(kwargs_source, self._prior_source)
         logL += self._prior_kwargs_list(kwargs_lens_light, self._prior_lens_light)
         logL += self._prior_kwargs_list(kwargs_ps, self._prior_ps)
-        logL += self._prior_kwargs(kwargs_cosmo, self._prior_cosmo)
+        logL += self._prior_kwargs(kwargs_special, self._prior_cosmo)
         return logL
 
     def _prior_kwargs_list(self, kwargs_list, prior_list):

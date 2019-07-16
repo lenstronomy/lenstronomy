@@ -77,7 +77,7 @@ class ImageModel(object):
         self.PSF.set_pixel_size(self.Data.pixel_width)
         self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
-    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, unconvolved=False,
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_special=None, kwargs_extinction=None, unconvolved=False,
                                   de_lensed=False, k=None):
         """
 
@@ -96,7 +96,8 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
-            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction)
+            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        kwargs_special=kwargs_special)
         else:
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
@@ -116,7 +117,7 @@ class ImageModel(object):
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 
-    def point_source(self, kwargs_ps, kwargs_lens=None, unconvolved=False, k=None):
+    def point_source(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, unconvolved=False, k=None):
         """
 
         computes the point source positions and paints PSF convolutions on them
@@ -134,7 +135,7 @@ class ImageModel(object):
         return point_source_image
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-              kwargs_extinction=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         make an image with a realisation of linear parameter values "param"

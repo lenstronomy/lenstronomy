@@ -76,7 +76,7 @@ class TestLikelihoodModule(object):
                                    'Ddt_sampling': True
                                    }
 
-        def condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+        def condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special):
             logL = 0
             if kwargs_lens_light[0]['R_sersic'] > kwargs_source[0]['R_sersic']:
                 logL -= 10**15

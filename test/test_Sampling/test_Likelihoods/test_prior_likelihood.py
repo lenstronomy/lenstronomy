@@ -13,13 +13,13 @@ class TestImageLikelihood(object):
         kwargs_lens = [{'gamma': 2}]
         kwargs_cosmo = {'source_size': 1}
         logL = self.prior.logL(kwargs_lens=kwargs_lens, kwargs_source=[], kwargs_lens_light=[], kwargs_ps=[],
-                        kwargs_cosmo=kwargs_cosmo)
+                               kwargs_special=kwargs_cosmo)
         assert logL == 0
 
         kwargs_lens = [{'gamma': 2.1}]
         kwargs_cosmo = {'source_size': 1.1}
         logL = self.prior.logL(kwargs_lens=kwargs_lens, kwargs_source=[], kwargs_lens_light=[], kwargs_ps=[],
-                               kwargs_cosmo=kwargs_cosmo)
+                               kwargs_special=kwargs_cosmo)
         npt.assert_almost_equal(logL, -1, decimal=8)
 
 

@@ -135,12 +135,13 @@ class TestFittingSequence(object):
         fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
+        kwargs_result = fittingSequence.best_fit(bijective=False)
+        lens_temp = kwargs_result['kwargs_lens']
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
 
         logL = fittingSequence.best_fit_likelihood
         print(logL, 'test')
-        print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+        #print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         npt.assert_almost_equal(logL, -10000000061.792593, decimal=-4)
 
         n_p = 2
@@ -173,13 +174,13 @@ class TestFittingSequence(object):
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
-        kwargs_fixed = fittingSequence.kwargs_fixed()
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
-        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
+        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed = fittingSequence._updateManager._fixed_kwargs
+        kwargs_result = fittingSequence.best_fit(bijective=False)
+        npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
-        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
-        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
-        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
+        npt.assert_almost_equal(lens_light_fixed[0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 10
 
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
@@ -228,10 +229,10 @@ class TestFittingSequence(object):
         fitting_list2.append(['nested_sampling', kwargs_dypolychord])
 
         chain_list2 = fittingSequence.fit_sequence(fitting_list2)
-        kwargs_fixed = fittingSequence.kwargs_fixed()
+        kwargs_fixed = fittingSequence._updateManager._fixed_kwargs
         npt.assert_almost_equal(kwargs_fixed[0][1]['e1'], 0.01, decimal=2)
-        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 2.9
-        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 3.1
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
 
 
 if __name__ == '__main__':

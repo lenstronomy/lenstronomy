@@ -208,8 +208,10 @@ class Param(object):
 
         if bijective is True:
             kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens, inverse=True)
-
-        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special
+        kwargs_return = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
+                         'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
+                         'kwargs_special': kwargs_special}
+        return kwargs_return
 
     def kwargs2args(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None):
         """

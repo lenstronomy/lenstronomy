@@ -20,7 +20,7 @@ class DifferentialExtinction(object):
         else:
             self._compute_bool = True
 
-    def extinction(self, x, y, kwargs_extinction=None):
+    def extinction(self, x, y, kwargs_extinction=None, kwargs_special=None):
         """
 
         :param x: coordinate in image plane of flux intensity

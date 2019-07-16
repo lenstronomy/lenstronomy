@@ -29,7 +29,7 @@ class ImageLikelihood(object):
         self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
         self._flux_min = flux_min
 
-    def logL(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None):
         """
 
         :param kwargs_lens:
@@ -65,7 +65,7 @@ class ImageLikelihood(object):
         """
         return self.imSim.num_data_evaluate
 
-    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+    def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None):
         """
 
         :return:  number of linear parameters solved for during the image reconstruction process

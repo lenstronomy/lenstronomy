@@ -77,8 +77,8 @@ class ImageModel(object):
         self.PSF.set_pixel_size(self.Data.pixel_width)
         self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
-    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_special=None, kwargs_extinction=None, unconvolved=False,
-                                  de_lensed=False, k=None):
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                  unconvolved=False, de_lensed=False, k=None):
         """
 
         computes the source surface brightness distribution
@@ -96,10 +96,11 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
-            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
-                                                        kwargs_special=kwargs_special)
         else:
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
+            if kwargs_special is not None and kwargs_extinction is not None:
+                source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        tau0_list=kwargs_special.get('tau0_list', None))
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -153,9 +154,9 @@ class ImageModel(object):
         model = np.zeros((self.Data.num_pixel_axes))
         if source_add is True:
             model += self.source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
-                                                    unconvolved=unconvolved)
+                                                    kwargs_special=kwargs_special, unconvolved=unconvolved)
         if lens_light_add is True:
             model += self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         if point_source_add is True:
-            model += self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
+            model += self.point_source(kwargs_ps, kwargs_lens, kwargs_special=kwargs_special, unconvolved=unconvolved)
         return model

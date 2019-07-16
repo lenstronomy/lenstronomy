@@ -14,7 +14,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None, optical_depth_model=[],
-                           band_index=0, all_models=False):
+                           band_index=0, tau0_index_list=None, all_models=False):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -41,6 +41,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_point_source_model_list:
     :param optical_depth_model: list of strings indicating the optical depth model to compute (differential) extinctions from the source
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
+    :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
     :return:
     """
@@ -107,7 +108,11 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                                      additional_images_list=additional_images_list_i, min_distance=min_distance,
                                      search_window=search_window, precision_limit=precision_limit,
                                      num_iter_max=num_iter_max)
-    extinction_class = DifferentialExtinction(optical_depth_model=optical_depth_model)
+    if tau0_index_list is None:
+        tau0_index = 0
+    else:
+        tau0_index = tau0_index_list[band_index]
+    extinction_class = DifferentialExtinction(optical_depth_model=optical_depth_model, tau0_index=tau0_index)
     return lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
 
 

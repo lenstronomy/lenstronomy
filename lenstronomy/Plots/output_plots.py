@@ -239,8 +239,7 @@ class ModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
+    def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
                  bands_compute=None, multi_band_type='multi-linear', band_index=0):
         """
 
@@ -258,13 +257,11 @@ class ModelPlot(object):
                                                        likelihood_mask_list=likelihood_mask_list,
                                                        band_index=band_index)
 
-        model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                 kwargs_lens_light, kwargs_ps,
-                                                                                 inv_bool=True)
-        self._kwargs_lens = kwargs_lens
-        self._kwargs_source = kwargs_source
-        self._kwargs_lens_light = kwargs_lens_light
-        self._kwargs_else = kwargs_ps
+        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+        #self._kwargs_lens = kwargs_lens
+        #self._kwargs_source = kwargs_source
+        #self._kwargs_lens_light = kwargs_lens_light
+        #self._kwargs_else = kwargs_ps
         self._band_plot_list = []
         self._index_list = []
         index = 0
@@ -277,9 +274,8 @@ class ModelPlot(object):
                     param_i = param[index]
                     cov_param_i = cov_param[index]
 
-                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i, param_i,
-                                         copy.deepcopy(kwargs_lens), copy.deepcopy(kwargs_source),
-                                         copy.deepcopy(kwargs_lens_light), copy.deepcopy(kwargs_ps),
+                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
+                                         param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
                                          cmap_string=cmap_string)
                 self._band_plot_list.append(bandplot)
@@ -471,13 +467,12 @@ class ModelBandPlot(object):
     class to plot a single band given the modeling results
 
     """
-    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
 
         self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
-        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, kwargs_extinction_partial = self.bandmodel.select_kwargs(kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps)
+        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)

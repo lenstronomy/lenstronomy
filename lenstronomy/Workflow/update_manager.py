@@ -225,7 +225,7 @@ class UpdateManager(object):
         for param_name in special_remove_fixed:
             if param_name in special_fixed:
                 del special_fixed[param_name]
-                self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed
+        self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed
 
     @staticmethod
     def _add_fixed(kwargs_model, kwargs_fixed, add_fixed):

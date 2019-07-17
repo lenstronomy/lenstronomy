@@ -27,7 +27,7 @@ class TestClassCreator(object):
                              }
         self.kwargs_model_4 = {'lens_model_list': ['SIS', 'SIS'], 'lens_redshift_list': [0.3, 0.4], 'multi_plane': True,
                                'observed_convention_index': [0], 'index_lens_model_list': [[0]], 'z_source': 1,
-                               'optical_depth_model_list': ['UNIFORM'], 'index_optical_depth_model_list': [[0]]}
+                               'optical_depth_model_list': ['UNIFORM'], 'index_optical_depth_model_list': [[0]], 'tau0_index_list': [0]}
 
 
         self.kwargs_psf = {'psf_type': 'NONE'}

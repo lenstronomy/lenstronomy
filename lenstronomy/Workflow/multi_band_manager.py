@@ -31,7 +31,7 @@ class MultiBandUpdateManager(UpdateManager):
         for j in frame_list_fixed:
             if self._index_lens_model_list[j] is not None:
                 for i in self._index_lens_model_list[j]:
-                    self._lens_fixed[i] = self._lens_temp[i]
+                    self._lens_fixed[i] = self._kwargs_temp['kwargs_lens'][i]
 
     def undo_frame_fixed(self, frame_list):
         """

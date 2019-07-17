@@ -135,7 +135,7 @@ class SingleBandMultiModel(ImageLinearFit):
         return self._error_map_source(kwargs_source_i, x_grid, y_grid, cov_param)
 
     def select_kwargs(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                      kwargs_extinction=None):
+                      kwargs_extinction=None, kwargs_special=None):
         """
         select subset of kwargs lists referenced to this imaging band
 

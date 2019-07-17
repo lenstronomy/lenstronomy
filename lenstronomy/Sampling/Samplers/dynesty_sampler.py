@@ -10,6 +10,7 @@ import lenstronomy.Util.sampling_util as utils
 import dynesty
 import dynesty.utils as dyfunc
 
+
 class DynestySampler(NestedSampler):
     """
     Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle

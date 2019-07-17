@@ -99,9 +99,9 @@ class Chameleon(object):
         :param w_t: see Suyu+2014
         :return:
         """
-        #TODO remove this switch
-        if not w_t > w_c:
-            w_t, w_c = w_c, w_t
+        if not w_t >= w_c:
+            return 0, w_t, w_c
+            #w_t, w_c = w_c, w_t
         s_scale_1 = w_c
         s_scale_2 = w_t
         f_x_1, f_y_1 = self.nie.derivatives(1, 0, theta_E=1, e1=0, e2=0, s_scale=s_scale_1)
@@ -163,7 +163,7 @@ class DoubleChameleon(object):
         :param w_c2: Suyu+2014 for second profile
         :param w_t2: Suyu+2014 for second profile
         :param e12: ellipticity parameter for second profile
-        :param e22: ellipticity parameter for second profile
+        :param e22: ellipticity parameter for second profile^V
         :param center_x: ra center
         :param center_y: dec center
         :return: deflection angles (RA, DEC)

@@ -231,6 +231,9 @@ class SinglePlane(object):
         elif lens_type == 'SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             return Shear()
+        elif lens_type == 'SHEAR_GAMMA_PSI':
+            from lenstronomy.LensModel.Profiles.shear import ShearGammaPsi
+            return ShearGammaPsi()
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()

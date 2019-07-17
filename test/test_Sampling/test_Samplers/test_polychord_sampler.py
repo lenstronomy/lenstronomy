@@ -100,7 +100,7 @@ class TestDyPolyChordSampler(object):
         kwargs_constraints = {'image_plane_source_list': [False] * len(source_model_list)}
 
         kwargs_likelihood = {
-                                  'source_marg': True,
+                                  'source_marg': False,
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -187,7 +187,8 @@ class TestDyPolyChordSampler(object):
         n_dims = self.sampler.n_dims
         args = np.nan * np.ones(n_dims)
         logL, phi = self.sampler.log_likelihood(args)
-        assert logL == -1e15
+        npt.assert_almost_equal(logL, -53.607122396369675, decimal=8)
+        #assert logL == -1e15
         assert phi == []
 
 

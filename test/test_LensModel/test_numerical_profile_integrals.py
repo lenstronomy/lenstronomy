@@ -23,11 +23,19 @@ class TestNumerics(object):
         density2d = lensModel.density_2d(r, 0, **kwargs)
         npt.assert_almost_equal(density2d/density2d_num, 1., decimal=1)
 
+        kwargs['center_x'] = 0
+        kwargs['center_y'] = 0
         mass_2d_num = int_profile.mass_enclosed_2d(r, kwargs)
+        del kwargs['center_x']
+        del kwargs['center_y']
         mass_2d = lensModel.mass_2d(r, **kwargs)
         npt.assert_almost_equal(mass_2d/mass_2d_num, 1, decimal=1)
 
+        kwargs['center_x'] = 0
+        kwargs['center_y'] = 0
         mass_3d_num = int_profile.mass_enclosed_3d(r, kwargs)
+        del kwargs['center_x']
+        del kwargs['center_y']
         mass_3d = lensModel.mass_3d(r, **kwargs)
         npt.assert_almost_equal(mass_3d/mass_3d_num, 1, decimal=2)
 
@@ -48,7 +56,7 @@ class TestNumerics(object):
         Ra = 0.2
         Rs = 2.
         rho0 = lensModel.sigma2rho(sigma0, Ra, Rs)
-        kwargs_lens = {'sigma0': sigma0, 'Ra': Ra, 'Rs': Rs}
+        kwargs_lens = {'sigma0': sigma0, 'Ra': Ra, 'Rs': Rs, 'center_x': 0, 'center_y': 0}
         kwargs_density = {'rho0': rho0, 'Ra': Ra, 'Rs': Rs}
         r = 1.
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
@@ -57,7 +65,7 @@ class TestNumerics(object):
         npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
 
     def test_nfw(self):
-        kwargs = {'rho0': 1.,  'Rs': 5.}
+        kwargs = {'rho0': 1.,  'Rs': 5., 'center_x': 0, 'center_y': 0}
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
         self.assert_integrals(Model, kwargs)
 

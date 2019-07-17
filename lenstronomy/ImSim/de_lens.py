@@ -44,7 +44,28 @@ def marginalisation_const(M_inv):
     :param M_inv: 2D covariance matrix
     :return: float
     """
+
     sign, log_det = np.linalg.slogdet(M_inv)
-    return log_det/2
+    if sign == 0:
+        return -10**15
+    return sign * log_det/2
 
 
+def marginalization_new(M_inv, d_prior=None):
+    """
+
+    :param M_inv: 2D covariance matrix
+    :param d_prior: maximum prior length of linear parameters
+    :return: log determinant with eigenvalues to be smaller or equal d_prior
+    """
+    if d_prior is None:
+        return marginalisation_const(M_inv)
+    v, w = np.linalg.eig(M_inv)
+    sign_v = np.sign(v)
+    v_abs = np.abs(v)
+    v_abs[v_abs > d_prior**2] = d_prior**2
+    log_det = np.sum(np.log(v_abs)) * np.prod(sign_v)
+    if np.isnan(log_det):
+        return -10**15
+    m = len(v)
+    return log_det / 2 + m/2. * np.log(np.pi/2.) - m * np.log(d_prior)

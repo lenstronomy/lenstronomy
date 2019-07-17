@@ -116,7 +116,7 @@ class JointLinear(MultiLinear):
         return C_D_response, model_error
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -139,6 +139,6 @@ class JointLinear(MultiLinear):
                 logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].likelihood_mask, model_error_list[index])
                 index += 1
         if cov_matrix is not None and source_marg:
-            marg_const = de_lens.marginalisation_const(cov_matrix)
+            marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         return logL

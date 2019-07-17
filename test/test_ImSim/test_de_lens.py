@@ -61,7 +61,28 @@ class TestDeLens(object):
         marg_const = self.deLens.marginalisation_const(M_inv)
         assert marg_const == 0
 
+    def test_margnialization_new(self):
+        M_inv = np.array([[1, -0.5, 1],
+                          [-0.5, 3, 0],
+                          [1, 0, 2]])
+        d_prior = 1000
+        m = len(M_inv)
+        log_det = DeLens.marginalization_new(M_inv, d_prior=d_prior)
+        log_det_old = DeLens.marginalisation_const(M_inv)
+        npt.assert_almost_equal(log_det, log_det_old + m/2. * np.log(np.pi/2.) - m * np.log(d_prior), decimal=9)
+
+        M_inv = np.array([[1, 1, 1],
+                          [0., 1., 0.],
+                          [1., 2., 1.]])
+        log_det = DeLens.marginalization_new(M_inv, d_prior=10)
+        log_det_old = DeLens.marginalisation_const(M_inv)
+        npt.assert_almost_equal(log_det, log_det_old, decimal=9)
+        npt.assert_almost_equal(log_det, -10**(15), decimal=10)
+
+        log_det = DeLens.marginalization_new(M_inv, d_prior=None)
+        log_det_old = DeLens.marginalisation_const(M_inv)
+        npt.assert_almost_equal(log_det, log_det_old, decimal=9)
+
 
 if __name__ == '__main__':
     pytest.main()
-

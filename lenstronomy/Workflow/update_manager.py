@@ -48,7 +48,6 @@ class UpdateManager(object):
         else:
             self._extinction_init, self._extinction_sigma, self._extinction_fixed, self._extinction_lower, self._extinction_upper = [], [], [], [], []
         if 'special' in kwargs_params:
-            # if self.kwargs_likelihood.get('time_delay_likelihood', False) is True or self.kwargs_constraints.get('mass_scaling', False) is True:
             self._special_init, self._special_sigma, self._special_fixed, self._special_lower, self._special_upper = \
             kwargs_params['special']
         else:

@@ -39,6 +39,9 @@ class Param(object):
     'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
     joint position parameter between lens model and lens light model
 
+    'joint_extinction_with_lens_light': list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
+    joint parameters between the lens surface brightness and the optical depth models
+
     hierarchy is as follows:
     1. Point source parameters are inferred
     2. Lens light joint parameters are set
@@ -58,7 +61,8 @@ class Param(object):
                  kwargs_upper_special=None, kwargs_upper_extinction=None,
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
-                 joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
+                 joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
+                 mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0):
         """
@@ -139,12 +143,14 @@ class Param(object):
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=lens_model_class,
                                          num_images=self._num_images)
 
+        self._joint_extinction_with_lens_light = joint_extinction_with_lens_light
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_lens)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light, self._joint_lens_light_with_lens_light)
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source, self._joint_source_with_source)
         kwargs_fixed_ps_updated = copy.deepcopy(kwargs_fixed_ps)
+        kwargs_fixed_extinction_updated = self._fix_joint_param(kwargs_fixed_extinction, self._joint_extinction_with_lens_light)
         # fix parameters joint with other model types
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_light)
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
@@ -163,7 +169,7 @@ class Param(object):
                                                   num_point_source_list=num_point_source_list,
                                                   linear_solver=linear_solver, kwargs_lower=kwargs_lower_ps,
                                                   kwargs_upper=kwargs_upper_ps)
-        self.extinctionParams = LightParam(self._optical_depth_model_list, kwargs_fixed_extinction,
+        self.extinctionParams = LightParam(self._optical_depth_model_list, kwargs_fixed_extinction_updated,
                                            kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
                                            linear_solver=False)
         self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
@@ -194,6 +200,8 @@ class Param(object):
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
+        # update extinction model with lens light model
+        kwargs_extinction = self._update_joint_param(kwargs_lens_light, kwargs_extinction, self._joint_extinction_with_lens_light)
         # update lens model joint parameters (including scaling)
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)

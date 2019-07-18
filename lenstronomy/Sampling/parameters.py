@@ -60,7 +60,7 @@ class Param(object):
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
-                 source_size=False):
+                 source_size=False, num_tau0=0):
         """
 
         :return:
@@ -170,7 +170,7 @@ class Param(object):
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size)
+                                          source_size=source_size, num_tau0=num_tau0)
 
     @property
     def num_point_source_images(self):

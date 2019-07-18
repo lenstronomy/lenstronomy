@@ -95,7 +95,8 @@ class SPP(object):
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def rho2theta(self, rho0, gamma):
+    @staticmethod
+    def rho2theta(rho0, gamma):
         """
         converts 3d density into 2d projected density parameter
         :param rho0:
@@ -108,7 +109,8 @@ class SPP(object):
         theta_E = fac**(1. / (gamma - 1))
         return theta_E
 
-    def theta2rho(self, theta_E, gamma):
+    @staticmethod
+    def theta2rho(theta_E, gamma):
         """
         converts projected density parameter (in units of deflection) into 3d density parameter
         :param theta_E:
@@ -120,7 +122,8 @@ class SPP(object):
         rho0 = fac2 / fac1
         return rho0
 
-    def mass_3d(self, r, rho0, gamma):
+    @staticmethod
+    def mass_3d(r, rho0, gamma):
         """
         mass enclosed a 3d sphere or radius r
         :param r:
@@ -185,7 +188,8 @@ class SPP(object):
         pot = mass_3d/r
         return pot
 
-    def density(self, r, rho0, gamma):
+    @staticmethod
+    def density(r, rho0, gamma):
         """
         computes the density
         :param x:
@@ -198,7 +202,8 @@ class SPP(object):
         rho = rho0 / r**gamma
         return rho
 
-    def density_2d(self, x, y, rho0, gamma, center_x=0, center_y=0):
+    @staticmethod
+    def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
         """
         projected density
         :param x:
@@ -216,7 +221,8 @@ class SPP(object):
         sigma = np.sqrt(np.pi) * special.gamma(1./2*(-1+gamma))/special.gamma(gamma/2.) * r**(1-gamma) * rho0
         return sigma
 
-    def _gamma_limit(self, gamma):
+    @staticmethod
+    def _gamma_limit(gamma):
         """
         limits the power-law slope to certain bounds
 

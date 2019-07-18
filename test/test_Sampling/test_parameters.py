@@ -28,7 +28,7 @@ class TestParam(object):
 
     def test_num_param(self):
         num_param, list = self.param_class.num_param()
-        assert list[0] == 'theta_E_lens'
+        assert list[0] == 'theta_E_lens0'
         assert num_param == 9
 
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
@@ -43,7 +43,7 @@ class TestParam(object):
                                         kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
                                    linear_solver=True, **kwargs_param)
         num_param, list = param_class_linear.num_param()
-        assert list[0] == 'theta_E_lens'
+        assert list[0] == 'theta_E_lens0'
         print(list)
         assert len(list) == num_param
         assert num_param == 9

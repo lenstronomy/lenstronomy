@@ -239,8 +239,7 @@ class ModelPlot(object):
     """
     class that manages the summary plots of a lens model
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
+    def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
                  bands_compute=None, multi_band_type='multi-linear', band_index=0):
         """
 
@@ -258,13 +257,11 @@ class ModelPlot(object):
                                                        likelihood_mask_list=likelihood_mask_list,
                                                        band_index=band_index)
 
-        model, error_map, cov_param, param = self._imageModel.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                                 kwargs_lens_light, kwargs_ps,
-                                                                                 inv_bool=True)
-        self._kwargs_lens = kwargs_lens
-        self._kwargs_source = kwargs_source
-        self._kwargs_lens_light = kwargs_lens_light
-        self._kwargs_else = kwargs_ps
+        model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+        #self._kwargs_lens = kwargs_lens
+        #self._kwargs_source = kwargs_source
+        #self._kwargs_lens_light = kwargs_lens_light
+        #self._kwargs_else = kwargs_ps
         self._band_plot_list = []
         self._index_list = []
         index = 0
@@ -277,9 +274,8 @@ class ModelPlot(object):
                     param_i = param[index]
                     cov_param_i = cov_param[index]
 
-                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i, param_i,
-                                         copy.deepcopy(kwargs_lens), copy.deepcopy(kwargs_source),
-                                         copy.deepcopy(kwargs_lens_light), copy.deepcopy(kwargs_ps),
+                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
+                                         param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
                                          cmap_string=cmap_string)
                 self._band_plot_list.append(bandplot)
@@ -454,19 +450,29 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
+    def source(self, band_index=0, **kwargs):
+        """
+
+        :param numPix: number of grid points per axis
+        :param deltaPix: width of grid points
+        :param band_index: index of band
+        :return: 2d array of source surface brightness
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.source(**kwargs)
+
 
 class ModelBandPlot(object):
     """
     class to plot a single band given the modeling results
 
     """
-    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps, likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
 
         self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
-        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial = self.bandmodel.select_kwargs(kwargs_lens, kwargs_source,
-                 kwargs_lens_light, kwargs_ps)
+        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)
@@ -671,6 +677,36 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
+    def source(self, numPix, deltaPix, image_orientation=True):
+        """
+
+        :param numPix: number of pixels per axes
+        :param deltaPix: pixel size
+        :param image_orientation: bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates
+        :return: 2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid
+        """
+        if image_orientation is True:
+            Mpix2coord = self._coords.transform_pix2angle * deltaPix / self._deltaPix
+            x_grid_source, y_grid_source = util.make_grid_transformed(numPix, Mpix2Angle=Mpix2coord)
+            ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
+        else:
+            x_grid_source, y_grid_source, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
+            numPix, deltaPix)
+        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0,
+                                    dec_at_xy_0=dec_at_xy_0)
+
+        if len(self._kwargs_source_partial) > 0:
+            x_center = self._kwargs_source_partial[0]['center_x']
+            y_center = self._kwargs_source_partial[0]['center_y']
+            x_grid_source += x_center
+            y_grid_source += y_center
+
+        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
+                                                               self._kwargs_source_partial)
+        source = util.array2image(source) * deltaPix ** 2
+        return source, coords_source
+
     def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
                     font_size=15, plot_scale='log',
@@ -696,19 +732,7 @@ class ModelBandPlot(object):
         if v_max is None:
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
-        x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
-                                                                  self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
-        if len(self._kwargs_source_partial) > 0:
-            x_center = self._kwargs_source_partial[0]['center_x']
-            y_center = self._kwargs_source_partial[0]['center_y']
-            x_grid_source += x_center
-            y_grid_source += y_center
-        coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
-                                    dec_at_xy_0=y_grid_source[0])
-
-        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source, self._kwargs_source_partial)
-        source = util.array2image(source) * deltaPix_source**2
-
+        source, coords_source = self.source(numPix, deltaPix_source)
         if plot_scale == 'log':
             source_scale = np.log10(source)
         elif plot_scale == 'linear':
@@ -724,6 +748,9 @@ class ModelBandPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
+
+
+
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list,

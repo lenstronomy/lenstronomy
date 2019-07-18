@@ -27,7 +27,7 @@ class SimAPI(DataAPI, ModelAPI):
         ModelAPI.__init__(self, **kwargs_model)
         self._image_model_class = ImageModel(self.data_class, self.psf_class, self.lens_model_class,
                                              self.source_model_class, self.lens_light_model_class,
-                                             self.point_source_model_class, kwargs_numerics)
+                                             self.point_source_model_class, kwargs_numerics=kwargs_numerics)
 
     @property
     def image_model_class(self):

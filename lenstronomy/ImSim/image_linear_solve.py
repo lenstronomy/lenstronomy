@@ -9,7 +9,7 @@ class ImageLinearFit(ImageModel):
     linear version class, inherits ImageModel
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}, likelihood_mask=None,
+                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
                  psf_error_map_bool_list=None):
         """
 
@@ -23,7 +23,6 @@ class ImageLinearFit(ImageModel):
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
         being applied to the point sources.
-        :param linear_prior: prior range in linear parameter (width) to cap a marginalization over the linear inversion if uncertainties are exceeding.
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
@@ -33,13 +32,13 @@ class ImageLinearFit(ImageModel):
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
-                                             point_source_class=point_source_class, kwargs_numerics=kwargs_numerics)
+                                             point_source_class=point_source_class, extinction_class=extinction_class, kwargs_numerics=kwargs_numerics)
         if psf_error_map_bool_list is None:
             psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
         self._psf_error_map_bool_list = psf_error_map_bool_list
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           inv_bool=False):
+                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
 
         computes the image (lens and source surface brightness with a given lens model).
@@ -52,10 +51,11 @@ class ImageLinearFit(ImageModel):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
+                                        kwargs_special, inv_bool=inv_bool)
 
     def _image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           inv_bool=False):
+                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
 
         computes the image (lens and source surface brightness with a given lens model).
@@ -68,7 +68,7 @@ class ImageLinearFit(ImageModel):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
@@ -76,7 +76,8 @@ class ImageLinearFit(ImageModel):
         model = self.array_masked2image(wls_model)
         return model, model_error, cov_param, param
 
-    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
+    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                               kwargs_extinction=None, kwargs_special=None):
         """
         computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
 
@@ -86,7 +87,7 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps:
         :return:
         """
-        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
         return A
 
     @property
@@ -117,8 +118,8 @@ class ImageLinearFit(ImageModel):
         C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
         return C_D_response, psf_model_error
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
-                                    linear_prior=None):
+    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
         """
 
         computes the likelihood of the data given a model
@@ -130,11 +131,11 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :return: log likelihood (natural logarithm)
         """
-        return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg,
-                                                 linear_prior=linear_prior)
+        return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                                                 kwargs_extinction, kwargs_special, source_marg, linear_prior=linear_prior)
 
-    def _likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False,
-                                     linear_prior=None):
+    def _likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
         """
 
         computes the likelihood of the data given a model
@@ -145,12 +146,13 @@ class ImageLinearFit(ImageModel):
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param source_marg: bool, performs a marginalization over the linear parameters
+        :param linear_prior: linear prior width in eigenvalues
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        im_sim, model_error, cov_matrix, param = self._image_linear_solve(kwargs_lens, kwargs_source,
-                                                                         kwargs_lens_light, kwargs_ps,
-                                                                         inv_bool=source_marg)
+        im_sim, model_error, cov_matrix, param = self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light,
+                                                                          kwargs_ps, kwargs_extinction, kwargs_special,
+                                                                          inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         if cov_matrix is not None and source_marg:
@@ -177,7 +179,7 @@ class ImageLinearFit(ImageModel):
         return num
 
     def _linear_response_matrix(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                unconvolved=False):
+                                kwargs_extinction=None, kwargs_special=None, unconvolved=False):
         """
 
         return linear response Matrix
@@ -192,7 +194,8 @@ class ImageLinearFit(ImageModel):
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
         source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
                                                                                kwargs_source)
-
+        extinction = self._extinction.extinction(x_grid, y_grid, kwargs_extinction=kwargs_extinction,
+                                                 kwargs_special=kwargs_special)
         lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
 
         ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=False)
@@ -204,6 +207,7 @@ class ImageLinearFit(ImageModel):
         # response of sersic source profile
         for i in range(0, n_source):
             image = source_light_response[i]
+            image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = self.image2array_masked(image)
             n += 1

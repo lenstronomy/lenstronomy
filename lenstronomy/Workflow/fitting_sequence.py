@@ -9,7 +9,6 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-import sys
 
 
 class FittingSequence(object):
@@ -38,13 +37,13 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
-    def kwargs_fixed(self):
-        """
-        returns the updated kwargs_fixed from the update Manager
+    #def kwargs_fixed(self):
+    #    """
+    #    returns the updated kwargs_fixed from the update Manager
 
-        :return: list of fixed kwargs, see UpdateManager()
-        """
-        return self._updateManager.fixed_kwargs
+    #    :return: list of fixed kwargs, see UpdateManager()
+    #    """
+    #    return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
         """
@@ -75,8 +74,8 @@ class FittingSequence(object):
                 self.align_images(**kwargs)
 
             elif fitting_type == 'PSO':
-                lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
-                self._updateManager.update_param_state(lens_result, source_result, lens_light_result, ps_result, cosmo_result)
+                kwargs_result, chain, param = self.pso(**kwargs)
+                self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == 'MCMC':
@@ -103,12 +102,7 @@ class FittingSequence(object):
         :return: best fit model of the current state of the FittingSequence class
         """
 
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        if bijective is False:
-            param_class = self._updateManager.param_class
-            lens_temp = param_class.update_lens_scaling(cosmo_temp, lens_temp, inverse=False)
-            source_temp = param_class.image2source_plane(source_temp, lens_temp)
-        return lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp
+        return self._updateManager.best_fit(bijective=bijective)
 
     @property
     def best_fit_likelihood(self):
@@ -117,11 +111,10 @@ class FittingSequence(object):
 
         :return: log likelihood, float
         """
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
+        kwargs_result = self.best_fit(bijective=False)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light,
-                                                                kwargs_ps, kwargs_cosmo))
+        logL, _ = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
         return logL
 
     @property
@@ -162,10 +155,10 @@ class FittingSequence(object):
         param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        mean_start = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
+        kwargs_temp = self._updateManager.parameter_state
+        mean_start = param_class.kwargs2args(**kwargs_temp)
+        kwargs_sigma = self._updateManager.sigma_kwargs
+        sigma_start = param_class.kwargs2args(**kwargs_sigma)
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None and re_use_samples is True:
@@ -207,10 +200,10 @@ class FittingSequence(object):
         """
 
         param_class = self.param_class
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        init_pos = param_class.kwargs2args(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
+        kwargs_temp = self._updateManager.parameter_state
+        init_pos = param_class.kwargs2args(**kwargs_temp)
+        kwargs_sigma = self._updateManager.sigma_kwargs
+        sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lowerLimit = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upperLimit = np.array(init_pos) + np.array(sigma_start) * sigma_scale
         num_param, param_list = param_class.num_param()
@@ -219,9 +212,8 @@ class FittingSequence(object):
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
                                        threadCount=threadCount, mpi=self._mpi, print_key=print_key)
-        lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.args2kwargs(result,
-                                                                                                         bijective=True)
-        return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
+        kwargs_result = param_class.args2kwargs(result, bijective=True)
+        return kwargs_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
                         prior_type='uniform', width_scale=1, sigma_scale=1, 
@@ -313,10 +305,8 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self.param_class
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
-        source_updated = param_class.image2source_plane(source_temp, lens_updated)
+        #param_class = self.param_class
+        kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
@@ -326,8 +316,7 @@ class FittingSequence(object):
                 image_model = SingleBandMultiModel(self.multi_band_list, kwargs_model,
                                                    likelihood_mask_list=likelihood_mask_list, band_index=band_index)
                 psf_iter = PsfFitting(image_model_class=image_model)
-                kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
-                                                       lens_light_temp, ps_temp, num_iter=num_iter,
+                kwargs_psf = psf_iter.update_iterative(kwargs_psf, kwargs_params=kwargs_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map,
@@ -352,18 +341,18 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self.param_class
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
-        source_updated = param_class.image2source_plane(source_temp, lens_updated)
+        #param_class = self.param_class
+        #lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        #lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
+        #source_updated = param_class.image2source_plane(source_temp, lens_updated)
+        kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
         for i in range(len(self.multi_band_list)):
             if compute_bands[i] is True:
 
-                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, lens_updated, source_updated,
-                                                        lens_light_temp, ps_temp, band_index=i,
+                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
                                                     likelihood_mask_list=likelihood_mask_list)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
@@ -416,8 +405,8 @@ class FittingSequence(object):
 
     def _prepare_sampling(self, prior_type):
         if prior_type == 'gaussian':
-            mean_start = self.param_class.kwargs2args(*self._updateManager.parameter_state)
-            sigma_start = self.param_class.kwargs2args(*self._updateManager.sigma_kwargs)
+            mean_start = self.param_class.kwargs2args(**self._updateManager.parameter_state)
+            sigma_start = self.param_class.kwargs2args(**self._updateManager.sigma_kwargs)
             mean_start  = np.array(mean_start)
             sigma_start = np.array(sigma_start)
         else:
@@ -430,7 +419,5 @@ class FittingSequence(object):
         :param result: array of parameters being sampled (e.g. result of MCMC chain)
         :return: None, updates the parameter state of the class instance
         """
-        lens_result, source_result, lens_light_result, ps_result, cosmo_result \
-            = self.param_class.args2kwargs(result, bijective=True)
-
-        self._updateManager.update_param_state(lens_result, source_result, lens_light_result, ps_result, cosmo_result)
+        kwargs_result = self.param_class.args2kwargs(result, bijective=True)
+        self._updateManager.update_param_state(**kwargs_result)

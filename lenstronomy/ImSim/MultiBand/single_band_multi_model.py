@@ -162,7 +162,7 @@ class SingleBandMultiModel(ImageLinearFit):
             kwargs_ps_i = kwargs_ps
         else:
             kwargs_ps_i = [kwargs_ps[k] for k in self._index_point_source]
-        if self._index_optical_depth is None:
+        if self._index_optical_depth is None or kwargs_extinction is None:
             kwargs_extinction_i = kwargs_extinction
         else:
             kwargs_extinction_i = [kwargs_extinction[k] for k in self._index_optical_depth]

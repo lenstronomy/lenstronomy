@@ -159,3 +159,18 @@ class ImageModel(object):
         if point_source_add is True:
             model += self.point_source(kwargs_ps, kwargs_lens, kwargs_special=kwargs_special, unconvolved=unconvolved)
         return model
+
+    def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
+        """
+        differential extinction per pixel
+
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments, additional parameter to the extinction
+        :return: 2d array of size of the image
+        """
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        extinction = self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        kwargs_special=kwargs_special)
+        extinction_array = np.ones_like(ra_grid) * extinction
+        extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
+        return extinction

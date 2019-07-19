@@ -450,6 +450,17 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_subtract_from_data_all()
 
+    def plot_extinction_map(self, band_index=0, **kwargs):
+        """
+
+        :param band_index: index of band
+        :param kwargs: arguments of plotting
+        :return: plot instance of differential extinction map
+        """
+        plot_band = self._select_band(band_index)
+        return plot_band.plot_extinction_map(**kwargs)
+
+
     def source(self, band_index=0, **kwargs):
         """
 
@@ -472,7 +483,8 @@ class ModelBandPlot(object):
 
         self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
-        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
+        self._kwargs_special_partial = kwargs_params.get('kwargs_special', None)
+        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, self._kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)
@@ -988,6 +1000,25 @@ class ModelBandPlot(object):
         f.tight_layout()
         f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
         return f, axes
+
+    def plot_extinction_map(self, ax, v_min=None, v_max=None, **kwargs):
+        """
+
+        :param ax:
+        :param v_min:
+        :param v_max:
+        :return:
+        """
+        model = self.bandmodel.extinction_map(self._kwargs_extinction_partial, self._kwargs_special_partial)
+        if v_min is None:
+            v_min = 0
+        if v_max is None:
+            v_max = 1
+
+        im = ax.matshow(model, origin='lower', vmin=v_min, vmax=v_max,
+                        extent=[0, self._frame_size, 0, self._frame_size], **kwargs)
+        return ax
+
 
 
 def plot_chain_list(chain_list, index=0, num_average=100):

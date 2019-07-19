@@ -14,7 +14,7 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.Data.pixel_grid import PixelGrid
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.Util import util
 
 
@@ -230,6 +230,14 @@ class TestImageModel(object):
 
         flux = imageModel_empty.lens_surface_brightness(kwargs_lens_light=None)
         assert flux.all() == 0
+
+    def test_extinction_map(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        extinction_class = DifferentialExtinction(optical_depth_model=['UNIFORM'], tau0_index=0)
+        imageModel = ImageModel(data_class, PSF(), extinction_class=extinction_class)
+        extinction = imageModel.extinction_map(kwargs_extinction=[{'amp': 1}], kwargs_special={'tau0_list': [1, 0, 0]})
+        npt.assert_almost_equal(extinction, np.exp(-1))
 
 
 if __name__ == '__main__':

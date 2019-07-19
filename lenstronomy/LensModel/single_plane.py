@@ -358,6 +358,9 @@ class SinglePlane(object):
         elif lens_type == 'DIPOLE':
             from lenstronomy.LensModel.Profiles.dipole import Dipole
             return Dipole()
+        elif lens_type == 'CURVED_ARC':
+            from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+            return CurvedArc()
         elif lens_type == 'FOREGROUND_SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             self._foreground_shear = True

@@ -229,8 +229,9 @@ class SPP(object):
         :param gamma: power-law slope
         :return: bounded power-law slopte
         """
-        if gamma < 1.5:
-            gamma = 1.5
-        if gamma > 2.9:
-            gamma = 2.9
         return gamma
+        #if gamma < 1.5:
+        #    gamma = 1.5
+        #if gamma > 2.9:
+        #    gamma = 2.9
+        #return gamma

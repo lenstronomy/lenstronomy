@@ -1,10 +1,11 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import scipy
+from scipy import ndimage
+from scipy import interpolate
+from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
-import scipy.ndimage.interpolation as interp
 
 
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
@@ -101,7 +102,7 @@ def rotateImage(img, angle):
     :param angle: angle to be rotated (radian)
     :return: rotated image
     """
-    imgR = scipy.ndimage.rotate(img, angle, reshape=False)
+    imgR = ndimage.rotate(img, angle, reshape=False)
     return imgR
 
 
@@ -115,7 +116,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     :param y_out:
     :return:
     """
-    interp_2d = scipy.interpolate.interp2d(x_in, y_in, input_values, kind='linear')
+    interp_2d = interpolate.interp2d(x_in, y_in, input_values, kind='linear')
     #interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)
     out_values = interp_2d.__call__(x_out, y_out)
     return out_values

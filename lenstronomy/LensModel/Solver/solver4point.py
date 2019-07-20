@@ -23,7 +23,7 @@ class Solver4Point(object):
             if not lensModel.lens_model_list[1] == 'SHEAR_GAMMA_PSI':
                 raise ValueError("second lens model must be SHEAR_GAMMA_PSI to enable solver type %s! 'SHEAR' is not "
                                  "valid anymore and you need to change your model to a shear parameterization with "
-                                 "shear strength and angle." % solver_type)
+                                 "shear strength 'gamma_ext' and angle 'psi_est'." % solver_type)
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
         if lensModel.multi_plane is True or 'FOREGROUND_SHEAR' in self._lens_mode_list:

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -221,7 +221,7 @@
 <li><strong>w_c2</strong> – Suyu+2014 for second profile</li>
 <li><strong>w_t2</strong> – Suyu+2014 for second profile</li>
 <li><strong>e12</strong> – ellipticity parameter for second profile</li>
-<li><strong>e22</strong> – ellipticity parameter for second profile</li>
+<li><strong>e22</strong> – ellipticity parameter for second profile^V</li>
 <li><strong>center_x</strong> – ra center</li>
 <li><strong>center_y</strong> – dec center</li>
 </ul>
@@ -1063,22 +1063,103 @@ normalized by rho0, the central core density</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.LensModel.Profiles.critical_curve">
-<span id="lenstronomy-lensmodel-profiles-critical-curve-module"></span><h2>lenstronomy.LensModel.Profiles.critical_curve module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.critical_curve" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.curved_arc">
+<span id="lenstronomy-lensmodel-profiles-curved-arc-module"></span><h2>lenstronomy.LensModel.Profiles.curved_arc module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.curved_arc" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.critical_curve.CriticalCurve">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.critical_curve.</code><code class="descname">CriticalCurve</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/critical_curve.html#CriticalCurve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.critical_curve.CriticalCurve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.curved_arc.CurvedArc">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.curved_arc.</code><code class="descname">CurvedArc</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/curved_arc.html#CurvedArc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>lens model that describes a section of a highly magnified deflector region.
 The parameterization is chosen to describe local observables efficient.</p>
 <p>Observables are:
 - curvature radius (basically bending relative to the center of the profile)
-- thickness of magnification region (more generalized than the power-law slope)
-- location of critical curve along the axis</p>
+- radial stretch (plus sign) thickness of arc with parity (more generalized than the power-law slope)
+- tangential stretch (plus sign). Infinity means at critical curve
+- direction of curvature
+- position of arc</p>
 <p>Requirements:
 - Should work with other perturbative models without breaking its meaning (say when adding additional shear terms)
 - Must best reflect the observables in lensing
 - minimal covariances between the parameters, intuitive parameterization.</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>tangential_stretch</em>, <em>radial_stretch</em>, <em>r_curvature</em>, <em>direction</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/curved_arc.html#CurvedArc.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>tangential_stretch</strong> – </li>
+<li><strong>radial_stretch</strong> – </li>
+<li><strong>r_curvature</strong> – </li>
+<li><strong>direction</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>tangential_stretch</em>, <em>radial_stretch</em>, <em>r_curvature</em>, <em>direction</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/curved_arc.html#CurvedArc.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>ATTENTION: there may not be a global lensing potential!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>tangential_stretch</strong> – </li>
+<li><strong>radial_stretch</strong> – </li>
+<li><strong>r_curvature</strong> – </li>
+<li><strong>direction</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>tangential_stretch</em>, <em>radial_stretch</em>, <em>r_curvature</em>, <em>direction</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/curved_arc.html#CurvedArc.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>tangential_stretch</strong> – </li>
+<li><strong>radial_stretch</strong> – </li>
+<li><strong>r_curvature</strong> – </li>
+<li><strong>direction</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -4558,7 +4639,7 @@ Prugniel &amp; Simien (1997)
 <dt id="lenstronomy.LensModel.Profiles.shear.Shear">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.shear.</code><code class="descname">Shear</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#Shear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.Shear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>new class for external shear e1, e2 expression</p>
+<p>class for external shear e1, e2 expression</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.shear.Shear.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#Shear.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.Shear.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -4587,6 +4668,43 @@ Prugniel &amp; Simien (1997)
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.shear.Shear.upper_limit_default">
 <code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'e1': 0.5, 'e2': 0.5, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.Shear.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.shear.</code><code class="descname">ShearGammaPsi</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#ShearGammaPsi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to model a shear field with shear strength and direction</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>gamma_ext</em>, <em>psi_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#ShearGammaPsi.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.function">
+<em class="property">static </em><code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>gamma_ext</em>, <em>psi_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#ShearGammaPsi.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.function" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>gamma_ext</em>, <em>psi_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/shear.html#ShearGammaPsi.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.hessian" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'dec_0': -100, 'gamma_ext': 0, 'psi_ext': -3.141592653589793, 'ra_0': -100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.param_names">
+<code class="descname">param_names</code><em class="property"> = ['gamma_ext', 'psi_ext', 'ra_0', 'dec_0']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'gamma_ext': 1, 'psi_ext': 3.141592653589793, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.shear.ShearGammaPsi.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -4873,6 +4991,14 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.hessian" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.is_not_empty">
+<em class="property">static </em><code class="descname">is_not_empty</code><span class="sig-paren">(</span><em>x1</em>, <em>x2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.is_not_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.is_not_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if float or not an empty array
+:return:
+:rtype: bool</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.lower_limit_default">
 <code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 's_scale': 0, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.lower_limit_default" title="Permalink to this definition">¶</a></dt>
@@ -4971,9 +5097,9 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.spp.</code><code class="descname">SPP</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class for circular power-law mass distribution</p>
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spp.SPP.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.density" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.density" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the density
 :param x:
 :param y:
@@ -4983,9 +5109,9 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 :return:</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spp.SPP.density_2d">
-<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>rho0</em>, <em>gamma</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.density_2d" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>rho0</em>, <em>gamma</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.density_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>projected density
 :param x:
 :param y:
@@ -5084,9 +5210,9 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spp.SPP.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.mass_3d" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 3d sphere or radius r
 :param r:
 :param a:
@@ -5120,18 +5246,18 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <code class="descname">param_names</code><em class="property"> = ['theta_E', 'gamma', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spp.SPP.rho2theta">
-<code class="descname">rho2theta</code><span class="sig-paren">(</span><em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.rho2theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.rho2theta" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">rho2theta</code><span class="sig-paren">(</span><em>rho0</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.rho2theta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.rho2theta" title="Permalink to this definition">¶</a></dt>
 <dd><p>converts 3d density into 2d projected density parameter
 :param rho0:
 :param gamma:
 :return:</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spp.SPP.theta2rho">
-<code class="descname">theta2rho</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.theta2rho"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.theta2rho" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">theta2rho</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spp.html#SPP.theta2rho"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spp.SPP.theta2rho" title="Permalink to this definition">¶</a></dt>
 <dd><p>converts projected density parameter (in units of deflection) into 3d density parameter
 :param theta_E:
 :param gamma:
@@ -5396,7 +5522,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.cnfw">lenstronomy.LensModel.Profiles.cnfw module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.convergence">lenstronomy.LensModel.Profiles.convergence module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.coreBurkert">lenstronomy.LensModel.Profiles.coreBurkert module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.critical_curve">lenstronomy.LensModel.Profiles.critical_curve module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.curved_arc">lenstronomy.LensModel.Profiles.curved_arc module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.flexionfg">lenstronomy.LensModel.Profiles.flexionfg module</a></li>
@@ -5481,7 +5607,7 @@ The Einstein ring parameter converts to the definition used by GRAVLENS as follo
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

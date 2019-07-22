@@ -94,7 +94,7 @@ class LensEquationSolver(object):
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
-                                   non_linear=False):
+                                   non_linear=False, magnification_limit=None):
         """
         finds image position source position and lense model
 
@@ -156,6 +156,10 @@ class LensEquationSolver(object):
         if arrival_time_sort is True:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         self._make_dynamic()
+        if magnification_limit is not None:
+            mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+            x_mins = x_mins[mag >= magnification_limit]
+            y_mins = y_mins[mag >= magnification_limit]
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),

@@ -15,7 +15,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=[], index_optical_depth_model_list=None,
-                           band_index=0, tau0_index_list=None, all_models=False):
+                           band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -44,6 +44,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
+    :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
     :return:
     """
     if index_lens_model_list is None or all_models is True:
@@ -108,7 +109,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                                      fixed_magnification_list=fixed_magnification_list_i,
                                      additional_images_list=additional_images_list_i, min_distance=min_distance,
                                      search_window=search_window, precision_limit=precision_limit,
-                                     num_iter_max=num_iter_max)
+                                     num_iter_max=num_iter_max, magnification_limit=point_source_magnification_limit)
     if tau0_index_list is None:
         tau0_index = 0
     else:

@@ -20,33 +20,33 @@ class TestCartShapelets(object):
         beta = 1.
         coeffs = (1., 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == -0.046311501189135587
+        npt.assert_almost_equal(values[0], -0.046311501189135587, decimal=8)
 
         x = 1.
         y = 2.
         beta = 1.
         coeffs = (1., 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values == -0.046311501189135587
+        npt.assert_almost_equal(values, -0.046311501189135587, decimal=8)
 
         x = np.array([0])
         y = np.array([0])
         beta = 1.
         coeffs = (0, 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (1, 1., 0, 0, 1, 1)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (1, 1., 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (0., 0., 0, 0, 0., 0., 0, 0, 0, 0, 0, 0, 0, 0, 0)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
     def test_derivatives(self):
         """

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,7 +50,6 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Samplers.polychord_sampler</span> <span class="k">import</span> <span class="n">DyPolyChordSampler</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Samplers.dynesty_sampler</span> <span class="k">import</span> <span class="n">DynestySampler</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 
 
 <div class="viewcode-block" id="FittingSequence"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence">[docs]</a><span class="k">class</span> <span class="nc">FittingSequence</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -79,13 +78,13 @@
                                                      <span class="n">num_bands</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mcmc_init_samples</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="FittingSequence.kwargs_fixed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">kwargs_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns the updated kwargs_fixed from the update Manager</span>
+    <span class="c1">#def kwargs_fixed(self):</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
+    <span class="c1">#    returns the updated kwargs_fixed from the update Manager</span>
 
-<span class="sd">        :return: list of fixed kwargs, see UpdateManager()</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">fixed_kwargs</span></div>
+    <span class="c1">#    :return: list of fixed kwargs, see UpdateManager()</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
+    <span class="c1">#    return self._updateManager.fixed_kwargs</span>
 
 <div class="viewcode-block" id="FittingSequence.fit_sequence"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">fit_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -116,8 +115,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">align_images</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;PSO&#39;</span><span class="p">:</span>
-                <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">)</span>
+                <span class="n">kwargs_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_result</span><span class="p">)</span>
                 <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">fitting_type</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param</span><span class="p">])</span>
 
             <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;MCMC&#39;</span><span class="p">:</span>
@@ -144,12 +143,7 @@
 <span class="sd">        :return: best fit model of the current state of the FittingSequence class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
-        <span class="k">if</span> <span class="n">bijective</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-            <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">param_class</span>
-            <span class="n">lens_temp</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">update_lens_scaling</span><span class="p">(</span><span class="n">cosmo_temp</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">source_temp</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">image2source_plane</span><span class="p">(</span><span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">best_fit</span><span class="p">(</span><span class="n">bijective</span><span class="o">=</span><span class="n">bijective</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">best_fit_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -158,11 +152,10 @@
 
 <span class="sd">        :return: log likelihood, float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_cosmo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit</span><span class="p">(</span><span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit</span><span class="p">(</span><span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
         <span class="n">likelihoodModule</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">likelihoodModule</span>
-        <span class="n">logL</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">likelihoodModule</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span>
-                                                                <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">))</span>
+        <span class="n">logL</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">likelihoodModule</span><span class="o">.</span><span class="n">logL</span><span class="p">(</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_result</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">logL</span>
 
     <span class="nd">@property</span>
@@ -203,10 +196,10 @@
         <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
         <span class="c1"># run PSO</span>
         <span class="n">mcmc_class</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">likelihoodModule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoodModule</span><span class="p">)</span>
-        <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
-        <span class="n">mean_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span><span class="p">)</span>
-        <span class="n">lens_sigma</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">lens_light_sigma</span><span class="p">,</span> <span class="n">ps_sigma</span><span class="p">,</span> <span class="n">cosmo_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span>
-        <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="n">lens_sigma</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">lens_light_sigma</span><span class="p">,</span> <span class="n">ps_sigma</span><span class="p">,</span> <span class="n">cosmo_sigma</span><span class="p">)</span>
+        <span class="n">kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
+        <span class="n">mean_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_temp</span><span class="p">)</span>
+        <span class="n">kwargs_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span>
+        <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_sigma</span><span class="p">)</span>
         <span class="n">num_param</span><span class="p">,</span> <span class="n">param_list</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
         <span class="c1"># run MCMC</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">init_samples</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">re_use_samples</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -248,10 +241,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
-        <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
-        <span class="n">init_pos</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span><span class="p">)</span>
-        <span class="n">lens_sigma</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">lens_light_sigma</span><span class="p">,</span> <span class="n">ps_sigma</span><span class="p">,</span> <span class="n">cosmo_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span>
-        <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="n">lens_sigma</span><span class="p">,</span> <span class="n">source_sigma</span><span class="p">,</span> <span class="n">lens_light_sigma</span><span class="p">,</span> <span class="n">ps_sigma</span><span class="p">,</span> <span class="n">cosmo_sigma</span><span class="p">)</span>
+        <span class="n">kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
+        <span class="n">init_pos</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_temp</span><span class="p">)</span>
+        <span class="n">kwargs_sigma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span>
+        <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_sigma</span><span class="p">)</span>
         <span class="n">lowerLimit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_scale</span>
         <span class="n">upperLimit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">)</span> <span class="o">*</span> <span class="n">sigma_scale</span>
         <span class="n">num_param</span><span class="p">,</span> <span class="n">param_list</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
@@ -260,9 +253,8 @@
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">likelihoodModule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoodModule</span><span class="p">)</span>
         <span class="n">result</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">init_pos</span><span class="o">=</span><span class="n">init_pos</span><span class="p">,</span>
                                        <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpi</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="n">print_key</span><span class="p">)</span>
-        <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span>
-                                                                                                         <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param_list</span></div>
+        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param_list</span></div>
 
 <div class="viewcode-block" id="FittingSequence.nested_sampling"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling">[docs]</a>    <span class="k">def</span> <span class="nf">nested_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sampler_type</span><span class="o">=</span><span class="s1">&#39;MULTINEST&#39;</span><span class="p">,</span> <span class="n">kwargs_run</span><span class="o">=</span><span class="p">{},</span>
                         <span class="n">prior_type</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span> <span class="n">width_scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">sigma_scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
@@ -354,10 +346,8 @@
         <span class="n">kwargs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_model</span>
         <span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_likelihood</span>
         <span class="n">likelihood_mask_list</span> <span class="o">=</span> <span class="n">kwargs_likelihood</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_likelihood_mask_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
-        <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
-        <span class="n">lens_updated</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">update_lens_scaling</span><span class="p">(</span><span class="n">cosmo_temp</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">)</span>
-        <span class="n">source_updated</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">image2source_plane</span><span class="p">(</span><span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">)</span>
+        <span class="c1">#param_class = self.param_class</span>
+        <span class="n">kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit</span><span class="p">(</span><span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">compute_bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compute_bands</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">)</span>
 
@@ -367,8 +357,7 @@
                 <span class="n">image_model</span> <span class="o">=</span> <span class="n">SingleBandMultiModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span>
                                                    <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="n">likelihood_mask_list</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="n">band_index</span><span class="p">)</span>
                 <span class="n">psf_iter</span> <span class="o">=</span> <span class="n">PsfFitting</span><span class="p">(</span><span class="n">image_model_class</span><span class="o">=</span><span class="n">image_model</span><span class="p">)</span>
-                <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="n">psf_iter</span><span class="o">.</span><span class="n">update_iterative</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">,</span> <span class="n">source_updated</span><span class="p">,</span>
-                                                       <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="n">num_iter</span><span class="p">,</span>
+                <span class="n">kwargs_psf</span> <span class="o">=</span> <span class="n">psf_iter</span><span class="o">.</span><span class="n">update_iterative</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="o">=</span><span class="n">kwargs_temp</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="n">num_iter</span><span class="p">,</span>
                                                        <span class="n">no_break</span><span class="o">=</span><span class="n">no_break</span><span class="p">,</span> <span class="n">stacking_method</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span>
                                                        <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">,</span>
                                                        <span class="n">keep_psf_error_map</span><span class="o">=</span><span class="n">keep_psf_error_map</span><span class="p">,</span>
@@ -393,18 +382,18 @@
         <span class="n">kwargs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_model</span>
         <span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_likelihood</span>
         <span class="n">likelihood_mask_list</span> <span class="o">=</span> <span class="n">kwargs_likelihood</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;image_likelihood_mask_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
-        <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">cosmo_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
-        <span class="n">lens_updated</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">update_lens_scaling</span><span class="p">(</span><span class="n">cosmo_temp</span><span class="p">,</span> <span class="n">lens_temp</span><span class="p">)</span>
-        <span class="n">source_updated</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">image2source_plane</span><span class="p">(</span><span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">)</span>
+        <span class="c1">#param_class = self.param_class</span>
+        <span class="c1">#lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state</span>
+        <span class="c1">#lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)</span>
+        <span class="c1">#source_updated = param_class.image2source_plane(source_temp, lens_updated)</span>
+        <span class="n">kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit</span><span class="p">(</span><span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">compute_bands</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compute_bands</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">compute_bands</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
 
-                <span class="n">alignmentFitting</span> <span class="o">=</span> <span class="n">AlignmentFitting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">lens_updated</span><span class="p">,</span> <span class="n">source_updated</span><span class="p">,</span>
-                                                        <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
+                <span class="n">alignmentFitting</span> <span class="o">=</span> <span class="n">AlignmentFitting</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_temp</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span>
                                                     <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="n">likelihood_mask_list</span><span class="p">)</span>
 
                 <span class="n">kwargs_data</span><span class="p">,</span> <span class="n">chain</span> <span class="o">=</span> <span class="n">alignmentFitting</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="n">n_particles</span><span class="o">=</span><span class="n">n_particles</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="n">n_iterations</span><span class="p">,</span>
@@ -451,14 +440,14 @@
 <span class="sd">        lens models to the initial kwargs_fixed options</span>
 
 <span class="sd">        :param free_bands: bool list of length of imaging bands in order of imaging bands, if False: set fixed lens model</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">fix_not_computed</span><span class="p">(</span><span class="n">free_bands</span><span class="o">=</span><span class="n">free_bands</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_prepare_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prior_type</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">prior_type</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
-            <span class="n">mean_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span><span class="p">)</span>
-            <span class="n">sigma_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span><span class="p">)</span>
+            <span class="n">mean_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span><span class="p">)</span>
+            <span class="n">sigma_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span><span class="p">)</span>
             <span class="n">mean_start</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span>
             <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -471,10 +460,8 @@
 <span class="sd">        :param result: array of parameters being sampled (e.g. result of MCMC chain)</span>
 <span class="sd">        :return: None, updates the parameter state of the class instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span> \
-            <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="n">lens_result</span><span class="p">,</span> <span class="n">source_result</span><span class="p">,</span> <span class="n">lens_light_result</span><span class="p">,</span> <span class="n">ps_result</span><span class="p">,</span> <span class="n">cosmo_result</span><span class="p">)</span></div>
+        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_result</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -507,7 +494,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

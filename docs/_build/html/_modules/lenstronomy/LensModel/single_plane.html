@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.single_plane &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.LensModel.single_plane &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -272,6 +272,9 @@
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">Shear</span>
             <span class="k">return</span> <span class="n">Shear</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR_GAMMA_PSI&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">ShearGammaPsi</span>
+            <span class="k">return</span> <span class="n">ShearGammaPsi</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CONVERGENCE&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="k">import</span> <span class="n">Convergence</span>
             <span class="k">return</span> <span class="n">Convergence</span><span class="p">()</span>
@@ -396,6 +399,9 @@
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.dipole</span> <span class="k">import</span> <span class="n">Dipole</span>
             <span class="k">return</span> <span class="n">Dipole</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc</span> <span class="k">import</span> <span class="n">CurvedArc</span>
+            <span class="k">return</span> <span class="n">CurvedArc</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FOREGROUND_SHEAR&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">Shear</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="o">=</span> <span class="kc">True</span>
@@ -492,7 +498,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

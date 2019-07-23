@@ -113,3 +113,10 @@ History
 * re-design of plotting module
 * nested samplers implemented
 * Workflow module with added features
+
+0.9.1 (2019-7-21)
++++++++++++++++++
+* non-linear solver for 4 point sources updated
+* new lens models added
+* updated Workflow module
+* implemented differential extinction

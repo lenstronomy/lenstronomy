@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots package &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Plots package &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-plots-output-plots-module"></span><h2>lenstronomy.Plots.output_plots module<a class="headerlink" href="#module-lenstronomy.Plots.output_plots" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Plots.output_plots.ModelBandPlot">
-<em class="property">class </em><code class="descclassname">lenstronomy.Plots.output_plots.</code><code class="descname">ModelBandPlot</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>model</em>, <em>error_map</em>, <em>cov_param</em>, <em>param</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>likelihood_mask_list=None</em>, <em>band_index=0</em>, <em>arrow_size=0.02</em>, <em>cmap_string='gist_heat'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Plots.output_plots.</code><code class="descname">ModelBandPlot</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>model</em>, <em>error_map</em>, <em>cov_param</em>, <em>param</em>, <em>kwargs_params</em>, <em>likelihood_mask_list=None</em>, <em>band_index=0</em>, <em>arrow_size=0.02</em>, <em>cmap_string='gist_heat'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to plot a single band given the modeling results</p>
 <dl class="method">
@@ -235,6 +235,27 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Plots.output_plots.ModelBandPlot.plot_extinction_map">
+<code class="descname">plot_extinction_map</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=None</em>, <em>v_max=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot.plot_extinction_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot.plot_extinction_map" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – </li>
+<li><strong>v_min</strong> – </li>
+<li><strong>v_max</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Plots.output_plots.ModelBandPlot.plot_main">
 <code class="descname">plot_main</code><span class="sig-paren">(</span><em>with_caustics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot.plot_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot.plot_main" title="Permalink to this definition">¶</a></dt>
 <dd><p>print the main plots together in a joint frame</p>
@@ -277,6 +298,27 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Plots.output_plots.ModelBandPlot.source">
+<code class="descname">source</code><span class="sig-paren">(</span><em>numPix</em>, <em>deltaPix</em>, <em>image_orientation=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot.source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot.source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>numPix</strong> – number of pixels per axes</li>
+<li><strong>deltaPix</strong> – pixel size</li>
+<li><strong>image_orientation</strong> – bool, if True, uses frame in orientation of the image, otherwise in RA-DEC coordinates</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d surface brightness grid of the reconstructed source and Coordinates() instance of source grid</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Plots.output_plots.ModelBandPlot.source_plot">
 <code class="descname">source_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>numPix</em>, <em>deltaPix_source</em>, <em>v_min=None</em>, <em>v_max=None</em>, <em>with_caustics=False</em>, <em>caustic_color='yellow'</em>, <em>font_size=15</em>, <em>plot_scale='log'</em>, <em>text='Reconstructed source'</em>, <em>colorbar_label='log$_{10}$ flux'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelBandPlot.source_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelBandPlot.source_plot" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -313,7 +355,7 @@
 
 <dl class="class">
 <dt id="lenstronomy.Plots.output_plots.ModelPlot">
-<em class="property">class </em><code class="descclassname">lenstronomy.Plots.output_plots.</code><code class="descname">ModelPlot</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>arrow_size=0.02</em>, <em>cmap_string='gist_heat'</em>, <em>likelihood_mask_list=None</em>, <em>bands_compute=None</em>, <em>multi_band_type='single-band'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelPlot" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Plots.output_plots.</code><code class="descname">ModelPlot</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_params</em>, <em>arrow_size=0.02</em>, <em>cmap_string='gist_heat'</em>, <em>likelihood_mask_list=None</em>, <em>bands_compute=None</em>, <em>multi_band_type='multi-linear'</em>, <em>band_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class that manages the summary plots of a lens model</p>
 <dl class="method">
@@ -506,6 +548,26 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Plots.output_plots.ModelPlot.plot_extinction_map">
+<code class="descname">plot_extinction_map</code><span class="sig-paren">(</span><em>band_index=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelPlot.plot_extinction_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelPlot.plot_extinction_map" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>band_index</strong> – index of band</li>
+<li><strong>kwargs</strong> – arguments of plotting</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot instance of differential extinction map</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Plots.output_plots.ModelPlot.plot_main">
 <code class="descname">plot_main</code><span class="sig-paren">(</span><em>band_index=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelPlot.plot_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelPlot.plot_main" title="Permalink to this definition">¶</a></dt>
 <dd><p>plot a set of ‘main’ modelling diagnostics</p>
@@ -562,6 +624,27 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot instance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Plots.output_plots.ModelPlot.source">
+<code class="descname">source</code><span class="sig-paren">(</span><em>band_index=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/output_plots.html#ModelPlot.source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.output_plots.ModelPlot.source" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>numPix</strong> – number of grid points per axis</li>
+<li><strong>deltaPix</strong> – width of grid points</li>
+<li><strong>band_index</strong> – index of band</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of source surface brightness</p>
 </td>
 </tr>
 </tbody>
@@ -883,7 +966,7 @@ This routine is an example and more tests might be appropriate to analyse a spec
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

@@ -127,6 +127,10 @@ class TestOutputPlots(object):
         lensPlot.absolute_residual_plot(ax=ax)
         plt.close()
 
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensPlot.plot_extinction_map(ax=ax)
+        plt.close()
+
     def test_psf_iteration_compare(self):
         kwargs_psf = self.kwargs_psf
         kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']

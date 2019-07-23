@@ -50,7 +50,7 @@ class LikelihoodModule(object):
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
         linear amplitude priors when computing the marginalization term.
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
-        images predicted than indicated in max_num_images, a punishment occures
+        images predicted than indicated in max_num_images, a punishment occurs
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source

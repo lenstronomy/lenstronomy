@@ -21,6 +21,7 @@ class DyPolyChordSampler(NestedSampler):
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
+                 num_repeats=20, seed=1,
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
@@ -65,10 +66,13 @@ class DyPolyChordSampler(NestedSampler):
             os.mkdir(self._output_dir)
 
         self._output_basename = output_basename
+        self._num_repeats = num_repeats
+        self._seed_increment = seed_increment
         self.settings = {
             'file_root': self._output_basename,
             'base_dir': self._output_dir,
-            'seed': seed_increment,
+            'seed': seed,
+            'num_repeats': self._num_repeats
         }
 
         if self._all_installed:
@@ -133,7 +137,8 @@ class DyPolyChordSampler(NestedSampler):
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
-                                              self.settings,
+                                              seed_increment=self._seed_increment,
+                                              settings_dict_in=self.settings,
                                               comm=self._comm, **kwargs_run)
 
             if self._is_master:

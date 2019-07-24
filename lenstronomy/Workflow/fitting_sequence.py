@@ -219,6 +219,9 @@ class FittingSequence(object):
                         prior_type='uniform', width_scale=1, sigma_scale=1, 
                         output_basename='chain', remove_output_dir=True, 
                         dypolychord_dynamic_goal=0.8,
+                        dypolychord_num_repeats=20,
+                        dypolychord_seed=1,
+                        dypolychord_seed_increment=1,
                         output_dir="nested_sampling_chains",
                         dynesty_bound='multi', dynesty_sample='auto'):
         """
@@ -260,6 +263,9 @@ class FittingSequence(object):
                                          sigma_scale=sigma_scale,
                                          output_dir=output_dir,
                                          output_basename=output_basename,
+                                         num_repeats=dypolychord_num_repeats,
+                                         seed=dypolychord_seed,
+                                         seed_increment=dypolychord_seed_increment,
                                          remove_output_dir=remove_output_dir,
                                          use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object \

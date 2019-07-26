@@ -219,7 +219,7 @@ class FittingSequence(object):
                         prior_type='uniform', width_scale=1, sigma_scale=1, 
                         output_basename='chain', remove_output_dir=True, 
                         dypolychord_dynamic_goal=0.8,
-                        polychord_settings = {},
+                        polychord_settings={},
                         dypolychord_seed_increment=200,
                         output_dir="nested_sampling_chains",
                         dynesty_bound='multi', dynesty_sample='auto'):

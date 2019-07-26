@@ -68,9 +68,9 @@ class DyPolyChordSampler(NestedSampler):
 
         self._output_basename = output_basename
         self._seed_increment = seed_increment
-        self.settings = polychord_settings
-        self.settings['file_root'] = self._output_basename,
-        self.settings['base_dir'] =  self._output_dir
+        self._settings = polychord_settings
+        self._settings['file_root'] = self._output_basename,
+        self._settings['base_dir'] =  self._output_dir
 
         if self._all_installed:
             # create the dyPolyChord callable object
@@ -135,12 +135,12 @@ class DyPolyChordSampler(NestedSampler):
 
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
                                               seed_increment=self._seed_increment,
-                                              settings_dict_in=self.settings,
+                                              settings_dict_in=self._settings,
                                               comm=self._comm, **kwargs_run)
 
             if self._is_master:
-                ns_run = self._ns_process_run(self.settings['file_root'],
-                                           self.settings['base_dir'])
+                ns_run = self._ns_process_run(self._settings['file_root'],
+                                           self._settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests

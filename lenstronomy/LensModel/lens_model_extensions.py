@@ -234,7 +234,7 @@ class LensModelExtensions(object):
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
                 if kappa_mean < 1:
-                    return r
+                    return -np.random.uniform(-r, -r+r_array[1]-r_array[0])
         print(kwargs_lens_list, "Warning, no Einstein radius computed!")
         return r_array[-1]
 

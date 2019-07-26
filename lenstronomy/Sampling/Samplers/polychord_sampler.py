@@ -21,7 +21,7 @@ class DyPolyChordSampler(NestedSampler):
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
-                 polychord_settings = {},
+                 polychord_settings={},
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)

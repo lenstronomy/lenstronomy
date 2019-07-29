@@ -247,22 +247,6 @@ class LightModel(object):
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
-    def re_normalize_flux(self, kwargs_list, norm_factor=1):
-        """
-
-        :param kwargs_list: list of keyword arguments
-        :param norm_factor: float, multiplicative factor to rescale the amplitude parameters
-        :return: new updated kwargs_list
-        """
-        kwargs_list_copy = copy.deepcopy(kwargs_list)
-        kwargs_list_new = []
-        for k, model in enumerate(self.profile_type_list):
-            kwargs_list_k = kwargs_list_copy[k]
-            if 'amp' in kwargs_list_k:
-                kwargs_list_k['amp'] *= norm_factor
-            kwargs_list_new.append(kwargs_list_k)
-        return kwargs_list_new
-
     def total_flux(self, kwargs_list, norm=False, k=None):
         """
         Computes the total flux of each individual light profile. This allows to estimate the total flux as

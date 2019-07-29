@@ -21,6 +21,7 @@ class DyPolyChordSampler(NestedSampler):
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-', seed_increment=1,
+                 polychord_settings={},
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
@@ -31,8 +32,9 @@ class DyPolyChordSampler(NestedSampler):
         :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
+        :param seed_increment: seed increment for dypolychord RNG with MPI. Check dypolychord documentation for details.
+        :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.
         :param remove_output_dir: remove the output_dir folder after completion
-        :param seed_increment: seed increment for random number generator
         :param use_mpi: Use MPI computing if `True`
         """
         self._check_install()
@@ -65,11 +67,10 @@ class DyPolyChordSampler(NestedSampler):
             os.mkdir(self._output_dir)
 
         self._output_basename = output_basename
-        self.settings = {
-            'file_root': self._output_basename,
-            'base_dir': self._output_dir,
-            'seed': seed_increment,
-        }
+        self._seed_increment = seed_increment
+        self._settings = polychord_settings
+        self._settings['file_root'] = self._output_basename,
+        self._settings['base_dir'] =  self._output_dir
 
         if self._all_installed:
             # create the dyPolyChord callable object
@@ -133,12 +134,13 @@ class DyPolyChordSampler(NestedSampler):
             # dynamic_goal = 0 for evidence-only, 1 for posterior-only
 
             self._dyPolyChord.run_dypolychord(self._sampler, dynamic_goal,
-                                              self.settings,
+                                              seed_increment=self._seed_increment,
+                                              settings_dict_in=self._settings,
                                               comm=self._comm, **kwargs_run)
 
             if self._is_master:
-                ns_run = self._ns_process_run(self.settings['file_root'],
-                                           self.settings['base_dir'])
+                ns_run = self._ns_process_run(self._settings['file_root'],
+                                           self._settings['base_dir'])
 
         else:
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests

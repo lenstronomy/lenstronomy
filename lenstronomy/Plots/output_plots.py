@@ -699,7 +699,7 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
-    def source(self, numPix, deltaPix, image_orientation=True):
+    def source(self, numPix, deltaPix, center=None, image_orientation=True):
         """
 
         :param numPix: number of pixels per axes
@@ -717,8 +717,10 @@ class ModelBandPlot(object):
         coords_source = Coordinates(transform_pix2angle=Mpix2coord,
                                     ra_at_xy_0=ra_at_xy_0,
                                     dec_at_xy_0=dec_at_xy_0)
-
-        if len(self._kwargs_source_partial) > 0:
+        if center is not None:
+            x_grid_source += center[0]
+            y_grid_source += center[1]
+        elif len(self._kwargs_source_partial) > 0:
             x_center = self._kwargs_source_partial[0]['center_x']
             y_center = self._kwargs_source_partial[0]['center_y']
             x_grid_source += x_center
@@ -729,7 +731,7 @@ class ModelBandPlot(object):
         source = util.array2image(source) * deltaPix ** 2
         return source, coords_source
 
-    def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
+    def source_plot(self, ax, numPix, deltaPix_source, center=None, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
                     font_size=15, plot_scale='log',
                     scale_size=0.1,
@@ -741,6 +743,7 @@ class ModelBandPlot(object):
         :param ax:
         :param numPix:
         :param deltaPix_source:
+        :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min:
         :param v_max:
         :param with_caustics:
@@ -755,7 +758,7 @@ class ModelBandPlot(object):
         if v_max is None:
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
-        source, coords_source = self.source(numPix, deltaPix_source)
+        source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == 'log':
             source[source < 10**(v_min)] = 10**(v_min) # to remove weird shadow in plot
             source_scale = np.log10(source)

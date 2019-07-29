@@ -14,7 +14,7 @@ class TestModelAPI(object):
         kwargs_single_band = constructor.observation_constructor(instrument_name=instrument_name,
                                                           observation_name=observation_name)
         kwargs_model = {'lens_model_list': ['SIS'], 'z_lens': None, 'z_source': None, 'lens_redshift_list': None,
-                        'multi_plane': False, 'source_light_model_list': ['GAUSSIAN'],
+                        'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list':['UNLENSED'],
                         'source_redshift_list': None}
         kwargs_numerics = {'supersampling_factor': 2}

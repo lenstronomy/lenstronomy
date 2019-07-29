@@ -156,7 +156,8 @@ class NIE_simple(object):
         f_yy = (alpha_dec_dy - alpha_dec) / diff
         return f_xx, f_yy, f_xy
 
-    def _psi(self, x, y, q, s):
+    @staticmethod
+    def _psi(x, y, q, s):
         """
         expression after equation (8) in Keeton&Kochanek 1998
 

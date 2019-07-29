@@ -62,7 +62,9 @@ class TestParam(object):
                            'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA',
                            'PJAFFE', 'PJAFFE_ELLIPSE', 'HERNQUIST_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED',
                            'SHAPELETS_POLAR', 'DIPOLE',
-                           'GAUSSIAN_ELLIPSE_KAPPA',
+                           'GAUSSIAN_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_KAPPA',
+                           'SERSIC_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_GAUSS_DEC',
+                           'CTNFW_GAUSS_DEC',
                            'GAUSSIAN_ELLIPSE_POTENTIAL',
                            'MULTI_GAUSSIAN_KAPPA',
                            'MULTI_GAUSSIAN_KAPPA_ELLIPSE']

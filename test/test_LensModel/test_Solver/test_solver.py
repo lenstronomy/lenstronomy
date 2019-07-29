@@ -57,12 +57,12 @@ class TestSolver4Point(object):
         npt.assert_almost_equal(kwargs_lens_new[0]['center_y'], kwargs_lens[0]['center_y'], decimal=3)
 
     def test_add_fixed_lens(self):
-        lens_model_list = ['SPEP', 'SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR_GAMMA_PSI']
         lensModel = LensModel(lens_model_list)
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_lens_init = [{'theta_E': 1., 'gamma': 2, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': 0.1, 'e2': 0.5}]
+                       {'gamma_ext': 0.1, 'psi_ext': 0.5}]
         kwargs_fixed_lens_list = [{}, {}]
         solver = Solver(solver_type='PROFILE', lensModel=lensModel, num_images=4)
         kwargs_fixed_lens = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
@@ -83,12 +83,12 @@ class TestSolver4Point(object):
         lens_model_list = ['NFW_ELLIPSE', 'SHEAR']
         lensModel = LensModel(lens_model_list)
 
-        kwargs_lens_init = [{'theta_Rs': 1., 'Rs': 4, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
+        kwargs_lens_init = [{'alpha_Rs': 1., 'Rs': 4, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
                        {'e1': 0.1, 'e2': 0.5}]
         kwargs_fixed_lens_list = [{}, {}]
         solver = Solver(solver_type='PROFILE', lensModel=lensModel, num_images=4)
         kwargs_fixed_lens = solver.add_fixed_lens(kwargs_fixed_lens_list, kwargs_lens_init)
-        assert kwargs_fixed_lens[0]['theta_Rs'] == kwargs_lens_init[0]['theta_Rs']
+        assert kwargs_fixed_lens[0]['alpha_Rs'] == kwargs_lens_init[0]['alpha_Rs']
 
 
 if __name__ == '__main__':

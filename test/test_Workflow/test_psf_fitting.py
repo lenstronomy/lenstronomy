@@ -86,6 +86,8 @@ class TestImageModel(object):
                                          point_source_class, kwargs_numerics=kwargs_numerics)
 
         self.psf_fitting = PsfFitting(self.imageModel)
+        self.kwargs_params = {'kwargs_lens': self.kwargs_lens, 'kwargs_source': self.kwargs_source,
+                              'kwargs_lens_light': self.kwargs_lens_light, 'kwargs_ps': self.kwargs_ps}
 
     def test_update_psf(self):
         fwhm = 0.5
@@ -100,8 +102,7 @@ class TestImageModel(object):
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
         kwargs_psf_iter = {'stacking_method': 'median'}
-        kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_lens, self.kwargs_source,
-                                                                       self.kwargs_lens_light, self.kwargs_ps, **kwargs_psf_iter)
+        kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_params, **kwargs_psf_iter)
         assert improved_bool
         kernel_new = kwargs_psf_return['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
@@ -122,8 +123,7 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
         kwargs_psf_iter = {'stacking_method': 'median'}
-        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
-                                                                       self.kwargs_lens_light, self.kwargs_ps,
+        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_params,
                                                            **kwargs_psf_iter)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
@@ -133,8 +133,7 @@ class TestImageModel(object):
         assert diff_old > diff_new
         assert diff_new < 0.01
 
-        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_lens, self.kwargs_source,
-                                                           self.kwargs_lens_light, self.kwargs_ps, num_iter=3,
+        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_params, num_iter=3,
                                                            no_break=True)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']

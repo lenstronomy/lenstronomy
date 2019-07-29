@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -281,7 +281,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel</span>
 
-<span class="sd">    :param kernel_super: supersampled PSF of a point source</span>
+<span class="sd">    :param kernel_super: supersampled PSF of a point source (odd number per axis</span>
 <span class="sd">    :param supersampling_factor: supersampling factor (int)</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -290,7 +290,9 @@
     <span class="k">if</span> <span class="n">kernel_size</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">kernel_size</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="n">n_high</span> <span class="o">=</span> <span class="n">kernel_size</span><span class="o">*</span><span class="n">supersampling_factor</span>
-    <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernel_size</span><span class="o">*</span><span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">*</span><span class="n">supersampling_factor</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n_high</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n_high</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_high</span><span class="p">,</span> <span class="n">n_high</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="p">):</span>
         <span class="n">k_x</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">supersampling_factor</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="p">):</span>
@@ -362,6 +364,8 @@
 <span class="sd">    :param degrading_factor: degrading factor (effectively the supersampling resolution of the kernel given</span>
 <span class="sd">    :return: degraded kernel with odd axis number</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">degrading_factor</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">kernel_super</span>
     <span class="k">if</span> <span class="n">degrading_factor</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">kernel_low_res</span> <span class="o">=</span> <span class="n">averaging_even_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">degrading_factor</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -370,13 +374,10 @@
         <span class="k">if</span> <span class="n">numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">numPix</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">n_high</span> <span class="o">=</span> <span class="n">numPix</span> <span class="o">*</span> <span class="n">degrading_factor</span>
-        <span class="k">if</span> <span class="n">n_high</span> <span class="o">==</span> <span class="n">n_kernel</span><span class="p">:</span>
-            <span class="n">kernel_super_</span> <span class="o">=</span> <span class="n">kernel_super</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">kernel_super_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_high</span><span class="p">,</span> <span class="n">n_high</span><span class="p">))</span>
-            <span class="n">i_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_high</span><span class="o">-</span><span class="n">n_kernel</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">i_start</span><span class="p">)</span>
-            <span class="n">kernel_super_</span><span class="p">[</span><span class="n">i_start</span><span class="p">:</span><span class="n">i_start</span><span class="o">+</span><span class="n">n_kernel</span><span class="p">,</span> <span class="n">i_start</span><span class="p">:</span><span class="n">i_start</span><span class="o">+</span><span class="n">n_kernel</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_super</span>
+
+        <span class="n">kernel_super_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_high</span><span class="p">,</span> <span class="n">n_high</span><span class="p">))</span>
+        <span class="n">i_start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">n_high</span><span class="o">-</span><span class="n">n_kernel</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">kernel_super_</span><span class="p">[</span><span class="n">i_start</span><span class="p">:</span><span class="n">i_start</span><span class="o">+</span><span class="n">n_kernel</span><span class="p">,</span> <span class="n">i_start</span><span class="p">:</span><span class="n">i_start</span><span class="o">+</span><span class="n">n_kernel</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_super</span>
         <span class="n">kernel_low_res</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="n">kernel_super_</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">n_high</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">numPix</span><span class="p">)</span> <span class="o">*</span> <span class="n">degrading_factor</span><span class="o">**</span><span class="mi">2</span>
     <span class="k">return</span> <span class="n">kernel_low_res</span></div>
 
@@ -513,7 +514,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

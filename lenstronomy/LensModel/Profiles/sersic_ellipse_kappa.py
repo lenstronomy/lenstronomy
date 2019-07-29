@@ -147,13 +147,15 @@ class SersicEllipseKappa(object):
 
         return alpha_x, alpha_y
 
-    def _elliptical_coord_u(self, x, y, u, q):
+    @staticmethod
+    def _elliptical_coord_u(x, y, u, q):
 
         fac = 1 - (1 - q**2) * u
 
         return (u * (x**2 + y**2 * fac**-1) )**0.5
 
-    def _coord_rotate(self, x, y, phi_G, center_x, center_y):
+    @staticmethod
+    def _coord_rotate(x, y, phi_G, center_x, center_y):
 
         x_shift = x - center_x
         y_shift = y - center_y
@@ -164,4 +166,3 @@ class SersicEllipseKappa(object):
         y_ = -sin_phi * x_shift + cos_phi * y_shift
 
         return x_, y_
-

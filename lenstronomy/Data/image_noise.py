@@ -45,6 +45,7 @@ class ImageNoise(object):
         if self._background_rms is None:
             if self._noise_map is None:
                 raise ValueError("rms background value as 'background_rms' not specified!")
+            self._background_rms = np.median(self._noise_map)
         return self._background_rms
 
     @property

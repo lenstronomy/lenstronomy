@@ -55,6 +55,9 @@ class PSF(object):
             if self.psf_type == 'PIXEL':
                 if len(self._psf_error_map) != len(self._kernel_point_source):
                     raise ValueError('psf_error_map must have same size as kernel_point_source!')
+            self.psf_error_map_bool = True
+        else:
+            self.psf_error_map_bool = False
 
     @property
     def kernel_point_source(self):

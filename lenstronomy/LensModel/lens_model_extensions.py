@@ -97,7 +97,6 @@ class LensModelExtensions(object):
         image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
         return util.array2image(image)
 
-
     def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
         """
 
@@ -203,12 +202,14 @@ class LensModelExtensions(object):
         plt.cla()
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
-    def effective_einstein_radius(self, kwargs_lens_list, k=None, spacing=1000):
+    def effective_einstein_radius(self, kwargs_lens_list, k=None,
+                                  spacing=1000, get_precision=False):
         """
         computes the radius with mean convergence=1
 
         :param kwargs_lens:
         :param spacing: number of annular bins to compute the convergence (resolution of the Einstein radius estimate)
+        :param get_precision: If `True`, return the precision of estimated Einstein radius
         :return:
         """
         if 'center_x' in kwargs_lens_list[0]:
@@ -235,7 +236,10 @@ class LensModelExtensions(object):
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
                 if kappa_mean < 1:
-                    return r
+                    if get_precision:
+                        return r, r_array[1] - r_array[0]
+                    else:
+                        return r
         print(kwargs_lens_list, "Warning, no Einstein radius computed!")
         return r_array[-1]
 

@@ -2,9 +2,12 @@ from lenstronomy.Workflow.psf_fitting import PsfFitting
 from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-from lenstronomy.Workflow.update_manager import UpdateManager
-from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
 from lenstronomy.Sampling.likelihood import LikelihoodModule
+from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
+from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
+from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 
 
@@ -18,7 +21,7 @@ class FittingSequence(object):
                  verbose=True):
         """
 
-        :param multi_band_list:
+        :param kwargs_data_joint:
         :param kwargs_model:
         :param kwargs_constraints:
         :param kwargs_likelihood:
@@ -30,17 +33,17 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
-        self._updateManager = UpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
-        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+        self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
+                                                     num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
-    def kwargs_fixed(self):
-        """
-        returns the updated kwargs_fixed from the update Manager
+    #def kwargs_fixed(self):
+    #    """
+    #    returns the updated kwargs_fixed from the update Manager
 
-        :return: list of fixed kwargs, see UpdateManager()
-        """
-        return self._updateManager.fixed_kwargs
+    #    :return: list of fixed kwargs, see UpdateManager()
+    #    """
+    #    return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
         """
@@ -49,35 +52,48 @@ class FittingSequence(object):
         :return: fitting results
         """
         chain_list = []
-        param_list = []
-        samples_mcmc, param_mcmc, dist_mcmc = [], [], []
+        #param_list = []
+        #samples_mcmc, param_mcmc, dist_mcmc = [], [], []
         for i, fitting in enumerate(fitting_list):
             fitting_type = fitting[0]
             kwargs = fitting[1]
+
             if fitting_type == 'restart':
-                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self._updateManager.init_kwargs
+                self._updateManager.set_init_state()
+
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
+
+            elif fitting_type == 'fix_not_computed':
+                self.fix_not_computed(**kwargs)
+
             elif fitting_type == 'psf_iteration':
                 self.psf_iteration(**kwargs)
+
             elif fitting_type == 'align_images':
                 self.align_images(**kwargs)
+
             elif fitting_type == 'PSO':
-                lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param = self.pso(**kwargs)
-                self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = lens_result, source_result, lens_light_result, ps_result, cosmo_result
-                chain_list.append(chain)
-                param_list.append(param)
+                kwargs_result, chain, param = self.pso(**kwargs)
+                self._updateManager.update_param_state(**kwargs_result)
+                chain_list.append([fitting_type, chain, param])
+
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
-                samples_mcmc, param_mcmc, dist_mcmc = self.mcmc(**kwargs)
-                self._mcmc_init_samples = samples_mcmc
+                mcmc_output = self.mcmc(**kwargs)
+                chain_list.append(mcmc_output)
+
+            elif fitting_type == 'nested_sampling':
+                ns_output = self.nested_sampling(**kwargs)
+                chain_list.append(ns_output)
+
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
-        return chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc
+        return chain_list
 
     def best_fit(self, bijective=False):
         """
@@ -85,13 +101,8 @@ class FittingSequence(object):
         :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
-        param_class = self._updateManager.param_class(self._lens_temp)
-        if bijective is False:
-            lens_temp = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp, inverse=False)
-            source_temp = param_class.image2source_plane(self._source_temp, lens_temp)
-        else:
-            lens_temp, source_temp = self._lens_temp, self._source_temp
-        return lens_temp, source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp
+
+        return self._updateManager.best_fit(bijective=bijective)
 
     @property
     def best_fit_likelihood(self):
@@ -100,20 +111,19 @@ class FittingSequence(object):
 
         :return: log likelihood, float
         """
-        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo = self.best_fit(bijective=False)
-        param_class = self._param_class
+        kwargs_result = self.best_fit(bijective=False)
+        param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL, _ = likelihoodModule.logL(param_class.kwargs2args(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                             kwargs_cosmo))
+        logL, _ = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
         return logL
 
     @property
-    def _param_class(self):
+    def param_class(self):
         """
 
         :return: Param() class instance reflecting the current state of Fittingsequence
         """
-        return self._updateManager.param_class(self._lens_temp)
+        return self._updateManager.param_class
 
     @property
     def likelihoodModule(self):
@@ -123,8 +133,7 @@ class FittingSequence(object):
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
-        param_class = self._updateManager.param_class(self._lens_temp)
-        likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, param_class, **kwargs_likelihood)
+        likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood)
         return likelihoodModule
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
@@ -140,16 +149,16 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
-        :return: MCMC samples, parameter names, logL distances of all samples
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
         """
 
-        param_class = self._param_class
+        param_class = self.param_class
         # run PSO
         mcmc_class = Sampler(likelihoodModule=self.likelihoodModule)
-        mean_start = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                           self._cosmo_temp)
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
+        kwargs_temp = self._updateManager.parameter_state
+        mean_start = param_class.kwargs2args(**kwargs_temp)
+        kwargs_sigma = self._updateManager.sigma_kwargs
+        sigma_start = param_class.kwargs2args(**kwargs_sigma)
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None and re_use_samples is True:
@@ -168,13 +177,15 @@ class FittingSequence(object):
             samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
                                            threadCount=threadCount,
                                            mpi=self._mpi, init_pos=initpos)
+            output = [sampler_type, samples, param_list, dist]
         elif sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
-            dist = None
+            output = [sampler_type, samples, param_list]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
-        return samples, param_list, dist
+        self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
+        return output
 
     def pso(self, n_particles, n_iterations, sigma_scale=1, print_key='PSO', threadCount=1):
         """
@@ -188,11 +199,11 @@ class FittingSequence(object):
         :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
         """
 
-        param_class = self._param_class
-        init_pos = param_class.kwargs2args(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                           self._cosmo_temp)
-        lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(lens_sigma, source_sigma, lens_light_sigma, ps_sigma, cosmo_sigma)
+        param_class = self.param_class
+        kwargs_temp = self._updateManager.parameter_state
+        init_pos = param_class.kwargs2args(**kwargs_temp)
+        kwargs_sigma = self._updateManager.sigma_kwargs
+        sigma_start = param_class.kwargs2args(**kwargs_sigma)
         lowerLimit = np.array(init_pos) - np.array(sigma_start) * sigma_scale
         upperLimit = np.array(init_pos) + np.array(sigma_start) * sigma_scale
         num_param, param_list = param_class.num_param()
@@ -201,12 +212,88 @@ class FittingSequence(object):
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
                                        threadCount=threadCount, mpi=self._mpi, print_key=print_key)
-        lens_result, source_result, lens_light_result, ps_result, cosmo_result = param_class.args2kwargs(result,
-                                                                                                         bijective=True)
-        return lens_result, source_result, lens_light_result, ps_result, cosmo_result, chain, param_list
+        kwargs_result = param_class.args2kwargs(result, bijective=True)
+        return kwargs_result, chain, param_list
 
-    def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
-                 psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
+    def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
+                        prior_type='uniform', width_scale=1, sigma_scale=1, 
+                        output_basename='chain', remove_output_dir=True, 
+                        dypolychord_dynamic_goal=0.8,
+                        polychord_settings={},
+                        dypolychord_seed_increment=200,
+                        output_dir="nested_sampling_chains",
+                        dynesty_bound='multi', dynesty_sample='auto'):
+        """
+        Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.
+
+        :param sampler_type: 'MULTINEST', 'DYPOLYCHORD', 'DYNESTY'
+        :param kwargs_run: keywords passed to the core sampling method
+        :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
+        :param width_scale: scale the width (lower/upper limits) of the parameters space by this factor
+        :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
+        :param output_basename: name of the folder in which the core MultiNest/PolyChord code will save output files
+        :param remove_output_dir: if True, the above folder is removed after completion
+        :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)
+        :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.
+        :param dypolychord_seed_increment: seed increment for dypolychord with MPI. Check dypolychord documentation for details.
+        :param dynesty_bound: see https://dynesty.readthedocs.io for details
+        :param dynesty_sample: see https://dynesty.readthedocs.io for details
+        :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
+        """
+        mean_start, sigma_start = self._prepare_sampling(prior_type)
+
+        if sampler_type == 'MULTINEST':
+            sampler = MultiNestSampler(self.likelihoodModule,
+                                       prior_type=prior_type,
+                                       prior_means=mean_start,
+                                       prior_sigmas=sigma_start,
+                                       width_scale=width_scale,
+                                       sigma_scale=sigma_scale,
+                                       output_dir=output_dir,
+                                       output_basename=output_basename,
+                                       remove_output_dir=remove_output_dir,
+                                       use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+
+        elif sampler_type == 'DYPOLYCHORD':
+            sampler = DyPolyChordSampler(self.likelihoodModule,
+                                         prior_type=prior_type,
+                                         prior_means=mean_start,
+                                         prior_sigmas=sigma_start,
+                                         width_scale=width_scale,
+                                         sigma_scale=sigma_scale,
+                                         output_dir=output_dir,
+                                         output_basename=output_basename,
+                                         polychord_settings=polychord_settings,
+                                         seed_increment=dypolychord_seed_increment,
+                                         remove_output_dir=remove_output_dir,
+                                         use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object \
+                = sampler.run(dypolychord_dynamic_goal, kwargs_run)
+
+        elif sampler_type == 'DYNESTY':
+            sampler = DynestySampler(self.likelihoodModule,
+                                     prior_type=prior_type,
+                                     prior_means=mean_start,
+                                     prior_sigmas=sigma_start,
+                                     width_scale=width_scale,
+                                     sigma_scale=sigma_scale,
+                                     bound=dynesty_bound, 
+                                     sample=dynesty_sample,
+                                     use_mpi=self._mpi)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
+
+        else:
+            raise ValueError('Sampler type %s not supported.' % sampler_type)
+        # update current best fit values
+        self._update_state(means)
+
+        output = [sampler_type, samples, sampler.param_names, logL, 
+                  logZ, logZ_err, results_object]
+        return output
+
+    def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
+                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
         """
         iterative PSF reconstruction
 
@@ -224,9 +311,8 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._param_class
-        lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
-        source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
+        #param_class = self.param_class
+        kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
@@ -236,8 +322,7 @@ class FittingSequence(object):
                 image_model = SingleBandMultiModel(self.multi_band_list, kwargs_model,
                                                    likelihood_mask_list=likelihood_mask_list, band_index=band_index)
                 psf_iter = PsfFitting(image_model_class=image_model)
-                kwargs_psf = psf_iter.update_iterative(kwargs_psf, lens_updated, source_updated,
-                                                       self._lens_light_temp, self._ps_temp, num_iter=num_iter,
+                kwargs_psf = psf_iter.update_iterative(kwargs_psf, kwargs_params=kwargs_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map,
@@ -262,17 +347,18 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        param_class = self._updateManager.param_class(self._lens_temp)
-        lens_updated = param_class.update_lens_scaling(self._cosmo_temp, self._lens_temp)
-        source_updated = param_class.image2source_plane(self._source_temp, lens_updated)
+        #param_class = self.param_class
+        #lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
+        #lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
+        #source_updated = param_class.image2source_plane(source_temp, lens_updated)
+        kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
 
         for i in range(len(self.multi_band_list)):
             if compute_bands[i] is True:
 
-                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, lens_updated, source_updated,
-                                                        self._lens_light_temp, self._ps_temp, band_index=i,
+                alignmentFitting = AlignmentFitting(self.multi_band_list, kwargs_model, kwargs_temp, band_index=i,
                                                     likelihood_mask_list=likelihood_mask_list)
 
                 kwargs_data, chain = alignmentFitting.pso(n_particles=n_particles, n_iterations=n_iterations,
@@ -307,9 +393,37 @@ class FittingSequence(object):
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
-        self._updateManager.update_fixed(self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp,
-                                         self._cosmo_temp, lens_add_fixed, source_add_fixed, lens_light_add_fixed,
+        self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+    def fix_not_computed(self, free_bands):
+        """
+        fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
+        lens models to the initial kwargs_fixed options
+
+        :param free_bands: bool list of length of imaging bands in order of imaging bands, if False: set fixed lens model
+        :return: None
+        """
+        self._updateManager.fix_not_computed(free_bands=free_bands)
+
+    def _prepare_sampling(self, prior_type):
+        if prior_type == 'gaussian':
+            mean_start = self.param_class.kwargs2args(**self._updateManager.parameter_state)
+            sigma_start = self.param_class.kwargs2args(**self._updateManager.sigma_kwargs)
+            mean_start  = np.array(mean_start)
+            sigma_start = np.array(sigma_start)
+        else:
+            mean_start, sigma_start = None, None
+        return mean_start, sigma_start
+
+    def _update_state(self, result):
+        """
+
+        :param result: array of parameters being sampled (e.g. result of MCMC chain)
+        :return: None, updates the parameter state of the class instance
+        """
+        kwargs_result = self.param_class.args2kwargs(result, bijective=True)
+        self._updateManager.update_param_state(**kwargs_result)

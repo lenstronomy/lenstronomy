@@ -1,5 +1,4 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
-import lenstronomy.Util.param_util as param_util
 
 
 class LensParam(object):
@@ -139,17 +138,17 @@ class LensParam(object):
                             elif self._num_images == 2:
                                 num_coeffs -= 3
                         num += num_coeffs
-                        list += [str(name + '_' + type)] * num_coeffs
+                        list += [str(name + '_' + type + str(k))] * num_coeffs
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + type))
+                            list.append(str(name + '_' + type + str(k)))
                     elif model in ['MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE'] and name == 'sigma':
                         raise ValueError("'sigma' must be a fixed keyword argument for MULTI_GAUSSIAN")
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
                     else:
                         num += 1
-                        list.append(str(name + '_' + type))
+                        list.append(str(name + '_' + type + str(k)))
         return num, list

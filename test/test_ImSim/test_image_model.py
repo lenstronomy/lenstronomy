@@ -14,6 +14,8 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
+from lenstronomy.Util import util
 
 
 class TestImageModel(object):
@@ -74,6 +76,10 @@ class TestImageModel(object):
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
     def test_source_surface_brightness(self):
+        source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens,
+                                                                 unconvolved=False, de_lensed=True)
+        assert len(source_model) == 100
+
         source_model = self.imageModel.source_surface_brightness(self.kwargs_source, self.kwargs_lens, unconvolved=False, de_lensed=False)
         assert len(source_model) == 100
         npt.assert_almost_equal(source_model[10, 10], 0.13939841209844345 * 0.05 ** 2, decimal=4)
@@ -98,7 +104,7 @@ class TestImageModel(object):
 
     def test_image_with_params(self):
         model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
-        error_map = self.imageModel._error_map(self.kwargs_lens, self.kwargs_ps)
+        error_map = self.imageModel._error_map_psf(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
@@ -109,6 +115,7 @@ class TestImageModel(object):
         logLmarg = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
                                                                self.kwargs_ps, source_marg=True)
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
+        assert logLmarg < logL
 
     def test_reduced_residuals(self):
         model = sim_util.simulate_simple(self.imageModel, self.kwargs_lens, self.kwargs_source,
@@ -123,6 +130,17 @@ class TestImageModel(object):
         numData = self.imageModel.num_data_evaluate
         assert numData == 10000
 
+    def test_num_param_linear(self):
+        num_param_linear = self.imageModel.num_param_linear(self.kwargs_lens, self.kwargs_source,
+                                         self.kwargs_lens_light, self.kwargs_ps)
+        assert num_param_linear == 3
+
+    def test_update_data(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1, inverse=True)
+        data_class = ImageData(**kwargs_data)
+        self.imageModel.update_data(data_class)
+        assert self.imageModel.Data.num_pixel == 100
+
     def test_point_source_rendering(self):
         # initialize data
 
@@ -132,7 +150,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL'}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.zeros_like(kernel)}
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
@@ -186,6 +204,40 @@ class TestImageModel(object):
                                 point_source_class=pointSource)
         image = imageModel.image(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps)
         assert np.sum(image) > 0
+
+    def test_error_map_source(self):
+        sourceModel = LightModel(light_model_list=['UNIFORM', 'UNIFORM'])
+
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+
+        psf_type = "GAUSSIAN"
+        fwhm = 0.9
+        kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
+        psf_class = PSF(**kwargs_psf)
+        imageModel = ImageLinearFit(data_class=data_class, psf_class=psf_class, lens_model_class=None,
+                                point_source_class=None, source_model_class=sourceModel)
+
+        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
+        error_map = imageModel.error_map_source(kwargs_source=[{'amp': 1}, {'amp': 1}], x_grid=x_grid, y_grid=y_grid, cov_param=np.array([[1, 0], [0, 1]]))
+        assert error_map[0] == 2
+
+    def test_create_empty(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        imageModel_empty = ImageModel(data_class, PSF())
+        assert imageModel_empty._psf_error_map == False
+
+        flux = imageModel_empty.lens_surface_brightness(kwargs_lens_light=None)
+        assert flux.all() == 0
+
+    def test_extinction_map(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        extinction_class = DifferentialExtinction(optical_depth_model=['UNIFORM'], tau0_index=0)
+        imageModel = ImageModel(data_class, PSF(), extinction_class=extinction_class)
+        extinction = imageModel.extinction_map(kwargs_extinction=[{'amp': 1}], kwargs_special={'tau0_list': [1, 0, 0]})
+        npt.assert_almost_equal(extinction, np.exp(-1))
 
 
 if __name__ == '__main__':

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.coreBurkert &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.coreBurkert &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,30 +44,30 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
-<div class="viewcode-block" id="coreBurkert"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert">[docs]</a><span class="k">class</span> <span class="nc">coreBurkert</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert">[docs]</a><span class="k">class</span> <span class="nc">CoreBurkert</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    lensing properties of a modified Burkert profile with variable core size</span>
 <span class="sd">    normalized by rho0, the central core density</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;rho0&#39;</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;rho0&#39;</span><span class="p">:</span> <span class="mf">1e+5</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
-    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;rho0&#39;</span><span class="p">:</span> <span class="mf">1e+10</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
+    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-<div class="viewcode-block" id="coreBurkert.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x: angular position</span>
 <span class="sd">        :param y: angular position</span>
 <span class="sd">        :param Rs: angular turn over point</span>
-<span class="sd">        :param theta_Rs: deflection angle at Rs</span>
+<span class="sd">        :param alpha_Rs: deflection angle at Rs</span>
 <span class="sd">        :param center_x: center of halo</span>
 <span class="sd">        :param center_y: center of halo</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">theta_Rs</span><span class="o">=</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
             <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0000001</span>
@@ -77,7 +77,7 @@
         <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cBurkPot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
-<div class="viewcode-block" id="coreBurkert.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deflection angles</span>
 <span class="sd">        :param x: x coordinate</span>
@@ -90,7 +90,7 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">theta_Rs</span><span class="o">=</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
             <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0000001</span>
@@ -102,7 +102,7 @@
 
         <span class="k">return</span> <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span></div>
 
-<div class="viewcode-block" id="coreBurkert.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param x: x coordinate</span>
@@ -121,7 +121,7 @@
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">theta_Rs</span><span class="o">=</span><span class="n">theta_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
 
         <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
 
@@ -131,7 +131,7 @@
         <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
 
-<div class="viewcode-block" id="coreBurkert.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        analytic solution of the projection integral</span>
@@ -151,7 +151,7 @@
 
         <span class="k">return</span> <span class="n">m_2d</span></div>
 
-<div class="viewcode-block" id="coreBurkert.coreBurkAlpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.coreBurkAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">coreBurkAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.coreBurkAlpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.coreBurkAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">coreBurkAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deflection angle</span>
 
@@ -172,7 +172,7 @@
 
         <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ax_x</span> <span class="o">/</span> <span class="n">R</span><span class="p">,</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ax_y</span> <span class="o">/</span> <span class="n">R</span></div>
 
-<div class="viewcode-block" id="coreBurkert.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        three dimenstional cored Burkert profile</span>
 
@@ -189,7 +189,7 @@
 
         <span class="k">return</span> <span class="p">(</span><span class="n">M0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">))</span> <span class="o">*</span> <span class="p">((</span><span class="n">r_core</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span></div>
 
-<div class="viewcode-block" id="coreBurkert.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        projected two dimenstional core Burkert profile (kappa*Sigma_crit)</span>
 
@@ -208,7 +208,7 @@
 
         <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">Fx</span></div>
 
-<div class="viewcode-block" id="coreBurkert.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param R: projected distance</span>
 <span class="sd">        :param Rs: scale radius</span>
@@ -224,7 +224,7 @@
 
         <span class="k">return</span> <span class="n">M0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">b</span><span class="o">**-</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">b</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">c</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="coreBurkert.cBurkPot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.cBurkPot">[docs]</a>    <span class="k">def</span> <span class="nf">cBurkPot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.cBurkPot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.cBurkPot">[docs]</a>    <span class="k">def</span> <span class="nf">cBurkPot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param R: projected distance</span>
@@ -238,7 +238,7 @@
 
         <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">hx</span></div>
 
-<div class="viewcode-block" id="coreBurkert.cBurkGamma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.coreBurkert.cBurkGamma">[docs]</a>    <span class="k">def</span> <span class="nf">cBurkGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
+<div class="viewcode-block" id="CoreBurkert.cBurkGamma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.cBurkGamma">[docs]</a>    <span class="k">def</span> <span class="nf">cBurkGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param R: projected distance</span>
@@ -448,13 +448,13 @@
 
         <span class="k">return</span> <span class="n">func</span> <span class="o">*</span> <span class="n">prefactor</span>
 
-    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">r_core</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
 
-        <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rho0</span>
 
@@ -465,8 +465,6 @@
         <span class="n">alpha</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">*</span> <span class="n">rho0</span>
 
         <span class="k">return</span> <span class="n">alpha</span></div>
-
-
 </pre></div>
 
           </div>
@@ -499,7 +497,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

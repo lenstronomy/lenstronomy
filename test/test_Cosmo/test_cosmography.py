@@ -98,7 +98,7 @@ class TestCosmography(object):
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true]
-        sigma_start = [5]
+        sigma_start = [2]
         mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1,
                                             init_pos=None, mpi_monch=False)
         H0_mean = np.mean(mcmc_samples)
@@ -163,6 +163,10 @@ class TestCosmoLikelihood(object):
 
     def test_prior_omega_mh2(self):
         prior, bool = self.cosmoL.prior_omega_mh2(h=1, omega_m=2, h_max=2)
+        assert bool is False
+
+    def test_prior_omega_m(self):
+        penalty, bool = self.cosmoL.prior_omega_m(omega_m=0, omega_m_min=0.05, omega_m_max=1)
         assert bool is False
 
     def test_call(self):

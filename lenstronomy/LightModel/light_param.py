@@ -127,15 +127,15 @@ class LightParam(object):
                             num_param = int((n_max + 1) * (n_max + 2) / 2)
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + self._type))
+                            list.append(str(name + '_' + self._type + str(k)))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + self._type))
+                            list.append(str(name + '_' + self._type + str(k)))
                     else:
                         num += 1
-                        list.append(str(name + '_' + self._type))
+                        list.append(str(name + '_' + self._type + str(k)))
         return num, list
 
     def add_fixed_linear(self, kwargs_fixed_list):

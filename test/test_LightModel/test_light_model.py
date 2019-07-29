@@ -43,7 +43,8 @@ class TestLightModel(object):
         self.LightModel = LightModel(light_model_list=self.light_model_list)
 
     def test_init(self):
-        model_list = ['CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP', 'UNIFORM', 'CHAMELEON', 'DOUBLE_CHAMELEON']
+        model_list = ['CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP', 'UNIFORM', 'CHAMELEON',
+                      'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON']
         lightModel = LightModel(light_model_list=model_list)
         assert len(lightModel.profile_type_list) == len(model_list)
 
@@ -68,8 +69,11 @@ class TestLightModel(object):
         assert len(self.light_model_list) == len(param_name_list)
 
     def test_num_param_linear(self):
-        num = self.LightModel.num_param_linear(self.kwargs)
+        num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
         assert num == 18
+
+        num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
+        assert num_list[0] == 1
 
     def test_update_linear(self):
         response, n = self.LightModel.functions_split(1, 1, self.kwargs)

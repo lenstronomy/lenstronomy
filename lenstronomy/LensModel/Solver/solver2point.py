@@ -126,8 +126,8 @@ class Solver2Point(object):
         elif self._solver_type == 'THETA_E_ELLIPSE':
             [theta_E, phi_G] = x
             kwargs_list[0]['theta_E'] = theta_E
-            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[0]['e1'], kwargs_list[0]['e2'])
-            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
+            phi_G_no_sense, q = param_util.ellipticity2phi_q(kwargs_list[0]['e1'], kwargs_list[0]['e2'])
+            e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             kwargs_list[0]['e1'] = e1
             kwargs_list[0]['e2'] = e2
         else:

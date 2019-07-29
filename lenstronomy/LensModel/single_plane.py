@@ -70,6 +70,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
@@ -95,6 +97,8 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
@@ -121,6 +125,9 @@ class SinglePlane(object):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        if isinstance(k, int):
+            f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
+            return f_xx, f_xy, f_xy, f_yy
         if self._foreground_shear:
             # needs to be computed numerically due to non-linear effects
             f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
@@ -224,6 +231,9 @@ class SinglePlane(object):
         elif lens_type == 'SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             return Shear()
+        elif lens_type == 'SHEAR_GAMMA_PSI':
+            from lenstronomy.LensModel.Profiles.shear import ShearGammaPsi
+            return ShearGammaPsi()
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()
@@ -260,6 +270,9 @@ class SinglePlane(object):
         elif lens_type == 'DOUBLE_CHAMELEON':
             from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon
             return DoubleChameleon()
+        elif lens_type == 'TRIPLE_CHAMELEON':
+            from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon
+            return TripleChameleon()
         elif lens_type == 'SPEP':
             from lenstronomy.LensModel.Profiles.spep import SPEP
             return SPEP()
@@ -275,12 +288,18 @@ class SinglePlane(object):
         elif lens_type == 'NFW_ELLIPSE':
             from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
             return NFW_ELLIPSE()
+        elif lens_type == 'NFW_ELLIPSE_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import NFWEllipseGaussDec
+            return NFWEllipseGaussDec()
         elif lens_type == 'TNFW':
             from lenstronomy.LensModel.Profiles.tnfw import TNFW
             return TNFW()
         elif lens_type == 'CNFW':
             from lenstronomy.LensModel.Profiles.cnfw import CNFW
             return CNFW()
+        elif lens_type == 'CTNFW_GAUSS_DEC':
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
+            return CTNFWGaussDec()
         elif lens_type == 'SERSIC':
             from lenstronomy.LensModel.Profiles.sersic import Sersic
             return Sersic()
@@ -291,12 +310,9 @@ class SinglePlane(object):
             from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
             return SersicEllipseKappa()
         elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
-            from lenstronomy.LensModel.Profiles.sersic_ellipse_gauss_dec \
+            from lenstronomy.LensModel.Profiles.gauss_decomposition \
                 import SersicEllipseGaussDec
             return SersicEllipseGaussDec()
-        elif lens_type == 'COMPOSITE_DISK':
-            from lenstronomy.LensModel.Profiles.composite_disk import CompDisk
-            return CompDisk()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
             return PJaffe()
@@ -342,14 +358,17 @@ class SinglePlane(object):
         elif lens_type == 'DIPOLE':
             from lenstronomy.LensModel.Profiles.dipole import Dipole
             return Dipole()
+        elif lens_type == 'CURVED_ARC':
+            from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+            return CurvedArc()
         elif lens_type == 'FOREGROUND_SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             self._foreground_shear = True
             self._foreground_shear_idex = i
             return Shear()
         elif lens_type == 'coreBURKERT':
-            from lenstronomy.LensModel.Profiles.coreBurkert import coreBurkert
-            return coreBurkert()
+            from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
+            return CoreBurkert()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

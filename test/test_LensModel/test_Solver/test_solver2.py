@@ -70,18 +70,18 @@ class TestSolver(object):
         gamma = 1.9
         Rs = 0.1
         nfw = NFW()
-        theta_Rs = nfw._rho02alpha(1., Rs)
+        alpha_Rs = nfw._rho02alpha(1., Rs)
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         x_pos, y_pos = image_position_nfw.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
         print(len(x_pos), 'number of images')
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
 
         kwargs_init = [{'theta_E': 1, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         kwargs_out_center, precision = solver_nfw_center.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         source_x, source_y = spep.ray_shooting(x_pos[0], y_pos[0], kwargs_out_center)
         x_pos_new, y_pos_new = image_position_nfw.findBrightImage(source_x, source_y, kwargs_out_center, numImages=2, min_distance=deltapix, search_window=numPix*deltapix)
@@ -94,7 +94,7 @@ class TestSolver(object):
         npt.assert_almost_equal(kwargs_out_center[0]['center_y'], -0.1, decimal=2)
 
         kwargs_init = [{'theta_E': 1., 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0.1, 'center_y': -0.1},
-                       {'Rs': Rs, 'theta_Rs': theta_Rs, 'center_x': -0.5, 'center_y': 0.5}]
+                       {'Rs': Rs, 'alpha_Rs': alpha_Rs, 'center_x': -0.5, 'center_y': 0.5}]
         kwargs_out_ellipse, precision = solver_nfw_ellipse.constraint_lensmodel(x_pos, y_pos, kwargs_init)
 
         npt.assert_almost_equal(kwargs_out_ellipse[0]['e1'], kwargs_lens[0]['e1'], decimal=2)

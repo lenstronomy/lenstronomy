@@ -6,19 +6,22 @@ class PriorLikelihood(object):
     class containing additional Gaussian priors to be folded into the likelihood
 
     """
-    def __init__(self, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_cosmo=[]):
+    def __init__(self, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_special=[],
+                 prior_extinction=[]):
         """
 
         :param prior_lens: list of [index_model, param_name, value, 1-sigma priors]
         :param prior_source: list of [index_model, param_name, value, 1-sigma priors]
         :param prior_lens_light: list of [index_model, param_name, value, 1-sigma priors]
         :param prior_ps: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_cosmo: list of [index_model, param_name, value, 1-sigma priors]
+        :param prior_special: list of [index_model, param_name, value, 1-sigma priors]
+        :param prior_extinction: list of [index_model, param_name, value, 1-sigma priors]
         """
-        self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_cosmo = \
-            prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo
+        self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_special, self._prior_extinction = \
+            prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction
 
-    def logL(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+    def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None,
+             kwargs_extinction=None):
         """
 
         :param kwargs_lens: lens model parameter list
@@ -29,7 +32,8 @@ class PriorLikelihood(object):
         logL += self._prior_kwargs_list(kwargs_source, self._prior_source)
         logL += self._prior_kwargs_list(kwargs_lens_light, self._prior_lens_light)
         logL += self._prior_kwargs_list(kwargs_ps, self._prior_ps)
-        logL += self._prior_kwargs(kwargs_cosmo, self._prior_cosmo)
+        logL += self._prior_kwargs(kwargs_special, self._prior_special)
+        logL += self._prior_kwargs(kwargs_extinction, self._prior_extinction)
         return logL
 
     def _prior_kwargs_list(self, kwargs_list, prior_list):

@@ -33,9 +33,9 @@ class TestFittingSequence(object):
         data_class = ImageData(**self.kwargs_data)
         kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix, 'truncation': 3}
         psf_gaussian = PSF(**kwargs_psf_gaussian)
-        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
         psf_class = PSF(**self.kwargs_psf)
-        # 'EXERNAL_SHEAR': external shear
+        # 'EXTERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
@@ -74,6 +74,7 @@ class TestFittingSequence(object):
                              'lens_light_model_list': lens_light_model_list,
                              'point_source_model_list': point_source_list,
                              'fixed_magnification_list': [False],
+                             'index_lens_model_list': [[0, 1]],
                              }
         self.kwargs_numerics = kwargs_numerics
 
@@ -87,7 +88,7 @@ class TestFittingSequence(object):
 
         self.kwargs_likelihood = {'force_no_add_image': True,
                                   'source_marg': True,
-                                  'point_source_likelihood': False,
+                                  'linear_prior': [1],
                                   'position_uncertainty': 0.004,
                                   'check_solver': False,
                                   'solver_tolerance': 0.001,
@@ -131,22 +132,22 @@ class TestFittingSequence(object):
         # kwargs_params = [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_init, kwargs_init]
         image_band = [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]
         multi_band_list = [image_band]
-        kwargs_data_joint = {'multi_band_list': multi_band_list, 'image_type': 'multi-linear'}
+        kwargs_data_joint = {'multi_band_list': multi_band_list, 'multi_band_type': 'multi-linear'}
         fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
+        kwargs_result = fittingSequence.best_fit(bijective=False)
+        lens_temp = kwargs_result['kwargs_lens']
         npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=2)
 
         logL = fittingSequence.best_fit_likelihood
         print(logL, 'test')
-        print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
+        #print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         npt.assert_almost_equal(logL, -10000000061.792593, decimal=-4)
 
         n_p = 2
         n_i = 2
         fitting_list = []
-
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
@@ -161,25 +162,78 @@ class TestFittingSequence(object):
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])
+        fitting_list.append(['fix_not_computed', {'free_bands': [True]}])
         n_sersic_overwrite = 4
         kwargs_update = {'lens_light_add_fixed': [[0, ['n_sersic'], [n_sersic_overwrite]]],
-                         'lens_light_remove_fixed': [[0, ['center_x']]], 'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]]
-            , 'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
+                         'lens_light_remove_fixed': [[0, ['center_x']]], 
+                         'change_source_lower_limit': [[0, ['n_sersic'], [0.1]]], 
+                         'change_source_upper_limit': [[0, ['n_sersic'], [10]]]}
         fitting_list.append(['update_settings', kwargs_update])
 
         #kwargs_model = {}, kwargs_constraints = {}, kwargs_likelihood = {}, lens_add_fixed = [],
         #source_add_fixed = [], lens_light_add_fixed = [], ps_add_fixed = [], cosmo_add_fixed = [], lens_remove_fixed = [],
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
-        chain_list, param_list, samples_mcmc, param_mcmc, dist_mcmc = fittingSequence.fit_sequence(fitting_list)
-        lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = fittingSequence.best_fit(bijective=False)
-        npt.assert_almost_equal(lens_temp[0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager._fixed_kwargs
+        kwargs_result = fittingSequence.best_fit(bijective=False)
+        npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
+        npt.assert_almost_equal(lens_light_fixed[0]['n_sersic'], 4, decimal=-1)
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 0.1
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 10
 
-        kwargs_fixed = fittingSequence.kwargs_fixed()
-        npt.assert_almost_equal(kwargs_fixed[2][0]['n_sersic'], 4, decimal=-1)
-        assert fittingSequence._updateManager.lower_kwargs[1][0]['n_sersic'] == 0.1
-        assert fittingSequence._updateManager.upper_kwargs[1][0]['n_sersic'] == 10
+        # Nested sampler tests
+        # further decrease the parameter space for nested samplers to run faster
+        fitting_list2 = []
+        kwargs_update2 = {'ps_add_fixed': [[0, ['ra_source', 'dec_source'], [0, 0]]],
+                          'lens_light_add_fixed': [[0, ['n_sersic', 'R_sersic', 'center_x', 'center_y'], [4, .1, 0, 0]]],
+                          'source_add_fixed': [[0, ['R_sersic', 'e1', 'e2', 'center_x', 'center_y'], [.6, .1, .1, 0, 0]]],
+                          'lens_add_fixed': [[0, ['gamma', 'theta_E', 'e1', 'e2', 'center_x', 'center_y'], [1.8, 1., .1, .1, 0, 0]],
+                                             [1, ['e1', 'e2'], [0.01, 0.01]]],
+                          'change_source_lower_limit': [[0, ['n_sersic'], [2.9]]], 
+                          'change_source_upper_limit': [[0, ['n_sersic'], [3.1]]]
+        }
+        fitting_list2.append(['update_settings', kwargs_update2])
+        kwargs_multinest = {
+            'sampler_type': 'MULTINEST',
+            'kwargs_run': {
+                'n_live_points': 10,
+                'evidence_tolerance': 0.5,
+                'sampling_efficiency': 0.8,  # 1 for posterior-only, 0 for evidence-only
+                'importance_nested_sampling': False,
+                'multimodal': True,
+                'const_efficiency_mode': False,   # reduce sampling_efficiency to 5% when True
+            },
+            'remove_output_dir': True,
+        }
+        fitting_list2.append(['nested_sampling', kwargs_multinest])
+        kwargs_dynesty = {
+            'sampler_type': 'DYNESTY',
+            'kwargs_run': {
+                'dlogz_init': 0.01,
+                'nlive_init': 3,
+                'nlive_batch': 3,
+                'maxbatch': 1,
+            },
+        }
+        fitting_list2.append(['nested_sampling', kwargs_dynesty])
+        kwargs_dypolychord = {
+            'sampler_type': 'DYPOLYCHORD',
+            'kwargs_run': {
+                'ninit': 8,
+                'nlive_const': 10,
+            },
+            'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
+            'remove_output_dir': True,
+        }
+        fitting_list2.append(['nested_sampling', kwargs_dypolychord])
+
+        chain_list2 = fittingSequence.fit_sequence(fitting_list2)
+        kwargs_fixed = fittingSequence._updateManager._fixed_kwargs
+        npt.assert_almost_equal(kwargs_fixed[0][1]['e1'], 0.01, decimal=2)
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
 
 
 if __name__ == '__main__':

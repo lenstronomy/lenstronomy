@@ -40,8 +40,8 @@ class Testcnfw(object):
 
         alpha_theory = self.cn.mass_2d(R, Rs, rho0, r_core) / np.pi / R
 
-        theta_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
-        alpha_derivatives = self.cn.derivatives(R, 0, Rs, theta_Rs, r_core)[0]
+        alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
+        alpha_derivatives = self.cn.derivatives(R, 0, Rs, alpha_Rs, r_core)[0]
 
         npt.assert_almost_equal(alpha/alpha_theory, 1)
         npt.assert_almost_equal(alpha/alpha_derivatives, 1)
@@ -92,12 +92,12 @@ class Testcnfw(object):
         rho0 = float(1)
         r_core = float(7)
 
-        theta_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
-        theta_rs_2 = self.cn.cnfwAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
+        alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
+        alpha_Rs_2 = self.cn.cnfwAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
 
-        npt.assert_almost_equal(theta_Rs*theta_rs_2**-1,1)
+        npt.assert_almost_equal(alpha_Rs*alpha_Rs_2**-1,1)
 
-        rho0_2 = self.cn._alpha2rho0(theta_Rs, Rs, r_core)
+        rho0_2 = self.cn._alpha2rho0(alpha_Rs, Rs, r_core)
         npt.assert_almost_equal(rho0, rho0_2)
 
 

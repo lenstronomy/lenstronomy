@@ -103,14 +103,14 @@ class TestSolver4Point(object):
         Rs = 4.
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens = [{'theta_Rs': 1., 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
+        kwargs_lens = [{'alpha_Rs': 1., 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},
                        {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=deltapix, search_window=numPix*deltapix)
         phi_G, q = 1.5, 0.9
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens_init = [{'theta_Rs': 0.5, 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
+        kwargs_lens_init = [{'alpha_Rs': 0.5, 'Rs': Rs, 'e1': e1, 'e2': e2, 'center_x': 0., 'center_y': 0}, kwargs_lens[1]]
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
-        npt.assert_almost_equal(kwargs_lens_new[0]['theta_Rs'], kwargs_lens[0]['theta_Rs'], decimal=3)
+        npt.assert_almost_equal(kwargs_lens_new[0]['alpha_Rs'], kwargs_lens[0]['alpha_Rs'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e1'], kwargs_lens[0]['e1'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['e2'], kwargs_lens[0]['e2'], decimal=3)
         npt.assert_almost_equal(kwargs_lens_new[0]['center_x'], kwargs_lens[0]['center_x'], decimal=3)
@@ -138,7 +138,7 @@ class TestSolver4Point(object):
             npt.assert_almost_equal(coeffs_new[i], coeffs[i], decimal=3)
 
     def test_solver_simplified(self):
-        lens_model_list = ['SPEP', 'SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR_GAMMA_PSI']
         lensModel = LensModel(lens_model_list)
 
         lensEquationSolver = LensEquationSolver(lensModel)
@@ -148,14 +148,15 @@ class TestSolver4Point(object):
         numPix = 150
         gamma = 1.9
         gamma_ext = 0.05
-        e1, e2 = param_util.phi_gamma_ellipticity(phi=0.4, gamma=gamma_ext)
+        psi_ext = 0.4
+        #e1, e2 = param_util.phi_gamma_ellipticity(phi=psi_ext, gamma=gamma_ext)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.1, 'e2': -0.1, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': e1, 'e2': e2}]
+                       {'gamma_ext': gamma_ext, 'psi_ext': psi_ext}]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         e1_new, e2_new = param_util.phi_gamma_ellipticity(phi=0., gamma=gamma_ext+0.1)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0., 'e2': 0., 'center_x': 0., 'center_y': 0},
-                            {'e1': e1_new, 'e2': e2_new}]
+                            {'gamma_ext': gamma_ext + 0.1, 'psi_ext': 0}]
         solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
@@ -173,7 +174,7 @@ class TestSolver4Point(object):
             npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
 
     def test_solver_simplified_2(self):
-        lens_model_list = ['SPEP', 'SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR_GAMMA_PSI']
         lensModel = LensModel(lens_model_list)
 
         lensEquationSolver = LensEquationSolver(lensModel)
@@ -183,13 +184,14 @@ class TestSolver4Point(object):
         numPix = 150
         gamma = 1.96
         e1, e2 = -0.01, -0.01
-        kwargs_shear = {'e1': e1, 'e2': e2}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
+        psi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+        kwargs_shear = {'gamma_ext': gamma_ext, 'psi_ext': psi_ext}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': gamma, 'center_x': 0, 'center_y': 0, 'e1': -0.2, 'e2': -0.03}
         kwargs_lens = [kwargs_spemd, kwargs_shear]
         x_pos, y_pos = lensEquationSolver.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=4,
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
-                            {'e1': e1, 'e2': e2}]
+                            {'gamma_ext': gamma_ext, 'psi_ext': psi_ext}]
         solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
@@ -205,11 +207,11 @@ class TestSolver4Point(object):
         for i in range(len(x_pos)):
             npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
             npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
-        npt.assert_almost_equal(kwargs_lens_new[1]['e1'], kwargs_lens[1]['e1'], decimal=8)
-        npt.assert_almost_equal(kwargs_lens_new[1]['e2'], kwargs_lens[1]['e2'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['psi_ext'], kwargs_lens[1]['psi_ext'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['gamma_ext'], kwargs_lens[1]['gamma_ext'], decimal=8)
 
     def test_solver_profile_shear(self):
-        lens_model_list = ['SPEP', 'SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR_GAMMA_PSI']
         lensModel = LensModel(lens_model_list)
 
         lensEquationSolver = LensEquationSolver(lensModel)
@@ -220,7 +222,7 @@ class TestSolver4Point(object):
         gamma = 1.98
         e1, e2 = -0.04, -0.01
         gamma_ext = np.sqrt(e1**2 + e2**2)
-        kwargs_shear = {'e1': e1, 'e2': e2}  # shear values to the source plane
+        kwargs_shear = {'gamma_ext': gamma_ext, 'psi_ext': 0.3}  # shear values to the source plane
         kwargs_spemd = {'theta_E': 1.66, 'gamma': gamma, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.1,
                         'e2': 0.05}  # parameters of the deflector lens model
 
@@ -229,7 +231,7 @@ class TestSolver4Point(object):
                                                           min_distance=deltapix, search_window=numPix * deltapix)
         print(x_pos, y_pos, 'test positions')
         kwargs_lens_init = [{'theta_E': 1.3, 'gamma': gamma, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0},
-                            {'e1': e1, 'e2': -e2}]
+                            {'gamma_ext': gamma_ext, 'psi_ext': -0.3}]
         solver = Solver4Point(lensModel, solver_type='PROFILE_SHEAR')
         kwargs_lens_new, accuracy = solver.constraint_lensmodel(x_pos, y_pos, kwargs_lens_init)
         assert accuracy < 10**(-10)
@@ -245,8 +247,8 @@ class TestSolver4Point(object):
         for i in range(len(x_pos)):
             npt.assert_almost_equal(x_pos[i], x_pos_new[i], decimal=6)
             npt.assert_almost_equal(y_pos[i], y_pos_new[i], decimal=6)
-        npt.assert_almost_equal(kwargs_lens_new[1]['e1'], kwargs_lens[1]['e1'], decimal=8)
-        npt.assert_almost_equal(kwargs_lens_new[1]['e2'], kwargs_lens[1]['e2'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['gamma_ext'], kwargs_lens[1]['gamma_ext'], decimal=8)
+        npt.assert_almost_equal(kwargs_lens_new[1]['psi_ext'], kwargs_lens[1]['psi_ext'], decimal=8)
         npt.assert_almost_equal(kwargs_lens_new[0]['e1'], kwargs_lens[0]['e1'], decimal=8)
         npt.assert_almost_equal(kwargs_lens_new[0]['e2'], kwargs_lens[0]['e2'], decimal=8)
 

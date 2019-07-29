@@ -22,7 +22,8 @@ class JointLinear(MultiLinear):
                                           likelihood_mask_list=likelihood_mask_list)
         self.type = 'joint-linear'
 
-    def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, inv_bool=False):
+    def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
@@ -33,15 +34,15 @@ class JointLinear(MultiLinear):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
         C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        _, _, _, _ = self._imageModel_list[0].update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         wls_list = self._array2image_list(wls_model)
         return wls_list, model_error_list, cov_param, param
 
-    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
+    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                               kwargs_extinction=None, kwargs_special=None):
         """
         computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
 
@@ -54,7 +55,8 @@ class JointLinear(MultiLinear):
         A = []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+                A_i = self._imageModel_list[i].linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light,
+                                                                      kwargs_ps, kwargs_extinction, kwargs_special)
                 if len(A) == 0:
                     A = A_i
                 else:
@@ -113,7 +115,8 @@ class JointLinear(MultiLinear):
                     C_D_response = np.append(C_D_response, C_D_response_i)
         return C_D_response, model_error
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -125,8 +128,9 @@ class JointLinear(MultiLinear):
         """
         # generate image
         im_sim_list, model_error_list, cov_matrix, param = self.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                         kwargs_lens_light, kwargs_ps,
-                                                                         inv_bool=source_marg)
+                                                                                   kwargs_lens_light, kwargs_ps,
+                                                                                   kwargs_extinction, kwargs_special,
+                                                                                   inv_bool=source_marg)
         # compute X^2
         logL = 0
         index = 0
@@ -135,6 +139,6 @@ class JointLinear(MultiLinear):
                 logL += self._imageModel_list[i].Data.log_likelihood(im_sim_list[index], self._imageModel_list[i].likelihood_mask, model_error_list[index])
                 index += 1
         if cov_matrix is not None and source_marg:
-            marg_const = de_lens.marginalisation_const(cov_matrix)
+            marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         return logL

@@ -21,27 +21,27 @@ class TestNFW(object):
         y = np.array([2])
         Rs = 1.
         rho0 = 1
-        theta_Rs = self.nfw._rho02alpha(rho0, Rs)
-        values = self.nfw.function(x, y, Rs, theta_Rs)
+        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        values = self.nfw.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0], 2.4764530888727556, decimal=5)
         x = np.array([0])
         y = np.array([0])
         Rs = 1.
         rho0 = 1
-        theta_Rs = self.nfw._rho02alpha(rho0, Rs)
-        values = self.nfw.function(x, y, Rs, theta_Rs)
+        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        values = self.nfw.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0], 0, decimal=4)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
-        values = self.nfw.function(x, y, Rs, theta_Rs)
+        values = self.nfw.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0], 2.4764530888727556, decimal=5)
         npt.assert_almost_equal(values[1], 3.5400250357511416, decimal=5)
         npt.assert_almost_equal(values[2], 4.5623722261790647, decimal=5)
 
     def test_derivatives(self):
         Rs = .1
-        theta_Rs = 0.0122741127776
+        alpha_Rs = 0.0122741127776
         x_array = np.array([0.0, 0.00505050505,0.0101010101,0.0151515152,0.0202020202,0.0252525253,
             0.0303030303,0.0353535354,0.0404040404,0.0454545455,0.0505050505,0.0555555556,0.0606060606,0.0656565657,0.0707070707,0.0757575758,0.0808080808,0.0858585859,0.0909090909,0.095959596,0.101010101,0.106060606,
             0.111111111,0.116161616,0.121212121,0.126262626,0.131313131,0.136363636,0.141414141,0.146464646,0.151515152,0.156565657,
@@ -58,7 +58,7 @@ class TestNFW(object):
             0.0102193428,0.0101786427,0.0101382318,0.0100981105,0.0100582792,0.0100187377,0.00997948602,0.00994052364,0.00990184999,
             0.00986346433, 0.00982536573,0.00978755314, 0.00975002537, 0.0097127811, 0.00967581893, 0.00963913734, 0.00960273473, 0.00956660941])
         y_array = np.zeros_like(x_array)
-        f_x, f_y = self.nfw.derivatives(x_array, y_array, Rs, theta_Rs)
+        f_x, f_y = self.nfw.derivatives(x_array, y_array, Rs, alpha_Rs)
         #print(f_x/truth_alpha)
         for i in range(len(x_array)):
             npt.assert_almost_equal(f_x[i], truth_alpha[i], decimal=8)
@@ -68,15 +68,15 @@ class TestNFW(object):
         y = np.array([2])
         Rs = 1.
         rho0 = 1
-        theta_Rs = self.nfw._rho02alpha(rho0, Rs)
-        f_xx, f_yy,f_xy = self.nfw.hessian(x, y, Rs, theta_Rs)
+        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        f_xx, f_yy,f_xy = self.nfw.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(f_xx[0], 0.40855527280658294, decimal=5)
         npt.assert_almost_equal(f_yy[0], 0.037870368296371637, decimal=5)
         npt.assert_almost_equal(f_xy[0], -0.2471232696734742, decimal=5)
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
-        values = self.nfw.hessian(x, y, Rs, theta_Rs)
+        values = self.nfw.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0][0], 0.40855527280658294, decimal=5)
         npt.assert_almost_equal(values[1][0], 0.037870368296371637, decimal=5)
         npt.assert_almost_equal(values[2][0], -0.2471232696734742, decimal=5)
@@ -87,14 +87,13 @@ class TestNFW(object):
     def test_mass_3d_lens(self):
         R = 1
         Rs = 3
-        theta_Rs = 1
-        m_3d = self.nfw.mass_3d_lens(R, Rs, theta_Rs)
+        alpha_Rs = 1
+        m_3d = self.nfw.mass_3d_lens(R, Rs, alpha_Rs)
         npt.assert_almost_equal(m_3d, 1.1573795105019022, decimal=8)
 
     def test_interpol(self):
-        R = 1
         Rs = 3
-        theta_Rs = 1
+        alpha_Rs = 1
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])
 
@@ -102,21 +101,21 @@ class TestNFW(object):
         nfw_interp = NFW(interpol=True)
         nfw_interp_lookup = NFW(interpol=True, lookup=True)
 
-        values = nfw.function(x, y, Rs, theta_Rs)
-        values_interp = nfw_interp.function(x, y, Rs, theta_Rs)
-        values_interp_lookup = nfw_interp_lookup.function(x, y, Rs, theta_Rs)
+        values = nfw.function(x, y, Rs, alpha_Rs)
+        values_interp = nfw_interp.function(x, y, Rs, alpha_Rs)
+        values_interp_lookup = nfw_interp_lookup.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
         npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
 
-        values = nfw.derivatives(x, y, Rs, theta_Rs)
-        values_interp = nfw_interp.derivatives(x, y, Rs, theta_Rs)
-        values_interp_lookup = nfw_interp_lookup.derivatives(x, y, Rs, theta_Rs)
+        values = nfw.derivatives(x, y, Rs, alpha_Rs)
+        values_interp = nfw_interp.derivatives(x, y, Rs, alpha_Rs)
+        values_interp_lookup = nfw_interp_lookup.derivatives(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
         npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
 
-        values = nfw.hessian(x, y, Rs, theta_Rs)
-        values_interp = nfw_interp.hessian(x, y, Rs, theta_Rs)
-        values_interp_lookup = nfw_interp_lookup.hessian(x, y, Rs, theta_Rs)
+        values = nfw.hessian(x, y, Rs, alpha_Rs)
+        values_interp = nfw_interp.hessian(x, y, Rs, alpha_Rs)
+        values_interp_lookup = nfw_interp_lookup.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
         npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
 
@@ -132,19 +131,19 @@ class TestMassAngleConversion(object):
 
     def test_angle(self):
         x, y = 1, 0
-        alpha1, alpha2 = self.nfw.derivatives(x, y, theta_Rs=1., Rs=1.)
+        alpha1, alpha2 = self.nfw.derivatives(x, y, alpha_Rs=1., Rs=1.)
         assert alpha1 == 1.
 
     def test_convertAngle2rho(self):
-        rho0 = self.nfw._alpha2rho0(theta_Rs=1., Rs=1.)
+        rho0 = self.nfw._alpha2rho0(alpha_Rs=1., Rs=1.)
         assert rho0 == 0.81472283831773229
 
     def test_convertrho02angle(self):
-        theta_Rs_in = 1.5
+        alpha_Rs_in = 1.5
         Rs = 1.5
-        rho0 = self.nfw._alpha2rho0(theta_Rs=theta_Rs_in, Rs=Rs)
-        theta_Rs_out = self.nfw._rho02alpha(rho0, Rs)
-        assert theta_Rs_in == theta_Rs_out
+        rho0 = self.nfw._alpha2rho0(alpha_Rs=alpha_Rs_in, Rs=Rs)
+        alpha_Rs_out = self.nfw._rho02alpha(rho0, Rs)
+        assert alpha_Rs_in == alpha_Rs_out
 
 
 if __name__ == '__main__':

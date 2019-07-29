@@ -5,7 +5,11 @@ mpmath
 cosmohammer>=0.6.1
 emcee
 matplotlib
-corner
 sklearn
 numba>=0.43.1
+future
+dynesty
+pymultinest
+pypolychord
+nestcheck
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

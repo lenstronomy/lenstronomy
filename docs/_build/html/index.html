@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.8.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.9.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -72,6 +72,10 @@ is also required and can be cloned from: <a class="reference external" href="htt
 <ul class="simple">
 <li><code class="docutils literal notranslate"><span class="pre">CosmoHammer</span></code> (through PyPi)</li>
 <li><code class="docutils literal notranslate"><span class="pre">astropy</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">dynesty</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">pymultinest</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">pypolychord</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">nestcheck</span></code></li>
 <li>standard python libraries (<code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code>)</li>
 </ul>
 </div>
@@ -90,6 +94,7 @@ is also required and can be cloned from: <a class="reference external" href="htt
 <li>Pre-defined plotting and illustration routines</li>
 <li>Particle swarm optimization for parameter fitting</li>
 <li>MCMC (emcee from CosmoHammer) for parameter inferences</li>
+<li>Nested Sampling (MultiNest, DyPolyChord, or Dynesty) for evidence computation and parameter inferences</li>
 <li>Kinematic modelling</li>
 <li>Cosmographic inference tools</li>
 </ul>
@@ -109,7 +114,7 @@ You can find simple examle notebooks for various cases.</p>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/double_model.ipynb">Double lensed quasar modelling</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/time-delay%20cosmography.ipynb">Time-delay cosmography</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/shapelet_source_modelling.ipynb">Source reconstruction and deconvolution with Shapelets</a></li>
-<li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/shapelet_source_modelling.ipynb">Solving the lens equation</a></li>
+<li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lens_equation.ipynb">Solving the lens equation</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/EinsteinRingShear_simulations.ipynb">Measuring cosmic shear with Einstein rings</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb">Fitting of galaxy light profiles, like e.g. GALFIT</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb">Quasar-host galaxy decomposition</a></li>
@@ -195,6 +200,7 @@ the relevant work that was implemented in <code class="docutils literal notransl
 <li class="toctree-l2"><a class="reference internal" href="history.html#id16">0.8.0 (2019-5-23)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id17">0.8.1 (2019-5-23)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id18">0.8.2 (2019-5-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id19">0.9.0 (2019-7-06)</a></li>
 </ul>
 </li>
 </ul>
@@ -272,7 +278,7 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.8.2 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 0.9.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

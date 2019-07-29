@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.mass_profile &#8212; lenstronomy 0.8.2 documentation</title>
+    <title>lenstronomy.GalKin.mass_profile &#8212; lenstronomy 0.9.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -73,7 +73,7 @@
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">mass_3d_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="n">mass_3d_array</span><span class="p">[</span><span class="n">mass_3d_array</span> <span class="o">&lt;</span> <span class="mf">10.</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">10.</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">)</span>
-            <span class="n">mass_dim_array</span> <span class="o">=</span> <span class="n">mass_3d_array</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_s</span> \
+            <span class="n">mass_dim_array</span> <span class="o">=</span> <span class="n">mass_3d_array</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_s</span> \
                        <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">mass_dim_array</span><span class="o">/</span><span class="n">r_array</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log_mass_3d</span> <span class="o">=</span> <span class="n">f</span>
@@ -87,9 +87,10 @@
 <span class="sd">        :return: mass enclosed physical radius in kg</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mass_dimless</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">mass_dim</span> <span class="o">=</span> <span class="n">mass_dimless</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_s</span> \
+        <span class="n">mass_dim</span> <span class="o">=</span> <span class="n">mass_dimless</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_d</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_s</span> \
                        <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">D_ds</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">mass_dim</span></div></div>
+    <span class="c1"># * const.arcsec * self.cosmo.D_d</span>
 </pre></div>
 
           </div>
@@ -122,7 +123,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

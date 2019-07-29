@@ -175,4 +175,3 @@ class AnalyticKinematics(object):
         :return:
         """
         return r**2/(r_ani**2 + r**2)
-

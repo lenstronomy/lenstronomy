@@ -27,7 +27,7 @@ class SimAPI(DataAPI, ModelAPI):
         ModelAPI.__init__(self, **kwargs_model)
         self._image_model_class = ImageModel(self.data_class, self.psf_class, self.lens_model_class,
                                              self.source_model_class, self.lens_light_model_class,
-                                             self.point_source_model_class, kwargs_numerics)
+                                             self.point_source_model_class, kwargs_numerics=kwargs_numerics)
 
     @property
     def image_model_class(self):
@@ -40,7 +40,9 @@ class SimAPI(DataAPI, ModelAPI):
     def magnitude2amplitude(self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None):
         """
 
-        :param
+        :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
+        :param kwargs_source_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
+        :param kwargs_ps_mag: keyword argument list as for PointSource module except that 'amp' parameters are 'magnitude' parameters.
         :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this
         magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
         """

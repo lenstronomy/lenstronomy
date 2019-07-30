@@ -54,6 +54,15 @@ class TestModelAPI(object):
         Rs_new , alpha_Rs_new = lens_cosmo.nfw_physical2angle(kwargs_mass[1]['M200'], kwargs_mass[1]['concentration'])
         npt.assert_almost_equal(alpha_Rs, alpha_Rs_new, decimal=7)
 
+        api = ModelAPI(lens_model_list=['SIS', 'NFW'], z_lens=0.5, z_source_convention=z_source_convention, cosmo=None,
+                       z_source=z_source_convention)
+        kwargs_lens = api.physical2lensing_conversion(kwargs_mass)
+
+        theta_E = kwargs_lens[0]['theta_E']
+        lens_cosmo = LensCosmo(z_lens=0.5, z_source=z_source_convention)
+        theta_E_test = lens_cosmo.sis_sigma_v2theta_E(kwargs_mass[0]['sigma_v'])
+        npt.assert_almost_equal(theta_E, theta_E_test, decimal=7)
+
 
 if __name__ == '__main__':
     pytest.main()

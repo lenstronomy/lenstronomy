@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 #this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
-import copy
 
 
 class LightModel(object):

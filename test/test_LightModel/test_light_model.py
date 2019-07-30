@@ -61,7 +61,7 @@ class TestLightModel(object):
         npt.assert_almost_equal(output[0][0],0.058549831524319168, decimal=6)
 
     def test_param_name_list(self):
-        param_name_list = self.LightModel.param_name_list()
+        param_name_list = self.LightModel.param_name_list
         assert len(self.light_model_list) == len(param_name_list)
 
     def test_num_param_linear(self):

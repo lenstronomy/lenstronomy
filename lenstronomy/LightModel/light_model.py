@@ -11,8 +11,8 @@ class LightModel(LinearBasis):
     """
 
     def __init__(self, light_model_list, deflection_scaling_list=None, source_redshift_list=None,
-                 merge_with_other_list=None, smoothing=0.0000001):
-        super(LightModel, self).__init__(light_model_list=light_model_list, merge_with_other_list=merge_with_other_list,
+                 smoothing=0.0000001):
+        super(LightModel, self).__init__(light_model_list=light_model_list,
                                          smoothing=smoothing)
         self.deflection_scaling_list = deflection_scaling_list
         self.redshift_list = source_redshift_list

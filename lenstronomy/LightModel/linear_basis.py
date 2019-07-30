@@ -12,7 +12,7 @@ class LinearBasis(LightModelBase):
     class to handle source and lens light models
     """
 
-    def __init__(self, light_model_list, smoothing=0.0000001, merge_with_other_list=None):
+    def __init__(self, light_model_list, smoothing=0.0000001):
         """
 
         :param light_model_list:
@@ -20,23 +20,6 @@ class LinearBasis(LightModelBase):
         :param merge_with_other_list: list of indexes of models that are merged with other models with fixed amplitude ratio
         """
         super(LinearBasis, self).__init__(light_model_list=light_model_list, smoothing=smoothing)
-        if merge_with_other_list is None:
-            merge_with_other_list = [False] * len(light_model_list)
-        self._merge_with_other_list = merge_with_other_list
-
-    def _transform_kwargs(self, kwargs_list):
-        """
-
-        :param kwargs_list: keyword argument list as parameterised models
-        :return: keyword argument list as used in the individual models
-        """
-        kwargs_out = copy.deepcopy(kwargs_list)
-        for i in range(len(self.profile_type_list)):
-            if self._merge_with_other_list[i] is not False:
-                j = self._merge_with_other_list[i]
-                kwargs_out[i]['amp'] = kwargs_out[j]['amp'] * kwargs_out[i]['scale_ratio']
-                del kwargs_out[i]['scale_ratio']
-        return kwargs_out
 
     @property
     def param_name_list(self):
@@ -47,13 +30,7 @@ class LinearBasis(LightModelBase):
         """
         name_list = []
         for i, func in enumerate(self.func_list):
-            names = func.param_names
-            if self._merge_with_other_list[i] is not False:
-                # this removes the linear 'amp' parameter and adds a scale_ratio parameter
-                names = copy.deepcopy(names)
-                names.remove('amp')
-                names.append('scale_ratio')
-            name_list.append(names)
+            name_list.append(func.param_names)
         return name_list
 
     def functions_split(self, x, y, kwargs_list, k=None):
@@ -72,16 +49,10 @@ class LinearBasis(LightModelBase):
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
                              'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
                     kwargs_new = kwargs_list[i].copy()
-                    if self._merge_with_other_list[i] is not False:
-                        new = {'amp': kwargs_new['scale_ratio']}
-                        del kwargs_new['scale_ratio']
-                        kwargs_new.update(new)
-                        response[j] += self.func_list[i].function(x, y, **kwargs_new)
-                    else:
-                        new = {'amp': 1}
-                        kwargs_new.update(new)
-                        response += [self.func_list[i].function(x, y, **kwargs_new)]
-                        n += 1
+                    new = {'amp': 1}
+                    kwargs_new.update(new)
+                    response += [self.func_list[i].function(x, y, **kwargs_new)]
+                    n += 1
                 elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                     num = len(kwargs_list[i]['amp'])
                     new = {'amp': np.ones(num)}
@@ -129,8 +100,7 @@ class LinearBasis(LightModelBase):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
                              'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
                              'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
-                if self._merge_with_other_list[i] is False:
-                    n_list += [1]
+                n_list += [1]
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
                 n_list += [num]
@@ -157,9 +127,8 @@ class LinearBasis(LightModelBase):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
                          'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
                          'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL']:
-                if self._merge_with_other_list[k] is False:
-                    kwargs_list[k]['amp'] = param[i]
-                    i += 1
+                kwargs_list[k]['amp'] = param[i]
+                i += 1
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num_param = len(kwargs_list[k]['sigma'])
                 kwargs_list[k]['amp'] = param[i:i + num_param]

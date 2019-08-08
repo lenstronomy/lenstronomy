@@ -462,6 +462,7 @@ class Param(object):
         print("Joint source with source:", self._joint_source_with_source)
         print("Joint lens with light:", self._joint_lens_with_light)
         print("Joint source with point source:", self._joint_source_with_point_source)
+        print("Joint lens light with point source:", self._joint_lens_light_with_point_source)
         print("===================")
         print("Number of non-linear parameters being sampled: ", num)
         print("Parameters being sampled: ", param_list)

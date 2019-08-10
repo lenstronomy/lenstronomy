@@ -8,7 +8,7 @@ class SIE(object):
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'theta_E': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, NIE=False):
+    def __init__(self, NIE=True):
         self._nie = NIE
         if NIE:
             from lenstronomy.LensModel.Profiles.nie import NIE

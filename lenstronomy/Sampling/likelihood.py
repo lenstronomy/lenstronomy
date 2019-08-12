@@ -218,7 +218,6 @@ class LikelihoodModule(object):
     def likelihood(self, a):
         return self.logL(a)
 
-
     def computeLikelihood(self, ctx):
         logL, _ = self.logL(ctx.getParams())
         return logL

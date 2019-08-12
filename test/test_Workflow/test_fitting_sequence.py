@@ -221,8 +221,14 @@ class TestFittingSequence(object):
         kwargs_dypolychord = {
             'sampler_type': 'DYPOLYCHORD',
             'kwargs_run': {
-                'ninit': 8,
-                'nlive_const': 10,
+                'ninit': 20,
+                'nlive_const': 30,
+                #'seed_increment': 1,
+                'resume_dyn_run': False,
+                #'init_step': 10,
+            },
+            'polychord_settings': {
+                'seed': 1
             },
             'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
             'remove_output_dir': True,

@@ -127,7 +127,7 @@ class KDE1D(object):
         :param values: 1d numpy array of points representing a PDF
         """
         self._points = values
-        self._kernel = stats.gaussian_kde(values,)
+        self._kernel = stats.gaussian_kde(values)
 
     def likelihood(self, x):
         """

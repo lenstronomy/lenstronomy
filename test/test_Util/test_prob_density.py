@@ -89,12 +89,12 @@ class TestKDE1D(object):
         return np.exp(-((x-mean)/(simga))**2/2) / np.sqrt(2*np.pi) / simga
 
     def test_likelihood(self):
-        x_array = np.linspace(-5, 5, 1000)
-        sigma = 1.
-        mean = 1
+        x_array = np.linspace(0.5, 1.5, 3000)
+        sigma = .1
+        mean = 1.
         pdf_array = self.gauss(x_array, mean=mean, simga=sigma)
         approx = Approx(x_array, pdf_array)
-        sample = approx.draw(n=20000)
+        sample = approx.draw(n=50000)
         kde = KDE1D(values=sample)
 
         x = -10
@@ -102,10 +102,14 @@ class TestKDE1D(object):
         likelihood_true = self.gauss(x, mean=mean, simga=sigma)
         npt.assert_almost_equal(likelihood, likelihood_true, decimal=4)
 
-        x = np.linspace(-5, 5, 100)
+        x = np.linspace(0.5, 1.5, 15)
         likelihood = kde.likelihood(x)
         likelihood_true = self.gauss(x, mean=mean, simga=sigma)
-        npt.assert_almost_equal(likelihood, likelihood_true, decimal=2)
+        #import matplotlib.pyplot as plt
+        #plt.plot(x, likelihood)
+        #plt.plot(x, likelihood_true)
+        #plt.show()
+        npt.assert_almost_equal(likelihood, likelihood_true, decimal=1)
 
 
 class TestRaise(unittest.TestCase):

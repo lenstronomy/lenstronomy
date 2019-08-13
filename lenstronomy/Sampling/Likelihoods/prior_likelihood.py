@@ -10,12 +10,12 @@ class PriorLikelihood(object):
                  prior_extinction=[]):
         """
 
-        :param prior_lens: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_source: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_lens_light: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_ps: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_special: list of [index_model, param_name, value, 1-sigma priors]
-        :param prior_extinction: list of [index_model, param_name, value, 1-sigma priors]
+        :param prior_lens: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_source: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_lens_light: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_ps: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_special: list of [index_model, param_name, mean, 1-sigma priors]
+        :param prior_extinction: list of [index_model, param_name, mean, 1-sigma priors]
         """
         self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_special, self._prior_extinction = \
             prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction

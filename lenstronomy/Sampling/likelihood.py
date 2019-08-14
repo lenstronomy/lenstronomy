@@ -24,8 +24,8 @@ class LikelihoodModule(object):
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
-                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
-                 prior_lens_light=[], prior_ps=[], prior_cosmo=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
+                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_extinction=[],
+                 prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
                  prior_special_kde=[], prior_extinction_kde=[], condition_definition=None):
         """
         initializing class
@@ -70,7 +70,7 @@ class LikelihoodModule(object):
         lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_reator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
-        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo,
+        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,
                                                  prior_lens_kde, prior_source_kde, prior_lens_light_kde, prior_ps_kde,
                                                  prior_special_kde, prior_extinction_kde)
         self._time_delay_likelihood = time_delay_likelihood

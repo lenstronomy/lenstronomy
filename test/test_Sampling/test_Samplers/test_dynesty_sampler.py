@@ -155,6 +155,7 @@ class TestDynestySampler(object):
         args = np.nan * np.ones(n_dims)
         logL = self.sampler.log_likelihood(args)
         assert logL < 0
+        #npt.assert_almost_equal(logL, -47.167446538898204)
         #assert logL == -1e15
 
 

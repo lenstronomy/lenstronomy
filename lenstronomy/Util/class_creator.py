@@ -35,7 +35,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param num_iter_max:
     :param source_deflection_scaling_list:
     :param source_redshift_list:
-    :param cosmo:
+    :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:
     :param index_source_light_model_list:
     :param index_lens_light_model_list:

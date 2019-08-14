@@ -12,7 +12,7 @@ class Unlensed(object):
         pass
 
     def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
-                       num_iter_max=100, x_center=0, y_center=0):
+                       num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         """
 
         :param ra_image:
@@ -30,7 +30,7 @@ class Unlensed(object):
         return np.array(ra_image), np.array(dec_image)
 
     def image_amplitude(self, kwargs_ps, kwargs_lens=None, x_pos=None, y_pos=None, min_distance=0.01, search_window=5,
-                        precision_limit=10**(-10), num_iter_max=100, x_center=0, y_center=0):
+                        precision_limit=10**(-10), num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         point_amp = kwargs_ps['point_amp']
         return np.array(point_amp)
 
@@ -55,7 +55,7 @@ class LensedPositions(object):
         self._additional_image = additional_image
 
     def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
-                       num_iter_max=100, x_center=0, y_center=0):
+                       num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         """
 
         :param ra_image:
@@ -70,7 +70,7 @@ class LensedPositions(object):
                                                                           search_window=search_window,
                                                                           precision_limit=precision_limit,
                                                                           num_iter_max=num_iter_max, x_center=x_center,
-                                                                          y_center=y_center)
+                                                                          y_center=y_center, magnification_limit=magnification_limit)
         else:
             ra_image = kwargs_ps['ra_image']
             dec_image = kwargs_ps['dec_image']
@@ -121,7 +121,7 @@ class SourcePositions(object):
         self._fixed_magnification = fixed_magnification
 
     def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
-                       num_iter_max=100, x_center=0, y_center=0):
+                       num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         """
 
         :param ra_image:
@@ -135,7 +135,7 @@ class SourcePositions(object):
                                                                       search_window=search_window,
                                                                       precision_limit=precision_limit,
                                                                       num_iter_max=num_iter_max, x_center=x_center,
-                                                                      y_center=y_center)
+                                                                      y_center=y_center, magnification_limit=magnification_limit)
         return ra_image, dec_image
 
     def source_position(self, kwargs_ps, kwargs_lens):
@@ -144,7 +144,7 @@ class SourcePositions(object):
         return np.array(ra_source), np.array(dec_source)
 
     def image_amplitude(self, kwargs_ps, kwargs_lens=None, x_pos=None, y_pos=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
-                       num_iter_max=100, x_center=0, y_center=0):
+                       num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         if self._fixed_magnification:
             if x_pos is not None and y_pos is not None:
                 ra_image, dec_image = x_pos, y_pos
@@ -153,7 +153,7 @@ class SourcePositions(object):
                                                         search_window=search_window,
                                                         precision_limit=precision_limit,
                                                         num_iter_max=num_iter_max, x_center=x_center,
-                                                        y_center=y_center)
+                                                        y_center=y_center, magnification_limit=magnification_limit)
             mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
             point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
@@ -200,7 +200,7 @@ class PointSourceCached(object):
         self._model.update_lens_model(lens_model_class)
 
     def image_position(self, kwargs_ps, kwargs_lens=None, min_distance=0.05, search_window=10,
-                       precision_limit=10**(-10), num_iter_max=100, x_center=0, y_center=0):
+                       precision_limit=10**(-10), num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         """
 
         :param ra_image:
@@ -213,7 +213,7 @@ class PointSourceCached(object):
                                                                       search_window=search_window,
                                                                       precision_limit=precision_limit,
                                                                       num_iter_max=num_iter_max, x_center=x_center,
-                                                                      y_center=y_center)
+                                                                      y_center=y_center, magnification_limit=magnification_limit)
         return self._x_image, self._y_image
 
     def source_position(self, kwargs_ps, kwargs_lens=None):
@@ -222,12 +222,12 @@ class PointSourceCached(object):
         return self._x_source, self._y_source
 
     def image_amplitude(self, kwargs_ps, kwargs_lens=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
-                       num_iter_max=100, x_center=0, y_center=0):
+                       num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
         x_pos, y_pos = self.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
                                                                       search_window=search_window,
                                                                       precision_limit=precision_limit,
                                                                       num_iter_max=num_iter_max, x_center=x_center,
-                                                                      y_center=y_center)
+                                                                      y_center=y_center, magnification_limit=magnification_limit)
         return self._model.image_amplitude(kwargs_ps, kwargs_lens, x_pos=x_pos, y_pos=y_pos)
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):

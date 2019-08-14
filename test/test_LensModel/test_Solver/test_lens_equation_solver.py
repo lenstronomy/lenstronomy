@@ -45,7 +45,7 @@ class TestLensEquationSolver(object):
                                                                      min_distance=min_distance,
                                                                      search_window=search_window,
                                                                      precision_limit=10**(-10), num_iter_max=10,
-                                                                     verbose=True)
+                                                                     verbose=True, magnification_limit=1)
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 

@@ -5,7 +5,8 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 
 class PointSource(object):
 
-    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None, additional_images_list=None,
+    def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
+                 additional_images_list=None, magnification_limit=None,
                  save_cache=False, min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
                  x_center=0, y_center=0):
         """
@@ -16,6 +17,8 @@ class PointSource(object):
         ratio of point sources is fixed to the one given by the lens model
         :param additional_images_list: list of bools (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
+        :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
+        images will be computed that exceed the lensing magnification (absolute value) limit
         :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
         equation is conducted with the lens model parameters provided. This can increase the speed as multiple times the
         image positions are requested for the same lens model. Attention in usage!
@@ -55,7 +58,7 @@ class PointSource(object):
                                                                  save_cache=save_cache))
             else:
                 raise ValueError("Point-source model %s not available" % model)
-        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center
+        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center, self._magnification_limit = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center, magnification_limit
 
     def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
@@ -135,7 +138,7 @@ class PointSource(object):
                                                         search_window=self._search_window,
                                                         precision_limit=self._precision_limit,
                                                         num_iter_max=self._num_iter_max, x_center=self._x_center,
-                                                        y_center=self._y_center)
+                                                        y_center=self._y_center, magnification_limit=self._magnification_limit)
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list

@@ -101,6 +101,17 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
 
+    def test_effective_einstein_radius(self):
+        kwargs_lens = [
+            {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
+        ret = lensModel.effective_einstein_radius(kwargs_lens,
+                                                  get_precision=True)
+
+        assert len(ret) == 2
+
+        npt.assert_almost_equal(ret[0], 1., decimal=2)
+
     def test_external_shear(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]

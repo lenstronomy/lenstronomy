@@ -17,10 +17,11 @@ from lenstronomy.Data.imaging_data import ImageData
 def text_description(ax, d, text, color='w', backgroundcolor='k',
                      flipped=False, font_size=15):
     if flipped:
-        ax.text(d - d / 40., d - d / 15., text, color=color, fontsize=font_size,
+        ax.text(d - d / 40., d - d * font_size / 15.**2, text, color=color,
+                fontsize=font_size,
                 backgroundcolor=backgroundcolor)
     else:
-        ax.text(d / 40., d - d / 15., text, color=color, fontsize=font_size,
+        ax.text(d / 40., d - d * font_size / 15.**2, text, color=color, fontsize=font_size,
                 backgroundcolor=backgroundcolor)
 
 
@@ -551,12 +552,13 @@ class ModelBandPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        scale_bar(ax, self._frame_size, dist=1, text='1"')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="w",
                          backgroundcolor='k', font_size=font_size)
 
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+                              arrow_size=self._arrow_size, font_size=font_size)
 
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -584,11 +586,13 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="w",
                          backgroundcolor='k', font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
+            coordinate_arrows(ax, self._frame_size, self._coords,
+                              color='w', arrow_size=self._arrow_size,
+                              font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -622,10 +626,10 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='w')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', color='w', font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
             coordinate_arrows(ax, self._frame_size, self._coords, color='w',
-                              arrow_size=self._arrow_size)
+                              arrow_size=self._arrow_size, font_size=font_size)
         text_description(ax, self._frame_size, text=text,
                          color="w", backgroundcolor='k', flipped=False,
                          font_size=font_size)
@@ -636,7 +640,7 @@ class ModelBandPlot(object):
         return ax
 
     def normalized_residual_plot(self, ax, v_min=-6, v_max=6, font_size=15, text="Normalized Residuals",
-                                 colorbar_label=r'(f${}_{\rm model}$ - f${r}_{\rm data}$)/$\sigma$',
+                                 colorbar_label=r'(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$',
                                  no_arrow=False, **kwargs):
         """
 
@@ -654,11 +658,13 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
+                  font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         if not no_arrow:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+                              arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -680,17 +686,21 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
+                  font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
-        coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
+        coordinate_arrows(ax, self._frame_size, self._coords,
+                          font_size=font_size,
+                          color='k',
+                          arrow_size=self._arrow_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
         return ax
 
-    def source(self, numPix, deltaPix, image_orientation=True):
+    def source(self, numPix, deltaPix, center=None, image_orientation=True):
         """
 
         :param numPix: number of pixels per axes
@@ -708,8 +718,10 @@ class ModelBandPlot(object):
         coords_source = Coordinates(transform_pix2angle=Mpix2coord,
                                     ra_at_xy_0=ra_at_xy_0,
                                     dec_at_xy_0=dec_at_xy_0)
-
-        if len(self._kwargs_source_partial) > 0:
+        if center is not None:
+            x_grid_source += center[0]
+            y_grid_source += center[1]
+        elif len(self._kwargs_source_partial) > 0:
             x_center = self._kwargs_source_partial[0]['center_x']
             y_center = self._kwargs_source_partial[0]['center_y']
             x_grid_source += x_center
@@ -720,9 +732,10 @@ class ModelBandPlot(object):
         source = util.array2image(source) * deltaPix ** 2
         return source, coords_source
 
-    def source_plot(self, ax, numPix, deltaPix_source, v_min=None,
+    def source_plot(self, ax, numPix, deltaPix_source, center=None, v_min=None,
                     v_max=None, with_caustics=False, caustic_color='yellow',
                     font_size=15, plot_scale='log',
+                    scale_size=0.1,
                     text="Reconstructed source",
                     colorbar_label=r'log$_{10}$ flux',
                     **kwargs):
@@ -731,6 +744,7 @@ class ModelBandPlot(object):
         :param ax:
         :param numPix:
         :param deltaPix_source:
+        :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min:
         :param v_max:
         :param with_caustics:
@@ -745,8 +759,9 @@ class ModelBandPlot(object):
         if v_max is None:
             v_max = self._v_max_default
         d_s = numPix * deltaPix_source
-        source, coords_source = self.source(numPix, deltaPix_source)
+        source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == 'log':
+            source[source < 10**(v_min)] = 10**(v_min) # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == 'linear':
             source_scale = source
@@ -768,15 +783,20 @@ class ModelBandPlot(object):
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list,
                           dec_caustic_list, color=caustic_color)
-        scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
+        scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size),
+                  color='w',
+                  flipped=False,
+                  font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w', arrow_size=self._arrow_size)
+            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+                              arrow_size=self._arrow_size, font_size=font_size)
         text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
         source_position_plot(ax, coords_source, self._kwargs_source_partial)
         return ax
 
-    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False):
+    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None,
+                              v_max=None, with_caustics=False, font_size=15):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
         x_center = self._kwargs_source_partial[0]['center_x']
@@ -796,13 +816,15 @@ class ModelBandPlot(object):
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'error variance', fontsize=15)
+        cb.set_label(r'error variance', fontsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
-        scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False)
-        coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w')
-        text_description(ax, d_s, text="Error map in source", color="w", backgroundcolor='k', flipped=False)
+        scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
+        coordinate_arrows(ax, d_s, coords_source,
+                          arrow_size=self._arrow_size, color='w', font_size=font_size)
+        text_description(ax, d_s, text="Error map in source", color="w",
+                         backgroundcolor='k', flipped=False, font_size=font_size)
         source_position_plot(ax, coords_source, self._kwargs_source_partial)
         return ax
 
@@ -830,9 +852,10 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
         if not no_arrow:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
+            coordinate_arrows(ax, self._frame_size, self._coords, color='k',
+                              arrow_size=self._arrow_size, font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
@@ -867,8 +890,9 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size)
+        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
+        coordinate_arrows(ax, self._frame_size, self._coords, color='k',
+                          arrow_size=self._arrow_size, font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
@@ -885,7 +909,10 @@ class ModelBandPlot(object):
         source_position_plot(ax, self._coords, self._kwargs_source_partial)
         return ax
 
-    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None, unconvolved=False, point_source_add=False, source_add=False, lens_light_add=False, **kwargs):
+    def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None,
+                           unconvolved=False, point_source_add=False,
+                           font_size=15,
+                           source_add=False, lens_light_add=False, **kwargs):
         """
 
         :param ax:
@@ -913,16 +940,21 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"')
+        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
         text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
+        coordinate_arrows(ax, self._frame_size, self._coords,
+                          arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ flux', fontsize=15)
+        cb.set_label(r'log$_{10}$ flux', fontsize=font_size)
         return ax
 
-    def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None, v_max=None, point_source_add=False, source_add=False, lens_light_add=False):
+    def subtract_from_data_plot(self, ax, text='Subtracted', v_min=None,
+                                v_max=None, point_source_add=False,
+                                source_add=False, lens_light_add=False,
+                                font_size=15
+                                ):
         model = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
                                           self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
@@ -935,13 +967,15 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"')
-        text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
-        coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size)
+        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
+        text_description(ax, self._frame_size, text=text, color="w",
+                         backgroundcolor='k', font_size=font_size)
+        coordinate_arrows(ax, self._frame_size, self._coords,
+                          arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
-        cb.set_label(r'log$_{10}$ flux', fontsize=15)
+        cb.set_label(r'log$_{10}$ flux', fontsize=font_size)
         return ax
 
     def plot_main(self, with_caustics=False):

@@ -219,6 +219,8 @@ class FittingSequence(object):
                         prior_type='uniform', width_scale=1, sigma_scale=1, 
                         output_basename='chain', remove_output_dir=True, 
                         dypolychord_dynamic_goal=0.8,
+                        polychord_settings={},
+                        dypolychord_seed_increment=200,
                         output_dir="nested_sampling_chains",
                         dynesty_bound='multi', dynesty_sample='auto'):
         """
@@ -232,6 +234,8 @@ class FittingSequence(object):
         :param output_basename: name of the folder in which the core MultiNest/PolyChord code will save output files
         :param remove_output_dir: if True, the above folder is removed after completion
         :param dypolychord_dynamic_goal: dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)
+        :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.
+        :param dypolychord_seed_increment: seed increment for dypolychord with MPI. Check dypolychord documentation for details.
         :param dynesty_bound: see https://dynesty.readthedocs.io for details
         :param dynesty_sample: see https://dynesty.readthedocs.io for details
         :return: list of output arguments : samples, mean inferred values, log-likelihood, log-evidence, error on log-evidence for each sample
@@ -252,6 +256,11 @@ class FittingSequence(object):
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
         elif sampler_type == 'DYPOLYCHORD':
+            if 'resume_dyn_run' in kwargs_run and \
+                    kwargs_run['resume_dyn_run'] is True:
+                resume_dyn_run = True
+            else:
+                resume_dyn_run = False
             sampler = DyPolyChordSampler(self.likelihoodModule,
                                          prior_type=prior_type,
                                          prior_means=mean_start,
@@ -260,7 +269,9 @@ class FittingSequence(object):
                                          sigma_scale=sigma_scale,
                                          output_dir=output_dir,
                                          output_basename=output_basename,
+                                         polychord_settings=polychord_settings,
                                          remove_output_dir=remove_output_dir,
+                                         resume_dyn_run=resume_dyn_run,
                                          use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object \
                 = sampler.run(dypolychord_dynamic_goal, kwargs_run)

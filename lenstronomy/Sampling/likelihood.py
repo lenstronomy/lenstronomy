@@ -24,8 +24,9 @@ class LikelihoodModule(object):
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
-                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
-                 prior_lens_light=[], prior_ps=[], prior_cosmo=[], condition_definition=None):
+                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_extinction=[],
+                 prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
+                 prior_special_kde=[], prior_extinction_kde=[], condition_definition=None):
         """
         initializing class
 
@@ -50,7 +51,7 @@ class LikelihoodModule(object):
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
         linear amplitude priors when computing the marginalization term.
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
-        images predicted than indicated in max_num_images, a punishment occures
+        images predicted than indicated in max_num_images, a punishment occurs
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
@@ -69,7 +70,9 @@ class LikelihoodModule(object):
         lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_reator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
-        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_cosmo)
+        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,
+                                                 prior_lens_kde, prior_source_kde, prior_lens_light_kde, prior_ps_kde,
+                                                 prior_special_kde, prior_extinction_kde)
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,

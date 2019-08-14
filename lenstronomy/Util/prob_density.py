@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
-import scipy.stats as stats
 from scipy.interpolate import interp1d
+from scipy import stats
 import numpy as np
 
 
@@ -115,6 +115,29 @@ class Approx(object):
         :return:
         """
         return self.draw(n=1)
+
+
+class KDE1D(object):
+    """
+    class that allows to compute likelihoods based on a 1-d posterior sample
+    """
+    def __init__(self, values):
+        """
+
+        :param values: 1d numpy array of points representing a PDF
+        """
+        self._points = values
+        self._kernel = stats.gaussian_kde(values)
+
+    def likelihood(self, x):
+        """
+
+        :param x: position where to evaluate the density
+        :return: likelihood given the sample distribution
+        """
+
+        dens = self._kernel.evaluate(points=x)
+        return dens
 
 
 def approx_cdf_1d(x_array, pdf_array):

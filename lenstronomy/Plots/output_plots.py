@@ -241,7 +241,7 @@ class ModelPlot(object):
     class that manages the summary plots of a lens model
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
-                 bands_compute=None, multi_band_type='multi-linear', band_index=0):
+                 bands_compute=None, multi_band_type='multi-linear', band_index=0, source_marg=False, linear_prior=None):
         """
 
         :param kwargs_options:
@@ -259,10 +259,12 @@ class ModelPlot(object):
                                                        band_index=band_index)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
-        #self._kwargs_lens = kwargs_lens
-        #self._kwargs_source = kwargs_source
-        #self._kwargs_lens_light = kwargs_lens_light
-        #self._kwargs_else = kwargs_ps
+        logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
+
+        n_data = self._imageModel.num_data_evaluate
+        if n_data > 0:
+            print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+
         self._band_plot_list = []
         self._index_list = []
         index = 0
@@ -461,7 +463,6 @@ class ModelPlot(object):
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(**kwargs)
 
-
     def source(self, band_index=0, **kwargs):
         """
 
@@ -489,7 +490,7 @@ class ModelBandPlot(object):
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
         self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)
-        print("reduced chi^2 = ", self._reduced_x2)
+        print("reduced chi^2 of data ", band_index, "= ", self._reduced_x2)
 
         self._model = model
         self._cov_param = cov_param

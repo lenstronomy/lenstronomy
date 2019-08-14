@@ -110,8 +110,9 @@ class NIE(object):
         :param q:
         :return:
         """
-        #theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) /(1+(1-q)/2)
-        return theta_E
+        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) / (1+(1-q)/2.)
+        return theta_E_new
+        #return theta_E
 
 
 class NIE_simple(object):

@@ -34,7 +34,7 @@ class Param(object):
     joint parameter between lens model and lens light model
 
     'joint_source_with_point_source': list [[i_point_source, k_source], [...], ...],
-    joint position parameter between lens model and lens light model
+    joint position parameter between lens model and source light model
 
     'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
     joint position parameter between lens model and lens light model

@@ -282,24 +282,6 @@ class PointSource(object):
                     return False
         return True
 
-    def re_normalize_flux(self, kwargs_ps, norm_factor):
-        """
-        renormalizes the point source amplitude keywords by a factor
-
-        :param kwargs_ps_updated:
-        :param norm_factor:
-        :return:
-        """
-        for i, model in enumerate(self.point_source_type_list):
-            if model == 'UNLENSED':
-                kwargs_ps[i]['point_amp'] *= norm_factor
-            elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification_list[i] is True:
-                    kwargs_ps[i]['source_amp'] *= norm_factor
-                else:
-                    kwargs_ps[i]['point_amp'] *= norm_factor
-        return kwargs_ps
-
     def set_amplitudes(self, amp_list, kwargs_ps):
         """
 

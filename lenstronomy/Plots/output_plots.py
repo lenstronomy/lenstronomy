@@ -240,7 +240,7 @@ class ModelPlot(object):
     class that manages the summary plots of a lens model
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
-                 bands_compute=None, multi_band_type='multi-linear', band_index=0):
+                 bands_compute=None, multi_band_type='multi-linear', band_index=0, source_marg=False, linear_prior=None):
         """
 
         :param kwargs_options:
@@ -258,7 +258,7 @@ class ModelPlot(object):
                                                        band_index=band_index)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
-        logL = self._imageModel.likelihood_data_given_model(**kwargs_params)
+        logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
@@ -461,7 +461,6 @@ class ModelPlot(object):
         """
         plot_band = self._select_band(band_index)
         return plot_band.plot_extinction_map(**kwargs)
-
 
     def source(self, band_index=0, **kwargs):
         """

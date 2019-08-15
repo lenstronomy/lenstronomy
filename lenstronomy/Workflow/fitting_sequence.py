@@ -291,7 +291,7 @@ class FittingSequence(object):
         else:
             raise ValueError('Sampler type %s not supported.' % sampler_type)
         # update current best fit values
-        self._update_state(means)
+        self._update_state(samples[-1])
 
         output = [sampler_type, samples, sampler.param_names, logL, 
                   logZ, logZ_err, results_object]

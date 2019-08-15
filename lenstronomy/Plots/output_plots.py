@@ -35,8 +35,7 @@ def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False)
     else:
         p0 = d / 15.
         ax.plot([p0, p0 + dist], [p0, p0], linewidth=2, color=color)
-        ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=font_size, \
-                                                    color=color, ha='center')
+        ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=font_size, color=color, ha='center')
 
 
 def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
@@ -220,7 +219,7 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     return ax
 
 
-def source_position_plot(ax, coords, kwargs_source):
+def source_position_plot(ax, coords, ra_pos, dec_pos):
     """
 
     :param ax:
@@ -229,10 +228,9 @@ def source_position_plot(ax, coords, kwargs_source):
     :return:
     """
     deltaPix = coords.pixel_width
-    if len(kwargs_source) > 0:
-        if 'center_x' in kwargs_source[0]:
-            x_source, y_source = coords.map_coord2pix(kwargs_source[0]['center_x'], kwargs_source[0]['center_y'])
-            ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+    if len(ra_pos) > 0:
+        x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
+        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax
 
 
@@ -737,7 +735,7 @@ class ModelBandPlot(object):
                     font_size=15, plot_scale='log',
                     scale_size=0.1,
                     text="Reconstructed source",
-                    colorbar_label=r'log$_{10}$ flux',
+                    colorbar_label=r'log$_{10}$ flux', point_source_position=True,
                     **kwargs):
         """
 
@@ -792,11 +790,13 @@ class ModelBandPlot(object):
                               arrow_size=self._arrow_size, font_size=font_size)
         text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
-        source_position_plot(ax, coords_source, self._kwargs_source_partial)
+        if point_source_position is True:
+            ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
     def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None,
-                              v_max=None, with_caustics=False, font_size=15):
+                              v_max=None, with_caustics=False, font_size=15, point_source_position=True):
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
         x_center = self._kwargs_source_partial[0]['center_x']
@@ -825,7 +825,9 @@ class ModelBandPlot(object):
                           arrow_size=self._arrow_size, color='w', font_size=font_size)
         text_description(ax, d_s, text="Error map in source", color="w",
                          backgroundcolor='k', flipped=False, font_size=font_size)
-        source_position_plot(ax, coords_source, self._kwargs_source_partial)
+        if point_source_position is True:
+            ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
     def magnification_plot(self, ax, v_min=-10, v_max=10,
@@ -864,7 +866,6 @@ class ModelBandPlot(object):
         cb.set_label(colorbar_label, fontsize=font_size)
         ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
-        source_position_plot(ax, self._coords, self._kwargs_source_partial)
         return ax
 
     def deflection_plot(self, ax, v_min=None, v_max=None, axis=0,
@@ -906,7 +907,6 @@ class ModelBandPlot(object):
             plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
-        source_position_plot(ax, self._coords, self._kwargs_source_partial)
         return ax
 
     def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None,

@@ -20,7 +20,7 @@ class LikelihoodModule(object):
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
     def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True, check_solver=False,
-                 astrometric_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
+                 astrometric_likelihood=False, image_position_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
@@ -61,7 +61,7 @@ class LikelihoodModule(object):
         :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
         and returns a logL (punishing) value.
         """
-        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors = self._unpack_data(**kwargs_data_joint)
+        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
 
@@ -86,6 +86,8 @@ class LikelihoodModule(object):
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
                                                     flux_min=flux_min)
         self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
+                                                       image_position_likelihood=image_position_likelihood,
+                                                       ra_image_list=ra_image_list, dec_image_list=dec_image_list,
                                                        position_uncertainty=position_uncertainty,
                                                        check_solver=check_solver, solver_tolerance=solver_tolerance,
                                                        force_no_add_image=force_no_add_image,
@@ -101,7 +103,7 @@ class LikelihoodModule(object):
         self._condition_definition = condition_definition
 
     def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
-                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None):
+                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[]):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
@@ -112,7 +114,7 @@ class LikelihoodModule(object):
         :param flux_ratio_errors: error in flux ratio measurement
         :return:
         """
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
 
     def _reset_point_source_cache(self, bool=True):
         self.PointSource.delete_lens_model_cache()

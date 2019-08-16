@@ -31,6 +31,8 @@ class PositionLikelihood(object):
         the Param() class
         """
         self._pointSource = point_source_class
+        # TODO replace with public function of ray_shooting
+        self._lensModel = point_source_class._lensModel
         self._astrometric_likelihood = astrometric_likelihood
         self._position_sigma = position_uncertainty
         self._check_solver = check_solver
@@ -89,8 +91,7 @@ class PositionLikelihood(object):
         """
         if 'ra_image' in kwargs_ps[0]:
             ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            source_x, source_y = self._pointSource._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
-            #TODO replace with public function of ray_shooting
+            source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
             dist = np.sqrt(np.sum((source_x - source_x[0]) ** 2 + (source_y - source_y[0]) ** 2))
             if dist > tolerance:
                 if verbose is True:
@@ -159,6 +160,8 @@ class PositionLikelihood(object):
         """
         if 'ra_image' not in kwargs_ps[0]:
             return 0
+        source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
+        #image_x
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
         #TODO

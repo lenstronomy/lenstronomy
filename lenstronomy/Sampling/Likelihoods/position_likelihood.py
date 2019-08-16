@@ -5,8 +5,9 @@ class PositionLikelihood(object):
     """
     likelihood of positions of multiply imaged point sources
     """
-    def __init__(self, point_source_class, param_class, astrometric_likelihood, position_uncertainty, check_solver,
-                 solver_tolerance, force_no_add_image, restrict_image_number, max_num_images):
+    def __init__(self, point_source_class, param_class, astrometric_likelihood=False, position_uncertainty=0.005,
+                 source_position_likelihood=False, check_solver=False, solver_tolerance=0.001, force_no_add_image=False,
+                 restrict_image_number=False, max_num_images=None):
         """
 
         :param point_source_class: Instance of PointSource() class
@@ -14,6 +15,8 @@ class PositionLikelihood(object):
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
         image positions
         :param position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian)
+        :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
+        relative errors in respect ot the position_uncertainties in the image plane
         :param check_solver: bool, if True, checks whether multiple images are a solution of the same source
         :param solver_tolerance: tolerance level (in arc seconds in the source plane) of the different images
         :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled
@@ -31,6 +34,7 @@ class PositionLikelihood(object):
         self._solver_tolerance = solver_tolerance
         self._force_no_add_image = force_no_add_image
         self._restrict_number_images = restrict_image_number
+        self._source_position_likelihood = source_position_likelihood
         if max_num_images is None:
             max_num_images = self._param.num_point_source_images
         self._max_num_images = max_num_images
@@ -57,6 +61,8 @@ class PositionLikelihood(object):
                 logL -= 10**10
                 if verbose is True:
                     print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
+        if self._source_position_likelihood is True:
+            logL += self.source_position_likelihood(kwargs_lens, kwargs_ps, kwargs_cosmo)
         return logL
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, kwargs_cosmo, tolerance, verbose=False):
@@ -86,23 +92,42 @@ class PositionLikelihood(object):
                 return True
         return False
 
-    def astrometric_likelihood(self, kwargs_ps, kwargs_cosmo, sigma):
+    def astrometric_likelihood(self, kwargs_ps, kwargs_special, sigma):
         """
         evaluates the astrometric uncertainty of the model plotted point sources (only available for 'LENSED_POSITION'
         point source model) and predicted image position by the lens model including an astrometric correction term.
 
         :param kwargs_ps: point source model kwargs list
-        :param kwargs_cosmo: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
+        :param kwargs_special: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
         :param sigma: 1-sigma Gaussian uncertainty in the astrometry
         :return: log likelihood of the astrometirc correction between predicted image positions and model placement of the point sources
         """
         if 'ra_image' not in kwargs_ps[0]:
             return 0
+        if 'delta_x_image' in kwargs_special:
+            delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+            dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
+            logL = -np.sum(dist)
+            if np.isnan(logL) is True:
+                return -10 ** 15
+            return logL
+        else:
+            return 0
+        #x_image = kwargs_ps[0]['ra_image']
+        #y_image = kwargs_ps[0]['dec_image']
+        #x_pos, y_pos = self._param.real_image_positions(x_image, y_image, kwargs_special)
+
+    def source_position_likelihood(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
+        """
+
+        :param kwargs_lens:
+        :param kwargs_ps:
+        :param kwargs_cosmo:
+        :return:
+        """
+        if 'ra_image' not in kwargs_ps[0]:
+            return 0
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
-        x_pos, y_pos = self._param.real_image_positions(x_image, y_image, kwargs_cosmo)
-        dist = ((x_pos - x_image)**2 + (y_pos - y_image)**2)/sigma**2/2
-        logL = -np.sum(dist)
-        if np.isnan(logL) is True:
-            return -10 ** 15
-        return logL
+        #TODO
+        return 0

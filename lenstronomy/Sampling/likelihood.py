@@ -155,7 +155,8 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
                                                                             kwargs_lens=kwargs_lens)
-            x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_special)
+            #x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_special)
+            x_pos, y_pos = ra_image_list[0], dec_image_list[0]
             logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_special)
             logL += logL_flux_ratios
             if verbose is True:

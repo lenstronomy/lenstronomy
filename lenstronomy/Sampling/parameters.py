@@ -208,7 +208,7 @@ class Param(object):
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
+            #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,
@@ -322,7 +322,7 @@ class Param(object):
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
-                x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
+                #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
                                                                             index_source=k_source)
             for param_name in param_list:
@@ -428,7 +428,7 @@ class Param(object):
         """
         if self._solver is True:
             image_x, image_y = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_special)
+            #image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_special)
             dist = self._solver_module.check_solver(image_x, image_y, kwargs_lens)
             return np.max(dist)
         else:
@@ -443,18 +443,18 @@ class Param(object):
         else:
             return False
 
-    def real_image_positions(self, x, y, kwargs_special):
-        """
+    #def real_image_positions(self, x, y, kwargs_special):
+    #    """
 
-        :param kwargs_ps: point source kwargs
-        :param kwargs_special: special kwargs (or other kwargs)
-        :return: position where time delays are evaluated and solver is solved for
-        """
-        if self._point_source_offset is True:
-            delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
-            return x + delta_x, y + delta_y
-        else:
-            return x, y
+     #   :param kwargs_ps: point source kwargs
+     #   :param kwargs_special: special kwargs (or other kwargs)
+     #   :return: position where time delays are evaluated and solver is solved for
+     #   """
+     #   if self._point_source_offset is True:
+     #       delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+     #       return x + delta_x, y + delta_y
+     #   else:
+     #       return x, y
 
     def print_setting(self):
         """

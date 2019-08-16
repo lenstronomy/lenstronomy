@@ -202,7 +202,7 @@ class PointSource(object):
             amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
-    def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False, k=None):
+    def linear_response_set(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, with_amp=False, k=None):
         """
 
         :param kwargs_ps:

@@ -69,7 +69,7 @@ class ImageLinearFit(ImageModel):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
-        C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps)
+        C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
         _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
@@ -100,21 +100,21 @@ class ImageLinearFit(ImageModel):
         d = self.image2array_masked(self.Data.data)
         return d
 
-    def error_response(self, kwargs_lens, kwargs_ps):
+    def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        return self._error_response(kwargs_lens, kwargs_ps)
+        return self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
 
-    def _error_response(self, kwargs_lens, kwargs_ps):
+    def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps)
+        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
         return C_D_response, psf_model_error
 
@@ -219,7 +219,7 @@ class ImageLinearFit(ImageModel):
             n += 1
         # response of point sources
         for i in range(0, n_points):
-            image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
+            image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i], kwargs_special=kwargs_special)
             A[n, :] = self.image2array_masked(image)
             n += 1
         return np.nan_to_num(A)
@@ -296,7 +296,7 @@ class ImageLinearFit(ImageModel):
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
 
-    def _error_map_psf(self, kwargs_lens, kwargs_ps):
+    def _error_map_psf(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
 
         :param kwargs_lens:
@@ -309,7 +309,7 @@ class ImageLinearFit(ImageModel):
                 if bool is True:
                     ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, k=k)
                     for i in range(0, n_points):
-                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data)
+                        error_map_add = self.ImageNumerics.psf_error_map(ra_pos[i], dec_pos[i], amp[i], self.Data.data, kwargs_special=kwargs_special)
                         error_map += error_map_add
         return error_map
 

@@ -419,7 +419,7 @@ class Param(object):
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         return kwargs_fixed_update
 
-    def check_solver(self, kwargs_lens, kwargs_ps, kwargs_special={}):
+    def check_solver(self, kwargs_lens, kwargs_ps):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
@@ -428,7 +428,6 @@ class Param(object):
         """
         if self._solver is True:
             image_x, image_y = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            #image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_special)
             dist = self._solver_module.check_solver(image_x, image_y, kwargs_lens)
             return np.max(dist)
         else:

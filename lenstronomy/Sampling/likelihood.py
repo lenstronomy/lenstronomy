@@ -85,9 +85,12 @@ class LikelihoodModule(object):
                                                     source_marg=source_marg, linear_prior=linear_prior,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
                                                     flux_min=flux_min)
-        self._position_likelihood = PositionLikelihood(point_source_class, param_class, astrometric_likelihood,
-                                                       position_uncertainty, check_solver, solver_tolerance,
-                                                       force_no_add_image, restrict_image_number, max_num_images)
+        self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
+                                                       position_uncertainty=position_uncertainty,
+                                                       check_solver=check_solver, solver_tolerance=solver_tolerance,
+                                                       force_no_add_image=force_no_add_image,
+                                                       restrict_image_number=restrict_image_number,
+                                                       max_num_images=max_num_images)
         self._flux_ratio_likelihood = flux_ratio_likelihood
         self._kwargs_flux_compute = kwargs_flux_compute
         if self._flux_ratio_likelihood is True:

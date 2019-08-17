@@ -181,7 +181,10 @@ class PositionLikelihood(object):
             Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
             Sigma_beta = image2source_covariance(A, Sigma_theta)
             delta = np.array([source_x - x_source[i], source_y - y_source[i]])
-            Sigma_inv = inv(Sigma_beta)
+            try:
+                Sigma_inv = inv(Sigma_beta)
+            except:
+                return -10**15
             chi2 = delta.T.dot(Sigma_inv.dot(delta))[0][0]
             logL -= chi2/2
         return logL

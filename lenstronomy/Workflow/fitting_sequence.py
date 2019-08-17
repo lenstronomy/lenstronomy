@@ -162,7 +162,6 @@ class FittingSequence(object):
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None and re_use_samples is True:
-            print("test that you are here!")
             num_samples, num_param_prev = np.shape(init_samples)
             print(num_samples, num_param_prev, num_param, 'shape of init_sample')
             if num_param_prev == num_param:

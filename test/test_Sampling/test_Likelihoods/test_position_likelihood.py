@@ -1,5 +1,7 @@
 import pytest
 import numpy.testing as npt
+import numpy as np
+import copy
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
@@ -19,7 +21,7 @@ class TestPositionLikelihood(object):
         point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], lensModel=lensModel)
         self.likelihood = PositionLikelihood(point_source_class, position_uncertainty=0.005, astrometric_likelihood=True,
                  image_position_likelihood=True, ra_image_list=[x_pos], dec_image_list=[y_pos],
-                 source_position_likelihood=False, check_solver=False, solver_tolerance=0.001, force_no_add_image=False,
+                 source_position_likelihood=True, check_solver=False, solver_tolerance=0.001, force_no_add_image=False,
                  restrict_image_number=False, max_num_images=None)
         self._x_pos, self._y_pos = x_pos, y_pos
 
@@ -75,6 +77,16 @@ class TestPositionLikelihood(object):
         kwargs_special = {'delta_x_image': [0, 0, 0, 0.], 'delta_y_image': [0, 0, 0, 0.]}
         logL = self.likelihood.logL(self._kwargs_lens, kwargs_ps, kwargs_special, verbose=True)
         npt.assert_almost_equal(logL, 0 , decimal=9)
+
+    def test_source_position_likelihood(self):
+        kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, sigma=0.01)
+        npt.assert_almost_equal(logL, 0, decimal=9)
+        x_pos = copy.deepcopy(self._x_pos)
+        x_pos[0] += 0.01
+        kwargs_ps = [{'ra_image': x_pos, 'dec_image': self._y_pos}]
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, sigma=0.01)
+        npt.assert_almost_equal(logL, -0.33011713058631054, decimal=9)
 
 
 if __name__ == '__main__':

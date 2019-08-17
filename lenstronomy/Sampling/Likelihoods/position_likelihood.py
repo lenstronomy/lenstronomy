@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.linalg import inv
 
 
 class PositionLikelihood(object):
@@ -77,9 +78,14 @@ class PositionLikelihood(object):
                 if verbose is True:
                     print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
         if self._source_position_likelihood is True:
-            logL += self.source_position_likelihood(kwargs_lens, kwargs_ps, kwargs_special)
+            logL_source_pos = self.source_position_likelihood(kwargs_lens, kwargs_ps, sigma=self._position_sigma)
+            logL += logL_source_pos
+            if verbose is True:
+                print('source position likelihood %s' % logL_source_pos)
         if self._image_position_likelihood is True:
-            logL += self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, sigma=self._position_sigma)
+            logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, sigma=self._position_sigma)
+            if verbose is True:
+                print('image position likelihood %s' % logL_image_pos)
         return logL
 
     def solver_penalty(self, kwargs_lens, kwargs_ps, tolerance, verbose=False):
@@ -150,19 +156,43 @@ class PositionLikelihood(object):
             logL += -np.sum((ra_image_list[i] - self._ra_image_list[i])**2 / sigma**2 / 2)
         return logL
 
-    def source_position_likelihood(self, kwargs_lens, kwargs_ps, kwargs_special):
+    def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma):
         """
+        computes a likelihood/punishing factor of how well the source positions of multiple images match.
+        The likelihood level is computed in respect of a displacement in the image plane and transposed through the
+        Hessian into the source plane
 
         :param kwargs_lens:
         :param kwargs_ps:
-        :param kwargs_special:
-        :return:
+        :return: log likelihood of the model reproducing the correct image positions given an image position uncertainty
         """
         if 'ra_image' not in kwargs_ps[0]:
             return 0
+        logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
-        #image_x
+
         x_image = kwargs_ps[0]['ra_image']
         y_image = kwargs_ps[0]['dec_image']
-        #TODO
-        return 0
+        # calculating the individual source positions from the image positions
+        x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
+        for i in range(len(x_image)):
+            f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
+            A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
+            Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
+            Sigma_beta = image2source_covariance(A, Sigma_theta)
+            delta = np.array([source_x - x_source[i], source_y - y_source[i]])
+            Sigma_inv = inv(Sigma_beta)
+            chi2 = delta.T.dot(Sigma_inv.dot(delta))[0][0]
+            logL -= chi2/2
+        return logL
+
+
+# Equation (13) in Birrer & Treu 2019
+def image2source_covariance(A, Sigma_theta):
+    """
+    computes error covariance in the source plane
+    A: Hessian lensing matrix
+    Sigma_theta: image plane covariance matrix
+    """
+    ATSigma = np.matmul(A.T, Sigma_theta)
+    return np.matmul(ATSigma, A)

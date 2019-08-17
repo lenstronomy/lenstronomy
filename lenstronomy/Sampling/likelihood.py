@@ -20,7 +20,7 @@ class LikelihoodModule(object):
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
     def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True, check_solver=False,
-                 astrometric_likelihood=False, image_position_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
+                 astrometric_likelihood=False, image_position_likelihood=False, source_position_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
                  solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
@@ -34,6 +34,8 @@ class LikelihoodModule(object):
         :param param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
         conventions of the imSim_class
         :param image_likelihood: bool, option to compute the imaging likelihood
+        :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
+        relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
         :param check_solver: bool, option to check whether point source position solver finds a solution to match all
          the image positions in the same source plane coordinate
@@ -87,6 +89,7 @@ class LikelihoodModule(object):
                                                     flux_min=flux_min)
         self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
                                                        image_position_likelihood=image_position_likelihood,
+                                                       source_position_likelihood=source_position_likelihood,
                                                        ra_image_list=ra_image_list, dec_image_list=dec_image_list,
                                                        position_uncertainty=position_uncertainty,
                                                        check_solver=check_solver, solver_tolerance=solver_tolerance,

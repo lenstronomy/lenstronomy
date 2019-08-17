@@ -195,7 +195,7 @@ def image2source_covariance(A, Sigma_theta):
     """
     computes error covariance in the source plane
     A: Hessian lensing matrix
-    Sigma_theta: image plane covariance matrix
+    Sigma_theta: image plane covariance matrix of uncertainties
     """
     ATSigma = np.matmul(A.T, Sigma_theta)
     return np.matmul(ATSigma, A)

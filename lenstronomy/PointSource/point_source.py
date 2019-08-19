@@ -305,4 +305,3 @@ class PointSource(object):
                 else:
                     kwargs_list[i]['point_amp'] = amp
         return kwargs_list
-

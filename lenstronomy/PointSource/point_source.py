@@ -59,6 +59,7 @@ class PointSource(object):
             else:
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center, self._magnification_limit = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center, magnification_limit
+        self._save_cache = save_cache
 
     def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
@@ -212,8 +213,8 @@ class PointSource(object):
         ra_pos = []
         dec_pos = []
         amp = []
+        self.set_save_cache(True)
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
-
         for i, model in enumerate(self._point_source_list):
                 if i == k or k is None:
                     x_pos = x_image_list[i]
@@ -222,6 +223,7 @@ class PointSource(object):
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
                         if with_amp:
+                            print('test with_amp')
                             mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
@@ -237,6 +239,9 @@ class PointSource(object):
                             dec_pos.append([y_pos[j]])
                             amp.append([mag[j]])
         n = len(ra_pos)
+        if self._save_cache is False:
+            self.delete_lens_model_cache()
+            self.set_save_cache(self._save_cache)
         return ra_pos, dec_pos, amp, n
 
     def update_linear(self, param, i, kwargs_ps, kwargs_lens):

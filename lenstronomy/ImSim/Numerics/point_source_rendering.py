@@ -58,7 +58,7 @@ class PointSourceRendering(object):
         subgrid2d = np.zeros((self._nx*subgrid, self._ny*subgrid))
         # add_layer2image
         if len(x_pos) > len(amp):
-            raise ValueError('there are %s images appearing but only %s amplitudes provided!')
+            raise ValueError('there are %s images appearing but only %s amplitudes provided!' % (len(x_pos), len(amp)))
         for i in range(len(x_pos)):
             subgrid2d = image_util.add_layer2image(subgrid2d, x_pos_subgird[i], y_pos_subgrid[i], amp[i] * kernel_point_source_subgrid)
         # re-size grid to data resolution

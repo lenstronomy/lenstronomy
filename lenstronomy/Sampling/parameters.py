@@ -42,6 +42,9 @@ class Param(object):
     'joint_extinction_with_lens_light': list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameters between the lens surface brightness and the optical depth models
 
+    'joint_lens_with_source_light': [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+    joint parameter between lens model and source light model. Samples light model parameter only.
+
     hierarchy is as follows:
     1. Point source parameters are inferred
     2. Lens light joint parameters are set
@@ -62,7 +65,7 @@ class Param(object):
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
-                 mass_scaling_list=None, point_source_offset=False,
+                 joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0):
         """
@@ -105,6 +108,7 @@ class Param(object):
         self._joint_source_with_source = joint_source_with_source
 
         self._joint_lens_with_light = joint_lens_with_light
+        self._joint_lens_with_source_light = joint_lens_with_source_light
         self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
         for param_list in self._joint_source_with_point_source:
             if len(param_list) == 2:
@@ -147,6 +151,7 @@ class Param(object):
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_lens)
+        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_source_light)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light, self._joint_lens_light_with_lens_light)
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source, self._joint_source_with_source)
         kwargs_fixed_ps_updated = copy.deepcopy(kwargs_fixed_ps)
@@ -177,6 +182,12 @@ class Param(object):
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
                                           source_size=source_size, num_tau0=num_tau0)
+        for lens_source_joint in self._joint_lens_with_source_light:
+            i_source = lens_source_joint[0]
+            if i_source in self._image_plane_source_list:
+                raise ValueError("linking a source light model with a lens model AND simultaneously parameterizing the"
+                                 " source position in the image plane is not valid!")
+
 
     @property
     def num_point_source_images(self):
@@ -200,6 +211,7 @@ class Param(object):
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
+        kwargs_lens = self._update_joint_param(kwargs_source, kwargs_lens, self._joint_lens_with_source_light)
         # update extinction model with lens light model
         kwargs_extinction = self._update_joint_param(kwargs_lens_light, kwargs_extinction, self._joint_extinction_with_lens_light)
         # update lens model joint parameters (including scaling)

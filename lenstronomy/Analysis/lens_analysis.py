@@ -19,13 +19,14 @@ class LensAnalysis(object):
     """
     def __init__(self, kwargs_model):
         self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
-        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
+
         self.LensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
                                    z_source=kwargs_model.get('z_source', None),
                                    lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
                                    multi_plane=kwargs_model.get('multi_plane', False))
+        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
         self._lensModelExtensions = LensModelExtensions(self.LensModel)
-        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []))
+        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []), lensModel=self.LensModel)
         self.kwargs_model = kwargs_model
         self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
 

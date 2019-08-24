@@ -45,6 +45,12 @@ class TestCorrelation(object):
         r_half = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0)
         assert r_half == -1
 
+    def test_bic_model(self):
+        bic=analysis_util.bic_model(0,np.e,1)
+        assert bic == 1
+
+
+
 
 if __name__ == '__main__':
     pytest.main()

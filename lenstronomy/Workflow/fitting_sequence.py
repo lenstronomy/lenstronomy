@@ -9,7 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-
+import lenstronomy.Util.analysis_util as analysis_util
 
 class FittingSequence(object):
     """
@@ -116,6 +116,22 @@ class FittingSequence(object):
         likelihoodModule = self.likelihoodModule
         logL, _ = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
         return logL
+
+
+    @property
+    def bic(self):
+        """
+        returns the bayesian information criterion of the model.
+        :return: bic value, float
+        """
+        num_data = self.likelihoodModule.num_data
+        num_param_nonlinear = self.param_class.num_param()[0]
+        num_param_linear = self.param_class.num_param_linear()
+        num_param = num_param_nonlinear + num_param_linear
+        bic = analysis_util.bic_model(self.best_fit_likelihood,num_data,num_param)
+        return bic
+
+
 
     @property
     def param_class(self):

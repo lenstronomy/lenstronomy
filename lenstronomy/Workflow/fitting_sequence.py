@@ -129,8 +129,6 @@ class FittingSequence(object):
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
         bic = analysis_util.bic_model(self.best_fit_likelihood,num_data,num_param)
-        print "number of the free model parameters:", num_param
-        print "number of the data points:",num_data
         return bic
 
 

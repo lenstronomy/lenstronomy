@@ -144,6 +144,8 @@ class TestFittingSequence(object):
         print(logL, 'test')
         #print(lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp)
         npt.assert_almost_equal(logL, -10000000061.792593, decimal=-4)
+        bic = fittingSequence.bic
+        npt.assert_almost_equal(bic, 20000000220.29376, decimal=-4)
 
         n_p = 2
         n_i = 2

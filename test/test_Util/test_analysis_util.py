@@ -39,17 +39,10 @@ class TestCorrelation(object):
         npt.assert_almost_equal(e1_out, e1, decimal=3)
         npt.assert_almost_equal(e2_out, e2, decimal=3)
 
-    def test_half_light_radius(self):
-        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
-        lens_light = np.zeros_like(x_grid)
-        r_half = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0)
-        assert r_half == -1
 
-    def test_half_light_radius(self):
-        x_grid, y_grid = util.make_grid(numPix=10, deltapix=1)
-        lens_light = np.zeros_like(x_grid)
-        r_half = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0)
-        assert r_half == -1
+    def test_bic_model(self):
+        bic=analysis_util.bic_model(0,np.e,1)
+        assert bic == 1
 
 
 

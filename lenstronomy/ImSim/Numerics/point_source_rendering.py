@@ -19,7 +19,27 @@ class PointSourceRendering(object):
         self._supersampling_factor = supersampling_factor
         self._psf = psf
 
-    def point_source_rendering(self, ra_pos, dec_pos, amp):
+    def _displace_astrometry(self, x_pos, y_pos, kwargs_special=None):
+        """
+        displaces point sources by shifts specified in kwargs_special
+
+        :param x_pos: list of point source positions according to point source model list
+        :param y_pos: list of point source positions according to point source model list
+        :param kwargs_special: keyword arguments, can contain 'delta_x_image' and 'delta_y_image'
+        :return: shifted image positions in same format as input
+        """
+        if kwargs_special is not None:
+            if 'delta_x_image' in kwargs_special:
+                delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+                delta_x_new = np.zeros_like(x_pos)
+                delta_x_new[0:len(delta_x)] = delta_x
+                delta_y_new = np.zeros_like(y_pos)
+                delta_y_new[0:len(delta_y)] = delta_y
+                x_pos = x_pos + delta_x_new
+                y_pos = y_pos + delta_y_new
+        return x_pos, y_pos
+
+    def point_source_rendering(self, ra_pos, dec_pos, amp, kwargs_special=None):
         """
 
         :param ra_pos:
@@ -27,6 +47,7 @@ class PointSourceRendering(object):
         :param amp:
         :return:
         """
+        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
         subgrid = self._supersampling_factor
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         # translate coordinates to higher resolution grid
@@ -36,6 +57,8 @@ class PointSourceRendering(object):
         # initialize grid with higher resolution
         subgrid2d = np.zeros((self._nx*subgrid, self._ny*subgrid))
         # add_layer2image
+        if len(x_pos) > len(amp):
+            raise ValueError('there are %s images appearing but only %s amplitudes provided!' % (len(x_pos), len(amp)))
         for i in range(len(x_pos)):
             subgrid2d = image_util.add_layer2image(subgrid2d, x_pos_subgird[i], y_pos_subgrid[i], amp[i] * kernel_point_source_subgrid)
         # re-size grid to data resolution
@@ -48,7 +71,8 @@ class PointSourceRendering(object):
             self._kernel_supersampled_instance = self._psf.kernel_point_source_supersampled(self._supersampling_factor, updata_cache=False)
         return self._kernel_supersampled_instance
 
-    def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
+    def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False, kwargs_special=None):
+        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._psf.kernel_point_source
         psf_error_map = self._psf.psf_error_map

@@ -91,6 +91,9 @@ class PSF(object):
             if self.psf_type == 'GAUSSIAN':
                 kernel_numPix = self._truncation / self._pixel_size * supersampling_factor
                 kernel_numPix = int(round(kernel_numPix))
+                if kernel_numPix > 10000:
+                    raise ValueError('The pixelized Gaussian kernel has a grid of %s pixels with a truncation at '
+                                     '%s times the sigma of the Gaussian, exceeding the limit allowed.' % (kernel_numPix, self._truncation))
                 if kernel_numPix % 2 == 0:
                     kernel_numPix += 1
                 kernel_point_source_supersampled = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size / supersampling_factor, self._fwhm)

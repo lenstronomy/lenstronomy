@@ -115,7 +115,6 @@ class LensEquationSolver(object):
         :raises: AttributeError, KeyError
         """
         kwargs_lens = self._static_lens_settings(kwargs_lens)
-
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
         x_grid, y_grid = util.make_grid(numPix, min_distance)

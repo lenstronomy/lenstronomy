@@ -178,7 +178,6 @@ class FittingSequence(object):
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None and re_use_samples is True:
-            print("test that you are here!")
             num_samples, num_param_prev = np.shape(init_samples)
             print(num_samples, num_param_prev, num_param, 'shape of init_sample')
             if num_param_prev == num_param:
@@ -272,6 +271,11 @@ class FittingSequence(object):
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
         elif sampler_type == 'DYPOLYCHORD':
+            if 'resume_dyn_run' in kwargs_run and \
+                    kwargs_run['resume_dyn_run'] is True:
+                resume_dyn_run = True
+            else:
+                resume_dyn_run = False
             sampler = DyPolyChordSampler(self.likelihoodModule,
                                          prior_type=prior_type,
                                          prior_means=mean_start,
@@ -281,8 +285,8 @@ class FittingSequence(object):
                                          output_dir=output_dir,
                                          output_basename=output_basename,
                                          polychord_settings=polychord_settings,
-                                         seed_increment=dypolychord_seed_increment,
                                          remove_output_dir=remove_output_dir,
+                                         resume_dyn_run=resume_dyn_run,
                                          use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object \
                 = sampler.run(dypolychord_dynamic_goal, kwargs_run)
@@ -302,7 +306,7 @@ class FittingSequence(object):
         else:
             raise ValueError('Sampler type %s not supported.' % sampler_type)
         # update current best fit values
-        self._update_state(means)
+        self._update_state(samples[-1])
 
         output = [sampler_type, samples, sampler.param_names, logL, 
                   logZ, logZ_err, results_object]

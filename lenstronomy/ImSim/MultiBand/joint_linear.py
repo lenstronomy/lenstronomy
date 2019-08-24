@@ -35,7 +35,7 @@ class JointLinear(MultiLinear):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         A = self.linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
-        C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps)
+        C_D_response, model_error_list = self.error_response(kwargs_lens, kwargs_ps, kwargs_special)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
         wls_list = self._array2image_list(wls_model)
@@ -98,7 +98,7 @@ class JointLinear(MultiLinear):
                 k += num_data
         return image_list
 
-    def error_response(self, kwargs_lens, kwargs_ps):
+    def error_response(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
@@ -107,7 +107,7 @@ class JointLinear(MultiLinear):
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
+                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps, kwargs_special)
                 model_error.append(model_error_i)
                 if len(C_D_response) == 0:
                     C_D_response = C_D_response_i

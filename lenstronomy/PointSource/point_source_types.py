@@ -208,6 +208,7 @@ class PointSourceCached(object):
         :param point_amp:
         :return:
         """
+
         if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
             self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
                                                                       search_window=search_window,

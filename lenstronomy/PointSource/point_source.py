@@ -59,6 +59,7 @@ class PointSource(object):
             else:
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center, self._magnification_limit = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center, magnification_limit
+        self._save_cache = save_cache
 
     def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
@@ -202,7 +203,7 @@ class PointSource(object):
             amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
-    def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False, k=None):
+    def linear_response_set(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, with_amp=False, k=None):
         """
 
         :param kwargs_ps:
@@ -212,8 +213,8 @@ class PointSource(object):
         ra_pos = []
         dec_pos = []
         amp = []
+        self.set_save_cache(True)
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
-
         for i, model in enumerate(self._point_source_list):
                 if i == k or k is None:
                     x_pos = x_image_list[i]
@@ -222,6 +223,7 @@ class PointSource(object):
                         ra_pos.append(list(x_pos))
                         dec_pos.append(list(y_pos))
                         if with_amp:
+                            print('test with_amp')
                             mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
                         else:
                             mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
@@ -237,6 +239,9 @@ class PointSource(object):
                             dec_pos.append([y_pos[j]])
                             amp.append([mag[j]])
         n = len(ra_pos)
+        if self._save_cache is False:
+            self.delete_lens_model_cache()
+            self.set_save_cache(self._save_cache)
         return ra_pos, dec_pos, amp, n
 
     def update_linear(self, param, i, kwargs_ps, kwargs_lens):
@@ -282,24 +287,6 @@ class PointSource(object):
                     return False
         return True
 
-    def re_normalize_flux(self, kwargs_ps, norm_factor):
-        """
-        renormalizes the point source amplitude keywords by a factor
-
-        :param kwargs_ps_updated:
-        :param norm_factor:
-        :return:
-        """
-        for i, model in enumerate(self.point_source_type_list):
-            if model == 'UNLENSED':
-                kwargs_ps[i]['point_amp'] *= norm_factor
-            elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification_list[i] is True:
-                    kwargs_ps[i]['source_amp'] *= norm_factor
-                else:
-                    kwargs_ps[i]['point_amp'] *= norm_factor
-        return kwargs_ps
-
     def set_amplitudes(self, amp_list, kwargs_ps):
         """
 
@@ -318,4 +305,3 @@ class PointSource(object):
                 else:
                     kwargs_list[i]['point_amp'] = amp
         return kwargs_list
-

@@ -34,13 +34,16 @@ class Param(object):
     joint parameter between lens model and lens light model
 
     'joint_source_with_point_source': list [[i_point_source, k_source], [...], ...],
-    joint position parameter between lens model and lens light model
+    joint position parameter between lens model and source light model
 
     'joint_lens_light_with_point_source': list [[i_point_source, k_lens_light], [...], ...],
     joint position parameter between lens model and lens light model
 
     'joint_extinction_with_lens_light': list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
     joint parameters between the lens surface brightness and the optical depth models
+
+    'joint_lens_with_source_light': [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+    joint parameter between lens model and source light model. Samples light model parameter only.
 
     hierarchy is as follows:
     1. Point source parameters are inferred
@@ -62,7 +65,7 @@ class Param(object):
                  kwargs_lens_init=None, linear_solver=True, joint_lens_with_lens=[], joint_lens_light_with_lens_light=[],
                  joint_source_with_source=[], joint_lens_with_light=[], joint_source_with_point_source=[],
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
-                 mass_scaling_list=None, point_source_offset=False,
+                 joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0):
         """
@@ -105,6 +108,7 @@ class Param(object):
         self._joint_source_with_source = joint_source_with_source
 
         self._joint_lens_with_light = joint_lens_with_light
+        self._joint_lens_with_source_light = joint_lens_with_source_light
         self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
         for param_list in self._joint_source_with_point_source:
             if len(param_list) == 2:
@@ -147,6 +151,7 @@ class Param(object):
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
         kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_lens)
+        kwargs_fixed_lens_updated = self._fix_joint_param(kwargs_fixed_lens_updated, self._joint_lens_with_source_light)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light, self._joint_lens_light_with_lens_light)
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source, self._joint_source_with_source)
         kwargs_fixed_ps_updated = copy.deepcopy(kwargs_fixed_ps)
@@ -177,6 +182,12 @@ class Param(object):
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
                                           source_size=source_size, num_tau0=num_tau0)
+        for lens_source_joint in self._joint_lens_with_source_light:
+            i_source = lens_source_joint[0]
+            if i_source in self._image_plane_source_list:
+                raise ValueError("linking a source light model with a lens model AND simultaneously parameterizing the"
+                                 " source position in the image plane is not valid!")
+
 
     @property
     def num_point_source_images(self):
@@ -200,6 +211,7 @@ class Param(object):
         kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
+        kwargs_lens = self._update_joint_param(kwargs_source, kwargs_lens, self._joint_lens_with_source_light)
         # update extinction model with lens light model
         kwargs_extinction = self._update_joint_param(kwargs_lens_light, kwargs_extinction, self._joint_extinction_with_lens_light)
         # update lens model joint parameters (including scaling)
@@ -208,7 +220,7 @@ class Param(object):
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
+            #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,
@@ -322,7 +334,7 @@ class Param(object):
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
-                x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
+                #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
                                                                             index_source=k_source)
             for param_name in param_list:
@@ -419,7 +431,7 @@ class Param(object):
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         return kwargs_fixed_update
 
-    def check_solver(self, kwargs_lens, kwargs_ps, kwargs_special={}):
+    def check_solver(self, kwargs_lens, kwargs_ps):
         """
         test whether the image positions map back to the same source position
         :param kwargs_lens:
@@ -428,7 +440,6 @@ class Param(object):
         """
         if self._solver is True:
             image_x, image_y = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            image_x, image_y = self.real_image_positions(image_x, image_y, kwargs_special)
             dist = self._solver_module.check_solver(image_x, image_y, kwargs_lens)
             return np.max(dist)
         else:
@@ -443,18 +454,18 @@ class Param(object):
         else:
             return False
 
-    def real_image_positions(self, x, y, kwargs_special):
-        """
+    #def real_image_positions(self, x, y, kwargs_special):
+    #    """
 
-        :param kwargs_ps: point source kwargs
-        :param kwargs_special: special kwargs (or other kwargs)
-        :return: position where time delays are evaluated and solver is solved for
-        """
-        if self._point_source_offset is True:
-            delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
-            return x + delta_x, y + delta_y
-        else:
-            return x, y
+     #   :param kwargs_ps: point source kwargs
+     #   :param kwargs_special: special kwargs (or other kwargs)
+     #   :return: position where time delays are evaluated and solver is solved for
+     #   """
+     #   if self._point_source_offset is True:
+     #       delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+     #       return x + delta_x, y + delta_y
+     #   else:
+     #       return x, y
 
     def print_setting(self):
         """

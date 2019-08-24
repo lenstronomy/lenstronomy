@@ -7,7 +7,6 @@ import warnings
 from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
-from lenstronomy.Util import simulation_util
 
 
 class TestData(object):
@@ -145,6 +144,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             psf = PSF(psf_type='PIXEL', kernel_point_source=np.ones((3, 3)))
             psf.psf_type = 'WRONG'
+            psf.kernel_point_source_supersampled(supersampling_factor=3)
+        with self.assertRaises(ValueError):
+            psf = PSF(psf_type='GAUSSIAN', fwhm=100, pixel_size=0.0001)
             psf.kernel_point_source_supersampled(supersampling_factor=3)
 
         with warnings.catch_warnings(record=True) as w:

@@ -15,7 +15,7 @@ class SinglePlane(object):
 
         :param lens_model_list: list of strings with lens model names
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        deflection angles as a lensmodel. See the documentation in Profiles.numerical_deflections
+        deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         """
 
         self.func_list = []
@@ -215,15 +215,16 @@ class SinglePlane(object):
                 #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
 
-    def _load_lensmodel(self, lens_type, index, custom_class):
+    def _load_lensmodel(self, lens_type, index, custom_class, z_lens=None, z_source=None):
 
+        if lens_type in ['NFW_MC']:
+            return self._import_class(lens_type, index, custom_class, z_lens=z_lens, z_source=z_source)
         if lens_type not in self._imported_classes.keys():
-            lensmodel_class = self._import_class(lens_type, index, custom_class)
+            lensmodel_class = self._import_class(lens_type, index, custom_class, z_lens=z_lens, z_source=z_source)
             self._imported_classes.update({lens_type: lensmodel_class})
-
         return self._imported_classes[lens_type]
 
-    def _import_class(self, lens_type, i, custom_class):
+    def _import_class(self, lens_type, i_foreground, custom_class, z_lens=None, z_source=None):
 
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
@@ -300,6 +301,9 @@ class SinglePlane(object):
         elif lens_type == 'CTNFW_GAUSS_DEC':
             from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
             return CTNFWGaussDec()
+        elif lens_type =='NFW_MC':
+            from lenstronomy.LensModel.Profiles.nfw_mass_concentration import NFWMC
+            return NFWMC(z_lens=z_lens, z_source=z_source)
         elif lens_type == 'SERSIC':
             from lenstronomy.LensModel.Profiles.sersic import Sersic
             return Sersic()
@@ -364,7 +368,7 @@ class SinglePlane(object):
         elif lens_type == 'FOREGROUND_SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             self._foreground_shear = True
-            self._foreground_shear_idex = i
+            self._foreground_shear_idex = i_foreground
             return Shear()
         elif lens_type == 'coreBURKERT':
             from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
@@ -424,4 +428,3 @@ class SinglePlane(object):
             y_ = y
             kwargs_copy = kwargs
         return x_, y_, kwargs_copy
-

@@ -236,6 +236,25 @@ class MultiPlane(object):
         theta_y = y / T_z
         return theta_x, theta_y
 
+    def set_static(self, kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
+
+        kwargs = self.observed2flat_convention(kwargs)
+        self.ignore_observed_positions = True
+        return self._multi_plane_base.set_static(kwargs)
+
+    def set_dynamic(self):
+        """
+
+        :return:
+        """
+        self.ignore_observed_positions = False
+        self._multi_plane_base.set_dynamic()
+
 
 class PhysicalLocation(object):
     """

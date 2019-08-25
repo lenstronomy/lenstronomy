@@ -1,7 +1,6 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
-#from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.Util.constants as const
 
 

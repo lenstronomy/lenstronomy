@@ -234,10 +234,7 @@ class LensModel(object):
         :param kwargs: lens model keyword argument list
         :return: kwargs_updated (in case of image position convention in multiplane lensing this is changed)
         """
-        if self.multi_plane is True:
-            kwargs = self.lens_model.observed2flat_convention(kwargs)
-            self.lens_model.ignore_observed_positions = True
-        return kwargs
+        return self.lens_model.set_static(kwargs)
 
     def set_dynamic(self):
         """
@@ -247,6 +244,4 @@ class LensModel(object):
 
         :return: None
         """
-
-        if self.multi_plane is True:
-            self.lens_model.ignore_observed_positions = False
+        self.lens_model.set_dynamic()

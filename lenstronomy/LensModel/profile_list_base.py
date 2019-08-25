@@ -226,3 +226,21 @@ class ProfileListBase(object):
                     else:
                         raise ValueError("k as set by %s is not convertable in a bool string!" % k)
         return bool_list
+
+    def set_static(self, kwargs_list):
+        """
+
+        :param kwargs_list: list of keyword arguments for each profile
+        :return: kwargs_list
+        """
+        for i, func in enumerate(self.func_list):
+            func.keep_model(**kwargs_list[i])
+        return kwargs_list
+
+    def set_dynamic(self):
+        """
+
+        :return: None
+        """
+        for i, func in enumerate(self.func_list):
+            func.release_fixed_model()

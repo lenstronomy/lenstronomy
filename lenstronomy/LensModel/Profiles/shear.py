@@ -37,7 +37,7 @@ class Shear(LensProfileBase):
         return f_xx, f_yy, f_xy
 
 
-class ShearGammaPsi(object):
+class ShearGammaPsi(LensProfileBase):
     """
     class to model a shear field with shear strength and direction
     """
@@ -47,6 +47,7 @@ class ShearGammaPsi(object):
 
     def __init__(self):
         self._shear_e1e2 = Shear()
+        super(ShearGammaPsi, self).__init__()
 
     @staticmethod
     def function(x, y, gamma_ext, psi_ext, ra_0=0, dec_0=0):

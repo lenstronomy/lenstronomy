@@ -2,7 +2,6 @@ __author__ = 'sibirrer'
 
 #file which contains class for lens model routines
 import numpy as np
-import copy
 
 
 class SinglePlane(object):

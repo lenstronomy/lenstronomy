@@ -10,7 +10,7 @@ class SinglePlane(object):
     class to handle an arbitrary list of lens models
     """
 
-    def __init__(self, lens_model_list, numerical_alpha_class=None):
+    def __init__(self, lens_model_list, numerical_alpha_class=None, lens_redshift_list=None, z_source_convention=None):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -18,7 +18,9 @@ class SinglePlane(object):
         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         """
 
-        self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class)
+        self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
+                                                    lens_redshift_list=lens_redshift_list,
+                                                    z_source_convention=z_source_convention)
         self._model_list = lens_model_list
 
     def ray_shooting(self, x, y, kwargs, k=None):

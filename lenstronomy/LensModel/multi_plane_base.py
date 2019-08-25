@@ -38,7 +38,8 @@ class MultiPlaneBase(object):
 
         self._lens_model_list = lens_model_list
         self._lens_redshift_list = lens_redshift_list
-        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                       lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []

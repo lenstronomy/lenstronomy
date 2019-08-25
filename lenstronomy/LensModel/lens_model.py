@@ -52,7 +52,8 @@ class LensModel(object):
                                          observed_convention_index=observed_convention_index,
                                          z_source_convention=z_source_convention)
         else:
-            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                          lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 

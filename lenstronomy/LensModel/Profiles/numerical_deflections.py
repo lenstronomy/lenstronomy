@@ -6,6 +6,7 @@ __author__ = 'dgilman'
 
 import numpy as np
 
+
 class NumericalAlpha(object):
 
     def __init__(self, custom_class):
@@ -49,7 +50,7 @@ class NumericalAlpha(object):
                 return ~some interpolating function(x_nfw, beta)~
 
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        Note: This retuns an *** un-normalized deflection angle ***
+        Note: This returns an *** un-normalized deflection angle ***
         It is up to the user to rescale the results according to whatever normalization is appropriate
 
         """

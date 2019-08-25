@@ -24,7 +24,7 @@ class SinglePlane(object):
         self._model_list = lens_model_list
 
         for i, lens_type in enumerate(lens_model_list):
-            lensing_function = self._load_lensmodel(lens_type, i, numerical_alpha_class)
+            lensing_function = self._load_lensmodel(lens_type, numerical_alpha_class)
             self.func_list.append(lensing_function)
 
     def ray_shooting(self, x, y, kwargs, k=None):
@@ -118,7 +118,7 @@ class SinglePlane(object):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
-            f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
+            f_xx, f_yy, f_xy = self.func_list[k].hessian(x, y, **kwargs[k])
             return f_xx, f_xy, f_xy, f_yy
 
         bool_list = self._bool_list(k)
@@ -172,16 +172,16 @@ class SinglePlane(object):
                 #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
 
-    def _load_lensmodel(self, lens_type, index, custom_class, z_lens=None, z_source=None):
+    def _load_lensmodel(self, lens_type, custom_class, z_lens=None, z_source=None):
 
         if lens_type in ['NFW_MC']:
-            return self._import_class(lens_type, index, custom_class, z_lens=z_lens, z_source=z_source)
+            return self._import_class(lens_type, custom_class, z_lens=z_lens, z_source=z_source)
         if lens_type not in self._imported_classes.keys():
-            lensmodel_class = self._import_class(lens_type, index, custom_class, z_lens=z_lens, z_source=z_source)
+            lensmodel_class = self._import_class(lens_type, custom_class, z_lens=z_lens, z_source=z_source)
             self._imported_classes.update({lens_type: lensmodel_class})
         return self._imported_classes[lens_type]
 
-    def _import_class(self, lens_type, i_foreground, custom_class, z_lens=None, z_source=None):
+    def _import_class(self, lens_type, custom_class, z_lens=None, z_source=None):
 
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
@@ -306,7 +306,7 @@ class SinglePlane(object):
             return MultiGaussianKappaEllipse()
         elif lens_type == 'INTERPOL':
             from lenstronomy.LensModel.Profiles.interpol import Interpol
-            return Interpol(grid=False, min_grid_number=100)
+            return Interpol()
         elif lens_type == 'INTERPOL_SCALED':
             from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
             return InterpolScaled()

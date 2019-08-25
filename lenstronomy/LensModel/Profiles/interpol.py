@@ -14,7 +14,12 @@ class Interpol(object):
     lower_limit_default = {}
     upper_limit_default = {}
 
-    def __init__(self, grid=True, min_grid_number=100):
+    def __init__(self, grid=False, min_grid_number=100):
+        """
+
+        :param grid: bool, if True, computes the calculation on a grid
+        :param min_grid_number: minimum numbers of positions to compute the interpolation on a grid
+        """
         self._grid = grid
         self._min_grid_number = min_grid_number
 

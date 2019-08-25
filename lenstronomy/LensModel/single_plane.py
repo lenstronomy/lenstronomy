@@ -18,14 +18,8 @@ class SinglePlane(object):
         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
         """
 
-        self.func_list = []
-        self._imported_classes = {}
-        self._foreground_shear = False
+        self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class)
         self._model_list = lens_model_list
-
-        for i, lens_type in enumerate(lens_model_list):
-            lensing_function = self._load_lensmodel(lens_type, numerical_alpha_class)
-            self.func_list.append(lensing_function)
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """
@@ -172,16 +166,38 @@ class SinglePlane(object):
                 #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
 
-    def _load_lensmodel(self, lens_type, custom_class, z_lens=None, z_source=None):
+    def _load_model_instances(self, lens_model_list, custom_class=None, lens_redshift_list=None,
+                              z_source_convention=None):
+        if lens_redshift_list is None:
+            lens_redshift_list = [None] * len(lens_model_list)
+        func_list = []
+        imported_classes = {}
+        for i, lens_type in enumerate(lens_model_list):
 
-        if lens_type in ['NFW_MC']:
-            return self._import_class(lens_type, custom_class, z_lens=z_lens, z_source=z_source)
-        if lens_type not in self._imported_classes.keys():
-            lensmodel_class = self._import_class(lens_type, custom_class, z_lens=z_lens, z_source=z_source)
-            self._imported_classes.update({lens_type: lensmodel_class})
-        return self._imported_classes[lens_type]
+            # those models require a new instance per profile as certain pre-computations are relevant per individual profile
+            if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
+                             'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED']:
+                lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],
+                                                     z_source=z_source_convention)
+            else:
+                if lens_type not in imported_classes.keys():
+                    lensmodel_class = self._import_class(lens_type, custom_class)
+                    imported_classes.update({lens_type: lensmodel_class})
+                else:
+                    lensmodel_class = imported_classes[lens_type]
+            func_list.append(lensmodel_class)
+        return func_list
 
-    def _import_class(self, lens_type, custom_class, z_lens=None, z_source=None):
+    @staticmethod
+    def _import_class(lens_type, custom_class, z_lens=None, z_source=None):
+        """
+
+        :param lens_type: string, lens model type
+        :param custom_class: custom class
+        :param z_lens:
+        :param z_source:
+        :return: class instance of the lens model type
+        """
 
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift

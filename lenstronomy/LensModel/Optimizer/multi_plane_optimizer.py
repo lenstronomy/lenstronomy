@@ -54,6 +54,13 @@ class MultiPlaneLensing(object):
         # this flag needs to be set as False to be compatible with the latest LensEquationSolver feature to make the
         # computation faster
 
+    def set_static(self, kwargs):
+        kwargs = self._full_lensmodel.set_static(kwargs)
+        return kwargs
+
+    def set_dynamic(self):
+        self._full_lensmodel.set_dynamic()
+
     def ray_shooting(self, x, y, kwargs_lens, check_convention=True):
 
         if check_convention:

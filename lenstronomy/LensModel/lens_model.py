@@ -225,3 +225,28 @@ class LensModel(object):
         f_xyy = (f_xy_dy - f_xy) / diff
         f_yyy = (f_yy_dy - f_yy) / diff
         return f_xxx, f_xxy, f_xyy, f_yyy
+
+    def set_static(self, kwargs):
+        """
+        set this instance to a static lens model. This can improve the speed in evaluating lensing quantities at
+        different positions but must not be used with different lens model parameters!
+
+        :param kwargs: lens model keyword argument list
+        :return: kwargs_updated (in case of image position convention in multiplane lensing this is changed)
+        """
+        if self.multi_plane is True:
+            kwargs = self.lens_model.observed2flat_convention(kwargs)
+            self.lens_model.ignore_observed_positions = True
+        return kwargs
+
+    def set_dynamic(self):
+        """
+        deletes cache for static setting and makes sure the observed convention in the position of lensing profiles in
+        the multiplane setting is enabled. Dynamic is the default setting of this class enabling an accurate computation
+        of lensing quantities with different parameters in the lensing profiles.
+
+        :return: None
+        """
+
+        if self.multi_plane is True:
+            self.lens_model.ignore_observed_positions = False

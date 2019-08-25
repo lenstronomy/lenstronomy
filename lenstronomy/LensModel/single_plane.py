@@ -132,36 +132,6 @@ class SinglePlane(object):
         f_yx = f_xy
         return f_xx, f_xy, f_yx, f_yy
 
-    def hessian_differential(self, x, y, kwargs, diff=0.0000001, k=None):
-        """
-        computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation
-
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param diff: numerical differential step (float)
-        :param k: only evaluate the k-th lens model
-        :return: f_xx, f_xy, f_yx, f_yy
-        """
-
-        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, k=k)
-
-        alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, k=k)
-        alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, k=k)
-
-        dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
-        dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
-        dalpha_decra = (alpha_dec_dx - alpha_dec)/diff
-        dalpha_decdec = (alpha_dec_dy - alpha_dec)/diff
-
-        f_xx = dalpha_rara
-        f_yy = dalpha_decdec
-        f_xy = dalpha_radec
-        f_yx = dalpha_decra
-        return f_xx, f_xy, f_yx, f_yy
-
     def mass_3d(self, r, kwargs, bool_list=None):
         """
         computes the mass within a 3d sphere of radius r

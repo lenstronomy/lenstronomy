@@ -4,11 +4,11 @@ __author__ = 'sibirrer'
 # the potential therefore is its integral
 
 import numpy as np
-import scipy.interpolate as interp
 import warnings
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class TNFW(object):
+class TNFW(LensProfileBase):
     """
     this class contains functions concerning the truncated NFW profile with a truncation function (r_trunc^2)*(r^2+r_trunc^2)
 
@@ -24,7 +24,7 @@ class TNFW(object):
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
-        pass
+        super(LensProfileBase, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
         """

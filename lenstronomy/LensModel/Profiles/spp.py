@@ -3,9 +3,10 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import scipy.special as special
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class SPP(object):
+class SPP(LensProfileBase):
     """
     class for circular power-law mass distribution
     """

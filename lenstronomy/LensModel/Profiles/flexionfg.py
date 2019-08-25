@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.Profiles.flexion import Flexion
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class Flexionfg(object):
+
+class Flexionfg(LensProfileBase):
     """
     Flexion consist of basis F flexion and G flexion (F1,F2,G1,G2),
     see formulas 2.54, 2.55 in Massimo Meneghetti 2017 - "Introduction to Gravitational Lensing".
@@ -11,6 +13,7 @@ class Flexionfg(object):
 
     def __init__(self):
         self.flexion_cart = Flexion()
+        super(Flexionfg, self).__init__()
 
     def function(self, x, y, F1, F2, G1, G2, ra_0=0, dec_0=0):
         """

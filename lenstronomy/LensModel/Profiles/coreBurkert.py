@@ -1,9 +1,10 @@
 __author__ = 'dgilman'
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class CoreBurkert(object):
+class CoreBurkert(LensProfileBase):
     """
     lensing properties of a modified Burkert profile with variable core size
     normalized by rho0, the central core density

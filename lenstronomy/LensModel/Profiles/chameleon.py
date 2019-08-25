@@ -1,10 +1,11 @@
 from lenstronomy.LensModel.Profiles.nie import NIE
 from lenstronomy.LensModel.Profiles.point_mass import PointMass
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.param_util as param_util
 import numpy as np
 
 
-class Chameleon(object):
+class Chameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
@@ -15,6 +16,7 @@ class Chameleon(object):
 
     def __init__(self):
         self.nie = NIE()
+        super(Chameleon, self).__init__()
 
     def function(self, x, y, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
@@ -111,7 +113,7 @@ class Chameleon(object):
         return theta_E_convert, w_c, w_t
 
 
-class DoubleChameleon(object):
+class DoubleChameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
@@ -126,6 +128,7 @@ class DoubleChameleon(object):
 
     def __init__(self):
         self.chameleon = Chameleon()
+        super(DoubleChameleon, self).__init__()
 
     def function(self, x, y, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         """
@@ -195,7 +198,7 @@ class DoubleChameleon(object):
         return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
 
 
-class TripleChameleon(object):
+class TripleChameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
@@ -213,6 +216,7 @@ class TripleChameleon(object):
 
     def __init__(self):
         self.chameleon = Chameleon()
+        super(TripleChameleon, self).__init__()
 
     def function(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
                  center_x=0, center_y=0):
@@ -296,7 +300,7 @@ class TripleChameleon(object):
         return f_xx1 + f_xx2 + f_xx3, f_yy1 + f_yy2 + f_yy3, f_xy1 + f_xy2 + f_xy3
 
 
-class DoubleChameleonPointMass(object):
+class DoubleChameleonPointMass(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
 
@@ -313,6 +317,7 @@ class DoubleChameleonPointMass(object):
     def __init__(self):
         self.chameleon = DoubleChameleon()
         self.pointMass = PointMass()
+        super(DoubleChameleonPointMass, self).__init__()
 
     def function(self, x, y, alpha_1, ratio_pointmass, ratio_chameleon, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22,
                  center_x=0, center_y=0):

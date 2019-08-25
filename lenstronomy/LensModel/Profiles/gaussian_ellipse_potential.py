@@ -4,9 +4,10 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class GaussianEllipsePotential(object):
+class GaussianEllipsePotential(LensProfileBase):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     with ellipticity in the convergence
@@ -21,6 +22,7 @@ class GaussianEllipsePotential(object):
     def __init__(self):
         self.spherical = GaussianKappa()
         self._diff = 0.000001
+        super(GaussianEllipsePotential, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """

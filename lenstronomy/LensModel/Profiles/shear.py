@@ -1,10 +1,11 @@
 __author__ = 'sibirrer'
 
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
 
-class Shear(object):
+class Shear(LensProfileBase):
     """
     class for external shear e1, e2 expression
     """

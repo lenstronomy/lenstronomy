@@ -3,9 +3,10 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class NIE(object):
+class NIE(LensProfileBase):
     """
 
     """
@@ -15,6 +16,7 @@ class NIE(object):
 
     def __init__(self):
         self.nie_simple = NIE_simple()
+        super(NIE, self).__init__()
 
     def function(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
         """
@@ -115,7 +117,7 @@ class NIE(object):
         #return theta_E
 
 
-class NIE_simple(object):
+class NIE_simple(LensProfileBase):
     """
     this class contains the function and the derivatives of the non-singular isothermal ellipse
     See Keeton&Kochanek 1998
@@ -124,6 +126,7 @@ class NIE_simple(object):
 
     def __init__(self, diff=0.0000000001):
         self._diff = diff
+        super(NIE_simple, self).__init__()
 
     def function(self, x, y, theta_E, s, q):
         psi = self._psi(x, y, q, s)

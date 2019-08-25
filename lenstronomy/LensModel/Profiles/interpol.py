@@ -4,9 +4,10 @@ import scipy.interpolate
 import numpy as np
 
 import lenstronomy.Util.util as util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class Interpol(object):
+class Interpol(LensProfileBase):
     """
     class which uses an interpolation of a lens model and its first and second order derivatives
     """
@@ -22,6 +23,7 @@ class Interpol(object):
         """
         self._grid = grid
         self._min_grid_number = min_grid_number
+        super(Interpol, self).__init__()
 
     def function(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
@@ -140,7 +142,7 @@ class Interpol(object):
             self._f_yy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_yy, kx=1, ky=1, s=0)
 
 
-class InterpolScaled(object):
+class InterpolScaled(LensProfileBase):
     """
     class for handling an interpolated lensing map and has the freedom to scale its lensing effect.
     Applications are e.g. mass to light ratio.
@@ -151,6 +153,7 @@ class InterpolScaled(object):
 
     def __init__(self, grid=True, min_grid_number=100):
         self.interp_func = Interpol(grid, min_grid_number=min_grid_number)
+        super(InterpolScaled, self).__init__()
 
     def function(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         f_out = self.interp_func.function(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)

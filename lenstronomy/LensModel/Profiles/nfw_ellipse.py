@@ -6,9 +6,10 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class NFW_ELLIPSE(object):
+class NFW_ELLIPSE(LensProfileBase):
     """
     this class contains functions concerning the NFW profile
 
@@ -21,6 +22,7 @@ class NFW_ELLIPSE(object):
     def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
         self.nfw = NFW(interpol=interpol, num_interp_X=num_interp_X, max_interp_X=max_interp_X)
         self._diff = 0.0000000001
+        super(NFW_ELLIPSE, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """

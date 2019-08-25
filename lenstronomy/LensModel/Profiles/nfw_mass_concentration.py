@@ -3,9 +3,10 @@ __author__ = 'sibirrer'
 # this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class NFWMC(object):
+class NFWMC(LensProfileBase):
     """
     this class contains functions parameterises the NFW profile with log10 M200 and the concentration rs/r200
     relation are: R_200 = c * Rs
@@ -33,6 +34,7 @@ class NFWMC(object):
             from astropy.cosmology import FlatLambdaCDM
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self._lens_cosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+        super(NFWMC, self).__init__()
 
     def _m_c2deflections(self, logM, concentration):
         """

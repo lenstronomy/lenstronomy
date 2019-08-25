@@ -4,8 +4,10 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class Sersic(SersicUtil):
+
+class Sersic(SersicUtil, LensProfileBase):
     """
     this class contains functions to evaluate a Sersic mass profile: https://arxiv.org/pdf/astro-ph/0311559.pdf
     """

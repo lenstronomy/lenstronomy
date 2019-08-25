@@ -5,9 +5,10 @@ __author__ = 'dgilman'
 # interpolate it to compute deflection angles and the hessian
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class NumericalAlpha(object):
+class NumericalAlpha(LensProfileBase):
 
     def __init__(self, custom_class):
 
@@ -56,6 +57,7 @@ class NumericalAlpha(object):
         """
 
         self._interp = custom_class
+        super(NumericalAlpha, self).__init__()
 
     def function(self, x, y,center_x = 0, center_y = 0, **kwargs):
 

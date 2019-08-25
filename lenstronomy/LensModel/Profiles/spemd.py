@@ -2,9 +2,10 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class SPEMD(object):
+class SPEMD(LensProfileBase):
     """
     class for smooth power law ellipse mass density profile
     """
@@ -16,6 +17,7 @@ class SPEMD(object):
         self.s2 = 0.00000001
         self.spp = SPP()
         self.spemd_smooth = SPEMD_SMOOTH()
+        super(SPEMD, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)

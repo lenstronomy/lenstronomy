@@ -1,6 +1,7 @@
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class SIE(object):
+class SIE(LensProfileBase):
     """
     class for singular isothermal ellipsoid (SIS with ellipticity)
     """
@@ -18,6 +19,7 @@ class SIE(object):
             self.profile = SPEMD()
         self._s_scale = 0.0000000001
         self._gamma = 2
+        super(SIE, self).__init__()
 
     def function(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """

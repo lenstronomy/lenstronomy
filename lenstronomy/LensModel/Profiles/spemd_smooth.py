@@ -2,9 +2,10 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class SPEMD_SMOOTH(object):
+class SPEMD_SMOOTH(LensProfileBase):
     """
     class for smooth power law ellipse mass density profile
     The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
@@ -22,6 +23,7 @@ class SPEMD_SMOOTH(object):
         except:
             self._fastell4py_bool = False
             print("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
+        super(SPEMD_SMOOTH, self).__init__()
 
     def _parameter_constraints(self, theta_E, gamma, q, phi_G, s_scale):
         """

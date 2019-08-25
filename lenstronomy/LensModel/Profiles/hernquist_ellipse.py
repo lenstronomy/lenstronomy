@@ -1,9 +1,10 @@
 from lenstronomy.LensModel.Profiles.hernquist import Hernquist
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
 
-class Hernquist_Ellipse(object):
+class Hernquist_Ellipse(LensProfileBase):
     """
     this class contains functions concerning the NFW profile
 
@@ -16,6 +17,7 @@ class Hernquist_Ellipse(object):
     def __init__(self):
         self.spherical = Hernquist()
         self._diff = 0.0000000001
+        super(Hernquist_Ellipse, self).__init__()
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """

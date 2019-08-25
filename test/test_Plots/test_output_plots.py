@@ -140,7 +140,7 @@ class TestOutputPlots(object):
         plt.close()
 
     def test_external_shear_direction(self):
-        lensModel = LensModel(lens_model_list=['SHEAR', 'FOREGROUND_SHEAR'])
+        lensModel = LensModel(lens_model_list=['SHEAR'])
         kwargs_lens = [{'e1': 0.1, 'e2': -0.1}, {'e1': 0.1, 'e2': -0.1}]
         f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=lensModel,
                                                  kwargs_lens=kwargs_lens, strength_multiply=10)

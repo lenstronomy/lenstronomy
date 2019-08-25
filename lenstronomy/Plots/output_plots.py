@@ -1167,24 +1167,13 @@ def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_mult
     x_shear = x_grid - f_x_shear
     y_shear = y_grid - f_y_shear
 
-    f_x_foreground, f_y_foreground = 0, 0
-    for i, lens_model in enumerate(lens_model_class.lens_model_list):
-        if lens_model == 'FOREGROUND_SHEAR':
-            kwargs = kwargs_lens[i]
-            f_x_foreground, f_y_foreground = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
-                                                     e2=kwargs['e2'] * strength_multiply)
-    x_foreground = x_grid - f_x_foreground
-    y_foreground = y_grid - f_y_foreground
-
     center_x = np.mean(x_grid)
     center_y = np.mean(y_grid)
     radius = (np.max(x_grid) - np.min(x_grid))/4
     circle_shear = util_mask.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
-    circle_foreground = util_mask.mask_sphere(x_foreground, y_foreground, center_x, center_y, radius)
     f, ax = plt.subplots(1, 1, figsize=(16, 8))
     im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
     im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
-    im = ax.matshow(util.array2image(circle_foreground), origin='lower', alpha=0.5)
     #f.show()
     return f, ax
 

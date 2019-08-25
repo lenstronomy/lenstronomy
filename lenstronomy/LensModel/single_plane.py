@@ -73,14 +73,10 @@ class SinglePlane(object):
         if isinstance(k, int):
             return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
-        x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                if self._model_list[i] == 'SHEAR':
-                    potential += func.function(x, y, **kwargs[i])
-                else:
-                    potential += func.function(x_, y_, **kwargs_copy[i])
+                potential += func.function(x, y, **kwargs[i])
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -100,14 +96,10 @@ class SinglePlane(object):
         if isinstance(k, int):
             return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
-        x_, y_, kwargs_copy = self._update_foreground(x, y, kwargs)
-        f_x, f_y = np.zeros_like(x_), np.zeros_like(x_)
+        f_x, f_y = np.zeros_like(x), np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                if self._model_list[i] == 'SHEAR':
-                    f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
-                else:
-                    f_x_i, f_y_i = func.derivatives(x_, y_, **kwargs_copy[i])
+                f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
         return f_x, f_y
@@ -128,20 +120,15 @@ class SinglePlane(object):
         if isinstance(k, int):
             f_xx, f_yy, f_xy =  self.func_list[k].hessian(x, y, **kwargs[k])
             return f_xx, f_xy, f_xy, f_yy
-        if self._foreground_shear:
-            # needs to be computed numerically due to non-linear effects
-            f_xx, f_xy, f_yx, f_yy = self.hessian_differential(x, y, kwargs, k=k)
-        else:
-            bool_list = self._bool_list(k)
-            x_ = x
-            y_ = y
-            f_xx, f_yy, f_xy = np.zeros_like(x_), np.zeros_like(x_), np.zeros_like(x_)
-            for i, func in enumerate(self.func_list):
-                if bool_list[i] is True:
-                    f_xx_i, f_yy_i, f_xy_i = func.hessian(x_, y_, **kwargs[i])
-                    f_xx += f_xx_i
-                    f_yy += f_yy_i
-                    f_xy += f_xy_i
+
+        bool_list = self._bool_list(k)
+        f_xx, f_yy, f_xy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                f_xx_i, f_yy_i, f_xy_i = func.hessian(x, y, **kwargs[i])
+                f_xx += f_xx_i
+                f_yy += f_yy_i
+                f_xy += f_xy_i
         f_yx = f_xy
         return f_xx, f_xy, f_yx, f_yy
 
@@ -365,11 +352,6 @@ class SinglePlane(object):
         elif lens_type == 'CURVED_ARC':
             from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
             return CurvedArc()
-        elif lens_type == 'FOREGROUND_SHEAR':
-            from lenstronomy.LensModel.Profiles.shear import Shear
-            self._foreground_shear = True
-            self._foreground_shear_idex = i_foreground
-            return Shear()
         elif lens_type == 'coreBURKERT':
             from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
             return CoreBurkert()
@@ -404,27 +386,4 @@ class SinglePlane(object):
                         bool_list[k_i] = True
                     else:
                         raise ValueError("k as set by %s is not convertable in a bool string!" % k)
-        if self._foreground_shear is True:
-            bool_list[self._foreground_shear_idex] = False
         return bool_list
-
-    def _update_foreground(self, x, y, kwargs, image_plane=True):
-        if self._foreground_shear:
-            f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(x, y, **kwargs[self._foreground_shear_idex])
-            x_ = x - f_x_shear1
-            y_ = y - f_y_shear1
-            if image_plane is True:
-                kwargs_copy = copy.deepcopy(kwargs)
-                for i, func in enumerate(self.func_list):
-                    if 'center_x' in kwargs_copy[i]:
-                        f_x_shear1, f_y_shear1 = self.func_list[self._foreground_shear_idex].derivatives(kwargs_copy[i]['center_x'], kwargs_copy[i]['center_y'], **kwargs[
-                            self._foreground_shear_idex])
-                        kwargs_copy[i]['center_x'] -= f_x_shear1
-                        kwargs_copy[i]['center_y'] -= f_y_shear1
-            else:
-                kwargs_copy = kwargs
-        else:
-            x_ = x
-            y_ = y
-            kwargs_copy = kwargs
-        return x_, y_, kwargs_copy

@@ -278,8 +278,7 @@ class FittingSequence(object):
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
 
         elif sampler_type == 'DYPOLYCHORD':
-            if 'resume_dyn_run' in kwargs_run and \
-                    kwargs_run['resume_dyn_run'] is True:
+            if 'resume_dyn_run' in kwargs_run and kwargs_run['resume_dyn_run'] is True:
                 resume_dyn_run = True
             else:
                 resume_dyn_run = False
@@ -295,8 +294,7 @@ class FittingSequence(object):
                                          remove_output_dir=remove_output_dir,
                                          resume_dyn_run=resume_dyn_run,
                                          use_mpi=self._mpi)
-            samples, means, logZ, logZ_err, logL, results_object \
-                = sampler.run(dypolychord_dynamic_goal, kwargs_run)
+            samples, means, logZ, logZ_err, logL, results_object = sampler.run(dypolychord_dynamic_goal, kwargs_run)
 
         elif sampler_type == 'DYNESTY':
             sampler = DynestySampler(self.likelihoodModule,

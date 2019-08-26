@@ -5,7 +5,7 @@ class LensProfileBase(object):
     """
 
     def __init__(self, **kwargs):
-        pass
+        self._static = False
 
     def function(self, **kwargs):
         """

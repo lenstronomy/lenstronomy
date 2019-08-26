@@ -18,6 +18,51 @@ class NIE(LensProfileBase):
         self.nie_simple = NIE_simple()
         super(NIE, self).__init__()
 
+    def param_conv(self, theta_E, e1, e2):
+        if self._static is True:
+            return self._theta_E_conv_static, self._phi_G_static, self._q_static
+        return self._param_conv(theta_E, e1, e2)
+
+    def _param_conv(self, theta_E, e1, e2):
+        """
+        convert parameters
+
+        :param theta_E:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        theta_E = self._theta_E_q_convert(theta_E, q)
+        return theta_E, phi_G, q
+
+    def set_static(self, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+
+        :param theta_E:
+        :param e1:
+        :param e2:
+        :param s_scale:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        self._static = True
+        self._theta_E_conv_static, self._phi_G_static, self._q_static = self._param_conv(theta_E, e1, e2)
+
+    def set_dynamic(self):
+        """
+
+        :return:
+        """
+        self._static = False
+        if hasattr(self, '_theta_E_conv_static'):
+            del self._theta_E_conv_static
+        if hasattr(self, '_phi_G_static'):
+            del self._phi_G_static
+        if hasattr(self, '_q_static'):
+            del self._q_static
+
     def function(self, x, y, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
         """
 
@@ -31,8 +76,7 @@ class NIE(LensProfileBase):
         :param center_y:
         :return:
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E = self._theta_E_q_convert(theta_E, q)
+        theta_E, phi_G, q = self.param_conv(theta_E, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -56,8 +100,7 @@ class NIE(LensProfileBase):
         :param center_y:
         :return:
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E = self._theta_E_q_convert(theta_E, q)
+        theta_E, phi_G, q = self.param_conv(theta_E, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -82,8 +125,7 @@ class NIE(LensProfileBase):
         :param center_y:
         :return:
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E = self._theta_E_q_convert(theta_E, q)
+        theta_E, phi_G, q = self.param_conv(theta_E, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -93,7 +135,7 @@ class NIE(LensProfileBase):
         f__xx, f__yy, f__xy = self.nie_simple.hessian(x__, y__, theta_E, s_scale, q)
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
-        gamma1__ = 1./2 *(f__xx - f__yy)
+        gamma1__ = 1./2 * (f__xx - f__yy)
         gamma2__ = f__xy
         gamma1 = np.cos(2 * phi_G) * gamma1__ - np.sin(2 * phi_G) * gamma2__
         gamma2 = +np.sin(2 * phi_G) * gamma1__ + np.cos(2 * phi_G) * gamma2__
@@ -114,7 +156,6 @@ class NIE(LensProfileBase):
         """
         theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) / (1+(1-q)/2.)
         return theta_E_new
-        #return theta_E
 
 
 class NIE_simple(LensProfileBase):

@@ -123,9 +123,8 @@ class Chameleon(LensProfileBase):
         """
         self._static = True
         self._theta_convert_static, self._w_c_static, self._w_t_stactic, self._s_scale_1_static, self._s_scale_2_static = self._param_convert(alpha_1, w_c, w_t, e1, e2)
-        #TODO set NIE static mode too
-        #self._nie_1.set_static()
-        #self._nie_2.set_static()
+        self._nie_1.set_static(self._theta_convert_static, e1, e2, self._s_scale_1_static, center_x, center_y)
+        self._nie_2.set_static(self._theta_convert_static, e1, e2, self._s_scale_2_static, center_x, center_y)
 
     def set_dynamic(self):
         """
@@ -143,6 +142,8 @@ class Chameleon(LensProfileBase):
             del self._s_scale_1_static
         if hasattr(self, '_s_scale_2_static'):
             del self._s_scale_2_static
+        self._nie_1.set_dynamic()
+        self._nie_2.set_dynamic()
 
 
 class DoubleChameleon(LensProfileBase):

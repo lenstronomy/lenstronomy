@@ -95,6 +95,8 @@ class PositionLikelihood(object):
         :param kwargs_ps:
         :return: add penalty when solver does not find a solution
         """
+        if len(kwargs_ps) < 1:
+            return 0
         if 'ra_image' in kwargs_ps[0]:
             ra_image, dec_image = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
             source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)

@@ -51,10 +51,10 @@ class TestNumerics(object):
         g1, g2, g3, g4 = 0.01, 0.02, 0.03, 0.04
         kwargs = [{'g1': g1, 'g2': g2, 'g3': g3, 'g4': g4}]
         f_xxx, f_xxy, f_xyy, f_yyy = lensModel.flexion(x=1., y=1., kwargs=kwargs)
-        npt.assert_almost_equal(f_xxx, g1, decimal=8)
-        npt.assert_almost_equal(f_xxy, g2, decimal=8)
-        npt.assert_almost_equal(f_xyy, g3, decimal=8)
-        npt.assert_almost_equal(f_yyy, g4, decimal=8)
+        npt.assert_almost_equal(f_xxx, g1, decimal=2)
+        npt.assert_almost_equal(f_xxy, g2, decimal=2)
+        npt.assert_almost_equal(f_xyy, g3, decimal=2)
+        npt.assert_almost_equal(f_yyy, g4, decimal=2)
 
 
 class TestNumericsProfile(object):

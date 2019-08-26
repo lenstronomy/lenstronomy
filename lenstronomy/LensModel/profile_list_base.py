@@ -29,7 +29,7 @@ class ProfileListBase(object):
 
             # those models require a new instance per profile as certain pre-computations are relevant per individual profile
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
-                             'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED']:
+                             'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
                 lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],
                                                      z_source=z_source_convention)
             else:
@@ -234,7 +234,7 @@ class ProfileListBase(object):
         :return: kwargs_list
         """
         for i, func in enumerate(self.func_list):
-            func.keep_model(**kwargs_list[i])
+            func.set_static(**kwargs_list[i])
         return kwargs_list
 
     def set_dynamic(self):
@@ -243,4 +243,4 @@ class ProfileListBase(object):
         :return: None
         """
         for i, func in enumerate(self.func_list):
-            func.release_fixed_model()
+            func.set_dynamic()

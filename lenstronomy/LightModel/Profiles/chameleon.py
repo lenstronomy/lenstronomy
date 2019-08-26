@@ -32,10 +32,8 @@ class Chameleon(object):
         :param center_y: center
         :return: flux of chameleon profile
         """
-        amp_new, w_c, w_t = self._chameleonLens._theta_convert(amp, w_c, w_t)
+        amp_new, w_c, w_t, s_scale_1, s_scale_2 = self._chameleonLens.param_convert(amp, w_c, w_t, e1, e2)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        s_scale_1 = np.sqrt(4 * w_c ** 2 / (1. + q) ** 2)
-        s_scale_2 = np.sqrt(4 * w_t ** 2 / (1. + q) ** 2)
         flux1 = self.nie.function(x, y, 1, e1, e2, s_scale_1, center_x, center_y)
         flux2 = self.nie.function(x, y, 1, e1, e2, s_scale_2, center_x, center_y)
         flux = amp_new / (1. + q) * (flux1 - flux2)

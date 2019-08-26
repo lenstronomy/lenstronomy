@@ -22,18 +22,20 @@ class NFWMC(LensProfileBase):
     lower_limit_default = {'logM': 0, 'concentration': 0.01, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'logM': 16, 'concentration': 1000, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, z_lens, z_source, cosmo=None):
+    def __init__(self, z_lens, z_source, cosmo=None, static=False):
         """
 
         :param z_lens: redshift of lens
         :param z_source: redshift of source
         :param cosmo: astropy cosmology instance
+        :param static: boolean, if True, only operates with fixed parameter values
         """
         self._nfw = NFW()
         if cosmo is None:
             from astropy.cosmology import FlatLambdaCDM
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self._lens_cosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+        self._static = static
         super(NFWMC, self).__init__()
 
     def _m_c2deflections(self, logM, concentration):
@@ -43,9 +45,35 @@ class NFWMC(LensProfileBase):
         :param concentration: halo concentration c = r_200 / r_s
         :return: Rs (in arc seconds), alpha_Rs (in arc seconds)
         """
+        if self._static is True:
+            return self._Rs_static, self._alpha_Rs_static
         M = 10 ** logM
         Rs, alpha_Rs = self._lens_cosmo.nfw_physical2angle(M, concentration)
         return Rs, alpha_Rs
+
+    def set_static(self, logM, concentration, center_x=0, center_y=0):
+        """
+
+        :param logM:
+        :param concentration:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        self._static = True
+        M = 10 ** logM
+        self._Rs_static, self._alpha_Rs_static = self._lens_cosmo.nfw_physical2angle(M, concentration)
+
+    def set_dynamic(self):
+        """
+
+        :return:
+        """
+        self._static = False
+        if hasattr(self, '_Rs_static'):
+            del self._Rs_static
+        if hasattr(self, '_alpha_Rs_static'):
+            del self._alpha_Rs_static
 
     def function(self, x, y, logM, concentration, center_x=0, center_y=0):
         """

@@ -40,7 +40,7 @@ class LensProfileBase(object):
         """
         raise ValueError('hessian definition is not defined in the profile you want to execute.')
 
-    def keep_model(self, **kwargs):
+    def set_static(self, **kwargs):
         """
         pre-computes certain computations that do only relate to the lens model parameters and not to the specific
         position where to evaluate the lens model
@@ -50,7 +50,7 @@ class LensProfileBase(object):
         """
         pass
 
-    def release_fixed_model(self):
+    def set_dynamic(self):
         """
 
         :return: no return, deletes pre-computed variables for certain lens models

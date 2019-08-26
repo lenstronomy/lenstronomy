@@ -51,6 +51,18 @@ class TestNFWMC(object):
         npt.assert_almost_equal(f_yy_mc, f_yy, decimal=8)
         npt.assert_almost_equal(f_xy_mc, f_xy, decimal=8)
 
+    def test_static(self):
+        x, y = 1., 1.
+        logM = 12
+        concentration = 10
+        f_ = self.nfwmc.function(x, y, logM, concentration, center_x=0, center_y=0)
+        self.nfwmc.set_static(logM, concentration)
+        f_static = self.nfwmc.function(x, y, 0, 0, center_x=0, center_y=0)
+        npt.assert_almost_equal(f_, f_static, decimal=8)
+        self.nfwmc.set_dynamic()
+        f_dyn = self.nfwmc.function(x, y, 11, 20, center_x=0, center_y=0)
+        assert f_dyn != f_static
+
 
 if __name__ == '__main__':
     pytest.main()

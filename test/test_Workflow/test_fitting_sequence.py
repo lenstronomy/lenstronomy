@@ -247,6 +247,12 @@ class TestFittingSequence(object):
         assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
         assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
 
+        kwargs_test = {'kwargs_lens': 1}
+        fittingSequence.update_state(kwargs_test)
+        kwargs_out = fittingSequence.best_fit(bijective=True)
+        assert kwargs_out['kwargs_lens'] == 1
+
+
 
 if __name__ == '__main__':
     pytest.main()

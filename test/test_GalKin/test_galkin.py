@@ -321,27 +321,6 @@ class TestGalkin(object):
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
 
-    def test_displace_psf(self):
-        galkin = Galkin(mass_profile_list=[], light_profile_list=[], psf_type='GAUSSIAN', fwhm=1, moffat_beta=2.6)
-        np.random.seed(41)
-        x, y = galkin.displace_psf(0, 0)
-        assert x != 0
-        assert y != 0
-
-        galkin = Galkin(mass_profile_list=[], light_profile_list=[], psf_type='MOFFAT', fwhm=1, moffat_beta=2.6)
-        np.random.seed(41)
-        x, y = galkin.displace_psf(0, 0)
-        assert x != 0
-        assert y != 0
-
-
-class TestRaise(unittest.TestCase):
-
-    def test_raise(self):
-        with self.assertRaises(ValueError):
-            galkin = Galkin(mass_profile_list=[], light_profile_list=[], psf_type='BRRR', fwhm=1, moffat_beta=2.6)
-            galkin.displace_psf(0, 0)
-
 
 if __name__ == '__main__':
     pytest.main()

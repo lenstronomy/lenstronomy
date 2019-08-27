@@ -2,6 +2,7 @@ from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.mass_profile import MassProfile
 from lenstronomy.GalKin.aperture import Aperture
 from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
+from lenstronomy.GalKin.psf import PSF
 from lenstronomy.GalKin.cosmo import Cosmo
 import lenstronomy.GalKin.velocity_util as util
 import lenstronomy.Util.constants as const
@@ -77,23 +78,7 @@ class Galkin(object):
         self._log_int = log_integration
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
-        self._psf_type = psf_type
-        self._fwhm = fwhm
-        self._moffat_beta = moffat_beta
-
-    def displace_psf(self, x, y):
-        """
-
-        :param x: x-coordinate of light ray
-        :param y: y-coordinate of light ray
-        :return: x', y' displaced by the two dimensional PSF distribution function
-        """
-        if self._psf_type == 'GAUSSIAN':
-            return util.displace_PSF_gaussian(x, y, self._fwhm)
-        elif self._psf_type == 'MOFFAT':
-            return util.displace_PSF_moffat(x, y, self._fwhm, self._moffat_beta)
-        else:
-            raise ValueError('psf_type %s not supported for convolution!' % self._psf_type)
+        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur):
         """
@@ -131,7 +116,7 @@ class Galkin(object):
         while True:
             R = self.lightProfile.draw_light_2d(kwargs_light)  # draw r
             x, y = util.draw_xy(R)  # draw projected R
-            x_, y_ = self.displace_psf(x, y)
+            x_, y_ = self._psf.displace_psf(x, y)
             bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)
             if bool is True:
                 break

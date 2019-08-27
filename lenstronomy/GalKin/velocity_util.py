@@ -11,7 +11,7 @@ def hyp_2F1(a, b, c, z):
     return mp.hyp2f1(a, b, c, z)
 
 
-def displace_PSF(x, y, FWHM):
+def displace_PSF_gaussian(x, y, FWHM):
     """
 
     :param x: x-coord (arc sec)
@@ -24,6 +24,68 @@ def displace_PSF(x, y, FWHM):
     x_ = x + np.random.normal() * sigma_one_direction
     y_ = y + np.random.normal() * sigma_one_direction
     return x_, y_
+
+
+def moffat_r(r, alpha, beta):
+    """
+    Moffat profile
+
+    :param r: radial coordinate
+    :param alpha:
+    :param beta:
+    :return:
+    """
+    return 2. * (beta -1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
+
+
+def moffat_fwhm_alpha(FWHM, beta):
+    """
+    computes alpha parameter from FWHM and beta for a Moffat profile
+
+    :param FWHM:
+    :param beta:
+    :return: alpha
+    """
+    return FWHM / (2 * np.sqrt(2 ** (1. / beta) - 1))
+
+
+def draw_moffat_r(FWHM, beta):
+    """
+
+    :param FWHM:
+    :param beta:
+    :return:
+    """
+    alpha = moffat_fwhm_alpha(FWHM, beta)
+    y = draw_cdf_Y(beta)
+    # equation B3 in Berge et al. paper
+    X = alpha * np.sqrt((y - 1))
+    return X
+
+
+def displace_PSF_moffat(x, y, FWHM, beta):
+    """
+
+    :param x:
+    :param y:
+    :param FWHM:
+    :param beta:
+    :return:
+    """
+    X = draw_moffat_r(FWHM, beta)
+    dx, dy = draw_xy(X)
+    return x + dx, y + dy
+
+
+def draw_cdf_Y(beta):
+    """
+    Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
+    cdf(Y) = 1−Y^(1−β)
+
+    :return:
+    """
+    x = np.random.uniform(0, 1)
+    return (1-x) ** (1./(1-beta))
 
 
 def R_r(r):

@@ -61,7 +61,7 @@ class GalKinAnalytic(object):
         while True:
             r = self.lightProfile.draw_light(kwargs_light)  # draw r
             R, x, y = util.R_r(r)  # draw projected R
-            x_, y_ = util.displace_PSF(x, y, self.FWHM)  # displace via PSF
+            x_, y_ = util.displace_PSF_gaussian(x, y, self.FWHM)  # displace via PSF
             bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)
             if bool is True:
                 break

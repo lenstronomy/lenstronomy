@@ -51,16 +51,17 @@ class Galkin(object):
 
     """
     def __init__(self, mass_profile_list, light_profile_list, aperture_type='slit', anisotropy_model='isotropic',
-                 fwhm=0.7, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, sampling_number=1000,
-                 interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
+                 psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500},
+                 sampling_number=1000, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
         :param mass_profile_list: list of lens (mass) model profiles
         :param light_profile_list: list of light model profiles of the lensing galaxy
         :param aperture_type: type of slit/shell aperture where the light is coming from. See details in Aperture() class.
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class.
+        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param fwhm: full width at half maximum seeing condition
-        :param kwargs_numerics: keyword arguments that control the numerical computation
+        :param moffat_beta: float, beta parameter of Moffat profile
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
         self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, interpol_grid_num=interpol_grid_num,
@@ -69,13 +70,30 @@ class Galkin(object):
                                          max_interpolate=max_integrate, min_interpolate=min_integrate)
         self.aperture = Aperture(aperture_type)
         self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
-        self._fwhm = fwhm
+
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._num_sampling = sampling_number
         self._interp_grid_num = interpol_grid_num
         self._log_int = log_integration
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
+        self._psf_type = psf_type
+        self._fwhm = fwhm
+        self._moffat_beta = moffat_beta
+
+    def displace_psf(self, x, y):
+        """
+
+        :param x: x-coordinate of light ray
+        :param y: y-coordinate of light ray
+        :return: x', y' displaced by the two dimensional PSF distribution function
+        """
+        if self._psf_type == 'GAUSSIAN':
+            return util.displace_PSF_gaussian(x, y, self._fwhm)
+        elif self._psf_type == 'MOFFAT':
+            return util.displace_PSF_moffat(x, y, self._fwhm, self._moffat_beta)
+        else:
+            raise ValueError('psf_type %s not supported for convolution!' % self._psf_type)
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur):
         """
@@ -113,7 +131,7 @@ class Galkin(object):
         while True:
             R = self.lightProfile.draw_light_2d(kwargs_light)  # draw r
             x, y = util.draw_xy(R)  # draw projected R
-            x_, y_ = util.displace_PSF(x, y, self._fwhm)  # displace via PSF
+            x_, y_ = self.displace_psf(x, y)
             bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)
             if bool is True:
                 break

@@ -33,8 +33,7 @@ class LensProp(object):
         self.lens_analysis = LensAnalysis(kwargs_model)
         self._lensModelExt = LensModelExtensions(self.lens_analysis.LensModel)
         self.kwargs_options = kwargs_model
-        kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
-        self.analytic_kinematics = AnalyticKinematics(**kwargs_cosmo)
+        self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """
@@ -49,7 +48,8 @@ class LensProp(object):
         time_delay = self.lensCosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def velocity_dispersion(self, kwargs_lens, r_eff, R_slit, dR_slit, psf_fwhm, aniso_param=1, num_evaluate=1000):
+    def velocity_dispersion(self, kwargs_lens, r_eff, R_slit, dR_slit, psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
+                            moffat_beta=2.6, num_evaluate=1000):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -62,19 +62,21 @@ class LensProp(object):
         :param r_eff: half light radius, if not provided, will be computed from the lens light model
         :param R_slit: width of the slit
         :param dR_slit: length of the slit
-        :param psf_fwhm: full width at half maximum of the seeing condition
+        :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
+        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
+        :param moffat_beta: float, beta parameter of Moffat profile
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
         :return: velocity dispersion in units [km/s]
         """
         gamma = kwargs_lens[0]['gamma']
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
-        sigma2 = self.analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, FWHM=psf_fwhm,
-                                                   rendering_number=num_evaluate)
+        analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type, **self._kwargs_cosmo)
+        sigma2 = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=num_evaluate)
         return sigma2
 
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                      aperture_type, anisotropy_model, r_eff, kwargs_numerics={}, MGE_light=False,
+                                      aperture_type, anisotropy_model, r_eff, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
                                       Hernquist_approx=False):
         """
@@ -91,6 +93,8 @@ class LensProp(object):
         :param kwargs_anisotropy: anisotropy parameters (see Galkin module)
         :param kwargs_aperture: aperture parameters (see Galkin module)
         :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
+        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
+        :param moffat_beta: float, beta parameter of Moffat profile
         :param aperture_type: type of aperture (see Galkin module
         :param anisotropy_model: stellar anisotropy model (see Galkin module)
         :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
@@ -159,7 +163,8 @@ class LensProp(object):
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
 
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
+                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
         return sigma2
 

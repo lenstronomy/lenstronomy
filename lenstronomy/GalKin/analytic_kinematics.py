@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
+from lenstronomy.GalKin.psf import PSF
 import lenstronomy.Util.constants as const
 import math
 
@@ -26,16 +27,20 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d=1000, D_s=2000, D_ds=500):
+    def __init__(self, D_d=1000, D_s=2000, D_ds=500, psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6):
         """
 
         :param D_d: angular diameter to the deflector [MPC]
         :param D_s: angular diameter to the source [MPC]
         :param D_ds: angular diameter from the deflector to the source [MPC]
+        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
+        :param fwhm: full width at half maximum seeing condition
+        :param moffat_beta: float, beta parameter of Moffat profile
         """
         self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
+        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
 
-    def vel_disp(self, gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, FWHM, rendering_number=1000):
+    def vel_disp(self, gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=1000):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -45,7 +50,6 @@ class AnalyticKinematics(object):
         :param r_ani: anisotropy radius
         :param R_slit: length of the slit/box
         :param dR_slit: width of the slit/box
-        :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
         :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 
@@ -54,7 +58,7 @@ class AnalyticKinematics(object):
         sigma_s2_sum = 0
         rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
         for i in range(0, rendering_number):
-            sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit, FWHM)
+            sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit)
             sigma_s2_sum += sigma_s2_draw
         sigma_s2_average = sigma_s2_sum / rendering_number
         return np.sqrt(sigma_s2_average)
@@ -64,7 +68,7 @@ class AnalyticKinematics(object):
         return -1 * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / \
                self._cosmo.arcsec2phys_lens(theta_E) * self._cosmo.epsilon_crit * const.M_sun / const.Mpc ** 3
 
-    def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit, FWHM):
+    def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit):
         """
         computes one realisation of the velocity dispersion realized in the slit
 
@@ -81,7 +85,7 @@ class AnalyticKinematics(object):
         while True:
             r = self.P_r(a)  # draw r
             R, x, y = self.R_r(r)  # draw projected R
-            x_, y_ = self.displace_PSF(x, y, FWHM)  # displace via PSF
+            x_, y_ = self._psf.displace_psf(x, y)
             bool = self.check_in_slit(x_, y_, R_slit, dR_slit)
             if bool is True:
                 break

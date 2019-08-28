@@ -354,6 +354,29 @@ def selectBest(array, criteria, numSelect, highest=True):
     return result[::-1]
 
 
+def select_best(array, criteria, num_select, highest=True):
+    """
+
+    :param array: numpy array to be selected from
+    :param criteria: criteria of selection
+    :param highest: bool, if false the lowest will be selected
+    :param num_select: number of elements to be selected
+    :return:
+    """
+    n = len(array)
+    m = len(criteria)
+    if n != m:
+        raise ValueError('Elements in array (%s) not equal to elements in criteria (%s)' % (n, m))
+    if n < num_select:
+        return array
+    array = np.array(array)
+    if highest is True:
+        indexes = criteria.argsort()[::-1][:num_select]
+    else:
+        indexes = criteria.argsort()[::-1][n-num_select:]
+    return array[indexes]
+
+
 def points_on_circle(radius, points):
     """
     returns a set of uniform points around a circle

@@ -168,7 +168,7 @@ class LikelihoodModule(object):
             logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_special)
             logL += logL_flux_ratios
             if verbose is True:
-                print('time-delay logL = %s' % logL_flux_ratios)
+                print('flux ratio logL = %s' % logL_flux_ratios)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior

@@ -114,10 +114,10 @@ class Solver4Point(object):
         :return: updated kwargs_list
         """
         if self._solver_type == 'PROFILE_SHEAR_GAMMA_PSI':
-            phi_G = x[5]
+            phi_G = x[5]# % (2 * np.pi)
             kwargs_list[1]['psi_ext'] = phi_G
         if self._solver_type == 'PROFILE_SHEAR':
-            phi_G = x[5]
+            phi_G = x[5] % np.pi
             phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
             e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
             kwargs_list[1]['e1'] = e1
@@ -153,7 +153,7 @@ class Solver4Point(object):
         :return:
         """
         if self._solver_type == 'PROFILE_SHEAR_GAMMA_PSI':
-            phi_ext = kwargs_list[1]['psi_ext']
+            phi_ext = kwargs_list[1]['psi_ext']# % (np.pi)
             #e1 = kwargs_list[1]['e1']
             #e2 = kwargs_list[1]['e2']
             #phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)

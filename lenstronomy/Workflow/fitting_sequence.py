@@ -137,7 +137,7 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood,num_data,num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data,num_param)
         return bic
 
     @property

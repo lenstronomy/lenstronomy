@@ -241,6 +241,23 @@ def test_selectBest():
     assert len(array_select) == len(array)
 
 
+def test_select_best():
+    array = np.array([4, 3, 6, 1, 3])
+    select = np.array([2, 4, 7, 3, 3])
+    numSelect = 4
+    array_select = util.select_best(array, select, numSelect, highest=True)
+
+    assert array_select[0] == 6
+    assert array_select[3] == 1
+
+    array_select = util.select_best(array, select, numSelect, highest=False)
+    assert array_select[0] == 3
+    assert array_select[3] == 4
+
+    array_select = util.select_best(array, select, num_select=10, highest=False)
+    assert len(array_select) == len(array)
+
+
 def test_compare_distance():
     x_mapped = np.array([4,3,6,1,3])
     y_mapped = np.array([2,4,7,3,3])

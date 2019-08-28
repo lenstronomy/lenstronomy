@@ -84,6 +84,7 @@ class PositionLikelihood(object):
                 print('source position likelihood %s' % logL_source_pos)
         if self._image_position_likelihood is True:
             logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, sigma=self._position_sigma)
+            logL += logL_image_pos
             if verbose is True:
                 print('image position likelihood %s' % logL_image_pos)
         return logL

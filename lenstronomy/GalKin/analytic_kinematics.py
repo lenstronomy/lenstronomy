@@ -115,20 +115,6 @@ class AnalyticKinematics(object):
         R = np.sqrt(x**2 + y**2)
         return R, x, y
 
-    def displace_PSF(self, x, y, FWHM):
-        """
-
-        :param x: x-coord (arc sec)
-        :param y: y-coord (arc sec)
-        :param FWHM: psf size (arc sec)
-        :return: x', y' random displaced according to psf
-        """
-        sigma = FWHM/(2*np.sqrt(2*np.log(2)))
-        sigma_one_direction = sigma
-        x_ = x + np.random.normal() * sigma_one_direction
-        y_ = y + np.random.normal() * sigma_one_direction
-        return x_, y_
-
     def check_in_slit(self, x, y, R_slit, dR_slit):
         """
 

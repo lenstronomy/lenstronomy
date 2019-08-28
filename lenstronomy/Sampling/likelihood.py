@@ -131,6 +131,13 @@ class LikelihoodModule(object):
         """
         #extract parameters
         kwargs_return = self.param.args2kwargs(args)
+        if self._check_bounds is True:
+            penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
+            if bound_hit:
+                return -penalty, None
+        return self.log_likelihood(kwargs_return, verbose=verbose)
+
+    def log_likelihood(self, kwargs_return, verbose=False):
         kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special = kwargs_return['kwargs_lens'], \
                                                                                    kwargs_return['kwargs_source'], \
                                                                                    kwargs_return['kwargs_lens_light'], \
@@ -139,11 +146,7 @@ class LikelihoodModule(object):
         #generate image and computes likelihood
         self._reset_point_source_cache(bool=True)
         logL = 0
-        if self._check_bounds is True:
-            penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
-            logL -= penalty
-            if bound_hit:
-                return logL, None
+
         if self._image_likelihood is True:
             logL_image = self.image_likelihood.logL(**kwargs_return)
             logL += logL_image
@@ -208,6 +211,9 @@ class LikelihoodModule(object):
             num_data += self.image_likelihood.num_data
         if self._time_delay_likelihood is True:
             num_data += self.time_delay_likelihood.num_data
+        if self._flux_ratio_likelihood is True:
+            num_data += self.flux_ratio_likelihood.num_data
+        num_data += self._position_likelihood.num_data
         return num_data
 
     @property
@@ -221,7 +227,7 @@ class LikelihoodModule(object):
         num_linear = 0
         if self._image_likelihood is True:
             num_linear = self.image_likelihood.num_param_linear(**kwargs)
-        num_param, _ = self.param.num_param()
+        num_param, param_names = self.param.num_param()
         return self.num_data - num_param - num_linear
 
     def __call__(self, a):

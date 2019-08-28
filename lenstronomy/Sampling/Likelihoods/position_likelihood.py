@@ -192,6 +192,18 @@ class PositionLikelihood(object):
             logL -= chi2/2
         return logL
 
+    @property
+    def num_data(self):
+        """
+
+        :return: integer, number of data points assocated with the class instance
+        """
+        num = 0
+        if self._image_position_likelihood is True:
+            for i in range(len(self._ra_image_list)):  # sum over the images of the different model components
+                num += len(self._ra_image_list[i]) * 2
+        return num
+
 
 # Equation (13) in Birrer & Treu 2019
 def image2source_covariance(A, Sigma_theta):

@@ -82,7 +82,7 @@ class Sampler(object):
             pass
         else:
             kwargs_return = self.chain.param.args2kwargs(result)
-            print(pso.gbest.fitness * 2 / (self.chain.effectiv_num_data_points(**kwargs_return)), 'reduced X^2 of best position')
+            print(pso.gbest.fitness * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
             print(pso.gbest.fitness, 'logL')
             print(self.chain.effectiv_num_data_points(**kwargs_return), 'effective number of data points')
             print(kwargs_return.get('kwargs_lens', None), 'lens result')

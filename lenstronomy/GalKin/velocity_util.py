@@ -42,9 +42,9 @@ def moffat_fwhm_alpha(FWHM, beta):
     """
     computes alpha parameter from FWHM and beta for a Moffat profile
 
-    :param FWHM:
-    :param beta:
-    :return: alpha
+    :param FWHM: full width at half maximum
+    :param beta: beta parameter of Moffat profile
+    :return: alpha parameter of Moffat profile
     """
     return FWHM / (2 * np.sqrt(2 ** (1. / beta) - 1))
 
@@ -52,9 +52,9 @@ def moffat_fwhm_alpha(FWHM, beta):
 def draw_moffat_r(FWHM, beta):
     """
 
-    :param FWHM:
-    :param beta:
-    :return:
+    :param FWHM: full width at half maximum
+    :param beta: Moffat beta parameter
+    :return: draw from radial Moffat distribution
     """
     alpha = moffat_fwhm_alpha(FWHM, beta)
     y = draw_cdf_Y(beta)
@@ -66,11 +66,11 @@ def draw_moffat_r(FWHM, beta):
 def displace_PSF_moffat(x, y, FWHM, beta):
     """
 
-    :param x:
-    :param y:
-    :param FWHM:
-    :param beta:
-    :return:
+    :param x: x-coordinate of light ray
+    :param y: y-coordinate of light ray
+    :param FWHM: full width at half maximum
+    :param beta: Moffat beta parameter
+    :return: displaced ray by PSF
     """
     X = draw_moffat_r(FWHM, beta)
     dx, dy = draw_xy(X)
@@ -80,7 +80,7 @@ def displace_PSF_moffat(x, y, FWHM, beta):
 def draw_cdf_Y(beta):
     """
     Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
-    cdf(Y) = 1−Y^(1−β)
+    cdf(Y) = 1−Y**(1−β)
 
     :return:
     """

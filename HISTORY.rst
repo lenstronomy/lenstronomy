@@ -120,3 +120,11 @@ History
 * new lens models added
 * updated Workflow module
 * implemented differential extinction
+
+0.9.2 (2019-8-29)
++++++++++++++++++
+* non-linear solver for 4 point sources updated
+* Moffat PSF for GalKin in place
+* Likelihood module for point sources and catalogue data improved
+* Design improvements in the LensModel module
+* minor stability updates

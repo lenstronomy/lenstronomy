@@ -324,6 +324,8 @@ class TestRaise(unittest.TestCase):
             util.get_axes(x, y)
         with self.assertRaises(ValueError):
             util.selectBest(array=np.ones(6), criteria=np.ones(5), numSelect=1, highest=True)
+        with self.assertRaises(ValueError):
+            util.select_best(array=np.ones(6), criteria=np.ones(5), num_select=1, highest=True)
 
 
 if __name__ == '__main__':

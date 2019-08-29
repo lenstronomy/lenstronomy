@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.numeric_lens_differentials &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.LensModel.numeric_lens_differentials &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -98,7 +98,30 @@
         <span class="n">f_yy</span> <span class="o">=</span> <span class="n">dalpha_decdec</span>
         <span class="n">f_xy</span> <span class="o">=</span> <span class="n">dalpha_radec</span>
         <span class="n">f_yx</span> <span class="o">=</span> <span class="n">dalpha_decra</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div></div>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
+
+<div class="viewcode-block" id="NumericLens.flexion"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.flexion">[docs]</a>    <span class="k">def</span> <span class="nf">flexion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        third derivatives (flexion)</span>
+
+<span class="sd">        :param x: x-position (preferentially arcsec)</span>
+<span class="sd">        :type x: numpy array</span>
+<span class="sd">        :param y: y-position (preferentially arcsec)</span>
+<span class="sd">        :type y: numpy array</span>
+<span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
+<span class="sd">        :param diff: numerical differential length of Hessian</span>
+<span class="sd">        :return: f_xxx, f_xxy, f_xyy, f_yyy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">f_xx_dx</span><span class="p">,</span> <span class="n">f_xy_dx</span><span class="p">,</span> <span class="n">f_yx_dx</span><span class="p">,</span> <span class="n">f_yy_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">f_xx_dy</span><span class="p">,</span> <span class="n">f_xy_dy</span><span class="p">,</span> <span class="n">f_yx_dy</span><span class="p">,</span> <span class="n">f_yy_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">f_xxx</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xx_dx</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_xxy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xx_dy</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_xyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xy_dy</span> <span class="o">-</span> <span class="n">f_xy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">f_yyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_yy_dy</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="k">return</span> <span class="n">f_xxx</span><span class="p">,</span> <span class="n">f_xxy</span><span class="p">,</span> <span class="n">f_xyy</span><span class="p">,</span> <span class="n">f_yyy</span></div></div>
 </pre></div>
 
           </div>
@@ -131,7 +154,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

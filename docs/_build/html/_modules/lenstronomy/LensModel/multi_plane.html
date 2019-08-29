@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -275,7 +275,26 @@
         <span class="n">T_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_z_source</span>
         <span class="n">theta_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">T_z</span>
         <span class="n">theta_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">T_z</span>
-        <span class="k">return</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span></div>
+        <span class="k">return</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span>
+
+<div class="viewcode-block" id="MultiPlane.set_static"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed2flat_convention</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiPlane.set_dynamic"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.set_dynamic">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span></div></div>
 
 
 <div class="viewcode-block" id="PhysicalLocation"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.PhysicalLocation">[docs]</a><span class="k">class</span> <span class="nc">PhysicalLocation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -363,7 +382,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

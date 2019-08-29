@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Index &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>Index &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -29,7 +29,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.2 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -101,8 +101,6 @@
         <li><a href="lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens">(lenstronomy.LensModel.Solver.solver4point.Solver4Point method)</a>
 </li>
       </ul></li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.add_fixed_linear">add_fixed_linear() (lenstronomy.LightModel.light_param.LightParam method)</a>
-</li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image">add_layer2image() (in module lenstronomy.Util.image_util)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image_int">add_layer2image_int() (in module lenstronomy.Util.image_util)</a>
@@ -216,6 +214,10 @@
 </li>
       </ul></li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.anisotropy.Anisotropy.beta_r_ani">beta_r_ani() (lenstronomy.GalKin.anisotropy.Anisotropy method)</a>
+</li>
+      <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.bic">bic (lenstronomy.Workflow.fitting_sequence.FittingSequence attribute)</a>
+</li>
+      <li><a href="lenstronomy.Util.html#lenstronomy.Util.analysis_util.bic_model">bic_model() (in module lenstronomy.Util.analysis_util)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -659,12 +661,10 @@
 </li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole_util">Dipole_util (class in lenstronomy.LensModel.Profiles.dipole)</a>
 </li>
-      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF">displace_PSF() (in module lenstronomy.GalKin.velocity_util)</a>
-
-      <ul>
-        <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.displace_PSF">(lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics method)</a>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF_gaussian">displace_PSF_gaussian() (in module lenstronomy.GalKin.velocity_util)</a>
 </li>
-      </ul></li>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF_moffat">displace_PSF_moffat() (in module lenstronomy.GalKin.velocity_util)</a>
+</li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.util.displaceAbs">displaceAbs() (in module lenstronomy.Util.util)</a>
 </li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.interpol.Interpol.do_interp">do_interp() (lenstronomy.LensModel.Profiles.interpol.Interpol method)</a>
@@ -679,11 +679,15 @@
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.draw">draw() (lenstronomy.Util.prob_density.Approx method)</a>
 </li>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.draw_cdf_Y">draw_cdf_Y() (in module lenstronomy.GalKin.velocity_util)</a>
+</li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfileOld.draw_light">draw_light() (lenstronomy.GalKin.light_profile.LightProfileOld method)</a>
 </li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.draw_light_2d">draw_light_2d() (lenstronomy.GalKin.light_profile.LightProfile method)</a>
 </li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.draw_light_2d_linear">draw_light_2d_linear() (lenstronomy.GalKin.light_profile.LightProfile method)</a>
+</li>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.draw_moffat_r">draw_moffat_r() (in module lenstronomy.GalKin.velocity_util)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.prob_density.Approx.draw_one">draw_one (lenstronomy.Util.prob_density.Approx attribute)</a>
 </li>
@@ -808,7 +812,11 @@
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.flexion.Flexion">Flexion (class in lenstronomy.LensModel.Profiles.flexion)</a>
 </li>
       <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.flexion">flexion() (lenstronomy.LensModel.lens_model.LensModel method)</a>
+
+      <ul>
+        <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.numeric_lens_differentials.NumericLens.flexion">(lenstronomy.LensModel.numeric_lens_differentials.NumericLens method)</a>
 </li>
+      </ul></li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.flexionfg.Flexionfg">Flexionfg (class in lenstronomy.LensModel.Profiles.flexionfg)</a>
 </li>
       <li><a href="lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high">flux_array2image_low_high() (lenstronomy.ImSim.Numerics.grid.AdaptiveGrid method)</a>
@@ -971,8 +979,6 @@
         <li><a href="lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.ShapeletSet.function_split">(lenstronomy.LightModel.Profiles.shapelets.ShapeletSet method)</a>
 </li>
       </ul></li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.functions_split">functions_split() (lenstronomy.LightModel.light_model.LightModel method)</a>
-</li>
       <li><a href="lenstronomy.Data.html#lenstronomy.Data.psf.PSF.fwhm">fwhm (lenstronomy.Data.psf.PSF attribute)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.util.fwhm2sigma">fwhm2sigma() (in module lenstronomy.Util.util)</a>
@@ -1229,8 +1235,6 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.hessian_differential">hessian_differential() (lenstronomy.LensModel.single_plane.SinglePlane method)</a>
-</li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.hyp_2F1">hyp_2F1() (in module lenstronomy.GalKin.velocity_util)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.util.hyper2F2_array">hyper2F2_array() (in module lenstronomy.Util.util)</a>
@@ -1250,6 +1254,8 @@
       <li><a href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image2array_masked">image2array_masked() (lenstronomy.ImSim.image_linear_solve.ImageLinearFit method)</a>
 </li>
       <li><a href="lenstronomy.ImSim.html#lenstronomy.ImSim.image2source_mapping.Image2SourceMapping.image2source">image2source() (lenstronomy.ImSim.image2source_mapping.Image2SourceMapping method)</a>
+</li>
+      <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.image2source_covariance">image2source_covariance() (in module lenstronomy.Sampling.Likelihoods.position_likelihood)</a>
 </li>
       <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.image2source_plane">image2source_plane() (lenstronomy.Sampling.parameters.Param method)</a>
 </li>
@@ -1300,6 +1306,8 @@
 </li>
       </ul></li>
       <li><a href="lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">image_position_from_source() (lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver method)</a>
+</li>
+      <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood">image_position_likelihood() (lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood method)</a>
 </li>
       <li><a href="lenstronomy.Plots.html#lenstronomy.Plots.output_plots.image_position_plot">image_position_plot() (in module lenstronomy.Plots.output_plots)</a>
 </li>
@@ -1364,6 +1372,8 @@
 </li>
       </ul></li>
       <li><a href="lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.kappa2proj_mass">kappa2proj_mass() (lenstronomy.Cosmo.lens_cosmo.LensCosmo method)</a>
+</li>
+      <li><a href="lenstronomy.Util.html#lenstronomy.Util.prob_density.KDE1D">KDE1D (class in lenstronomy.Util.prob_density)</a>
 </li>
       <li><a href="lenstronomy.Cosmo.html#lenstronomy.Cosmo.kde_likelihood.KDELikelihood">KDELikelihood (class in lenstronomy.Cosmo.kde_likelihood)</a>
 </li>
@@ -1689,10 +1699,10 @@
 </li>
       <li><a href="lenstronomy.PointSource.html#module-lenstronomy.PointSource.point_source">lenstronomy.PointSource.point_source (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.PointSource.html#module-lenstronomy.PointSource.point_source_param">lenstronomy.PointSource.point_source_param (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.PointSource.html#module-lenstronomy.PointSource.point_source_types">lenstronomy.PointSource.point_source_types (module)</a>
 </li>
       <li><a href="lenstronomy.Sampling.html#module-lenstronomy.Sampling">lenstronomy.Sampling (module)</a>
@@ -1800,8 +1810,6 @@
 </li>
         <li><a href="lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.power_law.PowerLaw.light_3d">(lenstronomy.LightModel.Profiles.power_law.PowerLaw method)</a>
 </li>
-        <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.light_3d">(lenstronomy.LightModel.light_model.LightModel method)</a>
-</li>
       </ul></li>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.light_3d_interp">light_3d_interp() (lenstronomy.GalKin.light_profile.LightProfile method)</a>
 </li>
@@ -1817,6 +1825,8 @@
 
       <ul>
         <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood">(lenstronomy.Sampling.likelihood.LikelihoodModule method)</a>
+</li>
+        <li><a href="lenstronomy.Util.html#lenstronomy.Util.prob_density.KDE1D.likelihood">(lenstronomy.Util.prob_density.KDE1D method)</a>
 </li>
         <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.likelihood">(lenstronomy.Workflow.alignment_matching.AlignmentLikelihood method)</a>
 </li>
@@ -1856,6 +1866,8 @@
 </li>
         <li><a href="lenstronomy.Sampling.Samplers.html#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.log_likelihood">(lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler method)</a>
 </li>
+        <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood">(lenstronomy.Sampling.likelihood.LikelihoodModule method)</a>
+</li>
       </ul></li>
       <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.logL">logL() (lenstronomy.Sampling.likelihood.LikelihoodModule method)</a>
 
@@ -1887,6 +1899,8 @@
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default">(lenstronomy.LensModel.Profiles.convergence.Convergence attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.lower_limit_default">(lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert attribute)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.lower_limit_default">(lenstronomy.LensModel.Profiles.curved_arc.CurvedArc attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.lower_limit_default">(lenstronomy.LensModel.Profiles.dipole.Dipole attribute)</a>
 </li>
@@ -2119,10 +2133,10 @@
         <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.mass_3d">(lenstronomy.LensModel.single_plane.SinglePlane method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.mass_profile.MassProfile.mass_3d_interp">mass_3d_interp() (lenstronomy.GalKin.mass_profile.MassProfile method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential.mass_3d_lens">mass_3d_lens() (lenstronomy.LensModel.Profiles.gaussian_ellipse_potential.GaussianEllipsePotential method)</a>
 
       <ul>
@@ -2208,6 +2222,10 @@
       <li><a href="lenstronomy.Plots.html#lenstronomy.Plots.output_plots.ModelPlot">ModelPlot (class in lenstronomy.Plots.output_plots)</a>
 </li>
       <li><a href="lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.moffat.Moffat">Moffat (class in lenstronomy.LightModel.Profiles.moffat)</a>
+</li>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha">moffat_fwhm_alpha() (in module lenstronomy.GalKin.velocity_util)</a>
+</li>
+      <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.moffat_r">moffat_r() (in module lenstronomy.GalKin.velocity_util)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.analysis_util.moments">moments() (in module lenstronomy.Util.analysis_util)</a>
 </li>
@@ -2304,6 +2322,8 @@
       <ul>
         <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data">(lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood attribute)</a>
 </li>
+        <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data">(lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood attribute)</a>
+</li>
         <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data">(lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood attribute)</a>
 </li>
       </ul></li>
@@ -2334,8 +2354,6 @@
 </li>
         <li><a href="lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear">(lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel method)</a>
 </li>
-        <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.num_param_linear">(lenstronomy.LightModel.light_model.LightModel method)</a>
-</li>
         <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.num_param_linear">(lenstronomy.LightModel.light_param.LightParam method)</a>
 </li>
         <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_param.PointSourceParam.num_param_linear">(lenstronomy.PointSource.point_source_param.PointSourceParam method)</a>
@@ -2345,8 +2363,6 @@
         <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.num_param_linear">(lenstronomy.Sampling.parameters.Param method)</a>
 </li>
       </ul></li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.num_param_linear_list">num_param_linear_list() (lenstronomy.LightModel.light_model.LightModel method)</a>
-</li>
       <li><a href="lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.partial_image.PartialImage.num_partial">num_partial (lenstronomy.ImSim.Numerics.partial_image.PartialImage attribute)</a>
 </li>
       <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.num_point_source_images">num_point_source_images (lenstronomy.Sampling.parameters.Param attribute)</a>
@@ -2403,13 +2419,15 @@
         <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.param_class">(lenstronomy.Workflow.update_manager.UpdateManager attribute)</a>
 </li>
       </ul></li>
+      <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.param_conv">param_conv() (lenstronomy.LensModel.Profiles.nie.NIE method)</a>
+</li>
+      <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.Chameleon.param_convert">param_convert() (lenstronomy.LensModel.Profiles.chameleon.Chameleon method)</a>
+</li>
       <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.param_limits">param_limits (lenstronomy.Sampling.likelihood.LikelihoodModule attribute)</a>
 </li>
       <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.param_limits">param_limits() (lenstronomy.Sampling.parameters.Param method)</a>
 </li>
       <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.param_name_list">param_name_list (lenstronomy.LightModel.light_param.LightParam attribute)</a>
-</li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.param_name_list">param_name_list() (lenstronomy.LightModel.light_model.LightModel method)</a>
 </li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.alpha_shift.Shift.param_names">param_names (lenstronomy.LensModel.Profiles.alpha_shift.Shift attribute)</a>
 
@@ -2427,6 +2445,8 @@
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.convergence.Convergence.param_names">(lenstronomy.LensModel.Profiles.convergence.Convergence attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.param_names">(lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert attribute)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.param_names">(lenstronomy.LensModel.Profiles.curved_arc.CurvedArc attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.param_names">(lenstronomy.LensModel.Profiles.dipole.Dipole attribute)</a>
 </li>
@@ -2545,10 +2565,10 @@
 </li>
       <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.optimizer_params.Params">Params (class in lenstronomy.LensModel.Optimizer.optimizer_params)</a>
 </li>
-      <li><a href="lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array">partial_array() (lenstronomy.ImSim.Numerics.partial_image.PartialImage method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array">partial_array() (lenstronomy.ImSim.Numerics.partial_image.PartialImage method)</a>
+</li>
       <li><a href="lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.partial_image.PartialImage">PartialImage (class in lenstronomy.ImSim.Numerics.partial_image)</a>
 </li>
       <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle">Particle (class in lenstronomy.LensModel.Optimizer.particle_swarm)</a>
@@ -2767,12 +2787,6 @@
 </li>
       <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting_partial_steps">ray_shooting_partial_steps() (lenstronomy.LensModel.multi_plane.MultiPlane method)</a>
 </li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.re_normalize_flux">re_normalize_flux() (lenstronomy.LightModel.light_model.LightModel method)</a>
-
-      <ul>
-        <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.re_normalize_flux">(lenstronomy.PointSource.point_source.PointSource method)</a>
-</li>
-      </ul></li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.re_size">re_size() (in module lenstronomy.Util.image_util)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.re_size_array">re_size_array() (in module lenstronomy.Util.image_util)</a>
@@ -2791,12 +2805,10 @@
       </ul></li>
       <li><a href="lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.SingleBand.read_noise">read_noise (lenstronomy.SimulationAPI.observation_api.SingleBand attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.real_image_positions">real_image_positions() (lenstronomy.Sampling.parameters.Param method)</a>
-</li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_coord_transform">rebin_coord_transform() (in module lenstronomy.Util.image_util)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_image">rebin_image() (in module lenstronomy.Util.image_util)</a>
 </li>
       <li><a href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_chi2">reduced_chi2() (lenstronomy.ImSim.image_linear_solve.ImageLinearFit method)</a>
@@ -2863,6 +2875,8 @@
 </li>
       <li><a href="lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.SingleBand.scaled_exposure_time">scaled_exposure_time (lenstronomy.SimulationAPI.observation_api.SingleBand attribute)</a>
 </li>
+      <li><a href="lenstronomy.Util.html#lenstronomy.Util.util.select_best">select_best() (in module lenstronomy.Util.util)</a>
+</li>
       <li><a href="lenstronomy.ImSim.MultiBand.html#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs">select_kwargs() (lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel method)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.util.selectBest">selectBest() (in module lenstronomy.Util.util)</a>
@@ -2885,6 +2899,22 @@
 </li>
       <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.set_amplitudes">set_amplitudes() (lenstronomy.PointSource.point_source.PointSource method)</a>
 </li>
+      <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.set_dynamic">set_dynamic() (lenstronomy.LensModel.lens_model.LensModel method)</a>
+
+      <ul>
+        <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.set_dynamic">(lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.Chameleon.set_dynamic">(lenstronomy.LensModel.Profiles.chameleon.Chameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.set_dynamic">(lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.set_dynamic">(lenstronomy.LensModel.Profiles.chameleon.TripleChameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.set_dynamic">(lenstronomy.LensModel.Profiles.nie.NIE method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.set_dynamic">(lenstronomy.LensModel.multi_plane.MultiPlane method)</a>
+</li>
+      </ul></li>
       <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.set_init_state">set_init_state() (lenstronomy.Workflow.update_manager.UpdateManager method)</a>
 </li>
       <li><a href="lenstronomy.Data.html#lenstronomy.Data.psf.PSF.set_pixel_size">set_pixel_size() (lenstronomy.Data.psf.PSF method)</a>
@@ -2893,6 +2923,22 @@
 
       <ul>
         <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.PointSourceCached.set_save_cache">(lenstronomy.PointSource.point_source_types.PointSourceCached method)</a>
+</li>
+      </ul></li>
+      <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.set_static">set_static() (lenstronomy.LensModel.lens_model.LensModel method)</a>
+
+      <ul>
+        <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing.set_static">(lenstronomy.LensModel.Optimizer.multi_plane_optimizer.MultiPlaneLensing method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.Chameleon.set_static">(lenstronomy.LensModel.Profiles.chameleon.Chameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.set_static">(lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.set_static">(lenstronomy.LensModel.Profiles.chameleon.TripleChameleon method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.set_static">(lenstronomy.LensModel.Profiles.nie.NIE method)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.set_static">(lenstronomy.LensModel.multi_plane.MultiPlane method)</a>
 </li>
       </ul></li>
       <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.setParams">setParams() (lenstronomy.LensModel.lens_param.LensParam method)</a>
@@ -2955,6 +3001,8 @@
         <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.jeans_equation.JeansSolver.sigma_r2">(lenstronomy.GalKin.jeans_equation.JeansSolver method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.sigma_s2">sigma_s2() (lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics method)</a>
 
       <ul>
@@ -2969,8 +3017,6 @@
 </li>
       <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane">SinglePlane (class in lenstronomy.LensModel.single_plane)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.single_plane_optimizer.SinglePlaneLensing">SinglePlaneLensing (class in lenstronomy.LensModel.Optimizer.single_plane_optimizer)</a>
 </li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS">SIS (class in lenstronomy.LensModel.Profiles.sis)</a>
@@ -3049,6 +3095,8 @@
         <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.Unlensed.source_position">(lenstronomy.PointSource.point_source_types.Unlensed method)</a>
 </li>
       </ul></li>
+      <li><a href="lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood">source_position_likelihood() (lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood method)</a>
+</li>
       <li><a href="lenstronomy.Plots.html#lenstronomy.Plots.output_plots.source_position_plot">source_position_plot() (in module lenstronomy.Plots.output_plots)</a>
 </li>
       <li><a href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness">source_surface_brightness() (lenstronomy.ImSim.image_model.ImageModel method)</a>
@@ -3065,7 +3113,11 @@
 </li>
       <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.spp.SPP">SPP (class in lenstronomy.LensModel.Profiles.spp)</a>
 </li>
+      <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.spp2stretch">spp2stretch() (lenstronomy.LensModel.Profiles.curved_arc.CurvedArc static method)</a>
+</li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.stack_images">stack_images() (in module lenstronomy.Util.image_util)</a>
+</li>
+      <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.stretch2spp">stretch2spp() (lenstronomy.LensModel.Profiles.curved_arc.CurvedArc static method)</a>
 </li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.kernel_util.subgrid_kernel">subgrid_kernel() (in module lenstronomy.Util.kernel_util)</a>
 </li>
@@ -3079,8 +3131,6 @@
         <li><a href="lenstronomy.Plots.html#lenstronomy.Plots.output_plots.ModelPlot.subtract_from_data_plot">(lenstronomy.Plots.output_plots.ModelPlot method)</a>
 </li>
       </ul></li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.surface_brightness">surface_brightness() (lenstronomy.LightModel.light_model.LightModel method)</a>
-</li>
       <li><a href="lenstronomy.Util.html#lenstronomy.Util.image_util.symmetry_average">symmetry_average() (in module lenstronomy.Util.image_util)</a>
 </li>
   </ul></td>
@@ -3119,8 +3169,6 @@
         <li><a href="lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.gaussian.MultiGaussian.total_flux">(lenstronomy.LightModel.Profiles.gaussian.MultiGaussian method)</a>
 </li>
         <li><a href="lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse.total_flux">(lenstronomy.LightModel.Profiles.gaussian.MultiGaussianEllipse method)</a>
-</li>
-        <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.total_flux">(lenstronomy.LightModel.light_model.LightModel method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -3179,12 +3227,8 @@
 </li>
       <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_limits">update_limits() (lenstronomy.Workflow.update_manager.UpdateManager method)</a>
 </li>
-      <li><a href="lenstronomy.LightModel.html#lenstronomy.LightModel.light_model.LightModel.update_linear">update_linear() (lenstronomy.LightModel.light_model.LightModel method)</a>
-
-      <ul>
-        <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_linear">(lenstronomy.PointSource.point_source.PointSource method)</a>
+      <li><a href="lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_linear">update_linear() (lenstronomy.PointSource.point_source.PointSource method)</a>
 </li>
-      </ul></li>
       <li><a href="lenstronomy.ImSim.html#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.update_linear_kwargs">update_linear_kwargs() (lenstronomy.ImSim.image_linear_solve.ImageLinearFit method)</a>
 </li>
       <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_multi_band">update_multi_band() (lenstronomy.Workflow.alignment_matching.AlignmentLikelihood method)</a>
@@ -3207,6 +3251,8 @@
 </li>
       <li><a href="lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.update_source_redshift">update_source_redshift() (lenstronomy.LensModel.multi_plane.MultiPlane method)</a>
 </li>
+      <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state">update_state() (lenstronomy.Workflow.fitting_sequence.FittingSequence method)</a>
+</li>
       <li><a href="lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager">UpdateManager (class in lenstronomy.Workflow.update_manager)</a>
 </li>
       <li><a href="lenstronomy.LensModel.Optimizer.html#lenstronomy.LensModel.Optimizer.particle_swarm.Particle.updatePBest">updatePBest() (lenstronomy.LensModel.Optimizer.particle_swarm.Particle method)</a>
@@ -3227,6 +3273,8 @@
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default">(lenstronomy.LensModel.Profiles.convergence.Convergence attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert.upper_limit_default">(lenstronomy.LensModel.Profiles.coreBurkert.CoreBurkert attribute)</a>
+</li>
+        <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc.CurvedArc.upper_limit_default">(lenstronomy.LensModel.Profiles.curved_arc.CurvedArc attribute)</a>
 </li>
         <li><a href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.dipole.Dipole.upper_limit_default">(lenstronomy.LensModel.Profiles.dipole.Dipole attribute)</a>
 </li>
@@ -3432,7 +3480,7 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.2 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

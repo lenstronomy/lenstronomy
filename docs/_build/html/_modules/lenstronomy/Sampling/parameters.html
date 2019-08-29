@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -75,13 +75,16 @@
 <span class="sd">    joint parameter between lens model and lens light model</span>
 
 <span class="sd">    &#39;joint_source_with_point_source&#39;: list [[i_point_source, k_source], [...], ...],</span>
-<span class="sd">    joint position parameter between lens model and lens light model</span>
+<span class="sd">    joint position parameter between lens model and source light model</span>
 
 <span class="sd">    &#39;joint_lens_light_with_point_source&#39;: list [[i_point_source, k_lens_light], [...], ...],</span>
 <span class="sd">    joint position parameter between lens model and lens light model</span>
 
 <span class="sd">    &#39;joint_extinction_with_lens_light&#39;: list [[i_lens_light, k_extinction, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [...], ...],</span>
 <span class="sd">    joint parameters between the lens surface brightness and the optical depth models</span>
+
+<span class="sd">    &#39;joint_lens_with_source_light&#39;: [[i_source, k_lens, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [...], ...],</span>
+<span class="sd">    joint parameter between lens model and source light model. Samples light model parameter only.</span>
 
 <span class="sd">    hierarchy is as follows:</span>
 <span class="sd">    1. Point source parameters are inferred</span>
@@ -103,7 +106,7 @@
                  <span class="n">kwargs_lens_init</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linear_solver</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">joint_lens_with_lens</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_lens_light_with_lens_light</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">joint_source_with_source</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_lens_with_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_source_with_point_source</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">joint_lens_light_with_point_source</span><span class="o">=</span><span class="p">[],</span> <span class="n">joint_extinction_with_lens_light</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">mass_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">joint_lens_with_source_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">mass_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">num_point_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_plane_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">Ddt_sampling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">source_size</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_tau0</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -146,6 +149,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_source_with_source</span> <span class="o">=</span> <span class="n">joint_source_with_source</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_light</span> <span class="o">=</span> <span class="n">joint_lens_with_light</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_source_light</span> <span class="o">=</span> <span class="n">joint_lens_with_source_light</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_joint_source_with_point_source</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">joint_source_with_point_source</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">param_list</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_source_with_point_source</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">param_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -188,6 +192,7 @@
         <span class="c1"># fix parameters joint within the same model types</span>
         <span class="n">kwargs_fixed_lens_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed_lens</span><span class="p">(</span><span class="n">kwargs_fixed_lens</span><span class="p">,</span> <span class="n">kwargs_lens_init</span><span class="p">)</span>
         <span class="n">kwargs_fixed_lens_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_joint_param</span><span class="p">(</span><span class="n">kwargs_fixed_lens_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_lens</span><span class="p">)</span>
+        <span class="n">kwargs_fixed_lens_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_joint_param</span><span class="p">(</span><span class="n">kwargs_fixed_lens_updated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_source_light</span><span class="p">)</span>
         <span class="n">kwargs_fixed_lens_light_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_joint_param</span><span class="p">(</span><span class="n">kwargs_fixed_lens_light</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_light_with_lens_light</span><span class="p">)</span>
         <span class="n">kwargs_fixed_source_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fix_joint_param</span><span class="p">(</span><span class="n">kwargs_fixed_source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_source_with_source</span><span class="p">)</span>
         <span class="n">kwargs_fixed_ps_updated</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_fixed_ps</span><span class="p">)</span>
@@ -218,6 +223,12 @@
                                           <span class="n">kwargs_lower</span><span class="o">=</span><span class="n">kwargs_lower_special</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="n">kwargs_upper_special</span><span class="p">,</span>
                                           <span class="n">point_source_offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_source_offset</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">,</span>
                                           <span class="n">source_size</span><span class="o">=</span><span class="n">source_size</span><span class="p">,</span> <span class="n">num_tau0</span><span class="o">=</span><span class="n">num_tau0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lens_source_joint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_source_light</span><span class="p">:</span>
+            <span class="n">i_source</span> <span class="o">=</span> <span class="n">lens_source_joint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i_source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_plane_source_list</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;linking a source light model with a lens model AND simultaneously parameterizing the&quot;</span>
+                                 <span class="s2">&quot; source position in the image plane is not valid!&quot;</span><span class="p">)</span>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_point_source_images</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -241,6 +252,7 @@
         <span class="n">kwargs_lens_light</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_joint_param</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_light_with_lens_light</span><span class="p">)</span>
         <span class="c1"># update lens_light joint with lens model parameters</span>
         <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_joint_param</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_light</span><span class="p">)</span>
+        <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_joint_param</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_with_source_light</span><span class="p">)</span>
         <span class="c1"># update extinction model with lens light model</span>
         <span class="n">kwargs_extinction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_joint_param</span><span class="p">(</span><span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_extinction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_joint_extinction_with_lens_light</span><span class="p">)</span>
         <span class="c1"># update lens model joint parameters (including scaling)</span>
@@ -249,7 +261,7 @@
         <span class="c1"># update point source constraint solver</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
-            <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_image_positions</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">)</span>
+            <span class="c1">#x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)</span>
             <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_module</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">)</span>
         <span class="c1"># update source joint with point source</span>
         <span class="n">kwargs_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_source_joint_with_point_source</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">,</span>
@@ -363,7 +375,7 @@
                 <span class="n">y_mapped</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i_point_source</span><span class="p">][</span><span class="s1">&#39;dec_source&#39;</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i_point_source</span><span class="p">][</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i_point_source</span><span class="p">][</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
-                <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_image_positions</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">)</span>
+                <span class="c1">#x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)</span>
                 <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image2SourceMapping</span><span class="o">.</span><span class="n">image2source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens_list</span><span class="p">,</span>
                                                                             <span class="n">index_source</span><span class="o">=</span><span class="n">k_source</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">:</span>
@@ -460,7 +472,7 @@
             <span class="n">kwargs_fixed_update</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_module</span><span class="o">.</span><span class="n">add_fixed_lens</span><span class="p">(</span><span class="n">kwargs_fixed_update</span><span class="p">,</span> <span class="n">kwargs_init</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kwargs_fixed_update</span>
 
-<div class="viewcode-block" id="Param.check_solver"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.check_solver">[docs]</a>    <span class="k">def</span> <span class="nf">check_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="o">=</span><span class="p">{}):</span>
+<div class="viewcode-block" id="Param.check_solver"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.check_solver">[docs]</a>    <span class="k">def</span> <span class="nf">check_solver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        test whether the image positions map back to the same source position</span>
 <span class="sd">        :param kwargs_lens:</span>
@@ -469,7 +481,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">image_x</span><span class="p">,</span> <span class="n">image_y</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
-            <span class="n">image_x</span><span class="p">,</span> <span class="n">image_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">real_image_positions</span><span class="p">(</span><span class="n">image_x</span><span class="p">,</span> <span class="n">image_y</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">)</span>
             <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_module</span><span class="o">.</span><span class="n">check_solver</span><span class="p">(</span><span class="n">image_x</span><span class="p">,</span> <span class="n">image_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -484,18 +495,18 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Param.real_image_positions"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.real_image_positions">[docs]</a>    <span class="k">def</span> <span class="nf">real_image_positions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+    <span class="c1">#def real_image_positions(self, x, y, kwargs_special):</span>
+    <span class="c1">#    &quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs_ps: point source kwargs</span>
-<span class="sd">        :param kwargs_special: special kwargs (or other kwargs)</span>
-<span class="sd">        :return: position where time delays are evaluated and solver is solved for</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_offset</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">delta_x</span><span class="p">,</span> <span class="n">delta_y</span> <span class="o">=</span> <span class="n">kwargs_special</span><span class="p">[</span><span class="s1">&#39;delta_x_image&#39;</span><span class="p">],</span> <span class="n">kwargs_special</span><span class="p">[</span><span class="s1">&#39;delta_y_image&#39;</span><span class="p">]</span>
-            <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">delta_x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">delta_y</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
+     <span class="c1">#   :param kwargs_ps: point source kwargs</span>
+     <span class="c1">#   :param kwargs_special: special kwargs (or other kwargs)</span>
+     <span class="c1">#   :return: position where time delays are evaluated and solver is solved for</span>
+     <span class="c1">#   &quot;&quot;&quot;</span>
+     <span class="c1">#   if self._point_source_offset is True:</span>
+     <span class="c1">#       delta_x, delta_y = kwargs_special[&#39;delta_x_image&#39;], kwargs_special[&#39;delta_y_image&#39;]</span>
+     <span class="c1">#       return x + delta_x, y + delta_y</span>
+     <span class="c1">#   else:</span>
+     <span class="c1">#       return x, y</span>
 
 <div class="viewcode-block" id="Param.print_setting"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param.print_setting">[docs]</a>    <span class="k">def</span> <span class="nf">print_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -560,7 +571,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

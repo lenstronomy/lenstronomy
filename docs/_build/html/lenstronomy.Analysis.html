@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -309,7 +309,7 @@ for a given lens model</p>
 
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion">
-<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>r_eff</em>, <em>R_slit</em>, <em>dR_slit</em>, <em>psf_fwhm</em>, <em>aniso_param=1</em>, <em>num_evaluate=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
+<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>r_eff</em>, <em>R_slit</em>, <em>dR_slit</em>, <em>psf_fwhm</em>, <em>aniso_param=1</em>, <em>psf_type='GAUSSIAN'</em>, <em>moffat_beta=2.6</em>, <em>num_evaluate=1000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
 The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.</p>
 <p>Further information can be found in the AnalyticKinematics() class.</p>
@@ -324,7 +324,9 @@ The assumptions are a Hernquist light profile and the spherical power-law lens m
 <li><strong>r_eff</strong> – half light radius, if not provided, will be computed from the lens light model</li>
 <li><strong>R_slit</strong> – width of the slit</li>
 <li><strong>dR_slit</strong> – length of the slit</li>
-<li><strong>psf_fwhm</strong> – full width at half maximum of the seeing condition</li>
+<li><strong>psf_fwhm</strong> – full width at half maximum of the seeing (Gaussian form)</li>
+<li><strong>psf_type</strong> – string, point spread functino type, current support for ‘GAUSSIAN’ and ‘MOFFAT’</li>
+<li><strong>moffat_beta</strong> – float, beta parameter of Moffat profile</li>
 <li><strong>num_evaluate</strong> – number of spectral rendering of the light distribution that end up on the slit</li>
 </ul>
 </td>
@@ -338,7 +340,7 @@ The assumptions are a Hernquist light profile and the spherical power-law lens m
 
 <dl class="method">
 <dt id="lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion_numerical">
-<code class="descname">velocity_dispersion_numerical</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>psf_fwhm</em>, <em>aperture_type</em>, <em>anisotropy_model</em>, <em>r_eff</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>Hernquist_approx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion_numerical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion_numerical" title="Permalink to this definition">¶</a></dt>
+<code class="descname">velocity_dispersion_numerical</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>psf_fwhm</em>, <em>aperture_type</em>, <em>anisotropy_model</em>, <em>r_eff</em>, <em>psf_type='GAUSSIAN'</em>, <em>moffat_beta=2.6</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>Hernquist_approx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/lens_properties.html#LensProp.velocity_dispersion_numerical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.lens_properties.LensProp.velocity_dispersion_numerical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
 For a detailed description, visit the description of the Galkin() class.
 Additionaly to executing the Galkin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
@@ -355,6 +357,8 @@ same point.</p>
 <li><strong>kwargs_anisotropy</strong> – anisotropy parameters (see Galkin module)</li>
 <li><strong>kwargs_aperture</strong> – aperture parameters (see Galkin module)</li>
 <li><strong>psf_fwhm</strong> – full width at half maximum of the seeing (Gaussian form)</li>
+<li><strong>psf_type</strong> – string, point spread functino type, current support for ‘GAUSSIAN’ and ‘MOFFAT’</li>
+<li><strong>moffat_beta</strong> – float, beta parameter of Moffat profile</li>
 <li><strong>aperture_type</strong> – type of aperture (see Galkin module</li>
 <li><strong>anisotropy_model</strong> – stellar anisotropy model (see Galkin module)</li>
 <li><strong>r_eff</strong> – a rough estimate of the half light radius of the lens light in case of computing the MGE of the
@@ -447,7 +451,7 @@ deflector</li>
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

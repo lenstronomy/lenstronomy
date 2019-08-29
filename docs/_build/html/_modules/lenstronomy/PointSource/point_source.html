@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -46,7 +46,8 @@
 
 <div class="viewcode-block" id="PointSource"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource">[docs]</a><span class="k">class</span> <span class="nc">PointSource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_source_type_list</span><span class="p">,</span> <span class="n">lensModel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">additional_images_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_source_type_list</span><span class="p">,</span> <span class="n">lensModel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">additional_images_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">save_cache</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                  <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -57,6 +58,8 @@
 <span class="sd">        ratio of point sources is fixed to the one given by the lens model</span>
 <span class="sd">        :param additional_images_list: list of bools (same length as point_source_type_list). If True, search for</span>
 <span class="sd">        additional images of the same source is conducted.</span>
+<span class="sd">        :param magnification_limit: float &gt;0 or None, if float is set and additional images are computed, only those</span>
+<span class="sd">        images will be computed that exceed the lensing magnification (absolute value) limit</span>
 <span class="sd">        :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens</span>
 <span class="sd">        equation is conducted with the lens model parameters provided. This can increase the speed as multiple times the</span>
 <span class="sd">        image positions are requested for the same lens model. Attention in usage!</span>
@@ -96,7 +99,8 @@
                                                                  <span class="n">save_cache</span><span class="o">=</span><span class="n">save_cache</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_min_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_window</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precision_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_iter_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span> <span class="o">=</span> <span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_distance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_window</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precision_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_iter_max</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_magnification_limit</span> <span class="o">=</span> <span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="p">,</span> <span class="n">magnification_limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span> <span class="o">=</span> <span class="n">save_cache</span>
 
 <div class="viewcode-block" id="PointSource.update_search_window"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_search_window">[docs]</a>    <span class="k">def</span> <span class="nf">update_search_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -176,7 +180,7 @@
                                                         <span class="n">search_window</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_window</span><span class="p">,</span>
                                                         <span class="n">precision_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_precision_limit</span><span class="p">,</span>
                                                         <span class="n">num_iter_max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_iter_max</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_center</span><span class="p">,</span>
-                                                        <span class="n">y_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span><span class="p">)</span>
+                                                        <span class="n">y_center</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_y_center</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnification_limit</span><span class="p">)</span>
                 <span class="n">x_image_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_image</span><span class="p">)</span>
                 <span class="n">y_image_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_image</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_image_list</span><span class="p">,</span> <span class="n">y_image_list</span></div>
@@ -240,7 +244,7 @@
             <span class="n">amp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">source_amplitude</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="o">=</span><span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">amp_list</span></div>
 
-<div class="viewcode-block" id="PointSource.linear_response_set"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.linear_response_set">[docs]</a>    <span class="k">def</span> <span class="nf">linear_response_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="PointSource.linear_response_set"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.linear_response_set">[docs]</a>    <span class="k">def</span> <span class="nf">linear_response_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_ps:</span>
@@ -250,8 +254,8 @@
         <span class="n">ra_pos</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_pos</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">amp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">x_image_list</span><span class="p">,</span> <span class="n">y_image_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">k</span> <span class="ow">or</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">x_pos</span> <span class="o">=</span> <span class="n">x_image_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -260,6 +264,7 @@
                         <span class="n">ra_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
                         <span class="n">dec_pos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">y_pos</span><span class="p">))</span>
                         <span class="k">if</span> <span class="n">with_amp</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;test with_amp&#39;</span><span class="p">)</span>
                             <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_amplitude</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">i</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
@@ -275,6 +280,9 @@
                             <span class="n">dec_pos</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">y_pos</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
                             <span class="n">amp</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">mag</span><span class="p">[</span><span class="n">j</span><span class="p">]])</span>
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">n</span></div>
 
 <div class="viewcode-block" id="PointSource.update_linear"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.update_linear">[docs]</a>    <span class="k">def</span> <span class="nf">update_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
@@ -320,24 +328,6 @@
                     <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="PointSource.re_normalize_flux"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.re_normalize_flux">[docs]</a>    <span class="k">def</span> <span class="nf">re_normalize_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">norm_factor</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        renormalizes the point source amplitude keywords by a factor</span>
-
-<span class="sd">        :param kwargs_ps_updated:</span>
-<span class="sd">        :param norm_factor:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point_source_type_list</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;UNLENSED&#39;</span><span class="p">:</span>
-                <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
-            <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;LENSED_POSITION&#39;</span><span class="p">,</span> <span class="s1">&#39;SOURCE_POSITION&#39;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_magnification_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;source_amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="n">norm_factor</span>
-        <span class="k">return</span> <span class="n">kwargs_ps</span></div>
-
 <div class="viewcode-block" id="PointSource.set_amplitudes"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.set_amplitudes">[docs]</a>    <span class="k">def</span> <span class="nf">set_amplitudes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp_list</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -356,7 +346,6 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">amp</span>
         <span class="k">return</span> <span class="n">kwargs_list</span></div></div>
-
 </pre></div>
 
           </div>
@@ -389,7 +378,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

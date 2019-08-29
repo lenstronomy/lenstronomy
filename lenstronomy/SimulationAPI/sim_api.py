@@ -43,8 +43,7 @@ class SimAPI(DataAPI, ModelAPI):
         :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
         :param kwargs_source_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
         :param kwargs_ps_mag: keyword argument list as for PointSource module except that 'amp' parameters are 'magnitude' parameters.
-        :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this
-        magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
+        :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
         """
 
         kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)

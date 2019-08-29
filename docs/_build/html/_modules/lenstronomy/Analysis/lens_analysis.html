@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis.lens_analysis &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.Analysis.lens_analysis &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,10 +48,9 @@
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.multi_gauss_expansion</span> <span class="k">as</span> <span class="nn">mge</span>
 
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_model</span> <span class="k">import</span> <span class="n">LightModel</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.PointSource.point_source</span> <span class="k">import</span> <span class="n">PointSource</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model_extensions</span> <span class="k">import</span> <span class="n">LensModelExtensions</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.numeric_lens_differentials</span> <span class="k">import</span> <span class="n">NumericLens</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">class_creator</span>
 
 
 <div class="viewcode-block" id="LensAnalysis"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.lens_analysis.LensAnalysis">[docs]</a><span class="k">class</span> <span class="nc">LensAnalysis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -59,14 +58,18 @@
 <span class="sd">    class to compute flux ratio anomalies, inherited from standard MakeImage</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_light_model_list&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;source_light_model_list&#39;</span><span class="p">,</span> <span class="p">[]))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">,</span> <span class="p">[]),</span>
-                                   <span class="n">z_source</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;z_source&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                                   <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_redshift_list&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
-                                   <span class="n">multi_plane</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multi_plane&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceModel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">LensLightModel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="p">,</span> <span class="n">extinction_class</span> <span class="o">=</span> <span class="n">class_creator</span><span class="o">.</span><span class="n">create_class_instances</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
+
+        <span class="c1">#self.LensLightModel = LightModel(kwargs_model.get(&#39;lens_light_model_list&#39;, []))</span>
+
+        <span class="c1">#self.LensModel = LensModel(lens_model_list=kwargs_model.get(&#39;lens_model_list&#39;, []),</span>
+        <span class="c1">#                           z_source=kwargs_model.get(&#39;z_source&#39;, None),</span>
+        <span class="c1">#                           lens_redshift_list=kwargs_model.get(&#39;lens_redshift_list&#39;, None),</span>
+        <span class="c1">#                           multi_plane=kwargs_model.get(&#39;multi_plane&#39;, False))</span>
+        <span class="c1">#self.SourceModel = LightModel(kwargs_model.get(&#39;source_light_model_list&#39;, []))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lensModelExtensions</span> <span class="o">=</span> <span class="n">LensModelExtensions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LensModel</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="n">PointSource</span><span class="p">(</span><span class="n">point_source_type_list</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_source_model_list&#39;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="c1">#self.PointSource = PointSource(point_source_type_list=kwargs_model.get(&#39;point_source_model_list&#39;, []), lensModel=self.LensModel)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span> <span class="o">=</span> <span class="n">kwargs_model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">NumLensModel</span> <span class="o">=</span> <span class="n">NumericLens</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">,</span> <span class="p">[]))</span>
 
@@ -365,7 +368,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

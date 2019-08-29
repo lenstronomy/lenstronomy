@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.galkin_old &#8212; lenstronomy 0.9.1 documentation</title>
+    <title>lenstronomy.GalKin.galkin_old &#8212; lenstronomy 0.9.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -46,6 +46,7 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.GalKin.aperture</span> <span class="k">import</span> <span class="n">Aperture</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.GalKin.anisotropy</span> <span class="k">import</span> <span class="n">Anisotropy</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.GalKin.jeans_equation</span> <span class="k">import</span> <span class="n">JeansSolver</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.GalKin.psf</span> <span class="k">import</span> <span class="n">PSF</span>
 
 
 <div class="viewcode-block" id="GalKinAnalytic"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKinAnalytic">[docs]</a><span class="k">class</span> <span class="nc">GalKinAnalytic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -53,20 +54,19 @@
 <span class="sd">    master class for all computations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">aperture</span><span class="o">=</span><span class="s1">&#39;slit&#39;</span><span class="p">,</span> <span class="n">mass_profile</span><span class="o">=</span><span class="s1">&#39;power_law&#39;</span><span class="p">,</span> <span class="n">light_profile</span><span class="o">=</span><span class="s1">&#39;Hernquist&#39;</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="o">=</span><span class="s1">&#39;r_ani&#39;</span><span class="p">,</span>
-                 <span class="n">psf_fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}):</span>
+                 <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">moffat_beta</span><span class="o">=</span><span class="mf">2.6</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;D_d&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;D_s&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span> <span class="s1">&#39;D_ds&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        initializes the observation condition and masks</span>
 <span class="sd">        :param aperture_type: string</span>
 <span class="sd">        :param psf_fwhm: float</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mass_profile</span> <span class="o">=</span> <span class="n">mass_profile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">=</span> <span class="n">psf_fwhm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_cosmo</span> <span class="o">=</span> <span class="n">kwargs_cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span> <span class="o">=</span> <span class="n">LightProfileOld</span><span class="p">(</span><span class="n">light_profile</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span> <span class="o">=</span> <span class="n">Aperture</span><span class="p">(</span><span class="n">aperture</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">anisotropy</span> <span class="o">=</span> <span class="n">Anisotropy</span><span class="p">(</span><span class="n">anisotropy_type</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span> <span class="o">=</span> <span class="n">psf_fwhm</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">jeans_solver</span> <span class="o">=</span> <span class="n">JeansSolver</span><span class="p">(</span><span class="n">kwargs_cosmo</span><span class="p">,</span> <span class="n">mass_profile</span><span class="p">,</span> <span class="n">light_profile</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="n">psf_type</span><span class="o">=</span><span class="n">psf_type</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="n">fwhm</span><span class="p">,</span> <span class="n">moffat_beta</span><span class="o">=</span><span class="n">moffat_beta</span><span class="p">)</span>
 
 <div class="viewcode-block" id="GalKinAnalytic.vel_disp"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.galkin_old.GalKinAnalytic.vel_disp">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_profile</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -102,7 +102,7 @@
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lightProfile</span><span class="o">.</span><span class="n">draw_light</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">)</span>  <span class="c1"># draw r</span>
             <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">R_r</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># draw projected R</span>
-            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">displace_PSF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">FWHM</span><span class="p">)</span>  <span class="c1"># displace via PSF</span>
+            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">displace_psf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>  <span class="c1"># displace via PSF</span>
             <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">break</span>
@@ -162,7 +162,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

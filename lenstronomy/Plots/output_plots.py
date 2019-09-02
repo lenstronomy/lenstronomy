@@ -1055,7 +1055,6 @@ class ModelBandPlot(object):
         return ax
 
 
-
 def plot_chain_list(chain_list, index=0, num_average=100):
     """
     plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.

@@ -26,7 +26,11 @@ class LikelihoodModule(object):
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_extinction=[],
                  prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
-                 prior_special_kde=[], prior_extinction_kde=[], condition_definition=None):
+                 prior_special_kde=[], prior_extinction_kde=[],
+                 prior_lens_lognormal=[], prior_source_lognormal=[], prior_extinction_lognormal=[],
+                 prior_lens_light_lognormal=[], prior_ps_lognormal=[],
+                 prior_special_lognormal=[],
+                 condition_definition=None):
         """
         initializing class
 
@@ -74,7 +78,11 @@ class LikelihoodModule(object):
 
         self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,
                                                  prior_lens_kde, prior_source_kde, prior_lens_light_kde, prior_ps_kde,
-                                                 prior_special_kde, prior_extinction_kde)
+                                                 prior_special_kde, prior_extinction_kde,
+                                                 prior_lens_lognormal, prior_source_lognormal,
+                                                 prior_lens_light_lognormal, prior_ps_lognormal,
+                                                 prior_special_lognormal, prior_extinction_lognormal,
+                                                 )
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,

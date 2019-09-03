@@ -10,10 +10,14 @@ class TestImageLikelihood(object):
     def setup(self):
         self.prior = PriorLikelihood(prior_lens=[[0, 'gamma', 2, 0.1]], prior_source=[], prior_lens_light=[], prior_ps=[],
                                      prior_special=[['source_size', 1, 0.1]])
+        self.prior_lognormal = PriorLikelihood(prior_lens_lognormal=[[0, 'gamma', np.log(2.), 0.1]],
+                                     prior_source_lognormal=[], prior_lens_light_lognormal=[],
+                                     prior_ps_lognormal=[],
+                                     prior_special_lognormal=[['source_size', 0., 0.1]])
 
     def test_logL(self):
-        kwargs_lens = [{'gamma': 2}]
-        kwargs_cosmo = {'source_size': 1}
+        kwargs_lens = [{'gamma': 2.}]
+        kwargs_cosmo = {'source_size': 1.}
         logL = self.prior.logL(kwargs_lens=kwargs_lens, kwargs_source=[], kwargs_lens_light=[], kwargs_ps=[],
                                kwargs_special=kwargs_cosmo)
         assert logL == 0
@@ -23,6 +27,21 @@ class TestImageLikelihood(object):
         logL = self.prior.logL(kwargs_lens=kwargs_lens, kwargs_source=[], kwargs_lens_light=[], kwargs_ps=[],
                                kwargs_special=kwargs_cosmo)
         npt.assert_almost_equal(logL, -1, decimal=8)
+
+    def test_logL_lognormal(self):
+        kwargs_lens = [{'gamma': 2}]
+        kwargs_cosmo = {'source_size': 1}
+        logL = self.prior_lognormal.logL(kwargs_lens=kwargs_lens, kwargs_source=[],
+                               kwargs_lens_light=[], kwargs_ps=[],
+                               kwargs_special=kwargs_cosmo)
+        assert logL == -3.
+
+        kwargs_lens = [{'gamma': 2.1}]
+        kwargs_cosmo = {'source_size': 1.1}
+        logL = self.prior_lognormal.logL(kwargs_lens=kwargs_lens, kwargs_source=[],
+                               kwargs_lens_light=[], kwargs_ps=[],
+                               kwargs_special=kwargs_cosmo)
+        npt.assert_almost_equal(logL, -3.7732255247006443, decimal=8)
 
     def gauss(self, x, mean, simga):
         return np.exp(-((x-mean)/(simga))**2/2) / np.sqrt(2*np.pi) / simga

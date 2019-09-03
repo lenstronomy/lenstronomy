@@ -159,7 +159,7 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             index, param_name, value, sigma = prior_list[i]
             model_value = kwargs_list[index][param_name]
-            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 - model_value
+            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 + model_value
             logL -= np.sum(dist)
         return logL
 
@@ -174,7 +174,7 @@ class PriorLikelihood(object):
         for i in range(len(prior_list)):
             param_name, value, sigma = prior_list[i]
             model_value = kwargs[param_name]
-            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 - model_value
+            dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 + model_value
             logL -= np.sum(dist)
         return logL
 

@@ -30,6 +30,28 @@ class TestInstrumentObservation(object):
         observation = Observation(**kwargs_observations)
         assert observation.exposure_time == exposure_time * num_exposures
 
+    def test_update_observation(self):
+        exposure_time = 90
+        sky_brightness = 20.
+        num_exposures = 2
+        seeing = 0.9
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+        observation = Observation(**kwargs_observations)
+
+        exposure_time = 1
+        sky_brightness = 1.
+        num_exposures = 1
+        seeing = 1
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+        observation.update_observation(**kwargs_observations)
+        assert observation.exposure_time == 1
+        psf = observation.psf_class
+        assert psf.fwhm == 1
+
 
 class TestRaise(unittest.TestCase):
 
@@ -169,5 +191,3 @@ class TestData(object):
         kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
         data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
         assert data_pixel._psf_type == 'PIXEL'
-
-

@@ -34,8 +34,6 @@ class Observation(object):
         :param exposure_time: exposure time per image (in seconds)
         :param sky_brightness: sky brightness (in magnitude per square arcseconds)
         :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
-        :param point_spread_function: 2d array characterising the point spread function (odd numbers per axis, centered)
-        :param magnitude_zero_point: magnitude in which 1 count per second per arcsecond square is registered (in ADU's)
         :param num_exposures: number of exposures that are combined
         :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
         :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
@@ -46,7 +44,34 @@ class Observation(object):
         self._num_exposures = num_exposures
         self._seeing = seeing
         self._psf_type = psf_type
-        self._psf_model = kernel_point_source
+        self._kernel_point_source = kernel_point_source
+
+    def update_observation(self, exposure_time=None, sky_brightness=None, seeing=None, num_exposures=None,
+                           psf_type=None, kernel_point_source=None):
+        """
+        updates class instance with new properties if specific argument is not None
+
+        :param exposure_time: exposure time per image (in seconds)
+        :param sky_brightness: sky brightness (in magnitude per square arcseconds)
+        :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
+        :param num_exposures: number of exposures that are combined
+        :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
+        (optional when psf_type='PIXEL' is chosen)
+        :return: None, updated class instance
+        """
+        if exposure_time is not None:
+            self._exposure_time = exposure_time
+        if sky_brightness is not None:
+            self._sky_brightness = sky_brightness
+        if seeing is not None:
+            self._seeing = seeing
+        if num_exposures is not None:
+            self._num_exposures = num_exposures
+        if psf_type is not None:
+            self._psf_type = psf_type
+        if kernel_point_source is not None:
+            self._kernel_point_source = kernel_point_source
 
     @property
     def exposure_time(self):
@@ -70,8 +95,8 @@ class Observation(object):
             fwhm = self._seeing
             kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
         elif self._psf_type == 'PIXEL':
-            if self._psf_model is not None:
-                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._psf_model}
+            if self._kernel_point_source is not None:
+                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._kernel_point_source}
             else:
                 raise ValueError("You need to create the class instance with a psf_model!")
         else:

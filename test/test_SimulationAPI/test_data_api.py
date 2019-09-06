@@ -1,6 +1,5 @@
 from lenstronomy.SimulationAPI.data_api import DataAPI
 import lenstronomy.Util.util as util
-import numpy.testing as npt
 import numpy as np
 import unittest
 

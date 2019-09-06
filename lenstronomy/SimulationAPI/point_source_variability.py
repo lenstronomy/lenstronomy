@@ -32,8 +32,8 @@ class PointSourceVariability(object):
         """
 
         # create background SimAPI class instance
-        sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model, kwargs_numerics)
-        image_model_bkg = sim_api_bkg.image_model_class
+        sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model)
+        image_model_bkg = sim_api_bkg.image_model_class(kwargs_numerics)
         kwargs_lens_light, kwargs_source, kwargs_ps = sim_api_bkg.magnitude2amplitude(kwargs_lens_light_mag,
                                                                                            kwargs_source_mag,
                                                                                            kwargs_ps_mag)
@@ -52,8 +52,8 @@ class PointSourceVariability(object):
         #  times at t>=0
         # add image plane source model
         kwargs_model_ps = {'point_source_model_list': ['LENSED_POSITION']}
-        self.sim_api_ps = SimAPI(numpix, kwargs_single_band, kwargs_model_ps, kwargs_numerics)
-        self._image_model_ps = self.sim_api_ps.image_model_class
+        self.sim_api_ps = SimAPI(numpix, kwargs_single_band, kwargs_model_ps)
+        self._image_model_ps = self.sim_api_ps.image_model_class(kwargs_numerics)
         self._kwargs_lens = kwargs_lens
         self._dt_days = dt_days
         self._mag = mag

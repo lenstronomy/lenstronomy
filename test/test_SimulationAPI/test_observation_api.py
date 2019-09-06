@@ -54,20 +54,20 @@ class TestRaise(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.sky_brightness
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.read_noise
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.background_noise
 
 

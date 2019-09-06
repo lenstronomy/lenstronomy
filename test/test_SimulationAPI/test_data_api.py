@@ -21,13 +21,13 @@ class TestDataAPI(object):
         seeing = 0.9
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'GAUSSIAN', 'psf_model': None}
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN', 'kernel_point_source': None}
         self.kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
         self.api = DataAPI(numpix=numpix, data_count_unit='ADU', **self.kwargs_data)
 
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'PIXEL', 'psf_model': np.ones((3, 3))}
+                               'seeing': seeing, 'psf_type': 'PIXEL', 'kernel_point_source': np.ones((3, 3))}
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
         self.api_pixel = DataAPI(numpix=numpix, data_count_unit='ADU', **kwargs_data)
 
@@ -58,7 +58,7 @@ class TestRaise(unittest.TestCase):
         seeing = 0.9
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'magnitude_zero_point': magnitude_zero_point, 'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'wrong', 'psf_model': None}
+                               'seeing': seeing, 'psf_type': 'wrong', 'kernel_point_source': None}
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
         data_api = DataAPI(numpix=numpix, data_count_unit='ADU', **kwargs_data)
         print(data_api._psf_type)
@@ -68,7 +68,7 @@ class TestRaise(unittest.TestCase):
 
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'magnitude_zero_point': magnitude_zero_point, 'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'PIXEL', 'psf_model': None}
+                               'seeing': seeing, 'psf_type': 'PIXEL', 'kernel_point_source': None}
         kwargs_data = util.merge_dicts(kwargs_instrument, kwargs_observations)
         with self.assertRaises(ValueError):
             data_api = DataAPI(numpix=numpix, data_count_unit='ADU', **kwargs_data)

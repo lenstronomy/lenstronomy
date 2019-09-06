@@ -1,20 +1,20 @@
 import numpy as np
 
 
-def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scael, num_exposures=1):
+def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=1):
     """
     computes the expected Gaussian background noise of a pixel in units of counts/second
 
     :param readout_noise: noise added per readout
     :param exposure_time: exposure time per exposure (in seconds)
-    :param sky_brightness: counts per second per unit arcsecond square
-    :param pixel_scael: size of pixel in units arcseonds
+    :param sky_brightness: counts per second per unit arcseconds square
+    :param pixel_scale: size of pixel in units arcseonds
     :param num_exposures: number of exposures (with same exposure time) to be co-added
     :return: estimated Gaussian noise sqrt(variance)
     """
     exposure_time_tot = num_exposures * exposure_time
     readout_noise_tot = num_exposures * readout_noise ** 2
-    sky_per_pixel = sky_brightness * pixel_scael ** 2
+    sky_per_pixel = sky_brightness * pixel_scale ** 2
     sigma_bkg = np.sqrt(readout_noise_tot + exposure_time_tot * sky_per_pixel ** 2) / exposure_time_tot
     return sigma_bkg
 

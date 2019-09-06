@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 import lenstronomy.Util.data_util as data_util
 from lenstronomy.Data.psf import PSF
 
@@ -27,7 +28,7 @@ class Observation(object):
     basic access point to observation properties
     """
     def __init__(self, exposure_time, magnitude_zero_point, sky_brightness=None, seeing=None, num_exposures=1,
-                 psf_type='GAUSSIAN', psf_model=None):
+                 psf_type='GAUSSIAN', kernel_point_source=None):
         """
 
         :param exposure_time: exposure time per image (in seconds)
@@ -37,7 +38,7 @@ class Observation(object):
         :param magnitude_zero_point: magnitude in which 1 count per second per arcsecond square is registered (in ADU's)
         :param num_exposures: number of exposures that are combined
         :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
-        :param psf_model: 2d numpy array, model of PSF centered with odd number of pixels per axis
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
         (optional when psf_type='PIXEL' is chosen)
         """
         self._exposure_time = exposure_time
@@ -46,7 +47,7 @@ class Observation(object):
         self._num_exposures = num_exposures
         self._seeing = seeing
         self._psf_type = psf_type
-        self._psf_model = psf_model
+        self._psf_model = kernel_point_source
 
     @property
     def exposure_time(self):
@@ -85,7 +86,7 @@ class SingleBand(Instrument, Observation):
     class that combines Instrument and Observation
     """
     def __init__(self, pixel_scale, exposure_time, magnitude_zero_point, read_noise=None, ccd_gain=None,
-                 sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
+                 sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
                  data_count_unit='ADU', background_noise=None):
         """
 
@@ -106,7 +107,7 @@ class SingleBand(Instrument, Observation):
         Instrument.__init__(self, pixel_scale, read_noise, ccd_gain)  # read_noise and ccd_gain can be None
         Observation.__init__(self, exposure_time=exposure_time, sky_brightness=sky_brightness,
                              magnitude_zero_point=magnitude_zero_point, seeing=seeing, num_exposures=num_exposures,
-                             psf_type=psf_type, psf_model=psf_model)
+                             psf_type=psf_type, kernel_point_source=kernel_point_source)
         if data_count_unit not in ['e-', 'ADU']:
             raise ValueError("count_unit type %s not supported! Please chose e- or ADU." % data_count_unit)
         self._data_count_unit = data_count_unit
@@ -151,6 +152,9 @@ class SingleBand(Instrument, Observation):
             return data_util.bkg_noise(self.read_noise, self._exposure_time, self.sky_brightness, self.pixel_scale,
                                    num_exposures=self._num_exposures)
         else:
+            if self._read_noise is not None:
+                warnings.warn('read noise is specified but not used for noise properties. background noise is estimated'
+                              ' from "background_noise" argument')
             return self._background_noise
 
     def flux_noise(self, flux):

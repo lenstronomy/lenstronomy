@@ -40,6 +40,8 @@ class Numerics(PointSourceRendering):
         """
         # if no super sampling, turn the supersampling convolution off
         self._psf_type = psf.psf_type
+        if not isinstance(supersampling_factor, int):
+            raise TypeError('supersampling_factor needs to be an integer! Current type is %s' % type(supersampling_factor))
         if supersampling_factor == 1:
             supersampling_convolution = False
         self._pixel_width = pixel_grid.pixel_width

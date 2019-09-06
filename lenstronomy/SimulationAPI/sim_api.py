@@ -16,6 +16,7 @@ class SimAPI(DataAPI, ModelAPI):
     All other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource modules
     """
     def __init__(self, numpix, kwargs_single_band, kwargs_model, kwargs_numerics):
+        # TODO create sub-class instance not requiring kwargs_numerics option
         """
         
         :param numpix: number of pixels per axis
@@ -25,6 +26,8 @@ class SimAPI(DataAPI, ModelAPI):
         """
         DataAPI.__init__(self, numpix, **kwargs_single_band)
         ModelAPI.__init__(self, **kwargs_model)
+
+        #TODO don't make the class instance as incompatible with future update PSF etc features
         self._image_model_class = ImageModel(self.data_class, self.psf_class, self.lens_model_class,
                                              self.source_model_class, self.lens_light_model_class,
                                              self.point_source_model_class, kwargs_numerics=kwargs_numerics)
@@ -81,12 +84,3 @@ class SimAPI(DataAPI, ModelAPI):
                 amp_list.append(amp)
             kwargs_ps = self.point_source_model_class.set_amplitudes(amp_list, kwargs_ps)
         return kwargs_lens_light, kwargs_source, kwargs_ps
-
-    def reset_point_source_cache(self, bool=True):
-        """
-        deletes all the cache in the point source class and saves it from then on
-
-        :param bool: boolean, if True, saves the next occuring point source positions in the cache
-        :return: None
-        """
-        self._image_model_class.reset_point_source_cache(bool)

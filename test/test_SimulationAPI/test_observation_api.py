@@ -22,11 +22,10 @@ class TestInstrumentObservation(object):
     def test_observations(self):
         exposure_time = 90
         sky_brightness = 20.
-        magnitude_zero_point = 21.
         num_exposures = 2,
         seeing = 0.9
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
-                               'magnitude_zero_point': magnitude_zero_point, 'num_exposures': num_exposures,
+                               'num_exposures': num_exposures,
                                'seeing': seeing, 'psf_type': 'GAUSSIAN'}
         observation = Observation(**kwargs_observations)
         assert observation.exposure_time == exposure_time * num_exposures

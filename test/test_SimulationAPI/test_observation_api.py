@@ -149,6 +149,7 @@ class TestData(object):
         npt.assert_almost_equal(noise_adu, noise_adu_2, decimal=10)
         noise_e_ = self.data_e_.noise_for_model(model_e_, background_noise=True, poisson_noise=True, seed=42)
         npt.assert_almost_equal(noise_adu, noise_e_/self.ccd_gain, decimal=10)
+        noise_e_ = self.data_e_.noise_for_model(model_e_, background_noise=True, poisson_noise=True, seed=None)
 
     def test_estimate_noise(self):
         image_adu = np.ones((10, 10))

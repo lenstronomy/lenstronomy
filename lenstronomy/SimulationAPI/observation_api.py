@@ -218,16 +218,20 @@ class SingleBand(Instrument, Observation):
         :param model: 2d numpy array of modelled image (with pixels in units of data specified in class)
         :param background_noise: bool, if True, adds background noise
         :param poisson_noise: bool, if True, adds Poisson noise of modelled flux
-        :return:
+        :param seed: int, seed number to be used to render the noise properties.
+        If None, then uses the current numpy.random seed to render the noise properties.
+        :return: noise realization corresponding to the model
         """
         if seed is not None:
-            np.random.seed(seed)
+            g = np.random.RandomState(seed=seed)
+        else:
+            g = np.random
         nx, ny = np.shape(model)
         noise = np.zeros_like(model)
         if background_noise is True:
-            noise += np.random.randn(nx, ny) * self.background_noise
+            noise += g.randn(nx, ny) * self.background_noise
         if poisson_noise is True:
-            noise += np.random.randn(nx, ny) * self.flux_noise(model)
+            noise += g.randn(nx, ny) * self.flux_noise(model)
         return noise
 
     def estimate_noise(self, image):

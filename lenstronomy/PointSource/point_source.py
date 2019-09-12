@@ -99,6 +99,16 @@ class PointSource(object):
         """
         set the save cache boolean to new value
 
+        :param bool: bool
+        :return: updated class and sub-class instances to either save or not save the point source information in cache
+        """
+        self._set_save_cache(bool)
+        self._save_cache = bool
+
+    def _set_save_cache(self, bool):
+        """
+        set the save cache boolean to new value. This function is for use within this class for temporarily set the cache within a single routine.
+
         :param bool:
         :return:
         """
@@ -152,8 +162,14 @@ class PointSource(object):
         :param kwargs_lens:
         :return:
         """
+        self._set_save_cache(True)
+        # we make sure we do not re-compute the image positions twice when evaluating image position and their amplitudes
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
         amp_list = self.image_amplitude(kwargs_ps, kwargs_lens)
+        if self._save_cache is False:
+            self.delete_lens_model_cache()
+            self._set_save_cache(self._save_cache)
+
         ra_array, dec_array, amp_array = [], [], []
         for i, ra in enumerate(ra_list):
             for j in range(len(ra)):
@@ -213,7 +229,7 @@ class PointSource(object):
         ra_pos = []
         dec_pos = []
         amp = []
-        self.set_save_cache(True)
+        self._set_save_cache(True)
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
             x_pos = x_image_list[i]
@@ -239,7 +255,7 @@ class PointSource(object):
         n = len(ra_pos)
         if self._save_cache is False:
             self.delete_lens_model_cache()
-            self.set_save_cache(self._save_cache)
+            self._set_save_cache(self._save_cache)
         return ra_pos, dec_pos, amp, n
 
     def update_linear(self, param, i, kwargs_ps, kwargs_lens):

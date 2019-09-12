@@ -19,10 +19,10 @@ class TestModelAPI(object):
                         'source_redshift_list': None}
         kwargs_numerics = {'supersampling_factor': 2}
 
-        self.api = SimAPI(numpix, kwargs_single_band, kwargs_model, kwargs_numerics)
+        self.api = SimAPI(numpix, kwargs_single_band, kwargs_model)
 
     def test_image_model_class(self):
-        model = self.api.image_model_class
+        model = self.api.image_model_class()
         assert model.LensModel.lens_model_list[0] == 'SIS'
 
     def test_magnitude2amplitude(self):

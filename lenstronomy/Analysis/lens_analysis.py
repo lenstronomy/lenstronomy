@@ -18,7 +18,7 @@ class LensAnalysis(object):
     """
     def __init__(self, kwargs_model):
 
-        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
 
         #self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
 

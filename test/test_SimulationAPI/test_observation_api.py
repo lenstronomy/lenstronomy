@@ -22,14 +22,35 @@ class TestInstrumentObservation(object):
     def test_observations(self):
         exposure_time = 90
         sky_brightness = 20.
-        magnitude_zero_point = 21.
         num_exposures = 2,
         seeing = 0.9
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
-                               'magnitude_zero_point': magnitude_zero_point, 'num_exposures': num_exposures,
+                               'num_exposures': num_exposures,
                                'seeing': seeing, 'psf_type': 'GAUSSIAN'}
         observation = Observation(**kwargs_observations)
         assert observation.exposure_time == exposure_time * num_exposures
+
+    def test_update_observation(self):
+        exposure_time = 90
+        sky_brightness = 20.
+        num_exposures = 2
+        seeing = 0.9
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+        observation = Observation(**kwargs_observations)
+
+        exposure_time = 1
+        sky_brightness = 1.
+        num_exposures = 1
+        seeing = 1
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+        observation.update_observation(**kwargs_observations)
+        assert observation.exposure_time == 1
+        psf = observation.psf_class
+        assert psf.fwhm == 1
 
 
 class TestRaise(unittest.TestCase):
@@ -54,20 +75,20 @@ class TestRaise(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.sky_brightness
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.read_noise
 
         with self.assertRaises(ValueError):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                       sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', psf_model=None,
-                       data_count_unit='ADU', background_noise=None)
+                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                              data_count_unit='ADU', background_noise=None)
             out = band.background_noise
 
 
@@ -128,6 +149,7 @@ class TestData(object):
         npt.assert_almost_equal(noise_adu, noise_adu_2, decimal=10)
         noise_e_ = self.data_e_.noise_for_model(model_e_, background_noise=True, poisson_noise=True, seed=42)
         npt.assert_almost_equal(noise_adu, noise_e_/self.ccd_gain, decimal=10)
+        noise_e_ = self.data_e_.noise_for_model(model_e_, background_noise=True, poisson_noise=True, seed=None)
 
     def test_estimate_noise(self):
         image_adu = np.ones((10, 10))
@@ -170,5 +192,3 @@ class TestData(object):
         kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
         data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
         assert data_pixel._psf_type == 'PIXEL'
-
-

@@ -37,7 +37,9 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
-        psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
+        kernel = psf_class.kernel_point_source
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel, 'psf_error_map': np.ones_like(kernel) * 0.001}
+        psf_class = PSF(**kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -104,7 +106,7 @@ class TestImageModel(object):
 
     def test_image_with_params(self):
         model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
-        error_map = self.imageModel._error_map_psf(self.kwargs_lens, self.kwargs_ps, kwargs_special={})
+        error_map = self.imageModel._error_map_psf(self.kwargs_lens, self.kwargs_ps)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
@@ -150,7 +152,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.zeros_like(kernel)}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.ones_like(kernel) * 0.001}
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
@@ -238,6 +240,19 @@ class TestImageModel(object):
         imageModel = ImageModel(data_class, PSF(), extinction_class=extinction_class)
         extinction = imageModel.extinction_map(kwargs_extinction=[{'amp': 1}], kwargs_special={'tau0_list': [1, 0, 0]})
         npt.assert_almost_equal(extinction, np.exp(-1))
+
+    def test_error_response(self):
+
+        C_D_response, model_error = self.imageModel._error_response(self.kwargs_lens, self.kwargs_ps)
+        assert len(model_error) == 100
+        print(np.sum(model_error))
+        npt.assert_almost_equal(np.sum(model_error), 0.0019271126921470687, decimal=3)
+
+    def test_point_source_linear_response_set(self):
+        kwargs_special = {'delta_x_image': [0.1, 0.1], 'delta_y_image': [-0.1, -0.1]}
+        ra_pos, dec_pos, amp, num_point = self.imageModel.point_source_linear_response_set(self.kwargs_ps, self.kwargs_lens, kwargs_special, with_amp=True)
+        ra, dec = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
+        npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)
 
 
 if __name__ == '__main__':

@@ -19,35 +19,14 @@ class PointSourceRendering(object):
         self._supersampling_factor = supersampling_factor
         self._psf = psf
 
-    def _displace_astrometry(self, x_pos, y_pos, kwargs_special=None):
-        """
-        displaces point sources by shifts specified in kwargs_special
-
-        :param x_pos: list of point source positions according to point source model list
-        :param y_pos: list of point source positions according to point source model list
-        :param kwargs_special: keyword arguments, can contain 'delta_x_image' and 'delta_y_image'
-        :return: shifted image positions in same format as input
-        """
-        if kwargs_special is not None:
-            if 'delta_x_image' in kwargs_special:
-                delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
-                delta_x_new = np.zeros_like(x_pos)
-                delta_x_new[0:len(delta_x)] = delta_x
-                delta_y_new = np.zeros_like(y_pos)
-                delta_y_new[0:len(delta_y)] = delta_y
-                x_pos = x_pos + delta_x_new
-                y_pos = y_pos + delta_y_new
-        return x_pos, y_pos
-
-    def point_source_rendering(self, ra_pos, dec_pos, amp, kwargs_special=None):
+    def point_source_rendering(self, ra_pos, dec_pos, amp):
         """
 
-        :param ra_pos:
-        :param dec_pos:
-        :param amp:
-        :return:
+        :param ra_pos: list of RA positions of point source(s)
+        :param dec_pos: list of DEC positions of point source(s)
+        :param amp: list of amplitudes of point source(s)
+        :return: 2d numpy array of size of the image with the point source(s) rendered
         """
-        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
         subgrid = self._supersampling_factor
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         # translate coordinates to higher resolution grid
@@ -71,8 +50,16 @@ class PointSourceRendering(object):
             self._kernel_supersampled_instance = self._psf.kernel_point_source_supersampled(self._supersampling_factor, updata_cache=False)
         return self._kernel_supersampled_instance
 
-    def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False, kwargs_special=None):
-        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
+    def psf_error_map(self, ra_pos, dec_pos, amp, data, fix_psf_error_map=False):
+        """
+
+        :param ra_pos: image positions of point sources
+        :param dec_pos: image positions of point sources
+        :param amp: amplitude of modeled point sources
+        :param data: 2d numpy array of the data
+        :param fix_psf_error_map: bool, if True, estimates the error based on the modeled ampitude, else uses the data to do so.
+        :return: 2d array of size of the image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
+        """
         x_pos, y_pos = self._pixel_grid.map_coord2pix(ra_pos, dec_pos)
         psf_kernel = self._psf.kernel_point_source
         psf_error_map = self._psf.psf_error_map

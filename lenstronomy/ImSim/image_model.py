@@ -129,9 +129,9 @@ class ImageModel(object):
         point_source_image = np.zeros((self.Data.num_pixel_axes))
         if unconvolved or self.PointSource is None:
             return point_source_image
-        ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=True, k=k)
-        for i in range(n_points):
-            point_source_image += self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i], kwargs_special=kwargs_special)
+        ra_pos, dec_pos, amp = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k)
+        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
+        point_source_image += self.ImageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
         return point_source_image
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
@@ -174,3 +174,24 @@ class ImageModel(object):
         extinction_array = np.ones_like(ra_grid) * extinction
         extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
         return extinction
+
+    def _displace_astrometry(self, x_pos, y_pos, kwargs_special=None):
+        """
+        displaces point sources by shifts specified in kwargs_special
+
+        :param x_pos: list of point source positions according to point source model list
+        :param y_pos: list of point source positions according to point source model list
+        :param kwargs_special: keyword arguments, can contain 'delta_x_image' and 'delta_y_image'
+        The list is defined in order of the image positions
+        :return: shifted image positions in same format as input
+        """
+        if kwargs_special is not None:
+            if 'delta_x_image' in kwargs_special:
+                delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+                delta_x_new = np.zeros_like(x_pos)
+                delta_x_new[0:len(delta_x)] = delta_x
+                delta_y_new = np.zeros_like(y_pos)
+                delta_y_new[0:len(delta_y)] = delta_y
+                x_pos = x_pos + delta_x_new
+                y_pos = y_pos + delta_y_new
+        return x_pos, y_pos

@@ -178,7 +178,7 @@ class PointSource(object):
 
         :param kwargs_ps:
         :param kwargs_lens:
-        :return:
+        :return: list of image amplitudes per model component
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
@@ -203,7 +203,7 @@ class PointSource(object):
             amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
-    def linear_response_set(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, with_amp=False, k=None):
+    def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
         """
 
         :param kwargs_ps:
@@ -216,28 +216,26 @@ class PointSource(object):
         self.set_save_cache(True)
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
-                if i == k or k is None:
-                    x_pos = x_image_list[i]
-                    y_pos = y_image_list[i]
-                    if self._fixed_magnification_list[i]:
-                        ra_pos.append(list(x_pos))
-                        dec_pos.append(list(y_pos))
-                        if with_amp:
-                            print('test with_amp')
-                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
-                        else:
-                            mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
-                            mag = np.abs(mag)
-                        amp.append(list(mag))
-                    else:
-                        if with_amp:
-                            mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
-                        else:
-                            mag = np.ones_like(x_pos)
-                        for j in range(len(x_pos)):
-                            ra_pos.append([x_pos[j]])
-                            dec_pos.append([y_pos[j]])
-                            amp.append([mag[j]])
+            x_pos = x_image_list[i]
+            y_pos = y_image_list[i]
+            if self._fixed_magnification_list[i]:
+                ra_pos.append(list(x_pos))
+                dec_pos.append(list(y_pos))
+                if with_amp:
+                    mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
+                else:
+                    mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
+                    mag = np.abs(mag)
+                amp.append(list(mag))
+            else:
+                if with_amp:
+                    mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
+                else:
+                    mag = np.ones_like(x_pos)
+                for j in range(len(x_pos)):
+                    ra_pos.append([x_pos[j]])
+                    dec_pos.append([y_pos[j]])
+                    amp.append([mag[j]])
         n = len(ra_pos)
         if self._save_cache is False:
             self.delete_lens_model_cache()

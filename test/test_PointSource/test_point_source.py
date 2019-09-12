@@ -42,7 +42,7 @@ class TestPointSource(object):
         assert num_basis == 9
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False, k=None)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
@@ -112,7 +112,7 @@ class TestPointSourceFixedMag(object):
         assert num_basis == 3
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False, k=None)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]

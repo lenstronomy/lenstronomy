@@ -370,5 +370,6 @@ class ImageLinearFit(ImageModel):
                         if k >= n:
                             break
                         ra_pos[i][j] = ra_pos[i][j] + delta_x[k]
+                        dec_pos[i][j] = dec_pos[i][j] + delta_y[k]
                         k += 1
         return ra_pos, dec_pos, amp, n_points

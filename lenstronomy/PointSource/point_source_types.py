@@ -53,6 +53,9 @@ class LensedPositions(object):
         self._solver = LensEquationSolver(lensModel)
         self._fixed_magnification = fixed_magnification
         self._additional_image = additional_image
+        if fixed_magnification is True and additional_image is True:
+            Warning('The combination of fixed_magnification=True and additional_image=True is not optimal for the current computation.'
+                    'If you see this warning, please approach the developers.')
 
     def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
                        num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
@@ -63,7 +66,7 @@ class LensedPositions(object):
         :param point_amp:
         :return:
         """
-        if self._additional_image:
+        if self._additional_image is True:
             ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)
             ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens,
                                                                           min_distance=min_distance,
@@ -98,7 +101,7 @@ class LensedPositions(object):
         if self._fixed_magnification:
             source_amp = kwargs_ps['source_amp']
         else:
-            ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens)
+            ra_image, dec_image = kwargs_ps['ra_image'], kwargs_ps['dec_image']
             mag = self._lensModel.magnification(ra_image, dec_image, kwargs_lens)
             point_amp = kwargs_ps['point_amp']
             source_amp = np.mean(np.array(point_amp) / np.array(np.abs(mag)))

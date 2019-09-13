@@ -369,7 +369,6 @@ class ImageLinearFit(ImageModel):
                     for j in range(len(ra_pos[i])):
                         if k >= n:
                             break
-                        print(i, j, k, delta_x[k], ra_pos, 'test')
                         ra_pos[i][j] = ra_pos[i][j] + delta_x[k]
                         k += 1
         return ra_pos, dec_pos, amp, n_points

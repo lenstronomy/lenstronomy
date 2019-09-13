@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-import copy
 import numpy.testing as npt
 
 from lenstronomy.PointSource.point_source import PointSource
@@ -140,6 +139,31 @@ class TestPointSourceFixedMag(object):
         assert kwargs_out[0]['source_amp'] == 10 * self.kwargs_ps[0]['source_amp']
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
+
+
+class TestUtil(object):
+
+    def setup(self):
+        pass
+
+    def test_expand_t0_array(self):
+        from lenstronomy.PointSource import point_source_types
+        array = 1
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+
+        array = [1]
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+        assert array_out[1] == 0
+
+        array = [1, 1, 1]
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+        assert array_out[1] == 1
 
 
 if __name__ == '__main__':

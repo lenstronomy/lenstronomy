@@ -95,6 +95,8 @@ class LensedPositions(object):
             point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
             point_amp = kwargs_ps['point_amp']
+            if x_pos is not None:
+                point_amp = _expand_to_array(point_amp, len(x_pos))
             #if np.atleast_1d(point_amp):
             #    pass
         return np.array(point_amp)
@@ -163,6 +165,8 @@ class SourcePositions(object):
             point_amp = kwargs_ps['source_amp'] * np.abs(mag)
         else:
             point_amp = kwargs_ps['point_amp']
+            if x_pos is not None:
+                point_amp = _expand_to_array(point_amp, len(x_pos))
         return np.array(point_amp)
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):
@@ -238,3 +242,20 @@ class PointSourceCached(object):
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):
         return self._model.source_amplitude(kwargs_ps, kwargs_lens)
+
+
+def _expand_to_array(array, num):
+    """
+
+    :param array: float/int or numpy array
+    :param num: number of array entries expected in array
+    :return: array of size num
+    """
+    if np.isscalar(array):
+        return np.ones(num) * array
+    elif len(array) < num:
+        out = np.zeros(num)
+        out[0:len(array)] = array
+        return out
+    else:
+        return array

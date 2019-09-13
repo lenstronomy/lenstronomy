@@ -52,6 +52,12 @@ class TestPointSource(object):
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
 
+        ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens, k=0)
+        assert ra_list[0] == self.x_pos[0]
+        assert len(ra_list) == 4
+        assert len(dec_list) == 4
+        assert len(amp_list) == 4
+
     def test_point_source_amplitude(self):
         amp_list = self.PointSource.source_amplitude(self.kwargs_ps, self.kwargs_lens)
         assert len(amp_list) == 3

@@ -165,7 +165,7 @@ class PointSource(object):
         self._set_save_cache(True)
         # we make sure we do not re-compute the image positions twice when evaluating image position and their amplitudes
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
-        amp_list = self.image_amplitude(kwargs_ps, kwargs_lens)
+        amp_list = self.image_amplitude(kwargs_ps, kwargs_lens, k=k)
         if self._save_cache is False:
             self.delete_lens_model_cache()
             self._set_save_cache(self._save_cache)

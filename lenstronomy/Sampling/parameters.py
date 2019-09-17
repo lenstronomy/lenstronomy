@@ -490,7 +490,7 @@ class Param(object):
         print("===================")
         print("Joint parameters for different models")
         print("Joint lens with lens:", self._joint_lens_with_lens)
-        print("Joint lens with lens light:", self._joint_lens_light_with_lens_light)
+        print("Joint lens light with lens light:", self._joint_lens_light_with_lens_light)
         print("Joint source with source:", self._joint_source_with_source)
         print("Joint lens with light:", self._joint_lens_with_light)
         print("Joint source with point source:", self._joint_source_with_point_source)

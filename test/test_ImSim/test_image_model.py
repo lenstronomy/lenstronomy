@@ -254,6 +254,15 @@ class TestImageModel(object):
         ra, dec = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
         npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)
 
+    def test_displace_astrometry(self):
+        kwargs_special = {'delta_x_image': np.array([0.1, 0.1]), 'delta_y_image': np.array([-0.1, -0.1])}
+        x_pos, y_pos = np.array([0, 0]), np.array([0, 0])
+        x_shift, y_shift = self.imageModel._displace_astrometry(x_pos, y_pos, kwargs_special=kwargs_special)
+        assert x_pos[0] == 0
+        assert x_shift[0] == kwargs_special['delta_x_image'][0]
+        assert y_pos[0] == 0
+        assert y_shift[0] == kwargs_special['delta_y_image'][0]
+
 
 if __name__ == '__main__':
     pytest.main()

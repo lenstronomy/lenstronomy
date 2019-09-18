@@ -296,7 +296,7 @@ class ImageLinearFit(ImageModel):
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
 
-    def _error_map_psf(self, kwargs_lens, kwargs_ps):
+    def _error_map_psf(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """
 
         :param kwargs_lens:
@@ -309,6 +309,7 @@ class ImageLinearFit(ImageModel):
                 if bool is True:
                     ra_pos, dec_pos, amp = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k)
                     if len(ra_pos) > 0:
+                        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
                         error_map += self.ImageNumerics.psf_error_map(ra_pos, dec_pos, amp, self.Data.data)
         return error_map
 

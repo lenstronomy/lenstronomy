@@ -188,9 +188,9 @@ class ImageModel(object):
         if kwargs_special is not None:
             if 'delta_x_image' in kwargs_special:
                 delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
-                delta_x_new = np.zeros_like(x_pos)
-                delta_x_new[0:len(delta_x)] = delta_x
-                delta_y_new = np.zeros_like(y_pos)
+                delta_x_new = np.zeros(len(x_pos))
+                delta_x_new[0:len(delta_x)] = delta_x[:]
+                delta_y_new = np.zeros(len(y_pos))
                 delta_y_new[0:len(delta_y)] = delta_y
                 x_pos = x_pos + delta_x_new
                 y_pos = y_pos + delta_y_new

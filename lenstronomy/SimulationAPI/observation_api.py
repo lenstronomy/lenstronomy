@@ -57,8 +57,7 @@ class Observation(object):
         :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
         :param num_exposures: number of exposures that are combined
         :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
-        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
-        (optional when psf_type='PIXEL' is chosen)
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis (optional when psf_type='PIXEL' is chosen)
         :return: None, updated class instance
         """
         if exposure_time is not None:
@@ -221,8 +220,7 @@ class SingleBand(Instrument, Observation):
         :param model: 2d numpy array of modelled image (with pixels in units of data specified in class)
         :param background_noise: bool, if True, adds background noise
         :param poisson_noise: bool, if True, adds Poisson noise of modelled flux
-        :param seed: int, seed number to be used to render the noise properties.
-        If None, then uses the current numpy.random seed to render the noise properties.
+        :param seed: int, seed number to be used to render the noise properties. If None, then uses the current numpy.random seed to render the noise properties.
         :return: noise realization corresponding to the model
         """
         if seed is not None:

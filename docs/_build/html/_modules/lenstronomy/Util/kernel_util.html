@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.9.2 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -455,8 +455,9 @@
     <span class="c1">#data_center = int((numPix-1.)/2)</span>
     <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="o">-</span><span class="mf">0.49999</span><span class="p">))</span><span class="c1">#+data_center</span>
     <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="o">-</span><span class="mf">0.49999</span><span class="p">))</span><span class="c1">#+data_center</span>
+    <span class="c1"># TODO: make amplitude estimate not sucecible to rounding effects on which pixels to chose to estimate the amplitude</span>
     <span class="k">if</span> <span class="n">x_int</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">x_int</span> <span class="o">&lt;</span> <span class="n">numPix_x</span><span class="o">-</span><span class="mi">2</span> <span class="ow">and</span> <span class="n">y_int</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">y_int</span> <span class="o">&lt;</span> <span class="n">numPix_y</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span>
-        <span class="n">mean_image</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">y_int</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">y_int</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_int</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">x_int</span><span class="o">+</span><span class="mi">3</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">mean_image</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">y_int</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span><span class="n">y_int</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">x_int</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">x_int</span><span class="o">+</span><span class="mi">3</span><span class="p">]),</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_kernel</span><span class="p">)</span>
         <span class="n">center</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">num</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">mean_kernel</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">psf_kernel</span><span class="p">[</span><span class="n">center</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">center</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="n">center</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">center</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span>
@@ -514,7 +515,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -128,3 +128,9 @@ History
 * Likelihood module for point sources and catalogue data improved
 * Design improvements in the LensModel module
 * minor stability updates
+
+0.9.3 (2019-9-25)
++++++++++++++++++
+* improvements in SimulationAPI design
+* improvements in astrometric uncertainty handling of parameters
+* local arc lens model description and differentials

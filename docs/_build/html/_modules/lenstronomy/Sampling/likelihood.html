@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 0.9.2 documentation</title>
+    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 0.9.3 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -67,7 +67,11 @@
                  <span class="n">force_minimum_source_surface_brightness</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flux_min</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">image_likelihood_mask_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">flux_ratio_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">kwargs_flux_compute</span><span class="o">=</span><span class="p">{},</span> <span class="n">prior_lens</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_source</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_extinction</span><span class="o">=</span><span class="p">[],</span>
                  <span class="n">prior_lens_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_ps</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_special</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_lens_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_source_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_lens_light_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_ps_kde</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">prior_special_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_extinction_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">condition_definition</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">prior_special_kde</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_extinction_kde</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">prior_lens_lognormal</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_source_lognormal</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_extinction_lognormal</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">prior_lens_light_lognormal</span><span class="o">=</span><span class="p">[],</span> <span class="n">prior_ps_lognormal</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">prior_special_lognormal</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">condition_definition</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        initializing class</span>
 
@@ -115,7 +119,11 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_prior_likelihood</span> <span class="o">=</span> <span class="n">PriorLikelihood</span><span class="p">(</span><span class="n">prior_lens</span><span class="p">,</span> <span class="n">prior_source</span><span class="p">,</span> <span class="n">prior_lens_light</span><span class="p">,</span> <span class="n">prior_ps</span><span class="p">,</span> <span class="n">prior_special</span><span class="p">,</span> <span class="n">prior_extinction</span><span class="p">,</span>
                                                  <span class="n">prior_lens_kde</span><span class="p">,</span> <span class="n">prior_source_kde</span><span class="p">,</span> <span class="n">prior_lens_light_kde</span><span class="p">,</span> <span class="n">prior_ps_kde</span><span class="p">,</span>
-                                                 <span class="n">prior_special_kde</span><span class="p">,</span> <span class="n">prior_extinction_kde</span><span class="p">)</span>
+                                                 <span class="n">prior_special_kde</span><span class="p">,</span> <span class="n">prior_extinction_kde</span><span class="p">,</span>
+                                                 <span class="n">prior_lens_lognormal</span><span class="p">,</span> <span class="n">prior_source_lognormal</span><span class="p">,</span>
+                                                 <span class="n">prior_lens_light_lognormal</span><span class="p">,</span> <span class="n">prior_ps_lognormal</span><span class="p">,</span>
+                                                 <span class="n">prior_special_lognormal</span><span class="p">,</span> <span class="n">prior_extinction_lognormal</span><span class="p">,</span>
+                                                 <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="o">=</span> <span class="n">time_delay_likelihood</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_delay_likelihood</span> <span class="o">=</span> <span class="n">TimeDelayLikelihood</span><span class="p">(</span><span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span>
@@ -315,7 +323,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

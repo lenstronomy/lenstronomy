@@ -134,3 +134,8 @@ History
 * improvements in SimulationAPI design
 * improvements in astrometric uncertainty handling of parameters
 * local arc lens model description and differentials
+
+
+1.0.0 (2019-9-25)
++++++++++++++++++
+* marking version as 5 - Stable/production mode

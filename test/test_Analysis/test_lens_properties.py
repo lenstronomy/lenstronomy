@@ -62,6 +62,35 @@ class TestLensProp(object):
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
+    def test_kinematic_profiles(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR'],
+
+                          'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
+        lensProp = LensProp(z_lens, z_source, kwargs_options)
+        kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093,
+                        'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
+                       {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}
+                       ]
+
+        phi, q = -0.52624727893702705, 0.79703498156919605
+        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+        kwargs_lens_light = [{'n_sersic': 1.1212528655709217,
+                              'center_x': -0.019674496231393473,
+                              'e1': e1, 'e2': e2, 'amp': 1.1091367792010356, 'center_y': 0.076914975081560991,
+                              'R_sersic': 0.42691611878867058},
+                             {'R_sersic': 0.03025682660635394, 'amp': 139.96763298885992,
+                              'n_sersic': 1.90000008624093865,
+                              'center_x': -0.019674496231393473, 'center_y': 0.076914975081560991}]
+
+        r_eff = 0.211919902322
+
+        mass_profile_list, kwargs_profile, light_profile_list, kwargs_light = lensProp.kinematic_profiles(kwargs_lens, kwargs_lens_light, MGE_light=True, MGE_mass=True, r_eff=r_eff,
+                                    lens_model_kinematics_bool=[True, False])
+        assert mass_profile_list[0] == 'MULTI_GAUSSIAN_KAPPA'
+        assert light_profile_list[0] == 'MULTI_GAUSSIAN'
+
     def test_time_delays(self):
         z_lens = 0.5
         z_source = 1.5

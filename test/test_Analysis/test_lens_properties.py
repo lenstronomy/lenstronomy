@@ -62,6 +62,18 @@ class TestLensProp(object):
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
+        # test with MGE results returned
+        output = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
+                                                        psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                        r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False],
+                                                        return_MGE_results=True)
+        npt.assert_equal(len(output), 5)
+        v_sigma_mge_lens_test = output[0]
+        npt.assert_almost_equal(v_sigma_mge_lens / v_sigma_mge_lens_test, 1, decimal=1)
+        lens_model_list_mge, lens_light_model_list_mge, kwargs_lens_mge, kwargs_lens_light_mge = output[1:]
+        assert ('MULTI_GAUSSIAN_KAPPA' in lens_model_list_mge)
+        assert ('MULTI_GAUSSIAN' in lens_light_model_list_mge)
+
     def test_time_delays(self):
         z_lens = 0.5
         z_source = 1.5

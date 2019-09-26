@@ -78,7 +78,7 @@ class LensProp(object):
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                       aperture_type, anisotropy_model, r_eff, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
-                                      Hernquist_approx=False):
+                                      Hernquist_approx=False, return_MGE_results=False):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.
@@ -166,6 +166,8 @@ class LensProp(object):
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
                         kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        if return_MGE_results:
+            return sigma2, mass_profile_list, light_profile_list, kwargs_profile, kwargs_light
         return sigma2
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model):

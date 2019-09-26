@@ -37,7 +37,8 @@ class TimeDelayLikelihood(object):
         :return: log likelihood of the model given the time delay data
         """
         x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        x_pos, y_pos = self._param.real_image_positions(x_pos[0], y_pos[0], kwargs_cosmo)
+        #x_pos, y_pos = self._param.real_image_positions(x_pos[0], y_pos[0], kwargs_cosmo)
+        x_pos, y_pos = x_pos[0], y_pos[0]
         x_source, y_source = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, x_source, y_source, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']

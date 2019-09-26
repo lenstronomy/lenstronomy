@@ -50,7 +50,7 @@ class TestLensModel(object):
         npt.assert_almost_equal(alphay_1_1 + alphay_1_2, alphay_full, decimal=5)
 
     def test_init(self):
-        lens_model_list = ['TNFW', 'SPEMD_SMOOTH', 'TRIPLE_CHAMELEON']
+        lens_model_list = ['TNFW', 'SPEMD_SMOOTH', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC', 'NFW_MC']
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == 'Rs'
 

@@ -54,12 +54,12 @@ class TestLikelihoodModule(object):
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         self.kwargs_cosmo = {'D_dt': 1000}
         kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False, 'compute_mode': 'gaussian'}
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class = class_creator.create_class_instances(**kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
-                                lens_light_model_class,
-                                point_source_class, kwargs_numerics=kwargs_numerics)
+                                lens_light_model_class, point_source_class, extinction_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                          self.kwargs_lens_light, self.kwargs_ps)
+        ra_pos, dec_pos = imageModel.PointSource.image_position(kwargs_ps=self.kwargs_ps, kwargs_lens=self.kwargs_lens)
 
         data_class.update_data(image_sim)
         kwargs_band['image_data'] = image_sim
@@ -77,7 +77,7 @@ class TestLikelihoodModule(object):
                                    'Ddt_sampling': True
                                    }
 
-        def condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+        def condition_definition(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps=None, kwargs_special=None, kwargs_extinction=None):
             logL = 0
             if kwargs_lens_light[0]['R_sersic'] > kwargs_source[0]['R_sersic']:
                 logL -= 10**15
@@ -92,13 +92,16 @@ class TestLikelihoodModule(object):
                              'check_positive_flux': True,
                              'flux_ratio_likelihood': True,
                              'prior_lens': [[0, 'theta_E', 1, 0.1]],
-                             'condition_definition': condition_definition
+                             'condition_definition': condition_definition,
+                             'image_position_likelihood': True
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
                             'time_delays_measured': np.ones(4),
                             'time_delays_uncertainties': np.ones(4),
                             'flux_ratios': np.ones(4),
-                            'flux_ratio_errors': np.ones(4)
+                            'flux_ratio_errors': np.ones(4),
+                            'ra_image_list': ra_pos,
+                            'dec_image_list': dec_pos
                             }
         self.param_class = Param(self.kwargs_model, **kwargs_constraints)
         self.imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class,
@@ -108,7 +111,7 @@ class TestLikelihoodModule(object):
 
     def test_logL(self):
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL, _ = self.Likelihood.logL(args, verbose=True)
         num_data_evaluate = self.Likelihood.num_data
@@ -119,7 +122,7 @@ class TestLikelihoodModule(object):
                              }
         likelihood = LikelihoodModule(kwargs_data_joint=self.kwargs_data, kwargs_model=self.kwargs_model, param_class=self.param_class, **kwargs_likelihood)
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_cosmo=self.kwargs_cosmo)
+                                            kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL, _ = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -3080.29, decimal=-1)

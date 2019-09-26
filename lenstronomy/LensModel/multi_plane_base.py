@@ -1,10 +1,10 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
-from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.profile_list_base import ProfileListBase
 import lenstronomy.Util.constants as const
 
 
-class MultiPlaneBase(object):
+class MultiPlaneBase(ProfileListBase):
 
     """
     Multi-plane lensing class
@@ -36,9 +36,9 @@ class MultiPlaneBase(object):
         if not len(lens_model_list) == len(lens_redshift_list):
             raise ValueError("The length of lens_model_list does not correspond to redshift_list")
 
-        self._lens_model_list = lens_model_list
         self._lens_redshift_list = lens_redshift_list
-        self._lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+        super(MultiPlaneBase, self).__init__(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                       lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
@@ -293,18 +293,19 @@ class MultiPlaneBase(object):
         factor = self._reduced2physical_factor[index_lens]
         return alpha_reduced * factor
 
-    def _gravitational_delay(self, x, y, kwargs_lens, idex, z_lens):
+    def _gravitational_delay(self, x, y, kwargs_lens, index, z_lens):
         """
 
         :param x: co-moving coordinate at the lens plane
         :param y: co-moving coordinate at the lens plane
         :param kwargs_lens: lens model keyword arguments
         :param z_lens: redshift of the deflector
-        :param idex: index of the lens model
+        :param index: index of the lens model in sorted redshfit convention
         :return: gravitational delay in units of days as seen at z=0
         """
-        theta_x, theta_y = self._co_moving2angle(x, y, idex)
-        potential = self._lens_model.potential(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[idex])
+        theta_x, theta_y = self._co_moving2angle(x, y, index)
+        k = self._sorted_redshift_index[index]
+        potential = self.func_list[k].function(theta_x, theta_y, **kwargs_lens[k])
         delay_days = self._lensing_potential2time_delay(potential, z_lens, z_source=self._z_source_convention)
         return -delay_days
 
@@ -394,12 +395,13 @@ class MultiPlaneBase(object):
         :param alpha_x: physical angle (radian) before the deflector plane
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
-        :param index: index of the lens model to be added
+        :param index: index of the lens model to be added in sorted redshift list convention
         :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)
-        alpha_x_red, alpha_y_red = self._lens_model.alpha(theta_x, theta_y, kwargs_lens, k=self._sorted_redshift_index[index])
+        k = self._sorted_redshift_index[index]
+        alpha_x_red, alpha_y_red = self.func_list[k].derivatives(theta_x, theta_y, **kwargs_lens[k])
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, index)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, index)
         return alpha_x - alpha_x_phys, alpha_y - alpha_y_phys

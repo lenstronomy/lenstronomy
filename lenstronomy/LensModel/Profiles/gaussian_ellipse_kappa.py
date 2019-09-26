@@ -13,9 +13,10 @@ from scipy.integrate import quad
 from copy import deepcopy
 from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class GaussianEllipseKappa(object):
+class GaussianEllipseKappa(LensProfileBase):
     """
     This class contains functions to evaluate the derivative and hessian matrix
     of the deflection potential for an elliptical Gaussian convergence.
@@ -45,6 +46,7 @@ class GaussianEllipseKappa(object):
 
         self.min_ellipticity = min_ellipticity
         self.spherical = GaussianKappa()
+        super(GaussianEllipseKappa, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """

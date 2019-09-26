@@ -5,6 +5,7 @@ from lenstronomy.ImSim.image2source_mapping import Image2SourceMapping
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 
 import numpy as np
 
@@ -14,7 +15,7 @@ class ImageModel(object):
     this class uses functions of lens_model and source_model to make a lensed image
     """
     def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, kwargs_numerics={}):
+                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
         :param psf_class: instance of PSF() class
@@ -50,6 +51,9 @@ class ImageModel(object):
         self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
         self.num_bands = 1
         self._kwargs_numerics = kwargs_numerics
+        if extinction_class is None:
+            extinction_class = DifferentialExtinction(optical_depth_model=[])
+        self._extinction = extinction_class
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -73,15 +77,18 @@ class ImageModel(object):
         self.PSF.set_pixel_size(self.Data.pixel_width)
         self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
-    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, unconvolved=False, de_lensed=False, k=None):
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                  unconvolved=False, de_lensed=False, k=None):
         """
 
         computes the source surface brightness distribution
 
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
         :return: 1d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
@@ -91,6 +98,8 @@ class ImageModel(object):
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         else:
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
+            source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        kwargs_special=kwargs_special)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -108,7 +117,7 @@ class ImageModel(object):
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 
-    def point_source(self, kwargs_ps, kwargs_lens=None, unconvolved=False, k=None):
+    def point_source(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, unconvolved=False, k=None):
         """
 
         computes the point source positions and paints PSF convolutions on them
@@ -120,16 +129,16 @@ class ImageModel(object):
         point_source_image = np.zeros((self.Data.num_pixel_axes))
         if unconvolved or self.PointSource is None:
             return point_source_image
-        ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=True, k=k)
-        for i in range(n_points):
-            point_source_image += self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
+        ra_pos, dec_pos, amp = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k)
+        ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
+        point_source_image += self.ImageNumerics.point_source_rendering(ra_pos, dec_pos, amp)
         return point_source_image
 
-    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, unconvolved=False,
-              source_add=True, lens_light_add=True, point_source_add=True):
+    def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
-        make a image with a realisation of linear parameter values "param"
+        make an image with a realisation of linear parameter values "param"
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
@@ -143,9 +152,46 @@ class ImageModel(object):
         """
         model = np.zeros((self.Data.num_pixel_axes))
         if source_add is True:
-            model += self.source_surface_brightness(kwargs_source, kwargs_lens, unconvolved=unconvolved)
+            model += self.source_surface_brightness(kwargs_source, kwargs_lens, kwargs_extinction=kwargs_extinction,
+                                                    kwargs_special=kwargs_special, unconvolved=unconvolved)
         if lens_light_add is True:
             model += self.lens_surface_brightness(kwargs_lens_light, unconvolved=unconvolved)
         if point_source_add is True:
-            model += self.point_source(kwargs_ps, kwargs_lens, unconvolved=unconvolved)
+            model += self.point_source(kwargs_ps, kwargs_lens, kwargs_special=kwargs_special, unconvolved=unconvolved)
         return model
+
+    def extinction_map(self, kwargs_extinction=None, kwargs_special=None):
+        """
+        differential extinction per pixel
+
+        :param kwargs_extinction: list of keyword arguments corresponding to the optical depth models tau, such that extinction is exp(-tau)
+        :param kwargs_special: keyword arguments, additional parameter to the extinction
+        :return: 2d array of size of the image
+        """
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        extinction = self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
+                                                        kwargs_special=kwargs_special)
+        extinction_array = np.ones_like(ra_grid) * extinction
+        extinction = self.ImageNumerics.re_size_convolve(extinction_array, unconvolved=True)
+        return extinction
+
+    def _displace_astrometry(self, x_pos, y_pos, kwargs_special=None):
+        """
+        displaces point sources by shifts specified in kwargs_special
+
+        :param x_pos: list of point source positions according to point source model list
+        :param y_pos: list of point source positions according to point source model list
+        :param kwargs_special: keyword arguments, can contain 'delta_x_image' and 'delta_y_image'
+        The list is defined in order of the image positions
+        :return: shifted image positions in same format as input
+        """
+        if kwargs_special is not None:
+            if 'delta_x_image' in kwargs_special:
+                delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+                delta_x_new = np.zeros(len(x_pos))
+                delta_x_new[0:len(delta_x)] = delta_x[:]
+                delta_y_new = np.zeros(len(y_pos))
+                delta_y_new[0:len(delta_y)] = delta_y
+                x_pos = x_pos + delta_x_new
+                y_pos = y_pos + delta_y_new
+        return x_pos, y_pos

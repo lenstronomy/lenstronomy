@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" accesskey="U">lenstronomy.ImSim package</a> &#187;</li> 
       </ul>
@@ -91,7 +91,7 @@ brightness models to be called in all available images/bands</p>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.image_linear_solve">
-<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.image_linear_solve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
 The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
 :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
@@ -104,7 +104,7 @@ The linear parameters are computed with a weighted linear least square optimizat
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.likelihood_data_given_model">
-<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
 This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
 :param kwargs_lens:
@@ -116,7 +116,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.linear_response_matrix">
-<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/joint_linear.html#JointLinear.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.joint_linear.JointLinear.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -234,20 +234,20 @@ This class calls functions of image_model.py with different bands with
 joint non-linear parameters and decoupled linear parameters.</p>
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.image_linear_solve">
-<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_else</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_linear.html#MultiLinear.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.image_linear_solve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_linear.html#MultiLinear.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
 The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
 :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
 :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
 :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-:param kwargs_else: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
+:param kwargs_ps: keyword arguments corresponding to “other” parameters, such as external shear and point source image positions
 :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
 :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.likelihood_data_given_model">
-<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_linear.html#MultiLinear.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_linear.html#MultiLinear.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_linear.MultiLinear.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
 This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
 :param kwargs_lens:
@@ -299,7 +299,7 @@ of the basis set.</p>
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.image_linear_solve">
-<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.image_linear_solve" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
 The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
 :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
@@ -312,7 +312,7 @@ The linear parameters are computed with a weighted linear least square optimizat
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.likelihood_data_given_model">
-<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>source_marg=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
 This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
 :param kwargs_lens:
@@ -324,7 +324,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.linear_response_matrix">
-<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,7 +347,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear">
-<code class="descname">num_param_linear</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<code class="descname">num_param_linear</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -362,7 +362,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs">
-<code class="descname">select_kwargs</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.select_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">select_kwargs</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.select_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.select_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>select subset of kwargs lists referenced to this imaging band</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -454,7 +454,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" >lenstronomy.ImSim package</a> &#187;</li> 
       </ul>

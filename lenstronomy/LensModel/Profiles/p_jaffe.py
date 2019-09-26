@@ -1,7 +1,8 @@
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class PJaffe(object):
+class PJaffe(LensProfileBase):
     """
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
     based on Eliasdottir (2013)

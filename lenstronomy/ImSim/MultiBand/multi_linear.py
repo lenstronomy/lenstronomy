@@ -18,14 +18,15 @@ class MultiLinear(MultiDataBase):
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 
-    def image_linear_solve(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_else, inv_bool=False):
+    def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_else: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
@@ -35,7 +36,9 @@ class MultiLinear(MultiDataBase):
                 wls_model, error_map, cov_param, param = self._imageModel_list[i].image_linear_solve(kwargs_lens,
                                                                                                      kwargs_source,
                                                                                                      kwargs_lens_light,
-                                                                                                     kwargs_else,
+                                                                                                     kwargs_ps,
+                                                                                                     kwargs_extinction,
+                                                                                                     kwargs_special,
                                                                                                      inv_bool=inv_bool)
                 wls_list.append(wls_model)
                 error_map_list.append(error_map)
@@ -43,7 +46,8 @@ class MultiLinear(MultiDataBase):
                 param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
-    def likelihood_data_given_model(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, source_marg=False):
+    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -55,9 +59,13 @@ class MultiLinear(MultiDataBase):
         """
         # generate image
         logL = 0
+        if linear_prior is None:
+            linear_prior = [None for i in range(self._num_bands)]
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
                 logL += self._imageModel_list[i].likelihood_data_given_model(kwargs_lens, kwargs_source,
                                                                              kwargs_lens_light, kwargs_ps,
-                                                                             source_marg=source_marg)
+                                                                             kwargs_extinction, kwargs_special,
+                                                                             source_marg=source_marg,
+                                                                             linear_prior=linear_prior[i])
         return logL

@@ -14,7 +14,7 @@ import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
-from lenstronomy.Data.pixel_grid import PixelGrid
+from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.Util import util
 
 
@@ -37,7 +37,9 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
-        psf_class._psf_error_map = np.zeros_like(psf_class.kernel_point_source)
+        kernel = psf_class.kernel_point_source
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel, 'psf_error_map': np.ones_like(kernel) * 0.001}
+        psf_class = PSF(**kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
         kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
@@ -115,6 +117,7 @@ class TestImageModel(object):
         logLmarg = self.imageModel.likelihood_data_given_model(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
                                                                self.kwargs_ps, source_marg=True)
         npt.assert_almost_equal(logL - logLmarg, 0, decimal=-3)
+        assert logLmarg < logL
 
     def test_reduced_residuals(self):
         model = sim_util.simulate_simple(self.imageModel, self.kwargs_lens, self.kwargs_source,
@@ -149,7 +152,7 @@ class TestImageModel(object):
         data_class = ImageData(**kwargs_data)
         kernel = np.zeros((5, 5))
         kernel[2, 2] = 1
-        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.zeros_like(kernel)}
+        kwargs_psf = {'kernel_point_source': kernel, 'psf_type': 'PIXEL', 'psf_error_map': np.ones_like(kernel) * 0.001}
         psf_class = PSF(**kwargs_psf)
         lens_model_class = LensModel(['SPEP'])
         source_model_class = LightModel([])
@@ -229,6 +232,36 @@ class TestImageModel(object):
 
         flux = imageModel_empty.lens_surface_brightness(kwargs_lens_light=None)
         assert flux.all() == 0
+
+    def test_extinction_map(self):
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, sigma_bkg=1)
+        data_class = ImageData(**kwargs_data)
+        extinction_class = DifferentialExtinction(optical_depth_model=['UNIFORM'], tau0_index=0)
+        imageModel = ImageModel(data_class, PSF(), extinction_class=extinction_class)
+        extinction = imageModel.extinction_map(kwargs_extinction=[{'amp': 1}], kwargs_special={'tau0_list': [1, 0, 0]})
+        npt.assert_almost_equal(extinction, np.exp(-1))
+
+    def test_error_response(self):
+
+        C_D_response, model_error = self.imageModel._error_response(self.kwargs_lens, self.kwargs_ps)
+        assert len(model_error) == 100
+        print(np.sum(model_error))
+        npt.assert_almost_equal(np.sum(model_error), 0.0019271126921470687, decimal=3)
+
+    def test_point_source_linear_response_set(self):
+        kwargs_special = {'delta_x_image': [0.1, 0.1], 'delta_y_image': [-0.1, -0.1]}
+        ra_pos, dec_pos, amp, num_point = self.imageModel.point_source_linear_response_set(self.kwargs_ps, self.kwargs_lens, kwargs_special, with_amp=True)
+        ra, dec = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
+        npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)
+
+    def test_displace_astrometry(self):
+        kwargs_special = {'delta_x_image': np.array([0.1, 0.1]), 'delta_y_image': np.array([-0.1, -0.1])}
+        x_pos, y_pos = np.array([0, 0]), np.array([0, 0])
+        x_shift, y_shift = self.imageModel._displace_astrometry(x_pos, y_pos, kwargs_special=kwargs_special)
+        assert x_pos[0] == 0
+        assert x_shift[0] == kwargs_special['delta_x_image'][0]
+        assert y_pos[0] == 0
+        assert y_shift[0] == kwargs_special['delta_y_image'][0]
 
 
 if __name__ == '__main__':

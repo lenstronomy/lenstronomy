@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -81,6 +81,7 @@
     <span class="n">dr_second</span> <span class="o">=</span> <span class="n">dis</span><span class="p">[</span><span class="n">second_greatest</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">dr_greatest</span><span class="o">*</span><span class="n">dr_second</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span></div>
+
 
 <div class="viewcode-block" id="sort_image_index"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sort_image_index">[docs]</a><span class="k">def</span> <span class="nf">sort_image_index</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">,</span><span class="n">xref</span><span class="p">,</span><span class="n">yref</span><span class="p">):</span>
 
@@ -394,6 +395,29 @@
     <span class="k">return</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="select_best"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.select_best">[docs]</a><span class="k">def</span> <span class="nf">select_best</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">num_select</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param array: numpy array to be selected from</span>
+<span class="sd">    :param criteria: criteria of selection</span>
+<span class="sd">    :param highest: bool, if false the lowest will be selected</span>
+<span class="sd">    :param num_select: number of elements to be selected</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">criteria</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="n">m</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Elements in array (</span><span class="si">%s</span><span class="s1">) not equal to elements in criteria (</span><span class="si">%s</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">num_select</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">array</span>
+    <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">highest</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">criteria</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">num_select</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">indexes</span> <span class="o">=</span> <span class="n">criteria</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="o">-</span><span class="n">num_select</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">indexes</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns a set of uniform points around a circle</span>
@@ -550,7 +574,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -7,10 +7,9 @@ import lenstronomy.Util.mask as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.PointSource.point_source import PointSource
-from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
+from lenstronomy.Util import class_creator
 
 
 class LensAnalysis(object):
@@ -18,14 +17,18 @@ class LensAnalysis(object):
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """
     def __init__(self, kwargs_model):
-        self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
-        self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
-        self.LensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-                                   z_source=kwargs_model.get('z_source', None),
-                                   lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-                                   multi_plane=kwargs_model.get('multi_plane', False))
+
+        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
+
+        #self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
+
+        #self.LensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
+        #                           z_source=kwargs_model.get('z_source', None),
+        #                           lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
+        #                           multi_plane=kwargs_model.get('multi_plane', False))
+        #self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
         self._lensModelExtensions = LensModelExtensions(self.LensModel)
-        self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []))
+        #self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []), lensModel=self.LensModel)
         self.kwargs_model = kwargs_model
         self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
 

@@ -20,33 +20,33 @@ class TestCartShapelets(object):
         beta = 1.
         coeffs = (1., 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == -0.046311501189135587
+        npt.assert_almost_equal(values[0], -0.046311501189135587, decimal=8)
 
         x = 1.
         y = 2.
         beta = 1.
         coeffs = (1., 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values == -0.046311501189135587
+        npt.assert_almost_equal(values, -0.046311501189135587, decimal=8)
 
         x = np.array([0])
         y = np.array([0])
         beta = 1.
         coeffs = (0, 1.)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (1, 1., 0, 0, 1, 1)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (1, 1., 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
         coeffs = (0., 0., 0, 0, 0., 0., 0, 0, 0, 0, 0, 0, 0, 0, 0)
         values = self.polarShapelets.function(x, y, coeffs, beta)
-        assert values[0] == 0
+        npt.assert_almost_equal(values[0], 0, decimal=8)
 
     def test_derivatives(self):
         """
@@ -80,9 +80,9 @@ class TestCartShapelets(object):
         x1 = np.array([1., 2])
         y1 = np.array([1, 1])
         f_xx, f_yy, f_xy = self.polarShapelets.hessian(x1, y1, **kwargs_lens1)
-        assert f_xx[0] == 0.20755374871029733
-        assert f_yy[0] == 0.20755374871029728
-        assert f_xy[0] == -0.20755374871029739
+        npt.assert_almost_equal(f_xx[0], 0.20755374871029733, decimal=8)
+        npt.assert_almost_equal(f_yy[0], 0.20755374871029728, decimal=8)
+        npt.assert_almost_equal(f_xy[0], -0.20755374871029739, decimal=8)
 
 
 if __name__ == '__main__':

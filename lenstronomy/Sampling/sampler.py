@@ -81,15 +81,15 @@ class Sampler(object):
         if mpi is True and not pso.isMaster():
             pass
         else:
-            lens_dict, source_dict, lens_light_dict, ps_dict, kwargs_cosmo = self.chain.param.args2kwargs(result)
-            print(pso.gbest.fitness * 2 / (self.chain.effectiv_num_data_points(lens_dict, source_dict, lens_light_dict, ps_dict)), 'reduced X^2 of best position')
+            kwargs_return = self.chain.param.args2kwargs(result)
+            print(pso.gbest.fitness * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
             print(pso.gbest.fitness, 'logL')
-            print(self.chain.effectiv_num_data_points(lens_dict, source_dict, lens_light_dict, ps_dict), 'effective number of data points')
-            print(lens_dict, 'lens result')
-            print(source_dict, 'source result')
-            print(lens_light_dict, 'lens light result')
-            print(ps_dict, 'point source result')
-            print(kwargs_cosmo, 'cosmo result')
+            print(self.chain.effectiv_num_data_points(**kwargs_return), 'effective number of data points')
+            print(kwargs_return.get('kwargs_lens', None), 'lens result')
+            print(kwargs_return.get('kwargs_source', None), 'source result')
+            print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
+            print(kwargs_return.get('kwargs_ps', None), 'point source result')
+            print(kwargs_return.get('kwargs_special', None), 'special param result')
             time_end = time.time()
             print(time_end - time_start, 'time used for PSO', print_key)
             print('===================')

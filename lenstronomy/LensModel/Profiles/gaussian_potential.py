@@ -2,9 +2,10 @@ __author__ = 'sibirrer'
 #this file contains a class to make a gaussian
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class Gaussian(object):
+class Gaussian(LensProfileBase):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     """

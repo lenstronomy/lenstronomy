@@ -1,5 +1,7 @@
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class Flexion(object):
+
+class Flexion(LensProfileBase):
     """
     class for flexion
     """

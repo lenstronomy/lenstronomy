@@ -9,7 +9,6 @@ from lenstronomy.LensModel.Optimizer.multi_plane_optimizer import MultiPlaneLens
 from lenstronomy.LensModel.Optimizer.penalties import Penalties
 from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-from copy import deepcopy
 
 
 class Optimizer(object):

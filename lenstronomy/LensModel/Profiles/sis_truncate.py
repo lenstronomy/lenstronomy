@@ -1,8 +1,10 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class SIS_truncate(object):
+
+class SIS_truncate(LensProfileBase):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
@@ -123,7 +125,8 @@ class SIS_truncate(object):
              r[r == 0] = 1
         return x/r, y/r
 
-    def _d2r_dx2(self, x, y):
+    @staticmethod
+    def _d2r_dx2(x, y):
         """
         second derivative
         :param x:

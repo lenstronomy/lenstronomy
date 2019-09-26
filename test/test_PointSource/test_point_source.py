@@ -1,6 +1,5 @@
 import pytest
 import numpy as np
-import copy
 import numpy.testing as npt
 
 from lenstronomy.PointSource.point_source import PointSource
@@ -42,7 +41,7 @@ class TestPointSource(object):
         assert num_basis == 9
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False, k=None)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
@@ -51,6 +50,12 @@ class TestPointSource(object):
         ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens)
         assert ra_list[0] == self.x_pos[0]
         assert len(ra_list) == 9
+
+        ra_list, dec_list, amp_list = self.PointSource.point_source_list(self.kwargs_ps, self.kwargs_lens, k=0)
+        assert ra_list[0] == self.x_pos[0]
+        assert len(ra_list) == 4
+        assert len(dec_list) == 4
+        assert len(amp_list) == 4
 
     def test_point_source_amplitude(self):
         amp_list = self.PointSource.source_amplitude(self.kwargs_ps, self.kwargs_lens)
@@ -71,12 +76,6 @@ class TestPointSource(object):
                                                                      kwargs_lens=kwargs_lens)
         npt.assert_almost_equal(x_image_list[0][-1], -0.82654997748011705 , decimal=8)
 
-    def test_re_normalize_flux(self):
-        norm_factor = 10
-        kwargs_input = copy.deepcopy(self.kwargs_ps)
-        kwargs_ps = self.PointSource.re_normalize_flux(kwargs_input, norm_factor)
-        npt.assert_almost_equal(kwargs_ps[0]['point_amp'][0] / self.kwargs_ps[0]['point_amp'][0], norm_factor, decimal=8)
-
     def test_set_amplitudes(self):
         amp_list = [np.ones_like(self.x_pos)*10, [100], np.ones_like(self.x_pos)*10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
@@ -85,7 +84,7 @@ class TestPointSource(object):
         assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
 
 
-class TestPointSource_fixed_mag(object):
+class TestPointSourceFixedMag(object):
 
     def setup(self):
         lensModel = LensModel(lens_model_list=['SPEP'])
@@ -118,7 +117,7 @@ class TestPointSource_fixed_mag(object):
         assert num_basis == 3
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False, k=None)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
@@ -134,18 +133,37 @@ class TestPointSource_fixed_mag(object):
         bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
         assert bool == True
 
-    def test_re_normalize_flux(self):
-        norm_factor = 10
-        kwargs_input = copy.deepcopy(self.kwargs_ps)
-        kwargs_ps = self.PointSource.re_normalize_flux(kwargs_input, norm_factor)
-        npt.assert_almost_equal(kwargs_ps[0]['source_amp'] / self.kwargs_ps[0]['source_amp'], norm_factor, decimal=8)
-
     def test_set_amplitudes(self):
         amp_list = [10, [100], 10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
         assert kwargs_out[0]['source_amp'] == 10 * self.kwargs_ps[0]['source_amp']
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
+
+
+class TestUtil(object):
+
+    def setup(self):
+        pass
+
+    def test_expand_t0_array(self):
+        from lenstronomy.PointSource import point_source_types
+        array = 1
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+
+        array = [1]
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+        assert array_out[1] == 0
+
+        array = [1, 1, 1]
+        num = 3
+        array_out = point_source_types._expand_to_array(array, num)
+        assert len(array_out) == num
+        assert array_out[1] == 1
 
 
 if __name__ == '__main__':

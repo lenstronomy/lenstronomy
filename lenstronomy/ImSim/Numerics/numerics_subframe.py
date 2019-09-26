@@ -13,7 +13,7 @@ class NumericsSubFrame(PointSourceRendering):
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
                  compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None,
-                 convolution_type='fft_static'):
+                 convolution_type='fft_static', truncation=4):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -52,7 +52,7 @@ class NumericsSubFrame(PointSourceRendering):
                                            compute_indexes=self._cut_frame(compute_indexes),
                                            point_source_supersampling_factor=point_source_supersampling_factor,
                                            convolution_kernel_size=convolution_kernel_size,
-                                           convolution_type=convolution_type)
+                                           convolution_type=convolution_type, truncation=truncation)
         super(NumericsSubFrame, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_supersampling_factor,
                                        psf=psf)
 

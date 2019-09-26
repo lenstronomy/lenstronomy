@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.velocity_util &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.GalKin.velocity_util &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -52,7 +52,7 @@
     <span class="k">return</span> <span class="n">mp</span><span class="o">.</span><span class="n">hyp2f1</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="displace_PSF"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF">[docs]</a><span class="k">def</span> <span class="nf">displace_PSF</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">FWHM</span><span class="p">):</span>
+<div class="viewcode-block" id="displace_PSF_gaussian"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF_gaussian">[docs]</a><span class="k">def</span> <span class="nf">displace_PSF_gaussian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">FWHM</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param x: x-coord (arc sec)</span>
@@ -65,6 +65,68 @@
     <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span> <span class="o">*</span> <span class="n">sigma_one_direction</span>
     <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">()</span> <span class="o">*</span> <span class="n">sigma_one_direction</span>
     <span class="k">return</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span></div>
+
+
+<div class="viewcode-block" id="moffat_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.moffat_r">[docs]</a><span class="k">def</span> <span class="nf">moffat_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Moffat profile</span>
+
+<span class="sd">    :param r: radial coordinate</span>
+<span class="sd">    :param alpha:</span>
+<span class="sd">    :param beta:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">alpha</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="n">beta</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="moffat_fwhm_alpha"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha">[docs]</a><span class="k">def</span> <span class="nf">moffat_fwhm_alpha</span><span class="p">(</span><span class="n">FWHM</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    computes alpha parameter from FWHM and beta for a Moffat profile</span>
+
+<span class="sd">    :param FWHM: full width at half maximum</span>
+<span class="sd">    :param beta: beta parameter of Moffat profile</span>
+<span class="sd">    :return: alpha parameter of Moffat profile</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">FWHM</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">beta</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="draw_moffat_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.draw_moffat_r">[docs]</a><span class="k">def</span> <span class="nf">draw_moffat_r</span><span class="p">(</span><span class="n">FWHM</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param FWHM: full width at half maximum</span>
+<span class="sd">    :param beta: Moffat beta parameter</span>
+<span class="sd">    :return: draw from radial Moffat distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">moffat_fwhm_alpha</span><span class="p">(</span><span class="n">FWHM</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">draw_cdf_Y</span><span class="p">(</span><span class="n">beta</span><span class="p">)</span>
+    <span class="c1"># equation B3 in Berge et al. paper</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">X</span></div>
+
+
+<div class="viewcode-block" id="displace_PSF_moffat"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.displace_PSF_moffat">[docs]</a><span class="k">def</span> <span class="nf">displace_PSF_moffat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">FWHM</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param x: x-coordinate of light ray</span>
+<span class="sd">    :param y: y-coordinate of light ray</span>
+<span class="sd">    :param FWHM: full width at half maximum</span>
+<span class="sd">    :param beta: Moffat beta parameter</span>
+<span class="sd">    :return: displaced ray by PSF</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">draw_moffat_r</span><span class="p">(</span><span class="n">FWHM</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">draw_xy</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">dy</span></div>
+
+
+<div class="viewcode-block" id="draw_cdf_Y"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.draw_cdf_Y">[docs]</a><span class="k">def</span> <span class="nf">draw_cdf_Y</span><span class="p">(</span><span class="n">beta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2</span>
+<span class="sd">    cdf(Y) = 1-Y**(1-beta)</span>
+
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">beta</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="R_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.velocity_util.R_r">[docs]</a><span class="k">def</span> <span class="nf">R_r</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
@@ -123,7 +185,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

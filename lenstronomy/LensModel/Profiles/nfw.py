@@ -5,8 +5,10 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import scipy.interpolate as interp
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class NFW(object):
+
+class NFW(LensProfileBase):
     """
     this class contains functions concerning the NFW profile
 
@@ -32,6 +34,7 @@ class NFW(object):
 
         self._max_interp_X = max_interp_X
         self._num_interp_X = num_interp_X
+        super(NFW, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """

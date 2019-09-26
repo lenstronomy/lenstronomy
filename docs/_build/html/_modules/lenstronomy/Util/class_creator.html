@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.class_creator &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Util.class_creator &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,6 +44,7 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_model</span> <span class="k">import</span> <span class="n">LightModel</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.point_source</span> <span class="k">import</span> <span class="n">PointSource</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.differential_extinction</span> <span class="k">import</span> <span class="n">DifferentialExtinction</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.ImSim.image_linear_solve</span> <span class="k">import</span> <span class="n">ImageLinearFit</span>
 
 
@@ -53,7 +54,9 @@
                            <span class="n">additional_images_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
                            <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">source_deflection_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">index_lens_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_source_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">index_lens_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_point_source_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                           <span class="n">index_lens_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_point_source_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">optical_depth_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">index_optical_depth_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">band_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau0_index_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_models</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">point_source_magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param lens_model_list: list of strings indicating the type of lens models</span>
@@ -73,15 +76,19 @@
 <span class="sd">    :param num_iter_max:</span>
 <span class="sd">    :param source_deflection_scaling_list:</span>
 <span class="sd">    :param source_redshift_list:</span>
-<span class="sd">    :param cosmo:</span>
+<span class="sd">    :param cosmo: astropy.cosmology instance</span>
 <span class="sd">    :param index_lens_model_list:</span>
 <span class="sd">    :param index_source_light_model_list:</span>
 <span class="sd">    :param index_lens_light_model_list:</span>
 <span class="sd">    :param index_point_source_model_list:</span>
+<span class="sd">    :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source</span>
 <span class="sd">    :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band</span>
+<span class="sd">    :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band</span>
+<span class="sd">    :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.</span>
+<span class="sd">    :param point_source_magnification_limit: float &gt;0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">index_lens_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">index_lens_model_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">all_models</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">lens_model_list_i</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="n">lens_redshift_list_i</span> <span class="o">=</span> <span class="n">lens_redshift_list</span>
         <span class="n">observed_convention_index_i</span> <span class="o">=</span> <span class="n">observed_convention_index</span>
@@ -105,7 +112,7 @@
                                  <span class="n">multi_plane</span><span class="o">=</span><span class="n">multi_plane</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                  <span class="n">observed_convention_index</span><span class="o">=</span><span class="n">observed_convention_index_i</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">index_source_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">index_source_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">all_models</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">source_light_model_list_i</span> <span class="o">=</span> <span class="n">source_light_model_list</span>
         <span class="n">source_deflection_scaling_list_i</span> <span class="o">=</span> <span class="n">source_deflection_scaling_list</span>
         <span class="n">source_redshift_list_i</span> <span class="o">=</span> <span class="n">source_redshift_list</span>
@@ -123,18 +130,17 @@
                                     <span class="n">deflection_scaling_list</span><span class="o">=</span><span class="n">source_deflection_scaling_list_i</span><span class="p">,</span>
                                     <span class="n">source_redshift_list</span><span class="o">=</span><span class="n">source_redshift_list_i</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">index_lens_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">index_lens_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">all_models</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">lens_light_model_list_i</span> <span class="o">=</span> <span class="n">lens_light_model_list</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">lens_light_model_list_i</span> <span class="o">=</span> <span class="p">[</span><span class="n">lens_light_model_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">index_lens_light_model_list</span><span class="p">[</span><span class="n">band_index</span><span class="p">]]</span>
     <span class="n">lens_light_model_class</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">light_model_list</span><span class="o">=</span><span class="n">lens_light_model_list_i</span><span class="p">)</span>
 
-
     <span class="n">point_source_model_list_i</span> <span class="o">=</span> <span class="n">point_source_model_list</span>
     <span class="n">fixed_magnification_list_i</span> <span class="o">=</span> <span class="n">fixed_magnification_list</span>
     <span class="n">additional_images_list_i</span> <span class="o">=</span> <span class="n">additional_images_list</span>
 
-    <span class="k">if</span> <span class="n">index_point_source_model_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">index_point_source_model_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">all_models</span><span class="p">:</span>
         <span class="n">point_source_model_list_i</span> <span class="o">=</span> <span class="p">[</span><span class="n">point_source_model_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">index_point_source_model_list</span><span class="p">[</span><span class="n">band_index</span><span class="p">]]</span>
         <span class="k">if</span> <span class="n">fixed_magnification_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">fixed_magnification_list_i</span> <span class="o">=</span> <span class="p">[</span><span class="n">fixed_magnification_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">index_point_source_model_list</span><span class="p">[</span><span class="n">band_index</span><span class="p">]]</span>
@@ -144,8 +150,17 @@
                                      <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="n">fixed_magnification_list_i</span><span class="p">,</span>
                                      <span class="n">additional_images_list</span><span class="o">=</span><span class="n">additional_images_list_i</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span>
                                      <span class="n">search_window</span><span class="o">=</span><span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="n">precision_limit</span><span class="p">,</span>
-                                     <span class="n">num_iter_max</span><span class="o">=</span><span class="n">num_iter_max</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span> <span class="n">point_source_class</span></div>
+                                     <span class="n">num_iter_max</span><span class="o">=</span><span class="n">num_iter_max</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="n">point_source_magnification_limit</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">tau0_index_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">tau0_index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tau0_index</span> <span class="o">=</span> <span class="n">tau0_index_list</span><span class="p">[</span><span class="n">band_index</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">index_optical_depth_model_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">optical_depth_model_list_i</span> <span class="o">=</span> <span class="p">[</span><span class="n">optical_depth_model_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">index_optical_depth_model_list</span><span class="p">[</span><span class="n">band_index</span><span class="p">]]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">optical_depth_model_list_i</span> <span class="o">=</span> <span class="n">optical_depth_model_list</span>
+    <span class="n">extinction_class</span> <span class="o">=</span> <span class="n">DifferentialExtinction</span><span class="p">(</span><span class="n">optical_depth_model</span><span class="o">=</span><span class="n">optical_depth_model_list_i</span><span class="p">,</span> <span class="n">tau0_index</span><span class="o">=</span><span class="n">tau0_index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">extinction_class</span></div>
 
 
 <div class="viewcode-block" id="create_image_model"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.class_creator.create_image_model">[docs]</a><span class="k">def</span> <span class="nf">create_image_model</span><span class="p">(</span><span class="n">kwargs_data</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">likelihood_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -159,9 +174,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data_class</span> <span class="o">=</span> <span class="n">ImageData</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_data</span><span class="p">)</span>
     <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
-    <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span> <span class="n">point_source_class</span> <span class="o">=</span> <span class="n">create_class_instances</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
+    <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">extinction_class</span> <span class="o">=</span> <span class="n">create_class_instances</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
     <span class="n">imageModel</span> <span class="o">=</span> <span class="n">ImageLinearFit</span><span class="p">(</span><span class="n">data_class</span><span class="p">,</span> <span class="n">psf_class</span><span class="p">,</span> <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span>
-                                <span class="n">point_source_class</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">,</span> <span class="n">likelihood_mask</span><span class="o">=</span><span class="n">likelihood_mask</span><span class="p">)</span>
+                                <span class="n">point_source_class</span><span class="p">,</span> <span class="n">extinction_class</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">,</span> <span class="n">likelihood_mask</span><span class="o">=</span><span class="n">likelihood_mask</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">imageModel</span></div>
 
 
@@ -224,7 +239,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

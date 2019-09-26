@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.model_api &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.SimulationAPI.model_api &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,6 +42,10 @@
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.lens_model</span> <span class="k">import</span> <span class="n">LensModel</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_model</span> <span class="k">import</span> <span class="n">LightModel</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.point_source</span> <span class="k">import</span> <span class="n">PointSource</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">default_cosmology</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.lens_cosmo</span> <span class="k">import</span> <span class="n">LensCosmo</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
 
 
 <div class="viewcode-block" id="ModelAPI"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.model_api.ModelAPI">[docs]</a><span class="k">class</span> <span class="nc">ModelAPI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -51,16 +55,17 @@
 <span class="sd">    Currently, all other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource.</span>
 <span class="sd">    The current options of the class instance only describe a subset of possibilities.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">source_light_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">point_source_model_list</span><span class="o">=</span><span class="p">[],</span>
-                 <span class="n">source_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">source_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
 <span class="sd">        :param z_lens: redshift of the deflector (only considered when operating in single plane mode).</span>
 <span class="sd">        Is only needed for specific functions that require a cosmology.</span>
 <span class="sd">        :param z_source: redshift of the source: Needed in multi_plane option only,</span>
-<span class="sd">        not required for the core functionalities in the single plane mode.</span>
+<span class="sd">        not required for the core functionalities in the single plane mode. This will be the redshift of the source</span>
+<span class="sd">        plane (if not further specified the &#39;source_redshift_list&#39;) and the point source redshift (regardless of &#39;source_redshift_list&#39;)</span>
 <span class="sd">        :param lens_redshift_list: list of deflector redshift (corresponding to the lens model list),</span>
 <span class="sd">        only applicable in multi_plane mode.</span>
 <span class="sd">        :param source_light_model_list: list of strings with source light model names (lensed light profiles)</span>
@@ -68,10 +73,21 @@
 <span class="sd">        :param point_source_model_list: list of strings with point source model names</span>
 <span class="sd">        :param source_redshift_list: list of redshifts of the source profiles (optional)</span>
 <span class="sd">        :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.</span>
+<span class="sd">        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens</span>
+<span class="sd">        models. If None, &#39;z_source&#39; is used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">lens_redshift_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">source_redshift_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">multi_plane</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">multi_plane</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">z_source_convention</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">z_source_convention</span> <span class="o">=</span> <span class="n">z_source</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model_class</span> <span class="o">=</span> <span class="n">LensModel</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="n">z_lens</span><span class="p">,</span>
-                                     <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">multi_plane</span><span class="o">=</span><span class="n">multi_plane</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+                                     <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">multi_plane</span><span class="o">=</span><span class="n">multi_plane</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                           <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_source_model_class</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">light_model_list</span><span class="o">=</span><span class="n">source_light_model_list</span><span class="p">,</span>
                                         <span class="n">source_redshift_list</span><span class="o">=</span><span class="n">source_redshift_list</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_model_class</span> <span class="o">=</span> <span class="n">LightModel</span><span class="p">(</span><span class="n">light_model_list</span><span class="o">=</span><span class="n">lens_light_model_list</span><span class="p">)</span>
@@ -82,6 +98,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_model_class</span> <span class="o">=</span> <span class="n">PointSource</span><span class="p">(</span><span class="n">point_source_type_list</span><span class="o">=</span><span class="n">point_source_model_list</span><span class="p">,</span>
                                                      <span class="n">lensModel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_lens_model_class</span><span class="p">,</span>
                                                      <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="n">fixed_magnification</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z_source_convention</span> <span class="o">=</span> <span class="n">z_source_convention</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lens_redshift_list</span> <span class="o">=</span> <span class="n">lens_redshift_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lens_model_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -113,8 +133,38 @@
 
 <span class="sd">        :return: instance of lenstronomy PointSource class describing the point sources (lensed and unlensed)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_model_class</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_model_class</span>
 
+<div class="viewcode-block" id="ModelAPI.physical2lensing_conversion"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.model_api.ModelAPI.physical2lensing_conversion">[docs]</a>    <span class="k">def</span> <span class="nf">physical2lensing_conversion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        </span>
+<span class="sd">        :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius &#39;theta_E&#39; are replaced by</span>
+<span class="sd">         &#39;sigma_v&#39;, velocity dispersion in km/s, &#39;alpha_Rs&#39; and &#39;Rs&#39; of NFW profiles are replaced by &#39;M200&#39; and &#39;concentration&#39;</span>
+<span class="sd">        :return: kwargs_lens in reduced deflection angles compatible with the lensModel instance of this module</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">)):</span>
+            <span class="n">kwargs_mass_i</span> <span class="o">=</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_redshift_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">z_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z_lens</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">z_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_redshift_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">lens_cosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z_source_convention</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="s1">&#39;sigma_v&#39;</span> <span class="ow">in</span> <span class="n">kwargs_mass_i</span><span class="p">:</span>
+                <span class="n">sigma_v</span> <span class="o">=</span> <span class="n">kwargs_mass_i</span><span class="p">[</span><span class="s1">&#39;sigma_v&#39;</span><span class="p">]</span>
+                <span class="n">theta_E</span> <span class="o">=</span> <span class="n">lens_cosmo</span><span class="o">.</span><span class="n">sis_sigma_v2theta_E</span><span class="p">(</span><span class="n">sigma_v</span><span class="p">)</span>
+                <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">theta_E</span>
+                <span class="k">del</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;sigma_v&#39;</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="s1">&#39;M200&#39;</span> <span class="ow">in</span> <span class="n">kwargs_mass_i</span><span class="p">:</span>
+                <span class="n">M200</span> <span class="o">=</span> <span class="n">kwargs_mass_i</span><span class="p">[</span><span class="s1">&#39;M200&#39;</span><span class="p">]</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">kwargs_mass_i</span><span class="p">[</span><span class="s1">&#39;concentration&#39;</span><span class="p">]</span>
+                <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_RS</span> <span class="o">=</span> <span class="n">lens_cosmo</span><span class="o">.</span><span class="n">nfw_physical2angle</span><span class="p">(</span><span class="n">M200</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+                <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Rs</span>
+                <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;alpha_Rs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">alpha_RS</span>
+                <span class="k">del</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;M200&#39;</span><span class="p">]</span>
+                <span class="k">del</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;concentration&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">kwargs_lens</span></div></div>
 </pre></div>
 
           </div>
@@ -147,7 +197,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

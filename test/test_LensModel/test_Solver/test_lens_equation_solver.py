@@ -45,21 +45,7 @@ class TestLensEquationSolver(object):
                                                                      min_distance=min_distance,
                                                                      search_window=search_window,
                                                                      precision_limit=10**(-10), num_iter_max=10,
-                                                                     verbose=True)
-        source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
-        npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
-
-    def test_foreground_shear(self):
-        lens_model_list = ['SPEP', 'FOREGROUND_SHEAR']
-        lensModel = LensModel(lens_model_list)
-        lensEquationSolver = LensEquationSolver(lensModel)
-        sourcePos_x = 0.1
-        sourcePos_y = -0.1
-        min_distance = 0.05
-        search_window = 10
-        gamma = 1.9
-        kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.2, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1}, {'e1': 0.01, 'e2': -0.05}]
-        x_pos, y_pos = lensEquationSolver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance=min_distance, search_window=search_window, precision_limit=10**(-10), num_iter_max=10)
+                                                                     verbose=True, magnification_limit=1)
         source_x, source_y = lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         npt.assert_almost_equal(sourcePos_x, source_x, decimal=10)
 

@@ -173,7 +173,7 @@ class PointSourceParam(object):
         :return:
         """
         for k, model in enumerate(self.model_list):
-            kwargs_fixed[k]['point_amp'] = 1
+            kwargs_fixed[k]['point_amp'] = [1] * self._num_point_sources_list[k]
         return kwargs_fixed
 
     def num_param_linear(self):

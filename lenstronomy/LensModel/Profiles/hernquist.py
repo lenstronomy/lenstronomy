@@ -1,7 +1,8 @@
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class Hernquist(object):
+class Hernquist(LensProfileBase):
     """
     class to compute the Hernquist 1990 model
     """

@@ -2,9 +2,10 @@ __author__ = 'sibirrer'
 
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class PointMass(object):
+class PointMass(LensProfileBase):
     """
     class to compute the physical deflection angle of a point mass, given as an Einstein radius
     """
@@ -14,6 +15,7 @@ class PointMass(object):
 
     def __init__(self):
         self.r_min = 10**(-25)
+        super(PointMass, self).__init__()
         # alpha = 4*const.G * (mass*const.M_sun)/const.c**2/(r*const.Mpc)
 
     def function(self, x, y, theta_E, center_x=0, center_y=0):

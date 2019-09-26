@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.single_plane &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.LensModel.single_plane &#8212; lenstronomy 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -43,30 +43,14 @@
 
 <span class="c1">#file which contains class for lens model routines</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.profile_list_base</span> <span class="k">import</span> <span class="n">ProfileListBase</span>
 
 
-<div class="viewcode-block" id="SinglePlane"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane">[docs]</a><span class="k">class</span> <span class="nc">SinglePlane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SinglePlane"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane">[docs]</a><span class="k">class</span> <span class="nc">SinglePlane</span><span class="p">(</span><span class="n">ProfileListBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle an arbitrary list of lens models</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param lens_model_list: list of strings with lens model names</span>
-<span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
-<span class="sd">        deflection angles as a lensmodel. See the documentation in Profiles.numerical_deflections</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_imported_classes</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lens_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">):</span>
-            <span class="n">lensing_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_lensmodel</span><span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lensing_function</span><span class="p">)</span>
 
 <div class="viewcode-block" id="SinglePlane.ray_shooting"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.ray_shooting">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -114,14 +98,10 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="n">bool_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bool_list</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_foreground</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="n">potential</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">bool_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">:</span>
-                    <span class="n">potential</span> <span class="o">+=</span> <span class="n">func</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">potential</span> <span class="o">+=</span> <span class="n">func</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">potential</span> <span class="o">+=</span> <span class="n">func</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">potential</span></div>
 
 <div class="viewcode-block" id="SinglePlane.alpha"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.alpha">[docs]</a>    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -141,14 +121,10 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
         <span class="n">bool_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bool_list</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_foreground</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
+        <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">bool_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">:</span>
-                    <span class="n">f_x_i</span><span class="p">,</span> <span class="n">f_y_i</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">f_x_i</span><span class="p">,</span> <span class="n">f_y_i</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">f_x_i</span><span class="p">,</span> <span class="n">f_y_i</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="n">f_x</span> <span class="o">+=</span> <span class="n">f_x_i</span>
                 <span class="n">f_y</span> <span class="o">+=</span> <span class="n">f_y_i</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
@@ -167,53 +143,18 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="c1"># needs to be computed numerically due to non-linear effects</span>
-            <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian_differential</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bool_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bool_list</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
-            <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
-            <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">bool_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">f_xx_i</span><span class="p">,</span> <span class="n">f_yy_i</span><span class="p">,</span> <span class="n">f_xy_i</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                    <span class="n">f_xx</span> <span class="o">+=</span> <span class="n">f_xx_i</span>
-                    <span class="n">f_yy</span> <span class="o">+=</span> <span class="n">f_yy_i</span>
-                    <span class="n">f_xy</span> <span class="o">+=</span> <span class="n">f_xy_i</span>
+
+        <span class="n">bool_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bool_list</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">bool_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">f_xx_i</span><span class="p">,</span> <span class="n">f_yy_i</span><span class="p">,</span> <span class="n">f_xy_i</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">f_xx</span> <span class="o">+=</span> <span class="n">f_xx_i</span>
+                <span class="n">f_yy</span> <span class="o">+=</span> <span class="n">f_yy_i</span>
+                <span class="n">f_xy</span> <span class="o">+=</span> <span class="n">f_xy_i</span>
         <span class="n">f_yx</span> <span class="o">=</span> <span class="n">f_xy</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
-
-<div class="viewcode-block" id="SinglePlane.hessian_differential"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.hessian_differential">[docs]</a>    <span class="k">def</span> <span class="nf">hessian_differential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="mf">0.0000001</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation</span>
-
-<span class="sd">        :param x: x-position (preferentially arcsec)</span>
-<span class="sd">        :type x: numpy array</span>
-<span class="sd">        :param y: y-position (preferentially arcsec)</span>
-<span class="sd">        :type y: numpy array</span>
-<span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
-<span class="sd">        :param diff: numerical differential step (float)</span>
-<span class="sd">        :param k: only evaluate the k-th lens model</span>
-<span class="sd">        :return: f_xx, f_xy, f_yx, f_yy</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-
-        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
-
-        <span class="n">dalpha_rara</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-        <span class="n">dalpha_radec</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-        <span class="n">dalpha_decra</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dx</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-        <span class="n">dalpha_decdec</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">dalpha_rara</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">dalpha_decdec</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">dalpha_radec</span>
-        <span class="n">f_yx</span> <span class="o">=</span> <span class="n">dalpha_decra</span>
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
 
 <div class="viewcode-block" id="SinglePlane.mass_3d"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.single_plane.SinglePlane.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">bool_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -254,212 +195,7 @@
                 <span class="n">mass_2d</span> <span class="o">+=</span> <span class="n">mass_2d_i</span>
                 <span class="c1">#except:</span>
                 <span class="c1">#    raise ValueError(&#39;Lens profile %s does not support a 2d mass function!&#39; % self.model_list[i])</span>
-        <span class="k">return</span> <span class="n">mass_2d</span></div>
-
-    <span class="k">def</span> <span class="nf">_load_lensmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">lens_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imported_classes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-            <span class="n">lensmodel_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_import_class</span><span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_imported_classes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">lens_type</span><span class="p">:</span> <span class="n">lensmodel_class</span><span class="p">})</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_imported_classes</span><span class="p">[</span><span class="n">lens_type</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">_import_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_type</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">):</span>
-
-        <span class="k">if</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHIFT&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.alpha_shift</span> <span class="k">import</span> <span class="n">Shift</span>
-            <span class="k">return</span> <span class="n">Shift</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">Shear</span>
-            <span class="k">return</span> <span class="n">Shear</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CONVERGENCE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="k">import</span> <span class="n">Convergence</span>
-            <span class="k">return</span> <span class="n">Convergence</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.flexion</span> <span class="k">import</span> <span class="n">Flexion</span>
-            <span class="k">return</span> <span class="n">Flexion</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FLEXIONFG&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.flexionfg</span> <span class="k">import</span> <span class="n">Flexionfg</span>
-            <span class="k">return</span> <span class="n">Flexionfg</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;POINT_MASS&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.point_mass</span> <span class="k">import</span> <span class="n">PointMass</span>
-            <span class="k">return</span> <span class="n">PointMass</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIS&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sis</span> <span class="k">import</span> <span class="n">SIS</span>
-            <span class="k">return</span> <span class="n">SIS</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sis_truncate</span> <span class="k">import</span> <span class="n">SIS_truncate</span>
-            <span class="k">return</span> <span class="n">SIS_truncate</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sie</span> <span class="k">import</span> <span class="n">SIE</span>
-            <span class="k">return</span> <span class="n">SIE</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPP&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spp</span> <span class="k">import</span> <span class="n">SPP</span>
-            <span class="k">return</span> <span class="n">SPP</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NIE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nie</span> <span class="k">import</span> <span class="n">NIE</span>
-            <span class="k">return</span> <span class="n">NIE</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NIE_SIMPLE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nie</span> <span class="k">import</span> <span class="n">NIE_simple</span>
-            <span class="k">return</span> <span class="n">NIE_simple</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">Chameleon</span>
-            <span class="k">return</span> <span class="n">Chameleon</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">DoubleChameleon</span>
-            <span class="k">return</span> <span class="n">DoubleChameleon</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;TRIPLE_CHAMELEON&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">TripleChameleon</span>
-            <span class="k">return</span> <span class="n">TripleChameleon</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spep</span> <span class="k">import</span> <span class="n">SPEP</span>
-            <span class="k">return</span> <span class="n">SPEP</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spemd</span> <span class="k">import</span> <span class="n">SPEMD</span>
-            <span class="k">return</span> <span class="n">SPEMD</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPEMD_SMOOTH&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spemd_smooth</span> <span class="k">import</span> <span class="n">SPEMD_SMOOTH</span>
-            <span class="k">return</span> <span class="n">SPEMD_SMOOTH</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw</span> <span class="k">import</span> <span class="n">NFW</span>
-            <span class="k">return</span> <span class="n">NFW</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw_ellipse</span> <span class="k">import</span> <span class="n">NFW_ELLIPSE</span>
-            <span class="k">return</span> <span class="n">NFW_ELLIPSE</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="k">import</span> <span class="n">NFWEllipseGaussDec</span>
-            <span class="k">return</span> <span class="n">NFWEllipseGaussDec</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.tnfw</span> <span class="k">import</span> <span class="n">TNFW</span>
-            <span class="k">return</span> <span class="n">TNFW</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CNFW&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cnfw</span> <span class="k">import</span> <span class="n">CNFW</span>
-            <span class="k">return</span> <span class="n">CNFW</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CTNFW_GAUSS_DEC&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="k">import</span> <span class="n">CTNFWGaussDec</span>
-            <span class="k">return</span> <span class="n">CTNFWGaussDec</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">Sersic</span>
-            <span class="k">return</span> <span class="n">Sersic</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_POTENTIAL&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_ellipse_potential</span> <span class="k">import</span> <span class="n">SersicEllipse</span>
-            <span class="k">return</span> <span class="n">SersicEllipse</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_KAPPA&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa</span> <span class="k">import</span> <span class="n">SersicEllipseKappa</span>
-            <span class="k">return</span> <span class="n">SersicEllipseKappa</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> \
-                <span class="kn">import</span> <span class="nn">SersicEllipseGaussDec</span>
-            <span class="k">return</span> <span class="n">SersicEllipseGaussDec</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe</span> <span class="k">import</span> <span class="n">PJaffe</span>
-            <span class="k">return</span> <span class="n">PJaffe</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe_ellipse</span> <span class="k">import</span> <span class="n">PJaffe_Ellipse</span>
-            <span class="k">return</span> <span class="n">PJaffe_Ellipse</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist</span> <span class="k">import</span> <span class="n">Hernquist</span>
-            <span class="k">return</span> <span class="n">Hernquist</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist_ellipse</span> <span class="k">import</span> <span class="n">Hernquist_Ellipse</span>
-            <span class="k">return</span> <span class="n">Hernquist_Ellipse</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_potential</span> <span class="k">import</span> <span class="n">Gaussian</span>
-            <span class="k">return</span> <span class="n">Gaussian</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_KAPPA&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_kappa</span> <span class="k">import</span> <span class="n">GaussianKappa</span>
-            <span class="k">return</span> <span class="n">GaussianKappa</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_KAPPA&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</span> <span class="k">import</span> <span class="n">GaussianEllipseKappa</span>
-            <span class="k">return</span> <span class="n">GaussianEllipseKappa</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_POTENTIAL&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_potential</span> <span class="k">import</span> <span class="n">GaussianEllipsePotential</span>
-            <span class="k">return</span> <span class="n">GaussianEllipsePotential</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multi_gaussian_kappa</span> <span class="k">import</span> <span class="n">MultiGaussianKappa</span>
-            <span class="k">return</span> <span class="n">MultiGaussianKappa</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA_ELLIPSE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multi_gaussian_kappa</span> <span class="k">import</span> <span class="n">MultiGaussianKappaEllipse</span>
-            <span class="k">return</span> <span class="n">MultiGaussianKappaEllipse</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.interpol</span> <span class="k">import</span> <span class="n">Interpol</span>
-            <span class="k">return</span> <span class="n">Interpol</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_grid_number</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.interpol</span> <span class="k">import</span> <span class="n">InterpolScaled</span>
-            <span class="k">return</span> <span class="n">InterpolScaled</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_polar</span> <span class="k">import</span> <span class="n">PolarShapelets</span>
-            <span class="k">return</span> <span class="n">PolarShapelets</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_cartesian</span> <span class="k">import</span> <span class="n">CartShapelets</span>
-            <span class="k">return</span> <span class="n">CartShapelets</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.dipole</span> <span class="k">import</span> <span class="n">Dipole</span>
-            <span class="k">return</span> <span class="n">Dipole</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FOREGROUND_SHEAR&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">Shear</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span> <span class="o">=</span> <span class="n">i</span>
-            <span class="k">return</span> <span class="n">Shear</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;coreBURKERT&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.coreBurkert</span> <span class="k">import</span> <span class="n">CoreBurkert</span>
-            <span class="k">return</span> <span class="n">CoreBurkert</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NumericalAlpha&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.numerical_deflections</span> <span class="k">import</span> <span class="n">NumericalAlpha</span>
-            <span class="k">return</span> <span class="n">NumericalAlpha</span><span class="p">(</span><span class="n">custom_class</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid lens model&#39;</span> <span class="o">%</span> <span class="n">lens_type</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_bool_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns a bool list of the length of the lens models</span>
-<span class="sd">        if k = None: returns bool list with True&#39;s</span>
-<span class="sd">        if k is int, returns bool list with False&#39;s but k&#39;th is True</span>
-
-<span class="sd">        :param k: None, int, or list of ints</span>
-<span class="sd">        :return: bool list</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">bool_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">)):</span>
-            <span class="n">bool_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
-            <span class="n">bool_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">bool_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">k_i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">False</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">k_i</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                        <span class="n">bool_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">elif</span> <span class="n">k_i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
-                        <span class="n">bool_list</span><span class="p">[</span><span class="n">k_i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;k as set by </span><span class="si">%s</span><span class="s2"> is not convertable in a bool string!&quot;</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">bool_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="n">bool_list</span>
-
-    <span class="k">def</span> <span class="nf">_update_foreground</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">image_plane</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear</span><span class="p">:</span>
-            <span class="n">f_x_shear1</span><span class="p">,</span> <span class="n">f_y_shear1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span><span class="p">]</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span><span class="p">])</span>
-            <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">f_x_shear1</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">f_y_shear1</span>
-            <span class="k">if</span> <span class="n">image_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                        <span class="n">f_x_shear1</span><span class="p">,</span> <span class="n">f_y_shear1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span><span class="p">]</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">],</span> <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">[</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_foreground_shear_idex</span><span class="p">])</span>
-                        <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">f_x_shear1</span>
-                        <span class="n">kwargs_copy</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">-=</span> <span class="n">f_y_shear1</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span>
-            <span class="n">kwargs_copy</span> <span class="o">=</span> <span class="n">kwargs</span>
-        <span class="k">return</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">kwargs_copy</span></div>
-
+        <span class="k">return</span> <span class="n">mass_2d</span></div></div>
 </pre></div>
 
           </div>
@@ -492,7 +228,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

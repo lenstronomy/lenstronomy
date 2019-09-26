@@ -52,7 +52,8 @@ class LensModel(object):
                                          observed_convention_index=observed_convention_index,
                                          z_source_convention=z_source_convention)
         else:
-            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class)
+            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                          lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
@@ -224,3 +225,23 @@ class LensModel(object):
         f_xyy = (f_xy_dy - f_xy) / diff
         f_yyy = (f_yy_dy - f_yy) / diff
         return f_xxx, f_xxy, f_xyy, f_yyy
+
+    def set_static(self, kwargs):
+        """
+        set this instance to a static lens model. This can improve the speed in evaluating lensing quantities at
+        different positions but must not be used with different lens model parameters!
+
+        :param kwargs: lens model keyword argument list
+        :return: kwargs_updated (in case of image position convention in multiplane lensing this is changed)
+        """
+        return self.lens_model.set_static(kwargs)
+
+    def set_dynamic(self):
+        """
+        deletes cache for static setting and makes sure the observed convention in the position of lensing profiles in
+        the multiplane setting is enabled. Dynamic is the default setting of this class enabling an accurate computation
+        of lensing quantities with different parameters in the lensing profiles.
+
+        :return: None
+        """
+        self.lens_model.set_dynamic()

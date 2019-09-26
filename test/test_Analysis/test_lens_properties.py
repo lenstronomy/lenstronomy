@@ -16,8 +16,8 @@ class TestLensProp(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
-                         'foreground_shear': False, 'lens_model_deflector_bool': [True, False, False, False, False],
-                          'lens_light_deflector_bool': [True], 'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
+
+                          'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
         lensProp = LensProp(z_lens, z_source, kwargs_options)
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
                        {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}, {'center_y': 2.79985456, 'center_x': -2.32019894,
@@ -45,17 +45,16 @@ class TestLensProp(object):
 
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
-                                                         MGE_light=True, r_eff=r_eff, lens_model_kinematics_bool=kwargs_options['lens_model_deflector_bool'])
+                                                         MGE_light=True, r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_mge_lens = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
                                                                   psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
-                                                                  r_eff=r_eff, lens_model_kinematics_bool=kwargs_options['lens_model_deflector_bool'])
+                                                                  r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_hernquist = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
                                                                   kwargs_aperture,
                                                                   psf_fwhm, aperture_type, anisotropy_model,
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
-                                                                  lens_model_kinematics_bool=kwargs_options[
-                                                                      'lens_model_deflector_bool'])
+                                                                  lens_model_kinematics_bool=[True, False, False, False, False])
         vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0

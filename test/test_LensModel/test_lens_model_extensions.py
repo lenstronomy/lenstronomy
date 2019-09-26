@@ -101,6 +101,17 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
 
+    def test_effective_einstein_radius(self):
+        kwargs_lens = [
+            {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
+        ret = lensModel.effective_einstein_radius(kwargs_lens,
+                                                  get_precision=True)
+
+        assert len(ret) == 2
+
+        npt.assert_almost_equal(ret[0], 1., decimal=2)
+
     def test_external_shear(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
@@ -137,6 +148,41 @@ class TestLensModelExtensions(object):
         image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
                     shape="GAUSSIAN")
         assert len(image) == 100
+
+    def test_radial_tangential_distortions(self):
+        lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
+        center_x, center_y = 0, 0
+        r_curvature = 2
+        lens = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'r_curvature': r_curvature,
+                        'direction': -10, 'center_x': center_x, 'center_y': center_y},
+                       {'e1': -0., 'e2': -0.0},
+                       {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
+
+        extensions = LensModelExtensions(lensModel=lens)
+
+        radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = extensions.radial_tangential_differentials(
+            x=center_x, y=center_y, kwargs_lens=kwargs_lens, delta=0.0001)
+
+        l = 1. / d_angle_d_tang
+        npt.assert_almost_equal(l, r_curvature)
+
+    def test_radial_tangential_differentials(self):
+        lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
+        center_x, center_y = 0, 0
+        r_curvature = 2
+        lens = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'r_curvature': r_curvature,
+                        'direction': -10, 'center_x': center_x, 'center_y': center_y},
+                       {'e1': -0., 'e2': -0.0},
+                       {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
+
+        extensions = LensModelExtensions(lensModel=lens)
+        from lenstronomy.Util import util
+        x, y = util.make_grid(numPix=10, deltapix=1)
+        radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = extensions.radial_tangential_differentials(x, y, kwargs_lens, delta=0.001)
+        npt.assert_almost_equal(np.sum(d_angle_d_rad), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(d_rad_d_rad), 0, decimal=5)
 
 
 if __name__ == '__main__':

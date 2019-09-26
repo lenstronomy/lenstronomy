@@ -2,10 +2,11 @@ __author__ = 'dgilman'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import warnings
 
 
-class CNFW(object):
+class CNFW(LensProfileBase):
     """
     this class computes the lensing quantities of a cored NFW profile:
     rho = rho0 * (r + r_core)^-1 * (r + rs)^-2
@@ -21,6 +22,7 @@ class CNFW(object):
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
         self._nfw = NFW()
+        super(CNFW, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_core, center_x=0, center_y=0):
         """
@@ -35,7 +37,7 @@ class CNFW(object):
         """
         warnings.warn('Potential for cored NFW potential not yet implemented. '
                       'Using the expression for the NFW '
-                      'potential instead.')
+                      'potential instead. THIS IS NOT ACCURATE!!!')
 
         pot = self._nfw.function(x, y, Rs, alpha_Rs, center_x=center_x, center_y=center_y)
 

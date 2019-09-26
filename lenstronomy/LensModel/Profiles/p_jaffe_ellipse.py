@@ -1,9 +1,10 @@
 from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
 
-class PJaffe_Ellipse(object):
+class PJaffe_Ellipse(LensProfileBase):
     """
     this class contains functions concerning the NFW profile
 
@@ -16,6 +17,7 @@ class PJaffe_Ellipse(object):
     def __init__(self):
         self.spherical = PJaffe()
         self._diff = 0.000001
+        super(PJaffe_Ellipse, self).__init__()
 
     def function(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
         """

@@ -7,9 +7,10 @@ import scipy.special
 import math
 
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class PolarShapelets(object):
+class PolarShapelets(LensProfileBase):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """
@@ -21,8 +22,9 @@ class PolarShapelets(object):
         n = 10
         self.poly = [[[] for i in range(n)] for i in range(n)]
         for i in range(0,n):
-            for j in range(0,n):
+            for j in range(0, n):
                 self.poly[i][j] = scipy.special.genlaguerre(i, j)
+        super(PolarShapelets, self).__init__()
 
     def function(self, x, y, coeffs, beta, center_x=0, center_y=0):
         shapelets = self._createShapelet(coeffs)

@@ -1,10 +1,10 @@
 __author__ = 'sibirrer'
 
 import lenstronomy.Util.param_util as param_util
-import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class Convergence(object):
+class Convergence(LensProfileBase):
     """
     a single mass sheet (external convergence)
     """

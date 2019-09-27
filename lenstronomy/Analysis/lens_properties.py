@@ -108,10 +108,45 @@ class LensProp(object):
         :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
             as part of the kinematics computation (can be used to ignore light components that do not describe the main
             deflector
+        :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
         :return: LOS velocity dispersion [km/s]
         """
 
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
+
+        mass_profile_list, kwargs_profile, light_profile_list, kwargs_light = self.kinematic_profiles(kwargs_lens,
+                                                                                        kwargs_lens_light, r_eff=r_eff,
+                                                                                        MGE_light=MGE_light, MGE_mass=MGE_mass,
+                                                                                        lens_model_kinematics_bool=lens_model_kinematics_bool,
+                                                                                        light_model_kinematics_bool=light_model_kinematics_bool,
+                                                                                        Hernquist_approx=Hernquist_approx)
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
+                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        return sigma2
+
+    def kinematic_profiles(self, kwargs_lens, kwargs_lens_light, r_eff, MGE_light=False, MGE_mass=False,
+                           lens_model_kinematics_bool=None, light_model_kinematics_bool=None, Hernquist_approx=False):
+        """
+        translates the lenstronomy lens and mass profiles into a (sub) set of profiles that are compatible with the GalKin module to compute the kinematics thereof.
+
+        :param kwargs_lens: lens model parameters
+        :param kwargs_lens_light: lens light parameters
+        :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
+         light profile
+        :param MGE_light: bool, if true performs the MGE for the light distribution
+        :param MGE_mass: bool, if true performs the MGE for the mass distribution
+        :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
+            main deflector potential
+        :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore light components that do not describe the main
+            deflector
+        :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
+        :return: mass_profile_list, kwargs_profile, light_profile_list, kwargs_light
+        """
+
         mass_profile_list = []
         kwargs_profile = []
         if lens_model_kinematics_bool is None:
@@ -145,14 +180,15 @@ class LensProp(object):
         for i, light_model in enumerate(self.kwargs_options['lens_light_model_list']):
             if light_model_kinematics_bool[i]:
                 light_profile_list.append(light_model)
-                kwargs_lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_lens_light_i = {k: v for k, v in kwargs_lens_light[i].items() if
+                                       not k in ['center_x', 'center_y']}
                 if 'e1' in kwargs_lens_light_i:
                     kwargs_lens_light_i['e1'] = 0
                     kwargs_lens_light_i['e2'] = 0
                 kwargs_light.append(kwargs_lens_light_i)
         if Hernquist_approx is True:
             light_profile_list = ['HERNQUIST']
-            kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]
+            kwargs_light = [{'Rs': r_eff, 'amp': 1.}]
         else:
             if MGE_light is True:
                 lightModel = LightModel(light_profile_list)
@@ -161,14 +197,7 @@ class LensProp(object):
                 amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
                 light_profile_list = ['MULTI_GAUSSIAN']
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
-
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
-                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
-        if return_MGE_results:
-            return sigma2, mass_profile_list, light_profile_list, kwargs_profile, kwargs_light
-        return sigma2
+        return mass_profile_list, kwargs_profile, light_profile_list, kwargs_light
 
     def angular_diameter_relations(self, sigma_v_model, sigma_v, kappa_ext, D_dt_model):
         """

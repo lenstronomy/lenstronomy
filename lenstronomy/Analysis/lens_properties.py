@@ -78,7 +78,7 @@ class LensProp(object):
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                       aperture_type, anisotropy_model, r_eff, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
-                                      Hernquist_approx=False, return_MGE_results=False):
+                                      Hernquist_approx=False):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.

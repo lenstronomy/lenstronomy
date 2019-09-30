@@ -84,6 +84,10 @@ class TestLensModelExtensions(object):
         gamma_out = lens_model.profile_slope(kwargs_lens)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
+        kwargs_lens_bad = [{'theta_E': 100, 'gamma': 2, 'center_x': 0, 'center_y': 0}]
+        gamma_out_bad = lens_model.profile_slope(kwargs_lens_bad, verbose=False)
+        assert np.isnan(gamma_out_bad)
+
         lens_model = LensModelExtensions(LensModel(lens_model_list=['SPEP']))
         gamma_in = 2.
         phi, q = 0.34403343049704888, 0.89760957136967312
@@ -102,15 +106,17 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(center_y_out, center_y, 2)
 
     def test_effective_einstein_radius(self):
-        kwargs_lens = [
-            {'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
         ret = lensModel.effective_einstein_radius(kwargs_lens,
                                                   get_precision=True)
 
         assert len(ret) == 2
-
         npt.assert_almost_equal(ret[0], 1., decimal=2)
+        kwargs_lens_bad = [{'theta_E': 100, 'center_x': 0, 'center_y': 0}]
+        ret_nan = lensModel.effective_einstein_radius(kwargs_lens_bad,
+                                                      get_precision=True, verbose=False)
+        assert np.isnan(ret_nan)
 
     def test_external_shear(self):
         lens_model_list = ['SHEAR']

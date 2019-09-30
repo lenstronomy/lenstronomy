@@ -203,7 +203,7 @@ class LensModelExtensions(object):
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
     def effective_einstein_radius(self, kwargs_lens_list, k=None,
-                                  spacing=1000, get_precision=False):
+                                  spacing=1000, get_precision=False, verbose=True):
         """
         computes the radius with mean convergence=1
 
@@ -240,8 +240,9 @@ class LensModelExtensions(object):
                         return r, r_array[1] - r_array[0]
                     else:
                         return r
-        print(kwargs_lens_list, "Warning, no Einstein radius computed!")
-        return r_array[-1]
+        if verbose:
+            print(kwargs_lens_list, "Warning, no Einstein radius computed!")
+        return np.nan #r_array[-1]
 
     def external_lensing_effect(self, kwargs_lens, lens_model_internal_bool=None):
         """
@@ -307,7 +308,7 @@ class LensModelExtensions(object):
         center_y = y_grid[kappa == np.max(kappa)]
         return center_x, center_y
 
-    def profile_slope(self, kwargs_lens_list, lens_model_internal_bool=None, num_points=10):
+    def profile_slope(self, kwargs_lens_list, lens_model_internal_bool=None, num_points=10, verbose=True):
         """
         computes the logarithmic power-law slope of a profile
 
@@ -316,7 +317,11 @@ class LensModelExtensions(object):
         :param num_points: number of estimates around the Einstein radius
         :return:
         """
-        theta_E = self.effective_einstein_radius(kwargs_lens_list)
+        theta_E = self.effective_einstein_radius(kwargs_lens_list, verbose=verbose)
+        if np.isnan(theta_E):
+            if verbose:
+                print("Could not compute effective slope, because of Einstein radius")
+            return np.nan
         x0 = kwargs_lens_list[0]['center_x']
         y0 = kwargs_lens_list[0]['center_y']
         x, y = util.points_on_circle(theta_E, num_points)

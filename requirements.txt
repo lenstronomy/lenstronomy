@@ -3,7 +3,7 @@ astropy>=2.0
 scipy>=0.19.1
 mpmath
 cosmohammer>=0.6.1
-emcee=2.2.1
+emcee==2.2.1
 matplotlib
 sklearn
 numba>=0.43.1

@@ -347,28 +347,15 @@ class LensModelExtensions(object):
         if isinstance(x, int) or isinstance(x, float):
             A = np.array([[1-f_xx, f_xy], [f_yx, 1-f_yy]])
             w, v = np.linalg.eig(A)
-            if w[0] >= w[1]:
-                v11, v12, v21, v22 = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
-                #v11, v12, v21, v22 = v[0, 0], v[1, 0], v[0, 1], v[1, 1]
-                w1, w2 = w[0], w[1]
-            else:
-                v11, v12, v21, v22 = v[1, 0], v[1, 1], v[0, 0], v[0, 1]
-                # v11, v12, v21, v22 = v[0, 0], v[1, 0], v[0, 1], v[1, 1]
-                w1, w2 = w[1], w[0]
+            v11, v12, v21, v22 = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
+            w1, w2 = w[0], w[1]
         else:
-            w1, w2, v11, v12, v21, v22 = np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x)
+            w1, w2, v11, v12, v21, v22 = np.empty(len(x), dtype=float), np.empty(len(x), dtype=float), np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x)
             for i in range(len(x)):
                 A = np.array([[1 - f_xx[i], f_xy[i]], [f_yx[i], 1 - f_yy[i]]])
                 w, v = np.linalg.eig(A)
-                if w[0] >= w[1]:
-                    w1[i] = w[0]
-                    w2[i] = w[1]
-                    v11[i], v12[i], v21[i], v22[i] = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
-                    #v11[i], v12[i], v21[i], v22[i] = v[0, 0], v[1, 0], v[0, 1], v[1, 1]
-                else:
-                    v11[i], v12[i], v21[i], v22[i] = v[1, 0], v[1, 1], v[0, 0], v[0, 1]
-                    # v11, v12, v21, v22 = v[0, 0], v[1, 0], v[0, 1], v[1, 1]
-                    w1[i], w2[i] = w[1], w[0]
+                w1[i], w2[i] = w[0], w[1]
+                v11[i], v12[i], v21[i], v22[i] = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
         return w1, w2, v11, v12, v21, v22
 
     def radial_tangential_stretch(self, x, y, kwargs_lens):
@@ -380,10 +367,33 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :return: radial stretch, tangential stretch
         """
-        w0, w1, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens)
-        radial_stretch = 1. / w0
-        tangential_stretch = 1. / w1
-        return radial_stretch, tangential_stretch, v11, v12, v21, v22
+        w0, w1, v11, v12, v21, v22= self.hessian_eigenvectors(x, y, kwargs_lens)
+        if isinstance(x, int) or isinstance(x, float):
+            if w0 > w1:
+                radial_stretch = 1. / w0
+                tangential_stretch = 1. / w1
+                v_rad1, v_rad2 = v11, v12
+                v_tang1, v_tang2 = v21, v22
+            else:
+                radial_stretch = 1. / w1
+                tangential_stretch = 1. / w0
+                v_rad1, v_rad2 = v21, v22
+                v_tang1, v_tang2 = v11, v12
+        else:
+            radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = np.empty(len(x), dtype=float), np.empty(len(x), dtype=float), np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x)
+            for i in range(len(x)):
+                if w0[i] > w1[i]:
+                    radial_stretch[i] = 1. / w0[i]
+                    tangential_stretch[i] = 1. / w1[i]
+                    v_rad1[i], v_rad2[i] = v11[i], v12[i]
+                    v_tang1[i], v_tang2[i] = v21[i], v22[i]
+                else:
+                    radial_stretch[i] = 1. / w1[i]
+                    tangential_stretch[i] = 1. / w0[i]
+                    v_rad1[i], v_rad2[i] = v21[i], v22[i]
+                    v_tang1[i], v_tang2[i] = v11[i], v12[i]
+
+        return radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2
 
     def radial_tangential_differentials(self, x, y, kwargs_lens, delta=0.001):
         """
@@ -397,20 +407,22 @@ class LensModelExtensions(object):
         """
         radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens)
 
-        direction = np.arctan2(v_rad1, v_rad2)
-
         dx_tang = x + delta * v_tang1
         dy_tang = y + delta * v_tang2
         rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang, kwargs_lens)
 
-        d_tang_d_tang = (tang_dt - tangential_stretch) / delta
-        direction_dt = np.arctan2(v_rad1_dt, v_rad2_dt)
-        d_angle_d_tang = (direction_dt - direction) / delta
+        d_tang_d_tang = (tang_dt - tangential_stretch) / delta * np.sign(v_tang1 * y - v_tang2 * x)
+        cos_delta = v_tang1 * v_tang1_dt + v_tang2 * v_tang2_dt / (np.sqrt(v_tang1**2 + v_tang2**2) * np.sqrt(v_tang1_dt**2 + v_tang2_dt**2))
+        arc_cos = np.arccos(np.abs(np.minimum(cos_delta, 1)))
+
+        d_angle_d_tang = arc_cos / delta
 
         dx_rad = x + delta * v_rad1
         dy_rad = y + delta * v_rad2
         rad_dr, tang_dr, v_rad1_dr, v_rad2_dr, v_tang1_dr, v_tang2_dr = self.radial_tangential_stretch(dx_rad, dy_rad, kwargs_lens)
-        d_rad_d_rad = (rad_dr - radial_stretch) / delta
-        direction_dr = np.arctan2(v_rad1_dr, v_rad2_dr)
-        d_angle_d_rad = (direction_dr - direction) / delta
+        cos_delta = v_rad1 * v_rad1_dr + v_rad2 * v_rad2_dr / (np.sqrt(v_rad1**2 + v_rad2**2) * np.sqrt(v_rad1_dr**2 + v_rad2_dr**2))
+
+        cos_delta = np.minimum(cos_delta, 1)
+        d_angle_d_rad = np.arccos(cos_delta) / delta
+        d_rad_d_rad = (rad_dr - radial_stretch) / delta * np.sign(v_rad1 * x + v_rad2 * y)
         return radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad

@@ -181,8 +181,27 @@ class TestLensModelExtensions(object):
         from lenstronomy.Util import util
         x, y = util.make_grid(numPix=10, deltapix=1)
         radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = extensions.radial_tangential_differentials(x, y, kwargs_lens, delta=0.001)
-        npt.assert_almost_equal(np.sum(d_angle_d_rad), 0, decimal=5)
-        npt.assert_almost_equal(np.sum(d_rad_d_rad), 0, decimal=5)
+        npt.assert_almost_equal(np.sum(d_angle_d_rad), 0, decimal=3)
+        npt.assert_almost_equal(np.sum(d_rad_d_rad), 0, decimal=3)
+
+        lens_model_list = ['SIS']
+        center_x, center_y = 0, 0
+        lens = LensModel(lens_model_list=lens_model_list)
+        kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
+
+        extensions = LensModelExtensions(lensModel=lens)
+        radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = extensions.radial_tangential_differentials(2, 2, kwargs_lens, delta=0.001)
+
+        npt.assert_almost_equal(radial_stretch, 1, decimal=5)
+        print(d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad)
+        npt.assert_almost_equal(tangential_stretch, 1.5469181606780271, decimal=5)
+
+        radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = extensions.radial_tangential_differentials(
+            np.array([2]), np.array([2]), kwargs_lens, delta=0.001)
+
+        npt.assert_almost_equal(radial_stretch, 1, decimal=5)
+        print(d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad)
+        npt.assert_almost_equal(tangential_stretch, 1.5469181606780271, decimal=5)
 
 
 if __name__ == '__main__':

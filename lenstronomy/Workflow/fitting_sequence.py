@@ -181,7 +181,7 @@ class FittingSequence(object):
         kwargs_temp = self._updateManager.parameter_state
         mean_start = param_class.kwargs2args(**kwargs_temp)
         kwargs_sigma = self._updateManager.sigma_kwargs
-        sigma_start = param_class.kwargs2args(**kwargs_sigma)
+        sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
         # run MCMC
         if not init_samples is None and re_use_samples is True:

@@ -175,8 +175,7 @@ class TestOutputPlots(object):
         dist_mcmc = np.random.random(1000)
 
         chain_list = [['PSO', chain, param],
-                      ['COSMOHAMMER', samples_mcmc, param, dist_mcmc],
-                      ['EMCEE', samples_mcmc, param],
+                      ['EMCEE', samples_mcmc, param, dist_mcmc],
                       ['MULTINEST', samples_mcmc, param, dist_mcmc]
                       ]
 
@@ -185,8 +184,6 @@ class TestOutputPlots(object):
         output_plots.plot_chain_list(chain_list, index=1, num_average=10)
         plt.close()
         output_plots.plot_chain_list(chain_list, index=2, num_average=10)
-        plt.close()
-        output_plots.plot_chain_list(chain_list, index=3, num_average=10)
         plt.close()
 
     def test_scale_bar(self):

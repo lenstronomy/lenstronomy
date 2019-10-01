@@ -160,7 +160,7 @@ class FittingSequence(object):
         return likelihoodModule
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='COSMOHAMMER'):
+             sampler_type='EMCEE'):
         """
         MCMC routine
 
@@ -195,15 +195,11 @@ class FittingSequence(object):
                 initpos = None
         else:
             initpos = None
-        if sampler_type is 'COSMOHAMMER':
-            samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, np.array(sigma_start) * sigma_scale,
-                                           threadCount=threadCount,
-                                           mpi=self._mpi, init_pos=initpos)
-            output = [sampler_type, samples, param_list, dist]
-        elif sampler_type is 'EMCEE':
+
+        if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
-            samples = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
-            output = [sampler_type, samples, param_list]
+            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
+            output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run

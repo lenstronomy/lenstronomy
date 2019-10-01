@@ -1,21 +1,14 @@
 __author__ = 'sibirrer'
 
-import os
-import shutil
-import tempfile
 import time
 import sys
 
 import numpy as np
-from cosmoHammer import CosmoHammerSampler
-from cosmoHammer import LikelihoodComputationChain
-from cosmoHammer import MpiCosmoHammerSampler
 from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
-from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 import emcee
-from emcee.mpi_pool import MPIPool
+from schwimmbad import MPIPool
 
 
 class Sampler(object):
@@ -94,101 +87,28 @@ class Sampler(object):
             print('===================')
         return result, [X2_list, pos_list, vel_list, []]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False):
         numParam, _ = self.chain.param.num_param()
-        if mpi:
+        p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
+        time_start = time.time()
+        if mpi is True:
             pool = MPIPool()
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
+            is_master_pool = pool.is_master()
             sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL, pool=pool)
         else:
+            is_master_pool = True
             sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood)
-        p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
-        sampler.run_mcmc(p0, n_burn + n_run, progress=True)
+        sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
-        return flat_samples
-
-
-        #sampler.reset()
-
-        #store = InMemoryStorageUtil()
-        #for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
-        #    store.persistSamplingValues(pos, prob, None)
-        #return store.samples
-
-    def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
-        """
-        runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
-        returns the chain
-        """
-        lowerLimit, upperLimit = self.lower_limit, self.upper_limit
-
-        mean_start = np.maximum(lowerLimit, mean_start)
-        mean_start = np.minimum(upperLimit, mean_start)
-
-        low_start = mean_start - sigma_start
-        high_start = mean_start + sigma_start
-        low_start = np.maximum(lowerLimit, low_start)
-        high_start = np.minimum(upperLimit, high_start)
-        sigma_start = (high_start - low_start) / 2
-        mean_start = (high_start + low_start) / 2
-        params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
-
-        chain = LikelihoodComputationChain(
-            min=lowerLimit,
-            max=upperLimit)
-
-        temp_dir = tempfile.mkdtemp("Hammer")
-        file_prefix = os.path.join(temp_dir, "logs")
-        #file_prefix = "./lenstronomy_debug"
-        # chain.addCoreModule(CambCoreModule())
-        chain.addLikelihoodModule(self.chain)
-        chain.setup()
-
-        store = InMemoryStorageUtil()
-        #store = None
-        if mpi is True:
-            sampler = MpiCosmoHammerSampler(
-            params=params,
-            likelihoodComputationChain=chain,
-            filePrefix=file_prefix,
-            walkersRatio=walkerRatio,
-            burninIterations=n_burn,
-            sampleIterations=n_run,
-            threadCount=1,
-            initPositionGenerator=init_pos,
-            storageUtil=store)
-        else:
-            sampler = CosmoHammerSampler(
-                params=params,
-                likelihoodComputationChain=chain,
-                filePrefix=file_prefix,
-                walkersRatio=walkerRatio,
-                burninIterations=n_burn,
-                sampleIterations=n_run,
-                threadCount=threadCount,
-                initPositionGenerator=init_pos,
-                storageUtil=store)
-        time_start = time.time()
-        if sampler.isMaster():
+        dist = sampler.get_log_prob(flat=True)
+        if is_master_pool:
             print('Computing the MCMC...')
-            print('Number of walkers = ', len(mean_start)*walkerRatio)
+            print('Number of walkers = ', n_walkers)
             print('Burn-in iterations: ', n_burn)
             print('Sampling iterations:', n_run)
-        sampler.startSampling()
-        if sampler.isMaster():
             time_end = time.time()
             print(time_end - time_start, 'time taken for MCMC sampling')
-        # if sampler._sampler.pool is not None:
-        #     sampler._sampler.pool.close()
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as ex:
-            print(ex, 'shutil.rmtree did not work')
-            pass
-        #samples = np.loadtxt(file_prefix+".out")
-        #prob = np.loadtxt(file_prefix+"prob.out")
-        return store.samples, store.prob
-        #return samples, prob
-
+        return flat_samples, dist

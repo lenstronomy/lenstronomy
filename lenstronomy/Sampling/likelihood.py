@@ -6,7 +6,7 @@ from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
-import lenstronomy.Util.class_creator as class_reator
+import lenstronomy.Util.class_creator as class_creator
 
 
 class LikelihoodModule(object):
@@ -73,7 +73,7 @@ class LikelihoodModule(object):
 
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_reator.create_class_instances(**kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
         self.PointSource = point_source_class
 
         self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,

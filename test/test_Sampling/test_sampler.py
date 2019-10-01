@@ -104,15 +104,6 @@ class TestFittingSequence(object):
         samples = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
         assert len(samples) == n_walkers * n_run
 
-    def test_mcmc_CH(self):
-        walkerRatio = 2
-        n_run = 2
-        n_burn = 2
-        mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
-                                                  kwargs_lens_light=self.kwargs_lens_light)
-        sigma_start = np.ones_like(mean_start) * 0.1
-        self.sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False)
-
 
 if __name__ == '__main__':
     pytest.main()

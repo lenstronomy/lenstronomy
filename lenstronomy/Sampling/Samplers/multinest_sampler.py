@@ -101,7 +101,7 @@ class MultiNestSampler(NestedSampler):
         :return: log-likelihood (from the likelihood module)
         """
         args_py = self._multinest2python(args, ndim)
-        logL, _ = self._ll(args_py)
+        logL = self._ll(args_py)
         if not np.isfinite(logL):
             if not self._has_warned:
                 print("WARNING : logL is not finite : return very low value instead")

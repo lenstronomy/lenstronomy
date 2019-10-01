@@ -46,17 +46,17 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
         if mpi is True:
-            pso = MpiParticleSwarmOptimizer(self.chain, lower_start, upper_start, n_particles, threads=1)
+            pso = MpiParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=1)
             if pso.isMaster():
                 print('MPI option chosen')
         else:
-            pso = ParticleSwarmOptimizer(self.chain, lower_start, upper_start, n_particles, threads=threadCount)
+            pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=threadCount)
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
         if not init_pos is None:
             pso.gbest.position = init_pos
             pso.gbest.velocity = [0]*len(init_pos)
-            pso.gbest.fitness, _ = self.chain.likelihood(init_pos)
+            pso.gbest.fitness = self.chain.likelihood(init_pos)
         X2_list = []
         vel_list = []
         pos_list = []
@@ -77,7 +77,6 @@ class Sampler(object):
         else:
             result = MpiUtil.mpiBCast(pso.gbest.position)
 
-        #if (pso.isMaster() and mpi is True) or self.chain.sampling_option == 'X2_catalogue':
         if mpi is True and not pso.isMaster():
             pass
         else:
@@ -104,15 +103,19 @@ class Sampler(object):
                 sys.exit(0)
             sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL, pool=pool)
         else:
-            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL)
+            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood)
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
-        new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
-        sampler.reset()
+        sampler.run_mcmc(p0, n_burn + n_run, progress=True)
+        flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
+        return flat_samples
 
-        store = InMemoryStorageUtil()
-        for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
-            store.persistSamplingValues(pos, prob, None)
-        return store.samples
+
+        #sampler.reset()
+
+        #store = InMemoryStorageUtil()
+        #for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
+        #    store.persistSamplingValues(pos, prob, None)
+        #return store.samples
 
     def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
         """

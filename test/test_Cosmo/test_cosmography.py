@@ -67,12 +67,12 @@ class TestCosmography(object):
     def test_sampling_H0_only(self):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
-        walkerRatio = 10
+        n_walkers = 10
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true]
         sigma_start = [2]
-        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
+        mcmc_samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
         H0_mean = np.mean(mcmc_samples)
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
         sigma = np.sqrt(np.var(mcmc_samples))
@@ -81,12 +81,12 @@ class TestCosmography(object):
     def test_sampling_H0_omega_m(self):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
-        walkerRatio = 10
+        n_walkers = 10
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true, self.omega_m_true]
         sigma_start = [5, 0.1]
-        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
+        mcmc_samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
         H0_mean = np.mean(mcmc_samples[:, 0])
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
 
@@ -94,13 +94,12 @@ class TestCosmography(object):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
-        walkerRatio = 10
+        n_walkers = 10
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true]
         sigma_start = [2]
-        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1,
-                                            init_pos=None, mpi_monch=False)
+        mcmc_samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
         H0_mean = np.mean(mcmc_samples)
         npt.assert_almost_equal(H0_mean / self.H0_true, 1, decimal=1)
         sigma = np.sqrt(np.var(mcmc_samples))
@@ -110,13 +109,12 @@ class TestCosmography(object):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m_omega_de",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
-        walkerRatio = 4
+        n_walkers = 10
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true, self.omega_m_true, 1 - self.omega_m_true]
         sigma_start = [5, 0.1, 0.1]
-        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1,
-                                            init_pos=None, mpi_monch=False)
+        mcmc_samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
         H0_mean = np.mean(mcmc_samples[:, 0])
         npt.assert_almost_equal(H0_mean / self.H0_true, 1, decimal=1)
         Om0_mean = np.mean(mcmc_samples[:, 1])
@@ -126,12 +124,13 @@ class TestCosmography(object):
         mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
                                    kde_type='gaussian', bandwidth=10)
-        walkerRatio = 10
+        n_walkers = 10
         n_run = 10
         n_burn = 10
         mean_start = [self.H0_true, self.omega_m_true]
         sigma_start = [5, 0.1]
-        mcmc_samples = mcmc_sampler.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False)
+        mcmc_samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
+        print(mcmc_samples, 'test samples')
         H0_mean = np.mean(mcmc_samples[:, 0])
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
         sigma = np.sqrt(np.var(mcmc_samples[:, 0]))
@@ -169,27 +168,6 @@ class TestCosmoLikelihood(object):
         penalty, bool = self.cosmoL.prior_omega_m(omega_m=0, omega_m_min=0.05, omega_m_max=1)
         assert bool is False
 
-    def test_call(self):
-        self.cosmoL.sampling_option = 'H0_only'
-        a = [70]
-        logL, _ = self.cosmoL(a)
-        npt.assert_almost_equal(logL, -11, decimal=-1)
-
-        self.cosmoL.sampling_option = 'H0_omega_m'
-        a = [70, 0.3]
-        logL, _ = self.cosmoL(a)
-        npt.assert_almost_equal(logL, -11, decimal=-1)
-
-        self.cosmoL.sampling_option = "fix_omega_mh2"
-        a = [70]
-        logL, _ = self.cosmoL(a)
-        npt.assert_almost_equal(logL, -11, decimal=-1)
-
-        self.cosmoL.sampling_option = 'H0_omega_m_omega_de'
-        a = [70, 0.3, 0.7]
-        logL, _ = self.cosmoL(a)
-        npt.assert_almost_equal(logL, -11, decimal=-1)
-
 
 class TestRaise(unittest.TestCase):
 
@@ -210,20 +188,15 @@ class TestRaise(unittest.TestCase):
                                       bandwidth=1, flat=True)
 
         self.cosmoL.sampling_option = 'WRONG'
+
         with self.assertRaises(ValueError):
-            self.cosmoL(a=[])
-        with self.assertRaises(ValueError):
-            self.cosmoL.likelihood(a=[])
-        with self.assertRaises(ValueError):
-            self.cosmoL.computeLikelihood(ctx=[])
+            self.cosmoL._likelihood(a=[])
         with self.assertRaises(ValueError):
             param = CosmoParam(sampling_option='WRONG')
             param.numParam
         with self.assertRaises(ValueError):
             param = CosmoParam(sampling_option='WRONG')
             param.param_bounds
-
-
 
 
 if __name__ == '__main__':

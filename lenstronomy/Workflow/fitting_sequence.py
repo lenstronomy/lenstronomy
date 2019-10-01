@@ -124,7 +124,7 @@ class FittingSequence(object):
         kwargs_result = self.best_fit(bijective=False)
         param_class = self.param_class
         likelihoodModule = self.likelihoodModule
-        logL, _ = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
+        logL = likelihoodModule.logL(param_class.kwargs2args(**kwargs_result))
         return logL
 
     @property

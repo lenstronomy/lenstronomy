@@ -142,7 +142,7 @@ class LikelihoodModule(object):
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
             if bound_hit:
-                return -penalty, None
+                return -penalty
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
@@ -191,7 +191,7 @@ class LikelihoodModule(object):
             if verbose is True:
                 print('Condition definition logL = %s' % logL_cond)
         self._reset_point_source_cache(bool=False)
-        return logL, None
+        return logL#, None
 
     @staticmethod
     def check_bounds(args, lowerLimit, upperLimit, verbose=False):
@@ -244,9 +244,10 @@ class LikelihoodModule(object):
     def likelihood(self, a):
         return self.logL(a)
 
-    def computeLikelihood(self, ctx):
-        logL, _ = self.logL(ctx.getParams())
-        return logL
+    def likelihood_derivative(self, a):
+        """
 
-    def setup(self):
-        pass
+        :param a: array
+        :return: logL, derivative estimatoe (None)
+        """
+        return self.logL(a), None

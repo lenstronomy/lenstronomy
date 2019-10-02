@@ -202,19 +202,18 @@ class LensModelExtensions(object):
         plt.cla()
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
-    def effective_einstein_radius(self, kwargs_lens_list, k=None,
-                                  spacing=1000, get_precision=False, verbose=True):
+    def effective_einstein_radius(self, kwargs_lens, k=None, spacing=1000, get_precision=False, verbose=True):
         """
         computes the radius with mean convergence=1
 
-        :param kwargs_lens:
+        :param kwargs_lens: list of lens model keyword arguments
         :param spacing: number of annular bins to compute the convergence (resolution of the Einstein radius estimate)
         :param get_precision: If `True`, return the precision of estimated Einstein radius
-        :return:
+        :return: estimate of the Einstein radius
         """
-        if 'center_x' in kwargs_lens_list[0]:
-            center_x = kwargs_lens_list[0]['center_x']
-            center_y = kwargs_lens_list[0]['center_y']
+        if 'center_x' in kwargs_lens[0]:
+            center_x = kwargs_lens[0]['center_x']
+            center_y = kwargs_lens[0]['center_y']
         elif self._lensModel.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
             center_x, center_y = 0, 0
         else:
@@ -224,7 +223,7 @@ class LensModelExtensions(object):
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
         x_grid += center_x
         y_grid += center_y
-        kappa = self._lensModel.kappa(x_grid, y_grid, kwargs_lens_list, k=k)
+        kappa = self._lensModel.kappa(x_grid, y_grid, kwargs_lens, k=k)
         if self._lensModel.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
             center_x = x_grid[kappa == np.max(kappa)]
             center_y = y_grid[kappa == np.max(kappa)]
@@ -241,7 +240,7 @@ class LensModelExtensions(object):
                     else:
                         return r
         if verbose:
-            print(kwargs_lens_list, "Warning, no Einstein radius computed!")
+            print(kwargs_lens, "Warning, no Einstein radius computed!")
         return np.nan #r_array[-1]
 
     def external_lensing_effect(self, kwargs_lens, lens_model_internal_bool=None):
@@ -400,23 +399,26 @@ class LensModelExtensions(object):
 
         return radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2
 
-    def radial_tangential_differentials(self, x, y, kwargs_lens, delta=0.001):
+    def radial_tangential_differentials(self, x, y, kwargs_lens, center_x=0, center_y=0, delta=0.001):
         """
         computes the differentials in stretches and directions
 
         :param x: x-position
         :param y: y-position
         :param kwargs_lens: lens model keyword arguments
+        :param center_x: x-coord of center towards which the rotation direction is defined
+        :param center_y: x-coord of center towards which the rotation direction is defined
         :param delta: finite differential length in units of angle
         :return:
         """
         radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens)
-
+        x0 = x - center_x
+        y0 = y - center_y
         dx_tang = x + delta * v_tang1
         dy_tang = y + delta * v_tang2
         rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang, kwargs_lens)
 
-        d_tang_d_tang = (tang_dt - tangential_stretch) / delta * np.sign(v_tang1 * y - v_tang2 * x)
+        d_tang_d_tang = (tang_dt - tangential_stretch) / delta * np.sign(v_tang1 * y0 - v_tang2 * x0)
         cos_delta = v_tang1 * v_tang1_dt + v_tang2 * v_tang2_dt / (np.sqrt(v_tang1**2 + v_tang2**2) * np.sqrt(v_tang1_dt**2 + v_tang2_dt**2))
         arc_cos = np.arccos(np.abs(np.minimum(cos_delta, 1)))
 
@@ -429,5 +431,5 @@ class LensModelExtensions(object):
 
         cos_delta = np.minimum(cos_delta, 1)
         d_angle_d_rad = np.arccos(cos_delta) / delta
-        d_rad_d_rad = (rad_dr - radial_stretch) / delta * np.sign(v_rad1 * x + v_rad2 * y)
+        d_rad_d_rad = (rad_dr - radial_stretch) / delta * np.sign(v_rad1 * x0 + v_rad2 * y0)
         return radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad

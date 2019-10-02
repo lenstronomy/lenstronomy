@@ -7,7 +7,7 @@ import numpy as np
 import copy
 
 
-def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, inverse=False):
+def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, center_ra=0, center_dec=0, inverse=False):
     """
     configures the data keyword arguments with a coordinate grid centered at zero.
 
@@ -20,7 +20,7 @@ def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, invers
     """
     mean = 0.  # background mean flux (default zero)
     # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
-    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, subgrid_res=1, inverse=inverse)
+    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, center_ra=center_ra, center_dec=center_dec, subgrid_res=1, inverse=inverse)
     # mask (1= model this pixel, 0= leave blanck)
     exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 

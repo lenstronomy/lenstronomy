@@ -126,6 +126,29 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     return ax
 
 
+def distortions(lensModel, kwargs_lens, num_pix=500, delta_pix=0.01, center_ra=0, center_dec=0):
+    """
+
+    :param lensModel: LensModel instance
+    :param kwargs_lens: lens model keyword argument list
+    :param num_pix: number of pixels per axis
+    :param delta_pix: pixel scale per axis
+    :param center_x: center of the grid
+    :param center_y: center of the grid
+    :return: matplotlib instance with different panels
+    """
+    kwargs_grid = sim_util.data_configure_simple(num_pix, delta_pix, center_ra=center_ra, center_dec=center_dec)
+    _coords = ImageData(**kwargs_grid)
+    _frame_size = num_pix * delta_pix
+    ra_grid, dec_grid = _coords.pixel_coordinates
+
+
+    ext_spemd = LensModelExtensions(lensModel=lensModel)
+
+    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = ext_spemd.radial_tangential_differentials(
+        ra_grid, dec_grid, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, delta=0.0001)
+
+
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                          with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
                          letter_font_size=20):

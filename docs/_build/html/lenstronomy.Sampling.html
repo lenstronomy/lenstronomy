@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling package &#8212; lenstronomy 1.0.0 documentation</title>
+    <title>lenstronomy.Sampling package &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.PointSource.html" title="lenstronomy.PointSource package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -95,11 +95,6 @@ ImageModel(), Multiband(), MultiExposure()
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.computeLikelihood">
-<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.computeLikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points">
 <code class="descname">effectiv_num_data_points</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.effectiv_num_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</p>
@@ -109,6 +104,21 @@ ImageModel(), Multiband(), MultiExposure()
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood">
 <code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative">
+<code class="descname">likelihood_derivative</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.likelihood_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">logL, derivative estimatoe (None)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.logL">
@@ -137,11 +147,6 @@ ImageModel(), Multiband(), MultiExposure()
 <dl class="attribute">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.param_limits">
 <code class="descname">param_limits</code><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.param_limits" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.setup" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -353,15 +358,8 @@ Available are: MCMC with emcee and comsoHammer and a Particle Swarm Optimizer.
 This are examples and depending on your problem, you might find other/better solutions.
 Feel free to sample with your convenient sampler!</p>
 <dl class="method">
-<dt id="lenstronomy.Sampling.sampler.Sampler.mcmc_CH">
-<code class="descname">mcmc_CH</code><span class="sig-paren">(</span><em>walkerRatio</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_CH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_CH" title="Permalink to this definition">¶</a></dt>
-<dd><p>runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
-returns the chain</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">
-<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em>, <em>progress=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -442,7 +440,7 @@ returns the chain</p>
         <li class="right" >
           <a href="lenstronomy.PointSource.html" title="lenstronomy.PointSource package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

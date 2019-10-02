@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.observation_api &#8212; lenstronomy 1.0.0 documentation</title>
+    <title>lenstronomy.SimulationAPI.observation_api &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -167,7 +167,7 @@
 <span class="sd">        :param num_exposures: number of exposures that are combined</span>
 <span class="sd">        :param data_count_unit: string, unit of the data (and other properties), &#39;e-&#39;: (electrons assumed to be IID),</span>
 <span class="sd">        &#39;ADU&#39;: (analog-to-digital unit)</span>
-<span class="sd">        :param background_noise: sqrt(variance of background) as a total contribution from readnoise, sky brightness etc</span>
+<span class="sd">        :param background_noise: sqrt(variance of background) as a total contribution from readnoise, sky brightness etc in units of the data_count_units</span>
 <span class="sd">        If you set this parameter, it will use this value regardless of the values of read_noise, sky_brightness</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Instrument</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_scale</span><span class="p">,</span> <span class="n">read_noise</span><span class="p">,</span> <span class="n">ccd_gain</span><span class="p">)</span>  <span class="c1"># read_noise and ccd_gain can be None</span>
@@ -333,7 +333,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

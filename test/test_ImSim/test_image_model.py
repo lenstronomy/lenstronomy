@@ -243,7 +243,7 @@ class TestImageModel(object):
 
     def test_error_response(self):
 
-        C_D_response, model_error = self.imageModel._error_response(self.kwargs_lens, self.kwargs_ps)
+        C_D_response, model_error = self.imageModel._error_response(self.kwargs_lens, self.kwargs_ps, kwargs_special=None)
         assert len(model_error) == 100
         print(np.sum(model_error))
         npt.assert_almost_equal(np.sum(model_error), 0.0019271126921470687, decimal=3)

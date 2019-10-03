@@ -121,20 +121,19 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    #image_position_plot(ax, _coords, self._kwargs_else)
-    #source_position_plot(ax, self._coords, self._kwargs_source)
     return ax
 
 
-def distortions(lensModel, kwargs_lens, num_pix=500, delta_pix=0.01, center_ra=0, center_dec=0):
+def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0, smoothing_scale=0.0001, **kwargs):
     """
 
     :param lensModel: LensModel instance
     :param kwargs_lens: lens model keyword argument list
     :param num_pix: number of pixels per axis
     :param delta_pix: pixel scale per axis
-    :param center_x: center of the grid
-    :param center_y: center of the grid
+    :param center_ra: center of the grid
+    :param center_dec: center of the grid
+    :param smoothing_scale: scale of the finite derivative length in units of angles
     :return: matplotlib instance with different panels
     """
     kwargs_grid = sim_util.data_configure_simple(num_pix, delta_pix, center_ra=center_ra, center_dec=center_dec)
@@ -142,11 +141,120 @@ def distortions(lensModel, kwargs_lens, num_pix=500, delta_pix=0.01, center_ra=0
     _frame_size = num_pix * delta_pix
     ra_grid, dec_grid = _coords.pixel_coordinates
 
+    exensions = LensModelExtensions(lensModel=lensModel)
+    ra_grid1d = util.image2array(ra_grid)
+    dec_grid1d = util.image2array(dec_grid)
+    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = exensions.radial_tangential_differentials(
+        ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, delta=smoothing_scale)
 
-    ext_spemd = LensModelExtensions(lensModel=lensModel)
+    font_size =10
+    _arrow_size = 0.02
+    f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
-    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad = ext_spemd.radial_tangential_differentials(
-        ra_grid, dec_grid, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, delta=0.0001)
+    ax = axes[0, 0]
+    im = ax.matshow(util.array2image(radial_stretch), extent=[0, _frame_size, 0, _frame_size])
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('radial stretch', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='radial stretch', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    ax = axes[1, 0]
+    im = ax.matshow(util.array2image(d_rad_d_rad), extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('radial gradient', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='radial gradien', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    ax = axes[0, 1]
+    im = ax.matshow(util.array2image(tangential_stretch), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('tangential stretch', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='tangential stretch', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    ax = axes[1, 1]
+    im = ax.matshow(util.array2image(d_tang_d_tang), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('tangential gradient', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='tangential gradient', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    ax = axes[0, 2]
+    im = ax.matshow(util.array2image(orientation_angle), extent=[0, _frame_size, 0, _frame_size], vmin=-np.pi / 10,
+                    vmax=np.pi / 10)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('orientation angle', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='orientation angle', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    ax = axes[1, 2]
+    im = ax.matshow(util.array2image(1./d_angle_d_tang), extent=[0, _frame_size, 0, _frame_size])
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('curvature radius', fontsize=10)
+    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    text_description(ax, _frame_size, text='curvature radius', color="w",
+                     backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        coordinate_arrows(ax, _frame_size, _coords,
+                          color='w', arrow_size=_arrow_size,
+                          font_size=font_size)
+
+    return f, axes
 
 
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,

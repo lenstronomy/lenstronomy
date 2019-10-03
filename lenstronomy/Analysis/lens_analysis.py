@@ -8,7 +8,6 @@ import lenstronomy.Util.multi_gauss_expansion as mge
 
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
 from lenstronomy.Util import class_creator
 
 
@@ -30,7 +29,7 @@ class LensAnalysis(object):
         self._lensModelExtensions = LensModelExtensions(self.LensModel)
         #self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []), lensModel=self.LensModel)
         self.kwargs_model = kwargs_model
-        self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
+        #self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
@@ -265,11 +264,11 @@ class LensAnalysis(object):
         f_ = interp_func.function(x_grid, y_grid)
         f_x, f_y = interp_func.derivatives(x_grid, y_grid)
         # numerical differentials for second order differentials
-        from lenstronomy.LensModel.numeric_lens_differentials import NumericLens
-        lens_differential = NumericLens(lens_model_list=['INTERPOL'])
+        from lenstronomy.LensModel.lens_model import LensModel
+        lens_model = LensModel(lens_model_list=['INTERPOL'])
         kwargs = [{'grid_interp_x': x_axes_sub, 'grid_interp_y': y_axes_sub, 'f_': f_sub,
                    'f_x': f_x_sub, 'f_y': f_y_sub}]
-        f_xx, f_xy, f_yx, f_yy = lens_differential.hessian(x_grid, y_grid, kwargs)
+        f_xx, f_xy, f_yx, f_yy = lens_model.hessian(x_grid, y_grid, kwargs, diff=0.00001)
         kwargs_interpol = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
                    'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
                            'f_xy': util.array2image(f_xy), 'f_yy': util.array2image(f_yy)}

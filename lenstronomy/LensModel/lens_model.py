@@ -1,5 +1,5 @@
+from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
-
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
@@ -133,7 +133,7 @@ class LensModel(object):
         """
         return self.lens_model.alpha(x, y, kwargs, k=k)
 
-    def hessian(self, x, y, kwargs, k=None):
+    def hessian(self, x, y, kwargs, k=None, diff=None):
         """
         hessian matrix
 
@@ -143,11 +143,15 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
         :return: f_xx, f_xy, f_yy components
         """
-        return self.lens_model.hessian(x, y, kwargs, k=k)
+        if diff is None:
+            return self.lens_model.hessian(x, y, kwargs, k=k)
+        else:
+            return self._hessian_differential(x, y, kwargs, k=k, diff=diff)
 
-    def kappa(self, x, y, kwargs, k=None):
+    def kappa(self, x, y, kwargs, k=None, diff=None):
         """
         lensing convergence k = 1/2 laplacian(phi)
 
@@ -157,14 +161,15 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
         :return: lensing convergence
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
         kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
-    def gamma(self, x, y, kwargs, k=None):
+    def gamma(self, x, y, kwargs, k=None, diff=None):
         """
         shear computation
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
@@ -176,15 +181,16 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
         :return: gamma1, gamma2
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
         gamma1 = 1./2 * (f_xx - f_yy)
         gamma2 = f_xy
         return gamma1, gamma2
 
-    def magnification(self, x, y, kwargs, k=None):
+    def magnification(self, x, y, kwargs, k=None, diff=None):
         """
         magnification
         mag = 1/det(A)
@@ -196,14 +202,15 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
         :return: magnification
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
 
-    def flexion(self, x, y, kwargs, diff=0.000001):
+    def flexion(self, x, y, kwargs, k=None, diff=0.000001, hessian_diff=None):
         """
         third derivatives (flexion)
 
@@ -212,13 +219,14 @@ class LensModel(object):
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param diff: numerical differential length of Hessian
+        :param diff: numerical differential length of Flexion
+        :param hessian_diff: numerical differential length of Hessian (optional)
         :return: f_xxx, f_xxy, f_xyy, f_yyy
         """
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=hessian_diff)
 
-        f_xx_dx, f_xy_dx, f_yx_dx, f_yy_dx = self.hessian(x + diff, y, kwargs)
-        f_xx_dy, f_xy_dy, f_yx_dy, f_yy_dy = self.hessian(x, y + diff, kwargs)
+        f_xx_dx, f_xy_dx, f_yx_dx, f_yy_dx = self.hessian(x + diff, y, kwargs, k=k, diff=hessian_diff)
+        f_xx_dy, f_xy_dy, f_yx_dy, f_yy_dy = self.hessian(x, y + diff, kwargs, k=k, diff=hessian_diff)
 
         f_xxx = (f_xx_dx - f_xx) / diff
         f_xxy = (f_xx_dy - f_xx) / diff
@@ -245,3 +253,24 @@ class LensModel(object):
         :return: None
         """
         self.lens_model.set_dynamic()
+
+    def _hessian_differential(self, x, y, kwargs, k=None, diff=0.00001):
+        """
+        computes the numerical differentials over a finite range for f_xx, f_yy, f_xy from f_x and f_y
+        :return: f_xx, f_xy, f_yx, f_yy
+        """
+        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, k=k)
+
+        alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, k=k)
+        alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, k=k)
+
+        dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
+        dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
+        dalpha_decra = (alpha_dec_dx - alpha_dec)/diff
+        dalpha_decdec = (alpha_dec_dy - alpha_dec)/diff
+
+        f_xx = dalpha_rara
+        f_yy = dalpha_decdec
+        f_xy = dalpha_radec
+        f_yx = dalpha_decra
+        return f_xx, f_xy, f_yx, f_yy

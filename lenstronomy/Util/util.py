@@ -201,7 +201,6 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 
     Mpix2coord = np.array([[delta_x, 0], [0, deltapix_eff]])
     Mcoord2pix = np.linalg.inv(Mpix2coord)
-    #TODO incorporate center shift in grid
     x_at_radec_0, y_at_radec_0 = map_coord2pix(-ra_at_xy_0, -dec_at_xy_0, x_0=0, y_0=0, M=Mcoord2pix)
     return ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
 

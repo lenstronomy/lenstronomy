@@ -371,7 +371,7 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :return: radial stretch, tangential stretch
         """
-        w0, w1, v11, v12, v21, v22= self.hessian_eigenvectors(x, y, kwargs_lens)
+        w0, w1, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens)
         if isinstance(x, int) or isinstance(x, float):
             if w0 > w1:
                 radial_stretch = 1. / w0
@@ -432,4 +432,7 @@ class LensModelExtensions(object):
         cos_delta = np.minimum(cos_delta, 1)
         d_angle_d_rad = np.arccos(cos_delta) / delta
         d_rad_d_rad = (rad_dr - radial_stretch) / delta * np.sign(v_rad1 * x0 + v_rad2 * y0)
-        return radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad
+
+        cos_angle = (v_tang1 * x0 + v_tang2 * y0) / np.sqrt((x0**2 + y0**2) * (v_tang1**2 + v_tang2**2)) * np.sign(v_tang1 * y0 - v_tang2 * x0)
+        angle = np.arccos(cos_angle) - np.pi / 2
+        return radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, angle

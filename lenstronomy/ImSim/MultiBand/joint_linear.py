@@ -98,7 +98,7 @@ class JointLinear(MultiLinear):
                 k += num_data
         return image_list
 
-    def error_response(self, kwargs_lens, kwargs_ps):
+    def error_response(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
@@ -107,7 +107,7 @@ class JointLinear(MultiLinear):
         C_D_response, model_error = [], []
         for i in range(self._num_bands):
             if self._compute_bool[i] is True:
-                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps)
+                C_D_response_i, model_error_i = self._imageModel_list[i].error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
                 model_error.append(model_error_i)
                 if len(C_D_response) == 0:
                     C_D_response = C_D_response_i

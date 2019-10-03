@@ -141,11 +141,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     _frame_size = num_pix * delta_pix
     ra_grid, dec_grid = _coords.pixel_coordinates
 
-    exensions = LensModelExtensions(lensModel=lensModel)
+    extensions = LensModelExtensions(lensModel=lensModel)
     ra_grid1d = util.image2array(ra_grid)
     dec_grid1d = util.image2array(dec_grid)
-    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = exensions.radial_tangential_differentials(
-        ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, delta=smoothing_scale)
+    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+        ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=smoothing_scale, smoothing_2nd=None)
 
     font_size =10
     _arrow_size = 0.02

@@ -308,6 +308,12 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             output_plots.plot_chain_list(chain_list=[['WRONG']], index=0)
 
+    def test_distortions(self):
+        lensModel = LensModel(lens_model_list=['SIS'])
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        output_plots.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0, smoothing_scale=0.0001)
+        plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

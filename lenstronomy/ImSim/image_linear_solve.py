@@ -69,7 +69,7 @@ class ImageLinearFit(ImageModel):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
-        C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps)
+        C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         d = self.data_response
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
         _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
@@ -100,21 +100,21 @@ class ImageLinearFit(ImageModel):
         d = self.image2array_masked(self.Data.data)
         return d
 
-    def error_response(self, kwargs_lens, kwargs_ps):
+    def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        return self._error_response(kwargs_lens, kwargs_ps)
+        return self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
 
-    def _error_response(self, kwargs_lens, kwargs_ps):
+    def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps)
+        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
         return C_D_response, psf_model_error
 

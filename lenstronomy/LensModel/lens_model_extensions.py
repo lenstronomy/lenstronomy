@@ -338,7 +338,7 @@ class LensModelExtensions(object):
         gamma = -slope + 2
         return gamma
 
-    def hessian_eigenvectors(self, x, y, kwargs_lens):
+    def hessian_eigenvectors(self, x, y, kwargs_lens, diff=None):
         """
         computes magnification eigenvectors at position (x, y)
 
@@ -347,7 +347,7 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :return: radial stretch, tangential stretch
         """
-        f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x, y, kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x, y, kwargs_lens, diff=diff)
         if isinstance(x, int) or isinstance(x, float):
             A = np.array([[1-f_xx, f_xy], [f_yx, 1-f_yy]])
             w, v = np.linalg.eig(A)
@@ -362,16 +362,17 @@ class LensModelExtensions(object):
                 v11[i], v12[i], v21[i], v22[i] = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
         return w1, w2, v11, v12, v21, v22
 
-    def radial_tangential_stretch(self, x, y, kwargs_lens):
+    def radial_tangential_stretch(self, x, y, kwargs_lens, diff=None):
         """
         computes the radial and tangential stretches at a given position
 
         :param x: x-position
         :param y: y-position
         :param kwargs_lens: lens model keyword arguments
+        :param diff: float or None, finite average differential scale
         :return: radial stretch, tangential stretch
         """
-        w0, w1, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens)
+        w0, w1, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens, diff=diff)
         if isinstance(x, int) or isinstance(x, float):
             if w0 > w1:
                 radial_stretch = 1. / w0
@@ -399,7 +400,7 @@ class LensModelExtensions(object):
 
         return radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2
 
-    def radial_tangential_differentials(self, x, y, kwargs_lens, center_x=0, center_y=0, delta=0.001):
+    def radial_tangential_differentials(self, x, y, kwargs_lens, center_x=0, center_y=0, smoothing_3rd=0.001, smoothing_2nd=None):
         """
         computes the differentials in stretches and directions
 
@@ -408,30 +409,31 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :param center_x: x-coord of center towards which the rotation direction is defined
         :param center_y: x-coord of center towards which the rotation direction is defined
-        :param delta: finite differential length in units of angle
+        :param smoothing_3rd: finite differential length of third order in units of angle
+        :param smoothing_2nd: float or None, finite average differential scale of Hessian
         :return:
         """
-        radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens)
+        radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens, diff=smoothing_2nd)
         x0 = x - center_x
         y0 = y - center_y
-        dx_tang = x + delta * v_tang1
-        dy_tang = y + delta * v_tang2
-        rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang, kwargs_lens)
+        dx_tang = x + smoothing_3rd * v_tang1
+        dy_tang = y + smoothing_3rd * v_tang2
+        rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang, kwargs_lens, diff=smoothing_2nd)
 
-        d_tang_d_tang = (tang_dt - tangential_stretch) / delta * np.sign(v_tang1 * y0 - v_tang2 * x0)
+        d_tang_d_tang = (tang_dt - tangential_stretch) / smoothing_3rd * np.sign(v_tang1 * y0 - v_tang2 * x0)
         cos_delta = v_tang1 * v_tang1_dt + v_tang2 * v_tang2_dt / (np.sqrt(v_tang1**2 + v_tang2**2) * np.sqrt(v_tang1_dt**2 + v_tang2_dt**2))
         arc_cos = np.arccos(np.abs(np.minimum(cos_delta, 1)))
 
-        d_angle_d_tang = arc_cos / delta
+        d_angle_d_tang = arc_cos / smoothing_3rd
 
-        dx_rad = x + delta * v_rad1
-        dy_rad = y + delta * v_rad2
-        rad_dr, tang_dr, v_rad1_dr, v_rad2_dr, v_tang1_dr, v_tang2_dr = self.radial_tangential_stretch(dx_rad, dy_rad, kwargs_lens)
+        dx_rad = x + smoothing_3rd * v_rad1
+        dy_rad = y + smoothing_3rd * v_rad2
+        rad_dr, tang_dr, v_rad1_dr, v_rad2_dr, v_tang1_dr, v_tang2_dr = self.radial_tangential_stretch(dx_rad, dy_rad, kwargs_lens, diff=smoothing_2nd)
         cos_delta = v_rad1 * v_rad1_dr + v_rad2 * v_rad2_dr / (np.sqrt(v_rad1**2 + v_rad2**2) * np.sqrt(v_rad1_dr**2 + v_rad2_dr**2))
 
         cos_delta = np.minimum(cos_delta, 1)
-        d_angle_d_rad = np.arccos(cos_delta) / delta
-        d_rad_d_rad = (rad_dr - radial_stretch) / delta * np.sign(v_rad1 * x0 + v_rad2 * y0)
+        d_angle_d_rad = np.arccos(cos_delta) / smoothing_3rd
+        d_rad_d_rad = (rad_dr - radial_stretch) / smoothing_3rd * np.sign(v_rad1 * x0 + v_rad2 * y0)
 
         cos_angle = (v_tang1 * x0 + v_tang2 * y0) / np.sqrt((x0**2 + y0**2) * (v_tang1**2 + v_tang2**2)) * np.sign(v_tang1 * y0 - v_tang2 * x0)
         angle = np.arccos(cos_angle) - np.pi / 2

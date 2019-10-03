@@ -210,7 +210,7 @@ class LensModel(object):
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
 
-    def flexion(self, x, y, kwargs, k=None, diff=0.000001, hessian_diff=None):
+    def flexion(self, x, y, kwargs, k=None, diff=0.000001, hessian_diff=True):
         """
         third derivatives (flexion)
 
@@ -220,18 +220,22 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param diff: numerical differential length of Flexion
-        :param hessian_diff: numerical differential length of Hessian (optional)
+        :param hessian_diff: boolean, if true also computes the numerical differential length of Hessian (optional)
         :return: f_xxx, f_xxy, f_xyy, f_yyy
         """
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=hessian_diff)
-
+        #f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=hessian_diff)
+        if hessian_diff is not True:
+            hessian_diff = None
         f_xx_dx, f_xy_dx, f_yx_dx, f_yy_dx = self.hessian(x + diff, y, kwargs, k=k, diff=hessian_diff)
         f_xx_dy, f_xy_dy, f_yx_dy, f_yy_dy = self.hessian(x, y + diff, kwargs, k=k, diff=hessian_diff)
 
-        f_xxx = (f_xx_dx - f_xx) / diff
-        f_xxy = (f_xx_dy - f_xx) / diff
-        f_xyy = (f_xy_dy - f_xy) / diff
-        f_yyy = (f_yy_dy - f_yy) / diff
+        f_xx_dx_, f_xy_dx_, f_yx_dx_, f_yy_dx_ = self.hessian(x - diff, y, kwargs, k=k, diff=hessian_diff)
+        f_xx_dy_, f_xy_dy_, f_yx_dy_, f_yy_dy_ = self.hessian(x, y - diff, kwargs, k=k, diff=hessian_diff)
+
+        f_xxx = (f_xx_dx - f_xx_dx_) / diff / 2
+        f_xxy = (f_xx_dy - f_xx_dy_) / diff / 2
+        f_xyy = (f_xy_dy - f_xy_dy_) / diff / 2
+        f_yyy = (f_yy_dy - f_yy_dy_) / diff / 2
         return f_xxx, f_xxy, f_xyy, f_yyy
 
     def set_static(self, kwargs):
@@ -257,17 +261,23 @@ class LensModel(object):
     def _hessian_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """
         computes the numerical differentials over a finite range for f_xx, f_yy, f_xy from f_x and f_y
+
+        :param x: x-coordinate
+        :param y: y-coordinate
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        alpha_ra, alpha_dec = self.alpha(x, y, kwargs, k=k)
+        #alpha_ra, alpha_dec = self.alpha(x, y, kwargs, k=k)
 
         alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, k=k)
         alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, k=k)
 
-        dalpha_rara = (alpha_ra_dx - alpha_ra)/diff
-        dalpha_radec = (alpha_ra_dy - alpha_ra)/diff
-        dalpha_decra = (alpha_dec_dx - alpha_dec)/diff
-        dalpha_decdec = (alpha_dec_dy - alpha_dec)/diff
+        alpha_ra_dx_, alpha_dec_dx_ = self.alpha(x - diff, y, kwargs, k=k)
+        alpha_ra_dy_, alpha_dec_dy_ = self.alpha(x, y - diff, kwargs, k=k)
+
+        dalpha_rara = (alpha_ra_dx - alpha_ra_dx_)/diff/2
+        dalpha_radec = (alpha_ra_dy - alpha_ra_dy_)/diff/2
+        dalpha_decra = (alpha_dec_dx - alpha_dec_dx_)/diff/2
+        dalpha_decdec = (alpha_dec_dy - alpha_dec_dy_)/diff/2
 
         f_xx = dalpha_rara
         f_yy = dalpha_decdec

@@ -186,34 +186,6 @@ class TestOutputPlots(object):
         output_plots.plot_chain_list(chain_list, index=2, num_average=10)
         plt.close()
 
-    def test_lens_model_plot(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensModel = LensModel(lens_model_list=['SIS'])
-        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        output_plots.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
-                    point_source=True, with_caustics=True)
-        plt.close()
-
-    def test_arrival_time_surface(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensModel = LensModel(lens_model_list=['SIS'])
-        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
-                                          sourcePos_y=0, point_source=True, with_caustics=True,
-                                          image_color_list=['k', 'k', 'k', 'r'])
-        plt.close()
-        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
-                                          sourcePos_y=0, point_source=True, with_caustics=False,
-                                          image_color_list=None)
-        plt.close()
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        lensModel = LensModel(lens_model_list=['SIS'])
-        kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
-        output_plots.arrival_time_surface(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0,
-                                          sourcePos_y=0,
-                                          point_source=False, with_caustics=False)
-        plt.close()
-
     def test_source_plot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02, cmap_string="gist_heat")
@@ -299,12 +271,6 @@ class TestRaise(unittest.TestCase):
             lensPlot._select_band(band_index=0)
         with self.assertRaises(ValueError):
             output_plots.plot_chain_list(chain_list=[['WRONG']], index=0)
-
-    def test_distortions(self):
-        lensModel = LensModel(lens_model_list=['SIS'])
-        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        output_plots.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0, smoothing_scale=0.0001)
-        plt.close()
 
 
 if __name__ == '__main__':

@@ -7,8 +7,8 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Plots.output_plots import ModelPlot
-import lenstronomy.Plots.output_plots as output_plots
+from lenstronomy.Plots.model_plot import ModelPlot
+import lenstronomy.Plots.model_plot as output_plots
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 

@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Plots import lens_plot
-import lenstronomy.Plots.output_plots as output_plots
+import lenstronomy.Plots.model_plot as output_plots
 
 import matplotlib
 matplotlib.use('agg')

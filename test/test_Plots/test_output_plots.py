@@ -139,13 +139,6 @@ class TestOutputPlots(object):
         f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf)
         plt.close()
 
-    def test_external_shear_direction(self):
-        lensModel = LensModel(lens_model_list=['SHEAR'])
-        kwargs_lens = [{'e1': 0.1, 'e2': -0.1}, {'e1': 0.1, 'e2': -0.1}]
-        f, ax = output_plots.ext_shear_direction(data_class=self.data_class, lens_model_class=lensModel,
-                                                 kwargs_lens=kwargs_lens, strength_multiply=10)
-        plt.close()
-
     def test_plot_chain(self):
         X2_list = [1, 1, 2]
         pos_list = [[1, 0], [2, 0], [3, 0]]

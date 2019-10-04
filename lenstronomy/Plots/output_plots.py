@@ -1,10 +1,8 @@
 import copy
 
 import lenstronomy.Util.util as util
-import lenstronomy.Util.mask as util_mask
 import matplotlib.pyplot as plt
 import numpy as np
-from lenstronomy.LensModel.Profiles.shear import Shear
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
@@ -913,43 +911,6 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
         ax.plot(dist_normed, label="logL", color='k', linewidth=2)
     ax.legend()
     return ax
-
-
-def ext_shear_direction(data_class, lens_model_class, kwargs_lens, strength_multiply=10):
-    """
-
-    :param kwargs_data:
-    :param kwargs_psf:
-    :param kwargs_options:
-    :param lens_result:
-    :param source_result:
-    :param lens_light_result:
-    :param else_result:
-    :return:
-    """
-    x_grid, y_grid = data_class.pixel_coordinates
-    x_grid = util.image2array(x_grid)
-    y_grid = util.image2array(y_grid)
-    shear = Shear()
-
-    f_x_shear, f_y_shear = 0, 0
-    for i, lens_model in enumerate(lens_model_class.lens_model_list):
-        if lens_model == 'SHEAR':
-            kwargs = kwargs_lens[i]
-            f_x_shear, f_y_shear = shear.derivatives(x_grid, y_grid, e1=kwargs['e1'] * strength_multiply,
-                                                         e2=kwargs['e2'] * strength_multiply)
-    x_shear = x_grid - f_x_shear
-    y_shear = y_grid - f_y_shear
-
-    center_x = np.mean(x_grid)
-    center_y = np.mean(y_grid)
-    radius = (np.max(x_grid) - np.min(x_grid))/4
-    circle_shear = util_mask.mask_sphere(x_shear, y_shear, center_x, center_y, radius)
-    f, ax = plt.subplots(1, 1, figsize=(16, 8))
-    im = ax.matshow(np.log10(data_class.data), origin='lower', alpha=0.5)
-    im = ax.matshow(util.array2image(circle_shear), origin='lower', alpha=0.5, cmap="jet")
-    #f.show()
-    return f, ax
 
 
 def psf_iteration_compare(kwargs_psf, **kwargs):

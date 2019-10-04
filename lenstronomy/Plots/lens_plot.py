@@ -7,6 +7,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
+from lenstronomy.Util import mask as util_mask
 
 
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,

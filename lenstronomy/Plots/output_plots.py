@@ -12,64 +12,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Data.imaging_data import ImageData
-
-
-def text_description(ax, d, text, color='w', backgroundcolor='k',
-                     flipped=False, font_size=15):
-    if flipped:
-        ax.text(d - d / 40., d - d * font_size / 15.**2, text, color=color,
-                fontsize=font_size,
-                backgroundcolor=backgroundcolor)
-    else:
-        ax.text(d / 40., d - d * font_size / 15.**2, text, color=color, fontsize=font_size,
-                backgroundcolor=backgroundcolor)
-
-
-def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False):
-    if flipped:
-        p0 = d - d / 15. - dist
-        p1 = d / 15.
-        ax.plot([p0, p0 + dist], [p1, p1], linewidth=2, color=color)
-        ax.text(p0 + dist / 2., p1 + 0.01 * d, text, fontsize=font_size,
-                color=color, ha='center')
-    else:
-        p0 = d / 15.
-        ax.plot([p0, p0 + dist], [p0, p0], linewidth=2, color=color)
-        ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=font_size, color=color, ha='center')
-
-
-def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
-    d0 = d / 8.
-    p0 = d / 15.
-    pt = d / 9.
-    deltaPix = coords.pixel_width
-    ra0, dec0 = coords.map_pix2coord((d - d0) / deltaPix, d0 / deltaPix)
-    xx_, yy_ = coords.map_coord2pix(ra0, dec0)
-    xx_ra, yy_ra = coords.map_coord2pix(ra0 + p0, dec0)
-    xx_dec, yy_dec = coords.map_coord2pix(ra0, dec0 + p0)
-    xx_ra_t, yy_ra_t = coords.map_coord2pix(ra0 + pt, dec0)
-    xx_dec_t, yy_dec_t = coords.map_coord2pix(ra0, dec0 + pt)
-
-    ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_ra - xx_) * deltaPix, (yy_ra - yy_) * deltaPix,
-             head_width=arrow_size * d, head_length=arrow_size * d, fc=color, ec=color, linewidth=1)
-    ax.text(xx_ra_t * deltaPix, yy_ra_t * deltaPix, "E", color=color, fontsize=font_size, ha='center')
-    ax.arrow(xx_ * deltaPix, yy_ * deltaPix, (xx_dec - xx_) * deltaPix, (yy_dec - yy_) * deltaPix,
-             head_width=arrow_size * d, head_length=arrow_size * d, fc
-             =color, ec=color, linewidth=1)
-    ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=font_size, ha='center')
-
-
-def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color='g'):
-    """
-
-    :param coords:
-    :return:
-    """
-    deltaPix = coords.pixel_width
-    #for i in range(len(ra_caustic_list)):
-    x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
-    ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
-    return ax
+from lenstronomy.Plots import plot_util
 
 
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
@@ -101,8 +44,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
                                                                          start_scale=deltaPix, max_order=10)
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
-        plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
+        plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
+        plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
     if point_source:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
@@ -160,11 +103,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('radial stretch', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='radial stretch', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='radial stretch', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -177,11 +120,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('radial gradient', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='radial gradien', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='radial gradien', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -194,11 +137,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('tangential stretch', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='tangential stretch', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='tangential stretch', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -211,11 +154,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('tangential gradient', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='tangential gradient', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='tangential gradient', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -229,11 +172,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('orientation angle', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='orientation angle', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='orientation angle', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -246,11 +189,11 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     cax = divider.append_axes("right", size="5%", pad=0.05)
     cb = plt.colorbar(im, cax=cax, orientation='vertical')
     cb.set_label('curvature radius', fontsize=10)
-    scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    text_description(ax, _frame_size, text='curvature radius', color="w",
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='curvature radius', color="w",
                      backgroundcolor='k', font_size=font_size)
     if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        coordinate_arrows(ax, _frame_size, _coords,
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
 
@@ -290,8 +233,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
                                                                              start_scale=deltaPix/5, max_order=10)
         ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, shift=_frame_size/2., color='g')
-        plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, shift=_frame_size/2., color='r')
+        plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, shift=_frame_size/2., color='g')
+        plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, shift=_frame_size/2., color='r')
     if point_source is True:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
@@ -681,12 +624,12 @@ class ModelBandPlot(object):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="w",
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="w",
                          backgroundcolor='k', font_size=font_size)
 
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
 
         divider = make_axes_locatable(ax)
@@ -715,11 +658,11 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="w",
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="w",
                          backgroundcolor='k', font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords,
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
                               color='w', arrow_size=self._arrow_size,
                               font_size=font_size)
         divider = make_axes_locatable(ax)
@@ -755,11 +698,11 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='w', font_size=font_size)
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='w', font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
-        text_description(ax, self._frame_size, text=text,
+            plot_util.text_description(ax, self._frame_size, text=text,
                          color="w", backgroundcolor='k', flipped=False,
                          font_size=font_size)
         divider = make_axes_locatable(ax)
@@ -787,12 +730,12 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
                   font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="k",
+        plot_util.text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         if not no_arrow:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -815,11 +758,11 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k',
                   font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="k",
+        plot_util.text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
-        coordinate_arrows(ax, self._frame_size, self._coords,
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
                           font_size=font_size,
                           color='k',
                           arrow_size=self._arrow_size)
@@ -910,16 +853,16 @@ class ModelBandPlot(object):
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_line_set(ax, coords_source, ra_caustic_list,
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list,
                           dec_caustic_list, color=caustic_color)
-        scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size),
+            plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size),
                   color='w',
                   flipped=False,
                   font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='w',
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
-        text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
+            plot_util.text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
@@ -950,11 +893,11 @@ class ModelBandPlot(object):
         cb.set_label(r'error variance', fontsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
-        scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
-        coordinate_arrows(ax, d_s, coords_source,
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
+        plot_util.scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
+        plot_util.coordinate_arrows(ax, d_s, coords_source,
                           arrow_size=self._arrow_size, color='w', font_size=font_size)
-        text_description(ax, d_s, text="Error map in source", color="w",
+        plot_util.text_description(ax, d_s, text="Error map in source", color="w",
                          backgroundcolor='k', flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
@@ -985,11 +928,11 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
         if not no_arrow:
-            coordinate_arrows(ax, self._frame_size, self._coords, color='k',
-                              arrow_size=self._arrow_size, font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="k",
+            plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size,
+                                        font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1022,10 +965,10 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
-        coordinate_arrows(ax, self._frame_size, self._coords, color='k',
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k',
                           arrow_size=self._arrow_size, font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="k",
+        plot_util.text_description(ax, self._frame_size, text=text, color="k",
                          backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1034,8 +977,8 @@ class ModelBandPlot(object):
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
-            plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
+            plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
+            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         return ax
@@ -1071,9 +1014,9 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
-        coordinate_arrows(ax, self._frame_size, self._coords,
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
                           arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -1098,10 +1041,10 @@ class ModelBandPlot(object):
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
-        scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
-        text_description(ax, self._frame_size, text=text, color="w",
+        plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="w",
                          backgroundcolor='k', font_size=font_size)
-        coordinate_arrows(ax, self._frame_size, self._coords,
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
                           arrow_size=self._arrow_size, font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)

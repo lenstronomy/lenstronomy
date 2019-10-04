@@ -186,14 +186,6 @@ class TestOutputPlots(object):
         output_plots.plot_chain_list(chain_list, index=2, num_average=10)
         plt.close()
 
-    def test_scale_bar(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        output_plots.scale_bar(ax, 3, dist=1, text='1"', flipped=True)
-        plt.close()
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        output_plots.text_description(ax, d=3, text='test', color='w', backgroundcolor='k', flipped=True)
-        plt.close()
-
     def test_lens_model_plot(self):
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         lensModel = LensModel(lens_model_list=['SIS'])

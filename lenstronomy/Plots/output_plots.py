@@ -271,43 +271,6 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     return ax
 
 
-def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
-    """
-
-    :param ax:
-    :param coords:
-    :param kwargs_else:
-    :return:
-    """
-    deltaPix = coords.pixel_width
-    if len(ra_image) > 0:
-        if len(ra_image[0]) > 0:
-            x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
-            if image_name_list is None:
-                image_name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
-            for i in range(len(x_image)):
-                x_ = (x_image[i] + 0.5) * deltaPix
-                y_ = (y_image[i] + 0.5) * deltaPix
-                ax.plot(x_, y_, 'or')
-                ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
-    return ax
-
-
-def source_position_plot(ax, coords, ra_pos, dec_pos):
-    """
-
-    :param ax:
-    :param coords:
-    :param kwargs_source:
-    :return:
-    """
-    deltaPix = coords.pixel_width
-    if len(ra_pos) > 0:
-        x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
-        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
-    return ax
-
-
 class ModelPlot(object):
     """
     class that manages the summary plots of a lens model
@@ -674,7 +637,7 @@ class ModelBandPlot(object):
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
             ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-            image_position_plot(ax, self._coords, ra_image, dec_image)
+            plot_util.image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, text='Convergence', v_min=None, v_max=None,
@@ -866,7 +829,7 @@ class ModelBandPlot(object):
                          flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-            source_position_plot(ax, coords_source, ra_source, dec_source)
+            plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
     def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None,
@@ -901,7 +864,7 @@ class ModelBandPlot(object):
                          backgroundcolor='k', flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-            source_position_plot(ax, coords_source, ra_source, dec_source)
+            plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
     def magnification_plot(self, ax, v_min=-10, v_max=10,
@@ -939,7 +902,7 @@ class ModelBandPlot(object):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
         ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-        image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
         return ax
 
     def deflection_plot(self, ax, v_min=None, v_max=None, axis=0,
@@ -980,7 +943,7 @@ class ModelBandPlot(object):
             plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
         ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-        image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
+        plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         return ax
 
     def decomposition_plot(self, ax, text='Reconstructed', v_min=None, v_max=None,

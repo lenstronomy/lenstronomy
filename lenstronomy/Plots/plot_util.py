@@ -88,3 +88,40 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color
     x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
     ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
     return ax
+
+
+def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
+    """
+
+    :param ax:
+    :param coords:
+    :param kwargs_else:
+    :return:
+    """
+    deltaPix = coords.pixel_width
+    if len(ra_image) > 0:
+        if len(ra_image[0]) > 0:
+            x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
+            if image_name_list is None:
+                image_name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
+            for i in range(len(x_image)):
+                x_ = (x_image[i] + 0.5) * deltaPix
+                y_ = (y_image[i] + 0.5) * deltaPix
+                ax.plot(x_, y_, 'or')
+                ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
+    return ax
+
+
+def source_position_plot(ax, coords, ra_pos, dec_pos):
+    """
+
+    :param ax:
+    :param coords:
+    :param kwargs_source:
+    :return:
+    """
+    deltaPix = coords.pixel_width
+    if len(ra_pos) > 0:
+        x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
+        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+    return ax

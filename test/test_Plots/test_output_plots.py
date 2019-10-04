@@ -131,54 +131,6 @@ class TestOutputPlots(object):
         lensPlot.plot_extinction_map(ax=ax)
         plt.close()
 
-    def test_psf_iteration_compare(self):
-        kwargs_psf = self.kwargs_psf
-        kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
-        f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf, vmin=-1, vmax=1)
-        plt.close()
-        f, ax = output_plots.psf_iteration_compare(kwargs_psf=kwargs_psf)
-        plt.close()
-
-    def test_plot_chain(self):
-        X2_list = [1, 1, 2]
-        pos_list = [[1, 0], [2, 0], [3, 0]]
-        vel_list = [[-1, 0], [0, 0], [1, 0]]
-        param_list = ['test1', 'test2']
-        chain = X2_list, pos_list, vel_list, None
-        output_plots.plot_chain(chain=chain, param_list=param_list)
-        plt.close()
-
-    def test_plot_mcmc_behaviour(self):
-        f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        param_mcmc = ['a', 'b']
-        samples_mcmc = np.random.random((10, 1000))
-        dist_mcmc = np.random.random(1000)
-        output_plots.plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc, num_average=10)
-        plt.close()
-
-    def test_chain_list(self):
-        param = ['a', 'b']
-
-        X2_list = [1, 1, 2]
-        pos_list = [[1, 0], [2, 0], [3, 0]]
-        vel_list = [[-1, 0], [0, 0], [1, 0]]
-        chain = X2_list, pos_list, vel_list, None
-
-        samples_mcmc = np.random.random((10, 1000))
-        dist_mcmc = np.random.random(1000)
-
-        chain_list = [['PSO', chain, param],
-                      ['EMCEE', samples_mcmc, param, dist_mcmc],
-                      ['MULTINEST', samples_mcmc, param, dist_mcmc]
-                      ]
-
-        output_plots.plot_chain_list(chain_list, index=0)
-        plt.close()
-        output_plots.plot_chain_list(chain_list, index=1, num_average=10)
-        plt.close()
-        output_plots.plot_chain_list(chain_list, index=2, num_average=10)
-        plt.close()
-
     def test_source_plot(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
         lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02, cmap_string="gist_heat")
@@ -262,8 +214,6 @@ class TestRaise(unittest.TestCase):
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[False],
                                  arrow_size=0.02, cmap_string="gist_heat")
             lensPlot._select_band(band_index=0)
-        with self.assertRaises(ValueError):
-            output_plots.plot_chain_list(chain_list=[['WRONG']], index=0)
 
 
 if __name__ == '__main__':

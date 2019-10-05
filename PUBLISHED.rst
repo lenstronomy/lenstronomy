@@ -12,11 +12,10 @@ Core **lenstronomy** methodology and software publications
 ----------------------------------------------------------
 
 * lenstronomy: Multi-purpose gravitational lens modelling software package; `Birrer & Amara 2018 <https://ui.adsabs.harvard.edu/abs/2018PDU....22..189B>`_
-    *This is **lenstronomy** software paper. Please cite this paper whenever you make use of **lenstronomy** *. The paper gives a design overview and gives some use cases.
+    *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and gives some use cases.*
 
 * Gravitational Lens Modeling with Basis Sets; `Birrer et al. 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
-    *This is the method paper **lenstronomy** is primary based on. Please cite this paper whenever you publish results with **lenstronomy** by using
-    Shapelet basis sets and/or the PSO and MCMC chain.*
+    *This is the method paper lenstronomy is primary based on. Please cite this paper whenever you publish results with lenstronomy by using Shapelet basis sets and/or the PSO and MCMC chain.*
 
 
 Measuring the Hubble constant
@@ -32,6 +31,7 @@ Measuring the Hubble constant
     *Derives requirements on how well the image positions of time-variable sources has to be known to perform a time-delay cosmographic measurement*
 
 * H0LiCOW XIII. A 2.4% measurement of  H0 from lensed quasars:  5.3σ tension between early and late-Universe probes; `Wong et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190704869W>`_
+    **
 
 
 Dark Matter substructure

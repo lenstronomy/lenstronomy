@@ -31,7 +31,7 @@ Measuring the Hubble constant
     *Derives requirements on how well the image positions of time-variable sources has to be known to perform a time-delay cosmographic measurement*
 
 * H0LiCOW XIII. A 2.4% measurement of  H0 from lensed quasars:  5.3σ tension between early and late-Universe probes; `Wong et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190704869W>`_
-    * *
+    **
 
 
 Dark Matter substructure
@@ -41,7 +41,7 @@ Dark Matter substructure
     *This paper quantifies the substructure content of a lens by a sub-clump scanning procedure and the application of Approximate Bayesian Computing.*
 
 * Probing the nature of dark matter by forward modelling flux ratios in strong gravitational lenses; `Gilman et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018MNRAS.481..819G>`_
-    *
+    * *
 
 
 * Probing dark matter structure down to 10**7 solar masses: flux ratio statistics in gravitational lenses with line-of-sight haloes; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.487.5721G>`_
@@ -69,7 +69,7 @@ Theory papers
     *This paper formulates an effective parameterization of line-of-sight structure for strong gravitational lens modelling and applies this technique to an Einstein ring in the COSMOS field*
 
 * Cosmic Shear with Einstein Rings; `Birrer et al. 2018a <http://adsabs.harvard.edu/abs/2018ApJ...852L..14B>`_
-    *Forecast paper to measure cosmic shear with Einstein ring lenses. The forecast is made based on **lenstronomy** simulations.*
+    *Forecast paper to measure cosmic shear with Einstein ring lenses. The forecast is made based on lenstronomy simulations.*
 
 * Unified lensing and kinematic analysis for any elliptical mass profile; `Shajib 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.488.1387S>`_
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*

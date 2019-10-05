@@ -41,19 +41,19 @@ Dark Matter substructure
     *This paper quantifies the substructure content of a lens by a sub-clump scanning procedure and the application of Approximate Bayesian Computing.*
 
 * Probing the nature of dark matter by forward modelling flux ratios in strong gravitational lenses; `Gilman et al. 2018 <https://ui.adsabs.harvard.edu/abs/2018MNRAS.481..819G>`_
-    * *
+    **
 
 * Probing dark matter structure down to 10**7 solar masses: flux ratio statistics in gravitational lenses with line-of-sight haloes; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.487.5721G>`_
-    * *
+    **
 
 * Warm dark matter chills out: constraints on the halo mass function and the free-streaming length of dark matter with 8 quadruple-image strong gravitational lenses; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190806983G>`_
-    * *
+    **
 
 * Constraints on the mass-concentration relation of cold dark matter halos with 11 strong gravitational lenses; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190902573G>`_
-    * *
+    **
 
 * Circumventing Lens Modeling to Detect Dark Matter Substructure in Strong Lens Images with Convolutional Neural Networks; `Diaz Rivero & Dvorkin <https://ui.adsabs.harvard.edu/abs/2019arXiv191000015D>`_
-    * *
+    **
 
 
 Automatized Lens Modeling

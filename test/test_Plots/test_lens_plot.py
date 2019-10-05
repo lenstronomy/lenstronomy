@@ -48,7 +48,7 @@ class TestLensPlot(object):
     def test_distortions(self):
         lensModel = LensModel(lens_model_list=['SIS'])
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        lens_plot.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0, smoothing_scale=0.0001)
+        lens_plot.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0, differential_scale=0.0001)
         plt.close()
 
 

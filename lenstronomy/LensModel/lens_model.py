@@ -169,6 +169,22 @@ class LensModel(object):
         kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
+    def curl(self, x, y, kwargs, k=None, diff=None):
+        """
+        curl computation F_xy - F_yx
+
+        :param x: x-position (preferentially arcsec)
+        :type x: numpy array
+        :param y: y-position (preferentially arcsec)
+        :type y: numpy array
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param k: only evaluate the k-th lens model
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
+        :return: curl at position (x, y)
+        """
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
+        return f_xy - f_yx
+
     def gamma(self, x, y, kwargs, k=None, diff=None):
         """
         shear computation

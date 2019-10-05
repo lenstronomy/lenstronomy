@@ -7,7 +7,7 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
-from lenstronomy.Util import mask as util_mask
+import scipy.ndimage as ndimage
 
 
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
@@ -62,7 +62,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     return ax
 
 
-def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0, smoothing_scale=0.0001, **kwargs):
+def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0,
+                differential_scale=0.0001, smoothing_scale=None, **kwargs):
     """
 
     :param lensModel: LensModel instance
@@ -71,7 +72,8 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     :param delta_pix: pixel scale per axis
     :param center_ra: center of the grid
     :param center_dec: center of the grid
-    :param smoothing_scale: scale of the finite derivative length in units of angles
+    :param differential_scale: scale of the finite derivative length in units of angles
+    :param smoothing_scale: float or None, Gaussian FWHM of a smoothing kernel applied before plotting
     :return: matplotlib instance with different panels
     """
     kwargs_grid = sim_util.data_configure_simple(num_pix, delta_pix, center_ra=center_ra, center_dec=center_dec)
@@ -83,14 +85,35 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     ra_grid1d = util.image2array(ra_grid)
     dec_grid1d = util.image2array(dec_grid)
     radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
-        ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=smoothing_scale, smoothing_2nd=None)
+        ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=differential_scale, smoothing_2nd=None)
 
     font_size =10
     _arrow_size = 0.02
     f, axes = plt.subplots(2, 3, figsize=(16, 8))
 
+
+    radial_stretch2d = util.array2image(radial_stretch)
+    d_rad_d_rad2d = util.array2image(d_rad_d_rad)
+    tangential_stretch2d = util.array2image(tangential_stretch)
+    d_tang_d_tang2d = util.array2image(d_tang_d_tang)
+    orientation_angle2d = util.array2image(orientation_angle)
+    d_angle_d_tang2d = util.array2image(d_angle_d_tang)
+    if smoothing_scale is not None:
+        radial_stretch2d = ndimage.gaussian_filter(radial_stretch2d, sigma=smoothing_scale/delta_pix)
+        d_rad_d_rad2d = ndimage.gaussian_filter(d_rad_d_rad2d, sigma=smoothing_scale/delta_pix)
+        tangential_stretch2d = np.abs(tangential_stretch2d)
+        # the magnification cut is made to make a stable integral/convolution
+        tangential_stretch2d[tangential_stretch2d > 100] = 100
+        tangential_stretch2d = ndimage.gaussian_filter(tangential_stretch2d, sigma=smoothing_scale/delta_pix)
+        # the magnification cut is made to make a stable integral/convolution
+        d_tang_d_tang2d[d_tang_d_tang2d > 100] = 100
+        d_tang_d_tang2d[d_tang_d_tang2d < -100] = -100
+        d_tang_d_tang2d = ndimage.gaussian_filter(d_tang_d_tang2d, sigma=smoothing_scale/delta_pix)
+        orientation_angle2d = ndimage.gaussian_filter(orientation_angle2d, sigma=smoothing_scale/delta_pix)
+        d_angle_d_tang2d = ndimage.gaussian_filter(d_angle_d_tang2d, sigma=smoothing_scale/delta_pix)
+
     ax = axes[0, 0]
-    im = ax.matshow(util.array2image(radial_stretch), extent=[0, _frame_size, 0, _frame_size])
+    im = ax.matshow(radial_stretch2d, extent=[0, _frame_size, 0, _frame_size])
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -107,7 +130,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 0]
-    im = ax.matshow(util.array2image(d_rad_d_rad), extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
+    im = ax.matshow(d_rad_d_rad2d, extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -124,7 +147,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[0, 1]
-    im = ax.matshow(util.array2image(tangential_stretch), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    im = ax.matshow(tangential_stretch2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -141,7 +164,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 1]
-    im = ax.matshow(util.array2image(d_tang_d_tang), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    im = ax.matshow(d_tang_d_tang2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -158,7 +181,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[0, 2]
-    im = ax.matshow(util.array2image(orientation_angle), extent=[0, _frame_size, 0, _frame_size], vmin=-np.pi / 10,
+    im = ax.matshow(orientation_angle2d, extent=[0, _frame_size, 0, _frame_size], vmin=-np.pi / 10,
                     vmax=np.pi / 10)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -176,7 +199,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 2]
-    im = ax.matshow(util.array2image(1./d_angle_d_tang), extent=[0, _frame_size, 0, _frame_size])
+    im = ax.matshow(1./d_angle_d_tang2d, extent=[0, _frame_size, 0, _frame_size])
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

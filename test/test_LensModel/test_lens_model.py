@@ -94,6 +94,23 @@ class TestLensModel(object):
         arrival_time_sp = lensModel_sp.arrival_time(x_image, y_image, kwargs)
         npt.assert_almost_equal(arrival_time_sp, arrival_time_mp, decimal=8)
 
+    def test_curl(self):
+        z_lens_list = [0.2, 0.8]
+        z_source = 1.5
+        x_image, y_image = 1., 0.
+        lensModel = LensModel(lens_model_list=['SIS', 'SIS'], multi_plane=True, lens_redshift_list=z_lens_list, z_source=z_source)
+        kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.},
+                  {'theta_E': 0., 'center_x': 0., 'center_y': 0.2}]
+
+        curl = lensModel.curl(x=1, y=1, kwargs=kwargs)
+        assert curl == 0
+
+        kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.},
+                  {'theta_E': 1., 'center_x': 0., 'center_y': 0.2}]
+
+        curl = lensModel.curl(x=1, y=1, kwargs=kwargs)
+        assert curl != 0
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

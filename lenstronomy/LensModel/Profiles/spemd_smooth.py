@@ -71,7 +71,8 @@ class SPEMD_SMOOTH(LensProfileBase):
                 if np.shape(x) == ():
                     return np.array(potential[0])
         else:
-            potential =  np.zeros_like(x1)
+            potential = np.zeros_like(x1)
+            Warning("SPEMD model output replaced by zeros as fastell4py package is not installed!")
         return potential
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
@@ -93,6 +94,7 @@ class SPEMD_SMOOTH(LensProfileBase):
             f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
         else:
             f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
+            Warning("SPEMD model output replaced by zeros as fastell4py package is not installed!")
         f_x = cos_phi*f_x_prim - sin_phi*f_y_prim
         f_y = sin_phi*f_x_prim + cos_phi*f_y_prim
         n = len(np.atleast_1d(x))
@@ -125,6 +127,7 @@ class SPEMD_SMOOTH(LensProfileBase):
                         f_xy_prim[0])
         else:
             f_xx_prim, f_yy_prim, f_xy_prim =  np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
+            Warning("SPEMD model output replaced by zeros as fastell4py package is not installed!")
         kappa = (f_xx_prim + f_yy_prim)/2
         gamma1_value = (f_xx_prim - f_yy_prim)/2
         gamma2_value = f_xy_prim

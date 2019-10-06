@@ -22,7 +22,7 @@ class SPEMD_SMOOTH(LensProfileBase):
             self.fastell4py = fastell4py
         except:
             self._fastell4py_bool = False
-            print("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
+            ImportWarning("module fastell4py not installed. You can get it from here: https://github.com/sibirrer/fastell4py")
         super(SPEMD_SMOOTH, self).__init__()
 
     def _parameter_constraints(self, theta_E, gamma, q, phi_G, s_scale):

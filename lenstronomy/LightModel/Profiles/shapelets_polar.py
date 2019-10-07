@@ -35,7 +35,7 @@ class ShapeletsPolar(object):
         :param center_y: center of shapelet
         :return: amplitude of shapelet at possition (x, y)
         """
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x, center_y)
         if complex_bool is True:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).imag
         else:
@@ -175,7 +175,7 @@ class ShapeletsPolarExp(object):
         :param center_y: center of shapelet
         :return: amplitude of shapelet at possition (x, y)
         """
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x, center_y)
         if complex_bool is True:
             return amp * self._chi_n_m(r, beta, n, m) * np.exp(-1j * m * phi).imag
         else:
@@ -314,7 +314,7 @@ class ShapeletSetPolar(object):
         """
         L_list = []
         # polar coordinates
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x, center_y)
         num_param = self.shapelets.num_param(n_max)
 
         # compute real and imaginary part of the complex angles in the range n_max

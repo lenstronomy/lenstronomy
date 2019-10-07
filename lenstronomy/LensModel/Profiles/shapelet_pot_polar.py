@@ -28,7 +28,7 @@ class PolarShapelets(LensProfileBase):
 
     def function(self, x, y, coeffs, beta, center_x=0, center_y=0):
         shapelets = self._createShapelet(coeffs)
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         f_ = self._shapeletOutput(r, phi, beta, shapelets)
         return f_
 
@@ -37,7 +37,7 @@ class PolarShapelets(LensProfileBase):
         returns df/dx and df/dy of the function
         """
         shapelets = self._createShapelet(coeffs)
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         alpha1_shapelets, alpha2_shapelets = self._alphaShapelets(shapelets, beta)
         f_x = self._shapeletOutput(r, phi, beta, alpha1_shapelets)
         f_y = self._shapeletOutput(r, phi, beta, alpha2_shapelets)
@@ -48,7 +48,7 @@ class PolarShapelets(LensProfileBase):
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         shapelets = self._createShapelet(coeffs)
-        r, phi = param_util.cart2polar(x, y, center=np.array([center_x, center_y]))
+        r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
         kappa_shapelets=self._kappaShapelets(shapelets, beta)
         gamma1_shapelets, gamma2_shapelets=self._gammaShapelets(shapelets, beta)
         kappa_value=self._shapeletOutput(r, phi, beta, kappa_shapelets)
@@ -115,7 +115,7 @@ class PolarShapelets(LensProfileBase):
                 values += value
         return values.real
 
-    def _chi_lr(self,r, phi, nl,nr,beta):
+    def _chi_lr(self, r, phi, nl, nr, beta):
         """
         computes the generalized polar basis function in the convention of Massey&Refregier eqn 8
 

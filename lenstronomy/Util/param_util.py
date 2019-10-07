@@ -1,21 +1,24 @@
 import numpy as np
 
 
-def cart2polar(x, y, center=np.array([0, 0])):
+def cart2polar(x, y, center_x=0, center_y=0):
     """
     transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center
 
-    :param coord: set of coordinates
-    :type coord: array of size (n,2)
-    :param center: rotation point
-    :type center: array of size (2)
+    :param x: set of x-coordinates
+    :type x: array of size (n)
+    :param y: set of x-coordinates
+    :type y: array of size (n)
+    :param center_x: rotation point
+    :type center_x: float
+    :param center_y: rotation point
+    :type center_y: float
     :returns:  array of same size with coords [r,phi]
-    :raises: AttributeError, KeyError
     """
-    coordShift_x = x - center[0]
-    coordShift_y = y - center[1]
-    r = np.sqrt(coordShift_x**2+coordShift_y**2)
-    phi = np.arctan2(coordShift_y, coordShift_x)
+    coord_shift_x = x - center_x
+    coord_shift_y = y - center_y
+    r = np.sqrt(coord_shift_x**2+coord_shift_y**2)
+    phi = np.arctan2(coord_shift_y, coord_shift_x)
     return r, phi
 
 

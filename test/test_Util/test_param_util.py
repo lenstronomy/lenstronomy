@@ -6,18 +6,17 @@ import lenstronomy.Util.param_util as param_util
 
 def test_cart2polar():
     #singel 2d coordinate transformation
-    center = np.array([0,0])
+    center_x, center_y = 0, 0
     x = 1
     y = 1
-    r, phi = param_util.cart2polar(x,y,center)
+    r, phi = param_util.cart2polar(x, y, center_x, center_y)
     assert r == np.sqrt(2) #radial part
     assert phi == np.arctan(1)
     #array of 2d coordinates
-    center = np.array([0,0])
-    x = np.array([1,2])
-    y = np.array([1,1])
+    x = np.array([1, 2])
+    y = np.array([1, 1])
 
-    r, phi = param_util.cart2polar(x,y,center)
+    r, phi = param_util.cart2polar(x, y, center_x, center_y)
     assert r[0] == np.sqrt(2) #radial part
     assert phi[0] == np.arctan(1)
 

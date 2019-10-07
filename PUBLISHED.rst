@@ -46,6 +46,9 @@ Dark Matter substructure
 * Probing dark matter structure down to 10**7 solar masses: flux ratio statistics in gravitational lenses with line-of-sight haloes; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.487.5721G>`_
     **
 
+* Double dark matter vision: twice the number of compact-source lenses with narrow-line lensing and the WFC3 Grism; `Nierenberg et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190806344N>`_
+    **
+
 * Warm dark matter chills out: constraints on the halo mass function and the free-streaming length of dark matter with 8 quadruple-image strong gravitational lenses; `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190806983G>`_
     **
 

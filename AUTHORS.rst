@@ -21,6 +21,7 @@ Contributors (alphabetic)
 * Martin Millon
 * Brian Nord
 * Ji Won Park
+* Thomas Schmidt
 * Anowar Shajib
 * Cyril Welschen
 * Lilan Yang

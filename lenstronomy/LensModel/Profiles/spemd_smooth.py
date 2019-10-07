@@ -7,7 +7,10 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 class SPEMD_SMOOTH(LensProfileBase):
     """
-    class for smooth power law ellipse mass density profile
+    class for smooth power law ellipse mass density profile. This class effectively performs the FASTELL calculations
+    by Renan Barkana. The parameters are changed and represent a spherically averaged Einstein radius an a logarithmic
+    3D mass profile slope.
+
     The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
     (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
     """
@@ -135,7 +138,7 @@ class SPEMD_SMOOTH(LensProfileBase):
                     f_xx_prim, f_yy_prim, f_xy_prim = np.array(f_xx_prim[0]), np.array(f_yy_prim[0]), np.array(
                         f_xy_prim[0])
         else:
-            f_xx_prim, f_yy_prim, f_xy_prim =  np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
+            f_xx_prim, f_yy_prim, f_xy_prim = np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
         kappa = (f_xx_prim + f_yy_prim)/2
         gamma1_value = (f_xx_prim - f_yy_prim)/2
         gamma2_value = f_xy_prim

@@ -191,6 +191,9 @@ class ProfileListBase(object):
         elif lens_type == 'CURVED_ARC':
             from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
             return CurvedArc()
+        elif lens_type == 'ARC_PERT':
+            from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
+            return ArcPerturbations()
         elif lens_type == 'coreBURKERT':
             from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
             return CoreBurkert()

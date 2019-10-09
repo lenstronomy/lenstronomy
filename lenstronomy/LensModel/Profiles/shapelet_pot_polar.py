@@ -164,7 +164,6 @@ class PolarShapelets(LensProfileBase):
                     output[nl+1][nr-1]+=a_lr*np.sqrt((nl+1)*nr)/2
         return output/beta**2
 
-
     def _alphaShapelets(self,shapelets, beta):
         """
         calculates the deflection angles given lensing potential shapelet coefficients (laplacian/2)

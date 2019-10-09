@@ -1,11 +1,11 @@
 __author__ = 'sibirrer'
 
-
 from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
 
 import numpy as np
 import numpy.testing as npt
 import pytest
+
 
 class TestP_JAFFW(object):
     """

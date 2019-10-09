@@ -7,6 +7,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestShift(object):
     """
     tests the Gaussian methods

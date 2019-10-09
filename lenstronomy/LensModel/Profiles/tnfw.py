@@ -44,6 +44,7 @@ class TNFW(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         f_ = self.nfwPot(R, Rs, rho0_input, r_trunc)
+        Warning('the potential of a truncated NFW profile is not implemented and may lead to crucial inaccuracies!')
         #TODO: truncated NFW potential not in place yet!
         return f_
 

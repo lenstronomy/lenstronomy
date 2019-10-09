@@ -15,7 +15,7 @@ class NIE(LensProfileBase):
     upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': -0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self.nie_simple = NIE_simple()
+        self.nie_simple = NIESimple()
         super(NIE, self).__init__()
 
     def param_conv(self, theta_E, e1, e2):
@@ -158,7 +158,7 @@ class NIE(LensProfileBase):
         return theta_E_new
 
 
-class NIE_simple(LensProfileBase):
+class NIESimple(LensProfileBase):
     """
     this class contains the function and the derivatives of the non-singular isothermal ellipse
     See Keeton&Kochanek 1998
@@ -167,7 +167,7 @@ class NIE_simple(LensProfileBase):
 
     def __init__(self, diff=0.0000000001):
         self._diff = diff
-        super(NIE_simple, self).__init__()
+        super(NIESimple, self).__init__()
 
     def function(self, x, y, theta_E, s, q):
         psi = self._psi(x, y, q, s)

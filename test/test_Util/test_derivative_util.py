@@ -85,7 +85,7 @@ class TestCalcUtil(object):
         assert out == 0
 
     def test_d_phi_dx(self):
-        x, y = np.array([1, 0, -1]), np.array([1, 1, -1])
+        x, y = np.array([1., 0., -1.]), np.array([1., 1., -1.])
         dx, dy = 0.0001, 0.0001
         r, phi = param_util.cart2polar(x, y, center_x=0, center_y=0)
 

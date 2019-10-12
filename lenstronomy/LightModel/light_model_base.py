@@ -27,6 +27,9 @@ class LightModelBase(object):
             elif profile_type == 'GAUSSIAN_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.gaussian import GaussianEllipse
                 self.func_list.append(GaussianEllipse())
+            elif profile_type == 'ELLIPSOID':
+                from lenstronomy.LightModel.Profiles.ellipsoid import Ellipsoid
+                self.func_list.append(Ellipsoid())
             elif profile_type == 'MULTI_GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian
                 self.func_list.append(MultiGaussian())

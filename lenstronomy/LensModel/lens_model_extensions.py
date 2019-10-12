@@ -41,7 +41,7 @@ class LensModelExtensions(object):
             from lenstronomy.LightModel.Profiles.gaussian import Gaussian
             quasar = Gaussian()
         elif shape == 'TORUS':
-            import lenstronomy.LightModel.Profiles.torus as quasar
+            import lenstronomy.LightModel.Profiles.ellipsoid as quasar
         else:
             raise ValueError("shape %s not valid for finite magnification computation!" % shape)
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
@@ -88,7 +88,7 @@ class LensModelExtensions(object):
             from lenstronomy.LightModel.Profiles.gaussian import Gaussian
             quasar = Gaussian()
         elif shape == 'TORUS':
-            import lenstronomy.LightModel.Profiles.torus as quasar
+            import lenstronomy.LightModel.Profiles.ellipsoid as quasar
         else:
             raise ValueError("shape %s not valid for finite magnification computation!" % shape)
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)

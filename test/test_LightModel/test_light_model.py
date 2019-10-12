@@ -17,7 +17,7 @@ class TestLightModel(object):
         self.light_model_list = ['GAUSSIAN', 'MULTI_GAUSSIAN', 'SERSIC', 'SERSIC_ELLIPSE',
                                  'CORE_SERSIC', 'SHAPELETS', 'HERNQUIST',
                                  'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
-                                 'INTERPOL', 'SHAPELETS_POLAR_EXP'
+                                 'INTERPOL', 'SHAPELETS_POLAR_EXP', 'ELLIPSOID'
                                  ]
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
@@ -37,7 +37,8 @@ class TestLightModel(object):
             {'amp': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'POWER_LAW'
             {'amp': .001, 'e1': 0, 'e2': 1., 'center_x': 0, 'center_y': 0, 's_scale': 1.},  # 'NIE'
             {'image': np.zeros((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},
-            {'amp': [1], 'n_max': 0, 'beta': 1, 'center_x': 0, 'center_y': 0}
+            {'amp': [1], 'n_max': 0, 'beta': 1, 'center_x': 0, 'center_y': 0},
+            {'amp': 1, 'radius': 1., 'e1': 0, 'e2': 0.1, 'center_x': 0, 'center_y': 0}  # 'ELLIPSOID'
             ]
 
         self.LightModel = LightModel(light_model_list=self.light_model_list)
@@ -66,7 +67,7 @@ class TestLightModel(object):
 
     def test_num_param_linear(self):
         num = self.LightModel.num_param_linear(self.kwargs, list_return=False)
-        assert num == 18
+        assert num == 19
 
         num_list = self.LightModel.num_param_linear(self.kwargs, list_return=True)
         assert num_list[0] == 1

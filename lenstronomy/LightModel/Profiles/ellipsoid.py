@@ -2,12 +2,18 @@ __author__ = 'sibirrer'
 
 #this file contains a class to make a moffat profile
 import numpy as np
+from lenstronomy.Util import param_util
 
 
 class Ellipsoid(object):
     """
     class for an universal surface brightness within an ellipsoid
     """
+    def __init__(self):
+        self.param_names = ['amp', 'radius', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'radius': 0, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'radius': 100, 'center_x': 100, 'center_y': 100}
+
     def function(self, x, y, amp, radius, e1, e2, center_x, center_y):
         """
 
@@ -21,8 +27,12 @@ class Ellipsoid(object):
         :param center_y:
         :return:
         """
-        pass
-
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        r2 = x_**2 + y_**2
+        flux = np.zeros_like(x)
+        flux[r2 <= radius**2] = 1
+        A = np.pi * radius ** 2
+        return amp / A * flux
 
 
 def function(x, y, amp, sigma, center_x, center_y):

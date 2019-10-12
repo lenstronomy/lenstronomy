@@ -16,7 +16,7 @@ class TestParam(object):
                           'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
         kwargs_param = {'num_point_source_list': [2]}
         kwargs_fixed_lens = [{'gamma': 1.9}] #for SPEP lens
-        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x':0.2, 'center_y': 0.2}]
+        kwargs_fixed_source = [{'sigma': 0.1, 'center_x':0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = [{}]
@@ -35,7 +35,7 @@ class TestParam(object):
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION']}
         kwargs_param = {}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
-        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_fixed_source = [{'sigma': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = [{}]
@@ -54,7 +54,7 @@ class TestParam(object):
 
     def test_get_params(self):
         kwargs_true_lens = [{'theta_E': 1.,'gamma':1.9, 'e1':0.01, 'e2':-0.01, 'center_x':0., 'center_y':0.}] #for SPEP lens
-        kwargs_true_source = [{'amp': 1*2*np.pi*0.1**2,'center_x':0.2, 'center_y':0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
+        kwargs_true_source = [{'amp': 1*2*np.pi*0.1**2,'center_x':0.2, 'center_y':0.2, 'sigma': 0.1}]
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                   'q': 0.86, 'n_sersic': 1.7,
                                   'amp': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]
@@ -79,7 +79,7 @@ class TestParam(object):
                         }
         kwargs_param = {'Ddt_sampling': True}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
-        kwargs_fixed_source = [{'sigma_x': 0.1, 'sigma_y': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_fixed_source = [{'sigma': 0.1, 'center_x': 0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
         kwargs_fixed_lens_light = [{}]
         kwargs_fixed_cosmo = {'D_dt': 1000}
@@ -90,7 +90,7 @@ class TestParam(object):
         kwargs_true_lens = [
             {'theta_E': 1., 'gamma': 1.9, 'e1':0.01, 'e2':-0.01, 'center_x': 0., 'center_y': 0.}]  # for SPEP lens
         kwargs_true_source = [
-            {'amp': 1 * 2 * np.pi * 0.1 ** 2, 'center_x': 0.2, 'center_y': 0.2, 'sigma_x': 0.1, 'sigma_y': 0.1}]
+            {'amp': 1 * 2 * np.pi * 0.1 ** 2, 'center_x': 0.2, 'center_y': 0.2, 'sigma': 0.1}]
         kwargs_true_lens_light = [{'center_x': -0.06, 'center_y': 0.4, 'phi_G': 4.8,
                                    'q': 0.86, 'n_sersic': 1.7,
                                    'amp': 11.8, 'R_sersic': 0.697, 'phi_G_2': 0}]

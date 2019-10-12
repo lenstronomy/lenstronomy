@@ -67,6 +67,8 @@ class HernquistEllipse(object):
         :param center_y:
         :return:
         """
+        #TODO check ellipticity consistency with the mass profile kappa definition
+        #x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_ , y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
         return self.spherical.function(x_, y_, amp, Rs)

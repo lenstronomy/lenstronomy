@@ -7,27 +7,26 @@ class Gaussian(object):
     class for Gaussian light profile
     """
     def __init__(self):
-        self.param_names = ['amp', 'sigma_x', 'sigma_y', 'center_x', 'center_y']
-        self.lower_limit_default = {'amp': 0, 'sigma_x': 0, 'sigma_y': 0, 'center_x': -100, 'center_y': -100}
-        self.upper_limit_default = {'amp': 1000, 'sigma_x': 100, 'sigma_y': 100, 'center_x': 100, 'center_y': 100}
+        self.param_names = ['amp', 'sigma', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'sigma': 0, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'sigma': 100, 'center_x': 100, 'center_y': 100}
 
-    def function(self, x, y, amp, sigma_x, sigma_y, center_x=0, center_y=0):
+    def function(self, x, y, amp, sigma, center_x=0, center_y=0):
         """
 
         :param x:
         :param y:
-        :param sigma0:
-        :param a:
-        :param s:
+        :param amp: amplitude
+        :param sigma: sigma of Gaussian
         :param center_x:
         :param center_y:
         :return:
         """
-        c = amp / (2 * np.pi * sigma_x * sigma_y)
-        R2 = (x - center_x) ** 2 / sigma_x**2 + (y - center_y) ** 2 / sigma_y**2
+        c = amp / (2 * np.pi * sigma**2)
+        R2 = (x - center_x) ** 2 / sigma**2 + (y - center_y) ** 2 / sigma**2
         return c * np.exp(-R2 / 2.)
 
-    def total_flux(self, amp, sigma_x, sigma_y, center_x=0, center_y=0):
+    def total_flux(self, amp, sigma, center_x=0, center_y=0):
         """
 
         :param amp:
@@ -38,7 +37,7 @@ class Gaussian(object):
         """
         return amp
 
-    def light_3d(self, r, amp, sigma_x, sigma_y):
+    def light_3d(self, r, amp, sigma):
         """
 
         :param y:
@@ -48,10 +47,9 @@ class Gaussian(object):
         :param center_y:
         :return:
         """
-        amp3d = amp / np.sqrt(2* sigma_x * sigma_y) / np.sqrt(np.pi)
-        sigma3d_x = sigma_x
-        sigma3d_y = sigma_y
-        return self.function(r, 0, amp3d, sigma3d_x, sigma3d_y)
+        amp3d = amp / np.sqrt(2 * sigma**2) / np.sqrt(np.pi)
+        sigma3d = sigma
+        return self.function(r, 0, amp3d, sigma3d)
 
 
 class GaussianEllipse(object):
@@ -77,8 +75,8 @@ class GaussianEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
-        return self.gaussian.function(x_, y_, amp, sigma, sigma, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        return self.gaussian.function(x_, y_, amp, sigma, center_x=0, center_y=0)
 
     def total_flux(self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None):
         """
@@ -91,7 +89,7 @@ class GaussianEllipse(object):
         :param center_y:
         :return:
         """
-        return self.gaussian.total_flux(amp, sigma, sigma, center_x, center_y)
+        return self.gaussian.total_flux(amp, sigma, center_x, center_y)
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
         """
@@ -103,7 +101,7 @@ class GaussianEllipse(object):
         :param center_y:
         :return:
         """
-        return self.gaussian.light_3d(r, amp, sigma_x=sigma, sigma_y=sigma)
+        return self.gaussian.light_3d(r, amp, sigma=sigma)
 
 
 class MultiGaussian(object):
@@ -131,7 +129,7 @@ class MultiGaussian(object):
         """
         f_ = np.zeros_like(x)
         for i in range(len(amp)):
-            f_ += self.gaussian.function(x, y, amp[i], sigma[i], sigma[i], center_x, center_y)
+            f_ += self.gaussian.function(x, y, amp[i], sigma[i], center_x, center_y)
         return f_
 
     def total_flux(self, amp, sigma, center_x=0, center_y=0):
@@ -145,13 +143,13 @@ class MultiGaussian(object):
         """
         flux = 0
         for i in range(len(amp)):
-            flux += self.gaussian.total_flux(amp[i], sigma[i], sigma[i], center_x, center_y)
+            flux += self.gaussian.total_flux(amp[i], sigma[i], center_x, center_y)
         return flux
 
     def function_split(self, x, y, amp, sigma, center_x=0, center_y=0):
         f_list = []
         for i in range(len(amp)):
-            f_list.append(self.gaussian.function(x, y, amp[i], sigma[i], sigma[i], center_x, center_y))
+            f_list.append(self.gaussian.function(x, y, amp[i], sigma[i], center_x, center_y))
         return f_list
 
     def light_3d(self, r, amp, sigma):
@@ -166,7 +164,7 @@ class MultiGaussian(object):
         """
         f_ = np.zeros_like(r)
         for i in range(len(amp)):
-            f_ += self.gaussian.light_3d(r, amp[i], sigma[i], sigma[i])
+            f_ += self.gaussian.light_3d(r, amp[i], sigma[i])
         return f_
 
 
@@ -193,11 +191,11 @@ class MultiGaussianEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
 
         f_ = np.zeros_like(x)
         for i in range(len(amp)):
-            f_ += self.gaussian.function(x_, y_, amp[i], sigma[i], sigma[i], center_x, center_y)
+            f_ += self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0)
         return f_
 
     def total_flux(self, amp, sigma, e1, e2, center_x=0, center_y=0):
@@ -213,14 +211,14 @@ class MultiGaussianEllipse(object):
         """
         flux = 0
         for i in range(len(amp)):
-            flux += self.gaussian.total_flux(amp[i], sigma[i], sigma[i], center_x, center_y)
+            flux += self.gaussian.total_flux(amp[i], sigma[i], center_x, center_y)
         return flux
 
     def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2)
+        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
         f_list = []
         for i in range(len(amp)):
-            f_list.append(self.gaussian.function(x_, y_, amp[i], sigma[i], sigma[i], center_x, center_y))
+            f_list.append(self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0))
         return f_list
 
     def light_3d(self, r, amp, sigma, e1=0, e2=0):
@@ -235,6 +233,5 @@ class MultiGaussianEllipse(object):
         """
         f_ = np.zeros_like(r)
         for i in range(len(amp)):
-            f_ += self.gaussian.light_3d(r, amp[i], sigma[i], sigma[i])
+            f_ += self.gaussian.light_3d(r, amp[i], sigma[i])
         return f_
-

@@ -10,7 +10,7 @@ class TestDifferentialExtinction(object):
 
     def test_extinction(self):
         extinction = DifferentialExtinction(optical_depth_model=['GAUSSIAN'], tau0_index=0)
-        kwargs_extinction = [{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_extinction = [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_special = {'tau0_list': [2, 0]}
         ext = extinction.extinction(x=1, y=1, kwargs_special=kwargs_special, kwargs_extinction=kwargs_extinction)
         npt.assert_almost_equal(ext, 0.8894965388088921, decimal=8)

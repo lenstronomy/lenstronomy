@@ -17,14 +17,14 @@ class TestAdaptiveConvolution(object):
         self.delta_pix = 1.
         x, y = util.make_grid(20, deltapix=self.delta_pix)
         x_sub, y_sub = util.make_grid(20*self.supersampling_factor, deltapix=self.delta_pix/self.supersampling_factor)
-        kwargs = [{'amp': 1, 'sigma_x': 2, 'sigma_y': 2, 'center_x': 0, 'center_y': 0}]
+        kwargs = [{'amp': 1, 'sigma': 2, 'center_x': 0, 'center_y': 0}]
         flux = lightModel.surface_brightness(x, y, kwargs)
         self.model = util.array2image(flux)
         flux_sub = lightModel.surface_brightness(x_sub, y_sub, kwargs)
         self.model_sub = util.array2image(flux_sub)
 
         x, y = util.make_grid(5, deltapix=self.delta_pix)
-        kwargs_kernel = [{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_kernel = [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}]
         kernel = lightModel.surface_brightness(x, y, kwargs_kernel)
         self.kernel = util.array2image(kernel) / np.sum(kernel)
 

@@ -15,7 +15,7 @@ def test_fwhm_kernel():
     x_grid, y_gird = Util.make_grid(101, 1)
     sigma = 20
 
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel = Util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
     fwhm_kernel = kernel_util.fwhm_kernel(kernel)
@@ -26,7 +26,7 @@ def test_fwhm_kernel():
 def test_center_kernel():
     x_grid, y_gird = Util.make_grid(31, 1)
     sigma = 2
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel = Util.array2image(flux)
     kernel = kernel_util.kernel_norm(kernel)
 
@@ -250,7 +250,7 @@ def test_subgrid_rebin():
 
     sigma = 1
     x_grid, y_gird = Util.make_grid(kernel_size, 1./subgrid_res, subgrid_res)
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel = Util.array2image(flux)
     print(np.shape(kernel))
     kernel = util.averaging(kernel, numGrid=kernel_size * subgrid_res, numPix=kernel_size)
@@ -285,7 +285,7 @@ def test_kernel_average_pixel():
     subgrid_res = 3
     x_grid, y_gird = Util.make_grid(9, 1., subgrid_res)
     sigma = 2
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel_super = Util.array2image(flux)
     kernel_pixel = kernel_util.kernel_average_pixel(kernel_super, supersampling_factor=subgrid_res)
     npt.assert_almost_equal(np.sum(kernel_pixel), np.sum(kernel_super))
@@ -300,7 +300,7 @@ def test_averaging_even_kernel():
 
     x_grid, y_gird = Util.make_grid(19, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
@@ -309,7 +309,7 @@ def test_averaging_even_kernel():
 
     x_grid, y_gird = Util.make_grid(17, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel_super = Util.array2image(flux)
 
     kernel_pixel = kernel_util.averaging_even_kernel(kernel_super, subgrid_res)
@@ -322,7 +322,7 @@ def test_degrade_kernel():
 
     x_grid, y_gird = Util.make_grid(19, 1., 1)
     sigma = 1.5
-    flux = gaussian.function(x_grid, y_gird, amp=1, sigma_x=sigma, sigma_y=sigma)
+    flux = gaussian.function(x_grid, y_gird, amp=1, sigma=sigma)
     kernel_super = Util.array2image(flux)/np.sum(flux)
 
     kernel_degraded = kernel_util.degrade_kernel(kernel_super, degrading_factor=subgrid_res)

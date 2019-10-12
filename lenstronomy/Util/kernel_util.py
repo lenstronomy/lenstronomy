@@ -273,8 +273,7 @@ def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     #    kernel_numPix += 1
     x_grid, y_grid = util.make_grid(kernel_numPix, deltaPix)
     gaussian = Gaussian()
-    kernel = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
-                                         center_x=0, center_y=0)
+    kernel = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
     kernel /= np.sum(kernel)
     kernel = util.array2image(kernel)
     return kernel

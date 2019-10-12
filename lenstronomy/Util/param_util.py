@@ -73,24 +73,28 @@ def phi_q2_ellipticity(phi, q):
     return e1, e2
 
 
-def transform_e1e2(x, y, e1, e2, center_x=0, center_y=0):
+def transform_e1e2(x, y, e1, e2, center_x, center_y):
     """
-    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordiante system
+    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordianate system
 
-    :param x:
-    :param y:
-    :param e1:
-    :param e2:
-    :param center_x:
-    :param center_y:
-    :return:
+    :param x: x-coordinate
+    :param y: y-coordinate
+    :param e1: eccentricity
+    :param e2: eccentricity
+    :param center_x: center of distortion
+    :param center_y: center of distortion
+    :return: distorted coordinates x_, y_
     """
+    phi_G, q = ellipticity2phi_q(e1, e2)
     x_shift = x - center_x
     y_shift = y - center_y
-    x_ = (1-e1) * x_shift - e2 * y_shift
-    y_ = -e2 * x_shift + (1 + e1) * y_shift
-    det = np.sqrt((1-e1)*(1+e1) + e2**2)
-    return x_ / det, y_ / det
+
+    cos_phi = np.cos(phi_G)
+    sin_phi = np.sin(phi_G)
+
+    xt1 = cos_phi * x_shift + sin_phi * y_shift
+    xt2 = -sin_phi * x_shift + cos_phi * y_shift
+    return xt1 * np.sqrt(q), xt2 / np.sqrt(q)
 
 
 def ellipticity2phi_q(e1, e2):
@@ -101,7 +105,7 @@ def ellipticity2phi_q(e1, e2):
     """
     phi = np.arctan2(e2, e1)/2
     c = np.sqrt(e1**2+e2**2)
-    if c > 0.999:
-        c = 0.999
+    if c > 0.9999:
+        c = 0.9999
     q = (1-c)/(1+c)
     return phi, q

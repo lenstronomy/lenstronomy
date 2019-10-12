@@ -66,8 +66,7 @@ class TestLensAnalysis(object):
     def test_multi_gaussian_lens_light(self):
         kwargs_profile = [{'Rs': 0.16350224766074103, 'e1': 0, 'e2': 0, 'center_x': 0,
             'center_y': 0,  'amp': 1.3168943578511678},
-            {'Rs': 0.29187068596715743, 'e1': 0, 'e2': 0, 'center_x': 0,
-            'center_y': 0, 'Ra': 0.020000382843298824,
+            {'Rs': 0.29187068596715743, 'e1': 0, 'e2': 0, 'center_x': 0, 'center_y': 0, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
@@ -86,10 +85,12 @@ class TestLensAnalysis(object):
         kwargs_profile = [{'amp': 1., 'sigma': 2, 'center_x': 0., 'center_y': 0, 'e1': e1, 'e2': e2}]
         kwargs_options = {'lens_light_model_list': ['GAUSSIAN_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
-        amplitudes, sigma, center_x, center_y = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20, e1=e1,
-                                                                                       e2=e2, deltaPix=0.05, numPix=400)
         mge = MultiGaussianEllipse()
-        flux = mge.function(1., 1, amp=amplitudes, sigma=sigma, center_x=center_x, center_y=center_y, e1=e1, e2=e2)
+
+        amplitudes, sigma, center_x, center_y = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20, deltaPix=0.05, numPix=400)
+
+        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        flux = mge.function(1., 1., amp=amplitudes, sigma=sigma, center_x=center_x, center_y=center_y, e1=e1, e2=e2)
         flux_true = lensAnalysis.LensLightModel.surface_brightness(1., 1., kwargs_profile)
         npt.assert_almost_equal(flux / flux_true, 1, decimal=1)
 

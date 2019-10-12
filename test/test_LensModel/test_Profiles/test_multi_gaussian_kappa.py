@@ -40,7 +40,7 @@ class TestGaussianKappa(object):
         sigma = [1.]
         f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
         kappa = 1./2 * (f_xx + f_yy)
-        kappa_true = self.gaussian.function(x, y, amp[0], sigma[0], sigma[0], center_x, center_y)
+        kappa_true = self.gaussian.function(x, y, amp[0], sigma[0], center_x, center_y)
         print(kappa_true)
         print(kappa)
         npt.assert_almost_equal(kappa[0], kappa_true[0], decimal=5)

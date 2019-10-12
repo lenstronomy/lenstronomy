@@ -65,7 +65,7 @@ class LensModelExtensions(object):
 
             betax, betay = self._lensModel.ray_shooting(xcoord + ra, ycoord + dec, kwargs_lens)
 
-            I_image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
+            I_image = quasar.function(betax, betay, 1., source_sigma, center_x, center_y)
             mag_finite[i] = np.sum(I_image) * deltaPix**2
         return mag_finite
 
@@ -94,7 +94,7 @@ class LensModelExtensions(object):
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
         center_x, center_y = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
         betax, betay = self._lensModel.ray_shooting(x_grid + x_pos, y_grid + y_pos, kwargs_lens)
-        image = quasar.function(betax, betay, 1., source_sigma, source_sigma, center_x, center_y)
+        image = quasar.function(betax, betay, 1., source_sigma, center_x, center_y)
         return util.array2image(image)
 
     def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):

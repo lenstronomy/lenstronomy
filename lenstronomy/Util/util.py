@@ -379,14 +379,14 @@ def select_best(array, criteria, num_select, highest=True):
     return array[indexes]
 
 
-def points_on_circle(radius, points):
+def points_on_circle(radius, num_points):
     """
     returns a set of uniform points around a circle
     :param radius: radius of the circle
-    :param points: number of points on the circle
+    :param num_points: number of points on the circle
     :return:
     """
-    angle = np.linspace(0, 2*np.pi, points)
+    angle = np.linspace(0, 2 * np.pi, num_points)
     x_coord = np.cos(angle)*radius
     y_coord = np.sin(angle)*radius
     return x_coord, y_coord

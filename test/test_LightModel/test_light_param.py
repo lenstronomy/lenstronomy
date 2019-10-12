@@ -15,7 +15,7 @@ class TestParam(object):
                                  'SHAPELETS', 'SHAPELETS_POLAR_EXP'
                                  ]
         self.kwargs = [
-            {'amp': 1., 'sigma_x': 1, 'sigma_y': 1., 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
+            {'amp': 1., 'sigma': 1, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
             {'amp': [1., 2], 'sigma': [1, 3], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'
             {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
             {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
@@ -33,7 +33,7 @@ class TestParam(object):
 
         ]
         self.kwargs_sigma = [
-            {'amp_sigma': 1., 'sigma_x_sigma': 1, 'sigma_y_sigma': 1., 'center_x_sigma': 0, 'center_y_sigma': 0},
+            {'amp_sigma': 1., 'sigma_sigma': 1, 'center_x_sigma': 0, 'center_y_sigma': 0},
             # 'GAUSSIAN'
             {'amp_sigma': [1., 1.], 'sigma_sigma': [1, 1], 'center_x_sigma': 0, 'center_y_sigma': 0},
             # 'MULTI_GAUSSIAN'
@@ -86,7 +86,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 67
+        assert num == 66
 
     def test_param_name_list(self):
         param_name_list = self.param.param_name_list

@@ -14,7 +14,6 @@ from lenstronomy.Data.psf import PSF
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
-import numpy as np
 import unittest
 
 
@@ -192,7 +191,7 @@ class TestRaise(unittest.TestCase):
             kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, sigma_bkg=1)
             #kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
-            kwargs_params = {'kwargs_lens': [], 'kwargs_source': [{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}],
+            kwargs_params = {'kwargs_lens': [], 'kwargs_source': [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
                              'kwargs_ps': [], 'kwargs_lens_light': []}
             lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params,
@@ -207,7 +206,7 @@ class TestRaise(unittest.TestCase):
             # kwargs_data['image_data'] = np.zeros((10, 10))
             kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
             kwargs_params = {'kwargs_lens': [],
-                             'kwargs_source': [{'amp': 1, 'sigma_x': 1, 'sigma_y': 1, 'center_x': 0, 'center_y': 0}],
+                             'kwargs_source': [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
                              'kwargs_ps': [], 'kwargs_lens_light': []}
             lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[False],

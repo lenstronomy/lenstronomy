@@ -18,18 +18,8 @@ class LensAnalysis(object):
     def __init__(self, kwargs_model):
 
         self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
-
-        #self.LensLightModel = LightModel(kwargs_model.get('lens_light_model_list', []))
-
-        #self.LensModel = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-        #                           z_source=kwargs_model.get('z_source', None),
-        #                           lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-        #                           multi_plane=kwargs_model.get('multi_plane', False))
-        #self.SourceModel = LightModel(kwargs_model.get('source_light_model_list', []))
         self._lensModelExtensions = LensModelExtensions(self.LensModel)
-        #self.PointSource = PointSource(point_source_type_list=kwargs_model.get('point_source_model_list', []), lensModel=self.LensModel)
         self.kwargs_model = kwargs_model
-        #self.NumLensModel = NumericLens(lens_model_list=kwargs_model.get('lens_model_list', []))
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
@@ -43,7 +33,7 @@ class LensAnalysis(object):
 
     def ellipticity_lens_light(self, kwargs_lens_light, deltaPix, numPix, center_x=0, center_y=0, model_bool_list=None):
         """
-        make sure that the window covers all the light, otherwise the moments may give to low answers.
+        make sure that the window covers all the light, otherwise the moments may give a too low answers.
 
         :param kwargs_lens_light:
         :param center_x:
@@ -92,6 +82,40 @@ class LensAnalysis(object):
         R_h = analysis_util.half_light_radius(source_light, x_grid, y_grid, center_x=center_x, center_y=center_y)
         return R_h
 
+    def radial_lens_light_profile(self, r_list, kwargs_lens_light, center_x=0, center_y=0, model_bool_list=None):
+        """
+
+        :param r_list: list of radii to compute the spherically averaged lens light profile
+        :param center_x: center of the profile
+        :param center_y: center of the profile
+        :param kwargs_lens_light: lens light parameter keyword argument list
+        :param model_bool_list: bool list or None, indicating which profiles to sum over
+        :return: flux amplitudes at r_list radii spherically averaged
+        """
+        f_list = []
+        for r in r_list:
+            x, y = util.points_on_circle(r, num_points=20)
+            f_r = self._lens_light_internal(x + center_x, y + center_y, kwargs_lens_light=kwargs_lens_light, model_bool_list=model_bool_list)
+            f_list.append(np.average(f_r))
+        return f_list
+
+    def radial_lens_profile(self, r_list, kwargs_lens, center_x=0, center_y=0, model_bool_list=None):
+        """
+
+        :param r_list: list of radii to compute the spherically averaged lens light profile
+        :param center_x: center of the profile
+        :param center_y: center of the profile
+        :param kwargs_lens_light: lens light parameter keyword argument list
+        :param model_bool_list: bool list or None, indicating which profiles to sum over
+        :return: flux amplitudes at r_list radii spherically averaged
+        """
+        kappa_list = []
+        for r in r_list:
+            x, y = util.points_on_circle(r, num_points=20)
+            f_r = self._kappa_internal(x + center_x, y + center_y, kwargs_lens=kwargs_lens, model_bool_list=model_bool_list)
+            kappa_list.append(np.average(f_r))
+        return kappa_list
+
     def _lens_light_internal(self, x_grid, y_grid, kwargs_lens_light, model_bool_list=None):
         """
         evaluates only part of the light profiles
@@ -110,8 +134,25 @@ class LensAnalysis(object):
                 lens_light += lens_light_i
         return lens_light
 
-    def multi_gaussian_lens_light(self, kwargs_lens_light, deltaPix=0.01, numPix=100, model_bool_list=None, e1=0, e2=0,
-                                  n_comp=20):
+    def _kappa_internal(self, x_grid, y_grid, kwargs_lens, model_bool_list=None):
+        """
+        evaluates only part of the light profiles
+
+        :param x_grid:
+        :param y_grid:
+        :param kwargs_lens_light:
+        :return:
+        """
+        if model_bool_list is None:
+            model_bool_list = [True] * len(kwargs_lens)
+        kappa = np.zeros_like(x_grid)
+        for i, bool in enumerate(model_bool_list):
+            if bool is True:
+                kappa_i = self.LensModel.kappa(x_grid, y_grid, kwargs_lens, k=i)
+                kappa += kappa_i
+        return kappa
+
+    def multi_gaussian_lens_light(self, kwargs_lens_light, deltaPix=0.01, numPix=100, model_bool_list=None, n_comp=20):
         """
         multi-gaussian decomposition of the lens light profile (in 1-dimension)
 
@@ -127,16 +168,13 @@ class LensAnalysis(object):
         r_h = self.half_light_radius_lens(kwargs_lens_light, center_x=center_x, center_y=center_y,
                                           model_bool_list=model_bool_list, deltaPix=deltaPix, numPix=numPix)
         r_array = np.logspace(-3, 2, 200) * r_h * 2
-        x_coords, y_coords = param_util.transform_e1e2(r_array, np.zeros_like(r_array), e1=-e1, e2=-e2)
-        x_coords += center_x
-        y_coords += center_y
-        #r_array = np.logspace(-2, 1, 50) * r_h
-        flux_r = self._lens_light_internal(x_coords, y_coords, kwargs_lens_light,
-                                           model_bool_list=model_bool_list)
+        flux_r = self.radial_lens_light_profile(r_array, kwargs_lens_light, center_x=center_x, center_y=center_y,
+                                                model_bool_list=model_bool_list)
+
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 
-    def multi_gaussian_lens(self, kwargs_lens, model_bool_list=None, e1=0, e2=0, n_comp=20):
+    def multi_gaussian_lens(self, kwargs_lens, model_bool_list=None, n_comp=20):
         """
         multi-gaussian lens model in convergence space
 
@@ -151,16 +189,8 @@ class LensAnalysis(object):
             raise ValueError('no keyword center_x defined!')
         theta_E = self._lensModelExtensions.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
-        x_coords, y_coords = param_util.transform_e1e2(r_array, np.zeros_like(r_array), e1=-e1, e2=-e2)
-        x_coords += center_x
-        y_coords += center_y
-        #r_array = np.logspace(-2, 1, 50) * theta_E
-        if model_bool_list is None:
-            model_bool_list = [True] * len(kwargs_lens)
-        kappa_s = np.zeros_like(r_array)
-        for i in range(len(kwargs_lens)):
-            if model_bool_list[i] is True:
-                kappa_s += self.LensModel.kappa(x_coords, y_coords, kwargs_lens, k=i)
+        kappa_s = self.radial_lens_profile(r_array, kwargs_lens, center_x=center_x, center_y=center_y,
+                                                model_bool_list=model_bool_list)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 
@@ -210,8 +240,8 @@ class LensAnalysis(object):
             e1, e2 = 0, 0
         # MGE around major axis
         amplitudes, sigmas, center_x, center_y = self.multi_gaussian_lens_light(kwargs_lens_light,
-                                                                                model_bool_list=model_bool_list, e1=e1,
-                                                                                e2=e2, n_comp=20, deltaPix=deltaPix,
+                                                                                model_bool_list=model_bool_list,
+                                                                                n_comp=20, deltaPix=deltaPix,
                                                                                 numPix=numPix)
         kwargs_mge = {'amp': amplitudes, 'sigma': sigmas, 'center_x': center_x, 'center_y': center_y}
         if elliptical:

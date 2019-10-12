@@ -37,8 +37,7 @@ class TestImageModel(object):
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
         gaussian = Gaussian()
-        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
-                                                center_x=0, center_y=0)
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
@@ -95,8 +94,7 @@ class TestImageModel(object):
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
         gaussian = Gaussian()
-        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
-                                                center_x=0, center_y=0)
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
@@ -117,8 +115,7 @@ class TestImageModel(object):
         x_grid, y_grid = util.make_grid(numPix=31, deltapix=0.05)
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian
         gaussian = Gaussian()
-        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma_x=sigma, sigma_y=sigma,
-                                              center_x=0, center_y=0)
+        kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}

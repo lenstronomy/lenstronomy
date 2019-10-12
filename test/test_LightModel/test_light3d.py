@@ -33,7 +33,7 @@ class TestNumerics(object):
 
     def test_gaussian(self):
         from lenstronomy.LightModel.Profiles.gaussian import Gaussian as Model
-        kwargs = {'amp': 1. / 4., 'sigma_x': 2., 'sigma_y': 2.}
+        kwargs = {'amp': 1. / 4., 'sigma': 2.}
         self.assert_integrals(Model, kwargs)
 
     def test_power_law(self):

@@ -48,14 +48,20 @@ Requirements
 To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
 is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
 
+.. code-block:: bash
+    $ sudo apt-get install gfortran
+    $ git clone https://github.com/sibirrer/fastell4py.git <desired location>
+    $ cd <desired location>
+    $ python setup.py install --user
+
 Additional python libraries:
 
-* ``CosmoHammer`` (through PyPi)
 * ``astropy``
 * ``dynesty``
 * ``pymultinest``
 * ``pypolychord``
 * ``nestcheck``
+* ``CosmoHammer``
 * standard python libraries (``numpy``, ``scipy``)
 
 
@@ -63,21 +69,19 @@ Additional python libraries:
 Modelling Features
 ------------------
 
-* a variety of lens models to use in arbitrary superposition
-* lens equation solver
-* multi-plane ray-tracing
+* a variety of analytic lens model profiles to be used in superposition with each other
+* ray-shooting, lens equation solver, non-linear image position solver and various other lensing computation tools
+* integrated support for multi-lens plane and multi-source plane
+* API to conveniently simulate mock lenses
 * Extended source reconstruction with basis sets (shapelets) and analytic light profiles
-* Point sources
+* Point source modeling within the lensing context and iterative point spread function reconstruction
 * numerical options for sub-grid ray-tracing and sub-pixel convolution
-* non-linear line-of-sight description
-* iterative point spread function reconstruction
-* linear and non-linear optimization modules
-* Pre-defined plotting and illustration routines
 * Particle swarm optimization for parameter fitting
-* MCMC (emcee from CosmoHammer) for parameter inferences
-* Nested Sampling (MultiNest, DyPolyChord, or Dynesty) for evidence computation and parameter inferences
-* Kinematic modelling
+* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty) for parameter inferences and evidence computations
+* Kinematic modelling (Jeans equation) of lens deflector galaxy
 * Cosmographic inference tools
+* Pre-defined plotting and illustration routines
+* ...and much more
 
 
 

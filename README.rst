@@ -69,18 +69,16 @@ Additional python libraries:
 Modelling Features
 ------------------
 
-* a variety of analytic lens model profiles to be used in superposition with each other
-* ray-shooting, lens equation solver, non-linear image position solver and various other lensing computation tools
-* integrated support for multi-lens plane and multi-source plane
+* a variety of analytic lens model profiles
+* various lensing computation tools (lens equation solver, ray-tracing etc)
+* integrated support for multi-lens plane and multi-source plane modelling
 * API to conveniently simulate mock lenses
-* Extended source reconstruction with basis sets (shapelets) and analytic light profiles
-* Point source modeling within the lensing context and iterative point spread function reconstruction
+* Extended source reconstruction with basis sets (shapelets)
 * numerical options for sub-grid ray-tracing and sub-pixel convolution
 * Particle swarm optimization for parameter fitting
-* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty) for parameter inferences and evidence computations
+* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)
 * Kinematic modelling (Jeans equation) of lens deflector galaxy
 * Cosmographic inference tools
-* Pre-defined plotting and illustration routines
 * ...and much more
 
 

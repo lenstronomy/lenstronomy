@@ -423,7 +423,6 @@ class LensModelExtensions(object):
         d_tang_d_tang = (tang_dt - tangential_stretch) / smoothing_3rd * np.sign(v_tang1 * y0 - v_tang2 * x0)
         cos_delta = v_tang1 * v_tang1_dt + v_tang2 * v_tang2_dt / (np.sqrt(v_tang1**2 + v_tang2**2) * np.sqrt(v_tang1_dt**2 + v_tang2_dt**2))
         arc_cos = np.arccos(np.abs(np.minimum(cos_delta, 1)))
-
         d_angle_d_tang = arc_cos / smoothing_3rd
 
         dx_rad = x + smoothing_3rd * v_rad1
@@ -435,6 +434,8 @@ class LensModelExtensions(object):
         d_angle_d_rad = np.arccos(cos_delta) / smoothing_3rd
         d_rad_d_rad = (rad_dr - radial_stretch) / smoothing_3rd * np.sign(v_rad1 * x0 + v_rad2 * y0)
 
+        d_tang_d_rad = (tang_dr - tangential_stretch) / smoothing_3rd * np.sign(v_rad1 * x0 + v_rad2 * y0)
+
         cos_angle = (v_tang1 * x0 + v_tang2 * y0) / np.sqrt((x0**2 + y0**2) * (v_tang1**2 + v_tang2**2)) * np.sign(v_tang1 * y0 - v_tang2 * x0)
         angle = np.arccos(cos_angle) - np.pi / 2
-        return radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, angle
+        return radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, angle

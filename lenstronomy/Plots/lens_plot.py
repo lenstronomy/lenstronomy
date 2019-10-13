@@ -84,12 +84,12 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     extensions = LensModelExtensions(lensModel=lensModel)
     ra_grid1d = util.image2array(ra_grid)
     dec_grid1d = util.image2array(dec_grid)
-    radial_stretch, tangential_stretch, d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+    radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
         ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=differential_scale, smoothing_2nd=None)
 
-    font_size =10
+    font_size = 10
     _arrow_size = 0.02
-    f, axes = plt.subplots(2, 3, figsize=(16, 8))
+    f, axes = plt.subplots(2, 4, figsize=(16, 8))
 
 
     radial_stretch2d = util.array2image(radial_stretch)
@@ -98,6 +98,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     d_tang_d_tang2d = util.array2image(d_tang_d_tang)
     orientation_angle2d = util.array2image(orientation_angle)
     d_angle_d_tang2d = util.array2image(d_angle_d_tang)
+    d_tang_d_rad2d = util.array2image(d_tang_d_rad)
     if smoothing_scale is not None:
         radial_stretch2d = ndimage.gaussian_filter(radial_stretch2d, sigma=smoothing_scale/delta_pix)
         d_rad_d_rad2d = ndimage.gaussian_filter(d_rad_d_rad2d, sigma=smoothing_scale/delta_pix)
@@ -113,7 +114,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         d_angle_d_tang2d = ndimage.gaussian_filter(d_angle_d_tang2d, sigma=smoothing_scale/delta_pix)
 
     ax = axes[0, 0]
-    im = ax.matshow(radial_stretch2d, extent=[0, _frame_size, 0, _frame_size])
+    im = ax.matshow(radial_stretch2d, extent=[0, _frame_size, 0, _frame_size], vmin=0.6, vmax=1.4)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -214,6 +215,40 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         plot_util.coordinate_arrows(ax, _frame_size, _coords,
                           color='w', arrow_size=_arrow_size,
                           font_size=font_size)
+
+    ax = axes[0, 3]
+    im = ax.matshow(util.array2image(tangential_stretch*radial_stretch), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('magnification', fontsize=10)
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='magnification', color="w",
+                               backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
+                                    color='w', arrow_size=_arrow_size,
+                                    font_size=font_size)
+
+    ax = axes[1, 3]
+    im = ax.matshow(np.abs(d_tang_d_rad2d), extent=[0, _frame_size, 0, _frame_size], vmin=0, vmax=200)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.05)
+    cb = plt.colorbar(im, cax=cax, orientation='vertical')
+    cb.set_label('log10 d_tang_d_rad', fontsize=10)
+    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+    plot_util.text_description(ax, _frame_size, text='log10 d_tang_d_rad', color="w",
+                               backgroundcolor='k', font_size=font_size)
+    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        plot_util.coordinate_arrows(ax, _frame_size, _coords,
+                                    color='w', arrow_size=_arrow_size,
+                                    font_size=font_size)
 
     return f, axes
 

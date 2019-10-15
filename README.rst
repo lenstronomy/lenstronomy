@@ -23,9 +23,9 @@ lenstronomy - gravitational lensing software package
 
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
-``lenstronomy`` finds application in e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_ and
-`Birrer et al 2018 <http://adsabs.harvard.edu/abs/2018arXiv180901274B>`_ for time-delay cosmography and measuring
-the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ for
+``lenstronomy`` finds application in e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_,
+`Birrer et al 2018 <http://adsabs.harvard.edu/abs/2018arXiv180901274B>`_ and `Shajib et al 2019 <https://arxiv.org/abs/1910.06306>`_ for time-delay cosmography and measuring
+the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ and `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190806983G/abstract>`_ for
 quantifying lensing substructure to infer dark matter properties.
 
 

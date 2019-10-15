@@ -7,6 +7,7 @@ import lenstronomy.Util.analysis_util as analysis_util
 
 def correlation_2D(image):
     """
+    #TODO document normalization output in units
 
     :param image: 2d image
     :return: psd1D, psd2D

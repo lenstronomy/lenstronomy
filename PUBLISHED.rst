@@ -30,8 +30,11 @@ Measuring the Hubble constant
 * Astrometric requirements for strong lensing time-delay cosmography; `Birrer & Treu 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.tmp.2172B>`_
     *Derives requirements on how well the image positions of time-variable sources has to be known to perform a time-delay cosmographic measurement*
 
-* H0LiCOW XIII. A 2.4% measurement of  H0 from lensed quasars:  5.3σ tension between early and late-Universe probes; `Wong et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190704869W>`_
-    **
+* H0LiCOW XIII. A 2.4% measurement of  H0 from lensed quasars: 5.3σ tension between early and late-Universe probes; `Wong et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190704869W>`_
+    *Joint analysis of the six H0LiCOW lenses including the lenstronomy analysis of J1206*
+
+* STRIDES: A 3.9 per cent measurement of the Hubble constant from the strongly lensed system DES J0408-5354; `Shajib et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv191006306S/abstract>`_
+    *most precise single lensing constraint on the Hubble constant. This analysis includes two source planes and three lensing planes*
 
 
 Dark Matter substructure

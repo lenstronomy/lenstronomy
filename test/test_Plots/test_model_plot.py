@@ -183,6 +183,20 @@ class TestOutputPlots(object):
         ax = lensPlot.decomposition_plot(ax=ax)
         plt.close()
 
+    def test_reconstruction_all_bands(self):
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics],
+                           [self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02,
+                             cmap_string="gist_heat",
+                             multi_band_type='joint-linear', bands_compute=[True, True])
+        f, axes = lensPlot.reconstruction_all_bands()
+        assert len(axes) == 2
+        assert len(axes[0]) == 3
+        plt.close()
+
+
+
+
 
 class TestRaise(unittest.TestCase):
 

@@ -51,9 +51,9 @@ class ModelPlot(object):
                                          cmap_string=cmap_string)
                 self._band_plot_list.append(bandplot)
                 self._index_list.append(index)
-                index += 1
             else:
                 self._index_list.append(-1)
+            index += 1
 
     def _select_band(self, band_index):
         """
@@ -66,6 +66,26 @@ class ModelPlot(object):
             raise ValueError("band %s is not computed or out of range." % band_index)
         i = int(i)
         return self._band_plot_list[i]
+
+    def reconstruction_all_bands(self, **kwargs):
+        """
+
+        :param kwargs: arguments of plotting
+        :return: 3 x n_data plot with data, model, reduced residual plots of all the images/bands that are being modeled
+
+        """
+        n_bands = len(self._band_plot_list)
+        import matplotlib.pyplot as plt
+        f, axes = plt.subplots(n_bands, 3, figsize=(12, 4*n_bands))
+        i = 0
+        for band_index in self._index_list:
+            if band_index >= 0:
+                axes[i, 0].set_title('image ' +str(band_index))
+                self.data_plot(ax=axes[i, 0], band_index=band_index)
+                self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index)
+                self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index)
+                i += 1
+        return f, axes
 
     def data_plot(self, band_index=0, **kwargs):
         """

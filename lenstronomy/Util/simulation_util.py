@@ -1,10 +1,7 @@
 import lenstronomy.Util.util as util
-import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.image_util as image_util
-from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
 
 import numpy as np
-import copy
 
 
 def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, center_ra=0, center_dec=0, inverse=False):

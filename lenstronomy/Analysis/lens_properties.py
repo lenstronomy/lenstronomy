@@ -66,7 +66,7 @@ class LensProp(object):
         :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param moffat_beta: float, beta parameter of Moffat profile
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
-        :param kappa_ext: external convergence
+        :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
         gamma = kwargs_lens[0]['gamma']
@@ -80,7 +80,7 @@ class LensProp(object):
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                       aperture_type, anisotropy_model, r_eff, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
-                                      Hernquist_approx=False):
+                                      Hernquist_approx=False, kappa_ext=0):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.
@@ -111,6 +111,7 @@ class LensProp(object):
             as part of the kinematics computation (can be used to ignore light components that do not describe the main
             deflector
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
+        :param kappa_ext: external convergence not accounted in the lens models
         :return: LOS velocity dispersion [km/s]
         """
 
@@ -125,8 +126,9 @@ class LensProp(object):
         galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
                         kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        sigma2 = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
-        return sigma2
+        sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        sigma *= np.sqrt(1 - kappa_ext)
+        return sigma
 
     def kinematic_profiles(self, kwargs_lens, kwargs_lens_light, r_eff, MGE_light=False, MGE_mass=False,
                            lens_model_kinematics_bool=None, light_model_kinematics_bool=None, Hernquist_approx=False):

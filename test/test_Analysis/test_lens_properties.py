@@ -106,6 +106,10 @@ class TestLensProp(object):
         npt.assert_almost_equal(delays[1], 0, decimal=8)
         npt.assert_almost_equal(delays[2], -31.387590264501007, decimal=8)
 
+        kappa_ext = 0.1
+        delays_kappa = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=kappa_ext)
+        npt.assert_almost_equal(delays_kappa / (1. - kappa_ext), delays, decimal=8)
+
     def test_angular_diameter_relations(self):
         z_lens = 0.5
         z_source = 1.5

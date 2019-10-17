@@ -141,7 +141,7 @@ class LensCosmo(object):
         :param kappa_ext: unit-less
         :return: time delay in days
         """
-        D_dt = self.D_dt / (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
+        D_dt = self.D_dt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
 
     def time_delay2fermat_pot(self, dt):

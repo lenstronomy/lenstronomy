@@ -86,7 +86,6 @@ def azimuthalAverage(image, center=None):
     tbin = csim[rind[1:]] - csim[rind[:-1]]
 
     radial_prof = tbin / nr
-
     return radial_prof
 
 

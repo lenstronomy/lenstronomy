@@ -49,7 +49,7 @@ class LensProp(object):
         return time_delay
 
     def velocity_dispersion(self, kwargs_lens, r_eff, R_slit, dR_slit, psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
-                            moffat_beta=2.6, num_evaluate=1000):
+                            moffat_beta=2.6, num_evaluate=1000, kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -66,14 +66,16 @@ class LensProp(object):
         :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param moffat_beta: float, beta parameter of Moffat profile
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
+        :param kappa_ext: external convergence
         :return: velocity dispersion in units [km/s]
         """
         gamma = kwargs_lens[0]['gamma']
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
         analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type, **self._kwargs_cosmo)
-        sigma2 = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=num_evaluate)
-        return sigma2
+        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=num_evaluate)
+        sigma *= np.sqrt(1-kappa_ext)
+        return sigma
 
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
                                       aperture_type, anisotropy_model, r_eff, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,

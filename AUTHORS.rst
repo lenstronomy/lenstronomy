@@ -19,6 +19,7 @@ Contributors (alphabetic)
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon
+* Anna Nierenberg
 * Brian Nord
 * Ji Won Park
 * Anowar Shajib

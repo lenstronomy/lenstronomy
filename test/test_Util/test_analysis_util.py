@@ -75,7 +75,6 @@ class TestCorrelation(object):
         #import matplotlib.pyplot as plt
         #plt.plot(r_new, I_r_true, label='true', alpha=0.5)
         #plt.plot(r_new, I_r, label='computed r old', alpha=0.5)
-        #plt.plot(r_new, I_r, label='computed r new', alpha=0.5)
         #plt.legend()
         #plt.show()
 

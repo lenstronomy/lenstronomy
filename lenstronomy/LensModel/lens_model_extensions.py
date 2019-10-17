@@ -440,7 +440,7 @@ class LensModelExtensions(object):
         angle = np.arccos(cos_angle) - np.pi / 2
         return radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, angle
 
-    def curved_arc_estimate(self, x, y, kwargs_lens):
+    def curved_arc_estimate(self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001):
         """
         performs the estimation of the curved arc description at a particular position of an arbitrary lens profile
 
@@ -449,4 +449,26 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :return: keyword argument list corresponding to a CURVED_ARC profile at (x, y) given the initial lens model
         """
-        pass
+        radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens, diff=smoothing)
+        dx_tang = x + smoothing_3rd * v_tang1
+        dy_tang = y + smoothing_3rd * v_tang2
+        rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang,
+                                                                                                       kwargs_lens,
+                                                                                                       diff=smoothing)
+        d_tang1 = v_tang1_dt - v_tang1
+        d_tang2 = v_tang2_dt - v_tang2
+        delta = np.sqrt(d_tang1**2 + d_tang2**2)
+        if delta > 1:
+            d_tang1 = v_tang1_dt + v_tang1
+            d_tang2 = v_tang2_dt + v_tang2
+            delta = np.sqrt(d_tang1 ** 2 + d_tang2 ** 2)
+        print(delta, 'delta')
+        r_curvature = smoothing_3rd / delta
+        direction = np.arctan2(v_rad2, v_rad1)
+        kwargs_arc = {'radial_stretch': radial_stretch,
+                      'tangential_stretch': tangential_stretch,
+                      'r_curvature': r_curvature,
+                      'direction': direction,
+                      'center_x': x, 'center_y': y}
+        return kwargs_arc
+

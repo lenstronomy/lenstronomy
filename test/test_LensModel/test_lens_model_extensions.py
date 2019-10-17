@@ -7,6 +7,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
 
 
 class TestLensModelExtensions(object):
@@ -214,6 +215,47 @@ class TestLensModelExtensions(object):
             x, y, kwargs_lens, smoothing_3rd=0.001)
         mag_tang_rad = tangential_stretch * radial_stretch
         npt.assert_almost_equal(mag_tang_rad, mag, decimal=5)
+
+    def test_curved_arc_estimate(self):
+        from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+        lens_model_list = ['SPP']
+        lens = LensModel(lens_model_list=lens_model_list)
+        arc = LensModel(lens_model_list=['CURVED_ARC'])
+        theta_E = 4
+        gamma = 2.
+        kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'center_x': 0, 'center_y': 0}]
+        ext = LensModelExtensions(lensModel=lens)
+        x_0, y_0 = 5, 0
+        kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
+        npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
+        npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
+        npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
+        x, y = util.make_grid(numPix=10, deltapix=1)
+        alpha_x, alpha_y = lens.alpha(x, y, kwargs_lens)
+        alpha0_x, alpha0_y = lens.alpha(x_0, y_0, kwargs_lens)
+        alpha_x_arc, alpha_y_arc = arc.alpha(x, y, [kwargs_arc])
+        npt.assert_almost_equal(alpha_x_arc, alpha_x - alpha0_x, decimal=3)
+        npt.assert_almost_equal(alpha_y_arc, alpha_y - alpha0_y, decimal=3)
+
+        x_0, y_0 = 0., 3
+        kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        print(kwargs_arc)
+        print(theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc)
+        npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
+        npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
+        npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
+        npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
+
+        x_0, y_0 = -2, -3
+        kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
+        npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
+        npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
+        npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
 
 
 if __name__ == '__main__':

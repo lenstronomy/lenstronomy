@@ -29,7 +29,7 @@ class TestCorrelation(object):
         #I[5, 5] = 100
         #I[50, 5] = 100
 
-        psd1D = correlation.power_spectrum_1d(I)
+        psd1D, r = correlation.power_spectrum_1d(I)
         #print(np.max(psd1D))
         #print(psd1D)
 
@@ -43,7 +43,7 @@ class TestCorrelation(object):
         num_pix = 10
         residuals = np.ones((num_pix, num_pix))
         residuals[5, 5] = num_pix**2
-        psd1D = correlation.power_spectrum_1d(residuals)
+        psd1D, r = correlation.power_spectrum_1d(residuals)
         print(psd1D)
         npt.assert_almost_equal(psd1D, ((num_pix**2-1.)/num_pix**2)**2, decimal=7)
 

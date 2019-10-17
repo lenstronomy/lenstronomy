@@ -439,3 +439,14 @@ class LensModelExtensions(object):
         cos_angle = (v_tang1 * x0 + v_tang2 * y0) / np.sqrt((x0**2 + y0**2) * (v_tang1**2 + v_tang2**2)) * np.sign(v_tang1 * y0 - v_tang2 * x0)
         angle = np.arccos(cos_angle) - np.pi / 2
         return radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, angle
+
+    def curved_arc_estimate(self, x, y, kwargs_lens):
+        """
+        performs the estimation of the curved arc description at a particular position of an arbitrary lens profile
+
+        :param x: float, x-position where the estimate is provided
+        :param y: float, y-position where the estimate is provided
+        :param kwargs_lens: lens model keyword arguments
+        :return: keyword argument list corresponding to a CURVED_ARC profile at (x, y) given the initial lens model
+        """
+        pass

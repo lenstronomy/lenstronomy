@@ -462,13 +462,11 @@ class LensModelExtensions(object):
             d_tang1 = v_tang1_dt + v_tang1
             d_tang2 = v_tang2_dt + v_tang2
             delta = np.sqrt(d_tang1 ** 2 + d_tang2 ** 2)
-        print(delta, 'delta')
-        r_curvature = smoothing_3rd / delta
-        direction = np.arctan2(v_rad2, v_rad1)
+        curvature = delta / smoothing_3rd
+        direction = np.arctan2(v_rad2 * np.sign(v_rad1 * x + v_rad2 * y), v_rad1 * np.sign(v_rad1 * x + v_rad2 * y))
         kwargs_arc = {'radial_stretch': radial_stretch,
                       'tangential_stretch': tangential_stretch,
-                      'r_curvature': r_curvature,
+                      'curvature': curvature,
                       'direction': direction,
                       'center_x': x, 'center_y': y}
         return kwargs_arc
-

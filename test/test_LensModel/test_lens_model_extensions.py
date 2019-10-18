@@ -6,6 +6,7 @@ import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 
@@ -159,9 +160,9 @@ class TestLensModelExtensions(object):
     def test_radial_tangential_distortions(self):
         lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
         center_x, center_y = 0, 0
-        r_curvature = 2
+        curvature = 1./2
         lens = LensModel(lens_model_list=lens_model_list)
-        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'r_curvature': r_curvature,
+        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
                         'direction': -10, 'center_x': center_x, 'center_y': center_y},
                        {'e1': -0., 'e2': -0.0},
                        {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
@@ -172,14 +173,14 @@ class TestLensModelExtensions(object):
             x=center_x, y=center_y, kwargs_lens=kwargs_lens, smoothing_3rd=0.0001)
 
         l = 1. / d_angle_d_tang
-        npt.assert_almost_equal(l, r_curvature)
+        npt.assert_almost_equal(l, 1./curvature)
 
     def test_radial_tangential_differentials(self):
         lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
         center_x, center_y = 0, 0
-        r_curvature = 2
+        curvature = 1./2
         lens = LensModel(lens_model_list=lens_model_list)
-        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'r_curvature': r_curvature,
+        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
                         'direction': -10, 'center_x': center_x, 'center_y': center_y},
                        {'e1': -0., 'e2': -0.0},
                        {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
@@ -217,7 +218,6 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(mag_tang_rad, mag, decimal=5)
 
     def test_curved_arc_estimate(self):
-        from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
         lens_model_list = ['SPP']
         lens = LensModel(lens_model_list=lens_model_list)
         arc = LensModel(lens_model_list=['CURVED_ARC'])
@@ -256,6 +256,45 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
         npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
+
+    def test_arcs_at_image_position(self):
+        # lensing quantities
+        kwargs_shear = {'e1': 0.02, 'e2': -0.04}  # shear values to the source plane
+        kwargs_spp = {'theta_E': 1.26, 'gamma': 2., 'e1': 0.1, 'e2': -0.1, 'center_x': 0.0, 'center_y': 0.0}  # parameters of the deflector lens model
+
+        # the lens model is a supperposition of an elliptical lens model with external shear
+        lens_model_list = ['SPEP']  #, 'SHEAR']
+        kwargs_lens = [kwargs_spp]  #, kwargs_shear]
+        lens_model_class = LensModel(lens_model_list=lens_model_list)
+        lensEquationSolver = LensEquationSolver(lens_model_class)
+        source_x = 0.
+        source_y = 0.05
+        x_image, y_image = lensEquationSolver.findBrightImage(source_x, source_y, kwargs_lens, numImages=4,
+                                                              min_distance=0.05, search_window=5)
+        arc_model = LensModel(lens_model_list=['CURVED_ARC', 'SHIFT'])
+        for i in range(len(x_image)):
+            x0, y0 = x_image[i], y_image[i]
+            print(x0, y0, i)
+            ext = LensModelExtensions(lensModel=lens_model_class)
+            kwargs_arc_i = ext.curved_arc_estimate(x0, y0, kwargs_lens)
+            alpha_x, alpha_y = lens_model_class.alpha(x0, y0, kwargs_lens)
+            kwargs_arc = [kwargs_arc_i, {'alpha_x': alpha_x, 'alpha_y': alpha_y}]
+            print(kwargs_arc_i)
+            direction = kwargs_arc_i['direction']
+            print(np.cos(direction), np.sin(direction))
+            x, y = util.make_grid(numPix=5, deltapix=0.01)
+            x = x0
+            y = y0
+            gamma1_arc, gamma2_arc = arc_model.gamma(x, y, kwargs_arc)
+            gamma1, gamma2 = lens_model_class.gamma(x, y, kwargs_lens)
+            print(gamma1, gamma2)
+            npt.assert_almost_equal(gamma1_arc, gamma1, decimal=3)
+            npt.assert_almost_equal(gamma2_arc, gamma2, decimal=3)
+            theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc_i)
+            print(theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc)
+            npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
+            npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
+
 
 
 if __name__ == '__main__':

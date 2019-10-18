@@ -59,7 +59,7 @@ class AlignmentFitting(object):
         else:
             time_end = time.time()
             print("Shifts found: ", result)
-            print(time_end - time_start, 'time used for PSO', print_key)
+            print(time_end - time_start, 'time used for ', print_key)
         return kwargs_data, [X2_list, pos_list, vel_list, []]
 
 

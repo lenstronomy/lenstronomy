@@ -83,7 +83,7 @@ class Sampler(object):
             print(kwargs_return.get('kwargs_ps', None), 'point source result')
             print(kwargs_return.get('kwargs_special', None), 'special param result')
             time_end = time.time()
-            print(time_end - time_start, 'time used for PSO', print_key)
+            print(time_end - time_start, 'time used for ', print_key)
             print('===================')
         return result, [X2_list, pos_list, vel_list, []]
 

@@ -1,4 +1,5 @@
 import numpy as np
+import warnings
 import lenstronomy.Util.data_util as data_util
 from lenstronomy.Data.psf import PSF
 
@@ -15,7 +16,9 @@ class Instrument(object):
         :param ccd_gain: electrons/ADU (analog-to-digital unit). A gain of 8 means that the camera digitizes the CCD signal
          so that each ADU corresponds to 8 photoelectrons.
         """
-        self.ccd_gain = float(ccd_gain)
+        if ccd_gain is not None:
+            ccd_gain = float(ccd_gain)
+        self.ccd_gain = ccd_gain
         self._read_noise = read_noise
         self.pixel_scale = pixel_scale
 
@@ -24,27 +27,51 @@ class Observation(object):
     """
     basic access point to observation properties
     """
-    def __init__(self, exposure_time, sky_brightness, magnitude_zero_point, seeing, num_exposures=1,
-                 psf_type='GAUSSIAN', psf_model=None):
+    def __init__(self, exposure_time, sky_brightness=None, seeing=None, num_exposures=1,
+                 psf_type='GAUSSIAN', kernel_point_source=None, truncation=5):
         """
 
         :param exposure_time: exposure time per image (in seconds)
         :param sky_brightness: sky brightness (in magnitude per square arcseconds)
         :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
-        :param point_spread_function: 2d array characterising the point spread function (odd numbers per axis, centered)
-        :param magnitude_zero_point: magnitude in which 1 count per second per arcsecond square is registered (in ADU's)
         :param num_exposures: number of exposures that are combined
         :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
-        :param psf_model: 2d numpy array, model of PSF centered with odd number of pixels per axis
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis
         (optional when psf_type='PIXEL' is chosen)
         """
         self._exposure_time = exposure_time
         self._sky_brightness = sky_brightness
-        self._magnitude_zero_point = magnitude_zero_point
         self._num_exposures = num_exposures
         self._seeing = seeing
         self._psf_type = psf_type
-        self._psf_model = psf_model
+        self._truncation = truncation
+        self._kernel_point_source = kernel_point_source
+
+    def update_observation(self, exposure_time=None, sky_brightness=None, seeing=None, num_exposures=None,
+                           psf_type=None, kernel_point_source=None):
+        """
+        updates class instance with new properties if specific argument is not None
+
+        :param exposure_time: exposure time per image (in seconds)
+        :param sky_brightness: sky brightness (in magnitude per square arcseconds)
+        :param seeing: full width at half maximum of the PSF (if not specific psf_model is specified)
+        :param num_exposures: number of exposures that are combined
+        :param psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+        :param kernel_point_source: 2d numpy array, model of PSF centered with odd number of pixels per axis (optional when psf_type='PIXEL' is chosen)
+        :return: None, updated class instance
+        """
+        if exposure_time is not None:
+            self._exposure_time = exposure_time
+        if sky_brightness is not None:
+            self._sky_brightness = sky_brightness
+        if seeing is not None:
+            self._seeing = seeing
+        if num_exposures is not None:
+            self._num_exposures = num_exposures
+        if psf_type is not None:
+            self._psf_type = psf_type
+        if kernel_point_source is not None:
+            self._kernel_point_source = kernel_point_source
 
     @property
     def exposure_time(self):
@@ -66,10 +93,11 @@ class Observation(object):
         if self._psf_type == 'GAUSSIAN':
             psf_type = "GAUSSIAN"
             fwhm = self._seeing
-            kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm}
+            truncation = self._truncation
+            kwargs_psf = {'psf_type': psf_type, 'fwhm': fwhm, 'truncation': truncation}
         elif self._psf_type == 'PIXEL':
-            if self._psf_model is not None:
-                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._psf_model}
+            if self._kernel_point_source is not None:
+                kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._kernel_point_source}
             else:
                 raise ValueError("You need to create the class instance with a psf_model!")
         else:
@@ -82,12 +110,13 @@ class SingleBand(Instrument, Observation):
     """
     class that combines Instrument and Observation
     """
-    def __init__(self, read_noise, pixel_scale, ccd_gain, exposure_time, sky_brightness, magnitude_zero_point, seeing,
-                 num_exposures=1, psf_type='GAUSSIAN', psf_model=None, data_count_unit='ADU', background_noise=None):
+    def __init__(self, pixel_scale, exposure_time, magnitude_zero_point, read_noise=None, ccd_gain=None,
+                 sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
+                 truncation=5, data_count_unit='ADU', background_noise=None):
         """
 
         :param read_noise: std of noise generated by read-out (in units of electrons)
-        :param pixel_scale: scale (in arcseonds) of pixels
+        :param pixel_scale: scale (in arcseconds) of pixels
         :param ccd_gain: electrons/ADU (analog-to-digital unit). A gain of 8 means that the camera digitizes the CCD signal
          so that each ADU corresponds to 8 photoelectrons.
         :param exposure_time: exposure time per image (in seconds)
@@ -97,16 +126,19 @@ class SingleBand(Instrument, Observation):
         :param num_exposures: number of exposures that are combined
         :param data_count_unit: string, unit of the data (and other properties), 'e-': (electrons assumed to be IID),
         'ADU': (analog-to-digital unit)
-        :param background_noise: sqrt(variance of background) as a total contribution from readnoise, sky brightness etc
+        :param background_noise: sqrt(variance of background) as a total contribution from readnoise, sky brightness etc in units of the data_count_units
         If you set this parameter, it will use this value regardless of the values of read_noise, sky_brightness
         """
-        Instrument.__init__(self, pixel_scale, read_noise, ccd_gain)
-        Observation.__init__(self, exposure_time, sky_brightness, magnitude_zero_point, seeing, num_exposures, psf_type,
-                             psf_model)
+        Instrument.__init__(self, pixel_scale, read_noise, ccd_gain)  # read_noise and ccd_gain can be None
+        Observation.__init__(self, exposure_time=exposure_time, sky_brightness=sky_brightness,
+                             seeing=seeing, num_exposures=num_exposures,
+                             psf_type=psf_type, kernel_point_source=kernel_point_source, 
+                             truncation=truncation)
         if data_count_unit not in ['e-', 'ADU']:
             raise ValueError("count_unit type %s not supported! Please chose e- or ADU." % data_count_unit)
         self._data_count_unit = data_count_unit
         self._background_noise = background_noise
+        self._magnitude_zero_point = magnitude_zero_point
 
     @property
     def read_noise(self):
@@ -114,6 +146,8 @@ class SingleBand(Instrument, Observation):
 
         :return: sqrt(variance) of read noise in units of the data
         """
+        if self._read_noise is None:
+            raise ValueError('read_noise is not specified!')
         if self._data_count_unit == 'ADU':
             return self._read_noise / self.ccd_gain
         else:
@@ -125,6 +159,8 @@ class SingleBand(Instrument, Observation):
 
         :return: sky brightness (counts per square arcseconds in unit of data)
         """
+        if self._sky_brightness is None:
+            raise ValueError('sky_brightness is not set in the class instance!')
         cps = data_util.magnitude2cps(self._sky_brightness, magnitude_zero_point=self._magnitude_zero_point)
         if self._data_count_unit == 'e-':
             cps *= self.ccd_gain
@@ -138,9 +174,14 @@ class SingleBand(Instrument, Observation):
         :return: sqrt(variance) of background noise level
         """
         if self._background_noise is None:
+            if self._read_noise is None:
+                raise ValueError('read_noise is not specified to evaluate background noise!')
             return data_util.bkg_noise(self.read_noise, self._exposure_time, self.sky_brightness, self.pixel_scale,
                                    num_exposures=self._num_exposures)
         else:
+            if self._read_noise is not None:
+                warnings.warn('read noise is specified but not used for noise properties. background noise is estimated'
+                              ' from "background_noise" argument')
             return self._background_noise
 
     def flux_noise(self, flux):
@@ -179,16 +220,19 @@ class SingleBand(Instrument, Observation):
         :param model: 2d numpy array of modelled image (with pixels in units of data specified in class)
         :param background_noise: bool, if True, adds background noise
         :param poisson_noise: bool, if True, adds Poisson noise of modelled flux
-        :return:
+        :param seed: int, seed number to be used to render the noise properties. If None, then uses the current numpy.random seed to render the noise properties.
+        :return: noise realization corresponding to the model
         """
         if seed is not None:
-            np.random.seed(seed)
+            g = np.random.RandomState(seed=seed)
+        else:
+            g = np.random
         nx, ny = np.shape(model)
         noise = np.zeros_like(model)
         if background_noise is True:
-            noise += np.random.randn(nx, ny) * self.background_noise
+            noise += g.randn(nx, ny) * self.background_noise
         if poisson_noise is True:
-            noise += np.random.randn(nx, ny) * self.flux_noise(model)
+            noise += g.randn(nx, ny) * self.flux_noise(model)
         return noise
 
     def estimate_noise(self, image):

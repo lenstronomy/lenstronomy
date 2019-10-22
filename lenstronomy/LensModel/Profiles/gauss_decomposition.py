@@ -13,11 +13,12 @@ from future.utils import with_metaclass
 
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 _SQRT_2PI = np.sqrt(2*np.pi)
 
 
-class GaussianEllipseKappaSet(object):
+class GaussianEllipseKappaSet(LensProfileBase):
     """
     This class computes the lensing properties of a set of concentric
     elliptical Gaussian convergences.
@@ -39,6 +40,7 @@ class GaussianEllipseKappaSet(object):
         self.gaussian_ellipse_kappa = GaussianEllipseKappa(
                                             use_scipy_wofz=use_scipy_wofz,
                                             min_ellipticity=min_ellipticity)
+        super(GaussianEllipseKappaSet, self).__init__()
 
     def function(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """

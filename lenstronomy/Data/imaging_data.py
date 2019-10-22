@@ -42,7 +42,7 @@ class ImageData(PixelGrid, ImageNoise):
         :param image_data: 2d numpy array of the image data
         :param exposure_time: int or array of size the data; exposure time
         (common for all pixels or individually for each individual pixel)
-        :param background_rms: root-mean-square value of Gaussian background noise
+        :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)

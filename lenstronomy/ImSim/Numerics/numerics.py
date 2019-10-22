@@ -14,7 +14,7 @@ class Numerics(PointSourceRendering):
     def __init__(self, pixel_grid, psf, supersampling_factor=1, compute_mode='regular', supersampling_convolution=False,
                  supersampling_kernel_size=5, flux_evaluate_indexes=None, supersampled_indexes=None,
                  compute_indexes=None, point_source_supersampling_factor=1, convolution_kernel_size=None,
-                 convolution_type='fft_static'):
+                 convolution_type='fft_static', truncation=4):
         """
 
         :param pixel_grid: PixelGrid() class instance
@@ -40,6 +40,8 @@ class Numerics(PointSourceRendering):
         """
         # if no super sampling, turn the supersampling convolution off
         self._psf_type = psf.psf_type
+        if not isinstance(supersampling_factor, int):
+            raise TypeError('supersampling_factor needs to be an integer! Current type is %s' % type(supersampling_factor))
         if supersampling_factor == 1:
             supersampling_convolution = False
         self._pixel_width = pixel_grid.pixel_width
@@ -86,7 +88,7 @@ class Numerics(PointSourceRendering):
             sigma_list = [sigma]
             fraction_list = [1]
             self._conv = MultiGaussianConvolution(sigma_list, fraction_list, pixel_scale, supersampling_factor,
-                                                  supersampling_convolution, truncation=4)
+                                                  supersampling_convolution, truncation=truncation)
         elif self._psf_type == 'NONE':
             self._conv = None
         else:

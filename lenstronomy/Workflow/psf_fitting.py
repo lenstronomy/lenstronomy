@@ -42,7 +42,7 @@ class PsfFitting(object):
     def __init__(self, image_model_class):
         self._image_model_class = image_model_class
 
-    def update_psf(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, stacking_method='median',
+    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median',
                  psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
         """
 
@@ -66,7 +66,9 @@ class PsfFitting(object):
         if 'psf_error_map' in kwargs_psf_copy:
             kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
-        image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_params)
+        kwargs_ps = kwargs_params.get('kwargs_ps', None)
+        kwargs_lens = kwargs_params.get('kwargs_lens', None)
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
 
@@ -82,11 +84,10 @@ class PsfFitting(object):
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
-        logL_after = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
-                                                               kwargs_lens_light, kwargs_ps)
+        logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
 
-    def update_iterative(self, kwargs_psf, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, num_iter=10,
+    def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10,
                          no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
                  psf_symmetry=1, psf_iter_factor=0.2, verbose=True):
         """
@@ -115,13 +116,11 @@ class PsfFitting(object):
         error_map_init = copy.deepcopy(error_map_final)
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
-        logL_before = self._image_model_class.likelihood_data_given_model(kwargs_lens, kwargs_source,
-                                                                          kwargs_lens_light, kwargs_ps)
+        logL_before = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_lens, kwargs_source,
-                                                                    kwargs_lens_light, kwargs_ps,
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params,
                                                                     stacking_method=stacking_method,
                                                                     psf_symmetry=psf_symmetry,
                                                                     psf_iter_factor=psf_iter_factor,
@@ -146,8 +145,7 @@ class PsfFitting(object):
         kwargs_psf_final['kernel_point_source_init'] = kernel_point_source_init
         return kwargs_psf_final
 
-    def image_single_point_source(self, image_model_class, kwargs_lens, kwargs_source, kwargs_lens_light,
-                                  kwargs_ps):
+    def image_single_point_source(self, image_model_class, kwargs_params):
         """
         return model without including the point source contributions as a list (for each point source individually)
         :param image_model_class: ImageModel class instance
@@ -158,11 +156,12 @@ class PsfFitting(object):
         :return: list of images with point source isolated
         """
         # reconstructed model with given psf
-        model, error_map, cov_param, param = image_model_class.image_linear_solve(kwargs_lens, kwargs_source,
-                                                                              kwargs_lens_light, kwargs_ps)
+        model, error_map, cov_param, param = image_model_class.image_linear_solve(**kwargs_params)
         #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
         mask = image_model_class.likelihood_mask
+        kwargs_ps = kwargs_params.get('kwargs_ps', None)
+        kwargs_lens = kwargs_params.get('kwargs_lens', None)
         point_source_list = self._point_sources_list(image_model_class, kwargs_ps, kwargs_lens)
         n = len(point_source_list)
         model_single_source_list = []

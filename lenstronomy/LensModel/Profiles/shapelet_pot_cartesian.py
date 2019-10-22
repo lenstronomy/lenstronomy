@@ -5,9 +5,10 @@ __author__ = 'sibirrer'
 import numpy as np
 import math
 import numpy.polynomial.hermite as hermite
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class CartShapelets(object):
+class CartShapelets(LensProfileBase):
     """
     this class contains the function and the derivatives of the cartesian shapelets
     """

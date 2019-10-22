@@ -367,64 +367,6 @@ class TestMultiPlane(object):
             npt.assert_almost_equal(betay1, betay2)
 
 
-class TestForegroundShear(object):
-
-    def setup(self):
-        pass
-
-    def test_foreground_shear(self):
-        """
-        scenario: a shear field in the foreground of the main deflector is placed
-        we compute the expected shear on the lens plain and effectively model the same system in a single plane
-        configuration
-        We check for consistency of the two approaches and whether the specific redshift of the foreground shear field has
-        an impact on the arrival time surface
-        :return:
-        """
-        z_source = 1.5
-        z_lens = 0.5
-        z_shear = 0.2
-        x, y = np.array([1., 0.]), np.array([0., 2.])
-        from astropy.cosmology import default_cosmology
-        from lenstronomy.Cosmo.background import Background
-
-        cosmo = default_cosmology.get()
-        cosmo_bkg = Background(cosmo)
-        e1, e2 = 0.01, 0.01 # shear terms caused by z_shear on z_source
-        lens_model_list = ['SIS', 'SHEAR']
-        redshift_list = [z_lens, z_shear]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
-        kwargs_lens_multi = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'e1': e1, 'e2': e2}]
-        alpha_x_multi, alpha_y_multi = lensModelMutli.alpha(x, y, kwargs_lens_multi)
-        t_multi = lensModelMutli.arrival_time(x, y, kwargs_lens_multi)
-        dt_multi = t_multi[0] - t_multi[1]
-        physical_shear = cosmo_bkg.D_xy(0, z_source) / cosmo_bkg.D_xy(z_shear, z_source)
-        foreground_factor = cosmo_bkg.D_xy(z_shear, z_lens) / cosmo_bkg.D_xy(0, z_lens) * physical_shear
-        print(foreground_factor)
-        lens_model_simple_list = ['SIS', 'FOREGROUND_SHEAR', 'SHEAR']
-        kwargs_lens_single = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}, {'e1': e1*foreground_factor, 'e2': e2*foreground_factor}, {'e1': e1, 'e2': e2}]
-        lensModel = LensModel(lens_model_list=lens_model_simple_list)
-        alpha_x_simple, alpha_y_simple = lensModel.alpha(x, y, kwargs_lens_single)
-        npt.assert_almost_equal(alpha_x_simple, alpha_x_multi, decimal=8)
-        npt.assert_almost_equal(alpha_y_simple, alpha_y_multi, decimal=8)
-
-        ra_source, dec_source = lensModel.ray_shooting(x, y, kwargs_lens_single)
-        ra_source_multi, dec_source_multi = lensModelMutli.ray_shooting(x, y, kwargs_lens_multi)
-        npt.assert_almost_equal(ra_source, ra_source_multi, decimal=8)
-        npt.assert_almost_equal(dec_source, dec_source_multi, decimal=8)
-
-        fermat_pot = lensModel.fermat_potential(x, y, ra_source, dec_source, kwargs_lens_single)
-        from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-        lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
-        Dt = lensCosmo.D_dt
-        print(lensCosmo.D_dt)
-        #t_simple = const.delay_arcsec2days(fermat_pot, Dt)
-        t_simple = lensCosmo.time_delay_units(fermat_pot)
-        dt_simple = t_simple[0] - t_simple[1]
-        print(t_simple, t_multi)
-        npt.assert_almost_equal(dt_simple / dt_multi, 1, decimal=2)
-
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

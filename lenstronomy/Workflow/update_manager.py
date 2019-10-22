@@ -42,35 +42,42 @@ class UpdateManager(object):
                 'point_source_model']
         else:
             self._ps_init, self._ps_sigma, self._ps_fixed, self._ps_lower, self._ps_upper = [], [], [], [], []
-
-        if 'cosmography' in kwargs_params:
-            # if self.kwargs_likelihood.get('time_delay_likelihood', False) is True or self.kwargs_constraints.get('mass_scaling', False) is True:
-            self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = \
-            kwargs_params['cosmography']
+        if kwargs_model.get('optical_depth_model_list', None) is not None:
+            self._extinction_init, self._extinction_sigma, self._extinction_fixed, self._extinction_lower, self._extinction_upper = kwargs_params[
+                'extinction_model']
         else:
-            self._cosmo_init, self._cosmo_sigma, self._cosmo_fixed, self._cosmo_lower, self._cosmo_upper = {}, {}, {}, {}, {}
+            self._extinction_init, self._extinction_sigma, self._extinction_fixed, self._extinction_lower, self._extinction_upper = [], [], [], [], []
+        if 'special' in kwargs_params:
+            self._special_init, self._special_sigma, self._special_fixed, self._special_lower, self._special_upper = \
+            kwargs_params['special']
+        else:
+            self._special_init, self._special_sigma, self._special_fixed, self._special_lower, self._special_upper = {}, {}, {}, {}, {}
 
-        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.init_kwargs
+        self._kwargs_temp = self.init_kwargs
 
     @property
     def init_kwargs(self):
-        return self._lens_init, self._source_init, self._lens_light_init, self._ps_init, self._cosmo_init
+        return {'kwargs_lens': self._lens_init, 'kwargs_source': self._source_init,
+                'kwargs_lens_light': self._lens_light_init, 'kwargs_ps': self._ps_init,
+                'kwargs_special': self._special_init, 'kwargs_extinction': self._extinction_init}
 
     @property
     def sigma_kwargs(self):
-        return self._lens_sigma, self._source_sigma, self._lens_light_sigma, self._ps_sigma, self._cosmo_sigma
+        return {'kwargs_lens': self._lens_sigma, 'kwargs_source': self._source_sigma,
+                'kwargs_lens_light': self._lens_light_sigma, 'kwargs_ps': self._ps_sigma,
+                'kwargs_special': self._special_sigma, 'kwargs_extinction': self._extinction_sigma}
 
     @property
-    def lower_kwargs(self):
-        return self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower, self._cosmo_lower
+    def _lower_kwargs(self):
+        return self._lens_lower, self._source_lower, self._lens_light_lower, self._ps_lower, self._special_lower, self._extinction_lower
 
     @property
-    def upper_kwargs(self):
-        return self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper, self._cosmo_upper
+    def _upper_kwargs(self):
+        return self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper, self._special_upper, self._extinction_upper
 
     @property
-    def fixed_kwargs(self):
-        return self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._cosmo_fixed
+    def _fixed_kwargs(self):
+        return self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed, self._extinction_fixed
 
     def set_init_state(self):
         """
@@ -78,7 +85,7 @@ class UpdateManager(object):
 
         :return:
         """
-        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = self.init_kwargs
+        self._kwargs_temp = self.init_kwargs
 
     @property
     def parameter_state(self):
@@ -86,9 +93,23 @@ class UpdateManager(object):
 
         :return: parameter state saved in this class
         """
-        return self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp
+        return self._kwargs_temp
 
-    def update_param_state(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo):
+    def best_fit(self, bijective=False):
+        lens_temp, source_temp, lens_light_temp, ps_temp, special_temp, extinction_temp = self._kwargs_temp['kwargs_lens'], \
+                                                                         self._kwargs_temp['kwargs_source'], \
+                                                                         self._kwargs_temp['kwargs_lens_light'], \
+                                                                         self._kwargs_temp['kwargs_ps'], \
+                                                                         self._kwargs_temp['kwargs_special'], \
+                                                                         self._kwargs_temp['kwargs_extinction']
+        if bijective is False:
+            lens_temp = self.param_class.update_lens_scaling(special_temp, lens_temp, inverse=False)
+            source_temp = self.param_class.image2source_plane(source_temp, lens_temp)
+        return {'kwargs_lens': lens_temp, 'kwargs_source': source_temp, 'kwargs_lens_light': lens_light_temp,
+                'kwargs_ps': ps_temp, 'kwargs_special': special_temp, 'kwargs_extinction': extinction_temp}
+
+    def update_param_state(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                           kwargs_special=None, kwargs_extinction=None):
         """
         updates the temporary state of the parameters being saved
 
@@ -96,11 +117,12 @@ class UpdateManager(object):
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
-        :param kwargs_cosmo:
+        :param kwargs_special:
         :return:
         """
-        self._lens_temp, self._source_temp, self._lens_light_temp, self._ps_temp, self._cosmo_temp = kwargs_lens, \
-                                                             kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_cosmo
+        self._kwargs_temp = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
+                             'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
+                             'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
 
     @property
     def param_class(self):
@@ -108,19 +130,19 @@ class UpdateManager(object):
 
         :return: instance of the Param class with the recent options and bounds
         """
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo = self.fixed_kwargs
-        kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps, kwargs_lower_cosmo = self.lower_kwargs
-        kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps, kwargs_upper_cosmo = self.upper_kwargs
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction = self._fixed_kwargs
+        kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps, kwargs_lower_special, kwargs_lower_extinction = self._lower_kwargs
+        kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps, kwargs_upper_special, kwargs_upper_extinction = self._upper_kwargs
         kwargs_model = self.kwargs_model
         kwargs_constraints = self.kwargs_constraints
-
+        lens_temp = self._kwargs_temp['kwargs_lens']
         param_class = Param(kwargs_model, kwargs_fixed_lens, kwargs_fixed_source,
-                            kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_cosmo,
+                            kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction,
                             kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps,
-                            kwargs_lower_cosmo,
+                            kwargs_lower_special, kwargs_lower_extinction,
                             kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps,
-                            kwargs_upper_cosmo,
-                            kwargs_lens_init=self._lens_temp, **kwargs_constraints)
+                            kwargs_upper_special, kwargs_upper_extinction,
+                            kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
     def update_options(self, kwargs_model, kwargs_constraints, kwargs_likelihood):
@@ -167,8 +189,8 @@ class UpdateManager(object):
         return kwargs_limit_updated
 
     def update_fixed(self, lens_add_fixed=[],
-                     source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[], lens_remove_fixed=[],
-                     source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[]):
+                     source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], special_add_fixed=[], lens_remove_fixed=[],
+                     source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], special_remove_fixed=[]):
         """
         adds the values of the keyword arguments that are stated in the _add_fixed to the existing fixed arguments.
 
@@ -181,27 +203,28 @@ class UpdateManager(object):
         :param source_add_fixed:
         :param lens_light_add_fixed:
         :param ps_add_fixed:
-        :param cosmo_add_fixed:
+        :param special_add_fixed:
         :return: updated kwargs fixed
         """
-        lens_fixed = self._add_fixed(self._lens_temp, self._lens_fixed, lens_add_fixed)
+        lens_fixed = self._add_fixed(self._kwargs_temp['kwargs_lens'], self._lens_fixed, lens_add_fixed)
         lens_fixed = self._remove_fixed(lens_fixed, lens_remove_fixed)
-        source_fixed = self._add_fixed(self._source_temp, self._source_fixed, source_add_fixed)
+        source_fixed = self._add_fixed(self._kwargs_temp['kwargs_source'], self._source_fixed, source_add_fixed)
         source_fixed = self._remove_fixed(source_fixed, source_remove_fixed)
-        lens_light_fixed = self._add_fixed(self._lens_light_temp, self._lens_light_fixed, lens_light_add_fixed)
+        lens_light_fixed = self._add_fixed(self._kwargs_temp['kwargs_lens_light'], self._lens_light_fixed, lens_light_add_fixed)
         lens_light_fixed = self._remove_fixed(lens_light_fixed, lens_light_remove_fixed)
-        ps_fixed = self._add_fixed(self._ps_temp, self._ps_fixed, ps_add_fixed)
+        ps_fixed = self._add_fixed(self._kwargs_temp['kwargs_ps'], self._ps_fixed, ps_add_fixed)
         ps_fixed = self._remove_fixed(ps_fixed, ps_remove_fixed)
-        cosmo_fixed = copy.deepcopy(self._cosmo_fixed)
-        for param_name in cosmo_add_fixed:
-            if param_name in cosmo_fixed:
+        special_fixed = copy.deepcopy(self._special_fixed)
+        special_temp = self._kwargs_temp['kwargs_special']
+        for param_name in special_add_fixed:
+            if param_name in special_fixed:
                 pass
             else:
-                cosmo_fixed[param_name] = self._cosmo_temp[param_name]
-        for param_name in cosmo_remove_fixed:
-            if param_name in cosmo_fixed:
-                del cosmo_fixed[param_name]
-                self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._cosmo_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, cosmo_fixed
+                special_fixed[param_name] = special_temp[param_name]
+        for param_name in special_remove_fixed:
+            if param_name in special_fixed:
+                del special_fixed[param_name]
+        self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed = lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed
 
     @staticmethod
     def _add_fixed(kwargs_model, kwargs_fixed, add_fixed):
@@ -251,3 +274,4 @@ class UpdateManager(object):
         :param image_index: index
         :return:
         """
+        pass

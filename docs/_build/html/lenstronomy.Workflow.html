@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-workflow-alignment-matching-module"></span><h2>lenstronomy.Workflow.alignment_matching module<a class="headerlink" href="#module-lenstronomy.Workflow.alignment_matching" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Workflow.alignment_matching.AlignmentFitting">
-<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="descname">AlignmentFitting</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>band_index=0</em>, <em>likelihood_mask_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="descname">AlignmentFitting</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_params</em>, <em>band_index=0</em>, <em>likelihood_mask_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class which executes the different sampling  methods</p>
 <dl class="method">
@@ -68,7 +68,7 @@
 
 <dl class="class">
 <dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood">
-<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="descname">AlignmentLikelihood</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>band_index=0</em>, <em>likelihood_mask_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="descname">AlignmentLikelihood</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>kwargs_model</em>, <em>kwargs_params</em>, <em>band_index=0</em>, <em>likelihood_mask_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.computeLikelihood">
@@ -202,6 +202,13 @@ with relative coordinate shifts as free parameters</p>
 </table>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.bic">
+<code class="descname">bic</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.bic" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the bayesian information criterion of the model.
+:return: bic value, float</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">
 <code class="descname">fit_sequence</code><span class="sig-paren">(</span><em>fitting_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fit_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence" title="Permalink to this definition">¶</a></dt>
@@ -228,21 +235,7 @@ lens models to the initial kwargs_fixed options</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>free_bands</strong> – bool list of length of imaging bands in order of imaging bands, if False: set fixed lens model</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed">
-<code class="descname">kwargs_fixed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.kwargs_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the updated kwargs_fixed from the update Manager</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of fixed kwargs, see UpdateManager()</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
 </tr>
 </tbody>
 </table>
@@ -263,7 +256,7 @@ lens models to the initial kwargs_fixed options</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc">
-<code class="descname">mcmc</code><span class="sig-paren">(</span><em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>sigma_scale=1</em>, <em>threadCount=1</em>, <em>init_samples=None</em>, <em>re_use_samples=True</em>, <em>sampler_type='COSMOHAMMER'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mcmc</code><span class="sig-paren">(</span><em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>sigma_scale=1</em>, <em>threadCount=1</em>, <em>init_samples=None</em>, <em>re_use_samples=True</em>, <em>sampler_type='EMCEE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>MCMC routine</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -290,7 +283,7 @@ lens models to the initial kwargs_fixed options</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling">
-<code class="descname">nested_sampling</code><span class="sig-paren">(</span><em>sampler_type='MULTINEST'</em>, <em>kwargs_run={}</em>, <em>prior_type='uniform'</em>, <em>width_scale=1</em>, <em>sigma_scale=1</em>, <em>output_basename='chain'</em>, <em>remove_output_dir=True</em>, <em>dypolychord_dynamic_goal=0.8</em>, <em>output_dir='nested_sampling_chains'</em>, <em>dynesty_bound='multi'</em>, <em>dynesty_sample='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.nested_sampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling" title="Permalink to this definition">¶</a></dt>
+<code class="descname">nested_sampling</code><span class="sig-paren">(</span><em>sampler_type='MULTINEST'</em>, <em>kwargs_run={}</em>, <em>prior_type='uniform'</em>, <em>width_scale=1</em>, <em>sigma_scale=1</em>, <em>output_basename='chain'</em>, <em>remove_output_dir=True</em>, <em>dypolychord_dynamic_goal=0.8</em>, <em>polychord_settings={}</em>, <em>dypolychord_seed_increment=200</em>, <em>output_dir='nested_sampling_chains'</em>, <em>dynesty_bound='multi'</em>, <em>dynesty_sample='auto'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.nested_sampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -305,6 +298,8 @@ lens models to the initial kwargs_fixed options</p>
 <li><strong>output_basename</strong> – name of the folder in which the core MultiNest/PolyChord code will save output files</li>
 <li><strong>remove_output_dir</strong> – if True, the above folder is removed after completion</li>
 <li><strong>dypolychord_dynamic_goal</strong> – dynamic goal for DyPolyChord (trade-off between evidence (0) and posterior (1) computation)</li>
+<li><strong>polychord_settings</strong> – settings dictionary to send to pypolychord. Check dypolychord documentation for details.</li>
+<li><strong>dypolychord_seed_increment</strong> – seed increment for dypolychord with MPI. Check dypolychord documentation for details.</li>
 <li><strong>dynesty_bound</strong> – see <a class="reference external" href="https://dynesty.readthedocs.io">https://dynesty.readthedocs.io</a> for details</li>
 <li><strong>dynesty_sample</strong> – see <a class="reference external" href="https://dynesty.readthedocs.io">https://dynesty.readthedocs.io</a> for details</li>
 </ul>
@@ -414,6 +409,22 @@ lens models to the initial kwargs_fixed options</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state">
+<code class="descname">update_state</code><span class="sig-paren">(</span><em>kwargs_update</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>updates current best fit state to the input model keywords specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_update</strong> – format of kwargs_result</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -506,7 +517,7 @@ factor=0 means old estimate
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source">
-<code class="descname">image_single_point_source</code><span class="sig-paren">(</span><em>image_model_class</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.image_single_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source" title="Permalink to this definition">¶</a></dt>
+<code class="descname">image_single_point_source</code><span class="sig-paren">(</span><em>image_model_class</em>, <em>kwargs_params</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.image_single_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>return model without including the point source contributions as a list (for each point source individually)
 :param image_model_class: ImageModel class instance
 :param kwargs_lens: lens model kwargs list
@@ -542,7 +553,7 @@ factor=0 means old estimate
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative">
-<code class="descname">update_iterative</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>num_iter=10</em>, <em>no_break=True</em>, <em>stacking_method='median'</em>, <em>block_center_neighbour=0</em>, <em>keep_psf_error_map=True</em>, <em>psf_symmetry=1</em>, <em>psf_iter_factor=0.2</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_iterative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_iterative</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_params</em>, <em>num_iter=10</em>, <em>no_break=True</em>, <em>stacking_method='median'</em>, <em>block_center_neighbour=0</em>, <em>keep_psf_error_map=True</em>, <em>psf_symmetry=1</em>, <em>psf_iter_factor=0.2</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_iterative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -568,7 +579,7 @@ factor=0 means old estimate
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">
-<code class="descname">update_psf</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>stacking_method='median'</em>, <em>psf_symmetry=1</em>, <em>psf_iter_factor=1.0</em>, <em>block_center_neighbour=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_psf</code><span class="sig-paren">(</span><em>kwargs_psf</em>, <em>kwargs_params</em>, <em>stacking_method='median'</em>, <em>psf_symmetry=1</em>, <em>psf_iter_factor=1.0</em>, <em>block_center_neighbour=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -603,6 +614,11 @@ factor=0 means old estimate
 <p>this class manages the parameter constraints as they may evolve through the steps of the modeling.
 This includes: keeping certain parameters fixed during one modelling step</p>
 <dl class="method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.best_fit">
+<code class="descname">best_fit</code><span class="sig-paren">(</span><em>bijective=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.best_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.best_fit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters">
 <code class="descname">fix_image_parameters</code><span class="sig-paren">(</span><em>image_index=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.fix_image_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>fixes all parameters that are only assigned to a specific image. This allows to sample only parameters that
@@ -620,18 +636,8 @@ constraint by the fitting of a sub-set of the images.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs">
-<code class="descname">fixed_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
 <dt id="lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs">
 <code class="descname">init_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.Workflow.update_manager.UpdateManager.lower_kwargs">
-<code class="descname">lower_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.lower_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -681,7 +687,7 @@ constraint by the fitting of a sub-set of the images.</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">
-<code class="descname">update_fixed</code><span class="sig-paren">(</span><em>lens_add_fixed=[]</em>, <em>source_add_fixed=[]</em>, <em>lens_light_add_fixed=[]</em>, <em>ps_add_fixed=[]</em>, <em>cosmo_add_fixed=[]</em>, <em>lens_remove_fixed=[]</em>, <em>source_remove_fixed=[]</em>, <em>lens_light_remove_fixed=[]</em>, <em>ps_remove_fixed=[]</em>, <em>cosmo_remove_fixed=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_fixed</code><span class="sig-paren">(</span><em>lens_add_fixed=[]</em>, <em>source_add_fixed=[]</em>, <em>lens_light_add_fixed=[]</em>, <em>ps_add_fixed=[]</em>, <em>special_add_fixed=[]</em>, <em>lens_remove_fixed=[]</em>, <em>source_remove_fixed=[]</em>, <em>lens_light_remove_fixed=[]</em>, <em>ps_remove_fixed=[]</em>, <em>special_remove_fixed=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>adds the values of the keyword arguments that are stated in the _add_fixed to the existing fixed arguments.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -697,7 +703,7 @@ constraint by the fitting of a sub-set of the images.</p>
 <li><strong>source_add_fixed</strong> – </li>
 <li><strong>lens_light_add_fixed</strong> – </li>
 <li><strong>ps_add_fixed</strong> – </li>
-<li><strong>cosmo_add_fixed</strong> – </li>
+<li><strong>special_add_fixed</strong> – </li>
 </ul>
 </td>
 </tr>
@@ -749,7 +755,7 @@ WARNING: some updates may not be valid depending on the model options. Use caref
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_param_state">
-<code class="descname">update_param_state</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_state" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_param_state</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_special=None</em>, <em>kwargs_extinction=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates the temporary state of the parameters being saved</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -760,7 +766,7 @@ WARNING: some updates may not be valid depending on the model options. Use caref
 <li><strong>kwargs_source</strong> – </li>
 <li><strong>kwargs_lens_light</strong> – </li>
 <li><strong>kwargs_ps</strong> – </li>
-<li><strong>kwargs_cosmo</strong> – </li>
+<li><strong>kwargs_special</strong> – </li>
 </ul>
 </td>
 </tr>
@@ -770,11 +776,6 @@ WARNING: some updates may not be valid depending on the model options. Use caref
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.Workflow.update_manager.UpdateManager.upper_kwargs">
-<code class="descname">upper_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.upper_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -847,7 +848,7 @@ WARNING: some updates may not be valid depending on the model options. Use caref
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

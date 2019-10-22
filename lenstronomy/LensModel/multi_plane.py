@@ -139,14 +139,10 @@ class MultiPlane(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
-        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed!
-        This can lead to duplications in the computation of deflection angles.
+        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed! This can lead to duplications in the computation of deflection angles.
         :param check_convention: flag to check the image position convention (leave this alone)
-        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
-        If not set, will compute the distance each time this function gets executed.
-        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
-        If not set, will compute the distance each time this function gets executed.
+        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow. If not set, will compute the distance each time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
 
@@ -239,6 +235,25 @@ class MultiPlane(object):
         theta_x = x / T_z
         theta_y = y / T_z
         return theta_x, theta_y
+
+    def set_static(self, kwargs):
+        """
+
+        :param kwargs:
+        :return:
+        """
+
+        kwargs = self.observed2flat_convention(kwargs)
+        self.ignore_observed_positions = True
+        return self._multi_plane_base.set_static(kwargs)
+
+    def set_dynamic(self):
+        """
+
+        :return:
+        """
+        self.ignore_observed_positions = False
+        self._multi_plane_base.set_dynamic()
 
 
 class PhysicalLocation(object):

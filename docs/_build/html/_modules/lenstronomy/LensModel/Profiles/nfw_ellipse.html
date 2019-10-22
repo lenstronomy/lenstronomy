@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.nfw_ellipse &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.nfw_ellipse &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -47,9 +47,10 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw</span> <span class="k">import</span> <span class="n">NFW</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
 
 
-<div class="viewcode-block" id="NFW_ELLIPSE"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE">[docs]</a><span class="k">class</span> <span class="nc">NFW_ELLIPSE</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="NFW_ELLIPSE"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE">[docs]</a><span class="k">class</span> <span class="nc">NFW_ELLIPSE</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    this class contains functions concerning the NFW profile</span>
 
@@ -62,6 +63,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpol</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_interp_X</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">max_interp_X</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span> <span class="o">=</span> <span class="n">NFW</span><span class="p">(</span><span class="n">interpol</span><span class="o">=</span><span class="n">interpol</span><span class="p">,</span> <span class="n">num_interp_X</span><span class="o">=</span><span class="n">num_interp_X</span><span class="p">,</span> <span class="n">max_interp_X</span><span class="o">=</span><span class="n">max_interp_X</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_diff</span> <span class="o">=</span> <span class="mf">0.0000000001</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NFW_ELLIPSE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NFW_ELLIPSE.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -164,7 +166,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

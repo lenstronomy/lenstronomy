@@ -32,15 +32,16 @@ class PointSourceVariability(object):
         """
 
         # create background SimAPI class instance
-        self.sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model, kwargs_numerics)
-        kwargs_lens_light, kwargs_source, kwargs_ps = self.sim_api_bkg.magnitude2amplitude(kwargs_lens_light_mag,
+        sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model)
+        image_model_bkg = sim_api_bkg.image_model_class(kwargs_numerics)
+        kwargs_lens_light, kwargs_source, kwargs_ps = sim_api_bkg.magnitude2amplitude(kwargs_lens_light_mag,
                                                                                            kwargs_source_mag,
                                                                                            kwargs_ps_mag)
-        self._image_bkg = self.sim_api_bkg.image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        self._image_bkg = image_model_bkg.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         # compute image positions of point source
-        x_center, y_center = self.sim_api_bkg.data_class.center
-        search_window = np.max(self.sim_api_bkg.data_class.width)
-        lensModel = self.sim_api_bkg.image_model_class.LensModel
+        x_center, y_center = sim_api_bkg.data_class.center
+        search_window = np.max(sim_api_bkg.data_class.width)
+        lensModel = image_model_bkg.LensModel
         solver = LensEquationSolver(lensModel=lensModel)
         image_x, image_y = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.1, search_window=search_window,
                                           precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
@@ -51,7 +52,8 @@ class PointSourceVariability(object):
         #  times at t>=0
         # add image plane source model
         kwargs_model_ps = {'point_source_model_list': ['LENSED_POSITION']}
-        self.sim_api_ps = SimAPI(numpix, kwargs_single_band, kwargs_model_ps, kwargs_numerics)
+        self.sim_api_ps = SimAPI(numpix, kwargs_single_band, kwargs_model_ps)
+        self._image_model_ps = self.sim_api_ps.image_model_class(kwargs_numerics)
         self._kwargs_lens = kwargs_lens
         self._dt_days = dt_days
         self._mag = mag
@@ -59,7 +61,7 @@ class PointSourceVariability(object):
         self._variability_func = variability_func
         # save the computed image position of the lensed point source in cache such that the solving the lens equation
         # only needs to be applied once.
-        self.sim_api_bkg.reset_point_source_cache(bool=True)
+        #self.sim_api_bkg.reset_point_source_cache(bool=True)
         #self.sim_api_ps.reset_point_source_cache(bool=True)
 
     @property
@@ -85,7 +87,7 @@ class PointSourceVariability(object):
         :return: image with time variable source at given time
         """
         kwargs_ps_time = self.point_source_time(time)
-        point_source = self.sim_api_ps.image_model_class.point_source(kwargs_ps_time, kwargs_lens=self._kwargs_lens)
+        point_source = self._image_model_ps.point_source(kwargs_ps_time, kwargs_lens=self._kwargs_lens)
         return point_source + self.image_bkg
 
     def point_source_time(self, t):

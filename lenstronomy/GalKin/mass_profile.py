@@ -7,7 +7,7 @@ from lenstronomy.GalKin.cosmo import Cosmo
 
 class MassProfile(object):
     """
-    mass profile class
+    mass profile class, only works if all the profiles are at one single lens plane
     """
     def __init__(self, profile_list, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, interpol_grid_num=1000,
                  max_interpolate=100, min_interpolate=0.001):

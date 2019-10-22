@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling package &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.Sampling package &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.PointSource.html" title="lenstronomy.PointSource package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -80,7 +80,7 @@
 <span id="lenstronomy-sampling-likelihood-module"></span><h2>lenstronomy.Sampling.likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule">
-<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.likelihood.</code><code class="descname">LikelihoodModule</code><span class="sig-paren">(</span><em>kwargs_data_joint</em>, <em>kwargs_model</em>, <em>param_class</em>, <em>image_likelihood=True</em>, <em>check_bounds=True</em>, <em>check_solver=False</em>, <em>astrometric_likelihood=False</em>, <em>position_uncertainty=0.004</em>, <em>check_positive_flux=False</em>, <em>solver_tolerance=0.001</em>, <em>force_no_add_image=False</em>, <em>source_marg=False</em>, <em>restrict_image_number=False</em>, <em>max_num_images=None</em>, <em>bands_compute=None</em>, <em>time_delay_likelihood=False</em>, <em>force_minimum_source_surface_brightness=False</em>, <em>flux_min=0</em>, <em>image_likelihood_mask_list=None</em>, <em>flux_ratio_likelihood=False</em>, <em>kwargs_flux_compute={}</em>, <em>prior_lens=[]</em>, <em>prior_source=[]</em>, <em>prior_lens_light=[]</em>, <em>prior_ps=[]</em>, <em>prior_cosmo=[]</em>, <em>condition_definition=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.likelihood.</code><code class="descname">LikelihoodModule</code><span class="sig-paren">(</span><em>kwargs_data_joint</em>, <em>kwargs_model</em>, <em>param_class</em>, <em>image_likelihood=True</em>, <em>check_bounds=True</em>, <em>check_solver=False</em>, <em>astrometric_likelihood=False</em>, <em>image_position_likelihood=False</em>, <em>source_position_likelihood=False</em>, <em>position_uncertainty=0.004</em>, <em>check_positive_flux=False</em>, <em>solver_tolerance=0.001</em>, <em>force_no_add_image=False</em>, <em>source_marg=False</em>, <em>linear_prior=None</em>, <em>restrict_image_number=False</em>, <em>max_num_images=None</em>, <em>bands_compute=None</em>, <em>time_delay_likelihood=False</em>, <em>force_minimum_source_surface_brightness=False</em>, <em>flux_min=0</em>, <em>image_likelihood_mask_list=None</em>, <em>flux_ratio_likelihood=False</em>, <em>kwargs_flux_compute={}</em>, <em>prior_lens=[]</em>, <em>prior_source=[]</em>, <em>prior_extinction=[]</em>, <em>prior_lens_light=[]</em>, <em>prior_ps=[]</em>, <em>prior_special=[]</em>, <em>prior_lens_kde=[]</em>, <em>prior_source_kde=[]</em>, <em>prior_lens_light_kde=[]</em>, <em>prior_ps_kde=[]</em>, <em>prior_special_kde=[]</em>, <em>prior_extinction_kde=[]</em>, <em>prior_lens_lognormal=[]</em>, <em>prior_source_lognormal=[]</em>, <em>prior_extinction_lognormal=[]</em>, <em>prior_lens_light_lognormal=[]</em>, <em>prior_ps_lognormal=[]</em>, <em>prior_special_lognormal=[]</em>, <em>condition_definition=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class contains the routines to run a MCMC process
 the key components are:
@@ -95,13 +95,8 @@ ImageModel(), Multiband(), MultiExposure()
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.computeLikelihood">
-<code class="descname">computeLikelihood</code><span class="sig-paren">(</span><em>ctx</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.computeLikelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points">
-<code class="descname">effectiv_num_data_points</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.effectiv_num_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points" title="Permalink to this definition">¶</a></dt>
+<code class="descname">effectiv_num_data_points</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.effectiv_num_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</p>
 </dd></dl>
 
@@ -111,10 +106,30 @@ ImageModel(), Multiband(), MultiExposure()
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative">
+<code class="descname">likelihood_derivative</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.likelihood_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">logL, derivative estimatoe (None)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.logL">
 <code class="descname">logL</code><span class="sig-paren">(</span><em>args</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.logL" title="Permalink to this definition">¶</a></dt>
 <dd><p>routine to compute X2 given variable parameters for a MCMC/PSO chain</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood">
+<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>kwargs_return</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.num_data">
@@ -134,11 +149,6 @@ ImageModel(), Multiband(), MultiExposure()
 <code class="descname">param_limits</code><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.param_limits" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
@@ -146,7 +156,7 @@ ImageModel(), Multiband(), MultiExposure()
 <span id="lenstronomy-sampling-parameters-module"></span><h2>lenstronomy.Sampling.parameters module<a class="headerlink" href="#module-lenstronomy.Sampling.parameters" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Sampling.parameters.Param">
-<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_cosmo=None</em>, <em>kwargs_lower_lens=None</em>, <em>kwargs_lower_source=None</em>, <em>kwargs_lower_lens_light=None</em>, <em>kwargs_lower_ps=None</em>, <em>kwargs_lower_cosmo=None</em>, <em>kwargs_upper_lens=None</em>, <em>kwargs_upper_source=None</em>, <em>kwargs_upper_lens_light=None</em>, <em>kwargs_upper_ps=None</em>, <em>kwargs_upper_cosmo=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>joint_lens_with_lens=[]</em>, <em>joint_lens_light_with_lens_light=[]</em>, <em>joint_source_with_source=[]</em>, <em>joint_lens_with_light=[]</em>, <em>joint_source_with_point_source=[]</em>, <em>joint_lens_light_with_point_source=[]</em>, <em>mass_scaling_list=None</em>, <em>point_source_offset=False</em>, <em>num_point_source_list=None</em>, <em>image_plane_source_list=None</em>, <em>solver_type='NONE'</em>, <em>Ddt_sampling=None</em>, <em>source_size=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_special=None</em>, <em>kwargs_fixed_extinction=None</em>, <em>kwargs_lower_lens=None</em>, <em>kwargs_lower_source=None</em>, <em>kwargs_lower_lens_light=None</em>, <em>kwargs_lower_ps=None</em>, <em>kwargs_lower_special=None</em>, <em>kwargs_lower_extinction=None</em>, <em>kwargs_upper_lens=None</em>, <em>kwargs_upper_source=None</em>, <em>kwargs_upper_lens_light=None</em>, <em>kwargs_upper_ps=None</em>, <em>kwargs_upper_special=None</em>, <em>kwargs_upper_extinction=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>joint_lens_with_lens=[]</em>, <em>joint_lens_light_with_lens_light=[]</em>, <em>joint_source_with_source=[]</em>, <em>joint_lens_with_light=[]</em>, <em>joint_source_with_point_source=[]</em>, <em>joint_lens_light_with_point_source=[]</em>, <em>joint_extinction_with_lens_light=[]</em>, <em>joint_lens_with_source_light=[]</em>, <em>mass_scaling_list=None</em>, <em>point_source_offset=False</em>, <em>num_point_source_list=None</em>, <em>image_plane_source_list=None</em>, <em>solver_type='NONE'</em>, <em>Ddt_sampling=None</em>, <em>source_size=False</em>, <em>num_tau0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class that handles the parameter constraints. In particular when different model profiles share joint constraints.</p>
 <p>Options between same model classes:</p>
@@ -160,9 +170,13 @@ joint parameter between two source surface brightness models, the second adopts 
 <p>‘joint_lens_with_light’: list [[i_light, k_lens, [‘param_name1’, ‘param_name2’, …]], […], …],
 joint parameter between lens model and lens light model</p>
 <p>‘joint_source_with_point_source’: list [[i_point_source, k_source], […], …],
-joint position parameter between lens model and lens light model</p>
+joint position parameter between lens model and source light model</p>
 <p>‘joint_lens_light_with_point_source’: list [[i_point_source, k_lens_light], […], …],
 joint position parameter between lens model and lens light model</p>
+<p>‘joint_extinction_with_lens_light’: list [[i_lens_light, k_extinction, [‘param_name1’, ‘param_name2’, …]], […], …],
+joint parameters between the lens surface brightness and the optical depth models</p>
+<p>‘joint_lens_with_source_light’: [[i_source, k_lens, [‘param_name1’, ‘param_name2’, …]], […], …],
+joint parameter between lens model and source light model. Samples light model parameter only.</p>
 <p>hierarchy is as follows:
 1. Point source parameters are inferred
 2. Lens light joint parameters are set
@@ -191,7 +205,7 @@ joint position parameter between lens model and lens light model</p>
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.parameters.Param.check_solver">
-<code class="descname">check_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.check_solver" title="Permalink to this definition">¶</a></dt>
+<code class="descname">check_solver</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.check_solver" title="Permalink to this definition">¶</a></dt>
 <dd><p>test whether the image positions map back to the same source position
 :param kwargs_lens:
 :param kwargs_ps:
@@ -221,7 +235,7 @@ joint position parameter between lens model and lens light model</p>
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.parameters.Param.kwargs2args">
-<code class="descname">kwargs2args</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_cosmo=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.kwargs2args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.kwargs2args" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kwargs2args</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_special=None</em>, <em>kwargs_extinction=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.kwargs2args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.kwargs2args" title="Permalink to this definition">¶</a></dt>
 <dd><p>inverse of getParam function
 :param kwargs_lens: keyword arguments depending on model options
 :param kwargs_source: keyword arguments depending on model options
@@ -287,28 +301,8 @@ joint position parameter between lens model and lens light model</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Sampling.parameters.Param.real_image_positions">
-<code class="descname">real_image_positions</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.real_image_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.real_image_positions" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_ps</strong> – point source kwargs</li>
-<li><strong>kwargs_cosmo</strong> – cosmo kwargs (or other kwargs)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">position where time delays are evaluated and solver is solved for</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Sampling.parameters.Param.update_lens_scaling">
-<code class="descname">update_lens_scaling</code><span class="sig-paren">(</span><em>kwargs_cosmo</em>, <em>kwargs_lens</em>, <em>inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.update_lens_scaling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.update_lens_scaling" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_lens_scaling</code><span class="sig-paren">(</span><em>kwargs_special</em>, <em>kwargs_lens</em>, <em>inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.update_lens_scaling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.update_lens_scaling" title="Permalink to this definition">¶</a></dt>
 <dd><p>multiplies the scaling parameters of the profiles</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -364,15 +358,8 @@ Available are: MCMC with emcee and comsoHammer and a Particle Swarm Optimizer.
 This are examples and depending on your problem, you might find other/better solutions.
 Feel free to sample with your convenient sampler!</p>
 <dl class="method">
-<dt id="lenstronomy.Sampling.sampler.Sampler.mcmc_CH">
-<code class="descname">mcmc_CH</code><span class="sig-paren">(</span><em>walkerRatio</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_CH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_CH" title="Permalink to this definition">¶</a></dt>
-<dd><p>runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
-returns the chain</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">
-<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em>, <em>progress=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -453,7 +440,7 @@ returns the chain</p>
         <li class="right" >
           <a href="lenstronomy.PointSource.html" title="lenstronomy.PointSource package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

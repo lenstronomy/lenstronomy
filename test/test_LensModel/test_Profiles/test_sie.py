@@ -20,7 +20,7 @@ class TestSIE(object):
             from lenstronomy.LensModel.Profiles.sie import SIE
             from lenstronomy.LensModel.Profiles.spemd import SPEMD
             from lenstronomy.LensModel.Profiles.nie import NIE
-            self.sie = SIE()
+            self.sie = SIE(NIE=False)
             self.sie_nie = SIE(NIE=True)
             self.spemd = SPEMD()
             self.nie = NIE()

@@ -64,3 +64,11 @@ class FluxRatioLikelihood(object):
         if not np.isfinite(logL):
             return -10 ** 15
         return logL
+
+    @property
+    def num_data(self):
+        """
+
+        :return: integer, number of data points associated with the flux ratios
+        """
+        return len(self._flux_ratios)

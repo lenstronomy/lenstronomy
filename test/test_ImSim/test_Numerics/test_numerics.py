@@ -1,6 +1,7 @@
 import pytest
 import numpy.testing as npt
 import numpy as np
+import unittest
 
 import lenstronomy.Util.util as util
 import lenstronomy.Util.kernel_util as kernel_util
@@ -175,6 +176,18 @@ class TestNumerics(object):
         image_conv = image_model.image(kwargs_lens_light=self.kwargs_light, unconvolved=False)
         delta = (self.image_true - image_conv) / self.image_true
         npt.assert_almost_equal(delta[self._conv_pixels_partial], 0, decimal=1)
+
+class TestRaise(unittest.TestCase):
+
+
+    def test_integer_in_supersampling_factor(self):
+        from lenstronomy.Data.psf import PSF
+        kwargs_psf = {'psf_type': 'NONE'}
+        psf_class = PSF(**kwargs_psf)
+
+        from lenstronomy.ImSim.Numerics.numerics import Numerics
+        with self.assertRaises(TypeError):
+            Numerics(pixel_grid=None, psf=psf_class, supersampling_factor=1.)
 
 
 if __name__ == '__main__':

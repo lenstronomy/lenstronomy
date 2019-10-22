@@ -1,8 +1,10 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class SIS(object):
+
+class SIS(LensProfileBase):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
     """

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.sim_api &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.SimulationAPI.sim_api &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,34 +56,32 @@
 <span class="sd">    the optical quantities being used in the lenstronomy LensModel module.</span>
 <span class="sd">    All other model choices are equivalent to the ones provided by LightModel, LensModel, PointSource modules</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numpix</span><span class="p">,</span> <span class="n">kwargs_single_band</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numpix</span><span class="p">,</span> <span class="n">kwargs_single_band</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        </span>
 <span class="sd">        :param numpix: number of pixels per axis</span>
 <span class="sd">        :param kwargs_single_band: keyword arguments specifying the class instance of DataAPI </span>
 <span class="sd">        :param kwargs_model: keyword arguments specifying the class instance of ModelAPI </span>
-<span class="sd">        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">DataAPI</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numpix</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_single_band</span><span class="p">)</span>
         <span class="n">ModelAPI</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span> <span class="o">=</span> <span class="n">ImageModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_class</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">source_model_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_light_model_class</span><span class="p">,</span>
-                                             <span class="bp">self</span><span class="o">.</span><span class="n">point_source_model_class</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">image_model_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="SimAPI.image_model_class"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.sim_api.SimAPI.image_model_class">[docs]</a>    <span class="k">def</span> <span class="nf">image_model_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{}):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">        :param kwargs_numerics: keyword arguments list of Numerics module</span>
 <span class="sd">        :return: instance of the ImageModel class with all the specified configurations</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span>
+        <span class="k">return</span> <span class="n">ImageModel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_model_class</span><span class="p">,</span>
+                          <span class="bp">self</span><span class="o">.</span><span class="n">lens_light_model_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_source_model_class</span><span class="p">,</span> <span class="n">kwargs_numerics</span><span class="o">=</span><span class="n">kwargs_numerics</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimAPI.magnitude2amplitude"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.sim_api.SimAPI.magnitude2amplitude">[docs]</a>    <span class="k">def</span> <span class="nf">magnitude2amplitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens_light_mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_source_mag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_ps_mag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param</span>
-<span class="sd">        :return: value of the lenstronomy &#39;amp&#39; parameter such that the total flux of the profile type results in this</span>
-<span class="sd">        magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.</span>
+<span class="sd">        :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that &#39;amp&#39; parameters are &#39;magnitude&#39; parameters.</span>
+<span class="sd">        :param kwargs_source_mag: keyword argument list as for LightModel module except that &#39;amp&#39; parameters are &#39;magnitude&#39; parameters.</span>
+<span class="sd">        :param kwargs_ps_mag: keyword argument list as for PointSource module except that &#39;amp&#39; parameters are &#39;magnitude&#39; parameters.</span>
+<span class="sd">        :return: value of the lenstronomy &#39;amp&#39; parameter such that the total flux of the profile type results in this magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">kwargs_lens_light</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_lens_light_mag</span><span class="p">)</span>
@@ -120,16 +118,7 @@
                 <span class="n">amp</span> <span class="o">=</span> <span class="n">cps</span> <span class="o">/</span> <span class="n">cps_norm</span>
                 <span class="n">amp_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span>
             <span class="n">kwargs_ps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_source_model_class</span><span class="o">.</span><span class="n">set_amplitudes</span><span class="p">(</span><span class="n">amp_list</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_ps</span></div>
-
-<div class="viewcode-block" id="SimAPI.reset_point_source_cache"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.sim_api.SimAPI.reset_point_source_cache">[docs]</a>    <span class="k">def</span> <span class="nf">reset_point_source_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        deletes all the cache in the point source class and saves it from then on</span>
-
-<span class="sd">        :param bool: boolean, if True, saves the next occuring point source positions in the cache</span>
-<span class="sd">        :return: None</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">reset_point_source_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_ps</span></div></div>
 </pre></div>
 
           </div>
@@ -162,7 +151,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

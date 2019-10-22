@@ -146,19 +146,11 @@ class CosmoLikelihood(object):
             prior = np.log(np.sqrt(1 + 4*self.omega_mh2_fixed**2/h**6))
             return prior, True
 
-    def __call__(self, a):
-        if self.sampling_option == 'H0_only':
-            return self.X2_chain_H0(a)
-        elif self.sampling_option == 'H0_omega_m':
-            return self.X2_chain_H0_omgega_m(a)
-        elif self.sampling_option == "fix_omega_mh2":
-            return self.X2_chain_omega_mh2(a)
-        elif self.sampling_option == 'H0_omega_m_omega_de':
-            return self.X2_chain_H0_omgega_m_omega_de(a)
-        else:
-            raise ValueError("sampling method %s not supported!" % self.sampling_option)
-
     def likelihood(self, a):
+        logL, _ = self._likelihood(a)
+        return logL
+
+    def _likelihood(self, a):
         if self.sampling_option == 'H0_only':
             return self.X2_chain_H0(a)
         elif self.sampling_option == 'H0_omega_m':
@@ -169,22 +161,6 @@ class CosmoLikelihood(object):
             return self.X2_chain_H0_omgega_m_omega_de(a)
         else:
             raise ValueError("sampling method %s not supported!" % self.sampling_option)
-
-    def computeLikelihood(self, ctx):
-        if self.sampling_option == 'H0_only':
-            likelihood, _ = self.X2_chain_H0(ctx.getParams())
-        elif self.sampling_option == 'H0_omega_m':
-            likelihood, _ = self.X2_chain_H0_omgega_m(ctx.getParams())
-        elif self.sampling_option == "fix_omega_mh2":
-            likelihood, _ = self.X2_chain_omega_mh2(ctx.getParams())
-        elif self.sampling_option == 'H0_omega_m_omega_de':
-            likelihood, _ = self.X2_chain_H0_omgega_m_omega_de(ctx.getParams())
-        else:
-            raise ValueError("wrong sampling option specified")
-        return likelihood
-
-    def setup(self):
-        pass
 
 
 class CosmoParam(object):
@@ -248,72 +224,9 @@ class MCMCSampler(object):
         """
         returns the mcmc analysis of the parameter space
         """
-        sampler = emcee.EnsembleSampler(n_walkers, self.cosmoParam.numParam, self.chain.likelihood)
+        sampler = emcee.EnsembleSampler(n_walkers, self.cosmoParam.numParam, self.chain.likelihood, args=())
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
-        new_pos, _, _, _ = sampler.run_mcmc(p0, n_burn)
-        sampler.reset()
-        store = InMemoryStorageUtil()
-        for pos, prob, _, _ in sampler.sample(new_pos, iterations=n_run):
-            store.persistSamplingValues(pos, prob, None)
-        return store.samples
-
-    def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi_monch=False):
-        """
-        runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
-        returns the chain
-        """
-        lowerLimit, upperLimit = self.cosmoParam.param_bounds
-        params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
-
-        chain = LikelihoodComputationChain(
-            min=lowerLimit,
-            max=upperLimit)
-
-        temp_dir = tempfile.mkdtemp("Hammer")
-        file_prefix = os.path.join(temp_dir, "logs")
-
-        # chain.addCoreModule(CambCoreModule())
-        chain.addLikelihoodModule(self.chain)
-        chain.setup()
-
-        store = InMemoryStorageUtil()
-        if mpi_monch is True:
-            sampler = MpiCosmoHammerSampler(
-            params=params,
-            likelihoodComputationChain=chain,
-            filePrefix=file_prefix,
-            walkersRatio=walkerRatio,
-            burninIterations=n_burn,
-            sampleIterations=n_run,
-            threadCount=1,
-            initPositionGenerator=init_pos,
-            storageUtil=store)
-        else:
-            sampler = CosmoHammerSampler(
-                params=params,
-                likelihoodComputationChain=chain,
-                filePrefix=file_prefix,
-                walkersRatio=walkerRatio,
-                burninIterations=n_burn,
-                sampleIterations=n_run,
-                threadCount=threadCount,
-                initPositionGenerator=init_pos,
-                storageUtil=store)
-        time_start = time.time()
-        if sampler.isMaster():
-            print('Computing the MCMC...')
-            print('Number of walkers = ', len(mean_start)*walkerRatio)
-            print('Burn-in itterations: ', n_burn)
-            print('Sampling itterations:', n_run)
-        sampler.startSampling()
-        if sampler.isMaster():
-            time_end = time.time()
-            print(time_end - time_start, 'time taken for MCMC sampling')
-        # if sampler._sampler.pool is not None:
-        #     sampler._sampler.pool.close()
-        try:
-            shutil.rmtree(temp_dir)
-        except Exception as ex:
-            print(ex)
-            pass
-        return store.samples
+        #p0 = mean_start *np.random.randn(n_walkers, self.cosmoParam.numParam)
+        sampler.run_mcmc(p0, n_burn+n_run, progress=True)
+        flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
+        return flat_samples

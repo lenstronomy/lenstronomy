@@ -3,9 +3,11 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.LensModel.Profiles.spp import SPP
 
 
-class SPEP(object):
+class SPEP(LensProfileBase):
     """
     class for Softened power-law elliptical potential (SPEP)
     """
@@ -14,8 +16,8 @@ class SPEP(object):
     upper_limit_default = {'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        from lenstronomy.LensModel.Profiles.spp import SPP
         self.spp = SPP()
+        super(SPEP, self).__init__()
 
     def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """

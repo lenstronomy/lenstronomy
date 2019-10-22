@@ -28,7 +28,7 @@ class TestLensAnalysis(object):
             {'Rs': 0.29187068596715743, 'center_x': center_x,
             'center_y': center_y, 'Ra': 0.020000382843298824, 'e1': e1, 'e2': e2,
             'amp': 85.948773973262391}]
-        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
         r_eff_true = 0.25430388278592997
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y, numPix=1000, deltaPix=0.01)
@@ -69,7 +69,7 @@ class TestLensAnalysis(object):
             {'Rs': 0.29187068596715743, 'e1': 0, 'e2': 0, 'center_x': 0,
             'center_y': 0, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
-        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
         amplitudes, sigma, center_x, center_y = lensAnalysis.multi_gaussian_lens_light(kwargs_profile, n_comp=20)
         mge = MultiGaussian()
@@ -121,8 +121,7 @@ class TestLensAnalysis(object):
                           {'Rs': 0.29187068596715743, 'e1': e1, 'e2': e2, 'center_x': 0.020568531548241405,
                            'center_y': 0.036038490364800925, 'Ra': 0.020000382843298824,
                            'amp': 85.948773973262391}]
-        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True],
-                          'lens_light_model_internal_bool': [True, True],
+        kwargs_options = {'lens_model_list': ['SPEP'],
                           'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']}
         lensAnalysis = LensAnalysis(kwargs_options)
         flux_list, R_h_list = lensAnalysis.flux_components(kwargs_profile, n_grid=400, delta_grid=0.01, deltaPix=1., type="lens")
@@ -140,7 +139,7 @@ class TestLensAnalysis(object):
     def test_light2mass_conversion(self):
         numPix = 100
         deltaPix = 0.05
-        kwargs_options = {'lens_light_model_internal_bool': [True, True],
+        kwargs_options = {
                           'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
         kwargs_lens_light = [{'R_sersic': 0.5, 'n_sersic': 4, 'amp': 2, 'e1': 0, 'e2': 0.05},
                              {'R_sersic': 1.5, 'n_sersic': 1, 'amp': 2}]
@@ -231,6 +230,31 @@ class TestLensAnalysis(object):
         kappa_mean_list = lensAnalysis.mass_fraction_within_radius(kwargs_lens, center_x, center_y, theta_E, numPix=100)
         npt.assert_almost_equal(kappa_mean_list[0], 1, 2)
 
+    def test_point_source(self):
+        kwargs_model = {'lens_model_list': ['SPEMD', 'SHEAR_GAMMA_PSI'], 'point_source_model_list': ['SOURCE_POSITION']}
+        lensAnalysis = LensAnalysis(kwargs_model=kwargs_model)
+        source_x, source_y = 0.02, 0.1
+        kwargs_ps = [{'dec_source': source_y, 'ra_source': source_x, 'point_amp': 75.155}]
+        kwargs_lens = [{'e2': 0.1, 'center_x': 0, 'theta_E': 1.133, 'e1': 0.1, 'gamma': 2.063, 'center_y': 0}, {'gamma_ext': 0.026, 'psi_ext': 1.793}]
+        x_image, y_image = lensAnalysis.PointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+        from lenstronomy.LensModel.lens_model import LensModel
+        lensModel = LensModel(lens_model_list=['SPEMD', 'SHEAR_GAMMA_PSI'])
+        from lenstronomy.PointSource.point_source import PointSource
+        ps = PointSource(point_source_type_list=['SOURCE_POSITION'], lensModel=lensModel)
+        x_image_new, y_image_new = ps.image_position(kwargs_ps, kwargs_lens)
+        npt.assert_almost_equal(x_image_new[0], x_image[0], decimal=7)
+
+        solver = LensEquationSolver(lensModel=lensModel)
+
+        x_image_true, y_image_true = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.01, search_window=5,
+                                   precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
+                                   initial_guess_cut=False, verbose=False, x_center=0, y_center=0, num_random=0,
+                                   non_linear=False, magnification_limit=None)
+
+        print(x_image[0], y_image[0], x_image_true, y_image_true)
+        npt.assert_almost_equal(x_image_true, x_image[0], decimal=7)
+
 
 class TestRaise(unittest.TestCase):
 
@@ -239,7 +263,7 @@ class TestRaise(unittest.TestCase):
             analysis = LensAnalysis(kwargs_model={'lens_model_list': ['SIS']})
             analysis.multi_gaussian_lens(kwargs_lens=[{'theta_E'}])
         with self.assertRaises(ValueError):
-            analysis = LensAnalysis(kwargs_model={'lens_liht_model_list': ['GAUSSIAN']})
+            analysis = LensAnalysis(kwargs_model={'lens_light_model_list': ['GAUSSIAN']})
             analysis.flux_components(kwargs_light=[{}], n_grid=400, delta_grid=0.01, deltaPix=1., type="wrong")
 
 

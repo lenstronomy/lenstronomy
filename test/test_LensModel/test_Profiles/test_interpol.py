@@ -23,7 +23,7 @@ class TestInterpol(object):
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
-        interp_func = Interpol()
+        interp_func = Interpol(grid=True)
         interp_func_loop = Interpol(grid=False)
         interp_func.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
         interp_func_loop.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
@@ -65,7 +65,7 @@ class TestInterpol(object):
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
-        interp_func = Interpol()
+        interp_func = Interpol(grid=True)
         interp_func.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
         x, y = 1., 1.
         alpha_x, alpha_y = interp_func.derivatives(x, y, **{})

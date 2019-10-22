@@ -44,10 +44,10 @@ lenstronomy.LensModel.Profiles.coreBurkert module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.LensModel.Profiles.critical\_curve module
------------------------------------------------------
+lenstronomy.LensModel.Profiles.curved\_arc module
+-------------------------------------------------
 
-.. automodule:: lenstronomy.LensModel.Profiles.critical_curve
+.. automodule:: lenstronomy.LensModel.Profiles.curved_arc
     :members:
     :undoc-members:
     :show-inheritance:

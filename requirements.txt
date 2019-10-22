@@ -3,7 +3,7 @@ astropy>=2.0
 scipy>=0.19.1
 mpmath
 cosmohammer>=0.6.1
-emcee
+emcee>=3.0.0
 matplotlib
 sklearn
 numba>=0.43.1
@@ -12,4 +12,5 @@ dynesty
 pymultinest
 pypolychord
 nestcheck
+schwimmbad
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

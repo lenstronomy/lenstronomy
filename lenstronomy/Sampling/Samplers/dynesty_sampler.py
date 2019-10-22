@@ -10,6 +10,7 @@ import lenstronomy.Util.sampling_util as utils
 import dynesty
 import dynesty.utils as dyfunc
 
+
 class DynestySampler(NestedSampler):
     """
     Wrapper for dynamical nested sampling algorithm Dynesty by J. Speagle
@@ -78,7 +79,6 @@ class DynestySampler(NestedSampler):
                                         self.n_dims, copy=True)
         return p
 
-
     def log_likelihood(self, x):
         """
         compute the log-likelihood given list of parameters
@@ -86,7 +86,7 @@ class DynestySampler(NestedSampler):
         :param x: parameter values
         :return: log-likelihood (from the likelihood module)
         """
-        logL, _ = self._ll(x)
+        logL = self._ll(x)
         if not np.isfinite(logL):
             if not self._has_warned:
                 print("WARNING : logL is not finite : return very low value instead")

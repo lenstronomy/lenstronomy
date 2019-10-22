@@ -14,6 +14,7 @@ class TestLightProfile(object):
         pass
 
     def test_draw_light(self):
+        np.random.seed(41)
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
         kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=500000)
@@ -29,6 +30,7 @@ class TestLightProfile(object):
             npt.assert_almost_equal(light2d[i] / hist[i], 1, decimal=1)
 
     def test_draw_light_2d_linear(self):
+        np.random.seed(41)
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
         kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d_linear(kwargs_profile, n=100000)
@@ -47,6 +49,7 @@ class TestLightProfile(object):
             npt.assert_almost_equal(light2d[i] / hist[i], 1, decimal=1)
 
     def test_draw_light_PJaffe(self):
+        np.random.seed(41)
         lightProfile = LightProfile(profile_list=['PJAFFE'])
         kwargs_profile = [{'amp': 1., 'Rs': 0.5, 'Ra': 0.2}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
@@ -72,6 +75,7 @@ class TestLightProfile(object):
         npt.assert_almost_equal(light2d[5] / hist[5], 1, decimal=1)
 
     def test_ellipticity_in_profiles(self):
+        np.random.seed(41)
         lightProfile = ['HERNQUIST_ELLIPSE', 'PJAFFE_ELLIPSE']
         import lenstronomy.Util.param_util as param_util
         phi, q = 0.14944144075912402, 0.4105628122365978
@@ -86,7 +90,7 @@ class TestLightProfile(object):
             {'Rs': 0.29187068596715743, 'e1': e12, 'e2': e22, 'center_x': center_x,
             'center_y': center_y, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
-        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_model_internal_bool': [True], 'lens_light_model_internal_bool': [True, True], 'lens_light_model_list': lightProfile}
+        kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': lightProfile}
         lensAnalysis = LensAnalysis(kwargs_options)
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y, deltaPix=0.1,
                                                     numPix=100)
@@ -97,6 +101,7 @@ class TestLightProfile(object):
         npt.assert_almost_equal(r_eff / r_eff_spherical, 1, decimal=2)
 
     def test_light_3d(self):
+        np.random.seed(41)
         lightProfile = LightProfile(profile_list=['HERNQUIST'])
         r = np.logspace(-2, 2, 100)
         kwargs_profile = [{'amp': 1., 'Rs': 0.5}]

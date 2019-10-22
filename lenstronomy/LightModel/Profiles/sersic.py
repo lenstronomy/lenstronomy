@@ -17,7 +17,15 @@ class Sersic(SersicUtil):
 
     def function(self, x, y, amp, R_sersic, n_sersic, center_x=0, center_y=0):
         """
-        returns Sersic profile
+
+        :param x:
+        :param y:
+        :param amp: surface brightness/amplitude value at the half light radius
+        :param R_sersic: semi-major axis half light radius
+        :param n_sersic: Sersic index
+        :param center_x: center in x-coordinate
+        :param center_y: center in y-coordinate
+        :return: Sersic profile value at (x, y)
         """
         x_shift = x - center_x
         y_shift = y - center_y
@@ -36,12 +44,19 @@ class SersicElliptic(SersicUtil):
 
     def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0):
         """
-        returns Sersic profile
+
+        :param x:
+        :param y:
+        :param amp: surface brightness/amplitude value at the half light radius
+        :param R_sersic: semi-major axis half light radius
+        :param n_sersic: Sersic index
+        :param e1: eccentricity parameter
+        :param e2: eccentricity parameter
+        :param center_x: center in x-coordinate
+        :param center_y: center in y-coordinate
+        :return: Sersic profile value at (x, y)
         """
-        #if n_sersic < 0.2:
-        #    n_sersic = 0.2
-        #if R_sersic < 10.**(-6):
-        #    R_sersic = 10.**(-6)
+
         R_sersic = np.maximum(0, R_sersic)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x

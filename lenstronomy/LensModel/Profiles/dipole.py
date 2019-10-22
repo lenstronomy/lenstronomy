@@ -2,8 +2,10 @@ __author__ = 'sibirrer'
 
 
 import numpy as np
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class Dipole(object):
+
+class Dipole(LensProfileBase):
     """
     class for dipole response of two massive bodies (experimental)
     """

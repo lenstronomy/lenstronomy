@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 0.9.0 documentation</title>
+    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 1.0.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,6 +44,7 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.single_plane</span> <span class="k">import</span> <span class="n">SinglePlane</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.multi_plane</span> <span class="k">import</span> <span class="n">MultiPlane</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.lens_cosmo</span> <span class="k">import</span> <span class="n">LensCosmo</span>
+<span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">default_cosmology</span>
 
 
 <div class="viewcode-block" id="LensModel"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel">[docs]</a><span class="k">class</span> <span class="nc">LensModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -52,7 +53,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param lens_model_list: list of strings with lens model names</span>
@@ -68,23 +69,34 @@
 <span class="sd">        (see documentation in Profiles/numerical_alpha)</span>
 <span class="sd">        :param observed_convention_index: a list of lens indexes that correspond to observed positions on the sky, not</span>
 <span class="sd">        physical positions</span>
+<span class="sd">        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens</span>
+<span class="sd">        models. If None, &#39;z_source&#39; is used.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lens_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
+        <span class="k">if</span> <span class="n">z_source_convention</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">z_source_convention</span> <span class="o">=</span> <span class="n">z_source</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z_source_convention</span> <span class="o">=</span> <span class="n">z_source_convention</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redshift_list</span> <span class="o">=</span> <span class="n">lens_redshift_list</span>
+
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source needs to be set for multi-plane lens modelling.&#39;</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                          <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
-                                         <span class="n">observed_convention_index</span><span class="o">=</span><span class="n">observed_convention_index</span><span class="p">)</span>
+                                         <span class="n">observed_convention_index</span><span class="o">=</span><span class="n">observed_convention_index</span><span class="p">,</span>
+                                         <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
+                                          <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">z_lens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LensModel.ray_shooting"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.ray_shooting">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -122,11 +134,11 @@
 <span class="sd">        :param x_image: image position</span>
 <span class="sd">        :param y_image: image position</span>
 <span class="sd">        :param kwargs_lens: lens model parameter keyword argument list</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: arrival time of image positions in units of days</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="p">,</span> <span class="s1">&#39;arrival_time&#39;</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">except</span><span class="p">:</span>
             <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
             <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_lensCosmo&#39;</span><span class="p">):</span>
@@ -253,7 +265,27 @@
         <span class="n">f_xxy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xx_dy</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
         <span class="n">f_xyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_xy_dy</span> <span class="o">-</span> <span class="n">f_xy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
         <span class="n">f_yyy</span> <span class="o">=</span> <span class="p">(</span><span class="n">f_yy_dy</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
-        <span class="k">return</span> <span class="n">f_xxx</span><span class="p">,</span> <span class="n">f_xxy</span><span class="p">,</span> <span class="n">f_xyy</span><span class="p">,</span> <span class="n">f_yyy</span></div></div>
+        <span class="k">return</span> <span class="n">f_xxx</span><span class="p">,</span> <span class="n">f_xxy</span><span class="p">,</span> <span class="n">f_xyy</span><span class="p">,</span> <span class="n">f_yyy</span></div>
+
+<div class="viewcode-block" id="LensModel.set_static"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set this instance to a static lens model. This can improve the speed in evaluating lensing quantities at</span>
+<span class="sd">        different positions but must not be used with different lens model parameters!</span>
+
+<span class="sd">        :param kwargs: lens model keyword argument list</span>
+<span class="sd">        :return: kwargs_updated (in case of image position convention in multiplane lensing this is changed)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensModel.set_dynamic"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.set_dynamic">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deletes cache for static setting and makes sure the observed convention in the position of lensing profiles in</span>
+<span class="sd">        the multiplane setting is enabled. Dynamic is the default setting of this class enabling an accurate computation</span>
+<span class="sd">        of lensing quantities with different parameters in the lensing profiles.</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span></div></div>
 </pre></div>
 
           </div>
@@ -286,7 +318,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 0.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

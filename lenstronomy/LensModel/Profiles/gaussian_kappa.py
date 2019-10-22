@@ -5,9 +5,10 @@ import numpy as np
 import scipy.special
 import scipy.integrate as integrate
 from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 
-class GaussianKappa(object):
+class GaussianKappa(LensProfileBase):
     """
     this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix
     """
@@ -18,6 +19,7 @@ class GaussianKappa(object):
     def __init__(self):
         self.gaussian = Gaussian()
         self.ds = 0.00001
+        super(LensProfileBase, self).__init__()
 
     def function(self, x, y, amp, sigma, center_x=0, center_y=0):
         """

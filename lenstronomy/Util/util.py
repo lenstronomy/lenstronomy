@@ -96,6 +96,11 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
     :param M: 2x2 matrix to transform angular to pixel coordinates
     :return: transformed coordinate systems of input ra and dec
     """
+    if len(np.shape(np.array([ra, dec]))) == 3 :
+        #print (np.shape(np.array([ra, dec])))
+        ra = ra[0]
+        dec =dec[0] #TODO: dirty fix for a single image, find where the bug is coming from
+        #print (np.shape(np.array([ra, dec])))
     x, y = M.dot(np.array([ra, dec]))
     return x + x_0, y + y_0
 

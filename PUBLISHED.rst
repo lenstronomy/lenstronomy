@@ -8,8 +8,8 @@ We are happy to include your publication in this list.
 
 
 
-Core **lenstronomy** methodology and software publications
-----------------------------------------------------------
+Core lenstronomy methodology and software publications
+------------------------------------------------------
 
 * lenstronomy: Multi-purpose gravitational lens modelling software package; `Birrer & Amara 2018 <https://ui.adsabs.harvard.edu/abs/2018PDU....22..189B>`_
     *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and gives some use cases.*

@@ -69,6 +69,14 @@ Automatized Lens Modeling
     *This work presents a uniform modelling framework to model 13 quadruply lensed quasars in three HST bands.*
 
 
+Quasar-host galaxy decomposition
+--------------------------------
+
+* The mass relations between supermassive black holes and their host galaxies at 1<z<2 with HST-WFC3; `Ding et al. 2019 <https://arxiv.org/abs/1910.11875>`_
+    *Quasar host galaxy decomposition at high redshift on HST imaging and marginalization over PSF uncertainties.*
+
+
+
 Theory papers
 -------------
 

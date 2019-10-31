@@ -4,14 +4,14 @@ import lenstronomy.Util.image_util as image_util
 import numpy as np
 
 
-def data_configure_simple(numPix, deltaPix, exposure_time, sigma_bkg, center_ra=0, center_dec=0, inverse=False):
+def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=None, center_ra=0, center_dec=0, inverse=False):
     """
     configures the data keyword arguments with a coordinate grid centered at zero.
 
     :param numPix: number of pixel (numPix x numPix)
     :param deltaPix: pixel size (in angular units)
     :param exposure_time: exposure time
-    :param sigma_bkg: background noise (Gaussian sigma)
+    :param background_rms: background noise (Gaussian sigma)
     :param inverse: if True, coordinate system is ra to the left, if False, to the right
     :return: keyword arguments that can be used to construct a Data() class instance of lenstronomy
     """
@@ -19,11 +19,11 @@ def data_configure_simple(numPix, deltaPix, exposure_time, sigma_bkg, center_ra=
     # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
     x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, center_ra=center_ra, center_dec=center_dec, subgrid_res=1, inverse=inverse)
     # mask (1= model this pixel, 0= leave blanck)
-    exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
+    # exposure_map = np.ones((numPix, numPix)) * exposure_time  # individual exposure time/weight per pixel
 
     kwargs_data = {
-        'background_rms': sigma_bkg,
-        'exposure_time': exposure_map
+        'background_rms': background_rms,
+        'exposure_time': exposure_time
         , 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0, 'transform_pix2angle': Mpix2coord
         , 'image_data': np.zeros((numPix, numPix))
         }

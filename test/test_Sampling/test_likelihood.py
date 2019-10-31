@@ -153,7 +153,7 @@ class TestLikelihoodModule(object):
         kwargs_constraints = {}
         param_class = Param(kwargs_model, **kwargs_constraints)
 
-        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=0.1, exposure_time=1, sigma_bkg=0.1)
+        kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=0.1, exposure_time=1, background_rms=0.1)
         data_class = ImageData(**kwargs_data)
         kwargs_psf = {'psf_type': 'NONE'}
         psf_class = PSF(**kwargs_psf)

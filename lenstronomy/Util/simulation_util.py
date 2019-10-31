@@ -4,7 +4,7 @@ import lenstronomy.Util.image_util as image_util
 import numpy as np
 
 
-def data_configure_simple(numPix, deltaPix, exposure_time=1, sigma_bkg=1, center_ra=0, center_dec=0, inverse=False):
+def data_configure_simple(numPix, deltaPix, exposure_time, sigma_bkg, center_ra=0, center_dec=0, inverse=False):
     """
     configures the data keyword arguments with a coordinate grid centered at zero.
 

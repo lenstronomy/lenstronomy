@@ -99,7 +99,7 @@ class LensAnalysis(object):
             f_list.append(np.average(f_r))
         return f_list
 
-    def radial_lens_profile(self, r_list, kwargs_lens, center_x=0, center_y=0, model_bool_list=None):
+    def radial_lens_profile(self, r_list, kwargs_lens, center_x=None, center_y=None, model_bool_list=None):
         """
 
         :param r_list: list of radii to compute the spherically averaged lens light profile
@@ -109,6 +109,11 @@ class LensAnalysis(object):
         :param model_bool_list: bool list or None, indicating which profiles to sum over
         :return: flux amplitudes at r_list radii spherically averaged
         """
+        if 'center_x' in kwargs_lens[0]:
+            center_x = kwargs_lens[0]['center_x']
+            center_y = kwargs_lens[0]['center_y']
+        else:
+            center_x, center_y = 0, 0
         kappa_list = []
         for r in r_list:
             x, y = util.points_on_circle(r, num_points=20)

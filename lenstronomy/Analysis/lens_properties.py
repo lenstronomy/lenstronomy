@@ -168,7 +168,8 @@ class LensProp(object):
             massModel = LensModelExtensions(lensModel)
             theta_E = massModel.effective_einstein_radius(kwargs_profile)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            mass_r = lensModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
+            mass_r = self.lens_analysis.radial_lens_profile(r_array, kwargs_lens, model_bool_list=lens_model_kinematics_bool)
+            #mass_r = lensModel.kappa(r_array, np.zeros_like(r_array), kwargs_profile)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
@@ -191,10 +192,12 @@ class LensProp(object):
             kwargs_light = [{'Rs': r_eff, 'amp': 1.}]
         else:
             if MGE_light is True:
-                lightModel = LightModel(light_profile_list)
-                r_array = np.logspace(-3, 2, 200) * r_eff * 2
-                flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
-                amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
+                #lightModel = LightModel(light_profile_list)
+                #r_array = np.logspace(-3, 2, 200) * r_eff * 2
+                amps, sigmas, center_x, center_y = self.lens_analysis.multi_gaussian_lens_light(kwargs_lens_light, deltaPix=0.01, numPix=100,
+                                                             model_bool_list=light_model_kinematics_bool, n_comp=20)
+                #flux_r = lightModel.surface_brightness(r_array, 0, kwargs_light)
+                #amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
                 light_profile_list = ['MULTI_GAUSSIAN']
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return mass_profile_list, kwargs_profile, light_profile_list, kwargs_light

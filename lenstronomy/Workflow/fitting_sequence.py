@@ -198,7 +198,7 @@ class FittingSequence(object):
 
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
-            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi)
+            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi, threadCount=threadCount)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

@@ -13,4 +13,5 @@ pymultinest
 pypolychord
 nestcheck
 schwimmbad
+multiprocess>=0.70.8
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

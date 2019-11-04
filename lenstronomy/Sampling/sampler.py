@@ -9,6 +9,7 @@ from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import MpiUtil
 import emcee
 from schwimmbad import MPIPool
+from multiprocess import Pool
 
 
 class Sampler(object):
@@ -87,7 +88,7 @@ class Sampler(object):
             print('===================')
         return result, [X2_list, pos_list, vel_list, []]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False,threadCount=1):
         numParam, _ = self.chain.param.num_param()
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()
@@ -100,7 +101,12 @@ class Sampler(object):
             sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL, pool=pool)
         else:
             is_master_pool = True
-            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood)
+            if threadCount > 1 :
+                pool = Pool(processes=threadCount)
+            else :
+                pool = None
+            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood, pool=pool)
+
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True)

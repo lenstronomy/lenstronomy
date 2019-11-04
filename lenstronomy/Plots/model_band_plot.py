@@ -311,8 +311,6 @@ class ModelBandPlot(object):
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
 
-
-
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(ax, coords_source, ra_caustic_list,

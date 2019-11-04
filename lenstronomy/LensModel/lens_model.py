@@ -101,7 +101,7 @@ class LensModel(object):
             x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
             fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
             if not hasattr(self, '_lensCosmo'):
-                raise ValueError("LensModel class was not initalized with lens and source redshifts!")
+                raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)
         return arrival_time
 
@@ -119,7 +119,7 @@ class LensModel(object):
         """
         return self.lens_model.potential(x, y, kwargs, k=k)
 
-    def alpha(self, x, y, kwargs, k=None):
+    def alpha(self, x, y, kwargs, k=None, diff=None):
         """
         deflection angles
 
@@ -129,9 +129,18 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
+        :param diff: None or float. If set, computes the deflection as a finite numerical differential of the lensing
+         potential. This differential is only applicable in the single lensing plane where the form of the lensing
+         potential is analytically known
         :return: deflection angles in units of arcsec
         """
-        return self.lens_model.alpha(x, y, kwargs, k=k)
+        if diff is None:
+            return self.lens_model.alpha(x, y, kwargs, k=k)
+        elif self.multi_plane is False:
+            return self._deflection_differential(x, y, kwargs, k=k, diff=diff)
+        else:
+            raise ValueError('numerical differentiation of lensing potential is not available in the multi-plane '
+                             'setting as analytical form of lensing potential is not available.')
 
     def hessian(self, x, y, kwargs, k=None, diff=None):
         """
@@ -273,6 +282,24 @@ class LensModel(object):
         :return: None
         """
         self.lens_model.set_dynamic()
+
+    def _deflection_differential(self, x, y, kwargs, k=None, diff=0.00001):
+        """
+
+        :param x: x-coordinate
+        :param y: y-coordinate
+        :param kwargs: keyword argument list
+        :param k: int or None, if set, only evaluates the differential from one model component
+        :param diff: finite differential length
+        :return: f_x, f_y
+        """
+        phi_dx = self.lens_model.potential(x + diff, y, kwargs=kwargs, k=k)
+        phi_dy = self.lens_model.potential(x, y + diff, kwargs=kwargs, k=k)
+        phi_dx_ = self.lens_model.potential(x - diff, y, kwargs=kwargs, k=k)
+        phi_dy_ = self.lens_model.potential(x, y - diff, kwargs=kwargs, k=k)
+        f_x = (phi_dx - phi_dx_) / diff / 2
+        f_y = (phi_dy - phi_dy_) / diff / 2
+        return f_x, f_y
 
     def _hessian_differential(self, x, y, kwargs, k=None, diff=0.00001):
         """

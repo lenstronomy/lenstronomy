@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Profiles.nfw import NFW
+import unittest
 
 
 class TestLensModel(object):
@@ -30,7 +31,7 @@ class TestLensModel(object):
         lens_model_list = ['NFW']
         lensModel = LensModel(lens_model_list)
         x,y = 0.2,1
-        kwargs = [{'alpha_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y':0}]
+        kwargs = [{'alpha_Rs':1, 'Rs': 0.5, 'center_x':0, 'center_y': 0}]
         value = lensModel.potential(x,y,kwargs)
         nfw_interp = NFW(interpol=True, lookup=True)
         value_interp_lookup = nfw_interp.function(x, y, **kwargs[0])
@@ -45,12 +46,19 @@ class TestLensModel(object):
 
     def test_potential(self):
         output = self.lensModel.potential(x=1., y=1., kwargs=self.kwargs)
-        assert output == 0.77880078307140488/(8*np.pi)
+        npt.assert_almost_equal(output, 0.77880078307140488/(8*np.pi), decimal=8)
+        #assert output == 0.77880078307140488/(8*np.pi)
 
     def test_alpha(self):
         output1, output2 = self.lensModel.alpha(x=1., y=1., kwargs=self.kwargs)
-        assert output1 == -0.19470019576785122/(8*np.pi)
-        assert output2 == -0.19470019576785122/(8*np.pi)
+        npt.assert_almost_equal(output1, -0.19470019576785122/(8*np.pi), decimal=8)
+        npt.assert_almost_equal(output2, -0.19470019576785122 / (8 * np.pi), decimal=8)
+        #assert output1 == -0.19470019576785122/(8*np.pi)
+        #assert output2 == -0.19470019576785122/(8*np.pi)
+
+        output1_diff, output2_diff = self.lensModel.alpha(x=1., y=1., kwargs=self.kwargs, diff=0.00001)
+        npt.assert_almost_equal(output1_diff, output1, decimal=5)
+        npt.assert_almost_equal(output2_diff, output2, decimal=5)
 
     def test_gamma(self):
         lensModel = LensModel(lens_model_list=['SHEAR'])
@@ -80,8 +88,10 @@ class TestLensModel(object):
 
     def test_ray_shooting(self):
         delta_x, delta_y = self.lensModel.ray_shooting(x=1., y=1., kwargs=self.kwargs)
-        assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
-        assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
+        npt.assert_almost_equal(delta_x, 1 + 0.19470019576785122/(8*np.pi), decimal=8)
+        npt.assert_almost_equal(delta_y, 1 + 0.19470019576785122 / (8 * np.pi), decimal=8)
+        #assert delta_x == 1 + 0.19470019576785122/(8*np.pi)
+        #assert delta_y == 1 + 0.19470019576785122/(8*np.pi)
 
     def test_arrival_time(self):
         z_lens = 0.5
@@ -110,6 +120,21 @@ class TestLensModel(object):
 
         curl = lensModel.curl(x=1, y=1, kwargs=kwargs)
         assert curl != 0
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs = [{'alpha_Rs': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0}]
+            lensModel = LensModel(['NFW'], multi_plane=True, lens_redshift_list=[1], z_source=2)
+            f_x, f_y = lensModel.alpha(1, 1, kwargs, diff=0.0001)
+        with self.assertRaises(ValueError):
+            lensModel = LensModel(['NFW'], multi_plane=True, lens_redshift_list=[1])
+        with self.assertRaises(ValueError):
+            kwargs = [{'alpha_Rs': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0}]
+            lensModel = LensModel(['NFW'], multi_plane=False)
+            t_arrival = lensModel.arrival_time(1, 1, kwargs)
 
 
 if __name__ == '__main__':

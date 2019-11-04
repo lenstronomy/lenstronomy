@@ -229,8 +229,9 @@ def source_position_plot(ax, coords, ra_pos, dec_pos):
     """
     deltaPix = coords.pixel_width
     if len(ra_pos) > 0:
-        x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
-        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+        for ra, dec in zip(ra_pos, dec_pos):
+            x_source, y_source = coords.map_coord2pix(ra, dec)
+            ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax
 
 
@@ -792,6 +793,7 @@ class ModelBandPlot(object):
                          flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            print(ra_source, dec_source, 'test source position ')
             source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 

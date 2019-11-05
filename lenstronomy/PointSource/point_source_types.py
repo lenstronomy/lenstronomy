@@ -83,7 +83,7 @@ class LensedPositions(object):
         x_source, y_source = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
         x_source = np.mean(x_source)
         y_source = np.mean(y_source)
-        return np.array(x_source), np.array(y_source)
+        return x_source, y_source
 
     def image_amplitude(self, kwargs_ps, kwargs_lens=None, x_pos=None, y_pos=None, **kwargs):  # min_distance=0.01, search_window=5, precision_limit=10**(-10),num_iter_max=100, x_center=0, y_center=0):
         if self._fixed_magnification:

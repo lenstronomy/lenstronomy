@@ -20,8 +20,8 @@ class PolarShapelets(LensProfileBase):
 
     def __init__(self):
         n = 10
-        self.poly = [[[] for i in range(n)] for i in range(n)]
-        for i in range(0,n):
+        self.poly = [[[] for i in range(n)] for j in range(n)]
+        for i in range(0, n):
             for j in range(0, n):
                 self.poly[i][j] = scipy.special.genlaguerre(i, j)
         super(PolarShapelets, self).__init__()
@@ -222,7 +222,8 @@ class PolarShapelets(LensProfileBase):
                     output_y[nl][nr-2] += a_lr*np.sqrt((nr)*(nr-1))*1j/4
         return output_x/beta**2, output_y/beta**2  #attention complex numbers!!!!
 
-    def _get_num_l(self, n_coeffs):
+    @staticmethod
+    def _get_num_l(n_coeffs):
         """
 
         :param n_coeffs: number of coeffs

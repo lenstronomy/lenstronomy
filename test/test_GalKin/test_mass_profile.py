@@ -1,5 +1,5 @@
 """
-Tests for `galkin` module.
+Tests for `Galkin` module.
 """
 import pytest
 import numpy.testing as npt

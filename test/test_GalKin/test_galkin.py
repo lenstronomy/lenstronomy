@@ -97,8 +97,8 @@ class TestGalkin(object):
         lin_I_R = np.zeros_like(R)
         log_I_R = np.zeros_like(R)
         for i in range(len(R)):
-            lin_I_R[i] = galkin_linear.I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
-            log_I_R[i] = galkin_log.I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            lin_I_R[i] = galkin_linear._I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            log_I_R[i] = galkin_log._I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
         print(log_I_R/lin_I_R)
         for i in range(len(R)):
             npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)

@@ -168,7 +168,7 @@ def make_grid_transformed(numPix, Mpix2Angle):
 
 def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, center_dec=0, left_lower=False, inverse=True):
     """
-    same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel
+    same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel scale per axis
@@ -188,11 +188,11 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
     else:
         delta_x = deltapix_eff
     if left_lower is True:
-        ra_grid = matrix[:, 0]*deltapix
-        dec_grid = matrix[:, 1]*deltapix
+        ra_grid = matrix[:, 0] * delta_x
+        dec_grid = matrix[:, 1] * deltapix_eff
     else:
-        ra_grid = (matrix[:, 0] - (numPix_eff-1)/2.)*delta_x
-        dec_grid = (matrix[:, 1] - (numPix_eff-1)/2.)*deltapix_eff
+        ra_grid = (matrix[:, 0] - (numPix_eff-1)/2.) * delta_x
+        dec_grid = (matrix[:, 1] - (numPix_eff-1)/2.) * deltapix_eff
     shift = (subgrid_res-1)/(2.*subgrid_res)*deltapix
     ra_grid -= shift + center_ra
     dec_grid -= shift + center_dec

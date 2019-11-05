@@ -94,14 +94,14 @@ class Galkin(object):
         """
         sigma2_R_sum = 0
         for i in range(0, self._num_sampling):
-            sigma2_R = self.draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur)
+            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur)
             sigma2_R_sum += sigma2_R
         sigma_s2_average = sigma2_R_sum / self._num_sampling
-        # apply unit conversion from arc seconds and deflections to physical velocity disperison in (km/s)
+        # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         sigma_s2_average *= 2 * const.G  # correcting for integral prefactor
         return np.sqrt(sigma_s2_average/(const.arcsec**2 * self.cosmo.D_d**2 * const.Mpc))/1000.  # in units of km/s
 
-    def draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture):
+    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture):
         """
 
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
@@ -114,31 +114,31 @@ class Galkin(object):
          falls in the aperture after displacing with the seeing
         """
         while True:
-            R = self.lightProfile.draw_light_2d(kwargs_light)  # draw r
-            x, y = util.draw_xy(R)  # draw projected R
+            R = self.lightProfile.draw_light_2d(kwargs_light)  # draw r in arcsec
+            x, y = util.draw_xy(R)  # draw projected R in arcsec
             x_, y_ = self._psf.displace_psf(x, y)
             bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)
             if bool is True:
                 break
-        sigma2_R = self.sigma2_R(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        sigma2_R = self._sigma2_R(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_R
 
-    def sigma2_R(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def _sigma2_R(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         returns unweighted los velocity dispersion for a specified projected radius
 
-        :param R: 2d projected radius (in angular units)
+        :param R: 2d projected radius (in angular units of arcsec)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
         :return:
         """
-        I_R_sigma2 = self.I_R_simga2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2 = self._I_R_simga2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         I_R = self.lightProfile.light_2d(R, kwargs_light)
         return I_R_sigma2 / I_R
 
-    def I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)
         modulo pre-factor 2*G
@@ -168,7 +168,7 @@ class Galkin(object):
         """
         integrand of A15 (in log space) in Mamon&Lokas 2005
 
-        :param r: 3d radius
+        :param r: 3d radius in arc seconds
         :param R: 2d projected radius
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)

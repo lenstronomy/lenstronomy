@@ -247,6 +247,11 @@ class TestNumericsProfile(object):
         lens_model = ['CNFW']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_cnfw_ellipse(self):
+        kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_core': 0.1, 'e1': 0.04, 'e2': -0.04}
+        lens_model = ['CNFW_ELLIPSE']
+        self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

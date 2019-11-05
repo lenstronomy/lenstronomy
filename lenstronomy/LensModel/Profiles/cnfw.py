@@ -329,11 +329,8 @@ class CNFW(LensProfileBase):
     def _alpha2rho0(self, alpha_Rs, Rs, r_core):
 
         b = r_core * Rs ** -1
-
         gx = self._G(1., b)
-
         rho0 = alpha_Rs * (4 * Rs ** 2 * gx) ** -1
-
         return rho0
 
     def _rho2alpha(self, rho0, Rs, r_core):

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.tnfw &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.tnfw &#8212; lenstronomy 1.1.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -85,6 +85,7 @@
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfwPot</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0_input</span><span class="p">,</span> <span class="n">r_trunc</span><span class="p">)</span>
+        <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;the potential of a truncated NFW profile is not implemented and may lead to crucial inaccuracies!&#39;</span><span class="p">)</span>
         <span class="c1">#TODO: truncated NFW potential not in place yet!</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
@@ -486,7 +487,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

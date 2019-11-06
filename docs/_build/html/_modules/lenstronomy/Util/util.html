@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 1.1.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -135,7 +135,7 @@
 <span class="sd">    :param x_0: pixel value in x-axis of ra,dec = 0,0</span>
 <span class="sd">    :param y_0: pixel value in y-axis of ra,dec = 0,0</span>
 <span class="sd">    :param M: 2x2 matrix to transform angular to pixel coordinates</span>
-<span class="sd">    :return: transformed coordnate systems of input ra and dec</span>
+<span class="sd">    :return: transformed coordinate systems of input ra and dec</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">]))</span>
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y_0</span></div>
@@ -207,13 +207,15 @@
     <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span></div>
 
 
-<div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel</span>
+<span class="sd">    same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel</span>
 
-<span class="sd">    :param numPix:</span>
-<span class="sd">    :param deltapix:</span>
-<span class="sd">    :param subgrid_res:</span>
+<span class="sd">    :param numPix: number of pixels per axis</span>
+<span class="sd">    :param deltapix: pixel scale per axis</span>
+<span class="sd">    :param subgrid_res: supersampling resolution relative to the stated pixel size</span>
+<span class="sd">    :param center_ra: center of the grid</span>
+<span class="sd">    :param center_dec: center of the grid</span>
 <span class="sd">    :param left_lower: sets the zero point at the lower left corner of the pixels</span>
 <span class="sd">    :param inverse: bool, if true sets East as left, otherwise East is righrt</span>
 <span class="sd">    :return:</span>
@@ -227,21 +229,21 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">delta_x</span> <span class="o">=</span> <span class="n">deltapix_eff</span>
     <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
-        <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">deltapix</span>
+        <span class="n">ra_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_x</span>
+        <span class="n">dec_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">x_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">delta_x</span>
-        <span class="n">y_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix_eff</span>
+        <span class="n">ra_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_x</span>
+        <span class="n">dec_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
     <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">subgrid_res</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span><span class="o">*</span><span class="n">deltapix</span>
-    <span class="n">x_grid</span> <span class="o">-=</span> <span class="n">shift</span>
-    <span class="n">y_grid</span> <span class="o">-=</span> <span class="n">shift</span>
-    <span class="n">ra_at_xy_0</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">dec_at_xy_0</span> <span class="o">=</span> <span class="n">y_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">x_at_radec_0</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
-    <span class="n">y_at_radec_0</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">ra_grid</span> <span class="o">-=</span> <span class="n">shift</span> <span class="o">+</span> <span class="n">center_ra</span>
+    <span class="n">dec_grid</span> <span class="o">-=</span> <span class="n">shift</span> <span class="o">+</span> <span class="n">center_dec</span>
+    <span class="n">ra_at_xy_0</span> <span class="o">=</span> <span class="n">ra_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">dec_at_xy_0</span> <span class="o">=</span> <span class="n">dec_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
     <span class="n">Mpix2coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">delta_x</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">deltapix_eff</span><span class="p">]])</span>
     <span class="n">Mcoord2pix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Mpix2coord</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span></div>
+    <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span> <span class="o">=</span> <span class="n">map_coord2pix</span><span class="p">(</span><span class="o">-</span><span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="o">-</span><span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">Mcoord2pix</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span></div>
 
 
 <div class="viewcode-block" id="grid_from_coordinate_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.grid_from_coordinate_transform">[docs]</a><span class="k">def</span> <span class="nf">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">):</span>
@@ -418,14 +420,14 @@
     <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">indexes</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+<div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns a set of uniform points around a circle</span>
 <span class="sd">    :param radius: radius of the circle</span>
-<span class="sd">    :param points: number of points on the circle</span>
+<span class="sd">    :param num_points: number of points on the circle</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">num_points</span><span class="p">)</span>
     <span class="n">x_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">radius</span>
     <span class="n">y_coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">*</span><span class="n">radius</span>
     <span class="k">return</span> <span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span></div>
@@ -574,7 +576,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

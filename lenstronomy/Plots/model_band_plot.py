@@ -249,17 +249,22 @@ class ModelBandPlot(object):
         else:
             x_grid_source, y_grid_source, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
             numPix, deltaPix)
-        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
-                                    ra_at_xy_0=ra_at_xy_0,
-                                    dec_at_xy_0=dec_at_xy_0)
+
         if center is not None:
+            center_x, center_y = center[0], center[1]
             x_grid_source += center[0]
             y_grid_source += center[1]
         elif len(self._kwargs_source_partial) > 0:
-            x_center = self._kwargs_source_partial[0]['center_x']
-            y_center = self._kwargs_source_partial[0]['center_y']
-            x_grid_source += x_center
-            y_grid_source += y_center
+            center_x = self._kwargs_source_partial[0]['center_x']
+            center_y = self._kwargs_source_partial[0]['center_y']
+            x_grid_source += center_x
+            y_grid_source += center_y
+        else:
+            center_x = 0
+            center_y = 0
+        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0 + center_x,
+                                    dec_at_xy_0=dec_at_xy_0 + center_y)
 
         source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
                                                                self._kwargs_source_partial)
@@ -326,6 +331,7 @@ class ModelBandPlot(object):
                          flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            print('test source position', ra_source, dec_source, center)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 

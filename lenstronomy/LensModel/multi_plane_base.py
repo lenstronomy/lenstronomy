@@ -76,12 +76,12 @@ class MultiPlaneBase(ProfileListBase):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
-        This can lead to duplications in the computation of deflection angles.
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
+         This can lead to duplications in the computation of deflection angles.
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
-        If not set, will compute the distance each time this function gets executed.
+         If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
-        If not set, will compute the distance each time this function gets executed.
+         If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
         x = np.array(x, dtype=float)

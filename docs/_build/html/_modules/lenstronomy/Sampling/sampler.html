@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.sampler &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Sampling.sampler &#8212; lenstronomy 1.1.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,6 +50,7 @@
 <span class="kn">from</span> <span class="nn">cosmoHammer.util</span> <span class="k">import</span> <span class="n">MpiUtil</span>
 <span class="kn">import</span> <span class="nn">emcee</span>
 <span class="kn">from</span> <span class="nn">schwimmbad</span> <span class="k">import</span> <span class="n">MPIPool</span>
+<span class="kn">from</span> <span class="nn">multiprocess</span> <span class="k">import</span> <span class="n">Pool</span>
 
 
 <div class="viewcode-block" id="Sampler"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.sampler.Sampler">[docs]</a><span class="k">class</span> <span class="nc">Sampler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -124,11 +125,11 @@
             <span class="nb">print</span><span class="p">(</span><span class="n">kwargs_return</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_ps&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;point source result&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">kwargs_return</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_special&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;special param result&#39;</span><span class="p">)</span>
             <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time used for PSO&#39;</span><span class="p">,</span> <span class="n">print_key</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time used for &#39;</span><span class="p">,</span> <span class="n">print_key</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;===================&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="n">X2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">,</span> <span class="p">[]]</span></div>
 
-<div class="viewcode-block" id="Sampler.mcmc_emcee"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_emcee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Sampler.mcmc_emcee"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_emcee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="n">numParam</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
         <span class="n">p0</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">)</span>
         <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
@@ -141,7 +142,12 @@
             <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">numParam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">logL</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">is_master_pool</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">numParam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">threadCount</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">:</span>
+                <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">threadCount</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">numParam</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+
         <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">p0</span><span class="p">,</span> <span class="n">n_burn</span> <span class="o">+</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
         <span class="n">flat_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_chain</span><span class="p">(</span><span class="n">discard</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_log_prob</span><span class="p">(</span><span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -185,7 +191,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

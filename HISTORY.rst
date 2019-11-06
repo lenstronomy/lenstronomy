@@ -141,6 +141,12 @@ History
 * marking version as 5 - Stable/production mode
 
 1.0.1 (2019-10-01)
-+++++++++++++++++
+++++++++++++++++++
 * compatible with emcee 3.0.0
 * removed CosmoHammer MCMC sampling
+
+1.1.0 (2019-11-5)
++++++++++++++++++
+* plotting routines split in different files
+* curved arc parameterization and eigenvector differentials
+* numerical differentials as part of the LensModel core class

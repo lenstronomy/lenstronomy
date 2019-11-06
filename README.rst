@@ -49,10 +49,12 @@ To run lens models with elliptical mass distributions, the fastell4py package, o
 is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
 
 .. code-block:: bash
+
     $ sudo apt-get install gfortran
     $ git clone https://github.com/sibirrer/fastell4py.git <desired location>
     $ cd <desired location>
     $ python setup.py install --user
+
 
 Additional python libraries:
 

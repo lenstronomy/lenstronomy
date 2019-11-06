@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.shapelet_pot_polar &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.shapelet_pot_polar &#8212; lenstronomy 1.1.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -61,15 +61,15 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">poly</span> <span class="o">=</span> <span class="p">[[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">poly</span> <span class="o">=</span> <span class="p">[[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">poly</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">genlaguerre</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PolarShapelets</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PolarShapelets.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.shapelet_pot_polar.PolarShapelets.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">coeffs</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">shapelets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createShapelet</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
-        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">]))</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shapeletOutput</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">shapelets</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
@@ -78,7 +78,7 @@
 <span class="sd">        returns df/dx and df/dy of the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shapelets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createShapelet</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
-        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">]))</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
         <span class="n">alpha1_shapelets</span><span class="p">,</span> <span class="n">alpha2_shapelets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alphaShapelets</span><span class="p">(</span><span class="n">shapelets</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
         <span class="n">f_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shapeletOutput</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">alpha1_shapelets</span><span class="p">)</span>
         <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shapeletOutput</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">alpha2_shapelets</span><span class="p">)</span>
@@ -89,7 +89,7 @@
 <span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">shapelets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_createShapelet</span><span class="p">(</span><span class="n">coeffs</span><span class="p">)</span>
-        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">]))</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
         <span class="n">kappa_shapelets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kappaShapelets</span><span class="p">(</span><span class="n">shapelets</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
         <span class="n">gamma1_shapelets</span><span class="p">,</span> <span class="n">gamma2_shapelets</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_gammaShapelets</span><span class="p">(</span><span class="n">shapelets</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
         <span class="n">kappa_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shapeletOutput</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">kappa_shapelets</span><span class="p">)</span>
@@ -156,7 +156,7 @@
                 <span class="n">values</span> <span class="o">+=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">values</span><span class="o">.</span><span class="n">real</span>
 
-    <span class="k">def</span> <span class="nf">_chi_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span><span class="n">nr</span><span class="p">,</span><span class="n">beta</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_chi_lr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the generalized polar basis function in the convention of Massey&amp;Refregier eqn 8</span>
 
@@ -204,7 +204,6 @@
                 <span class="k">if</span> <span class="n">nr</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">:</span>
                     <span class="n">output</span><span class="p">[</span><span class="n">nl</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">nr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+=</span><span class="n">a_lr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">nl</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">nr</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
         <span class="k">return</span> <span class="n">output</span><span class="o">/</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span>
-
 
     <span class="k">def</span> <span class="nf">_alphaShapelets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">shapelets</span><span class="p">,</span> <span class="n">beta</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -264,7 +263,8 @@
                     <span class="n">output_y</span><span class="p">[</span><span class="n">nl</span><span class="p">][</span><span class="n">nr</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span> <span class="o">+=</span> <span class="n">a_lr</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">nr</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">nr</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="o">/</span><span class="mi">4</span>
         <span class="k">return</span> <span class="n">output_x</span><span class="o">/</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">output_y</span><span class="o">/</span><span class="n">beta</span><span class="o">**</span><span class="mi">2</span>  <span class="c1">#attention complex numbers!!!!</span>
 
-    <span class="k">def</span> <span class="nf">_get_num_l</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_coeffs</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_num_l</span><span class="p">(</span><span class="n">n_coeffs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param n_coeffs: number of coeffs</span>
@@ -304,7 +304,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

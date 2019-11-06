@@ -83,7 +83,7 @@ def transform_e1e2(x, y, e1, e2, center_x, center_y):
     :param e2: eccentricity
     :param center_x: center of distortion
     :param center_y: center of distortion
-    :return: distorted coordinates x_, y_
+    :return: distorted coordinates x', y'
     """
     phi_G, q = ellipticity2phi_q(e1, e2)
     x_shift = x - center_x

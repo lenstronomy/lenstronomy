@@ -56,15 +56,7 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
     $ python setup.py install --user
 
 
-Additional python libraries:
-
-* ``astropy``
-* ``dynesty``
-* ``pymultinest``
-* ``pypolychord``
-* ``nestcheck``
-* ``CosmoHammer``
-* standard python libraries (``numpy``, ``scipy``)
+Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``, ``CosmoHammer``
 
 
 
@@ -79,7 +71,7 @@ Modelling Features
 * numerical options for sub-grid ray-tracing and sub-pixel convolution
 * Particle swarm optimization for parameter fitting
 * MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)
-* Kinematic modelling (Jeans equation) of lens deflector galaxy
+* Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy
 * Cosmographic inference tools
 * ...and much more
 

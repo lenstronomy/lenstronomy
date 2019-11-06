@@ -51,6 +51,10 @@ class TestLensPlot(object):
         lens_plot.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0, differential_scale=0.0001)
         plt.close()
 
+        lens_plot.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0,
+                              differential_scale=0.0001, smoothing_scale=0.1)
+        plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

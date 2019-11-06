@@ -250,18 +250,18 @@ class ModelBandPlot(object):
             x_grid_source, y_grid_source, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
             numPix, deltaPix)
 
+        center_x = 0
+        center_y = 0
         if center is not None:
             center_x, center_y = center[0], center[1]
-            x_grid_source += center[0]
-            y_grid_source += center[1]
+            #x_grid_source += center[0]
+            #y_grid_source += center[1]
         elif len(self._kwargs_source_partial) > 0:
             center_x = self._kwargs_source_partial[0]['center_x']
             center_y = self._kwargs_source_partial[0]['center_y']
-            x_grid_source += center_x
-            y_grid_source += center_y
-        else:
-            center_x = 0
-            center_y = 0
+        x_grid_source += center_x
+        y_grid_source += center_y
+
         coords_source = Coordinates(transform_pix2angle=Mpix2coord,
                                     ra_at_xy_0=ra_at_xy_0 + center_x,
                                     dec_at_xy_0=dec_at_xy_0 + center_y)

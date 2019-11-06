@@ -195,9 +195,6 @@ class TestOutputPlots(object):
         plt.close()
 
 
-
-
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):
@@ -208,6 +205,15 @@ class TestRaise(unittest.TestCase):
             kwargs_params = {'kwargs_lens': [], 'kwargs_source': [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
                              'kwargs_ps': [], 'kwargs_lens_light': []}
             lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                 kwargs_model=kwargs_model, kwargs_params=kwargs_params,
+                                 arrow_size=0.02, cmap_string="gist_heat")
+        with self.assertRaises(ValueError):
+            kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1)
+            # kwargs_data['image_data'] = np.zeros((10, 10))
+            kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+            kwargs_params = {'kwargs_lens': [], 'kwargs_source': [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                             'kwargs_ps': [], 'kwargs_lens_light': []}
+            lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {}, {}]],
                                  kwargs_model=kwargs_model, kwargs_params=kwargs_params,
                                  arrow_size=0.02, cmap_string="gist_heat")
             f, ax = plt.subplots(1, 1, figsize=(4, 4))

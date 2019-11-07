@@ -187,7 +187,7 @@ class SingleBand(Instrument, Observation):
     def flux_noise(self, flux):
         """
 
-        :param flux: float or array, units of count_unit/seconds
+        :param flux: float or array, units of count_unit/seconds, needs to be positive semi-definite in the flux value
         :return: Gaussian approximation of Poisson statistics in IIDs sqrt(variance)
         """
         if self._data_count_unit == 'ADU':
@@ -195,6 +195,10 @@ class SingleBand(Instrument, Observation):
         else:
             flux_iid = flux * self.exposure_time  # if in electrons per seconds
         variance = flux_iid  # the variance of a Poisson distribution is the IID count number
+        if isinstance(variance, int) or isinstance(variance, float):
+            variance = max(variance, 0)
+        else:
+            variance[flux_iid < 0] = 0  # make sure negative pixels do not lead to variances (or nans) in the return
         noise = np.sqrt(variance) / self.exposure_time
         if self._data_count_unit == 'ADU':
             noise /= self.ccd_gain

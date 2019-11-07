@@ -59,11 +59,11 @@ class LensProp(object):
         :param kwargs_lens: lens model parameters
         :param kwargs_lens_light: deflector light parameters
         :param aniso_param: scaled r_ani with respect to the half light radius
-        :param r_eff: half light radius, if not provided, will be computed from the lens light model
+        :param r_eff: half light radius
         :param R_slit: width of the slit
         :param dR_slit: length of the slit
         :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
+        :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param moffat_beta: float, beta parameter of Moffat profile
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
         :param kappa_ext: external convergence not accounted in the lens models

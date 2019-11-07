@@ -331,7 +331,6 @@ class ModelBandPlot(object):
                          flipped=False, font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-            print('test source position', ra_source, dec_source, center)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 

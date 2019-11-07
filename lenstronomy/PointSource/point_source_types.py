@@ -75,7 +75,7 @@ class LensedPositions(object):
         else:
             ra_image = kwargs_ps['ra_image']
             dec_image = kwargs_ps['dec_image']
-        return np.array(ra_image), np.array(dec_image)
+        return ra_image, dec_image
 
     def source_position(self, kwargs_ps, kwargs_lens):
         ra_image = kwargs_ps['ra_image']

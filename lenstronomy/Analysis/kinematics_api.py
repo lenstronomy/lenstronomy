@@ -5,14 +5,14 @@ import copy
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from lenstronomy.Analysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 import lenstronomy.Util.constants as const
 
 
-class LensProp(object):
+class KinematicAPI(object):
     """
     this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
     for a given lens model
@@ -29,7 +29,7 @@ class LensProp(object):
         self.z_d = z_lens
         self.z_s = z_source
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
-        self.lens_analysis = LensAnalysis(kwargs_model)
+        self.lens_analysis = ProfileAnalysis(kwargs_model)
         self._lensModelExt = LensModelExtensions(self.lens_analysis.LensModel)
         self.kwargs_options = kwargs_model
         self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}

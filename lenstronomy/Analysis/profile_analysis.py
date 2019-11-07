@@ -10,7 +10,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Util import class_creator
 
 
-class LensAnalysis(object):
+class ProfileAnalysis(object):
     """
     class to compute flux ratio anomalies, inherited from standard MakeImage
     """

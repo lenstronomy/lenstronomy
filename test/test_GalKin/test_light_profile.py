@@ -5,7 +5,7 @@ import pytest
 import numpy.testing as npt
 import numpy as np
 from lenstronomy.GalKin.light_profile import LightProfile
-from lenstronomy.Analysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
 
 
 class TestLightProfile(object):
@@ -91,7 +91,7 @@ class TestLightProfile(object):
             'center_y': center_y, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': lightProfile}
-        lensAnalysis = LensAnalysis(kwargs_options)
+        lensAnalysis = ProfileAnalysis(kwargs_options)
         r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y, deltaPix=0.1,
                                                     numPix=100)
         kwargs_profile[0]['e1'], kwargs_profile[0]['e2'] = 0, 0

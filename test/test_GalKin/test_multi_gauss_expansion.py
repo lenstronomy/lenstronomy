@@ -7,7 +7,7 @@ import lenstronomy.Util.multi_gauss_expansion as mge
 import numpy as np
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Analysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
 from lenstronomy.GalKin.galkin import Galkin
 
 
@@ -202,7 +202,7 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # Hernquist fit to Sersic profile
-        lens_analysis = LensAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': []})
+        lens_analysis = ProfileAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': []})
         r_eff = lens_analysis.half_light_radius_lens(kwargs_light, deltaPix=0.1, numPix=100)
         print(r_eff)
         light_profile_list_hernquist = ['HERNQUIST']

@@ -283,16 +283,16 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_interpolated_sersic(self):
-        from lenstronomy.Analysis.lens_analysis import LensAnalysis
+        from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
         kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'amp': 1, 'center_x': 0.01, 'center_y': 0.01}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
         deltaPix = 0.1
         numPix = 100
 
-        kwargs_interp = LensAnalysis.light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
-                                                                                          deltaPix=deltaPix, subgrid_res=5)
+        kwargs_interp = ProfileAnalysis.light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+                                                            deltaPix=deltaPix, subgrid_res=5)
         kwargs_lens_interp = [kwargs_interp]
-        from lenstronomy.Analysis.lens_properties import LensProp
+        from lenstronomy.Analysis.kinematics_api import KinematicAPI
         z_lens = 0.5
         z_source = 1.5
         r_ani = 0.62
@@ -306,14 +306,14 @@ class TestGalkin(object):
         r_eff = 0.5
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
-        lensProp = LensProp(z_lens, z_source, kwargs_options)
+        lensProp = KinematicAPI(z_lens, z_source, kwargs_options)
 
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
                                                          MGE_light=True, MGE_mass=True, r_eff=r_eff)
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
-        lensProp_interp = LensProp(z_lens, z_source, kwargs_options_interp)
+        lensProp_interp = KinematicAPI(z_lens, z_source, kwargs_options_interp)
         v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
                                                          kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff)

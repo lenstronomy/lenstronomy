@@ -8,7 +8,6 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.lens_analysis import LensAnalysis
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LightModel.light_model import LightModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 import lenstronomy.Util.constants as const
 
@@ -95,7 +94,7 @@ class LensProp(object):
         :param kwargs_anisotropy: anisotropy parameters (see Galkin module)
         :param kwargs_aperture: aperture parameters (see Galkin module)
         :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
+        :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param moffat_beta: float, beta parameter of Moffat profile
         :param aperture_type: type of aperture (see Galkin module
         :param anisotropy_model: stellar anisotropy model (see Galkin module)

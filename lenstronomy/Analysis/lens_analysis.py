@@ -2,7 +2,6 @@ import copy
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
-import lenstronomy.Util.param_util as param_util
 import lenstronomy.Util.mask as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 
@@ -109,7 +108,9 @@ class LensAnalysis(object):
         :param model_bool_list: bool list or None, indicating which profiles to sum over
         :return: flux amplitudes at r_list radii spherically averaged
         """
-        if 'center_x' in kwargs_lens[0]:
+        if center_x is not None and center_y is not None:
+            pass
+        elif 'center_x' in kwargs_lens[0]:
             center_x = kwargs_lens[0]['center_x']
             center_y = kwargs_lens[0]['center_y']
         else:

@@ -122,6 +122,7 @@ def source_position_plot(ax, coords, ra_pos, dec_pos):
     """
     deltaPix = coords.pixel_width
     if len(ra_pos) > 0:
-        x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
-        ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+        for ra, dec in zip(ra_pos, dec_pos):
+            x_source, y_source = coords.map_coord2pix(ra, dec)
+            ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax

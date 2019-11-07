@@ -18,9 +18,8 @@ class Hernquist(object):
 
         :param x:
         :param y:
-        :param sigma0:
-        :param a:
-        :param s:
+        :param amp:
+        :param Rs: scale radius: half-light radius = Rs / 0.551
         :param center_x:
         :param center_y:
         :return:

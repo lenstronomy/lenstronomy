@@ -114,7 +114,7 @@ class Galkin(object):
          falls in the aperture after displacing with the seeing
         """
         while True:
-            R = self.lightProfile.draw_light_2d(kwargs_light)  # draw r in arcsec
+            R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
             x, y = util.draw_xy(R)  # draw projected R in arcsec
             x_, y_ = self._psf.displace_psf(x, y)
             bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)

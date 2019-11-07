@@ -254,8 +254,6 @@ class ModelBandPlot(object):
         center_y = 0
         if center is not None:
             center_x, center_y = center[0], center[1]
-            #x_grid_source += center[0]
-            #y_grid_source += center[1]
         elif len(self._kwargs_source_partial) > 0:
             center_x = self._kwargs_source_partial[0]['center_x']
             center_y = self._kwargs_source_partial[0]['center_y']

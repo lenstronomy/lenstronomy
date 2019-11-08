@@ -192,8 +192,8 @@ class ImageLinearFit(ImageModel):
         :return:
         """
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
-        source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
-                                                                               kwargs_source)
+        source_light_response, n_source = self._source_linear_response_matrix(x_grid, y_grid, kwargs_lens,
+                                                                              kwargs_source)
         extinction = self._extinction.extinction(x_grid, y_grid, kwargs_extinction=kwargs_extinction,
                                                  kwargs_special=kwargs_special)
         lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)
@@ -223,6 +223,22 @@ class ImageLinearFit(ImageModel):
             A[n, :] = self.image2array_masked(image)
             n += 1
         return np.nan_to_num(A)
+
+    def _source_linear_response_matrix(self, x_grid, y_grid, kwargs_lens, kwargs_source):
+        """
+
+        return linear response Matrix for source light only
+
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :param unconvolved:
+        :return:
+        """
+        source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
+                                                                               kwargs_source)
+        return source_light_response, n_source
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """

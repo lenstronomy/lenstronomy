@@ -60,6 +60,12 @@ def test_elliptisity2phi_q():
     assert phi == 0
     assert q == 0.53846153846153844
 
+    # Works on np arrays as well
+    e1 = np.array([0.3, 0.9])
+    e2 = np.array([0.0, 0.9 ])
+    phi, q = param_util.ellipticity2phi_q(e1, e2)
+    assert np.testing.assert_array_almost_equal(phi, [0.0, 0.39269908], decimal=7)
+    assert np.testing.assert_array_almost_equal(q, [0.53846153, 5.00025001e-05], decimal=7)
 
 def test_elliptisity2phi_q_symmetry():
     phi,q = 1.5, 0.8

@@ -69,13 +69,12 @@ class ImageSparseFit(ImageLinearFit):
         :return: 1d numpy array
         """
         threshold = 5
-        lensing_operator = 
+        lensing_operator = self.
         return self._solve_sparse(lensing_operator, threshold)
 
 
-    def _solve_sparse(self, lensing_operator, k_max, n_iter, size, PSF, PSFconj, S0 = [0], levels = [0], scheme = 'FB',
-                      mask = [0], lvl = 0, weightS = 1, noise = 'gaussian', tau = 0, verbosity = 0, nweights = 1,
-                      save_steps_dir=None, show_plots=False):
+    def _solve_sparse(self, lensing_operator, k_max, n_iter, size, PSF, PSFconj, S0=[0], levels=[0], scheme='FB',
+                      mask=[0], lvl=0, weightS=1, tau=0, nweights=1, verbose=False):
         """SLIT algorithm"""
 
 

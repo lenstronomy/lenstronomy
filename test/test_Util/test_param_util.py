@@ -32,7 +32,7 @@ def test_polar2cart():
     assert abs(y) < 10e-14
 
 
-def test_phi_q2_elliptisity():
+def test_phi_q2_ellipticity():
     phi, q = 0, 1
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == 0
@@ -54,7 +54,7 @@ def test_phi_q2_elliptisity():
     assert e2 == 0
 
 
-def test_elliptisity2phi_q():
+def test_ellipticity2phi_q():
     e1, e2 = 0.3,0
     phi,q = param_util.ellipticity2phi_q(e1, e2)
     assert phi == 0
@@ -67,7 +67,7 @@ def test_elliptisity2phi_q():
     assert np.testing.assert_array_almost_equal(phi, [0.0, 0.39269908], decimal=7)
     assert np.testing.assert_array_almost_equal(q, [0.53846153, 5.00025001e-05], decimal=7)
 
-def test_elliptisity2phi_q_symmetry():
+def test_ellipticity2phi_q_symmetry():
     phi,q = 1.5, 0.8
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)

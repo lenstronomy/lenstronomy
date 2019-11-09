@@ -97,9 +97,9 @@ class LensModel(object):
          observables in position and relative fluxes but rescales the time delays
         :return: arrival time of image positions in units of days
         """
-        try:
+        if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
-        except:
+        else:
             x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
             fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
             if not hasattr(self, '_lensCosmo'):

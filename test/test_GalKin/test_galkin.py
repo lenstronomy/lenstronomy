@@ -283,13 +283,13 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_interpolated_sersic(self):
-        from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
+        from lenstronomy.Analysis.light2mass import light2mass_interpol
         kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'amp': 1, 'center_x': 0.01, 'center_y': 0.01}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
         deltaPix = 0.1
         numPix = 100
 
-        kwargs_interp = ProfileAnalysis.light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+        kwargs_interp = light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
                                                             deltaPix=deltaPix, subgrid_res=5)
         kwargs_lens_interp = [kwargs_interp]
         from lenstronomy.Analysis.kinematics_api import KinematicAPI

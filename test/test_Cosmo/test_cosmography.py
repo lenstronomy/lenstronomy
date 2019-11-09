@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from lenstronomy.Cosmo.cosmography import MCMCSampler, CosmoLikelihood, CosmoParam
+from lenstronomy.Cosmo.cosmo_sampling import MCMCSampler, CosmoLikelihood, CosmoParam
 from astropy.cosmology import FlatLambdaCDM
 import unittest
 

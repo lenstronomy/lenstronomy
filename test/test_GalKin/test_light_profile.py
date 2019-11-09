@@ -5,7 +5,8 @@ import pytest
 import numpy.testing as npt
 import numpy as np
 from lenstronomy.GalKin.light_profile import LightProfile
-from lenstronomy.Analysis.profile_analysis import ProfileAnalysis
+from lenstronomy.Analysis.light_profile import LightProfileAnalysis
+from lenstronomy.LightModel.light_model import LightModel
 
 
 class TestLightProfile(object):
@@ -91,13 +92,13 @@ class TestLightProfile(object):
             'center_y': center_y, 'Ra': 0.020000382843298824,
             'amp': 85.948773973262391}]
         kwargs_options = {'lens_model_list': ['SPEP'], 'lens_light_model_list': lightProfile}
-        lensAnalysis = ProfileAnalysis(kwargs_options)
-        r_eff = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y, deltaPix=0.1,
-                                                    numPix=100)
+        lensAnalysis = LightProfileAnalysis(LightModel(light_model_list=lightProfile))
+        r_eff = lensAnalysis.half_light_radius(kwargs_profile, center_x=center_x, center_y=center_y, grid_spacing=0.1,
+                                                    grid_num=100)
         kwargs_profile[0]['e1'], kwargs_profile[0]['e2'] = 0, 0
         kwargs_profile[1]['e1'], kwargs_profile[1]['e2'] = 0, 0
-        r_eff_spherical = lensAnalysis.half_light_radius_lens(kwargs_profile, center_x=center_x, center_y=center_y,
-                                                              deltaPix=0.1, numPix=100)
+        r_eff_spherical = lensAnalysis.half_light_radius(kwargs_profile, center_x=center_x, center_y=center_y,
+                                                              grid_spacing=0.1, grid_num=100)
         npt.assert_almost_equal(r_eff / r_eff_spherical, 1, decimal=2)
 
     def test_light_3d(self):

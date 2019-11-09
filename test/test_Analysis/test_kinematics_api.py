@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy.testing as npt
 import pytest
+import unittest
 
 from lenstronomy.Analysis.kinematics_api import KinematicAPI
 import lenstronomy.Util.param_util as param_util
@@ -12,7 +13,7 @@ class TestLensProp(object):
     def setup(self):
         pass
 
-    def test_velocity_dispersion_new(self):
+    def test_velocity_dispersion(self):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
@@ -62,88 +63,57 @@ class TestLensProp(object):
         npt.assert_almost_equal(v_sigma_mge_lens / v_sigma, 1, decimal=1)
         npt.assert_almost_equal(v_sigma / v_sigma_hernquist, 1, decimal=1)
 
-    def test_kinematic_profiles(self):
+    def test_kinematic_light_profile(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR'],
+        kwargs_options = {'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'SERSIC']}
+        kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+        r_eff = 0.2
+        kwargs_lens_light = [{'amp': 1, 'Rs': r_eff * 0.551, 'e1': 0., 'e2': 0, 'center_x': 0, 'center_y': 0},
+                             {'amp': 1, 'R_sersic': 1, 'n_sersic': 2, 'center_x': -10, 'center_y': -10}]
+        light_profile_list, kwargs_light = kinematicAPI.kinematic_light_profile(kwargs_lens_light, MGE_fit=True, r_eff=r_eff, model_kinematics_bool=[True, False])
+        assert light_profile_list[0] == 'MULTI_GAUSSIAN'
 
-                          'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
+        light_profile_list, kwargs_light = kinematicAPI.kinematic_light_profile(kwargs_lens_light, MGE_fit=False, r_eff=r_eff, model_kinematics_bool=[True, False])
+        assert light_profile_list[0] == 'HERNQUIST_ELLIPSE'
+
+        light_profile_list, kwargs_light = kinematicAPI.kinematic_light_profile(kwargs_lens_light, MGE_fit=False,
+                                                                            Hernquist_approx=True, r_eff=r_eff, model_kinematics_bool=[True, False])
+        assert light_profile_list[0] == 'HERNQUIST'
+        npt.assert_almost_equal(kwargs_light[0]['Rs'] / kwargs_lens_light[0]['Rs'], 1, decimal=2)
+
+    def test_kinematic_lens_profiles(self):
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR']}
         lensProp = KinematicAPI(z_lens, z_source, kwargs_options)
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093,
                         'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
                        {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}
                        ]
 
-        phi, q = -0.52624727893702705, 0.79703498156919605
-        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_lens_light = [{'n_sersic': 1.1212528655709217,
-                              'center_x': -0.019674496231393473,
-                              'e1': e1, 'e2': e2, 'amp': 1.1091367792010356, 'center_y': 0.076914975081560991,
-                              'R_sersic': 0.42691611878867058},
-                             {'R_sersic': 0.03025682660635394, 'amp': 139.96763298885992,
-                              'n_sersic': 1.90000008624093865,
-                              'center_x': -0.019674496231393473, 'center_y': 0.076914975081560991}]
 
-        r_eff = 0.211919902322
-
-        mass_profile_list, kwargs_profile, light_profile_list, kwargs_light = lensProp.kinematic_profiles(kwargs_lens, kwargs_lens_light, MGE_light=True, MGE_mass=True, r_eff=r_eff,
-                                    lens_model_kinematics_bool=[True, False])
+        mass_profile_list, kwargs_profile = lensProp.kinematic_lens_profiles(kwargs_lens, MGE_fit=True,
+                                    model_kinematics_bool=[True, False])
         assert mass_profile_list[0] == 'MULTI_GAUSSIAN_KAPPA'
-        assert light_profile_list[0] == 'MULTI_GAUSSIAN'
 
-    def test_time_delays(self):
-        z_lens = 0.5
-        z_source = 1.5
-        kwargs_options = {'lens_model_list': ['SPEP'], 'point_source_model_list': ['LENSED_POSITION']}
-        e1, e2 = param_util.phi_q2_ellipticity(0, 0.7)
-        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': e1, 'e2': e2}]
-        kwargs_else = [{'ra_image': [-1, 0, 1], 'dec_image': [0, 0, 0]}]
-        from astropy.cosmology import FlatLambdaCDM
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        lensProp = KinematicAPI(z_lens, z_source, kwargs_options, cosmo=cosmo)
-        delays = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=0)
-        npt.assert_almost_equal(delays[0], -31.387590264501007, decimal=8)
-        npt.assert_almost_equal(delays[1], 0, decimal=8)
-        npt.assert_almost_equal(delays[2], -31.387590264501007, decimal=8)
-        kappa_ext = 0.1
-        delays_kappa = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=kappa_ext)
-        npt.assert_almost_equal(delays_kappa/(1.-kappa_ext), delays, decimal=8)
+        mass_profile_list, kwargs_profile = lensProp.kinematic_lens_profiles(kwargs_lens, MGE_fit=False,
+                                                                             model_kinematics_bool=[True, False])
+        assert mass_profile_list[0] == 'SPEP'
 
-        kappa_ext = 0.1
-        delays_kappa = lensProp.time_delays(kwargs_lens, kwargs_ps=kwargs_else, kappa_ext=kappa_ext)
-        npt.assert_almost_equal(delays_kappa / (1. - kappa_ext), delays, decimal=8)
 
-    def test_angular_diameter_relations(self):
-        z_lens = 0.5
-        z_source = 1.5
-        from astropy.cosmology import FlatLambdaCDM
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        lensProp = KinematicAPI(z_lens, z_source, kwargs_model={}, cosmo=cosmo)
-        sigma_v_model = 290
-        sigma_v = 310
-        kappa_ext = 0
-        D_dt_model = 3000
+class TestRaise(unittest.TestCase):
 
-        D_d, Ds_Dds = lensProp.angular_diameter_relations(sigma_v_model, sigma_v, kappa_ext, D_dt_model)
-        npt.assert_almost_equal(D_d, 992.768, decimal=1)
-        npt.assert_almost_equal(Ds_Dds, 2.01, decimal=2)
-
-    def test_angular_distances(self):
-        z_lens = 0.5
-        z_source = 1.5
-        from astropy.cosmology import FlatLambdaCDM
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        lensProp = KinematicAPI(z_lens, z_source, kwargs_model={}, cosmo=cosmo)
-        sigma_v_measured = 290
-        sigma_v_modeled = 310
-        kappa_ext = 0
-        time_delay_measured = 111
-        fermat_pot = 0.7
-        Ds_Dds, DdDs_Dds = lensProp.angular_distances(sigma_v_measured, time_delay_measured, kappa_ext, sigma_v_modeled,
-                                                      fermat_pot)
-        print(Ds_Dds, DdDs_Dds)
-        npt.assert_almost_equal(Ds_Dds, 1.5428, decimal=2)
-        npt.assert_almost_equal(DdDs_Dds, 3775.442, decimal=1)
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_options = {'lens_light_model_list': ['HERNQUIST']}
+            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
+            kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
+                                                 Hernquist_approx=True, r_eff=None, model_kinematics_bool=[True])
+            raise ValueError()
 
 
 if __name__ == '__main__':

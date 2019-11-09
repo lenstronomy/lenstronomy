@@ -80,7 +80,7 @@ class Galkin(object):
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
         self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
 
-    def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur):
+    def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -88,13 +88,13 @@ class Galkin(object):
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
-        :param kwargs_apertur: Aperture parameters, may vary depending on aperture type chosen.
+        :param kwargs_aperture: Aperture parameters, may vary depending on aperture type chosen.
             We refer to the Aperture() class for details on the parameters.
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_R_sum = 0
         for i in range(0, self._num_sampling):
-            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_apertur)
+            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture)
             sigma2_R_sum += sigma2_R
         sigma_s2_average = sigma2_R_sum / self._num_sampling
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)

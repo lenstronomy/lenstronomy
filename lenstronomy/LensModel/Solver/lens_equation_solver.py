@@ -258,7 +258,7 @@ class LensEquationSolver(object):
         if self.lensModel.multi_plane is True:
             arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:
-            fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, x_source, y_source, kwargs_lens)
+            fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, kwargs_lens)
             arrival_time = fermat_pot
         idx = np.argsort(arrival_time)
         x_mins = np.array(x_mins)[idx]

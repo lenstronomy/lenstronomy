@@ -278,7 +278,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
-    fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, sourcePos_x, sourcePos_y, kwargs_lens)
+    fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y)
     fermat_surface = util.array2image(fermat_surface)
 
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
@@ -294,7 +294,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
                                                                  min_distance=deltaPix, search_window=deltaPix*numPix)
 
-        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, sourcePos_x, sourcePos_y, kwargs_lens)
+        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
         im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
                         levels=np.sort(fermat_pot_images), **kwargs_contours)
         mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)

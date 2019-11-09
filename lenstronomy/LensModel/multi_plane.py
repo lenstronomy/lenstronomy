@@ -81,7 +81,7 @@ class MultiPlane(object):
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """
-        ray-tracing (backwards light cone)
+        ray-tracing (backwards light cone) to the default z_source redshift
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image

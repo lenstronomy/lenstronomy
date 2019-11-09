@@ -43,6 +43,7 @@ class TDCosmography(object):
         ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
+        #TODO raise statement when ray-tracing is not hitting the same source position within some requirement
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
         return fermat_pot
 
@@ -70,3 +71,16 @@ class TDCosmography(object):
         Ds_Dds = (sigma_v_measured/float(sigma_v_modeled)) ** 2 / (self._lens_cosmo.D_ds / self._lens_cosmo.D_s) / (1. - kappa_ext)
         DdDs_Dds = 1./(1+self._lens_cosmo.z_lens)/(1. - kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
         return Ds_Dds, DdDs_Dds
+
+    def kinematics_dimension_less(self, kwargs_lens, kwargs_light, kwargs_anisotropy):
+        """
+        \sigma^2 = D_d/D_ds * c^2 *J(kwargs_lens, kwargs_light, anisotropy) (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019)
+        J() is a dimensionless and cosmological independent quantity only depending on angular units
+        This function returns J given the lens and light parameters and the anisotropy choice without an external mass sheet correction.
+
+        :param kwargs_lens: lens model keyword arguments
+        :param kwargs_light: lens light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
+        """
+        pass

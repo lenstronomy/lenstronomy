@@ -25,7 +25,7 @@ class SinglePlane(ProfileListBase):
         dx, dy = self.alpha(x, y, kwargs, k=k)
         return x - dx, y - dy
 
-    def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens, k=None):
+    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
         """
         fermat potential (negative sign means earlier arrival time)
 
@@ -38,6 +38,8 @@ class SinglePlane(ProfileListBase):
         """
 
         potential = self.potential(x_image, y_image, kwargs_lens, k=k)
+        if x_source is None or y_source is None:
+            x_source, y_source = self.ray_shooting(x_image, y_image, kwargs_lens, k=k)
         geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
         return geometry - potential
 

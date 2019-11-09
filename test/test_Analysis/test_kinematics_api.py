@@ -8,7 +8,7 @@ from lenstronomy.Analysis.kinematics_api import KinematicAPI
 import lenstronomy.Util.param_util as param_util
 
 
-class TestLensProp(object):
+class TestKinematicsAPI(object):
 
     def setup(self):
         pass
@@ -56,7 +56,7 @@ class TestLensProp(object):
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
                                                                   lens_model_kinematics_bool=[True, False, False, False, False])
-        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, R_slit=R_slit, dR_slit=dR_slit, psf_fwhm=psf_fwhm, num_evaluate=5000)
+        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, kwargs_aperture=kwargs_aperture, psf_fwhm=psf_fwhm, num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)

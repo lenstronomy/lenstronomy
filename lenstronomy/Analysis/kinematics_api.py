@@ -32,7 +32,7 @@ class KinematicAPI(object):
         self.kwargs_model = kwargs_model
         self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
 
-    def velocity_dispersion(self, kwargs_lens, r_eff, R_slit, dR_slit, psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
+    def velocity_dispersion(self, kwargs_lens, r_eff, kwargs_aperture, psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
                             moffat_beta=2.6, num_evaluate=1000, kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
@@ -57,7 +57,7 @@ class KinematicAPI(object):
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
         analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type, **self._kwargs_cosmo)
-        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=num_evaluate)
+        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, kwargs_aperture=kwargs_aperture, rendering_number=num_evaluate)
         sigma *= np.sqrt(1-kappa_ext)
         return sigma
 

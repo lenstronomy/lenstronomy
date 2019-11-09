@@ -59,7 +59,7 @@ class TestGalkin(object):
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=2000)
 
         los_disp = AnalyticKinematics(**kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, R_slit=length, dR_slit=width,
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, kwargs_aperture=kwargs_aperture,
                                      rendering_number=2000)
         npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
 
@@ -183,7 +183,7 @@ class TestGalkin(object):
         sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
 
         los_disp = AnalyticKinematics(fwhm=psf_fwhm, **kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff / 0.551, r_ani=r_ani, R_slit=length, dR_slit=width,
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff / 0.551, r_ani=r_ani, kwargs_aperture=kwargs_aperture,
                                      rendering_number=1000)
         print(sigma_v, sigma_v_lin, sigma_v2, 'sigma_v Galkin (log and linear), sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)

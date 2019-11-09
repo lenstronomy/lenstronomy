@@ -2,9 +2,12 @@ __author__ = 'sibirrer'
 
 
 import numpy as np
+from astropy.cosmology import default_cosmology
+
+from lenstronomy.Util import class_creator
 from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from astropy.cosmology import default_cosmology
+from lenstronomy.Analysis.kinematics_api import KinematicAPI
 
 
 class TDCosmography(object):
@@ -17,11 +20,14 @@ class TDCosmography(object):
 
 
     """
-    def __init__(self, z_lens, z_source, kwargs_model):
+    def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None):
 
-        self._cosmo_fiducial = default_cosmology.get()
+        if cosmo_fiducial is None:
+            cosmo_fiducial = default_cosmology.get()
+        self._cosmo_fiducial = cosmo_fiducial
         self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=self._cosmo_fiducial)
-        kwargs_model['cosmo'] = self._cosmo_fiducial  # here we over-write a possible cosmology model to make sure that it is always the same default one to be subtracted off
+        self._kinematic_api = KinematicAPI(z_lens, z_source, kwargs_model, cosmo=self._cosmo_fiducial)
+        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """
@@ -41,9 +47,13 @@ class TDCosmography(object):
         ra_pos = ra_pos[0]
         dec_pos = dec_pos[0]
         ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)
+        sigma_source = np.sqrt(np.var(ra_source) + np.var(dec_source))
+        if sigma_source > 0.001:
+            Warning('Source position computed from the different image positions do not trace back to the same position! '
+                    'The error is %s mas and may be larger than what is required for an accurate relative time delay estimate!'
+                    'See e.g. Birrer & Treu 2019.' %sigma_source * 1000)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
-        #TODO raise statement when ray-tracing is not hitting the same source position within some requirement
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
         return fermat_pot
 
@@ -72,7 +82,7 @@ class TDCosmography(object):
         DdDs_Dds = 1./(1+self._lens_cosmo.z_lens)/(1. - kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
         return Ds_Dds, DdDs_Dds
 
-    def kinematics_dimension_less(self, kwargs_lens, kwargs_light, kwargs_anisotropy):
+    def kinematics_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy):
         """
         \sigma^2 = D_d/D_ds * c^2 *J(kwargs_lens, kwargs_light, anisotropy) (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019)
         J() is a dimensionless and cosmological independent quantity only depending on angular units
@@ -83,4 +93,15 @@ class TDCosmography(object):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
+        sigma_v = self._kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
+                                      aperture_type, anisotropy_model, r_eff=None, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
+                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
+                                      Hernquist_approx=False, kappa_ext=0)
+        if self._kinematic_analytic is True:
+            self._kinematic_api.velocity_dispersion(kwargs_lens, r_eff, kwargs_aperture=kwargs_aperture, psf_fwhm=psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
+                            moffat_beta=2.6, num_evaluate=1000, kappa_ext=0)
+        J = sigma_v**2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c**2
+        return J
+
+    def kinematic_observation_settings(self):
         pass

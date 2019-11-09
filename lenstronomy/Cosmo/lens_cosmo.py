@@ -137,7 +137,7 @@ class LensCosmo(object):
         """
 
         :param fermat_pot: in units of arcsec^2 (e.g. Fermat potential)
-        :param kappa_ext: unit-less
+        :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
         :return: time delay in days
         """
         D_dt = self.D_dt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.

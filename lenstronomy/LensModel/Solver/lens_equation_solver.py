@@ -253,8 +253,6 @@ class LensEquationSolver(object):
         if len(x_mins) <= 1:
             return x_mins, y_mins
         x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
-        x_source = np.mean(x_source)
-        y_source = np.mean(y_source)
         if self.lensModel.multi_plane is True:
             arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:

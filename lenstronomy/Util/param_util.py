@@ -105,7 +105,6 @@ def ellipticity2phi_q(e1, e2):
     """
     phi = np.arctan2(e2, e1)/2
     c = np.sqrt(e1**2+e2**2)
-    if c > 0.9999:
-        c = 0.9999
+    c = np.minimum(c, 0.9999)
     q = (1-c)/(1+c)
     return phi, q

@@ -12,7 +12,7 @@ class GalKinAnalytic(object):
     """
     master class for all computations
     """
-    def __init__(self, kwargs_aperture, aperture_type='slit', mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani',
+    def __init__(self, kwargs_aperture, mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani',
                  psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
         """
         initializes the observation condition and masks
@@ -22,7 +22,7 @@ class GalKinAnalytic(object):
         self._mass_profile = mass_profile
         self._kwargs_cosmo = kwargs_cosmo
         self.lightProfile = LightProfileOld(light_profile)
-        self.aperture = aperture_select(aperture_type=aperture_type, kwargs_aperture=kwargs_aperture)
+        self.aperture = aperture_select(**kwargs_aperture)
         self.anisotropy = Anisotropy(anisotropy_type)
         self.jeans_solver = JeansSolver(kwargs_cosmo, mass_profile, light_profile, anisotropy_type)
         self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)

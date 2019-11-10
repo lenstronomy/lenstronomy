@@ -16,7 +16,7 @@ Available aperture types:
 """
 
 
-def aperture_select(aperture_type, kwargs_aperture):
+def aperture_select(aperture_type, **kwargs_aperture):
     """
 
     initializes the observation condition and masks

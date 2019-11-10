@@ -63,7 +63,8 @@ class KinematicAPI(object):
         return sigma
 
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                      aperture_type, anisotropy_model, r_eff=None, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
+                                      anisotropy_model, r_eff=None, psf_type='GAUSSIAN', moffat_beta=2.6,
+                                      kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
                                       Hernquist_approx=False, kappa_ext=0):
         """
@@ -82,7 +83,6 @@ class KinematicAPI(object):
         :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
         :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
         :param moffat_beta: float, beta parameter of Moffat profile
-        :param aperture_type: type of aperture (see Galkin module
         :param anisotropy_model: stellar anisotropy model (see Galkin module)
         :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
          light profile
@@ -108,7 +108,7 @@ class KinematicAPI(object):
                                                                         MGE_fit=MGE_light,
                                                                         model_kinematics_bool=light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
-        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, aperture_type=aperture_type,
+        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
                         kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)

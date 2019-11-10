@@ -11,14 +11,14 @@ class TestAperture(object):
 
     def test_aperture_select(self):
         kwargs_slit = {'length': 2, 'width': 0.5, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
-        slit = aperture_select(aperture_type='slit', kwargs_aperture=kwargs_slit)
+        slit = aperture_select(aperture_type='slit', **kwargs_slit)
         bool = slit.aperture_select(ra=0.9, dec=0.2)
         assert bool is True
         bool = slit.aperture_select(ra=1.1, dec=0.2)
         assert bool is False
 
         kwargs_shell = {'r_in': 0.2, 'r_out': 1., 'center_ra': 0, 'center_dec': 0}
-        shell = aperture_select(aperture_type='shell', kwargs_aperture=kwargs_shell)
+        shell = aperture_select(aperture_type='shell', **kwargs_shell)
         bool = shell.aperture_select(ra=0.9, dec=0)
         assert bool is True
         bool = shell.aperture_select(ra=1.1, dec=0)

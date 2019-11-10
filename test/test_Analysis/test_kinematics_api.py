@@ -38,21 +38,22 @@ class TestKinematicsAPI(object):
         kwargs_anisotropy = {'r_ani': r_ani}
         R_slit = 3.8
         dR_slit = 1.
-        kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0}
         aperture_type = 'slit'
+        kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0}
+
         psf_fwhm = 0.7
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.211919902322
 
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                         kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
+                                                         kwargs_aperture, psf_fwhm, anisotropy_model,
                                                          MGE_light=True, r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_mge_lens = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                                                  psf_fwhm, aperture_type, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                                  psf_fwhm, anisotropy_model, MGE_light=True, MGE_mass=True,
                                                                   r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_hernquist = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
                                                                   kwargs_aperture,
-                                                                  psf_fwhm, aperture_type, anisotropy_model,
+                                                                  psf_fwhm, anisotropy_model,
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
                                                                   lens_model_kinematics_bool=[True, False, False, False, False])

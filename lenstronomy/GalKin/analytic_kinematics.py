@@ -28,7 +28,7 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, aperture_type='slit', psf_type='GAUSSIAN', fwhm=0.7,
+    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, psf_type='GAUSSIAN', fwhm=0.7,
                  moffat_beta=2.6):
         """
 
@@ -41,7 +41,7 @@ class AnalyticKinematics(object):
         """
         self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
         self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
-        self.aperture = aperture_select(aperture_type, kwargs_aperture=kwargs_aperture)
+        self.aperture = aperture_select(**kwargs_aperture)
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
         """

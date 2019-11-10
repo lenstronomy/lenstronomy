@@ -318,17 +318,21 @@ class TestGalkin(object):
         r_eff = 0.5
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
+        kwargs_mge = {'n_comp': 20}
         kinematic_api = KinematicAPI(z_lens, z_source, kwargs_options)
 
         v_sigma = kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
-                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff)
+                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff,
+                                                              kwargs_mge_mass=kwargs_mge, kwargs_mge_light=kwargs_mge)
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
         kinematic_api_interp = KinematicAPI(z_lens, z_source, kwargs_options_interp)
         v_sigma_interp = kinematic_api_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
-                                                         kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff)
+                                                         kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff,
+                                                                            kwargs_mge_mass=kwargs_mge,
+                                                                            kwargs_mge_light=kwargs_mge)
         npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 1)
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate

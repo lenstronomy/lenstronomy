@@ -503,3 +503,41 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     dec_coords_sub = image2array(dec_array_new)
     return ra_coords_sub, dec_coords_sub
 
+
+def convert_bool_list(n, k=None):
+    """
+    returns a bool list of the length of the lens models
+    if k = None: returns bool list with True's
+    if k is int, returns bool list with False's but k'th is True
+    if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
+    if k is a boolean list, checks for size to match the numbers of models and returns it
+
+    :param n: integer, total lenght of output boolean list
+    :param k: None, int, or list of ints
+    :return: bool list
+    """
+    if k is None:
+        bool_list = [True] * n
+    elif isinstance(k, (int, np.integer)):  # single integer
+        bool_list = [False] * n
+        bool_list[k] = True
+    elif len(k) == 0:  # empty list
+        bool_list = [False] * n
+    elif isinstance(k[0], bool):
+        if n != len(k):
+            raise ValueError('length of selected lens models in format of boolean list is %s '
+                             'and does not match the models of this class instance %s.' % (len(k), n))
+        bool_list = k
+    elif isinstance(k[0], (int, np.integer)):  # list of integers
+        bool_list = [False] * n
+        for i, k_i in enumerate(k):
+            if k_i is not False:
+                if k_i is True:
+                    bool_list[i] = True
+                elif k_i < n:
+                    bool_list[k_i] = True
+                else:
+                    raise ValueError("k as set by %s is not convertable in a bool string!" % k)
+    else:
+        raise ValueError('input list k as %s not compatible' % k)
+    return bool_list

@@ -23,7 +23,7 @@ class KinematicAPI(object):
         :param z_lens: redshift of lens
         :param z_source: redshift of source
         :param kwargs_model: model keyword arguments
-        :param cosmo: astropy.cosmology instance
+        :param cosmo: astropy.cosmology instance, if None then will be set to the default cosmology
         """
         self.z_d = z_lens
         self.z_s = z_source
@@ -41,14 +41,8 @@ class KinematicAPI(object):
         Further information can be found in the AnalyticKinematics() class.
 
         :param kwargs_lens: lens model parameters
-        :param kwargs_lens_light: deflector light parameters
         :param aniso_param: scaled r_ani with respect to the half light radius
         :param r_eff: half light radius
-        :param R_slit: width of the slit
-        :param dR_slit: length of the slit
-        :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
-        :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param moffat_beta: float, beta parameter of Moffat profile
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
@@ -62,14 +56,14 @@ class KinematicAPI(object):
         return sigma
 
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                      kwargs_psf, anisotropy_model, r_eff=None,
-                                      kwargs_numerics={}, MGE_light=False,
-                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
+                                      kwargs_psf, anisotropy_model, r_eff=None, theta_E=None,
+                                      kwargs_numerics={}, MGE_light=False, kwargs_mge_light=None,
+                                      MGE_mass=False, kwargs_mge_mass=None, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
                                       Hernquist_approx=False, kappa_ext=0):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.
-        Additionaly to executing the Galkin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
+        Additionally to executing the GalKin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
         and light models that do not have a three-dimensional distribution built in, such as Sersic profiles etc.
 
         The center of all the lens and lens light models that are part of the kinematic estimate must be centered on the
@@ -85,6 +79,7 @@ class KinematicAPI(object):
         :param anisotropy_model: stellar anisotropy model (see Galkin module)
         :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
          light profile
+        :param theta_E: a rough estimate of the Einstein radius when performing the MGE of the deflector
         :param kwargs_numerics: keyword arguments that contain numerical options (see Galkin module)
         :param MGE_light: bool, if true performs the MGE for the light distribution
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
@@ -101,10 +96,11 @@ class KinematicAPI(object):
 
         kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
 
-        mass_profile_list, kwargs_profile = self.kinematic_lens_profiles(kwargs_lens, MGE_fit=MGE_mass,
-                                                                         model_kinematics_bool=lens_model_kinematics_bool)
+        mass_profile_list, kwargs_profile = self.kinematic_lens_profiles(kwargs_lens, MGE_fit=MGE_mass, theta_E=theta_E,
+                                                                         model_kinematics_bool=lens_model_kinematics_bool,
+                                                                         kwargs_mge=kwargs_mge_mass)
         light_profile_list, kwargs_light = self.kinematic_light_profile(kwargs_lens_light, r_eff=r_eff,
-                                                                        MGE_fit=MGE_light,
+                                                                        MGE_fit=MGE_light, kwargs_mge=kwargs_mge_light,
                                                                         model_kinematics_bool=light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
         galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
@@ -113,7 +109,8 @@ class KinematicAPI(object):
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma
 
-    def kinematic_lens_profiles(self, kwargs_lens, MGE_fit=False, model_kinematics_bool=None, theta_E=None):
+    def kinematic_lens_profiles(self, kwargs_lens, MGE_fit=False, model_kinematics_bool=None, theta_E=None,
+                                kwargs_mge=None):
         """
         translates the lenstronomy lens and mass profiles into a (sub) set of profiles that are compatible with the
         GalKin module to compute the kinematics thereof.
@@ -128,6 +125,7 @@ class KinematicAPI(object):
             main deflector potential
         :param theta_E: (optional float) estimate of the Einstein radius. If present, does not numerically compute this
          quantity in this routine numerically
+        :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
         :return: mass_profile_list, keyword argument list
         """
 
@@ -139,29 +137,39 @@ class KinematicAPI(object):
             if model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x, center_y = self._profile_analysis.lensProfile.lens_center(kwargs_lens, k=i)
+                    center_x_i, center_y_i = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens, k=i)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
-                    kwargs_lens_i['grid_interp_x'] -= center_x
-                    kwargs_lens_i['grid_interp_y'] -= center_y
+                    kwargs_lens_i['grid_interp_x'] -= center_x_i
+                    kwargs_lens_i['grid_interp_y'] -= center_y_i
                 else:
                     kwargs_lens_i = {k: v for k, v in kwargs_lens[i].items() if not k in ['center_x', 'center_y']}
                 kwargs_profile.append(kwargs_lens_i)
 
         if MGE_fit is True:
+            if kwargs_mge is None:
+                raise ValueError('kwargs_mge needs to be specified!')
             if theta_E is None:
                 lensModel = LensModel(lens_model_list=mass_profile_list)
                 massModel = LensProfileAnalysis(lensModel)
-                theta_E = massModel.effective_einstein_radius(kwargs_profile)
+                theta_E = massModel.effective_einstein_radius(kwargs_profile, center_x=0, center_y=0,
+                                                              model_bool_list=None, grid_num=200, grid_spacing=0.05,
+                                                              get_precision=False, verbose=True)
             r_array = np.logspace(-4, 2, 200) * theta_E
-            mass_r = self._profile_analysis.lensProfile.radial_lens_profile(r_array, kwargs_lens, model_bool_list=model_kinematics_bool)
-            amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=20)
+            if self.kwargs_model['lens_model_list'][0] in ['INTERPOL', 'INTERPOL_SCLAED']:
+                center_x, center_y = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens, k=model_kinematics_bool)
+            else:
+                center_x, center_y = None, None
+            mass_r = self._profile_analysis.lensProfile.radial_lens_profile(r_array, kwargs_lens, center_x=center_x,
+                                                                            center_y=center_y,
+                                                                            model_bool_list=model_kinematics_bool)
+            amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=kwargs_mge.get('n_comp', 20))
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
 
         return mass_profile_list, kwargs_profile
 
     def kinematic_light_profile(self, kwargs_lens_light, r_eff=None, MGE_fit=False, model_kinematics_bool=None,
-                                Hernquist_approx=False):
+                                Hernquist_approx=False, kwargs_mge=None):
         """
         setting up of the light profile to compute the kinematics in the GalKin module. The requirement is that the
         profiles are centered at (0, 0) and that for all profile types there exists a 3d de-projected analytical
@@ -176,6 +184,7 @@ class KinematicAPI(object):
           deflector light.
         :param Hernquist_approx: boolean, if True replaces the actual light profile(s) with a Hernquist model with
          matched half-light radius.
+        :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
         :return: deflector type list, keyword arguments list
         """
         light_profile_list = []
@@ -192,16 +201,16 @@ class KinematicAPI(object):
                     kwargs_lens_light_i['e2'] = 0
                 kwargs_light.append(kwargs_lens_light_i)
         if Hernquist_approx is True:
-            print(r_eff, 'test r_eff')
             if r_eff is None:
                 raise ValueError('r_eff needs to be pre-computed and specified when using the Hernquist approximation')
             light_profile_list = ['HERNQUIST']
             kwargs_light = [{'Rs': r_eff * 0.551, 'amp': 1.}]
         else:
             if MGE_fit is True:
+                if kwargs_mge is None:
+                    raise ValueError('kwargs_mge must be provided to compute the MGE')
                 amps, sigmas, center_x, center_y = self._profile_analysis.lensLightProfile.multi_gaussian_decomposition(
-                    kwargs_lens_light, grid_spacing=0.01, grid_num=100,
-                    model_bool_list=model_kinematics_bool, n_comp=20)
+                    kwargs_lens_light, model_bool_list=model_kinematics_bool, **kwargs_mge)
                 light_profile_list = ['MULTI_GAUSSIAN']
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light

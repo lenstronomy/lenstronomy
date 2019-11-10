@@ -1,4 +1,4 @@
-import numpy as np
+from lenstronomy.Util.util import convert_bool_list
 
 
 class ProfileListBase(object):
@@ -17,6 +17,7 @@ class ProfileListBase(object):
         self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
                                                     lens_redshift_list=lens_redshift_list,
                                                     z_source_convention=z_source_convention)
+        self._num_func = len(self.func_list)
         self._model_list = lens_model_list
 
     def _load_model_instances(self, lens_model_list, custom_class=None, lens_redshift_list=None,
@@ -211,27 +212,13 @@ class ProfileListBase(object):
         returns a bool list of the length of the lens models
         if k = None: returns bool list with True's
         if k is int, returns bool list with False's but k'th is True
+        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
+        if k is a boolean list, checks for size to match the numbers of models and returns it
 
         :param k: None, int, or list of ints
         :return: bool list
         """
-        n = len(self.func_list)
-        if k is None:
-            bool_list = [True] * n
-        elif isinstance(k, (int, np.integer)):
-            bool_list = [False] * n
-            bool_list[k] = True
-        else:
-            bool_list = [False] * n
-            for i, k_i in enumerate(k):
-                if k_i is not False:
-                    if k_i is True:
-                        bool_list[i] = True
-                    elif k_i < n:
-                        bool_list[k_i] = True
-                    else:
-                        raise ValueError("k as set by %s is not convertable in a bool string!" % k)
-        return bool_list
+        return convert_bool_list(n=self._num_func, k=k)
 
     def set_static(self, kwargs_list):
         """

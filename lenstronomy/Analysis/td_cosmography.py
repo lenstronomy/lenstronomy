@@ -8,6 +8,7 @@ from lenstronomy.Util import class_creator
 from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.kinematics_api import KinematicAPI
+from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 
 
 class TDCosmography(object):
@@ -28,6 +29,7 @@ class TDCosmography(object):
         self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=self._cosmo_fiducial)
         self._kinematic_api = KinematicAPI(z_lens, z_source, kwargs_model, cosmo=self._cosmo_fiducial)
         self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
+        self._lensLightProfile = LightProfileAnalysis(light_model=self.LensLightModel)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """
@@ -51,7 +53,7 @@ class TDCosmography(object):
         if sigma_source > 0.001:
             Warning('Source position computed from the different image positions do not trace back to the same position! '
                     'The error is %s mas and may be larger than what is required for an accurate relative time delay estimate!'
-                    'See e.g. Birrer & Treu 2019.' %sigma_source * 1000)
+                    'See e.g. Birrer & Treu 2019.' % sigma_source * 1000)
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, ra_source, dec_source, kwargs_lens)
@@ -82,26 +84,47 @@ class TDCosmography(object):
         DdDs_Dds = 1./(1+self._lens_cosmo.z_lens)/(1. - kappa_ext) * (const.c * time_delay_measured * const.day_s)/(fermat_pot*const.arcsec**2)/const.Mpc
         return Ds_Dds, DdDs_Dds
 
-    def kinematics_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy):
+    def kinematics_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, anisotropy_model, r_eff=None):
         """
         \sigma^2 = D_d/D_ds * c^2 *J(kwargs_lens, kwargs_light, anisotropy) (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019)
         J() is a dimensionless and cosmological independent quantity only depending on angular units
         This function returns J given the lens and light parameters and the anisotropy choice without an external mass sheet correction.
 
         :param kwargs_lens: lens model keyword arguments
-        :param kwargs_light: lens light model keyword arguments
+        :param kwargs_lens_light: lens light model keyword arguments
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
+        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
+         if set to None will be computed in this function with default settings that may not be accurate.
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
-        sigma_v = self._kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                      aperture_type, anisotropy_model, r_eff=None, psf_type='GAUSSIAN', moffat_beta=2.6, kwargs_numerics={}, MGE_light=False,
-                                      MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
-                                      Hernquist_approx=False, kappa_ext=0)
+        sigma_v = self._kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light,
+                                                                    kwargs_anisotropy=kwargs_anisotropy,
+                                                                    kwargs_aperture=self._kwargs_aperture_kin,
+                                                                    kwargs_psf=self._kwargs_psf_kin,
+                                                                    anisotropy_model=anisotropy_model,
+                                                                    r_eff=r_eff, kwargs_numerics=self._kwargs_numerics_kin,
+                                                                    MGE_light=False, MGE_mass=False,
+                                                                    lens_model_kinematics_bool=None,
+                                                                    light_model_kinematics_bool=None,
+                                                                    Hernquist_approx=False, kappa_ext=0)
         if self._kinematic_analytic is True:
-            self._kinematic_api.velocity_dispersion(kwargs_lens, r_eff, kwargs_aperture=kwargs_aperture, psf_fwhm=psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
-                            moffat_beta=2.6, num_evaluate=1000, kappa_ext=0)
+            if r_eff is None:
+                r_eff = self._lensLightProfile.half_light_radius(kwargs_light=kwargs_lens_light)
+            self._kinematic_api.velocity_dispersion(kwargs_lens, r_eff, self._kwargs_aperture_kin, self._kwargs_psf_kin,
+                                                    aniso_param=1, num_evaluate=1000,
+                            kappa_ext=0)
         J = sigma_v**2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c**2
         return J
 
-    def kinematic_observation_settings(self):
-        pass
+    def kinematic_observation_settings(self, kwargs_aperture, kwargs_seeing, kwargs_numerics):
+        """
+
+        :param kwargs_aperture: spectroscopic aperture keyword arguments, see lenstronomy.Galkin.aperture for options
+        :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin module specified in lenstronomy.GalKin.psf
+        :param kwargs_numerics: numerical settings for the integrated line-of-sight velocity dispersion
+        :return: None
+        """
+        self._kwargs_aperture_kin = kwargs_aperture
+        self._kwargs_numerics_kin = kwargs_numerics
+        self._kwargs_psf_kin = kwargs_seeing

@@ -61,7 +61,7 @@ class TestLensProfileAnalysis(object):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
         lensModel = LensProfileAnalysis(LensModel(lens_model_list))
-        alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.external_lensing_effect(kwargs_lens, lens_model_internal_bool=[False])
+        alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.local_lensing_effect(kwargs_lens, model_list_bool=[0])
         print(alpha0_x, alpha0_y, kappa_ext, shear1, shear2)
         assert alpha0_x == 0
         assert alpha0_y == 0
@@ -100,7 +100,7 @@ class TestLensProfileAnalysis(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
         lensModel = LensModel(**{'lens_model_list': ['SIS']})
         profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
-        center_x_out, center_y_out = profileAnalysis.lens_center(kwargs_lens)
+        center_x_out, center_y_out = profileAnalysis.convergence_peak(kwargs_lens)
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
 

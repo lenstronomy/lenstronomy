@@ -28,13 +28,13 @@ class LightProfileAnalysis(object):
         :param grid_num: grid size over which the moments are computed
         :return: eccentricities e1, e2
         """
-        center_x, center_y = self._center(kwargs_light, center_x, center_y)
+        center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_light)
         x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
         x_grid += center_x
         y_grid += center_y
-        I_xy = self._light_components_select(x_grid, y_grid, kwargs_light, model_bool_list=model_bool_list)
+        I_xy = self._light_model.surface_brightness(x_grid, y_grid, kwargs_light, k=model_bool_list)
         e1, e2 = analysis_util.ellipticities(I_xy, x_grid-center_x, y_grid-center_y)
         return e1, e2
 
@@ -50,13 +50,13 @@ class LightProfileAnalysis(object):
         :param grid_num: grid size over which the moments are computed
         :return: half-light radius
         """
-        center_x, center_y = self._center(kwargs_light, center_x, center_y)
+        center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
         if model_bool_list is None:
             model_bool_list = [True] * len(kwargs_light)
         x_grid, y_grid = util.make_grid(numPix=grid_num, deltapix=grid_spacing)
         x_grid += center_x
         y_grid += center_y
-        lens_light = self._light_components_select(x_grid, y_grid, kwargs_light, model_bool_list=model_bool_list)
+        lens_light = self._light_model.surface_brightness(x_grid, y_grid, kwargs_light, k=model_bool_list)
         R_h = analysis_util.half_light_radius(lens_light, x_grid, y_grid, center_x, center_y)
         return R_h
 
@@ -70,31 +70,13 @@ class LightProfileAnalysis(object):
         :param model_bool_list: bool list or None, indicating which profiles to sum over
         :return: flux amplitudes at r_list radii spherically averaged
         """
-        center_x, center_y = self._center(kwargs_light, center_x, center_y)
+        center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
         f_list = []
         for r in r_list:
             x, y = util.points_on_circle(r, num_points=20)
-            f_r = self._light_components_select(x + center_x, y + center_y, kwargs_profile=kwargs_light, model_bool_list=model_bool_list)
+            f_r = self._light_model.surface_brightness(x + center_x, y + center_y, kwargs_list=kwargs_light, k=model_bool_list)
             f_list.append(np.average(f_r))
         return f_list
-
-    def _light_components_select(self, x_grid, y_grid, kwargs_profile, model_bool_list=None):
-        """
-        evaluates only part of the light profiles
-
-        :param x_grid:
-        :param y_grid:
-        :param kwargs_profile:
-        :return:
-        """
-        if model_bool_list is None:
-            model_bool_list = [True] * len(kwargs_profile)
-        lens_light = np.zeros_like(x_grid)
-        for i, bool in enumerate(model_bool_list):
-            if bool is True:
-                lens_light_i = self._light_model.surface_brightness(x_grid, y_grid, kwargs_profile, k=i)
-                lens_light += lens_light_i
-        return lens_light
 
     def multi_gaussian_decomposition(self, kwargs_light, grid_spacing=0.01, grid_num=100, model_bool_list=None,
                                      n_comp=20, center_x=None, center_y=None):
@@ -107,12 +89,11 @@ class LightProfileAnalysis(object):
         :param model_bool_list: list of booleans to select subsets of the profile
         :param grid_spacing: grid spacing over which the moments are computed
         :param grid_num: grid size over which the moments are computed
-        :param n_comp: maximum number of Gaussians in the MGE
+        :param n_comp: maximum number of Gaussian's in the MGE
         :return: amplitudes, sigmas, center_x, center_y
         """
 
-        center_x, center_y = self._center(kwargs_light, center_x, center_y)
-
+        center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
         r_h = self.half_light_radius(kwargs_light, center_x=center_x, center_y=center_y,
                                      model_bool_list=model_bool_list, grid_spacing=grid_spacing, grid_num=grid_num)
         r_array = np.logspace(-3, 2, 200) * r_h * 2
@@ -138,7 +119,7 @@ class LightProfileAnalysis(object):
         :return: keyword arguments of the elliptical multi Gaussian profile in lenstronomy conventions
         """
         # estimate center
-        center_x, center_y = self._center(kwargs_light, center_x, center_y)
+        center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
 
         if elliptical is True:
             e1, e2 = self.ellipticity(kwargs_light, center_x=center_x, center_y=center_y,
@@ -180,21 +161,3 @@ class LightProfileAnalysis(object):
             flux_list.append(flux)
             R_h_list.append(R_h)
         return flux_list, R_h_list
-
-    @staticmethod
-    def _center(kwargs_light, center_x=None, center_y=None):
-        """
-        utility routine that results in the centroid estimate for the profile estimates
-
-        :param kwargs_light: light parameter keyword argument list
-        :param center_x: None or center
-        :param center_y: None or center
-        :return: center_x, center_y
-        """
-        if center_x is None or center_y is None:
-            if 'center_x' in kwargs_light[0]:
-                center_x = kwargs_light[0]['center_x']
-                center_y = kwargs_light[0]['center_y']
-            else:
-                raise ValueError('The center has to be provided or the first profile must come with a center.')
-        return center_x, center_y

@@ -138,3 +138,22 @@ def bic_model(logL, num_data, num_param):
     """
     bic = -2 * logL + (np.log(num_data) * num_param)
     return bic
+
+
+def profile_center(kwargs_list, center_x=None, center_y=None):
+    """
+    utility routine that results in the centroid estimate for the profile estimates
+
+    :param kwargs_list: light parameter keyword argument list (can be light or mass)
+    :param center_x: None or center
+    :param center_y: None or center
+    :return: center_x, center_y
+    """
+    if center_x is None or center_y is None:
+        if 'center_x' in kwargs_list[0]:
+            center_x = kwargs_list[0]['center_x']
+            center_y = kwargs_list[0]['center_y']
+        else:
+            raise ValueError('The center has to be provided as a function argument or the first profile in the list'
+                             ' must come with a center.')
+    return center_x, center_y

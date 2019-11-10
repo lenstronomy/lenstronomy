@@ -7,6 +7,7 @@ from lenstronomy.LightModel.Profiles.gaussian import Gaussian, GaussianEllipse
 import pytest
 import numpy.testing as npt
 import numpy as np
+import unittest
 
 
 class TestCorrelation(object):
@@ -79,6 +80,20 @@ class TestCorrelation(object):
         #plt.show()
 
         npt.assert_almost_equal(I_r[10:], I_r_true[10:], decimal=1)
+
+    def test_profile_center(self):
+        kwargs_list = [{'center_x': 1, 'center_y': 0}]
+        center_x, center_y = analysis_util.profile_center(kwargs_list=kwargs_list)
+        assert center_x == 1
+        assert center_y == 0
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs_list = [{}]
+            analysis_util.profile_center(kwargs_list=kwargs_list)
 
 
 if __name__ == '__main__':

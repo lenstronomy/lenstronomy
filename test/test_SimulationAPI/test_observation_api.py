@@ -46,7 +46,7 @@ class TestInstrumentObservation(object):
         seeing = 1
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN', 'kernel_point_source': 1}
         observation.update_observation(**kwargs_observations)
         assert observation.exposure_time == 1
         psf = observation.psf_class

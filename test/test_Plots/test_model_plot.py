@@ -233,6 +233,24 @@ class TestRaise(unittest.TestCase):
                                  arrow_size=0.02, cmap_string="gist_heat")
             lensPlot._select_band(band_index=0)
 
+        with self.assertRaises(ValueError):
+            kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, background_rms=1)
+            # kwargs_data['image_data'] = np.zeros((10, 10))
+            kwargs_model = {'source_light_model_list': ['GAUSSIAN']}
+            kwargs_params = {'kwargs_lens': [],
+                             'kwargs_source': [{'amp': 1, 'sigma': 1, 'center_x': 0, 'center_y': 0}],
+                             'kwargs_ps': [], 'kwargs_lens_light': []}
+            lensPlot = ModelPlot(multi_band_list=[[kwargs_data, {'psf_type': 'NONE'}, {}]],
+                                 kwargs_model=kwargs_model, kwargs_params=kwargs_params, bands_compute=[False],
+                                 arrow_size=0.02, cmap_string="gist_heat")
+
+            f, ax = plt.subplots(1, 1, figsize=(4, 4))
+            ax = lensPlot.source_plot(ax=ax, numPix=10, deltaPix_source=0.1, v_min=None, v_max=None,
+                                      with_caustics=False,
+                                      caustic_color='yellow',
+                                      fsize=15, plot_scale='wrong')
+            plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

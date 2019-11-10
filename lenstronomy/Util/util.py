@@ -532,9 +532,9 @@ def convert_bool_list(n, k=None):
         bool_list = [False] * n
         for i, k_i in enumerate(k):
             if k_i is not False:
-                if k_i is True:
-                    bool_list[i] = True
-                elif k_i < n:
+                #if k_i is True:
+                #    bool_list[i] = True
+                if k_i < n:
                     bool_list[k_i] = True
                 else:
                     raise ValueError("k as set by %s is not convertable in a bool string!" % k)

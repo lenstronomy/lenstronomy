@@ -335,6 +335,10 @@ def test_convert_bool_list():
     assert bool_list[1] is False
     assert bool_list[2] is True
 
+    bool_list = util.convert_bool_list(n=3, k=[])
+    assert len(bool_list) == 3
+    assert bool_list[0] is False
+
 
 class TestRaise(unittest.TestCase):
 

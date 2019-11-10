@@ -42,22 +42,24 @@ class TestKinematicsAPI(object):
         kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0}
 
         psf_fwhm = 0.7
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.211919902322
 
         v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                         kwargs_aperture, psf_fwhm, anisotropy_model,
+                                                         kwargs_aperture, kwargs_psf, anisotropy_model,
                                                          MGE_light=True, r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_mge_lens = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                                                  psf_fwhm, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                                  kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True,
                                                                   r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_hernquist = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                                  kwargs_aperture,
-                                                                  psf_fwhm, anisotropy_model,
+                                                                  kwargs_aperture, kwargs_psf, anisotropy_model,
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
                                                                   lens_model_kinematics_bool=[True, False, False, False, False])
-        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff, kwargs_aperture=kwargs_aperture, psf_fwhm=psf_fwhm, num_evaluate=5000)
+        vel_disp_temp = lensProp.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff,
+                                                     kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
+                                                     num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)

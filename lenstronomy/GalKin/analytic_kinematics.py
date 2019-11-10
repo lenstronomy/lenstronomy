@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.psf import PSF
+from lenstronomy.GalKin.psf import psf_select
 from lenstronomy.GalKin.aperture import aperture_select
 import lenstronomy.Util.constants as const
 import math
@@ -28,8 +28,7 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, psf_type='GAUSSIAN', fwhm=0.7,
-                 moffat_beta=2.6):
+    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, kwargs_psf):
         """
 
         :param D_d: angular diameter to the deflector [MPC]
@@ -40,7 +39,7 @@ class AnalyticKinematics(object):
         :param moffat_beta: float, beta parameter of Moffat profile
         """
         self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
-        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
+        self._psf = psf_select(**kwargs_psf)
         self.aperture = aperture_select(**kwargs_aperture)
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):

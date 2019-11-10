@@ -2,7 +2,7 @@ from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.mass_profile import MassProfile
 from lenstronomy.GalKin.aperture import aperture_select
 from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
-from lenstronomy.GalKin.psf import PSF
+from lenstronomy.GalKin.psf import psf_select
 from lenstronomy.GalKin.cosmo import Cosmo
 import lenstronomy.GalKin.velocity_util as util
 import lenstronomy.Util.constants as const
@@ -51,8 +51,8 @@ class Galkin(object):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, mass_profile_list, light_profile_list, kwargs_aperture, anisotropy_model='isotropic',
-                 psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500},
+    def __init__(self, mass_profile_list, light_profile_list, kwargs_aperture, kwargs_psf, anisotropy_model='isotropic',
+                 kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500},
                  sampling_number=1000, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
@@ -60,9 +60,7 @@ class Galkin(object):
         :param light_profile_list: list of light model profiles of the lensing galaxy
         :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class.
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param fwhm: full width at half maximum seeing condition
-        :param moffat_beta: float, beta parameter of Moffat profile
+        :param kwargs_psf: keyword argument specifying the PSF of the observation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
         self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, interpol_grid_num=interpol_grid_num,
@@ -78,7 +76,7 @@ class Galkin(object):
         self._log_int = log_integration
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
-        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
+        self._psf = psf_select(**kwargs_psf)
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

@@ -32,8 +32,8 @@ class KinematicAPI(object):
         self.kwargs_model = kwargs_model
         self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
 
-    def velocity_dispersion(self, kwargs_lens, r_eff, kwargs_aperture, psf_fwhm, aniso_param=1, psf_type='GAUSSIAN',
-                            moffat_beta=2.6, num_evaluate=1000, kappa_ext=0):
+    def velocity_dispersion(self, kwargs_lens, r_eff, kwargs_aperture, kwargs_psf, aniso_param=1, num_evaluate=1000,
+                            kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
@@ -56,14 +56,13 @@ class KinematicAPI(object):
         gamma = kwargs_lens[0]['gamma']
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
-        analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type,
-                                                 kwargs_aperture=kwargs_aperture, **self._kwargs_cosmo)
+        analytic_kinematics = AnalyticKinematics(kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture, **self._kwargs_cosmo)
         sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, rendering_number=num_evaluate)
         sigma *= np.sqrt(1-kappa_ext)
         return sigma
 
-    def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture, psf_fwhm,
-                                      anisotropy_model, r_eff=None, psf_type='GAUSSIAN', moffat_beta=2.6,
+    def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
+                                      kwargs_psf, anisotropy_model, r_eff=None,
                                       kwargs_numerics={}, MGE_light=False,
                                       MGE_mass=False, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
                                       Hernquist_approx=False, kappa_ext=0):
@@ -108,9 +107,8 @@ class KinematicAPI(object):
                                                                         MGE_fit=MGE_light,
                                                                         model_kinematics_bool=light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
-        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
-                        anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
-                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
+                        anisotropy_model=anisotropy_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma

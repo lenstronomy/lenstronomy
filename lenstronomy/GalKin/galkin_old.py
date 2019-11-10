@@ -5,15 +5,15 @@ from lenstronomy.GalKin.light_profile import LightProfileOld
 from lenstronomy.GalKin.aperture import aperture_select
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.GalKin.jeans_equation import JeansSolver
-from lenstronomy.GalKin.psf import PSF
+from lenstronomy.GalKin.psf import psf_select
 
 
 class GalKinAnalytic(object):
     """
     master class for all computations
     """
-    def __init__(self, kwargs_aperture, mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani',
-                 psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
+    def __init__(self, kwargs_aperture, kwargs_psf, mass_profile='power_law', light_profile='Hernquist', anisotropy_type='r_ani',
+                 kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}):
         """
         initializes the observation condition and masks
         :param aperture_type: string
@@ -25,7 +25,7 @@ class GalKinAnalytic(object):
         self.aperture = aperture_select(**kwargs_aperture)
         self.anisotropy = Anisotropy(anisotropy_type)
         self.jeans_solver = JeansSolver(kwargs_cosmo, mass_profile, light_profile, anisotropy_type)
-        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
+        self._psf = psf_select(**kwargs_psf)
 
     def vel_disp(self, kwargs_profile, kwargs_light, kwargs_anisotropy, num=1000):
         """

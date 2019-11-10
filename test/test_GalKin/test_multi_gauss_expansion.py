@@ -54,11 +54,15 @@ class TestGalkin(object):
         gamma = 2.
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -104,11 +108,15 @@ class TestGalkin(object):
         kwargs_profile_mge = [{'amp': amps, 'sigma': sigmas}]
 
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list_mge, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list_mge, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -158,11 +166,15 @@ class TestGalkin(object):
         kwargs_profile_mge = [{'amp': amps, 'sigma': sigmas}]
 
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list_mge, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list_mge, light_profile_list_mge, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -218,11 +230,15 @@ class TestGalkin(object):
         kwargs_light_mge = [{'amp': amps, 'sigma': sigmas}]
         print(amps, sigmas, 'amp', 'sigma')
 
-        galkin = Galkin(mass_profile_list, light_profile_list_hernquist, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_hernquist, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type,
+                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)

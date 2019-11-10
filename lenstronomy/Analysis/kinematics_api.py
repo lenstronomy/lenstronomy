@@ -56,8 +56,9 @@ class KinematicAPI(object):
         gamma = kwargs_lens[0]['gamma']
         theta_E = kwargs_lens[0]['theta_E']
         r_ani = aniso_param * r_eff
-        analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type, **self._kwargs_cosmo)
-        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, kwargs_aperture=kwargs_aperture, rendering_number=num_evaluate)
+        analytic_kinematics = AnalyticKinematics(fwhm=psf_fwhm, moffat_beta=moffat_beta, psf_type=psf_type,
+                                                 kwargs_aperture=kwargs_aperture, **self._kwargs_cosmo)
+        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, rendering_number=num_evaluate)
         sigma *= np.sqrt(1-kappa_ext)
         return sigma
 
@@ -107,10 +108,10 @@ class KinematicAPI(object):
                                                                         MGE_fit=MGE_light,
                                                                         model_kinematics_bool=light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
+        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, aperture_type=aperture_type,
                         anisotropy_model=anisotropy_model, fwhm=psf_fwhm, psf_type=psf_type, moffat_beta=moffat_beta,
                         kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma
 

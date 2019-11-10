@@ -1,6 +1,6 @@
 from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.mass_profile import MassProfile
-from lenstronomy.GalKin.aperture import Aperture
+from lenstronomy.GalKin.aperture import aperture_select
 from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
 from lenstronomy.GalKin.psf import PSF
 from lenstronomy.GalKin.cosmo import Cosmo
@@ -51,13 +51,14 @@ class Galkin(object):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, mass_profile_list, light_profile_list, aperture_type='slit', anisotropy_model='isotropic',
+    def __init__(self, mass_profile_list, light_profile_list, kwargs_aperture, aperture_type='slit', anisotropy_model='isotropic',
                  psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6, kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500},
                  sampling_number=1000, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
         :param mass_profile_list: list of lens (mass) model profiles
         :param light_profile_list: list of light model profiles of the lensing galaxy
+        :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
         :param aperture_type: type of slit/shell aperture where the light is coming from. See details in Aperture() class.
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class.
         :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
@@ -69,7 +70,7 @@ class Galkin(object):
                                          max_interpolate=max_integrate, min_interpolate=min_integrate)
         self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
                                          max_interpolate=max_integrate, min_interpolate=min_integrate)
-        self.aperture = Aperture(aperture_type)
+        self.aperture = aperture_select(aperture_type, kwargs_aperture=kwargs_aperture)
         self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
 
         self.cosmo = Cosmo(**kwargs_cosmo)
@@ -80,7 +81,7 @@ class Galkin(object):
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
         self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
 
-    def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture):
+    def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -88,28 +89,24 @@ class Galkin(object):
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
-        :param kwargs_aperture: Aperture parameters, may vary depending on aperture type chosen.
-            We refer to the Aperture() class for details on the parameters.
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_R_sum = 0
         for i in range(0, self._num_sampling):
-            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma2_R_sum += sigma2_R
         sigma_s2_average = sigma2_R_sum / self._num_sampling
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         sigma_s2_average *= 2 * const.G  # correcting for integral prefactor
         return np.sqrt(sigma_s2_average/(const.arcsec**2 * self.cosmo.D_d**2 * const.Mpc))/1000.  # in units of km/s
 
-    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy, kwargs_aperture):
+    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
 
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
-        :param kwargs_apertur: Aperture parameters, may vary depending on aperture type chosen.
-            We refer to the Aperture() class for details on the parameters.
         :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
          falls in the aperture after displacing with the seeing
         """
@@ -117,7 +114,7 @@ class Galkin(object):
             R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
             x, y = util.draw_xy(R)  # draw projected R in arcsec
             x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.aperture.aperture_select(x_, y_, kwargs_aperture)
+            bool = self.aperture.aperture_select(x_, y_)
             if bool is True:
                 break
         sigma2_R = self._sigma2_R(R, kwargs_mass, kwargs_light, kwargs_anisotropy)

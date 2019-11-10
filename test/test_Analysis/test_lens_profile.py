@@ -7,7 +7,6 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
 import lenstronomy.Util.param_util as param_util
-import lenstronomy.Util.util as util
 
 
 class TestLensProfileAnalysis(object):
@@ -19,21 +18,17 @@ class TestLensProfileAnalysis(object):
         lens_model = LensProfileAnalysis(LensModel(lens_model_list=['SPP']))
         gamma_in = 2.
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
+        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
         gamma_in = 1.7
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
+        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
         gamma_in = 2.5
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
+        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-
-        kwargs_lens_bad = [{'theta_E': 100, 'gamma': 2, 'center_x': 0, 'center_y': 0}]
-        gamma_out_bad = lens_model.profile_slope(kwargs_lens_bad, verbose=False)
-        assert np.isnan(gamma_out_bad)
 
         lens_model = LensProfileAnalysis(LensModel(lens_model_list=['SPEP']))
         gamma_in = 2.
@@ -41,7 +36,7 @@ class TestLensProfileAnalysis(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens = [{'theta_E': 1.4516812130749424, 'e1': e1, 'e2': e2, 'center_x': -0.04507598845306314,
          'center_y': 0.054491803177414651, 'gamma': gamma_in}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
+        gamma_out = lens_model.profile_slope(kwargs_lens, radius=1.45)
         npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
 
     def test_effective_einstein_radius(self):

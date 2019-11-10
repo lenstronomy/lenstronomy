@@ -103,7 +103,7 @@ class LightProfileAnalysis(object):
         amplitudes, sigmas, norm = mge.mge_1d(r_array, flux_r, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 
-    def multi_gaussian_decomposition_ellipse(self, kwargs_light, model_bool_list=None, elliptical=True,
+    def multi_gaussian_decomposition_ellipse(self, kwargs_light, model_bool_list=None,
                                              center_x=None, center_y=None, grid_num=100, grid_spacing=0.05, n_comp=20):
         """
         MGE with ellipticity estimate.
@@ -121,11 +121,9 @@ class LightProfileAnalysis(object):
         # estimate center
         center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
 
-        if elliptical is True:
-            e1, e2 = self.ellipticity(kwargs_light, center_x=center_x, center_y=center_y,
-                                      model_bool_list=model_bool_list, grid_spacing=grid_spacing * 2, grid_num=grid_num)
-        else:
-            e1, e2 = 0, 0
+        e1, e2 = self.ellipticity(kwargs_light, center_x=center_x, center_y=center_y,
+                                  model_bool_list=model_bool_list, grid_spacing=grid_spacing * 2, grid_num=grid_num)
+
         # MGE around major axis
         amplitudes, sigmas, center_x, center_y = self.multi_gaussian_decomposition(kwargs_light,
                                                                                    model_bool_list=model_bool_list,
@@ -133,9 +131,8 @@ class LightProfileAnalysis(object):
                                                                                    grid_num=grid_num, center_x=center_x,
                                                                                    center_y=center_y)
         kwargs_mge = {'amp': amplitudes, 'sigma': sigmas, 'center_x': center_x, 'center_y': center_y}
-        if elliptical:
-            kwargs_mge['e1'] = e1
-            kwargs_mge['e2'] = e2
+        kwargs_mge['e1'] = e1
+        kwargs_mge['e2'] = e2
         return kwargs_mge
 
     def flux_components(self, kwargs_light, grid_num=400, grid_spacing=0.01):

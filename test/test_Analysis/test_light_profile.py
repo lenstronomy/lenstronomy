@@ -177,8 +177,7 @@ class TestLightAnalysis(object):
         kwargs_mge = profile.multi_gaussian_decomposition_ellipse(kwargs_light, grid_spacing=0.1,
                                                                   grid_num=400, model_bool_list=None,
                                                                   n_comp=20,
-                                                                  center_x=None, center_y=None,
-                                                                  elliptical=True)
+                                                                  center_x=None, center_y=None)
 
         print(kwargs_mge['e1'])
         mge = MultiGaussianEllipse()

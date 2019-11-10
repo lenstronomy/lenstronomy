@@ -169,6 +169,28 @@ class TestCosmoLikelihood(object):
         assert bool is False
 
 
+class TestCosmoParam(object):
+
+    def setup(self):
+        pass
+
+    def test_param_bounds(self):
+        cosmo_param = CosmoParam(sampling_option="H0_only", lower_limit=[0, 0, 0], upper_limit=[200, 1, 1])
+        lower_limit, uppder_limit = cosmo_param.param_bounds
+        assert len(lower_limit) == 1
+        assert uppder_limit[0] == 200
+
+        cosmo_param = CosmoParam(sampling_option="H0_omega_m", lower_limit=[0, 0, 0], upper_limit=[200, 1, 1])
+        lower_limit, uppder_limit = cosmo_param.param_bounds
+        assert len(lower_limit) == 2
+        assert uppder_limit[1] == 1
+
+        cosmo_param = CosmoParam(sampling_option='H0_omega_m_omega_de', lower_limit=[0, 0, 0], upper_limit=[200, 1, 1])
+        lower_limit, uppder_limit = cosmo_param.param_bounds
+        assert len(lower_limit) == 3
+        assert uppder_limit[2] == 1
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):
@@ -193,10 +215,7 @@ class TestRaise(unittest.TestCase):
             self.cosmoL._likelihood(a=[])
         with self.assertRaises(ValueError):
             param = CosmoParam(sampling_option='WRONG')
-            param.numParam
-        with self.assertRaises(ValueError):
-            param = CosmoParam(sampling_option='WRONG')
-            param.param_bounds
+            test = param.numParam
 
 
 if __name__ == '__main__':

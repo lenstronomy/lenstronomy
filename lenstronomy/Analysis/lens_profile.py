@@ -69,31 +69,26 @@ class LensProfileAnalysis(object):
         shear2 = f_xy
         return f_x, f_y, kappa_ext, shear1, shear2
 
-    def profile_slope(self, kwargs_lens, model_list_bool=None, num_points=10, verbose=True):
+    def profile_slope(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None, num_points=10, verbose=True):
         """
         computes the logarithmic power-law slope of a profile
 
         :param kwargs_lens: lens model keyword argument list
+        :param radius: radius from the center where to compute the logarithmic slope (angular units
         :param model_list_bool: bool list, indicate which part of the model to consider
         :param num_points: number of estimates around the Einstein radius
         :return: logarithmic power-law slope
         """
-        theta_E = self.effective_einstein_radius(kwargs_lens, verbose=verbose)
-        if np.isnan(theta_E):
-            if verbose:
-                print("Could not compute effective slope, because of Einstein radius")
-            return np.nan
-        x0 = kwargs_lens[0]['center_x']
-        y0 = kwargs_lens[0]['center_y']
-        x, y = util.points_on_circle(theta_E, num_points)
+        center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)
+        x, y = util.points_on_circle(radius, num_points)
         dr = 0.01
-        x_dr, y_dr = util.points_on_circle(theta_E + dr, num_points)
+        x_dr, y_dr = util.points_on_circle(radius + dr, num_points)
 
-        alpha_E_x_i, alpha_E_y_i = self._lens_model.alpha(x0 + x, y0 + y, kwargs_lens, k=model_list_bool)
+        alpha_E_x_i, alpha_E_y_i = self._lens_model.alpha(center_x + x, center_y + y, kwargs_lens, k=model_list_bool)
         alpha_E_r = np.sqrt(alpha_E_x_i**2 + alpha_E_y_i**2)
-        alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(x0 + x_dr, y0 + y_dr, kwargs_lens, k=model_list_bool)
+        alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(center_x + x_dr, center_y + y_dr, kwargs_lens, k=model_list_bool)
         alpha_E_dr = np.sqrt(alpha_E_dr_x_i ** 2 + alpha_E_dr_y_i ** 2)
-        slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((theta_E + dr) / theta_E))
+        slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((radius + dr) / radius))
         gamma = -slope + 2
         return gamma
 

@@ -323,13 +323,13 @@ class TestGalkin(object):
 
         v_sigma = kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
-                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff,
+                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff, theta_E=1,
                                                               kwargs_mge_mass=kwargs_mge, kwargs_mge_light=kwargs_mge)
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
         kinematic_api_interp = KinematicAPI(z_lens, z_source, kwargs_options_interp)
         v_sigma_interp = kinematic_api_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
-                                                         kwargs_aperture, kwargs_psf, anisotropy_model,
+                                                         kwargs_aperture, kwargs_psf, anisotropy_model, theta_E=1.,
                                                          kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff,
                                                                             kwargs_mge_mass=kwargs_mge,
                                                                             kwargs_mge_light=kwargs_mge)

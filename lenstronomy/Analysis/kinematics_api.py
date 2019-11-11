@@ -8,7 +8,6 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
 from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
-from lenstronomy.LensModel.lens_model import LensModel
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 
@@ -141,12 +140,9 @@ class KinematicAPI(object):
             if model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x_i, center_y_i = self._lensMassProfile.convergence_peak(kwargs_lens,
-                                                                                                 model_bool_list=i,
-                                                                                                 grid_num=200,
-                                                                                                 grid_spacing=0.01,
-                                                                                                 center_x_init=0,
-                                                                                                 center_y_init=0)
+                    center_x_i, center_y_i = self._lensMassProfile.convergence_peak(kwargs_lens, model_bool_list=i,
+                                                                                    grid_num=200, grid_spacing=0.01,
+                                                                                    center_x_init=0, center_y_init=0)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
                     kwargs_lens_i['grid_interp_x'] -= center_x_i
                     kwargs_lens_i['grid_interp_y'] -= center_y_i
@@ -158,18 +154,12 @@ class KinematicAPI(object):
             if kwargs_mge is None:
                 raise ValueError('kwargs_mge needs to be specified!')
             if theta_E is None:
-                lensModel = LensModel(lens_model_list=mass_profile_list)
-                massModel = LensProfileAnalysis(lensModel)
-                theta_E = massModel.effective_einstein_radius(kwargs_profile, center_x=0, center_y=0,
-                                                              model_bool_list=None, grid_num=200, grid_spacing=0.05,
-                                                              get_precision=False, verbose=True)
+                raise ValueError('rough estimate of the Einstein radius needs to be provided to compute the MGE!')
             r_array = np.logspace(-4, 2, 200) * theta_E
             if self.kwargs_model['lens_model_list'][0] in ['INTERPOL', 'INTERPOL_SCLAED']:
                 center_x, center_y = self._lensMassProfile.convergence_peak(kwargs_lens, model_bool_list=model_kinematics_bool,
-                                                                                         grid_num=200,
-                                                                                         grid_spacing=0.01,
-                                                                                         center_x_init=0,
-                                                                                         center_y_init=0)
+                                                                            grid_num=200, grid_spacing=0.01,
+                                                                            center_x_init=0, center_y_init=0)
             else:
                 center_x, center_y = None, None
             mass_r = self._lensMassProfile.radial_lens_profile(r_array, kwargs_lens, center_x=center_x,
@@ -231,9 +221,7 @@ class KinematicAPI(object):
     def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                   theta_E=None, gamma=None):
         """
-        \sigma^2 = D_d/D_ds * c^2 *J(kwargs_lens, kwargs_light, anisotropy) (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019)
-        J() is a dimensionless and cosmological independent quantity only depending on angular units
-        This function returns J given the lens and light parameters and the anisotropy choice without an external mass sheet correction.
+        API for both, analytic and numerical JAM modeling to compute the velocity dispersion [km/s]
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments
@@ -241,7 +229,7 @@ class KinematicAPI(object):
         :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
          if set to None will be computed in this function with default settings that may not be accurate.
 
-        :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
+        :return: velocity dispersion [km/s]
         """
 
         if self._analytic_kinematics is True:
@@ -264,16 +252,16 @@ class KinematicAPI(object):
                                                                          num_evaluate=num_evaluate, kappa_ext=0)
         else:
             sigma_v = self.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light,
-                                                                        kwargs_anisotropy=kwargs_anisotropy,
-                                                                        kwargs_aperture=self._kwargs_aperture_kin,
-                                                                        kwargs_psf=self._kwargs_psf_kin,
-                                                                        anisotropy_model=self._anisotropy_model,
-                                                                        r_eff=r_eff, theta_E=theta_E,
-                                                                        kwargs_numerics=self._kwargs_numerics_kin,
-                                                                        MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
-                                                                        lens_model_kinematics_bool=self._lens_model_kinematics_bool,
-                                                                        light_model_kinematics_bool=self._light_model_kinematics_bool,
-                                                                        Hernquist_approx=self._Hernquist_approx, kappa_ext=0)
+                                                         kwargs_anisotropy=kwargs_anisotropy,
+                                                         kwargs_aperture=self._kwargs_aperture_kin,
+                                                         kwargs_psf=self._kwargs_psf_kin,
+                                                         anisotropy_model=self._anisotropy_model,
+                                                         r_eff=r_eff, theta_E=theta_E,
+                                                         kwargs_numerics=self._kwargs_numerics_kin,
+                                                         MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
+                                                         lens_model_kinematics_bool=self._lens_model_kinematics_bool,
+                                                         light_model_kinematics_bool=self._light_model_kinematics_bool,
+                                                         Hernquist_approx=self._Hernquist_approx, kappa_ext=0)
         return sigma_v
 
     def kinematic_observation_settings(self, kwargs_aperture, kwargs_seeing):

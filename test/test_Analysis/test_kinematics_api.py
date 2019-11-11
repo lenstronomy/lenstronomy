@@ -54,7 +54,7 @@ class TestKinematicsAPI(object):
                                                          MGE_light=True, r_eff=r_eff,  kwargs_mge_light=kwargs_mge,
                                                          lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_mge_lens = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                                                  kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                                  kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True, theta_E=theta_E,
                                                                   kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge,
                                                                   r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
         v_sigma_hernquist = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
@@ -108,7 +108,7 @@ class TestKinematicsAPI(object):
 
         kwargs_mge = {'n_comp': 20}
         mass_profile_list, kwargs_profile = lensProp.kinematic_lens_profiles(kwargs_lens, MGE_fit=True,
-                                                                             kwargs_mge=kwargs_mge,
+                                                                             kwargs_mge=kwargs_mge, theta_E=1.4,
                                                                              model_kinematics_bool=[True, False])
         assert mass_profile_list[0] == 'MULTI_GAUSSIAN_KAPPA'
 
@@ -129,6 +129,13 @@ class TestRaise(unittest.TestCase):
             kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
                                                  Hernquist_approx=True, r_eff=None, model_kinematics_bool=[True])
             raise ValueError()
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_options = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
+            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
+            kinematicAPI.kinematic_lens_profiles(kwargs_light, MGE_fit=True, model_kinematics_bool=[True])
 
 
 if __name__ == '__main__':

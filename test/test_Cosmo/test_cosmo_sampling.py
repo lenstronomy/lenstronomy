@@ -216,6 +216,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             param = CosmoParam(sampling_option='WRONG')
             test = param.numParam
+        with self.assertRaises(ValueError):
+            param = CosmoParam(sampling_option='WRONG')
+            bounds = param.param_bounds
 
 
 if __name__ == '__main__':

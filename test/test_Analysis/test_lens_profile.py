@@ -49,7 +49,7 @@ class TestLensProfileAnalysis(object):
         npt.assert_almost_equal(ret[0], 1., decimal=2)
         kwargs_lens_bad = [{'theta_E': 100, 'center_x': 0, 'center_y': 0}]
         ret_nan = lensModel.effective_einstein_radius(kwargs_lens_bad,
-                                                      get_precision=True, verbose=False)
+                                                      get_precision=True, verbose=True)
         assert np.isnan(ret_nan)
 
     def test_external_lensing_effect(self):

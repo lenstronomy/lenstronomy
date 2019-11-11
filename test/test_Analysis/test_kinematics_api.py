@@ -62,9 +62,9 @@ class TestKinematicsAPI(object):
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
                                                                   lens_model_kinematics_bool=[True, False, False, False, False])
-        vel_disp_temp = kinematicAPI.velocity_dispersion(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
-                                                     kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                                                     num_evaluate=5000)
+        vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
+                                                                    kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
+                                                                    num_evaluate=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)

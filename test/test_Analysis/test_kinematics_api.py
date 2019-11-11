@@ -20,7 +20,9 @@ class TestKinematicsAPI(object):
 
                           'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
         kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
-        kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
+        theta_E = 1.5
+        gamma = 1.8
+        kwargs_lens = [{'theta_E': theta_E, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': gamma},
                        {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}, {'center_y': 2.79985456, 'center_x': -2.32019894,
                         'theta_E': 0.28165274714097904}, {'center_y': 3.83985426,
                         'center_x': -2.32019933, 'theta_E': 0.0038110812674654873},
@@ -60,7 +62,7 @@ class TestKinematicsAPI(object):
                                                                   MGE_light=False, MGE_mass=False,
                                                                   r_eff=r_eff, Hernquist_approx=True,
                                                                   lens_model_kinematics_bool=[True, False, False, False, False])
-        vel_disp_temp = kinematicAPI.velocity_dispersion(kwargs_lens, aniso_param=r_ani/r_eff, r_eff=r_eff,
+        vel_disp_temp = kinematicAPI.velocity_dispersion(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
                                                      kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                                      num_evaluate=5000)
         print(v_sigma, vel_disp_temp)

@@ -69,7 +69,7 @@ class LensProfileAnalysis(object):
         shear2 = f_xy
         return f_x, f_y, kappa_ext, shear1, shear2
 
-    def profile_slope(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None, num_points=10, verbose=True):
+    def profile_slope(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None, num_points=10):
         """
         computes the logarithmic power-law slope of a profile
 
@@ -147,7 +147,8 @@ class LensProfileAnalysis(object):
             kappa_list.append(kappa_mean)
         return kappa_list
 
-    def convergence_peak(self, kwargs_lens, model_bool_list=None, grid_num=200, grid_spacing=0.01, center_x_init=0, center_y_init=0):
+    def convergence_peak(self, kwargs_lens, model_bool_list=None, grid_num=200, grid_spacing=0.01, center_x_init=0,
+                         center_y_init=0):
         """
         computes the maximal convergence position on a grid and returns its coordinate
 

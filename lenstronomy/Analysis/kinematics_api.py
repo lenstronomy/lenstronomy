@@ -32,7 +32,7 @@ class KinematicAPI(object):
         self.kwargs_model = kwargs_model
         self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
 
-    def velocity_dispersion(self, kwargs_lens, r_eff, kwargs_aperture, kwargs_psf, aniso_param=1, num_evaluate=1000,
+    def velocity_dispersion(self, theta_E, gamma, r_eff, kwargs_aperture, kwargs_psf, r_ani, num_evaluate=1000,
                             kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
@@ -40,16 +40,16 @@ class KinematicAPI(object):
 
         Further information can be found in the AnalyticKinematics() class.
 
-        :param kwargs_lens: lens model parameters
-        :param aniso_param: scaled r_ani with respect to the half light radius
-        :param r_eff: half light radius
+        :param theta_E: Einstein radius
+        :param gamma: power-low slope of the mass profile (=2 corresponds to isothermal)
+        :param r_ani: anisotropy radius in units of angles
+        :param r_eff: projected half-light radius
+        :param kwargs_aperture: aperture parameters (see Galkin module)
         :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
-        gamma = kwargs_lens[0]['gamma']
-        theta_E = kwargs_lens[0]['theta_E']
-        r_ani = aniso_param * r_eff
+
         analytic_kinematics = AnalyticKinematics(kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture, **self._kwargs_cosmo)
         sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, rendering_number=num_evaluate)
         sigma *= np.sqrt(1-kappa_ext)
@@ -73,9 +73,7 @@ class KinematicAPI(object):
         :param kwargs_lens_light: lens light parameters
         :param kwargs_anisotropy: anisotropy parameters (see Galkin module)
         :param kwargs_aperture: aperture parameters (see Galkin module)
-        :param psf_fwhm: full width at half maximum of the seeing (Gaussian form)
-        :param psf_type: string, point spread function type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param moffat_beta: float, beta parameter of Moffat profile
+        :param kwargs_psf: seeing conditions and model (see GalKin module)
         :param anisotropy_model: stellar anisotropy model (see Galkin module)
         :param r_eff: a rough estimate of the half light radius of the lens light in case of computing the MGE of the
          light profile
@@ -94,8 +92,6 @@ class KinematicAPI(object):
         :return: LOS velocity dispersion [km/s]
         """
 
-        kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
-
         mass_profile_list, kwargs_profile = self.kinematic_lens_profiles(kwargs_lens, MGE_fit=MGE_mass, theta_E=theta_E,
                                                                          model_kinematics_bool=lens_model_kinematics_bool,
                                                                          kwargs_mge=kwargs_mge_mass)
@@ -104,7 +100,7 @@ class KinematicAPI(object):
                                                                         model_kinematics_bool=light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
         galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                        anisotropy_model=anisotropy_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+                        anisotropy_model=anisotropy_model, kwargs_cosmo=self._kwargs_cosmo, **kwargs_numerics)
         sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma
@@ -137,7 +133,12 @@ class KinematicAPI(object):
             if model_kinematics_bool[i] is True:
                 mass_profile_list.append(lens_model)
                 if lens_model in ['INTERPOL', 'INTERPOL_SCLAED']:
-                    center_x_i, center_y_i = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens, k=i)
+                    center_x_i, center_y_i = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens,
+                                                                                                 model_bool_list=i,
+                                                                                                 grid_num=200,
+                                                                                                 grid_spacing=0.01,
+                                                                                                 center_x_init=0,
+                                                                                                 center_y_init=0)
                     kwargs_lens_i = copy.deepcopy(kwargs_lens[i])
                     kwargs_lens_i['grid_interp_x'] -= center_x_i
                     kwargs_lens_i['grid_interp_y'] -= center_y_i
@@ -156,7 +157,11 @@ class KinematicAPI(object):
                                                               get_precision=False, verbose=True)
             r_array = np.logspace(-4, 2, 200) * theta_E
             if self.kwargs_model['lens_model_list'][0] in ['INTERPOL', 'INTERPOL_SCLAED']:
-                center_x, center_y = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens, k=model_kinematics_bool)
+                center_x, center_y = self._profile_analysis.lensProfile.convergence_peak(kwargs_lens, model_bool_list=model_kinematics_bool,
+                                                                                         grid_num=200,
+                                                                                         grid_spacing=0.01,
+                                                                                         center_x_init=0,
+                                                                                         center_y_init=0)
             else:
                 center_x, center_y = None, None
             mass_r = self._profile_analysis.lensProfile.radial_lens_profile(r_array, kwargs_lens, center_x=center_x,

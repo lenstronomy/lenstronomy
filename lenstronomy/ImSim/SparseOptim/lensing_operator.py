@@ -37,9 +37,9 @@ class LensingOperator(object):
         self.theta_y_src = y_grid_src_1d
 
 
-    def source2image(self, source_1d, kwargs_lens, update=False): #, compute_norm=False):
+    def source2image(self, source_1d, kwargs_lens=None, update=False): #, compute_norm=False):
         if not hasattr(self, '_lens_mapping_list') or update:
-            self._compute_mapping(kwargs_lens)
+            self.update_mapping(kwargs_lens)
 
         # if not compute_norm:
         #     source_ones_1d = np.ones_like(source_1d)
@@ -50,7 +50,7 @@ class LensingOperator(object):
         #     norm_1d = 1.
 
         if self._matrix_prod:
-            image_1d = self._source2image_matrix(source_1d, kwargs_lens)
+            image_1d = self._source2image_matrix(source_1d)
         else:
             image_1d = np.ones(self._num_pix**2)
             for j in range(source_1d.size):
@@ -61,14 +61,15 @@ class LensingOperator(object):
         return image_1d
 
 
-    def _source2image_matrix(self, source_1d, kwargs_lens):
+    def _source2image_matrix(self, source_1d):
         image_1d = self._lens_mapping_matrix.dot(source_1d)
         return image_1d
 
 
-    def image2source(self, image_1d, kwargs_lens, update=False, test_unit_image=False):
+    def image2source(self, image_1d, kwargs_lens=None, update=False, test_unit_image=False):
+        """if test_unit_image is True, do not normalize light flux to better visualize the mapping"""
         if not hasattr(self, '_lens_mapping_list') or update:
-            self._compute_mapping(kwargs_lens)
+            self.update_mapping(kwargs_lens)
         source_1d = np.zeros(self._num_pix**2 * self._subgrid_res_source**2)
         for j in range(source_1d.size):
             indices_i = np.where(self._lens_mapping_list == j)
@@ -82,16 +83,36 @@ class LensingOperator(object):
         return source_1d
 
 
-    def lens_mapping_list(self, kwargs_lens, update=False):
+    def source2image_2d(self, source, **kwargs):
+        source_1d = util.image2array(source)
+        return util.array2image(self.source2image(source_1d, **kwargs))
+
+
+    def image2source_2d(self, image, **kwargs):
+        image_1d = util.image2array(image)
+        return util.array2image(self.image2source(image_1d, **kwargs))
+
+
+    def lens_mapping_list(self, kwargs_lens=None, update=False):
         if not hasattr(self, '_lens_mapping_list') or update:
-            self._compute_mapping(kwargs_lens)
+            self.update_mapping(kwargs_lens)
         return self._lens_mapping_list
 
 
-    def lens_mapping_matrix(self, kwargs_lens, update=False):
+    def lens_mapping_matrix(self, kwargs_lens=None, update=False):
         if not hasattr(self, '_lens_mapping_list') or update:
-            self._compute_mapping(kwargs_lens)
+            self.update_mapping(kwargs_lens)
         return self._lens_mapping_matrix
+
+
+    @property
+    def source_plane_num_pix(self):
+        return self._num_pix * int(self._subgrid_res_source)
+
+
+    @property
+    def image_plane_num_pix(self):
+        return self._num_pix
 
 
     @property
@@ -104,7 +125,13 @@ class LensingOperator(object):
         return self.theta_x, self.theta_y
 
 
-    def _compute_mapping(self, kwargs_lens):
+    def update_mapping(self, kwargs_lens=None):
+        self._compute_mapping(kwargs_lens)
+
+
+    def _compute_mapping(self, kwargs_lens=None):
+        if kwargs_lens is None and not hasattr(self, '_lens_mapping_list'):
+            raise ValueError("Lens mapping initialization required kwargs_lens")
         image_plane_size  = self._num_pix**2
         source_plane_size = self._num_pix**2 * self._subgrid_res_source**2
         if self._matrix_prod:

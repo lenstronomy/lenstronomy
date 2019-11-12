@@ -52,6 +52,27 @@ class TestLensProfileAnalysis(object):
                                                       get_precision=True, verbose=True)
         assert np.isnan(ret_nan)
 
+        # test interpolated profile
+        numPix = 101
+        deltaPix = 0.02
+        from lenstronomy.Util import util
+        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        from lenstronomy.LensModel.Profiles.sis import SIS
+        sis = SIS()
+        center_x, center_y = 0., -0.
+        kwargs_SIS = {'theta_E': 1., 'center_x': center_x, 'center_y': center_y}
+        f_ = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_x, f_y = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx, f_yy, f_xy = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
+        kwargs_interpol = [{'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
+                           'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
+                           'f_xy': util.array2image(f_xy), 'f_yy': util.array2image(f_yy)}]
+        lensModel = LensProfileAnalysis(LensModel(lens_model_list=['INTERPOL']))
+        theta_E_return = lensModel.effective_einstein_radius(kwargs_interpol,
+                                                      get_precision=False, verbose=True, center_x=center_x, center_y=center_y)
+        npt.assert_almost_equal(theta_E_return, 1, decimal=2)
+
     def test_external_lensing_effect(self):
         lens_model_list = ['SHEAR']
         kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]

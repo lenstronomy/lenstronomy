@@ -33,8 +33,8 @@ class LensProfileAnalysis(object):
         y_grid += center_y
         kappa = self._lens_model.kappa(x_grid, y_grid, kwargs_lens, k=model_bool_list)
         if self._lens_model.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
-            center_x = x_grid[kappa == np.max(kappa)]
-            center_y = y_grid[kappa == np.max(kappa)]
+            center_x = x_grid[kappa == np.max(kappa)][0]
+            center_y = y_grid[kappa == np.max(kappa)][0]
         kappa = util.array2image(kappa)
         r_array = np.linspace(0, grid_num*grid_spacing/2., grid_num*2)
         for r in r_array:

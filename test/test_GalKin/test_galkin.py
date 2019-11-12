@@ -205,8 +205,8 @@ class TestGalkin(object):
         :return:
         """
         light_profile_list = ['HERNQUIST']
-        r_eff = 1.
-        kwargs_light = [{'Rs': r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        Rs = 1.
+        kwargs_light = [{'Rs': Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 2
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)

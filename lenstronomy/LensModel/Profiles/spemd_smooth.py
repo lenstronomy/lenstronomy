@@ -140,7 +140,7 @@ class SPEMD_SMOOTH(LensProfileBase):
                     f_xx_prim, f_yy_prim, f_xy_prim = np.array(f_xx_prim[0]), np.array(f_yy_prim[0]), np.array(
                         f_xy_prim[0])
         else:
-            f_xx_prim, f_yy_prim, f_xy_prim =  np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
+            f_xx_prim, f_yy_prim, f_xy_prim = np.zeros_like(x1), np.zeros_like(x1), np.zeros_like(x1)
             Warning("SPEMD model output replaced by zeros as fastell4py package is not installed!")
         kappa = (f_xx_prim + f_yy_prim)/2
         gamma1_value = (f_xx_prim - f_yy_prim)/2

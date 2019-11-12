@@ -128,7 +128,7 @@ class TNFW(LensProfileBase):
 
     def density_2d(self, x, y, Rs, rho0, r_trunc, center_x=0, center_y=0):
         """
-        projected two dimenstional NFW profile (kappa*Sigma_crit)
+        projected two dimensional NFW profile (kappa*Sigma_crit)
 
         :param R: radius of interest
         :type R: float/numpy array

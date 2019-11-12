@@ -18,6 +18,8 @@ class TestTDCosmography(object):
                         'point_source_model_list': ['LENSED_POSITION']}
         z_lens = 0.5
         z_source = 2.5
+        TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
+                      light_model_kinematics_bool=None)
         from astropy.cosmology import FlatLambdaCDM
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.td_cosmo = TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=cosmo, lens_model_kinematics_bool=None,

@@ -35,7 +35,7 @@ class TestLensCosmo(object):
     def test_profileMain(self):
         M = 10**(13.5)
         z = 0.5
-        r200, rho0, c, Rs = self.nfwParam.profileMain(M, z)
+        r200, rho0, c, Rs = self.nfwParam.nfw_Mz(M, z)
 
         c_ = self.nfwParam.c_M_z(M, z)
         r200_ = self.nfwParam.r200_M(M)

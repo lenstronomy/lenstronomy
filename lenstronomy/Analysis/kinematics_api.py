@@ -33,7 +33,6 @@ class KinematicAPI(object):
             all_models=True, **kwargs_model)
         self._lensLightProfile = LightProfileAnalysis(light_model=self.LensLightModel)
         self._lensMassProfile = LensProfileAnalysis(lens_model=self.LensModel)
-        #self._profile_analysis = ProfileAnalysis(kwargs_model)
         self.kwargs_model = kwargs_model
         self._kwargs_cosmo = {'D_d': self.lensCosmo.D_d, 'D_s': self.lensCosmo.D_s, 'D_ds': self.lensCosmo.D_ds}
         self._lens_model_kinematics_bool = lens_model_kinematics_bool

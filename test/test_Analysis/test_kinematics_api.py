@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import numpy.testing as npt
+import numpy as np
 import pytest
 import unittest
 
@@ -100,21 +101,55 @@ class TestKinematicsAPI(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR']}
-        lensProp = KinematicAPI(z_lens, z_source, kwargs_options)
+        kin_api = KinematicAPI(z_lens, z_source, kwargs_options)
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093,
                         'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
                        {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}
                        ]
 
         kwargs_mge = {'n_comp': 20}
-        mass_profile_list, kwargs_profile = lensProp.kinematic_lens_profiles(kwargs_lens, MGE_fit=True,
+        mass_profile_list, kwargs_profile = kin_api.kinematic_lens_profiles(kwargs_lens, MGE_fit=True,
                                                                              kwargs_mge=kwargs_mge, theta_E=1.4,
                                                                              model_kinematics_bool=[True, False])
         assert mass_profile_list[0] == 'MULTI_GAUSSIAN_KAPPA'
 
-        mass_profile_list, kwargs_profile = lensProp.kinematic_lens_profiles(kwargs_lens, MGE_fit=False,
+        mass_profile_list, kwargs_profile = kin_api.kinematic_lens_profiles(kwargs_lens, MGE_fit=False,
                                                                              model_kinematics_bool=[True, False])
         assert mass_profile_list[0] == 'SPEP'
+
+    def test_model_dispersion(self):
+        np.random.seed(42)
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_options = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['HERNQUIST']}
+        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens_light = [{'amp': 1, 'Rs': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_anisotropy = {'r_ani': 1}
+        kin_api = KinematicAPI(z_lens, z_source, kwargs_options)
+        # settings
+
+        R_slit = 3.8
+        dR_slit = 1.
+        aperture_type = 'slit'
+        kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'width': dR_slit, 'length': R_slit,
+                           'angle': 0, 'center_dec': 0}
+        psf_fwhm = 0.7
+        kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        kin_api.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
+
+        anisotropy_model = 'OsipkovMerritt'
+        kwargs_numerics_galkin = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
+                                  'max_integrate': 10, 'min_integrate': 0.001}
+        kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
+                                     Hernquist_approx=False, MGE_light=False, MGE_mass=False)
+        vel_disp_analytic = kin_api.model_velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
+                                  theta_E=None, gamma=None)
+
+        kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
+                                             Hernquist_approx=False, MGE_light=False, MGE_mass=False)
+        vel_disp_numerical = kin_api.model_velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                              r_eff=None,theta_E=None, gamma=None)
+        npt.assert_almost_equal(vel_disp_numerical/ vel_disp_analytic, 1, decimal=2)
 
 
 class TestRaise(unittest.TestCase):

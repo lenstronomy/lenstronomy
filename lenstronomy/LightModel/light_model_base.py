@@ -87,6 +87,9 @@ class LightModelBase(object):
             elif profile_type == 'INTERPOL':
                 from lenstronomy.LightModel.Profiles.interpolation import Interpol
                 self.func_list.append(Interpol())
+            elif profile_type == 'STARLETS':
+                from lenstronomy.LightModel.Profiles.starlets import Starlets
+                self.func_list.append(Starlets(fast_inverse=True, second_gen=False))
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
 

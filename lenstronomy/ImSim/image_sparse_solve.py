@@ -49,8 +49,9 @@ class ImageSparseFit(ImageModel):
             lens_light_profile = self.LensLightModel.func_list[0]
         else:
             lens_light_profile = None
-        self.sparseOptimizer = SparseOptimizer(image_data, psf_kernel, sigma_bkg, self.likelihood_mask, 
-                                               source_profile, lens_light_profile, **kwargs_sparse)
+        self.sparseOptimizer = SparseOptimizer(data_class, source_profile, psf_class=psf_class,
+                                               lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
+                                               **kwargs_sparse)
         self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
                                                matrix_prod=True)
 
@@ -79,8 +80,8 @@ class ImageSparseFit(ImageModel):
         # _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         # model = self.array_masked2image(wls_model)
         # return model, model_error, cov_param, param
-        model = self.pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
-        return model
+        model_TEMP = self.pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
+        return model_TEMP
 
 
     def pixel_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):

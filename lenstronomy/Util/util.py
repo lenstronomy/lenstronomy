@@ -503,3 +503,38 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     dec_coords_sub = image2array(dec_array_new)
     return ra_coords_sub, dec_coords_sub
 
+
+def spectral_norm(num_pix, operator, inverse_operator, num_iter=20, tol=1e-10):
+    """compute spectral norm from operator and its inverse"""
+    random_array = np.random.randn(num_pix, num_pix)
+    norm = np.linalg.norm(random_array)
+    random_array /= norm
+
+    i = 0
+    err = abs(tol)
+    while i < num_iter and err >= tol:
+        # print(i, norm)
+        coeffs = operator(random_array)
+        random_array = inverse_operator(coeffs)
+        norm_new = np.linalg.norm(random_array)
+        random_array /= norm_new
+        err = abs(norm_new - norm)/norm_new
+        norm = norm_new
+        i += 1
+    return norm
+
+
+def soft_threshold(array, level):
+    if len(array.shape) > 2:
+        ValueError("Soft thresholding only supported for 1D or 2D arrays")
+    array_th = np.sign(array) * np.maximum(np.abs(array) - level, 0.)
+    return array_th
+
+
+def hard_threshold(array, level):
+    if len(array.shape) > 2:
+        ValueError("Hard thresholding only supported for 1D or 2D arrays")
+    array_th = array.copy()
+    array_th[np.abs(array) < level] = 0.
+    return array_th
+

@@ -19,7 +19,7 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     """
     # make super-sampled grid
     x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix * 5, deltapix=deltaPix, subgrid_res=subgrid_res)
-    import lenstronomy.Util.mask as mask_util
+    import lenstronomy.Util.mask_util as mask_util
     mask = mask_util.mask_sphere(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
     x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
     # compute light on the subgrid

@@ -82,13 +82,26 @@ class LensCosmo(object):
             self._Epsilon_Crit = self.D_s/(self.D_d*self.D_ds) * factor #[M_sun/Mpc^2]
         return self._Epsilon_Crit
 
+    @property
+    def epsilon_crit_angle(self):
+        """
+        returns the critical projected mass density in units of M_sun/arcsec^2 (in physical solar mass units)
+        :return: critical projected mass density
+        """
+        if not hasattr(self, '_Epsilon_Crit_arcsec'):
+            const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
+            conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
+            factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
+            self._Epsilon_Crit_arcsec = self.D_s / (self.D_d * self.D_ds) * factor * (self.D_d * const.arcsec)**2  # [M_sun/arcsec^2]
+        return self._Epsilon_Crit_arcsec
+
     def phys2arcsec_lens(self, phys):
         """
         convert physical Mpc into arc seconds
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
         """
-        return phys / self.D_d/const.arcsec
+        return phys / self.D_d/ const.arcsec
 
     def arcsec2phys_lens(self, arcsec):
         """
@@ -193,6 +206,17 @@ class LensCosmo(object):
         rho0 = self.nfw_param.rho0_c(c) * self.h**2 / self.a_z(self.z_lens)**3 # physical density in M_sun/Mpc**3
         Rs = r200/c
         return rho0, Rs, r200
+
+    def nfw_M_theta_vir(self, M):
+        """
+        returns virial radius in angular units of arc seconds on the sky
+
+        :param M: physical mass in M_sun
+        :return: angle (in arc seconds) of the virial radius
+        """
+        r200 = self.nfw_param.r200_M(M * self.h) / self.h * self.a_z(self.z_lens)  # physical radius r200
+        theta_r200 = r200 / self.D_d / const.arcsec
+        return theta_r200
 
     def sis_theta_E2sigma_v(self, theta_E):
         """

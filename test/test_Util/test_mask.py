@@ -1,6 +1,6 @@
 import numpy as np
 import pytest
-import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.mask_util as mask_util
 import lenstronomy.Util.util as util
 
 

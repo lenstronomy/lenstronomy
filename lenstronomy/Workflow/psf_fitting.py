@@ -2,7 +2,7 @@ from lenstronomy.Data.psf import PSF
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 import lenstronomy.Util.kernel_util as kernel_util
-import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.mask_util as mask_util
 
 import numpy as np
 import copy

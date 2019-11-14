@@ -1,6 +1,6 @@
 import numpy as np
 from lenstronomy.Util import util
-from lenstronomy.Util import mask as mask_util
+from lenstronomy.Util import mask_util as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.Util import analysis_util
 

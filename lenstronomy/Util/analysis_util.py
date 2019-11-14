@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-import lenstronomy.Util.mask as mask_util
+import lenstronomy.Util.mask_util as mask_util
 
 
 def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):

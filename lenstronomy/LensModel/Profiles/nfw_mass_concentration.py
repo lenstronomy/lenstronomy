@@ -34,7 +34,7 @@ class NFWMC(LensProfileBase):
         if cosmo is None:
             from astropy.cosmology import FlatLambdaCDM
             cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
-        self._lens_cosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
+        self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
         self._static = static
         super(NFWMC, self).__init__()
 

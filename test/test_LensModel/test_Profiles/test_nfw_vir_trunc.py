@@ -21,6 +21,7 @@ class TestNFW(object):
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.nfw = NFWVirTrunc(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
         self.lensCosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
+        NFWVirTrunc(z_lens=z_lens, z_source=z_source, cosmo=None)
 
     def test_G(self):
 
@@ -28,8 +29,15 @@ class TestNFW(object):
         num = 1000
         l = 2 * c
         r = np.linspace(0, l, 1000)
+        out = self.nfw._G(c, c=c)
+        assert out == 0
+        out = self.nfw._G(x=1, c=c)
+        npt.assert_almost_equal(out, 0.32892146681210577 , decimal=6)
+        out = self.nfw._G(x=2, c=c)
+        npt.assert_almost_equal(out, 0.12735521436564, decimal=6)
 
-
+        out = self.nfw._G(x=c+1, c=c)
+        npt.assert_almost_equal(out, 0, decimal=6)
         kappa = self.nfw._G(r, c=c) * r * np.pi * 2
         kappa_int = np.sum(kappa) / num * l/c
         f = self.nfw._f(c)# / self.nfw._f(c=1)

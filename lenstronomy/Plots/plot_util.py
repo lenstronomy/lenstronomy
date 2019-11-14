@@ -1,5 +1,7 @@
 import numpy as np
 import math
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def sqrt(inputArray, scale_min=None, scale_max=None):
@@ -125,3 +127,12 @@ def source_position_plot(ax, coords, ra_pos, dec_pos):
         x_source, y_source = coords.map_coord2pix(ra_pos, dec_pos)
         ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax
+
+
+def nice_colorbar(mappable, position='right', pad=0.1, size='5%', **divider_kwargs):
+    divider_kwargs.update({'position': position, 'pad': pad, 'size': size})
+    ax = mappable.axes
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes(**divider_kwargs)
+    return plt.colorbar(mappable, cax=cax)
+    

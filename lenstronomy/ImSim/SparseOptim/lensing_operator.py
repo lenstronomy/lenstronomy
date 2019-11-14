@@ -13,15 +13,17 @@ class LensingOperator(object):
     """TODO"""
 
     def __init__(self, data_class, lens_model_class, subgrid_res_source=1, matrix_prod=True):
-        self._lens_model = lens_model_class
-        self._subgrid_res_source = subgrid_res_source
-        self._matrix_prod = matrix_prod
-
         num_pix_x, num_pix_y = data_class.num_pixel_axes
         if num_pix_x != num_pix_y:
             raise ValueError("Only square images are supported")
-        self._num_pix = num_pix_x
+        self._num_pix_lens = num_pix_x
         self._delta_pix = data_class.pixel_width
+
+        self._subgrid_res_source = subgrid_res_source
+        self._num_pix_source = self._num_pix_lens * int(self._subgrid_res_source)
+
+        self._lens_model = lens_model_class
+        self._matrix_prod = matrix_prod
 
         # get the coordinates arrays of image plane
         x_grid, y_grid = data_class.pixel_coordinates
@@ -31,7 +33,7 @@ class LensingOperator(object):
         self.theta_y = y_grid_1d
 
         # get the coordinates arrays of source plane
-        x_grid_src_1d, y_grid_src_1d = util.make_grid(numPix=self._num_pix, deltapix=self._delta_pix, 
+        x_grid_src_1d, y_grid_src_1d = util.make_grid(numPix=self._num_pix_lens, deltapix=self._delta_pix, 
                                                       subgrid_res=self._subgrid_res_source)
         self.theta_x_src = x_grid_src_1d
         self.theta_y_src = y_grid_src_1d
@@ -52,7 +54,7 @@ class LensingOperator(object):
         if self._matrix_prod:
             image_1d = self._source2image_matrix(source_1d)
         else:
-            image_1d = np.ones(self._num_pix**2)
+            image_1d = np.ones(self._num_pix_lens**2)
             for j in range(source_1d.size):
                 indices_i = np.where(self._lens_mapping_list == j)
                 image[indices_i] = source_1d[j]
@@ -70,7 +72,8 @@ class LensingOperator(object):
         """if test_unit_image is True, do not normalize light flux to better visualize the mapping"""
         if not hasattr(self, '_lens_mapping_list') or update:
             self.update_mapping(kwargs_lens)
-        source_1d = np.zeros(self._num_pix**2 * self._subgrid_res_source**2)
+        source_plane_size = self._num_pix_source**2
+        source_1d = np.zeros(source_plane_size)
         for j in range(source_1d.size):
             indices_i = np.where(self._lens_mapping_list == j)
             flux_i = image_1d[indices_i]
@@ -107,12 +110,12 @@ class LensingOperator(object):
 
     @property
     def source_plane_num_pix(self):
-        return self._num_pix * int(self._subgrid_res_source)
+        return self._num_pix_source
 
 
     @property
     def image_plane_num_pix(self):
-        return self._num_pix
+        return self._num_pix_lens
 
 
     @property
@@ -132,8 +135,8 @@ class LensingOperator(object):
     def _compute_mapping(self, kwargs_lens=None):
         if kwargs_lens is None and not hasattr(self, '_lens_mapping_list'):
             raise ValueError("Lens mapping initialization required kwargs_lens")
-        image_plane_size  = self._num_pix**2
-        source_plane_size = self._num_pix**2 * self._subgrid_res_source**2
+        image_plane_size  = self._num_pix_lens**2
+        source_plane_size = self._num_pix_source**2 
         if self._matrix_prod:
             lens_mapping_array = np.zeros((image_plane_size, source_plane_size))
         lens_mapping_list = []

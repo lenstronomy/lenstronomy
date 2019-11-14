@@ -37,6 +37,8 @@ class AnalyticKinematics(object):
         :param fwhm: full width at half maximum seeing condition
         :param moffat_beta: float, beta parameter of Moffat profile
         """
+        if D_ds <= 0 or D_s <= 0 or D_d <=0:
+            raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens model!' % (D_d, D_s, D_ds) )
         self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
         self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
 

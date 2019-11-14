@@ -4,6 +4,8 @@ import numpy as np
 import scipy.signal as scs
 import scipy.ndimage.filters as scf
 
+from lenstronomy.Util import util
+
 
 class Starlets(object):
     """
@@ -37,6 +39,14 @@ class Starlets(object):
             return self._transform(image, n_scales)
         else:
             return self._transform_slit(image, n_scales)
+
+
+    def spectral_norm(self, num_pix, amp, n_scales):
+        if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales_cache:
+            self._spectral_norm = self._compute_spectral_norm(num_pix, amp, n_scales, num_iter=20, tol=1e-10)
+            self._n_scales_cache = n_scales
+        return self._spectral_norm
+
 
     def _inverse_transform(self, coeffs):
         """performs inverse starlet transform"""
@@ -187,6 +197,13 @@ class Starlets(object):
             cJ = cnew + wave[lvl-1-i, :, :]
 
         return np.reshape(cJ, (n1, n2))
+
+
+    def _compute_spectral_norm(self, num_pix, amp, n_scales, num_iter=20, tol=1e-10):
+        """compute spectral norm of the starlet operator"""
+        operator = lambda x: self.decomposition(x, amp, n_scales)
+        inverse_operator = lambda c: self.function(c, amp, n_scales)
+        return util.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
 
     def _check_modules(self):

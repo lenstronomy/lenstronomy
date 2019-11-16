@@ -20,7 +20,7 @@ class TestMultiPlaneOptimizer(object):
         lens_model_list_simple = ['SPEP', 'SHEAR']
         self.kwargs_lens_simple = [
             {'theta_E': 0.7, 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
-             'e2': 0.08890716633399057}, {'e1': 0.00418890660015825, 'e2': -0.02908846518073248}]
+             'e2': 0.08890716633399057}, {'gamma1': 0.00418890660015825, 'gamma2': -0.02908846518073248}]
         #self.kwargs_lens_simple = [
         #    {'theta_E': 0., 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
         #     'e2': 0.08890716633399057}, {'e1': 0, 'e2': 0}]
@@ -327,5 +327,7 @@ class TestMultiPlaneOptimizer(object):
 
         npt.assert_almost_equal(betax, betaxtrue, 5)
         npt.assert_almost_equal(betay, betaytrue, 5)
+
+
 if __name__ == '__main__':
     pytest.main()

@@ -116,7 +116,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_external_shear(self):
-        kwargs = {'e1': 0.1, 'e2': -0.1}
+        kwargs = {'gamma1': 0.1, 'gamma2': -0.1}
         lens_model = ['SHEAR']
         self.assert_differentials(lens_model, kwargs)
 

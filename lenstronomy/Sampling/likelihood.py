@@ -87,7 +87,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class, param_class)
+                                                             lens_model_class, point_source_class)
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:

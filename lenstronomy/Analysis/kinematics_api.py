@@ -220,7 +220,7 @@ class KinematicAPI(object):
     def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                   theta_E=None, gamma=None):
         """
-        API for both, analytic and numerical JAM modeling to compute the velocity dispersion [km/s]
+        API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments

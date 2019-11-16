@@ -62,11 +62,11 @@ class TestLensModel(object):
 
     def test_gamma(self):
         lensModel = LensModel(lens_model_list=['SHEAR'])
-        e1, e2  = 0.1, -0.1
-        kwargs = [{'e1': e1, 'e2': e2}]
+        gamma1, gamm2  = 0.1, -0.1
+        kwargs = [{'gamma1': gamma1, 'gamma2': gamm2}]
         e1_out, e2_out = lensModel.gamma(x=1., y=1., kwargs=kwargs)
-        assert e1_out == e1
-        assert e2_out == e2
+        assert e1_out == gamma1
+        assert e2_out == gamm2
 
         output1, output2 = self.lensModel.gamma(x=1., y=1., kwargs=self.kwargs)
         assert output1 == 0

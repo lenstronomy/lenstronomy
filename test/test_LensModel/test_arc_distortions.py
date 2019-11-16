@@ -24,7 +24,7 @@ class TestArcDistortions(object):
         lens = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
                         'direction': -10, 'center_x': center_x, 'center_y': center_y},
-                       {'e1': -0., 'e2': -0.0},
+                       {'gamma1': -0., 'gamma2': -0.0},
                        {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
 
         extensions = LensModelExtensions(lensModel=lens)
@@ -42,7 +42,7 @@ class TestArcDistortions(object):
         lens = LensModel(lens_model_list=lens_model_list)
         x0, y0 = 1., 1.
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
@@ -63,7 +63,7 @@ class TestArcDistortions(object):
         x0, y0 = 1., 1.
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
@@ -90,7 +90,7 @@ class TestArcDistortions(object):
         x0, y0 = 2., 1.
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
@@ -114,7 +114,7 @@ class TestArcDistortions(object):
         lens = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
                         'direction': -10, 'center_x': center_x, 'center_y': center_y},
-                       {'e1': -0., 'e2': -0.0},
+                       {'gamma1': -0., 'gamma2': -0.0},
                        {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
 
         extensions = LensModelExtensions(lensModel=lens)
@@ -191,7 +191,6 @@ class TestArcDistortions(object):
 
     def test_arcs_at_image_position(self):
         # lensing quantities
-        kwargs_shear = {'e1': 0.02, 'e2': -0.04}  # shear values to the source plane
         kwargs_spp = {'theta_E': 1.26, 'gamma': 2., 'e1': 0.1, 'e2': -0.1, 'center_x': 0.0, 'center_y': 0.0}  # parameters of the deflector lens model
 
         # the lens model is a supperposition of an elliptical lens model with external shear

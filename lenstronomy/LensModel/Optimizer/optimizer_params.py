@@ -66,9 +66,9 @@ class Params(object):
             if hasattr(self.routine, '_fixshear') and n == 1:
                 # here values is [theta_E, x, y, e1, e2, shear_theta]
                 # so convert into shear e1 e2
-                e1, e2 = phi_gamma_ellipticity(values[count],
+                gamma1, gamma2 = shear_polar2cartesian(values[count],
                                                self.routine.fixed_values[n]['shear_magnitude'])
-                args.update({'e1': e1, 'e2': e2})
+                args.update({'gamma1': gamma1, 'gamma2': gamma2})
 
             else:
                 for key in self.routine.param_names[n]:
@@ -97,7 +97,7 @@ class Params(object):
 
                 if key == 'shear_magnitude' or key == 'shear_PA':
 
-                    phi, _ = ellipticity2phi_gamma(kwargs[n]['e1'], kwargs[n]['e2'])
+                    phi, _ = shear_cartesian2polar(kwargs[n]['gamma1'], kwargs[n]['gamma2'])
                     values.append(phi)
 
                 else:

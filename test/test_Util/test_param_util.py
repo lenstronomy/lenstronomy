@@ -113,18 +113,18 @@ def test_transform_e1e2():
 def test_phi_gamma_ellipticity():
     phi = -1.
     gamma = 0.1
-    e1, e2 = param_util.phi_gamma_ellipticity(phi, gamma)
+    e1, e2 = param_util.shear_polar2cartesian(phi, gamma)
     print(e1, e2, 'e1, e2')
-    phi_out, gamma_out = param_util.ellipticity2phi_gamma(e1, e2)
+    phi_out, gamma_out = param_util.shear_cartesian2polar(e1, e2)
     assert phi == phi_out
     assert gamma == gamma_out
 
 
 def test_phi_gamma_ellipticity_2():
     e1, e2 = -0.04, -0.01
-    phi, gamma = param_util.ellipticity2phi_gamma(e1, e2)
+    phi, gamma = param_util.shear_cartesian2polar(e1, e2)
 
-    e1_out, e2_out = param_util.phi_gamma_ellipticity(phi, gamma)
+    e1_out, e2_out = param_util.shear_polar2cartesian(phi, gamma)
     npt.assert_almost_equal(e1, e1_out, decimal=10)
     npt.assert_almost_equal(e2, e2_out, decimal=10)
 

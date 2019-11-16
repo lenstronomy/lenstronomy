@@ -75,7 +75,7 @@ class TestLensProfileAnalysis(object):
 
     def test_external_lensing_effect(self):
         lens_model_list = ['SHEAR']
-        kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
+        kwargs_lens = [{'gamma1': 0.1, 'gamma2': 0.01}]
         lensModel = LensProfileAnalysis(LensModel(lens_model_list))
         alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.local_lensing_effect(kwargs_lens, model_list_bool=[0])
         print(alpha0_x, alpha0_y, kappa_ext, shear1, shear2)

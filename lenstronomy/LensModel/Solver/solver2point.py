@@ -119,10 +119,10 @@ class Solver2Point(object):
         elif self._solver_type == 'THETA_E_PHI':
             [theta_E, phi_G] = x
             kwargs_list[0]['theta_E'] = theta_E
-            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
-            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
-            kwargs_list[1]['e1'] = e1
-            kwargs_list[1]['e2'] = e2
+            phi_G_no_sense, gamma_ext = param_util.shear_cartesian2polar(kwargs_list[1]['gamma1'], kwargs_list[1]['gamma2'])
+            gamma1, gamma2 = param_util.shear_polar2cartesian(phi_G, gamma_ext)
+            kwargs_list[1]['gamma1'] = gamma1
+            kwargs_list[1]['gamma2'] = gamma2
         elif self._solver_type == 'THETA_E_ELLIPSE':
             [theta_E, phi_G] = x
             kwargs_list[0]['theta_E'] = theta_E
@@ -155,15 +155,15 @@ class Solver2Point(object):
             x = [c10, c01]
         elif self._solver_type == 'THETA_E_PHI':
             theta_E = kwargs_list[0]['theta_E']
-            e1 = kwargs_list[1]['e1']
-            e2 = kwargs_list[1]['e2']
-            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            gamma1 = kwargs_list[1]['gamma1']
+            gamma2 = kwargs_list[1]['gamma2']
+            phi_ext, gamma_ext = param_util.shear_cartesian2polar(gamma1, gamma2)
             x = [theta_E, phi_ext]
         elif self._solver_type == 'THETA_E_ELLIPSE':
             theta_E = kwargs_list[0]['theta_E']
             e1 = kwargs_list[0]['e1']
             e2 = kwargs_list[0]['e2']
-            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            phi_ext, gamma_ext = param_util.shear_cartesian2polar(e1, e2)
             x = [theta_E, phi_ext]
         else:
             raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
@@ -188,7 +188,7 @@ class Solver2Point(object):
             pass
         elif self._solver_type == 'THETA_E_PHI':
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
-            kwargs_fixed_lens_list[1]['e2'] = 0
+            kwargs_fixed_lens_list[1]['gamma2'] = 0
         elif self._solver_type == 'THETA_E_ELLIPSE':
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed_lens_list[0]['e2'] = 0

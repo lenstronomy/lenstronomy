@@ -6,8 +6,7 @@ class TimeDelayLikelihood(object):
     """
     class to compute the likelihood of a model given a measurement of time delays
     """
-    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class,
-                 param_class):
+    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
@@ -15,7 +14,6 @@ class TimeDelayLikelihood(object):
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
         time delays are imposed on
-        :param param_class: Param() class instance
         """
 
         if time_delays_measured is None:
@@ -26,7 +24,6 @@ class TimeDelayLikelihood(object):
         self._delays_errors = np.array(time_delays_uncertainties)
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
-        self._param = param_class
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """

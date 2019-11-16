@@ -40,7 +40,7 @@ class TestOutputPlots(object):
         psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
-        kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
+        kwargs_shear = {'gamma1': 0.01, 'gamma2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         e1, e2 = param_util.phi_q2_ellipticity(0.2, 0.8)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': e1, 'e2': e2}
 

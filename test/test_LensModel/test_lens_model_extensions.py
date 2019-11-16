@@ -55,7 +55,8 @@ class TestLensModelExtensions(object):
 
         lens_model_list = ['SPEMD','SHEAR']
 
-        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},{'e1':0.01,'e2':0.03}]
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
+                       {'gamma1':0.01, 'gamma2':0.03}]
 
         extension = LensModelExtensions(LensModel(lens_model_list))
         x_image, y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
@@ -76,7 +77,7 @@ class TestLensModelExtensions(object):
 
         x_source, y_source = 0.02, 0.01
         kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': 0.1, 'gamma': 2, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.05, 'e2': -0.03}]
+                       {'gamma1': 0.05, 'gamma2': -0.03}]
 
         x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,
                                                                      sourcePos_y=y_source)

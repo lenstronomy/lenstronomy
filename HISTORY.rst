@@ -150,3 +150,11 @@ History
 * plotting routines split in different files
 * curved arc parameterization and eigenvector differentials
 * numerical differentials as part of the LensModel core class
+
+
+1.2.0 (2019-11-17)
++++++++++++++++++
+* Analysis module re-designed
+* GalKin module partially re-designed
+* Added cosmography module
+* parameterization of cartesian shear coefficients changed

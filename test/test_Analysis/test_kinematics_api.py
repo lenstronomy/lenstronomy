@@ -18,9 +18,8 @@ class TestKinematicsAPI(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
-
                           'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
-        kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+        kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options, lens_model_kinematics_bool= [True, False, False, False, False])
         theta_E = 1.5
         gamma = 1.8
         kwargs_lens = [{'theta_E': theta_E, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': gamma},
@@ -53,16 +52,15 @@ class TestKinematicsAPI(object):
         v_sigma = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
                                                          MGE_light=True, r_eff=r_eff,  kwargs_mge_light=kwargs_mge,
-                                                         lens_model_kinematics_bool=[True, False, False, False, False])
+                                                         )
         v_sigma_mge_lens = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
                                                                   kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True, theta_E=theta_E,
                                                                   kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge,
-                                                                  r_eff=r_eff, lens_model_kinematics_bool=[True, False, False, False, False])
+                                                                  r_eff=r_eff)
         v_sigma_hernquist = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
                                                                   kwargs_aperture, kwargs_psf, anisotropy_model,
                                                                   MGE_light=False, MGE_mass=False,
-                                                                  r_eff=r_eff, Hernquist_approx=True,
-                                                                  lens_model_kinematics_bool=[True, False, False, False, False])
+                                                                  r_eff=r_eff, Hernquist_approx=True)
         vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
                                                                     kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                                                     num_evaluate=5000)

@@ -25,6 +25,12 @@ class KinematicAPI(object):
         :param z_source: redshift of source
         :param kwargs_model: model keyword arguments
         :param cosmo: astropy.cosmology instance, if None then will be set to the default cosmology
+        :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
+            main deflector potential
+        :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
+            as part of the kinematics computation (can be used to ignore light components that do not describe the main
+            deflector
         """
         self.z_d = z_lens
         self.z_s = z_source
@@ -64,7 +70,7 @@ class KinematicAPI(object):
     def velocity_dispersion_numerical(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
                                       kwargs_psf, anisotropy_model, r_eff=None, theta_E=None,
                                       kwargs_numerics={}, MGE_light=False, kwargs_mge_light=None,
-                                      MGE_mass=False, kwargs_mge_mass=None, lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
+                                      MGE_mass=False, kwargs_mge_mass=None,
                                       Hernquist_approx=False, kappa_ext=0):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
@@ -87,23 +93,17 @@ class KinematicAPI(object):
         :param kwargs_numerics: keyword arguments that contain numerical options (see Galkin module)
         :param MGE_light: bool, if true performs the MGE for the light distribution
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
-        :param lens_model_kinematics_bool: bool list of length of the lens model. Only takes a subset of all the models
-            as part of the kinematics computation (can be used to ignore substructure, shear etc that do not describe the
-            main deflector potential
-        :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
-            as part of the kinematics computation (can be used to ignore light components that do not describe the main
-            deflector
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
         :param kappa_ext: external convergence not accounted in the lens models
         :return: LOS velocity dispersion [km/s]
         """
 
         mass_profile_list, kwargs_profile = self.kinematic_lens_profiles(kwargs_lens, MGE_fit=MGE_mass, theta_E=theta_E,
-                                                                         model_kinematics_bool=lens_model_kinematics_bool,
+                                                                         model_kinematics_bool=self._lens_model_kinematics_bool,
                                                                          kwargs_mge=kwargs_mge_mass)
         light_profile_list, kwargs_light = self.kinematic_light_profile(kwargs_lens_light, r_eff=r_eff,
                                                                         MGE_fit=MGE_light, kwargs_mge=kwargs_mge_light,
-                                                                        model_kinematics_bool=light_model_kinematics_bool,
+                                                                        model_kinematics_bool=self._light_model_kinematics_bool,
                                                                         Hernquist_approx=Hernquist_approx)
         galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                         anisotropy_model=anisotropy_model, kwargs_cosmo=self._kwargs_cosmo, **kwargs_numerics)
@@ -258,8 +258,6 @@ class KinematicAPI(object):
                                                          r_eff=r_eff, theta_E=theta_E,
                                                          kwargs_numerics=self._kwargs_numerics_kin,
                                                          MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
-                                                         lens_model_kinematics_bool=self._lens_model_kinematics_bool,
-                                                         light_model_kinematics_bool=self._light_model_kinematics_bool,
                                                          Hernquist_approx=self._Hernquist_approx, kappa_ext=0)
         return sigma_v
 

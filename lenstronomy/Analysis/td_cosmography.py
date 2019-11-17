@@ -119,14 +119,14 @@ class TDCosmography(KinematicAPI):
                                               kappa_ds=0, kappa_d=0):
         """
 
-        :param d_fermat_model:
-        :param dt_measured:
-        :param sigma_v_measured:
-        :param J:
-        :param kappa_s:
-        :param kappa_ds:
-        :param kappa_d:
-        :return:
+        :param d_fermat_model: relative Fermat potential in units arcsec^2
+        :param dt_measured: measured relative time delay [days]
+        :param sigma_v_measured: 1-sigma Gaussian uncertainty in the measured velocity dispersion
+        :param J: modeled dimensionless kinematic estimate
+        :param kappa_s: LOS convergence from observer to source
+        :param kappa_ds: LOS convergence from deflector to source
+        :param kappa_d: LOS convergence from observer to deflector
+        :return: D_dt, D_d
         """
         D_dt = self.Ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=kappa_s, kappa_ds=kappa_ds,
                                         kappa_d=kappa_d)

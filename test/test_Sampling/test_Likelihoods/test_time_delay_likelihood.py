@@ -25,7 +25,7 @@ class TestImageLikelihood(object):
         # make class instances for a chosen lens model type
 
         # chose a lens model
-        lens_model_list = ['SPEMD', 'SHEAR']
+        lens_model_list = ['SPEP', 'SHEAR']
         # make instance of LensModel class
         lensModel = LensModel(lens_model_list=lens_model_list, cosmo=cosmo, z_lens=z_lens, z_source=z_source)
         # we require routines accessible in the LensModelExtensions class

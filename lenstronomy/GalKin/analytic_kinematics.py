@@ -146,8 +146,8 @@ class AnalyticKinematics(object):
     def _beta_ani(self, r, r_ani):
         """
         anisotropy parameter beta
-        :param r:
-        :param r_ani:
-        :return:
+        :param r: radius
+        :param r_ani: anisotropy radius
+        :return: beta(r) in the OM parameterization
         """
         return r**2/(r_ani**2 + r**2)

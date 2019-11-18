@@ -153,7 +153,7 @@ History
 
 
 1.2.0 (2019-11-17)
-+++++++++++++++++
+++++++++++++++++++
 * Analysis module re-designed
 * GalKin module partially re-designed
 * Added cosmography module

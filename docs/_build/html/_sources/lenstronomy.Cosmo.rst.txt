@@ -12,6 +12,14 @@ lenstronomy.Cosmo.background module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.Cosmo.cosmo\_sampling module
+----------------------------------------
+
+.. automodule:: lenstronomy.Cosmo.cosmo_sampling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.Cosmo.cosmo\_solver module
 --------------------------------------
 
@@ -20,18 +28,18 @@ lenstronomy.Cosmo.cosmo\_solver module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.Cosmo.cosmography module
-------------------------------------
-
-.. automodule:: lenstronomy.Cosmo.cosmography
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy.Cosmo.kde\_likelihood module
 ----------------------------------------
 
 .. automodule:: lenstronomy.Cosmo.kde_likelihood
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Cosmo.lcdm module
+-----------------------------
+
+.. automodule:: lenstronomy.Cosmo.lcdm
     :members:
     :undoc-members:
     :show-inheritance:

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 1.1.0 documentation</title>
+    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,6 +48,7 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood</span> <span class="k">import</span> <span class="n">FluxRatioLikelihood</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Likelihoods.prior_likelihood</span> <span class="k">import</span> <span class="n">PriorLikelihood</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.class_creator</span> <span class="k">as</span> <span class="nn">class_creator</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 
 <div class="viewcode-block" id="LikelihoodModule"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule">[docs]</a><span class="k">class</span> <span class="nc">LikelihoodModule</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -127,7 +128,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="o">=</span> <span class="n">time_delay_likelihood</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_delay_likelihood</span> <span class="o">=</span> <span class="n">TimeDelayLikelihood</span><span class="p">(</span><span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span>
-                                                             <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">param_class</span><span class="p">)</span>
+                                                             <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="o">=</span> <span class="n">image_likelihood</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -182,8 +183,9 @@
         <span class="n">kwargs_return</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_bounds</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_bounds</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_limit</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">bound_hit</span><span class="p">:</span>
-                <span class="k">return</span> <span class="o">-</span><span class="n">penalty</span>
+            <span class="k">if</span> <span class="n">bound_hit</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="c1">#print(-penalty, &#39;test penalty&#39;)</span>
+                <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">log_likelihood</span><span class="p">(</span><span class="n">kwargs_return</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LikelihoodModule.log_likelihood"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_return</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -209,7 +211,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_positive_flux</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">check_positive_flux</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                <span class="n">logL</span> <span class="o">-=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">10</span>
+                <span class="n">logL</span> <span class="o">-=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">5</span>
                 <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;non-positive surface brightness parameters detected!&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flux_ratio_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -239,14 +241,15 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        checks whether the parameter vector has left its bound, if so, adds a big number</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">penalty</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">penalty</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">bound_hit</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">or</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="n">penalty</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
+                <span class="n">penalty</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="mi">5</span>
                 <span class="n">bound_hit</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;parameter </span><span class="si">%s</span><span class="s1"> with value </span><span class="si">%s</span><span class="s1"> hit the bounds [</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">] &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span>
         <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span></div>
 
     <span class="nd">@property</span>
@@ -324,7 +327,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

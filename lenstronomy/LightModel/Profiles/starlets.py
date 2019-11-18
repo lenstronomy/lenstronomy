@@ -15,17 +15,18 @@ class Starlets(object):
     lower_limit_default = {'amp': 0, 'n_scales': 2}
     upper_limit_default = {'amp': 1e6, 'n_scales': 20}
 
-    def __init__(self, thread_count=1, fast_inverse=True, second_gen=False):
-        self._check_modules()
-        if self._pysap is not None:
+    def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False):
+        self._use_pysap = self._load_pysap()
+        if self._use_pysap:
             self._transf_class = self._pysap.load_transform('BsplineWaveletTransformATrousAlgorithm')
         self._thread_count = thread_count
         self._fast_inverse = fast_inverse
         self._second_gen = second_gen
+        self._show_pysap_plots = show_pysap_plots
 
     def function(self, coeffs, amp, n_scales):
         """return inverse starlet transform from starlet coefficients stored in amp"""
-        if self._pysap is not None:
+        if self._use_pysap:
             return amp * self._inverse_transform(coeffs)
         else:
             return amp * self._inverse_transform_slit(coeffs)
@@ -35,7 +36,7 @@ class Starlets(object):
         decomposes an image into starlet coefficients
         :return:
         """
-        if self._pysap is not None:
+        if self._use_pysap:
             return self._transform(image, n_scales)
         else:
             return self._transform_slit(image, n_scales)
@@ -58,7 +59,8 @@ class Starlets(object):
             coeffs = self._coeffs2pysap(coeffs)
             self._transf.analysis_data = coeffs
             result = transform.synthesis()
-            result.show()
+            if self._show_pysap_plots:
+                result.show()
             image = result.data
         return image
 
@@ -69,7 +71,8 @@ class Starlets(object):
         self._check_transform_pysap(n_scales)
         self._transf.data = image
         self._transf.analysis()
-        self._transf.show()
+        if self._show_pysap_plots:
+            self._transf.show()
         coeffs = self._transf.analysis_data
         coeffs = self._pysap2coeffs(coeffs)
         return amp
@@ -206,10 +209,12 @@ class Starlets(object):
         return util.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
 
-    def _check_modules(self):
+    def _load_pysap(self):
         try:
             import pysap
         except ImportError:
             self._pysap = None
+            return False
         else:
             self._pysap = pysap
+            return True

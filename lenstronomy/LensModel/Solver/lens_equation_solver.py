@@ -75,7 +75,7 @@ class LensEquationSolver(object):
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
                                    non_linear=False, magnification_limit=None):
         """
-        finds image position source position and lense model
+        finds image position source position and lens model
 
         :param sourcePos_x: source position in units of angle
         :param sourcePos_y: source position in units of angle

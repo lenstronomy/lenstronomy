@@ -2,23 +2,23 @@ import numpy as np
 import lenstronomy.Util.util as util
 
 
-def mask_center_2d(center_x, center_y, r, x, y):
+def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     """
 
-    :param center: 2D coordinate of center position of circular mask
+    :param center_x: x-coordinate of center position of circular mask
+    :param center_y: y-coordinate of center position of circular mask
     :param r: radius of mask in pixel values
-    :param data: data image
-    :return:
+    :param x_grid: x-coordinate grid
+    :param y_grid: y-coordinate grid
+    :return: mask array of shape x_grid with =0 inside the radius and =1 outside
     """
-    x_shift = x - center_x
-    y_shift = y - center_y
+    x_shift = x_grid - center_x
+    y_shift = y_grid - center_y
     R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
     mask = np.empty_like(R)
     mask[R > r] = 1
     mask[R <= r] = 0
-    n = int(np.sqrt(len(x)))
-    mask_2d = mask.reshape(n, n)
-    return mask_2d
+    return mask
 
 
 def mask_sphere(x, y, center_x, center_y, r):
@@ -58,6 +58,7 @@ def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     mask[r_ab > 1] = 0
     mask[r_ab <= 1] = 1
     return mask
+
 
 def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np.pi):
     """

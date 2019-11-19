@@ -35,7 +35,7 @@ class LensProfileAnalysis(object):
         if self._lens_model.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
             center_x = x_grid[kappa == np.max(kappa)][0]
             center_y = y_grid[kappa == np.max(kappa)][0]
-        kappa = util.array2image(kappa)
+        #kappa = util.array2image(kappa)
         r_array = np.linspace(0, grid_num*grid_spacing/2., grid_num*2)
         for r in r_array:
             mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))

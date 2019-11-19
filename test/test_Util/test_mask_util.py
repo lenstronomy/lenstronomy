@@ -11,8 +11,8 @@ def test_get_mask():
     center_y = 5
     r = 1
     mask = mask_util.mask_center_2d(center_x, center_y, r, x, y)
-    assert mask[0][0] == 1
-    assert mask[5][5] == 0
+    assert mask[0] == 1
+    assert mask[50] == 0
 
 
 def test_mask_half_moon():

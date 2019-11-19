@@ -77,7 +77,6 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np
     y_shift = y - center_y
     R = np.sqrt(x_shift*x_shift + y_shift*y_shift)
     phi = np.arctan2(x_shift, y_shift)
-    #phi = np.abs(phi)
     phi_min = phi0 - delta_phi/2.
     phi_max = phi0 + delta_phi/2.
     mask = np.zeros_like(x)

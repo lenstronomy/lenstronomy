@@ -1,3 +1,5 @@
+__author__ = 'aymgal'
+
 # class that implements the computation of the lensing operator
 # that maps image plane pixels to source plane pixels
 

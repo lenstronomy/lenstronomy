@@ -3,7 +3,7 @@ __author__ = 'aymgal'
 # class that implements SLIT algorithm
 
 import numpy as np
-import scipy.signal as scp
+from scipy import signal
 import matplotlib.pyplot as plt
 
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
@@ -412,12 +412,7 @@ class SparseOptimizer(object):
     @property
     def mask_source_plane(self):
         # TODO : include mask in image plane ray-traced to source plane
-        if not hasattr(self, '_mask_source_plane'):
-            images_ones = np.ones_like(self.image_data)
-            images_ones_mapped = self.F_T(images_ones)
-            images_ones_mapped[images_ones_mapped > 0] = 1.
-            self._mask_source_plane = images_ones_mapped
-        return self._mask_source_plane
+        return self._lensing_op.source_support
 
 
     @property
@@ -449,16 +444,10 @@ class SparseOptimizer(object):
         noise_levels = np.zeros(dirac_coeffs.shape)
         for scale_idx in range(noise_levels.shape[0]):
             dirac_scale = dirac_coeffs[scale_idx, :, :]
-            levels = scp.fftconvolve(FT_HT_noise**2, dirac_scale**2, mode='same')
+            levels = signal.fftconvolve(FT_HT_noise**2, dirac_scale**2, mode='same')
             levels[levels == 0] = 0
             noise_levels[scale_idx, :, :] = np.sqrt(np.abs(levels))
         return noise_levels
-
-
-    # def _forward_backward(self):
-
-
-    # def _fista(self):
 
 
     @staticmethod

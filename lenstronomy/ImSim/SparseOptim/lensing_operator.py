@@ -5,6 +5,7 @@ __author__ = 'aymgal'
 
 import numpy as np
 from scipy import sparse
+from scipy.ndimage import morphology
 
 from lenstronomy.Util import util
 
@@ -189,3 +190,43 @@ class LensingOperator(object):
             self._lens_mapping_matrix = None
 
 
+    @property
+    def source_support(self):
+        if not hasattr(self, '_source_support'):
+            self._source_support = self._compute_support_src()
+        return self._source_support
+
+
+    def _compute_support_src(self):
+        # start from a image full on 1s
+        images_ones = np.ones((self._num_pix_lens, self._num_pix_lens))
+
+        # de-lens it to get non-zero source plane pixel
+        images_ones_mapped = self.image2source_2d(images_ones)
+        images_ones_mapped[images_ones_mapped > 0] = 1
+
+        # apply an erosion operation in source plane to fill holes in source area
+        images_ones_mapped = self._fill_mapping_holes(images_ones_mapped)
+        return images_ones_mapped
+
+
+    def _fill_mapping_holes(self, mapped_image):
+        """
+        erosion operation for filling holes
+
+        The higher the subgrid resolution of the source, the highest the number of holes.
+        Hence the 'strength' of the erosion is set to the subgrid resolution of the source plane 
+        """
+        strength = self._subgrid_res_source
+        # invert 0s and 1s
+        mapped_image = 1 - mapped_image
+        # apply morphological erosion operation
+        mapped_image = morphology.binary_erosion(mapped_image, iterations=strength)
+        # invert 1s and 0s
+        mapped_image = 1 - mapped_image
+        # remove margins that were
+        mapped_image[:strength, :] = 0
+        mapped_image[-strength:, :] = 0
+        mapped_image[:, :strength] = 0
+        mapped_image[:, -strength:] = 0
+        return mapped_image

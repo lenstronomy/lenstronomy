@@ -23,10 +23,11 @@ class SparseOptimizer(object):
         
         self._image_data = data_class.data
 
-        (num_pix_x, num_pix_y) = self._image_data.shape
+        (num_pix_x, num_pix_y) = data_class.num_pixel_axes
         if num_pix_x != num_pix_y:
             raise ValueError("Only square images are supported")
         self._num_pix = num_pix_x
+        self._delta_pix = data_class.pixel_width
 
         # self._noise_map = data_class.noise_map
         self._sigma_bkg = data_class.background_rms
@@ -93,7 +94,7 @@ class SparseOptimizer(object):
         weights = 1.
 
         loss_list = []
-        chi2_list = []
+        red_chi2_list = []
         step_diff_list = []
         for j in range(self._n_weights):
 
@@ -115,18 +116,18 @@ class SparseOptimizer(object):
                     alpha_S_next = self.Phi_T(S_next)
 
                 loss = self.loss(S_next)
-                chi2 = self.reduced_chi2(S_next)
+                red_chi2 = self.reduced_chi2(S_next)
                 step_diff = self.norm_diff(S, S_next)
 
                 if i % 10 == 0:
-                    print("iteration {}-{} : loss = {:.4f}, chi2 = {:.4f}, step_diff = {:.4f}"
-                          .format(j, i, loss, chi2, step_diff))
+                    print("iteration {}-{} : loss = {:.4f}, red-chi2 = {:.4f}, step_diff = {:.4f}"
+                          .format(j, i, loss, red_chi2, step_diff))
 
                 if i % int(self._n_iter/2) == 0:
                     self.quick_imshow(S_next, title="iteration {}".format(i), show_now=True, cmap='gist_stern')
 
                 loss_list.append(loss)
-                chi2_list.append(chi2)
+                red_chi2_list.append(red_chi2)
                 step_diff_list.append(step_diff)
 
                 # update current estimate of source light
@@ -146,7 +147,7 @@ class SparseOptimizer(object):
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),
-            'residuals': np.asarray(chi2_list),
+            'red_chi2': np.asarray(red_chi2_list),
             'step_diff': np.asarray(step_diff_list),
         }
         
@@ -192,6 +193,13 @@ class SparseOptimizer(object):
         return self._solve_track
 
 
+    @property
+    def best_fit_reduced_chi2(self):
+        if not hasattr(self, '_solve_track'):
+            raise ValueError("You must run the optimization before accessing the track")
+        return self._solve_track['red_chi2'][-1]
+
+
     def plot_results(self, image_residuals=False, log=False, vmin=None, vmax=None):
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         ax = axes[0, 0]
@@ -199,6 +207,10 @@ class SparseOptimizer(object):
             ax.set_title(r"$(data - model)/\sigma^2$")
             im = ax.imshow(self.reduced_residuals(self.source_model), origin='lower',
                            cmap='bwr', vmin=vmin, vmax=vmax)
+            frame_size = self._num_pix * self._delta_pix
+            text = r"$\chi^2={:.2f}$".format(self.best_fit_reduced_chi2)
+            plot_util.text_description(ax, frame_size, text, color='black', backgroundcolor='white',
+                                       flipped=False, font_size=15)
         else:
             im = ax.imshow(self.image_model(unconvolved=False), origin='lower', cmap='cubehelix')
         plot_util.nice_colorbar(im)
@@ -212,9 +224,9 @@ class SparseOptimizer(object):
         ax = axes[1, 0]
         ax.set_title("reduced chi2")
         if log:
-            ax.semilogy(self.solve_track['residuals'])
+            ax.semilogy(self.solve_track['red_chi2'])
         else:
-            ax.plot(self.solve_track['residuals'])
+            ax.plot(self.solve_track['red_chi2'])
         ax.set_xlabel("iterations")
         ax = axes[1, 1]
         ax.set_title("step-to-step difference")

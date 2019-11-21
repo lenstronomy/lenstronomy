@@ -18,4 +18,3 @@ def step_FISTA(x, y, t, grad, prox, step_size):
     factor = (t - 1) / t_next
     y_next = x_next + factor * (x_next - x)
     return x_next, y_next, t_next
-

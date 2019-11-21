@@ -20,7 +20,7 @@ class SparseOptimizer(object):
     def __init__(self, data_class, source_profile_class, psf_class=None, lens_light_profile_class=None, likelihood_mask=None, 
                  k_max=5, n_iter=50, n_weights=1, sparsity_prior_norm=1, force_positivity=True, 
                  formulation='analysis', convolution_type='fft_static', verbose=False):
-        
+
         self._image_data = data_class.data
 
         (num_pix_x, num_pix_y) = data_class.num_pixel_axes
@@ -86,8 +86,8 @@ class SparseOptimizer(object):
 
         # initial guess as background random noise
         num_pix_source = lensing_operator_class.source_plane_num_pix
-        S, alpha_S = self.generate_init_guess(num_pix_source, kwargs_source['n_scales'],
-                                              guess_type='bkg_noise')
+        S, alpha_S = self.generate_initial_guess(num_pix_source, kwargs_source['n_scales'],
+                                                 guess_type='bkg_noise')
         self.quick_imshow(S, title="initial guess", show_now=True)
 
         # initialise weights
@@ -98,8 +98,9 @@ class SparseOptimizer(object):
         step_diff_list = []
         for j in range(self._n_weights):
 
-            if self.algorithm == 'FISTA':
-                xi, t = 0., 1.
+            if j == 0 and self.algorithm == 'FISTA':
+                fista_xi = np.copy(alpha_S)
+                fista_t  = 1.
 
             for i in range(self._n_iter):
 
@@ -107,13 +108,12 @@ class SparseOptimizer(object):
                 prox_g = lambda x, y: self.proximal_sparsity(x, y, weights)
 
                 if self.algorithm == 'FISTA':
-                    alpha_S = self.Phi_T(S)
-                    alpha_S_next, xi_next, t_next = algorithms.step_FISTA(alpha_S, xi, t, grad_f, prox_g, mu)
+                    alpha_S_next, fista_xi_next, fista_t_next \
+                        = algorithms.step_FISTA(alpha_S, fista_xi, fista_t, grad_f, prox_g, mu)
                     S_next = self.Phi(alpha_S_next)
 
                 elif self.algorithm == 'FB':
                     S_next = algorithms.step_FB(S, grad_f, prox_g, mu)
-                    alpha_S_next = self.Phi_T(S_next)
 
                 loss = self.loss(S_next)
                 red_chi2 = self.reduced_chi2(S_next)
@@ -132,11 +132,13 @@ class SparseOptimizer(object):
 
                 # update current estimate of source light
                 S = S_next
-                alpha_S = alpha_S_next
+                if self.algorithm == 'FISTA':
+                    alpha_S = alpha_S_next
+                    fista_xi, fista_t = fista_xi_next, fista_t_next
 
             if j == 0:
                 # save coefficients from first inner loop estimate
-                alpha_0 = alpha_S.copy()
+                alpha_0 = np.copy(alpha_S)
 
             # update weights
             lambda_ = self._k_max * self.noise_levels_source_plane
@@ -200,7 +202,7 @@ class SparseOptimizer(object):
         return self._solve_track['red_chi2'][-1]
 
 
-    def plot_results(self, image_residuals=False, log=False, vmin=None, vmax=None):
+    def plot_results(self, image_residuals=False, vmin=None, vmax=None):
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
         ax = axes[0, 0]
         if image_residuals:
@@ -216,29 +218,20 @@ class SparseOptimizer(object):
         plot_util.nice_colorbar(im)
         ax = axes[0, 1]
         ax.set_title("loss function")
-        if log:
-            ax.semilogy(self.solve_track['loss'])
-        else:
-            ax.plot(self.solve_track['loss'])
+        ax.plot(self.solve_track['loss'])
         ax.set_xlabel("iterations")
         ax = axes[1, 0]
         ax.set_title("reduced chi2")
-        if log:
-            ax.semilogy(self.solve_track['red_chi2'])
-        else:
-            ax.plot(self.solve_track['red_chi2'])
+        ax.plot(self.solve_track['red_chi2'])
         ax.set_xlabel("iterations")
         ax = axes[1, 1]
         ax.set_title("step-to-step difference")
-        if log:
-            ax.semilogy(self.solve_track['step_diff'])
-        else:
-            ax.plot(self.solve_track['step_diff'])
+        ax.semilogy(self.solve_track['step_diff'])
         ax.set_xlabel("iterations")
         plt.show()
 
 
-    def generate_init_guess(self, num_pix, n_scales, guess_type='bkg_noise'):
+    def generate_initial_guess(self, num_pix, n_scales, guess_type='bkg_noise'):
         if guess_type == 'null':
             X = np.zeros((num_pix, num_pix))
             alpha_X = np.zeros((n_scales, num_pix, num_pix))
@@ -256,9 +249,14 @@ class SparseOptimizer(object):
 
 
     def apply_mask(self, image_2d):
-        image_2d_m = image_2d.copy()
-        image_2d_m[self._mask] = 0.
-        return image_2d_m
+        # image_2d_m = image_2d.copy()
+        # image_2d_m[self._mask] = 0.
+        # return image_2d_m
+        return image_2d * self._mask
+
+
+    def apply_source_plane_mask(self, source_2d):
+        return source_2d * self.mask_source_plane
 
 
     @property
@@ -340,7 +338,14 @@ class SparseOptimizer(object):
         return np.linalg.norm(diff, ord=2)**2
 
 
-    def gradient_loss(self, S):
+    def gradient_loss(self, array):
+        if self._formulation == 'analysis':
+            return self._gradient_loss_analysis(array)
+        elif self._formulation == 'synthesis':
+            return self._gradient_loss_synthesis(array)
+
+
+    def _gradient_loss_analysis(self, S):
         """ returns the gradient of f = || Y - HFS ||^2_2 """
         model = self.H(self.F(S))
         error = self.Y - model
@@ -348,7 +353,22 @@ class SparseOptimizer(object):
         return grad
 
 
-    def proximal_sparsity(self, optimized_array, step, weights):
+    def _gradient_loss_synthesis(self, alpha_S):
+        """ returns the gradient of f = || Y - H F Phi alphaS ||^2_2 """
+        model = self.H(self.F(self.Phi(alpha_S)))
+        error = self.Y - model
+        grad  = - self.Phi_T(self.F_T(self.H_T(error)))
+        return grad
+
+
+    def proximal_sparsity(self, array, step, weights):
+        if self._formulation == 'analysis':
+            return self._proximal_sparsity_analysis(array, step, weights)
+        elif self._formulation == 'synthesis':
+            return self._proximal_sparsity_synthesis(array, step, weights)
+
+
+    def _proximal_sparsity_analysis(self, S, step, weights):
         """
         returns the proximal operator of the regularisation term
             g = lambda * |Phi^T S|_0
@@ -360,22 +380,40 @@ class SparseOptimizer(object):
         level_const[0] = self._k_max + 1  # means a stronger threshold for first decomposition levels (small scales features)
         level_pixels = weights * self.noise_levels_source_plane
 
-        if self._formulation == 'analysis':
-            alpha_S = self.Phi_T(optimized_array)
-        else:
-            # alpha_S = optimized_array
-            raise NotImplementedError("Proximal op not ready for synthesis formulation !")
-
+        alpha_S = self.Phi_T(S)
         alpha_S_proxed = proximals.prox_sparsity_wavelets(alpha_S, step, level_const=level_const, level_pixels=level_pixels,
                                                           force_positivity=self._force_positivity, norm=self._sparsity_prior_norm)
-        
         S_proxed = self.Phi(alpha_S_proxed)
+
         if self._force_positivity:
             S_proxed = proximals.prox_positivity(S_proxed)
 
         # finally, set to 0 every pixel that is outside the 'support' in source plane
-        S_proxed *= self.mask_source_plane
+        S_proxed = self.apply_source_plane_mask(S_proxed)
         return S_proxed
+
+
+    def _proximal_sparsity_synthesis(self, alpha_S, step, weights):
+        """
+        returns the proximal operator of the regularisation term
+            g = lambda * |alpha_S|_0
+        or
+            g = lambda * |alpha_S|_1
+        """
+        n_scales = self.noise_levels_source_plane.shape[0]
+        level_const = self._k_max * np.ones(n_scales)
+        level_const[0] = self._k_max + 1  # means a stronger threshold for first decomposition levels (small scales features)
+        level_pixels = weights * self.noise_levels_source_plane
+
+        alpha_S_proxed = proximals.prox_sparsity_wavelets(alpha_S, step, level_const=level_const, level_pixels=level_pixels,
+                                                          force_positivity=self._force_positivity, norm=self._sparsity_prior_norm)
+
+        if self._force_positivity:
+            alpha_S_proxed = proximals.prox_positivity(alpha_S_proxed)
+
+        # finally, set to 0 every pixel that is outside the 'support' in source plane
+        alpha_S_proxed = self.apply_source_plane_mask(alpha_S_proxed)
+        return alpha_S_proxed
 
 
     @property
@@ -437,14 +475,12 @@ class SparseOptimizer(object):
     def _compute_noise_levels_src(self):
         n_img = self._lensing_op.image_plane_num_pix
 
-        # estimate noise level
-        # sigma_bkg = self.sigma_background_mad(self._noise_map)
-
         # PSF noise map
         HT = self._psf_kernel.T
-        HT_noise = np.ones((n_img, n_img)) * self._sigma_bkg * np.sqrt(np.sum(HT**2))
+        HT_power = np.sqrt(np.sum(HT**2))
+        HT_noise = self._sigma_bkg * HT_power * np.ones((n_img, n_img))
         FT_HT_noise = self.F_T(HT_noise)
-        FT_HT_noise[FT_HT_noise == 0] = 10 * np.mean(FT_HT_noise)
+        FT_HT_noise[FT_HT_noise == 0.] = 10. * np.mean(FT_HT_noise)
 
         # computes noise levels in in source plane in starlet space
         dirac = self.dirac_impulse(n_img)

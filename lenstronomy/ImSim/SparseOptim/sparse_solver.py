@@ -14,12 +14,12 @@ from lenstronomy.ImSim.SparseOptim import proximals
 
 
 
-class SparseOptimizer(object):
+class SparseSolver(object):
 
 
     def __init__(self, data_class, source_profile_class, psf_class=None, lens_light_profile_class=None, likelihood_mask=None, 
                  k_max=5, n_iter=50, n_weights=1, sparsity_prior_norm=1, force_positivity=True, 
-                 formulation='analysis', convolution_type='fft_static', verbose=False):
+                 formulation='analysis', convolution_type='fft_static', verbose=False, show_steps=False):
 
         self._image_data = data_class.data
 
@@ -64,17 +64,18 @@ class SparseOptimizer(object):
         self._force_positivity = force_positivity
 
         self._verbose = verbose
+        self._show_steps = show_steps
 
 
-    def solve_sparse(self, lensing_operator_class, kwargs_source, kwargs_lens_light=None):
+    def solve(self, lensing_operator_class, kwargs_source, kwargs_lens_light=None):
         if self._solve_for_lens_light:
-            # return self._solve_sparse_all(lensing_operator_class, kwargs_source, kwargs_lens_light)
-            raise NotImplementedError("SLIT_MCA algorithm not yet implemented")
+            # return self._solve_all(lensing_operator_class, kwargs_source, kwargs_lens_light)
+            raise NotImplementedError("Sparse solver for source and lens light not implemented")
         else:
-            return self._solve_sparse_source(lensing_operator_class, kwargs_source)
+            return self._solve_source(lensing_operator_class, kwargs_source)
 
 
-    def _solve_sparse_source(self, lensing_operator_class, kwargs_source):
+    def _solve_source(self, lensing_operator_class, kwargs_source):
         """SLIT algorithm"""
         self._set_cache(lensing_operator_class, kwargs_source)
 
@@ -88,7 +89,8 @@ class SparseOptimizer(object):
         num_pix_source = lensing_operator_class.source_plane_num_pix
         S, alpha_S = self.generate_initial_guess(num_pix_source, kwargs_source['n_scales'],
                                                  guess_type='bkg_noise')
-        self.quick_imshow(S, title="initial guess", show_now=True)
+        if self._show_steps:
+            self.quick_imshow(S, title="initial guess", show_now=True)
 
         # initialise weights
         weights = 1.
@@ -119,11 +121,11 @@ class SparseOptimizer(object):
                 red_chi2 = self.reduced_chi2(S_next)
                 step_diff = self.norm_diff(S, S_next)
 
-                if i % 10 == 0:
+                if i % 10 == 0 and self._verbose:
                     print("iteration {}-{} : loss = {:.4f}, red-chi2 = {:.4f}, step_diff = {:.4f}"
                           .format(j, i, loss, red_chi2, step_diff))
 
-                if i % int(self._n_iter/2) == 0:
+                if i % int(self._n_iter/2) == 0 and self._show_steps:
                     self.quick_imshow(S_next, title="iteration {}".format(i), show_now=True, cmap='gist_stern')
 
                 loss_list.append(loss)
@@ -145,20 +147,22 @@ class SparseOptimizer(object):
             weights = 2. / ( 1. + np.exp(-10. * (lambda_ - alpha_0)) )
 
         # save results
-        self.quick_imshow(S, title="final estimate", show_now=True, cmap='gist_stern')
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),
             'red_chi2': np.asarray(red_chi2_list),
             'step_diff': np.asarray(step_diff_list),
         }
+
+        if self._show_steps:
+            self.quick_imshow(S, title="final estimate", show_now=True, cmap='gist_stern')
         
         # for potential memory issues delete 
         # self._unset_cache()
         return self._source_model
 
 
-    def _solve_sparse_all(self, F, kwargs_source, kwargs_lens_light):
+    def _solve_all(self, F, kwargs_source, kwargs_lens_light):
         """SLIT_MCA algorithm"""
         pass
 
@@ -268,7 +272,7 @@ class SparseOptimizer(object):
     def Y(self):
         """replace masked pixels with random gaussian noise"""
         if not hasattr(self, '_Y'):
-            image_data = self._image_data.copy()
+            image_data = np.copy(self._image_data)
             noise = self._sigma_bkg * np.random.randn(*image_data.shape)
             image_data[~self._mask] = noise[~self._mask]
             self._Y = image_data

@@ -1,7 +1,7 @@
 import numpy as np
 
 from lenstronomy.ImSim.image_model import ImageModel
-from lenstronomy.ImSim.SparseOptim.sparse_optimizer import SparseOptimizer
+from lenstronomy.ImSim.SparseOptim.sparse_solver import SparseSolver
 from lenstronomy.ImSim.SparseOptim.lensing_operator import LensingOperator
 from lenstronomy.Util import util
 
@@ -13,7 +13,7 @@ class ImageSparseFit(ImageModel):
 
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
-                 psf_error_map_bool_list=None, subgrid_res_source=1, kwargs_sparse={}):
+                 psf_error_map_bool_list=None, subgrid_res_source=1, kwargs_sparse_solver={}):
         """
 
         :param data_class: ImageData() instance
@@ -39,28 +39,30 @@ class ImageSparseFit(ImageModel):
         source_model_list = self.SourceModel.profile_type_list
         if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
             raise ValueError("'STARLETS' must be the only source model list for sparse fit")
-
-        image_data = util.array2image(self.data_response)
-        # noise_map  = self.error_response
-        sigma_bkg = self.Data.background_rms
-        psf_kernel = self.PSF.kernel_point_source
         source_profile = self.SourceModel.func_list[0]
-        if lens_light_model_class is not None and len(lens_light_model_class) > 0:
+
+        lens_light_model_list = self.LensLightModel.profile_type_list
+        if len(lens_light_model_list) > 0:
+            if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
+                raise ValueError("'STARLETS' must be the only source model list for sparse fit")
             lens_light_profile = self.LensLightModel.func_list[0]
         else:
             lens_light_profile = None
-        self.sparseOptimizer = SparseOptimizer(data_class, source_profile, psf_class=psf_class,
-                                               lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
-                                               **kwargs_sparse)
+        self.sparseSolver = SparseSolver(data_class, source_profile, psf_class=psf_class,
+                                         lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
+                                         **kwargs_sparse_solver)
         self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
                                                matrix_prod=True)
 
 
-    def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None):
-        return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+    def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
+                           kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
+        return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light, 
+                                        kwargs_ps, kwargs_extinction, kwargs_special)
 
 
-    def _image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None):
+    def _image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
+                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
         """
 
         computes the image (lens and source surface brightness with a given lens model)
@@ -73,21 +75,16 @@ class ImageSparseFit(ImageModel):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        # A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
-        # C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        # d = self.data_response #- self.pixel_surface_brightness(kwargs_lens)
-        # param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-        # _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        # model = self.array_masked2image(wls_model)
-        # return model, model_error, cov_param, param
-        model_TEMP = self.pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
-        return model_TEMP
+        C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
+        model = self.pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
+        #cov_param, param = None, None
+        return model, model_error #, cov_param, param
 
 
     def pixel_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
         """
 
-        :return: 1d numpy array
+        :return: 2d numpy array
         """
         return self._pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
 
@@ -95,12 +92,12 @@ class ImageSparseFit(ImageModel):
     def _pixel_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
         """
 
-        :return: 1d numpy array
+        :return: 2d numpy array
         """
         kwargs_source_profile = kwargs_source[0]
         self.lensingOperator.update_mapping(kwargs_lens)
-        flux_1d = self.sparseOptimizer.solve_sparse(self.lensingOperator, kwargs_source_profile, kwargs_lens_light)
-        return flux_1d
+        flux = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light)
+        return flux
 
 
     @property
@@ -113,6 +110,7 @@ class ImageSparseFit(ImageModel):
         d = self.image2array_masked(self.Data.data)
         return d
 
+
     def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
@@ -121,16 +119,81 @@ class ImageSparseFit(ImageModel):
         """
         return self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
 
+
     def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
-        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
+        # psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
+        # C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
+        psf_model_error = 0.
+        C_D_response = self.image2array_masked(self.Data.C_D)
         return C_D_response, psf_model_error
 
+
+    def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+        """
+
+        computes the likelihood of the data given a model
+        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :return: log likelihood (natural logarithm)
+        """
+        return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light)
+
+
+    def _likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None):
+        """
+
+        computes the likelihood of the data given a model
+        This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param source_marg: bool, performs a marginalization over the linear parameters
+        :param linear_prior: linear prior width in eigenvalues
+        :return: log likelihood (natural logarithm)
+        """
+        # generate image
+        im_sim, model_error = self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        # compute X^2
+        logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
+        # if cov_matrix is not None and source_marg:
+        #     marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
+        #     logL += marg_const
+        return logL
+
+
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        :return: number of linear coefficients to be solved for in the linear inversion
+        """
+        return self._num_param_linear(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+
+    def _num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        :return: number of linear coefficients to be solved for in the linear inversion
+        """
+        num = 0
+        num += self._source_num_param_linear(kwargs_source)
+        num += self.LensLightModel.num_param_linear(kwargs_lens_light)
+        num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
+        return num
+
+    def _source_num_param_linear(self, kwargs_source):
+        # TODO : adapt to 'synthesis' formulation
+        return self.num_data_evaluate
 
     def reduced_residuals(self, model, error_map=0):
         """
@@ -142,6 +205,7 @@ class ImageSparseFit(ImageModel):
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
+
     def reduced_chi2(self, model, error_map=0):
         """
         returns reduced chi2
@@ -152,6 +216,7 @@ class ImageSparseFit(ImageModel):
         chi2 = self.reduced_residuals(model, error_map)
         return np.sum(chi2**2) / self.num_data_evaluate
 
+
     @property
     def num_data_evaluate(self):
         """
@@ -159,6 +224,7 @@ class ImageSparseFit(ImageModel):
         :return:
         """
         return int(np.sum(self.likelihood_mask))
+
 
     def image2array_masked(self, image):
         """
@@ -168,6 +234,7 @@ class ImageSparseFit(ImageModel):
         """
         array = util.image2array(image)
         return array[self._mask1d]
+
 
     def array_masked2image(self, array):
         """
@@ -180,24 +247,4 @@ class ImageSparseFit(ImageModel):
         grid1d[self._mask1d] = array
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
-
-
-    # def _source_linear_response_matrix(self, x_grid, y_grid, kwargs_lens, kwargs_source):
         
-
-    #     return linear response Matrix for source light only
-    #     In this particular case, pixel-base profile is assumed so a blank image is returned
-
-    #     :param kwargs_lens:
-    #     :param kwargs_source:
-    #     :param kwargs_lens_light:
-    #     :param kwargs_ps:
-    #     :param unconvolved:
-    #     :return:
-        
-        # if len(source_model_list) == 1:
-        #     source_light_response = np.zeros_like(x_grid)
-        #     n_source = 0
-        #     return source_light_response, n_source
-        # else:
-        #     raise ValueError("'STARLETS' model can not be used with other source light models")   

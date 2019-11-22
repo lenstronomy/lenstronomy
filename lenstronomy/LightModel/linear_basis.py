@@ -111,6 +111,8 @@ class LinearBasis(LightModelBase):
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 n_list += [num_param]
+            elif model in ['STARLETS']:
+                n_list += [0]  # TODO : find a way to make it the number of source pixels
             else:
                 raise ValueError('model type %s not valid!' % model)
         return n_list

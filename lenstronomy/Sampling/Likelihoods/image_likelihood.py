@@ -8,7 +8,8 @@ class ImageLikelihood(object):
     """
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
-                 source_marg=False, linear_prior=None, force_minimum_source_surface_brightness=False, flux_min=0):
+                 source_marg=False, linear_prior=None, force_minimum_source_surface_brightness=False, flux_min=0,
+                 kwargs_sparse_solver={}):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
@@ -25,7 +26,7 @@ class ImageLikelihood(object):
         """
 
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
-                                   likelihood_mask_list=likelihood_mask_list, band_index=0)
+                                   likelihood_mask_list=likelihood_mask_list, band_index=0, kwargs_sparse_solver=kwargs_sparse_solver)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior

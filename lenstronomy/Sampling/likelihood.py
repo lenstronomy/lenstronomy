@@ -30,7 +30,7 @@ class LikelihoodModule(object):
                  prior_lens_lognormal=[], prior_source_lognormal=[], prior_extinction_lognormal=[],
                  prior_lens_light_lognormal=[], prior_ps_lognormal=[],
                  prior_special_lognormal=[],
-                 condition_definition=None):
+                 condition_definition=None, kwargs_sparse_solver={}):
         """
         initializing class
 
@@ -94,7 +94,7 @@ class LikelihoodModule(object):
                                                     likelihood_mask_list=image_likelihood_mask_list,
                                                     source_marg=source_marg, linear_prior=linear_prior,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
-                                                    flux_min=flux_min)
+                                                    flux_min=flux_min, kwargs_sparse_solver=kwargs_sparse_solver)
         self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
                                                        image_position_likelihood=image_position_likelihood,
                                                        source_position_likelihood=source_position_likelihood,

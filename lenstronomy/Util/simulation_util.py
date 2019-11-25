@@ -4,7 +4,8 @@ import lenstronomy.Util.image_util as image_util
 import numpy as np
 
 
-def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=None, center_ra=0, center_dec=0, inverse=False):
+def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=None, center_ra=0, center_dec=0,
+                          inverse=False):
     """
     configures the data keyword arguments with a coordinate grid centered at zero.
 
@@ -12,10 +13,11 @@ def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=N
     :param deltaPix: pixel size (in angular units)
     :param exposure_time: exposure time
     :param background_rms: background noise (Gaussian sigma)
+    :param center_ra: RA at the center of the image
+    :param center_dec: DEC at the center of the image
     :param inverse: if True, coordinate system is ra to the left, if False, to the right
     :return: keyword arguments that can be used to construct a Data() class instance of lenstronomy
     """
-    mean = 0.  # background mean flux (default zero)
     # 1d list of coordinates (x,y) of a numPix x numPix square grid, centered to zero
     x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(numPix=numPix, deltapix=deltaPix, center_ra=center_ra, center_dec=center_dec, subgrid_res=1, inverse=inverse)
     # mask (1= model this pixel, 0= leave blanck)

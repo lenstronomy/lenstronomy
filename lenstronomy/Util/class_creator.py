@@ -172,7 +172,7 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
 
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModelSparse
         multiband = SingleBandMultiModelSparse(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                                   band_index=band_index, kwargs_sparse_solver=kwargs_sparse_solver)
+                                               band_index=band_index, kwargs_sparse_solver=kwargs_sparse_solver)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

@@ -227,9 +227,9 @@ class SingleBandMultiModelSparse(ImageSparseFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        wls_model, error_map, cov_param, param = self._image_sparse_solve(kwargs_lens_i, kwargs_source_i,
-                                                                          kwargs_lens_light_i)
-        return wls_model, error_map, cov_param, param
+        wls_model, error_map = self._image_sparse_solve(kwargs_lens_i, kwargs_source_i,
+                                                        kwargs_lens_light_i)
+        return wls_model, error_map
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):

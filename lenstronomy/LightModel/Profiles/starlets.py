@@ -1,5 +1,7 @@
 __author__ = 'aymgal'
 
+# TODO : merge in a clever array reshape operations (pysap2coeffs, cube2array, etc...)
+
 import numpy as np
 
 from lenstronomy.Util import util
@@ -10,44 +12,55 @@ class Starlets(object):
     """
 
     """
-    param_names = ['n_scales']
-    lower_limit_default = {'n_scales': 2}
-    upper_limit_default = {'n_scales': 20}
+    param_names = ['coeffs', 'n_scales', 'n_pixels']
+    lower_limit_default = {'coeffs': [0], 'n_scales': 2, 'n_pixels': 10}
+    upper_limit_default = {'coeffs': [1e8], 'n_scales': 20, 'n_pixels': 1e10}
 
     def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False):
-        self._use_pysap = self._load_pysap()
-        if self._use_pysap:
-            self._transf_class = self._pysap.load_transform('BsplineWaveletTransformATrousAlgorithm')
+        self.use_pysap, pysap = self._load_pysap()
+        if self.use_pysap:
+            self._transf_class = pysap.load_transform('BsplineWaveletTransformATrousAlgorithm')
         self._thread_count = thread_count
         self._fast_inverse = fast_inverse
         self._second_gen = second_gen
         self._show_pysap_plots = show_pysap_plots
 
-    def function(self, coeffs, n_scales):
-        """return inverse starlet transform from starlet coefficients stored in amp"""
-        if self._use_pysap:
+    def function(self, coeffs, n_scales, n_pixels):
+        """return inverse starlet transform from starlet coefficients stored in coeffs"""
+        coeffs = util.array2cube(coeffs, n_scales, n_pixels)
+        return self.function_2d(coeffs, n_scales, n_pixels)
+
+    def function_2d(self, coeffs, n_scales, n_pixels):
+        """return inverse starlet transform from starlet coefficients stored in coeffs"""
+        if self.use_pysap:
             return self._inverse_transform(coeffs, n_scales)
         else:
-            return starlets_slit._inverse_transform(coeffs, fast=self._fast_inverse, 
-                                                    second_gen=self._second_gen)
+            return starlets_slit.inverse_transform(coeffs, fast=self._fast_inverse, 
+                                                   second_gen=self._second_gen)
 
     def decomposition(self, image, n_scales):
+        """
+        decomposes an image into starlet coefficients, as a 1d array
+        :return:
+        """
+        return util.cube2array(self.decomposition_2d(image, n_scales))
+
+    def decomposition_2d(self, image, n_scales):
         """
         decomposes an image into starlet coefficients
         :return:
         """
-        if self._use_pysap:
-            return self._transform(image, n_scales)
+        if self.use_pysap:
+            coeffs = self._transform(image, n_scales)
         else:
-            return starlets_slit._transform(image, n_scales, second_gen=self._second_gen)
-
+            coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
+        return coeffs
 
     def spectral_norm(self, num_pix, n_scales):
         if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales_cache:
             self._spectral_norm = self._compute_spectral_norm(num_pix, n_scales, num_iter=20, tol=1e-10)
             self._n_scales_cache = n_scales
         return self._spectral_norm
-
 
     def _inverse_transform(self, coeffs, n_scales):
         """performs inverse starlet transform"""
@@ -103,8 +116,6 @@ class Starlets(object):
         try:
             import pysap
         except ImportError:
-            self._pysap = None
-            return False
+            return False, None
         else:
-            self._pysap = pysap
-            return True
+            return True, pysap

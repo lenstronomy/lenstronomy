@@ -131,6 +131,23 @@ def image2array(image):
     imgh = np.reshape(image, nx*ny)  # change the shape to be 1d
     return imgh
 
+def array2cube(array, n_1, n_23):
+    """
+    """
+    n = int(np.sqrt(n_23))
+    if n**2 != n_23:
+        raise ValueError("2nd and 3rd dims (%s) are not square of integer number!" % n_23)
+    n_2, n_3 = n, n
+    cube = array.reshape(n_1, n_2, n_3)
+    return cube
+
+def cube2array(cube):
+    """
+    """
+    n_1, n_2, n_3 = cube.shape
+    array = cube.reshape(n_1 * n_2 * n_3)
+    return array
+
 
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     """

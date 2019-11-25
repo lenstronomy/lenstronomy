@@ -72,6 +72,8 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num_param
+                elif model in ['STARLETS']:
+                    raise ValueError("'STARLETS' model does not support function split")
                 else:
                     raise ValueError('model type %s not valid!' % model)
         return response, n
@@ -112,7 +114,10 @@ class LinearBasis(LightModelBase):
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 n_list += [num_param]
             elif model in ['STARLETS']:
-                n_list += [0]  # TODO : find a way to make it the number of source pixels
+                n_scales = kwargs_list[i]['n_scales']
+                n_pixels = kwargs_list[i]['n_pixels']
+                num_param = n_scales * n_pixels
+                n_list += [num_param]  # TODO : find a way to make it the number of source pixels
             else:
                 raise ValueError('model type %s not valid!' % model)
         return n_list
@@ -143,6 +148,12 @@ class LinearBasis(LightModelBase):
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
+            elif model in ['STARLETS']:
+                n_scales = kwargs_list[k]['n_scales']
+                n_pixels = kwargs_list[k]['n_pixels']
+                num_param = n_scales * n_pixels
+                kwargs_list[k]['coeffs'] = param[i:i+num_param]
+                i += num_param
             else:
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
@@ -159,4 +170,7 @@ class LinearBasis(LightModelBase):
             if 'amp' in param_names:
                 if not 'amp' in kwargs_fixed:
                     kwargs_fixed['amp'] = 1
+            if 'coeffs' in param_names:
+                if not 'coeffs' in kwargs_fixed:
+                    kwargs_fixed['coeffs'] = 1
         return kwargs_fixed_list

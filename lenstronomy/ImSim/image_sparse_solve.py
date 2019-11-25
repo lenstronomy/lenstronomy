@@ -76,29 +76,19 @@ class ImageSparseFit(ImageModel):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        model = self.pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
-        #cov_param, param = None, None
-        return model, model_error #, cov_param, param
+        model, param = self.solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        cov_param = None
+        _, _ = self.update_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light)
+        return model, model_error
 
-
-    def pixel_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
+    def solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
         """
 
-        :return: 2d numpy array
-        """
-        return self._pixel_surface_brightness(kwargs_lens, kwargs_source, kwargs_lens_light)
-
-
-    def _pixel_surface_brightness(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
-        """
-
-        :return: 2d numpy array
+        :return: 2d numpy array, 3d numpy array
         """
         kwargs_source_profile = kwargs_source[0]
         self.lensingOperator.update_mapping(kwargs_lens)
-        flux = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light)
-        return flux
-
+        return self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light)
 
     @property
     def data_response(self):
@@ -110,7 +100,6 @@ class ImageSparseFit(ImageModel):
         d = self.image2array_masked(self.Data.data)
         return d
 
-
     def error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
         returns the 1d array of the error estimate corresponding to the data response
@@ -118,7 +107,6 @@ class ImageSparseFit(ImageModel):
         :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
         """
         return self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-
 
     def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
@@ -131,7 +119,6 @@ class ImageSparseFit(ImageModel):
         psf_model_error = 0.
         C_D_response = self.image2array_masked(self.Data.C_D)
         return C_D_response, psf_model_error
-
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
@@ -186,14 +173,28 @@ class ImageSparseFit(ImageModel):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0
-        num += self._source_num_param_linear(kwargs_source)
+        # num += self._source_num_param_linear(kwargs_source)
+        num += self.SourceModel.num_param_linear(kwargs_source)
         num += self.LensLightModel.num_param_linear(kwargs_lens_light)
         num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
         return num
 
-    def _source_num_param_linear(self, kwargs_source):
-        # TODO : adapt to 'synthesis' formulation
-        return self.num_data_evaluate
+    # def _source_num_param_linear(self, kwargs_source):
+    #     # TODO : adapt to 'synthesis' formulation
+    #     return self.num_data_evaluate
+
+    def update_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light):
+        """
+
+        links linear parameters to kwargs arguments
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :return: updated list of kwargs with linear parameter values
+        """
+        i = 0
+        kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
+        kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
+        return kwargs_source, kwargs_lens_light
 
     def reduced_residuals(self, model, error_map=0):
         """
@@ -205,7 +206,6 @@ class ImageSparseFit(ImageModel):
         residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
         return residual
 
-
     def reduced_chi2(self, model, error_map=0):
         """
         returns reduced chi2
@@ -215,7 +215,6 @@ class ImageSparseFit(ImageModel):
         """
         chi2 = self.reduced_residuals(model, error_map)
         return np.sum(chi2**2) / self.num_data_evaluate
-
 
     @property
     def num_data_evaluate(self):

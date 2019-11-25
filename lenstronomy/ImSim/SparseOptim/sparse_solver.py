@@ -66,19 +66,20 @@ class SparseSolver(object):
         self._verbose = verbose
         self._show_steps = show_steps
 
-
-    def solve(self, lensing_operator_class, kwargs_source, kwargs_lens_light=None):
+    def solve(self, lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile):
+        self._set_cache(lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile)
         if self._solve_for_lens_light:
-            # return self._solve_all(lensing_operator_class, kwargs_source, kwargs_lens_light)
+            # image, coeffs_source, coeffs_lens_light = self._solve_all()
+            # TODO : concatenate coeffs_source & coeffs_lens_light
             raise NotImplementedError("Sparse solver for source and lens light not implemented")
         else:
-            return self._solve_source(lensing_operator_class, kwargs_source)
+            image, coeffs = self._solve_source()
+        # for potential memory issues delete heavy operators/matrices
+        # self._delete_cache()
+        return image, coeffs
 
-
-    def _solve_source(self, lensing_operator_class, kwargs_source):
+    def _solve_source(self):
         """SLIT algorithm"""
-        self._set_cache(lensing_operator_class, kwargs_source)
-
         # compute the gradient step
         mu = 1. / self.spectral_norm
 
@@ -86,9 +87,8 @@ class SparseSolver(object):
         grad_f = lambda x : self.gradient_loss(x)
 
         # initial guess as background random noise
-        num_pix_source = lensing_operator_class.source_plane_num_pix
-        S, alpha_S = self.generate_initial_guess(num_pix_source, kwargs_source['n_scales'],
-                                                 guess_type='bkg_noise')
+        num_pix_source = self._lensing_op.source_plane_num_pix
+        S, alpha_S = self.generate_initial_guess(num_pix_source, self._n_scales, guess_type='bkg_noise')
         if self._show_steps:
             self.quick_imshow(S, title="initial guess", show_now=True)
 
@@ -139,7 +139,7 @@ class SparseSolver(object):
                     fista_xi, fista_t = fista_xi_next, fista_t_next
 
             if j == 0:
-                # save coefficients from first inner loop estimate
+                # save coefficients from first inner loop estimate for weights update
                 alpha_0 = np.copy(alpha_S)
 
             # update weights
@@ -147,6 +147,7 @@ class SparseSolver(object):
             weights = 2. / ( 1. + np.exp(-10. * (lambda_ - alpha_0)) )
 
         # save results
+        source_coeffs = util.cube2array(alpha_S)
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),
@@ -156,22 +157,23 @@ class SparseSolver(object):
 
         if self._show_steps:
             self.quick_imshow(S, title="final estimate", show_now=True, cmap='gist_stern')
-        
-        # for potential memory issues delete 
-        # self._unset_cache()
-        return self._source_model
+    
+        return self._source_model, source_coeffs
 
 
-    def _solve_all(self, F, kwargs_source, kwargs_lens_light):
+    def _solve_all(self):
         """SLIT_MCA algorithm"""
         pass
 
 
-    def _set_cache(self, lensing_operator_class, kwargs_source):
+    def _set_cache(self, lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile):
         self._lensing_op = lensing_operator_class
-        self._kwargs_source = kwargs_source
+        if self._solve_for_lens_light:
+            if kwargs_source_profile['n_scales'] != kwargs_lens_light_profile['n_scales']:
+                raise ValueError("Number of decomposition scales must be identical for source and lens ligth!")
+        self._n_scales = kwargs_source_profile['n_scales']
 
-    def _unset_cache(self):
+    def _delete_cache(self):
         delattr(self, '_lensing_op')
         delattr(self, '_kwargs_source')
 
@@ -300,11 +302,12 @@ class SparseSolver(object):
 
 
     def Phi(self, array_2d):
-        return self._source_light.function(array_2d, **self._kwargs_source)
+        return self._source_light.function_2d(coeffs=array_2d, n_scales=self._n_scales,
+                                              n_pixels=np.size(array_2d))
 
 
     def Phi_T(self, array_2d):
-        return self._source_light.decomposition(array_2d, **self._kwargs_source)
+        return self._source_light.decomposition_2d(image=array_2d, n_scales=self._n_scales)
 
 
     @property

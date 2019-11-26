@@ -103,6 +103,7 @@ class TestFittingSequence(object):
         sigma_start = np.ones_like(mean_start) * 0.1
         samples, dist = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
         assert len(samples) == n_walkers * n_run
+        assert len(dist) == len(samples)
 
 
 if __name__ == '__main__':

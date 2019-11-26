@@ -84,7 +84,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     extensions = LensModelExtensions(lensModel=lensModel)
     ra_grid1d = util.image2array(ra_grid)
     dec_grid1d = util.image2array(dec_grid)
-    radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+    lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
         ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=differential_scale, smoothing_2nd=None)
 
     font_size = 10
@@ -92,29 +92,29 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     f, axes = plt.subplots(2, 4, figsize=(16, 8))
 
 
-    radial_stretch2d = util.array2image(radial_stretch)
-    d_rad_d_rad2d = util.array2image(d_rad_d_rad)
-    tangential_stretch2d = util.array2image(tangential_stretch)
-    d_tang_d_tang2d = util.array2image(d_tang_d_tang)
+    lambda_rad2d = util.array2image(lambda_rad)
+    dlambda_rad_drad = util.array2image(dlambda_rad_drad)
+    lambda_tan2d = util.array2image(lambda_tan)
+    dlambda_tan_dtan2d = util.array2image(dlambda_tan_dtan)
     orientation_angle2d = util.array2image(orientation_angle)
-    d_angle_d_tang2d = util.array2image(d_angle_d_tang)
-    d_tang_d_rad2d = util.array2image(d_tang_d_rad)
+    dphi_tan_dtan2d = util.array2image(dphi_tan_dtan)
+    dlambda_tan_drad2d = util.array2image(dlambda_tan_drad)
     if smoothing_scale is not None:
-        radial_stretch2d = ndimage.gaussian_filter(radial_stretch2d, sigma=smoothing_scale/delta_pix)
-        d_rad_d_rad2d = ndimage.gaussian_filter(d_rad_d_rad2d, sigma=smoothing_scale/delta_pix)
-        tangential_stretch2d = np.abs(tangential_stretch2d)
+        lambda_rad2d = ndimage.gaussian_filter(lambda_rad2d, sigma=smoothing_scale/delta_pix)
+        dlambda_rad_drad = ndimage.gaussian_filter(dlambda_rad_drad, sigma=smoothing_scale/delta_pix)
+        lambda_tan2d = np.abs(lambda_tan2d)
         # the magnification cut is made to make a stable integral/convolution
-        tangential_stretch2d[tangential_stretch2d > 100] = 100
-        tangential_stretch2d = ndimage.gaussian_filter(tangential_stretch2d, sigma=smoothing_scale/delta_pix)
+        lambda_tan2d[lambda_tan2d > 100] = 100
+        lambda_tan2d = ndimage.gaussian_filter(lambda_tan2d, sigma=smoothing_scale/delta_pix)
         # the magnification cut is made to make a stable integral/convolution
-        d_tang_d_tang2d[d_tang_d_tang2d > 100] = 100
-        d_tang_d_tang2d[d_tang_d_tang2d < -100] = -100
-        d_tang_d_tang2d = ndimage.gaussian_filter(d_tang_d_tang2d, sigma=smoothing_scale/delta_pix)
+        dlambda_tan_dtan2d[dlambda_tan_dtan2d > 100] = 100
+        dlambda_tan_dtan2d[dlambda_tan_dtan2d < -100] = -100
+        dlambda_tan_dtan2d = ndimage.gaussian_filter(dlambda_tan_dtan2d, sigma=smoothing_scale/delta_pix)
         orientation_angle2d = ndimage.gaussian_filter(orientation_angle2d, sigma=smoothing_scale/delta_pix)
-        d_angle_d_tang2d = ndimage.gaussian_filter(d_angle_d_tang2d, sigma=smoothing_scale/delta_pix)
+        dphi_tan_dtan2d = ndimage.gaussian_filter(dphi_tan_dtan2d, sigma=smoothing_scale/delta_pix)
 
     ax = axes[0, 0]
-    im = ax.matshow(radial_stretch2d, extent=[0, _frame_size, 0, _frame_size], vmin=0.6, vmax=1.4)
+    im = ax.matshow(lambda_rad2d, extent=[0, _frame_size, 0, _frame_size], vmin=0.6, vmax=1.4)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -131,7 +131,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 0]
-    im = ax.matshow(d_rad_d_rad2d, extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
+    im = ax.matshow(dlambda_rad_drad, extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -148,7 +148,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[0, 1]
-    im = ax.matshow(tangential_stretch2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    im = ax.matshow(lambda_tan2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -165,7 +165,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 1]
-    im = ax.matshow(d_tang_d_tang2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    im = ax.matshow(dlambda_tan_dtan2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -200,7 +200,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[1, 2]
-    im = ax.matshow(1./d_angle_d_tang2d, extent=[0, _frame_size, 0, _frame_size])
+    im = ax.matshow(1./dphi_tan_dtan2d, extent=[0, _frame_size, 0, _frame_size])
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -217,7 +217,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                           font_size=font_size)
 
     ax = axes[0, 3]
-    im = ax.matshow(util.array2image(tangential_stretch*radial_stretch), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
+    im = ax.matshow(util.array2image(lambda_tan*lambda_rad), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -234,7 +234,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
                                     font_size=font_size)
 
     ax = axes[1, 3]
-    im = ax.matshow(np.abs(d_tang_d_rad2d), extent=[0, _frame_size, 0, _frame_size], vmin=0, vmax=200)
+    im = ax.matshow(np.abs(dlambda_tan_drad2d), extent=[0, _frame_size, 0, _frame_size], vmin=0, vmax=200)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)

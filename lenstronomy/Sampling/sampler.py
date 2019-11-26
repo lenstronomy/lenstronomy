@@ -109,7 +109,7 @@ class Sampler(object):
 
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
-        dist = sampler.get_log_prob(flat=True)
+        dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
         if is_master_pool:
             print('Computing the MCMC...')
             print('Number of walkers = ', n_walkers)

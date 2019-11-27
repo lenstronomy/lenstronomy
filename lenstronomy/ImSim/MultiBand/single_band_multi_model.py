@@ -182,7 +182,7 @@ class SingleBandMultiModelSparse(ImageSparseFit):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_sparse_solver={}):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, subgrid_res_source=1, kwargs_sparse_solver={}):
         self.type = 'single-band-multi-model-sparse'
         if likelihood_mask_list is None:
             likelihood_mask_list = [None for i in range(len(multi_band_list))]
@@ -208,7 +208,7 @@ class SingleBandMultiModelSparse(ImageSparseFit):
         super(SingleBandMultiModelSparse, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class, extinction_class,
                                                    kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],
-                                                   kwargs_sparse_solver=kwargs_sparse_solver)
+                                                   subgrid_res_source=subgrid_res_source, kwargs_sparse_solver=kwargs_sparse_solver)
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):

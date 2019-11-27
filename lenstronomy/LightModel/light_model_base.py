@@ -101,14 +101,19 @@ class LightModelBase(object):
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
-        flux = np.zeros_like(x)
+        if 'STARLETS' in self.profile_type_list:
+            pixelated_light = True
+        else:
+            pixelated_light = False
+            flux = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if k is None or k == i:
-                if self.profile_type_list[0] == 'STARLETS':
+                if pixelated_light:
                     out = np.array(func.function(**kwargs_list_standard[i]), dtype=float)
+                    flux = out  # warning, overwrites previous flux
                 else:
                     out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
-                flux += out
+                    flux += out
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):

@@ -63,7 +63,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
 
 def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0,
-                differential_scale=0.0001, smoothing_scale=None, **kwargs):
+                differential_scale=0.001, smoothing_scale=None, **kwargs):
     """
 
     :param lensModel: LensModel instance
@@ -87,21 +87,13 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
         ra_grid1d, dec_grid1d, kwargs_lens=kwargs_lens, center_x=center_ra, center_y=center_dec, smoothing_3rd=differential_scale, smoothing_2nd=None)
 
-    font_size = 10
-    _arrow_size = 0.02
-    f, axes = plt.subplots(2, 4, figsize=(16, 8))
+    lambda_rad2d, lambda_tan2d, orientation_angle2d, dlambda_tan_dtan2d, dlambda_tan_drad2d, dlambda_rad_drad2d, dlambda_rad_dtan2d, dphi_tan_dtan2d, dphi_tan_drad2d, dphi_rad_drad2d, dphi_rad_dtan2d = util.array2image(lambda_rad), \
+                                            util.array2image(lambda_tan), util.array2image(orientation_angle), util.array2image(dlambda_tan_dtan), util.array2image(dlambda_tan_drad), util.array2image(dlambda_rad_drad), util.array2image(dlambda_rad_dtan), \
+                                            util.array2image(dphi_tan_dtan), util.array2image(dphi_tan_drad), util.array2image(dphi_rad_drad), util.array2image(dphi_rad_dtan)
 
-
-    lambda_rad2d = util.array2image(lambda_rad)
-    dlambda_rad_drad = util.array2image(dlambda_rad_drad)
-    lambda_tan2d = util.array2image(lambda_tan)
-    dlambda_tan_dtan2d = util.array2image(dlambda_tan_dtan)
-    orientation_angle2d = util.array2image(orientation_angle)
-    dphi_tan_dtan2d = util.array2image(dphi_tan_dtan)
-    dlambda_tan_drad2d = util.array2image(dlambda_tan_drad)
     if smoothing_scale is not None:
         lambda_rad2d = ndimage.gaussian_filter(lambda_rad2d, sigma=smoothing_scale/delta_pix)
-        dlambda_rad_drad = ndimage.gaussian_filter(dlambda_rad_drad, sigma=smoothing_scale/delta_pix)
+        dlambda_rad_drad2d = ndimage.gaussian_filter(dlambda_rad_drad2d, sigma=smoothing_scale/delta_pix)
         lambda_tan2d = np.abs(lambda_tan2d)
         # the magnification cut is made to make a stable integral/convolution
         lambda_tan2d[lambda_tan2d > 100] = 100
@@ -113,142 +105,48 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         orientation_angle2d = ndimage.gaussian_filter(orientation_angle2d, sigma=smoothing_scale/delta_pix)
         dphi_tan_dtan2d = ndimage.gaussian_filter(dphi_tan_dtan2d, sigma=smoothing_scale/delta_pix)
 
-    ax = axes[0, 0]
-    im = ax.matshow(lambda_rad2d, extent=[0, _frame_size, 0, _frame_size], vmin=0.6, vmax=1.4)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('radial stretch', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='radial stretch', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
+    def _plot_frame(ax, map, vmin, vmax, text_string):
+        """
 
-    ax = axes[1, 0]
-    im = ax.matshow(dlambda_rad_drad, extent=[0, _frame_size, 0, _frame_size], vmin=-.1, vmax=.1)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('radial gradient', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='radial gradien', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
+        :param ax: matplotlib.axis instance
+        :param map: 2d array
+        :param vmin: minimum plotting scale
+        :param vmax: maximum plotting scale
+        :param text_string: string to describe the label
+        :return:
+        """
+        font_size = 10
+        _arrow_size = 0.02
+        im = ax.matshow(map, extent=[0, _frame_size, 0, _frame_size], vmin=vmin, vmax=vmax)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.autoscale(False)
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        cb = plt.colorbar(im, cax=cax, orientation='vertical')
+        cb.set_label(text_string, fontsize=10)
+        plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, _frame_size, text=text_string, color="w",
+                                   backgroundcolor='k', font_size=font_size)
+        if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+            plot_util.coordinate_arrows(ax, _frame_size, _coords,
+                                        color='w', arrow_size=_arrow_size,
+                                        font_size=font_size)
 
-    ax = axes[0, 1]
-    im = ax.matshow(lambda_tan2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('tangential stretch', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='tangential stretch', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
+    f, axes = plt.subplots(3, 4, figsize=(12, 8))
+    _plot_frame(axes[0, 0], lambda_rad2d, vmin=0.6, vmax=1.4, text_string='radial stretch')
+    _plot_frame(axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, text_string='tangential stretch')
+    _plot_frame(axes[0, 2], orientation_angle2d, vmin=-np.pi / 10, vmax=np.pi / 10, text_string='orientation angle')
+    _plot_frame(axes[0, 3], util.array2image(lambda_tan * lambda_rad), vmin=-20, vmax=20, text_string='magnification')
+    _plot_frame(axes[1, 0], dlambda_rad_drad2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_drad')
+    _plot_frame(axes[1, 1], dlambda_tan_dtan2d, vmin=-20, vmax=20, text_string='dlambda_tan_dtan')
+    _plot_frame(axes[1, 2], dlambda_tan_drad2d, vmin=-20, vmax=20, text_string='dlambda_tan_drad')
+    _plot_frame(axes[1, 3], dlambda_rad_dtan2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_dtan')
 
-    ax = axes[1, 1]
-    im = ax.matshow(dlambda_tan_dtan2d, extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('tangential gradient', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='tangential gradient', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
-
-    ax = axes[0, 2]
-    im = ax.matshow(orientation_angle2d, extent=[0, _frame_size, 0, _frame_size], vmin=-np.pi / 10,
-                    vmax=np.pi / 10)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('orientation angle', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='orientation angle', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
-
-    ax = axes[1, 2]
-    im = ax.matshow(1./dphi_tan_dtan2d, extent=[0, _frame_size, 0, _frame_size])
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('curvature radius', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='curvature radius', color="w",
-                     backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                          color='w', arrow_size=_arrow_size,
-                          font_size=font_size)
-
-    ax = axes[0, 3]
-    im = ax.matshow(util.array2image(lambda_tan*lambda_rad), extent=[0, _frame_size, 0, _frame_size], vmin=-20, vmax=20)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('magnification', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='magnification', color="w",
-                               backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                                    color='w', arrow_size=_arrow_size,
-                                    font_size=font_size)
-
-    ax = axes[1, 3]
-    im = ax.matshow(np.abs(dlambda_tan_drad2d), extent=[0, _frame_size, 0, _frame_size], vmin=0, vmax=200)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    divider = make_axes_locatable(ax)
-    cax = divider.append_axes("right", size="5%", pad=0.05)
-    cb = plt.colorbar(im, cax=cax, orientation='vertical')
-    cb.set_label('log10 d_tang_d_rad', fontsize=10)
-    plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-    plot_util.text_description(ax, _frame_size, text='log10 d_tang_d_rad', color="w",
-                               backgroundcolor='k', font_size=font_size)
-    if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-        plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                                    color='w', arrow_size=_arrow_size,
-                                    font_size=font_size)
+    _plot_frame(axes[2, 0], dphi_rad_drad2d, vmin=-.1, vmax=.1, text_string='dphi_rad_drad')
+    _plot_frame(axes[2, 1], dphi_tan_dtan2d, vmin=0, vmax=20, text_string='dphi_tan_dtan: curvature radius')
+    _plot_frame(axes[2, 2], dphi_tan_drad2d, vmin=-.1, vmax=.1, text_string='dphi_tan_drad')
+    _plot_frame(axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, text_string='dphi_rad_dtan')
 
     return f, axes
 

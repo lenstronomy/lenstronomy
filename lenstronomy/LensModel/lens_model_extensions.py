@@ -226,7 +226,8 @@ class LensModelExtensions(object):
                 v11[i], v12[i], v21[i], v22[i] = v[0, 0], v[0, 1], v[1, 0], v[1, 1]
         return w1, w2, v11, v12, v21, v22
 
-    def radial_tangential_stretch(self, x, y, kwargs_lens, diff=None):
+    def radial_tangential_stretch(self, x, y, kwargs_lens, diff=None, ra_0=0, dec_0=0,
+                                  coordinate_frame_definitions=False):
         """
         computes the radial and tangential stretches at a given position
 
@@ -236,31 +237,54 @@ class LensModelExtensions(object):
         :param diff: float or None, finite average differential scale
         :return: radial stretch, tangential stretch
         """
-        w0, w1, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens, diff=diff)
+        w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(x, y, kwargs_lens, diff=diff)
+        v_x, v_y = x - ra_0, y - dec_0
+
+        prod_v1 = v_x*v11 + v_y*v12
+        prod_v2 = v_x*v21 + v_y*v22
         if isinstance(x, int) or isinstance(x, float):
-            if w0 > w1:
-                lambda_rad = 1. / w0
-                lambda_tan = 1. / w1
+            if (coordinate_frame_definitions is True and abs(prod_v1) >= abs(prod_v2)) or (coordinate_frame_definitions is False and w1 >= w2):
+            #if w1 > w2:
+            #if abs(prod_v1) > abs(prod_v2):  # radial vector has larger scalar product to the zero point
+                lambda_rad = 1. / w1
+                lambda_tan = 1. / w2
                 v1_rad, v2_rad = v11, v12
                 v1_tan, v2_tan = v21, v22
+                prod_r = prod_v1
             else:
-                lambda_rad = 1. / w1
-                lambda_tan = 1. / w0
+                lambda_rad = 1. / w2
+                lambda_tan = 1. / w1
                 v1_rad, v2_rad = v21, v22
                 v1_tan, v2_tan = v11, v12
+                prod_r = prod_v2
+            if prod_r < 0:  # if radial eigenvector points towards the center
+                v1_rad, v2_rad = -v1_rad, -v2_rad
+            if v1_rad * v2_tan - v2_rad * v1_tan < 0:  # cross product defines orientation of the tangential eigenvector
+                v1_tan *= -1
+                v2_tan *= -1
+
         else:
             lambda_rad, lambda_tan, v1_rad, v2_rad, v1_tan, v2_tan = np.empty(len(x), dtype=float), np.empty(len(x), dtype=float), np.empty_like(x), np.empty_like(x), np.empty_like(x), np.empty_like(x)
             for i in range(len(x)):
-                if w0[i] > w1[i]:
-                    lambda_rad[i] = 1. / w0[i]
-                    lambda_tan[i] = 1. / w1[i]
+                if (coordinate_frame_definitions is True and abs(prod_v1[i]) >= abs(prod_v2[i])) or (
+                        coordinate_frame_definitions is False and w1[i] >= w2[i]):
+                #if w1[i] > w2[i]:
+                    lambda_rad[i] = 1. / w1[i]
+                    lambda_tan[i] = 1. / w2[i]
                     v1_rad[i], v2_rad[i] = v11[i], v12[i]
                     v1_tan[i], v2_tan[i] = v21[i], v22[i]
+                    prod_r = prod_v1[i]
                 else:
-                    lambda_rad[i] = 1. / w1[i]
-                    lambda_tan[i] = 1. / w0[i]
+                    lambda_rad[i] = 1. / w2[i]
+                    lambda_tan[i] = 1. / w1[i]
                     v1_rad[i], v2_rad[i] = v21[i], v22[i]
                     v1_tan[i], v2_tan[i] = v11[i], v12[i]
+                    prod_r = prod_v2[i]
+                if prod_r < 0:  # if radial eigenvector points towards the center
+                    v1_rad[i], v2_rad[i] = -v1_rad[i], -v2_rad[i]
+                if v1_rad[i] * v2_tan[i] - v2_rad[i] * v1_tan[i] < 0:  # cross product defines orientation of the tangential eigenvector
+                    v1_tan[i] *= -1
+                    v2_tan[i] *= -1
 
         return lambda_rad, lambda_tan, v1_rad, v2_rad, v1_tan, v2_tan
 
@@ -279,37 +303,38 @@ class LensModelExtensions(object):
         :return:
         """
         lambda_rad, lambda_tan, v1_rad, v2_rad, v1_tan, v2_tan = self.radial_tangential_stretch(x, y, kwargs_lens,
-                                                                                                diff=smoothing_2nd)
+                                                                                                diff=smoothing_2nd,
+                                                                                                ra_0=center_x, dec_0=center_y,
+                                                                                                coordinate_frame_definitions=True)
         x0 = x - center_x
         y0 = y - center_y
 
         # computing angle of tangential vector in regard to the defined coordinate center
-        cos_angle = (v1_tan * x0 + v2_tan * y0) / np.sqrt((x0 ** 2 + y0 ** 2) * (v1_tan ** 2 + v2_tan ** 2)) * np.sign(
-            v1_tan * y0 - v2_tan * x0)
+        cos_angle = (v1_tan * x0 + v2_tan * y0) / np.sqrt((x0 ** 2 + y0 ** 2) * (v1_tan ** 2 + v2_tan ** 2))# * np.sign(v1_tan * y0 - v2_tan * x0)
         orientation_angle = np.arccos(cos_angle) - np.pi / 2
 
         # computing differentials in tangential and radial directions
         dx_tan = x + smoothing_3rd * v1_tan
         dy_tan = y + smoothing_3rd * v2_tan
-        lambda_rad_dtan, lambda_tan_dtan, v1_rad_dtan, v2_rad_dtan, v1_tan_dtan, v2_tan_dtan = self.radial_tangential_stretch(dx_tan, dy_tan, kwargs_lens, diff=smoothing_2nd)
+        lambda_rad_dtan, lambda_tan_dtan, v1_rad_dtan, v2_rad_dtan, v1_tan_dtan, v2_tan_dtan = self.radial_tangential_stretch(dx_tan, dy_tan, kwargs_lens, diff=smoothing_2nd,
+                                                                                                                              ra_0=center_x, dec_0=center_y, coordinate_frame_definitions=True)
         dx_rad = x + smoothing_3rd * v1_rad
         dy_rad = y + smoothing_3rd * v2_rad
         lambda_rad_drad, lambda_tan_drad, v1_rad_drad, v2_rad_drad, v1_tan_drad, v2_tan_drad = self.radial_tangential_stretch(
-            dx_rad, dy_rad, kwargs_lens, diff=smoothing_2nd)
+            dx_rad, dy_rad, kwargs_lens, diff=smoothing_2nd, ra_0=center_x, dec_0=center_y, coordinate_frame_definitions=True)
 
         # eigenvalue differentials in tangential and radial direction
-        dlambda_tan_dtan = (lambda_tan_dtan - lambda_tan) / smoothing_3rd * np.sign(v1_tan * y0 - v2_tan * x0)
-        dlambda_tan_drad = (lambda_tan_drad - lambda_tan) / smoothing_3rd * np.sign(v1_rad * x0 + v2_rad * y0)
-        dlambda_rad_drad = (lambda_rad_drad - lambda_rad) / smoothing_3rd * np.sign(v1_rad * x0 + v2_rad * y0)
-        dlambda_rad_dtan = (lambda_rad_dtan - lambda_rad) / smoothing_3rd * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_tan_dtan = (lambda_tan_dtan - lambda_tan) / smoothing_3rd# * np.sign(v1_tan * y0 - v2_tan * x0)
+        dlambda_tan_drad = (lambda_tan_drad - lambda_tan) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_rad_drad = (lambda_rad_drad - lambda_rad) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_rad_dtan = (lambda_rad_dtan - lambda_rad) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
 
         # eigenvector direction differentials in tangential and radial direction
         cos_dphi_tan_dtan = v1_tan * v1_tan_dtan + v2_tan * v2_tan_dtan #/ (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))
         norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2)
         cos_dphi_tan_dtan /= norm
-
-        arc_cos = np.arccos(np.abs(np.minimum(cos_dphi_tan_dtan, 1)))
-        dphi_tan_dtan = arc_cos / smoothing_3rd
+        arc_cos_dphi_tan_dtan = np.arccos(np.abs(np.minimum(cos_dphi_tan_dtan, 1)))
+        dphi_tan_dtan = arc_cos_dphi_tan_dtan / smoothing_3rd
 
         cos_dphi_tan_drad = v1_tan * v1_tan_drad + v2_tan * v2_tan_drad  # / (np.sqrt(v1_tan ** 2 + v2_tan ** 2) * np.sqrt(v1_tan_drad ** 2 + v2_tan_drad ** 2))
         norm = np.sqrt(v1_tan ** 2 + v2_tan ** 2) * np.sqrt(v1_tan_drad ** 2 + v2_tan_drad ** 2)
@@ -329,6 +354,8 @@ class LensModelExtensions(object):
         cos_dphi_rad_dtan = np.minimum(cos_dphi_rad_dtan, 1)
         dphi_rad_dtan = np.arccos(cos_dphi_rad_dtan) / smoothing_3rd
 
+        #dphi_rad_dtan = dphi_tan_dtan
+        #dphi_tan_drad = dphi_rad_drad
         return lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan
 
     def curved_arc_estimate(self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001):
@@ -355,6 +382,7 @@ class LensModelExtensions(object):
             delta = np.sqrt(d_tang1 ** 2 + d_tang2 ** 2)
         curvature = delta / smoothing_3rd
         direction = np.arctan2(v_rad2 * np.sign(v_rad1 * x + v_rad2 * y), v_rad1 * np.sign(v_rad1 * x + v_rad2 * y))
+        #direction = np.arctan2(v_rad2, v_rad1)
         kwargs_arc = {'radial_stretch': radial_stretch,
                       'tangential_stretch': tangential_stretch,
                       'curvature': curvature,

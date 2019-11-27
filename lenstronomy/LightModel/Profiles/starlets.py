@@ -8,6 +8,9 @@ from lenstronomy.Util import util
 from lenstronomy.LightModel.Profiles import starlets_slit
 
 
+_force_no_pysap = False
+
+
 class Starlets(object):
     """
 
@@ -27,8 +30,9 @@ class Starlets(object):
 
     def function(self, coeffs, n_scales, n_pixels):
         """return inverse starlet transform from starlet coefficients stored in coeffs"""
-        coeffs = util.array2cube(coeffs, n_scales, n_pixels)
-        return self.function_2d(coeffs, n_scales, n_pixels)
+        if len(coeffs.shape) == 1:
+            coeffs = util.array2cube(coeffs, n_scales, n_pixels)
+        return util.image2array(self.function_2d(coeffs, n_scales, n_pixels))
 
     def function_2d(self, coeffs, n_scales, n_pixels):
         """return inverse starlet transform from starlet coefficients stored in coeffs"""
@@ -113,6 +117,8 @@ class Starlets(object):
 
 
     def _load_pysap(self):
+        if _force_no_pysap:
+            return False, None
         try:
             import pysap
         except ImportError:

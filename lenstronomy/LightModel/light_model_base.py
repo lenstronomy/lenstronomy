@@ -104,7 +104,10 @@ class LightModelBase(object):
         flux = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if k is None or k == i:
-                out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
+                if self.profile_type_list[0] == 'STARLETS':
+                    out = np.array(func.function(**kwargs_list_standard[i]), dtype=float)
+                else:
+                    out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
                 flux += out
         return flux
 

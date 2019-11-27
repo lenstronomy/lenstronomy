@@ -5,7 +5,7 @@ import scipy.signal as scs
 import scipy.ndimage.filters as scf
 
 
-def transform(self, img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
+def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
 
     mode = 'nearest'
     
@@ -83,7 +83,7 @@ def transform(self, img, n_scales, Filter='Bspline', convol2d=0, second_gen=Fals
     return wave
 
 
-def inverse_transform(self, wave, convol2d=0, fast=True, second_gen=False):
+def inverse_transform(wave, convol2d=0, fast=True, second_gen=False):
     if fast and not second_gen:
         # simply sum all scales, including the coarsest one
         return np.sum(wave, axis=0)

@@ -5,6 +5,7 @@ __author__ = 'aymgal'
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
+import matplotlib.colors as colors
 
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
@@ -39,11 +40,11 @@ class SparseSolver(object):
 
         if psf_class is not None:
             self._psf_kernel = psf_class.kernel_point_source
-            self._conv   = PixelKernelConvolution(self._psf_kernel, convolution_type=convolution_type)
-            self._conv_T = PixelKernelConvolution(self._psf_kernel.T, convolution_type=convolution_type)
+            self.convolution   = PixelKernelConvolution(self._psf_kernel, convolution_type=convolution_type)
+            self.convolution_T = PixelKernelConvolution(self._psf_kernel.T, convolution_type=convolution_type)
         else:
             self._psf_kernel = None
-            self._conv, self._conv_T = None, None
+            self.convolution, self.convolution_T = None, None
 
         self._source_light = source_profile_class
         self._lens_light   = lens_light_profile_class
@@ -149,6 +150,7 @@ class SparseSolver(object):
 
         # store results
         source_coeffs_1d = util.cube2array(self.Phi_T(S))
+        print("S.shape", S.shape, "Phi_T(S)", self.Phi_T(S).shape, "source_coeffs_1d", source_coeffs_1d.shape)
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),
@@ -210,29 +212,46 @@ class SparseSolver(object):
         return self._solve_track['red_chi2'][-1]
 
 
-    def plot_results(self, image_residuals=False, vmin=None, vmax=None):
-        fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    def plot_results(self, model_log_scale=False, model_cmap='cubehelix', res_vmin=None, res_vmax=None):
+        fig, axes = plt.subplots(2, 3, figsize=(18, 10))
         ax = axes[0, 0]
-        if image_residuals:
-            ax.set_title(r"$(data - model)/\sigma^2$")
-            im = ax.imshow(self.reduced_residuals(self.source_model), origin='lower',
-                           cmap='bwr', vmin=vmin, vmax=vmax)
-            frame_size = self._num_pix * self._delta_pix
-            text = r"$\chi^2={:.2f}$".format(self.best_fit_reduced_chi2)
-            plot_util.text_description(ax, frame_size, text, color='black', backgroundcolor='white',
-                                       flipped=False, font_size=15)
+        ax.set_title("source model")
+        src_model = self.source_model
+        if model_log_scale:
+            src_model[src_model <= 0.] = np.nan
+            im = ax.imshow(src_model, origin='lower', cmap=model_cmap, 
+                           norm=colors.LogNorm(vmin=src_model.min(), vmax=src_model.max()))
         else:
-            im = ax.imshow(self.image_model(unconvolved=False), origin='lower', cmap='cubehelix')
+            im = ax.imshow(src_model, origin='lower', cmap=model_cmap)
         plot_util.nice_colorbar(im)
         ax = axes[0, 1]
+        ax.set_title("image model")
+        img_model = self.image_model(unconvolved=False)
+        if model_log_scale:
+            img_model[img_model <= 0.] = np.nan
+            im = ax.imshow(img_model, origin='lower', cmap=model_cmap,
+                           norm=colors.LogNorm(vmin=img_model.min(), vmax=img_model.max()))
+        else:
+            im = ax.imshow(img_model, origin='lower', cmap=model_cmap)
+        plot_util.nice_colorbar(im)
+        ax = axes[0, 2]
+        ax.set_title(r"(data - model)$/\sigma$")
+        im = ax.imshow(self.reduced_residuals(self.source_model), origin='lower',
+                       cmap='bwr', vmin=res_vmin, vmax=res_vmax)
+        frame_size = self._num_pix * self._delta_pix
+        text = r"$\chi^2={:.2f}$".format(self.best_fit_reduced_chi2)
+        plot_util.text_description(ax, frame_size, text, color='black', backgroundcolor='white',
+                                   flipped=False, font_size=15)
+        plot_util.nice_colorbar(im)
+        ax = axes[1, 0]
         ax.set_title("loss function")
         ax.plot(self.solve_track['loss'])
         ax.set_xlabel("iterations")
-        ax = axes[1, 0]
+        ax = axes[1, 1]
         ax.set_title("reduced chi2")
         ax.plot(self.solve_track['red_chi2'])
         ax.set_xlabel("iterations")
-        ax = axes[1, 1]
+        ax = axes[1, 2]
         ax.set_title("step-to-step difference")
         ax.semilogy(self.solve_track['step_diff'])
         ax.set_xlabel("iterations")
@@ -284,15 +303,15 @@ class SparseSolver(object):
 
 
     def H(self, array_2d):
-        if self._conv is None:
+        if self.convolution is None:
             return array_2d
-        return self._conv.convolution2d(array_2d)
+        return self.convolution.convolution2d(array_2d)
 
 
     def H_T(self, array_2d):
-        if self._conv_T is None:
+        if self.convolution_T is None:
             return array_2d
-        return self._conv_T.convolution2d(array_2d)
+        return self.convolution_T.convolution2d(array_2d)
 
 
     def F(self, source_2d):
@@ -489,7 +508,7 @@ class SparseSolver(object):
         HT_power = np.sqrt(np.sum(HT**2))
         HT_noise = self._sigma_bkg * HT_power * np.ones((n_img, n_img))
         FT_HT_noise = self.F_T(HT_noise)
-        FT_HT_noise[FT_HT_noise == 0.] = 10. * np.mean(FT_HT_noise)
+        FT_HT_noise[FT_HT_noise == 0.] = np.mean(FT_HT_noise) * 10.
 
         # computes noise levels in in source plane in starlet space
         dirac = self.dirac_impulse(n_img)
@@ -502,7 +521,7 @@ class SparseSolver(object):
         for scale_idx in range(noise_levels.shape[0]):
             dirac_scale = dirac_coeffs[scale_idx, :, :]
             levels = signal.fftconvolve(FT_HT_noise**2, dirac_scale**2, mode='same')
-            levels[levels == 0] = 0
+            levels[levels == 0.] = 0.
             noise_levels[scale_idx, :, :] = np.sqrt(np.abs(levels))
         return noise_levels
 

@@ -1,9 +1,11 @@
 import numpy as np
 
 from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.ImSim.SparseOptim.sparse_solver import SparseSolver
 from lenstronomy.ImSim.SparseOptim.lensing_operator import LensingOperator
 from lenstronomy.Util import util
+from lenstronomy.Util import image_util
 
 class ImageSparseFit(ImageModel):
     """
@@ -51,20 +53,55 @@ class ImageSparseFit(ImageModel):
         self.sparseSolver = SparseSolver(data_class, source_profile, psf_class=psf_class,
                                          lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
                                          **kwargs_sparse_solver)
+        self._subgrid_res_source = subgrid_res_source
         self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
                                                matrix_prod=True)
 
+    def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                  unconvolved=False, de_lensed=False, k=None, re_sized=True):
+        """
+        Overwrites ImageModel method.
+        ImageModel.source_surface_brightness() may not work for some settings.
+
+        # TODO : make ImageModel.source_surface_brightness() to work without this overwriting.
+
+        computes the source surface brightness distribution
+
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
+        :return: 1d array of surface brightness pixels
+        """
+        if len(self.SourceModel.profile_type_list) == 0:
+            return np.zeros((self.Data.num_pixel_axes))
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        if de_lensed is True:
+            source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
+        else:
+            # TODO
+            raise NotImplementedError
+
+        source_light = util.array2image(source_light)
+        if not unconvolved:
+            source_light = image_util.re_size(source_light, self._subgrid_res_source)
+            source_light_final = self.sparseSolver.convolution.convolution2d(source_light)
+        elif re_sized:
+            source_light_final = image_util.re_size(source_light, self._subgrid_res_source)
+        else:
+            source_light_final = source_light
+        return source_light_final
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
         return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light, 
                                         kwargs_ps, kwargs_extinction, kwargs_special)
 
-
     def _image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
                             kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
         """
-
         computes the image (lens and source surface brightness with a given lens model)
         using sparse optimization, on the data pixelated grid.
 
@@ -72,7 +109,6 @@ class ImageSparseFit(ImageModel):
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)

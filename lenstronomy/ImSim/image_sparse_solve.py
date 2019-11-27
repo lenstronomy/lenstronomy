@@ -86,9 +86,14 @@ class ImageSparseFit(ImageModel):
 
         :return: 2d numpy array, 3d numpy array
         """
-        kwargs_source_profile = kwargs_source[0]
-        self.lensingOperator.update_mapping(kwargs_lens)
-        return self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light)
+        kwargs_source_profile = kwargs_source[0]  # select first profile, should be pixel-based
+        if kwargs_lens_light is None or len(kwargs_lens_light) == 0:
+            kwargs_lens_light_profile = None
+        else:
+            kwargs_lens_light_profile = kwargs_lens_light[0]
+        self.lensingOperator.update_mapping(kwargs_lens)  # update the source <-> image plane mapping
+        model, _, _, param = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light_profile)
+        return model, param
 
     @property
     def data_response(self):

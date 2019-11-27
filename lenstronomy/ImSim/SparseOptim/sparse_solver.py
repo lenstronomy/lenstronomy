@@ -69,14 +69,15 @@ class SparseSolver(object):
     def solve(self, lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile):
         self._set_cache(lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile)
         if self._solve_for_lens_light:
-            # image, coeffs_source, coeffs_lens_light = self._solve_all()
+            # image, source, lens_light, coeffs_source, coeffs_lens_light = self._solve_all()
             # TODO : concatenate coeffs_source & coeffs_lens_light
             raise NotImplementedError("Sparse solver for source and lens light not implemented")
         else:
-            image, coeffs = self._solve_source()
+            image, source, coeffs = self._solve_source()
+            lens_light = None
         # for potential memory issues delete heavy operators/matrices
         # self._delete_cache()
-        return image, coeffs
+        return image, source, lens_light, coeffs
 
     def _solve_source(self):
         """SLIT algorithm"""
@@ -132,7 +133,7 @@ class SparseSolver(object):
                 red_chi2_list.append(red_chi2)
                 step_diff_list.append(step_diff)
 
-                # update current estimate of source light
+                # update current estimate of source light and local parameters
                 S = S_next
                 if self.algorithm == 'FISTA':
                     alpha_S = alpha_S_next
@@ -146,8 +147,8 @@ class SparseSolver(object):
             lambda_ = self._k_max * self.noise_levels_source_plane
             weights = 2. / ( 1. + np.exp(-10. * (lambda_ - alpha_0)) )
 
-        # save results
-        source_coeffs = util.cube2array(alpha_S)
+        # store results
+        source_coeffs_1d = util.cube2array(self.Phi_T(S))
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),
@@ -157,8 +158,9 @@ class SparseSolver(object):
 
         if self._show_steps:
             self.quick_imshow(S, title="final estimate", show_now=True, cmap='gist_stern')
-    
-        return self._source_model, source_coeffs
+        
+        image_model = self.image_model(unconvolved=False)
+        return image_model, self.source_model, source_coeffs_1d
 
 
     def _solve_all(self):

@@ -150,7 +150,6 @@ class SparseSolver(object):
 
         # store results
         source_coeffs_1d = util.cube2array(self.Phi_T(S))
-        print("S.shape", S.shape, "Phi_T(S)", self.Phi_T(S).shape, "source_coeffs_1d", source_coeffs_1d.shape)
         self._source_model = S
         self._solve_track = {
             'loss': np.asarray(loss_list),

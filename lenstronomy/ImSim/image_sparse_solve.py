@@ -87,7 +87,7 @@ class ImageSparseFit(ImageModel):
         source_light = util.array2image(source_light)
         if not unconvolved:
             source_light = image_util.re_size(source_light, self._subgrid_res_source)
-            source_light_final = self.sparseSolver.convolution.convolution2d(source_light)
+            source_light_final = self.sparseSolver.psf_convolution(source_light)
         elif re_sized:
             source_light_final = image_util.re_size(source_light, self._subgrid_res_source)
         else:

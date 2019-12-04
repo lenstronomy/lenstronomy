@@ -285,6 +285,12 @@ class SparseSolver(object):
         return source_2d * self.mask_source_plane
 
 
+    def psf_convolution(self, array_2d):
+        if self.convolution is None:
+            return array_2d
+        return self.convolution.convolution2d(array_2d)
+
+
     @property
     def image_data(self):
         return self._image_data
@@ -302,31 +308,37 @@ class SparseSolver(object):
 
 
     def H(self, array_2d):
+        """alias method for convolution with the PSF kernel"""
         if self.convolution is None:
             return array_2d
         return self.convolution.convolution2d(array_2d)
 
 
     def H_T(self, array_2d):
+        """alias method for convolution with the transposed PSF kernel"""
         if self.convolution_T is None:
             return array_2d
         return self.convolution_T.convolution2d(array_2d)
 
 
     def F(self, source_2d):
+        """alias method for lensing from source plane to image plane"""
         return self._lensing_op.source2image_2d(source_2d)
 
 
     def F_T(self, image_2d):
+        """alias method for ray-tracing from image plane to source plane"""
         return self._lensing_op.image2source_2d(image_2d)
 
 
     def Phi(self, array_2d):
+        """alias method for inverse wavelet transform"""
         return self._source_light.function_2d(coeffs=array_2d, n_scales=self._n_scales,
                                               n_pixels=np.size(array_2d))
 
 
     def Phi_T(self, array_2d):
+        """alias method for wavelet transform"""
         return self._source_light.decomposition_2d(image=array_2d, n_scales=self._n_scales)
 
 

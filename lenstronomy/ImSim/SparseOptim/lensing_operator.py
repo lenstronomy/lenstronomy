@@ -172,6 +172,7 @@ class LensingOperator(object):
             #theta_y_j = theta_y_src[j_y]
             
             # 4. find the 1D index that corresponds to these coordinates
+            # TODO : find proper way to find the index j
             j = j_x + j_y   # WRONG ??  but it seems to work
             #print(j_x1 + j_y1, j_x + j_y)
             

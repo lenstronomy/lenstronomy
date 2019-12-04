@@ -82,15 +82,14 @@ class SparseSolver(object):
 
     def _solve_source(self):
         """SLIT algorithm"""
-        # compute the gradient step
+        # set the gradient step
         mu = 1. / self.spectral_norm
 
         # get the gradient of the cost function, which is f = || Y - HFS ||^2_2  
         grad_f = lambda x : self.gradient_loss(x)
 
         # initial guess as background random noise
-        num_pix_source = self._lensing_op.source_plane_num_pix
-        S, alpha_S = self.generate_initial_guess(num_pix_source, self._n_scales, guess_type='bkg_noise')
+        S, alpha_S = self.generate_initial_guess(guess_type='bkg_noise')
         if self._show_steps:
             self.quick_imshow(S, title="initial guess", show_now=True)
 
@@ -148,6 +147,9 @@ class SparseSolver(object):
             lambda_ = self._k_max * self.noise_levels_source_plane
             weights = 2. / ( 1. + np.exp(-10. * (lambda_ - alpha_0)) )
 
+        # if wanted, pad the final source to original grid
+        # S = self.original_grid_source(S)
+
         # store results
         source_coeffs_1d = util.cube2array(self.Phi_T(S))
         self._source_model = S
@@ -170,14 +172,11 @@ class SparseSolver(object):
 
 
     def _set_cache(self, lensing_operator_class, kwargs_source_profile, kwargs_lens_light_profile):
-        self._lensing_op = lensing_operator_class
-        if self._solve_for_lens_light:
-            if kwargs_source_profile['n_scales'] != kwargs_lens_light_profile['n_scales']:
-                raise ValueError("Number of decomposition scales must be identical for source and lens ligth!")
+        self._lensingOperator = lensing_operator_class
         self._n_scales = kwargs_source_profile['n_scales']
 
     def _delete_cache(self):
-        delattr(self, '_lensing_op')
+        delattr(self, '_lensingOperator')
         delattr(self, '_kwargs_source')
 
 
@@ -216,20 +215,27 @@ class SparseSolver(object):
         ax = axes[0, 0]
         ax.set_title("source model")
         src_model = self.source_model
+        print("Negative source pixels ?", np.any(src_model < 0))
         if model_log_scale:
-            src_model[src_model <= 0.] = np.nan
+            vmin = max(src_model.min(), 1e-3)
+            vmax = min(src_model.max(), 1e10)
+            src_model[src_model <= 0.] = 1e-10
             im = ax.imshow(src_model, origin='lower', cmap=model_cmap, 
-                           norm=colors.LogNorm(vmin=src_model.min(), vmax=src_model.max()))
+                           norm=colors.LogNorm(vmin=vmin, vmax=vmax))
         else:
             im = ax.imshow(src_model, origin='lower', cmap=model_cmap)
+        # ax.imshow(self._lensingOperator.sourcePlane.reduction_mask, origin='lower', cmap='gray', alpha=0.1)
         plot_util.nice_colorbar(im)
         ax = axes[0, 1]
         ax.set_title("image model")
         img_model = self.image_model(unconvolved=False)
+        print("Negative image pixels ?", np.any(img_model < 0))
         if model_log_scale:
-            img_model[img_model <= 0.] = np.nan
+            vmin = max(img_model.min(), 1e-3)
+            vmax = min(img_model.max(), 1e10)
+            img_model[img_model <= 0.] = 1e-10
             im = ax.imshow(img_model, origin='lower', cmap=model_cmap,
-                           norm=colors.LogNorm(vmin=img_model.min(), vmax=img_model.max()))
+                           norm=colors.LogNorm(vmin=vmin, vmax=vmax))
         else:
             im = ax.imshow(img_model, origin='lower', cmap=model_cmap)
         plot_util.nice_colorbar(im)
@@ -257,7 +263,9 @@ class SparseSolver(object):
         plt.show()
 
 
-    def generate_initial_guess(self, num_pix, n_scales, guess_type='bkg_noise'):
+    def generate_initial_guess(self, guess_type='bkg_noise'):
+        num_pix = self._lensingOperator.sourcePlane.num_pix
+        n_scales = self._n_scales, 
         if guess_type == 'null':
             X = np.zeros((num_pix, num_pix))
             alpha_X = np.zeros((n_scales, num_pix, num_pix))
@@ -282,7 +290,11 @@ class SparseSolver(object):
 
 
     def apply_source_plane_mask(self, source_2d):
-        return source_2d * self.mask_source_plane
+        return source_2d * self._lensingOperator.sourcePlane.effective_mask
+
+
+    def original_grid_source(self, source_2d):
+        return self._lensingOperator.sourcePlane.project_on_original_grid(source_2d)
 
 
     def psf_convolution(self, array_2d):
@@ -323,12 +335,12 @@ class SparseSolver(object):
 
     def F(self, source_2d):
         """alias method for lensing from source plane to image plane"""
-        return self._lensing_op.source2image_2d(source_2d)
+        return self._lensingOperator.source2image_2d(source_2d)
 
 
     def F_T(self, image_2d):
         """alias method for ray-tracing from image plane to source plane"""
-        return self._lensing_op.image2source_2d(image_2d)
+        return self._lensingOperator.image2source_2d(image_2d)
 
 
     def Phi(self, array_2d):
@@ -368,7 +380,7 @@ class SparseSolver(object):
         """ returns || Y - HFS ||^2_2 / sigma^2 """
         model = self.H(self.F(S))
         error = self.Y - model
-        return error / self._sigma_bkg
+        return (error / self._sigma_bkg) * self._mask
 
 
     def norm_diff(self, S1, S2):
@@ -499,12 +511,6 @@ class SparseSolver(object):
 
 
     @property
-    def mask_source_plane(self):
-        # TODO : include mask in image plane ray-traced to source plane
-        return self._lensing_op.source_support
-
-
-    @property
     def noise_levels_source_plane(self):
         if not hasattr(self, '_noise_levels_src'):
             self._noise_levels_src = self._compute_noise_levels_src()
@@ -512,7 +518,7 @@ class SparseSolver(object):
 
 
     def _compute_noise_levels_src(self):
-        n_img = self._lensing_op.image_plane_num_pix
+        n_img = self._lensingOperator.imagePlane.num_pix
 
         # PSF noise map
         HT = self._psf_kernel.T

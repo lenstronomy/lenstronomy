@@ -15,7 +15,7 @@ class ImageSparseFit(ImageModel):
 
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
-                 psf_error_map_bool_list=None, subgrid_res_source=1, kwargs_sparse_solver={}):
+                 psf_error_map_bool_list=None, subgrid_res_source=1, minimal_source_plane=False, kwargs_sparse_solver={}):
         """
 
         :param data_class: ImageData() instance
@@ -55,10 +55,11 @@ class ImageSparseFit(ImageModel):
                                          **kwargs_sparse_solver)
         self._subgrid_res_source = subgrid_res_source
         self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
+                                               likelihood_mask=self.likelihood_mask, minimal_source_plane=minimal_source_plane,
                                                matrix_prod=True)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None, re_sized=True):
+                                  unconvolved=False, de_lensed=False, k=None, re_sized=True, original_grid=True):
         """
         Overwrites ImageModel method.
         ImageModel.source_surface_brightness() may not work for some settings.
@@ -83,16 +84,18 @@ class ImageSparseFit(ImageModel):
         else:
             # TODO
             raise NotImplementedError
-
         source_light = util.array2image(source_light)
+
         if not unconvolved:
+            source_light = self.sparseSolver.original_grid_source(source_light)
             source_light = image_util.re_size(source_light, self._subgrid_res_source)
-            source_light_final = self.sparseSolver.psf_convolution(source_light)
-        elif re_sized:
-            source_light_final = image_util.re_size(source_light, self._subgrid_res_source)
+            source_light = self.sparseSolver.psf_convolution(source_light)
         else:
-            source_light_final = source_light
-        return source_light_final
+            if original_grid:
+                source_light = self.sparseSolver.original_grid_source(source_light)
+            if re_sized:
+                source_light = image_util.re_size(source_light, self._subgrid_res_source)
+        return source_light
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
@@ -112,9 +115,9 @@ class ImageSparseFit(ImageModel):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        model, param = self.solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        model, param, n_pixels_source = self.solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         cov_param = None
-        _, _ = self.update_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light)
+        _, _ = self.update_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, n_pixels_source)
         return model, model_error
 
     def solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
@@ -128,8 +131,9 @@ class ImageSparseFit(ImageModel):
         else:
             kwargs_lens_light_profile = kwargs_lens_light[0]
         self.lensingOperator.update_mapping(kwargs_lens)  # update the source <-> image plane mapping
-        model, _, _, param = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light_profile)
-        return model, param
+        image_model, source_model, _, param = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light_profile)
+        n_pixels_source = source_model.size
+        return image_model, param, n_pixels_source
 
     @property
     def data_response(self):
@@ -224,7 +228,7 @@ class ImageSparseFit(ImageModel):
     #     # TODO : adapt to 'synthesis' formulation
     #     return self.num_data_evaluate
 
-    def update_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light):
+    def update_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, n_pixels_source=None):
         """
 
         links linear parameters to kwargs arguments
@@ -232,6 +236,10 @@ class ImageSparseFit(ImageModel):
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
+        # update general parameters
+        if n_pixels_source is not None:
+            kwargs_source[0]['n_pixels'] = n_pixels_source
+        # update amplitudes (wavelets coefficients)
         i = 0
         kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
         kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)

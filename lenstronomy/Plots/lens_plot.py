@@ -63,7 +63,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
 
 
 def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0,
-                differential_scale=0.001, smoothing_scale=None, **kwargs):
+                differential_scale=0.0001, smoothing_scale=None, **kwargs):
     """
 
     :param lensModel: LensModel instance
@@ -138,10 +138,10 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     _plot_frame(axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, text_string='tangential stretch')
     _plot_frame(axes[0, 2], orientation_angle2d, vmin=-np.pi / 10, vmax=np.pi / 10, text_string='orientation angle')
     _plot_frame(axes[0, 3], util.array2image(lambda_tan * lambda_rad), vmin=-20, vmax=20, text_string='magnification')
-    _plot_frame(axes[1, 0], dlambda_rad_drad2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_drad')
-    _plot_frame(axes[1, 1], dlambda_tan_dtan2d, vmin=-20, vmax=20, text_string='dlambda_tan_dtan')
-    _plot_frame(axes[1, 2], dlambda_tan_drad2d, vmin=-20, vmax=20, text_string='dlambda_tan_drad')
-    _plot_frame(axes[1, 3], dlambda_rad_dtan2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_dtan')
+    _plot_frame(axes[1, 0], dlambda_rad_drad2d/lambda_rad2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_drad')
+    _plot_frame(axes[1, 1], dlambda_tan_dtan2d/lambda_tan2d, vmin=-20, vmax=20, text_string='dlambda_tan_dtan')
+    _plot_frame(axes[1, 2], dlambda_tan_drad2d/lambda_tan2d, vmin=-20, vmax=20, text_string='dlambda_tan_drad')
+    _plot_frame(axes[1, 3], dlambda_rad_dtan2d/lambda_rad2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_dtan')
 
     _plot_frame(axes[2, 0], dphi_rad_drad2d, vmin=-.1, vmax=.1, text_string='dphi_rad_drad')
     _plot_frame(axes[2, 1], dphi_tan_dtan2d, vmin=0, vmax=20, text_string='dphi_tan_dtan: curvature radius')

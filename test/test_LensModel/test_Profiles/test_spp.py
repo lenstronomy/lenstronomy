@@ -55,25 +55,21 @@ class TestSPEP(object):
         E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
-        assert f_x_spep[0] == f_x_spp[0]
-        assert f_y_spep[0] == f_y_spp[0]
+        npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
+        npt.assert_almost_equal(f_y_spep, f_y_spp, decimal=9)
         x = np.array([0])
         y = np.array([0])
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
-        assert f_x_spep[0] == f_x_spp[0]
-        assert f_y_spep[0] == f_y_spp[0]
+        npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
+        npt.assert_almost_equal(f_y_spep, f_y_spp, decimal=9)
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         f_x_spep, f_y_spep = self.SPEP.derivatives(x, y, E, gamma, e1, e2)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, E, gamma)
-        assert f_x_spep[0] == f_x_spp[0]
-        assert f_y_spep[0] == f_y_spp[0]
-        assert f_x_spep[1] == f_x_spp[1]
-        assert f_y_spep[1] == f_y_spp[1]
-        assert f_x_spep[2] == f_x_spp[2]
-        assert f_y_spep[2] == f_y_spp[2]
+        npt.assert_almost_equal(f_x_spep, f_x_spp, decimal=9)
+        npt.assert_almost_equal(f_y_spep, f_y_spp, decimal=9)
 
     def test_hessian(self):
         x = np.array([1])

@@ -5,7 +5,7 @@ __author__ = 'aymgal'
 import numpy as np
 from scipy import signal
 import matplotlib.pyplot as plt
-import matplotlib.colors as colors
+from matplotlib.colors import LogNorm
 
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
@@ -17,10 +17,11 @@ from lenstronomy.ImSim.SparseOptim import proximals
 
 class SparseSolver(object):
 
+    """Implements an improved version of the original SLIT algorithm (https://github.com/herjy/SLIT)"""
 
     def __init__(self, data_class, source_profile_class, psf_class=None, lens_light_profile_class=None, likelihood_mask=None, 
                  k_max=5, n_iter=50, n_weights=1, sparsity_prior_norm=1, force_positivity=True, 
-                 formulation='analysis', convolution_type='fft_static', verbose=False, show_steps=False):
+                 formulation='analysis', verbose=False, show_steps=False):
 
         self._image_data = data_class.data
 
@@ -40,8 +41,8 @@ class SparseSolver(object):
 
         if psf_class is not None:
             self._psf_kernel = psf_class.kernel_point_source
-            self.convolution   = PixelKernelConvolution(self._psf_kernel, convolution_type=convolution_type)
-            self.convolution_T = PixelKernelConvolution(self._psf_kernel.T, convolution_type=convolution_type)
+            self.convolution   = PixelKernelConvolution(self._psf_kernel, convolution_type='fft_static')
+            self.convolution_T = PixelKernelConvolution(self._psf_kernel.T, convolution_type='fft_static')
         else:
             self._psf_kernel = None
             self.convolution, self.convolution_T = None, None
@@ -91,7 +92,7 @@ class SparseSolver(object):
         # initial guess as background random noise
         S, alpha_S = self.generate_initial_guess(guess_type='bkg_noise')
         if self._show_steps:
-            self.quick_imshow(S, title="initial guess", show_now=True)
+            self.quick_imshow(S, title="initial guess", cmap='gist_stern', show_now=True)
 
         # initialise weights
         weights = 1.
@@ -221,7 +222,7 @@ class SparseSolver(object):
             vmax = min(src_model.max(), 1e10)
             src_model[src_model <= 0.] = 1e-10
             im = ax.imshow(src_model, origin='lower', cmap=model_cmap, 
-                           norm=colors.LogNorm(vmin=vmin, vmax=vmax))
+                           norm=LogNorm(vmin=vmin, vmax=vmax))
         else:
             im = ax.imshow(src_model, origin='lower', cmap=model_cmap)
         # ax.imshow(self._lensingOperator.sourcePlane.reduction_mask, origin='lower', cmap='gray', alpha=0.1)
@@ -235,7 +236,7 @@ class SparseSolver(object):
             vmax = min(img_model.max(), 1e10)
             img_model[img_model <= 0.] = 1e-10
             im = ax.imshow(img_model, origin='lower', cmap=model_cmap,
-                           norm=colors.LogNorm(vmin=vmin, vmax=vmax))
+                           norm=LogNorm(vmin=vmin, vmax=vmax))
         else:
             im = ax.imshow(img_model, origin='lower', cmap=model_cmap)
         plot_util.nice_colorbar(im)

@@ -6,7 +6,7 @@ from scipy.ndimage import morphology
 from lenstronomy.Util import util
 
 
-class BasePlaneGrid(object):
+class AbstractPlaneGrid(object):
 
     """Base class for image and source plane grids"""
 
@@ -50,7 +50,7 @@ class BasePlaneGrid(object):
         return np.ones(self.grid_shape)
 
 
-class ImagePlaneGrid(BasePlaneGrid):
+class ImagePlaneGrid(AbstractPlaneGrid):
 
     """Class that defines the grid on which lens galaxy is projected"""
 
@@ -62,7 +62,7 @@ class ImagePlaneGrid(BasePlaneGrid):
         self._y_grid_1d = util.image2array(y_grid)
 
 
-class SourcePlaneGrid(BasePlaneGrid):
+class SourcePlaneGrid(AbstractPlaneGrid):
 
     """Class that defines the grid on which source galaxy is projected"""
 
@@ -110,22 +110,11 @@ class SourcePlaneGrid(BasePlaneGrid):
             return
         if min_num_pix is None:
             # kind of arbitrary as a default
-            min_num_pix = int(self.num_pix / 4)
-        reduc_mask, reduced_num_pix = self._reduce_plane_iterative(self.effective_mask, min_num_pix=min_num_pix)
-        self._reduc_mask_1d = util.image2array(reduc_mask).astype(bool)
-        # backup the original 'large' grid
-        self._num_pix_large = self._num_pix
-        self._x_grid_1d_large = np.copy(self._x_grid_1d)
-        self._y_grid_1d_large = np.copy(self._y_grid_1d)
-        self._effective_mask_large = np.copy(self.effective_mask)
-        # update coordinates array
-        self._num_pix = reduced_num_pix
-        self._x_grid_1d = self._x_grid_1d[self._reduc_mask_1d]
-        self._y_grid_1d = self._y_grid_1d[self._reduc_mask_1d]
-        # don't know why, but can apply reduc_mask_1d only on 1D arrays
-        effective_mask_1d = util.image2array(self._effective_mask)
-        self._effective_mask = util.array2image(effective_mask_1d[self._reduc_mask_1d])
-        print("Source grid has been reduced from {} to {} side pixels".format(self._num_pix_large, self._num_pix))
+            min_num_pix = int(self.num_pix / 10)
+        reduc_mask, reduced_num_pix = self.reduce_plane_iterative(self.effective_mask, 
+                                                                  min_num_pix=min_num_pix)
+        self._update_grid_after_shrink(reduc_mask, reduced_num_pix)
+        print("INFO : source grid has been reduced from {} to {} side pixels".format(self._num_pix_large, self._num_pix))
 
     def project_on_original_grid(self, image):
         array_large = np.zeros(self._num_pix_large**2)
@@ -153,8 +142,25 @@ class SourcePlaneGrid(BasePlaneGrid):
         image[:, -strength:] = 0
         return image
 
-    def _reduce_plane_iterative(self, effective_mask, min_num_pix=10):
-        num_pix = len(effective_mask)  # start at original size
+    def _update_grid_after_shrink(self, reduc_mask, reduced_num_pix):
+        self._reduc_mask_1d = util.image2array(reduc_mask).astype(bool)
+        # backup the original 'large' grid
+        self._num_pix_large = self._num_pix
+        self._x_grid_1d_large = np.copy(self._x_grid_1d)
+        self._y_grid_1d_large = np.copy(self._y_grid_1d)
+        self._effective_mask_large = np.copy(self.effective_mask)
+        # update coordinates array
+        self._num_pix = reduced_num_pix
+        self._x_grid_1d = self._x_grid_1d[self._reduc_mask_1d]
+        self._y_grid_1d = self._y_grid_1d[self._reduc_mask_1d]
+        # don't know why, but can apply reduc_mask_1d only on 1D arrays
+        effective_mask_1d = util.image2array(self._effective_mask)
+        self._effective_mask = util.array2image(effective_mask_1d[self._reduc_mask_1d])
+
+    @staticmethod
+    def reduce_plane_iterative(effective_mask, min_num_pix=10):
+        num_pix_origin = len(effective_mask)
+        num_pix = num_pix_origin  # start at original size
         min_num_pix = 10  # minimal allowed number of pixels in source plane
         n_rm = 1
         test_mask = np.zeros((num_pix, num_pix))
@@ -164,7 +170,7 @@ class SourcePlaneGrid(BasePlaneGrid):
             # fill with ones to create a centered square with size reduced by 2*n_rm
             test_mask_next[n_rm:-n_rm, n_rm:-n_rm] = 1
             # update number side length of the non-zero
-            num_pix_next = self.num_pix - 2 * n_rm
+            num_pix_next = num_pix_origin - 2 * n_rm
             # test if all ones in test_mask are also ones in target mask
             intersection_mask = np.zeros_like(test_mask_next)
             intersection_mask[(test_mask_next == 1) & (effective_mask == 1)] = 1

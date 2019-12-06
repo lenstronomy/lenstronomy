@@ -2,10 +2,12 @@ import numpy as np
 
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
-from lenstronomy.ImSim.SparseOptim.sparse_solver import SparseSolver
-from lenstronomy.ImSim.SparseOptim.lensing_operator import LensingOperator
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
+
+from slitronomy.SparseOptim.sparse_solver import SparseSolver
+from slitronomy.Lensing.lensing_operator import LensingOperator
+
 
 class ImageSparseFit(ImageModel):
     """
@@ -15,7 +17,8 @@ class ImageSparseFit(ImageModel):
 
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
-                 psf_error_map_bool_list=None, subgrid_res_source=1, minimal_source_plane=False, kwargs_sparse_solver={}):
+                 psf_error_map_bool_list=None, subgrid_res_source=1, minimal_source_plane=False, min_num_pix_source=10,
+                 kwargs_sparse_solver={}):
         """
 
         :param data_class: ImageData() instance
@@ -50,13 +53,14 @@ class ImageSparseFit(ImageModel):
             lens_light_profile = self.LensLightModel.func_list[0]
         else:
             lens_light_profile = None
-        self.sparseSolver = SparseSolver(data_class, source_profile, psf_class=psf_class,
-                                         lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
-                                         **kwargs_sparse_solver)
+
         self._subgrid_res_source = subgrid_res_source
         self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
                                                likelihood_mask=self.likelihood_mask, minimal_source_plane=minimal_source_plane,
-                                               matrix_prod=True)
+                                               min_num_pix_source=min_num_pix_source, matrix_prod=True)
+        self.sparseSolver = SparseSolver(data_class, source_profile, psf_class=psf_class,
+                                         lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
+                                         **kwargs_sparse_solver)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
                                   unconvolved=False, de_lensed=False, k=None, re_sized=True, original_grid=True):
@@ -130,7 +134,9 @@ class ImageSparseFit(ImageModel):
             kwargs_lens_light_profile = None
         else:
             kwargs_lens_light_profile = kwargs_lens_light[0]
-        self.lensingOperator.update_mapping(kwargs_lens)  # update the source <-> image plane mapping
+        # update the source <-> image plane mapping
+        self.lensingOperator.update_mapping(kwargs_lens)
+        # solve using sparsity as a prior for surface brightness distributions
         image_model, source_model, _, param = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light_profile)
         n_pixels_source = source_model.size
         return image_model, param, n_pixels_source
@@ -236,13 +242,13 @@ class ImageSparseFit(ImageModel):
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
-        # update general parameters
-        if n_pixels_source is not None:
-            kwargs_source[0]['n_pixels'] = n_pixels_source
         # update amplitudes (wavelets coefficients)
         i = 0
         kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
         kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
+        # update other parameters if required
+        if n_pixels_source is not None:
+            kwargs_source[0]['n_pixels'] = n_pixels_source
         return kwargs_source, kwargs_lens_light
 
     def reduced_residuals(self, model, error_map=0):

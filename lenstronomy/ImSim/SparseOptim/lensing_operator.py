@@ -6,7 +6,7 @@ __author__ = 'aymgal'
 import numpy as np
 from scipy import sparse
 
-from lenstronomy.ImSim.SparseOptim.planes import ImagePlaneGrid, SourcePlaneGrid
+from lenstronomy.ImSim.SparseOptim.lensing_planes import ImagePlaneGrid, SourcePlaneGrid
 from lenstronomy.Util import util
 
 
@@ -16,13 +16,15 @@ class LensingOperator(object):
     """TODO"""
 
     def __init__(self, data_class, lens_model_class, subgrid_res_source=1, 
-                 likelihood_mask=None, minimal_source_plane=True, matrix_prod=True):
+                 likelihood_mask=None, minimal_source_plane=True, min_num_pix_source=10,
+                 matrix_prod=True):
         self.lensModel = lens_model_class
         self.imagePlane  = ImagePlaneGrid(data_class)
         self.sourcePlane = SourcePlaneGrid(data_class, subgrid_res=subgrid_res_source)
         self._subgrid_res_source = subgrid_res_source
         self._likelihood_mask = likelihood_mask
         self._minimal_source_plane = minimal_source_plane
+        self._min_num_pix_source = min_num_pix_source
         self._matrix_prod = matrix_prod
 
     def source2image(self, source_1d, kwargs_lens=None, update=False):
@@ -93,7 +95,7 @@ class LensingOperator(object):
         if self._minimal_source_plane:
             # for source plane to be reduced to minimal size
             # we compute effective source mask and shrink the grid to match it
-            self._shrink_source_plane()
+            self._shrink_source_plane(self._min_num_pix_source)
             # recompute the mapping with updated grid
             self._compute_mapping(kwargs_lens)
 
@@ -165,5 +167,5 @@ class LensingOperator(object):
         # set the image to source plane for filling holes due to lensing
         self.sourcePlane.set_delensed_masks(unit_mapped, mask=mask_mapped)
 
-    def _shrink_source_plane(self):
-        self.sourcePlane.shrink_grid_to_mask()
+    def _shrink_source_plane(self, min_num_pix):
+        self.sourcePlane.shrink_grid_to_mask(min_num_pix=min_num_pix)

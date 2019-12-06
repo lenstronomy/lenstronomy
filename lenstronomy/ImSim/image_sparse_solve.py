@@ -5,7 +5,7 @@ from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 
-from slitronomy.SparseOptim.sparse_solver import SparseSolver
+from slitronomy.Optimization.sparse_solver import SparseSolver
 from slitronomy.Lensing.lensing_operator import LensingOperator
 
 

@@ -539,19 +539,3 @@ def spectral_norm(num_pix, operator, inverse_operator, num_iter=20, tol=1e-10):
         norm = norm_new
         i += 1
     return norm
-
-
-def soft_threshold(array, level):
-    if len(array.shape) > 2:
-        ValueError("Soft thresholding only supported for 1D or 2D arrays")
-    array_th = np.sign(array) * np.maximum(np.abs(array) - level, 0.)
-    return array_th
-
-
-def hard_threshold(array, level):
-    if len(array.shape) > 2:
-        ValueError("Hard thresholding only supported for 1D or 2D arrays")
-    array_th = array.copy()
-    array_th[np.abs(array) < level] = 0.
-    return array_th
-

@@ -76,12 +76,12 @@ class MultiPlaneBase(ProfileListBase):
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
         :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
-        the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
-        This can lead to duplications in the computation of deflection angles.
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
+         This can lead to duplications in the computation of deflection angles.
         :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
-        If not set, will compute the distance each time this function gets executed.
+         If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
-        If not set, will compute the distance each time this function gets executed.
+         If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
         x = np.array(x, dtype=float)
@@ -215,15 +215,18 @@ class MultiPlaneBase(ProfileListBase):
 
         return pos_x, pos_y, redshifts, Tz_list
 
-    def arrival_time(self, theta_x, theta_y, kwargs_lens, z_stop, T_z_stop=None, T_ij_end=None):
+    def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, z_stop, T_z_stop=None, T_ij_end=None):
         """
-        light travel time relative to a straight path through the coordinate (0,0)
+        geometric and Shapiro (gravitational) light travel time relative to a straight path through the coordinate (0,0)
         Negative sign means earlier arrival time
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
-        :param kwargs_lens:
-        :return: travel time in unit of days
+        :param kwargs_lens: lens model keyword argument list
+        :param z_stop: redshift of the source to stop the backwards ray-tracing
+        :param T_z_stop: optional, Transversal angular distance from z=0 to z_stop
+        :param T_ij_end: optional, transversal angular distance between the last lensing plane and the source plane
+        :return: dt_geo, dt_shapiro, [days]
         """
         dt_grav = np.zeros_like(theta_x)
         dt_geo = np.zeros_like(theta_x)
@@ -242,7 +245,7 @@ class MultiPlaneBase(ProfileListBase):
                     pass
                 elif T_ij > 0:
                     T_j = self._T_z_list[i]
-                    T_i = self._T_z_list[i-1]
+                    T_i = self._T_z_list[i - 1]
                     beta_i_x, beta_i_y = x / T_i, y / T_i
                     beta_j_x, beta_j_y = x_new / T_j, y_new / T_j
                     dt_geo_new = self._geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij)
@@ -265,7 +268,7 @@ class MultiPlaneBase(ProfileListBase):
         beta_j_x, beta_j_y = x_new / T_j, y_new / T_j
         dt_geo_new = self._geometrical_delay(beta_i_x, beta_i_y, beta_j_x, beta_j_y, T_i, T_j, T_ij)
         dt_geo += dt_geo_new
-        return dt_grav + dt_geo
+        return dt_geo, dt_grav
 
     @staticmethod
     def _index_ordering(redshift_list):

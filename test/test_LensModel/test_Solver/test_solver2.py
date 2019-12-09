@@ -180,14 +180,14 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': 0.03, 'e2': 0.0}]
+                       {'gamma1': 0.03, 'gamma2': 0.0}]
         x_pos, y_pos = image_position.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2, min_distance=deltapix, search_window=numPix*deltapix, precision_limit=10**(-15))
         print(len(x_pos), 'number of images')
         x_pos = x_pos[:2]
         y_pos = y_pos[:2]
 
         kwargs_init = [{'theta_E': 1.9, 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': 0., 'e2': 0.03}]
+                       {'gamma1': 0., 'gamma2': 0.03}]
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, 'output')
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
@@ -196,8 +196,8 @@ class TestSolver(object):
         npt.assert_almost_equal(y_pos_new[0], y_pos[0], decimal=3)
 
         npt.assert_almost_equal(kwargs_out[0]['theta_E'], kwargs_lens[0]['theta_E'], decimal=3)
-        npt.assert_almost_equal(kwargs_out[1]['e1'], kwargs_lens[1]['e1'], decimal=2)
-        npt.assert_almost_equal(kwargs_out[1]['e2'], kwargs_lens[1]['e2'], decimal=2)
+        npt.assert_almost_equal(kwargs_out[1]['gamma1'], kwargs_lens[1]['gamma1'], decimal=2)
+        npt.assert_almost_equal(kwargs_out[1]['gamma2'], kwargs_lens[1]['gamma2'], decimal=2)
 
     def test_theta_E_ellipse(self):
         lensModel = LensModel(['SPEP', 'SHEAR'])
@@ -210,7 +210,7 @@ class TestSolver(object):
         numPix = 100
         gamma = 1.9
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': 0.1, 'e2': -0.03, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': 0.03, 'e2': 0.0}]
+                       {'gamma1': 0.03, 'gamma2': 0.0}]
         x_pos, y_pos = image_position.findBrightImage(sourcePos_x, sourcePos_y, kwargs_lens, numImages=2,
                                                       min_distance=deltapix, search_window=numPix * deltapix,
                                                       precision_limit=10 ** (-15))
@@ -219,7 +219,7 @@ class TestSolver(object):
         y_pos = y_pos[:2]
 
         kwargs_init = [{'theta_E': 1.9, 'gamma': gamma, 'e1': -0.03, 'e2': 0.1, 'center_x': 0.1, 'center_y': -0.1},
-                       {'e1': 0.03, 'e2': 0.0}]
+                       {'gamma1': 0.03, 'gamma2': 0.0}]
         kwargs_out, precision = solver.constraint_lensmodel(x_pos, y_pos, kwargs_init)
         print(kwargs_out, 'output')
         source_x, source_y = lensModel.ray_shooting(x_pos[0], y_pos[0], kwargs_out)
@@ -234,10 +234,11 @@ class TestSolver(object):
 
     def test_add_fixed_lens(self):
         lensModel = LensModel(lens_model_list=['SPEP', 'SHEAR'])
-        kwargs_lens_init = [{'theta_E': 1, 'e2': 0}, {'e2': 0}]
+        kwargs_lens_init = [{'theta_E': 1, 'e2': 0}, {'gamma2': 0}]
         solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_PHI', decoupling=True)
         kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)
-        assert kwargs_fixed_added[1]['e2'] == 0
+        print(kwargs_fixed_added)
+        assert kwargs_fixed_added[1]['gamma2'] == 0
 
         solver = Solver2Point(lensModel=lensModel, solver_type='THETA_E_ELLIPSE', decoupling=True)
         kwargs_fixed_added = solver.add_fixed_lens(kwargs_fixed_lens_list=[{}, {}], kwargs_lens_init=kwargs_lens_init)

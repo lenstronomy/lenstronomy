@@ -231,8 +231,3 @@ class SPP(LensProfileBase):
         :return: bounded power-law slopte
         """
         return gamma
-        #if gamma < 1.5:
-        #    gamma = 1.5
-        #if gamma > 2.9:
-        #    gamma = 2.9
-        #return gamma

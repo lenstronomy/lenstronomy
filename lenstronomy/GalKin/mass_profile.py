@@ -40,6 +40,7 @@ class MassProfile(object):
 
     def mass_3d(self, r, kwargs):
         """
+        mass enclosed a 3d radius
 
         :param r: in arc seconds
         :param kwargs: lens model parameters in arc seconds
@@ -49,4 +50,3 @@ class MassProfile(object):
         mass_dim = mass_dimless * const.arcsec ** 2 * self.cosmo.D_d * self.cosmo.D_s \
                        / self.cosmo.D_ds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
         return mass_dim
-    # * const.arcsec * self.cosmo.D_d

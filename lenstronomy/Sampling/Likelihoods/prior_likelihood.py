@@ -177,4 +177,3 @@ class PriorLikelihood(object):
             dist = (np.log(model_value) - value) ** 2 / sigma ** 2 / 2 + model_value
             logL -= np.sum(dist)
         return logL
-

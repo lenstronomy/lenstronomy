@@ -4,6 +4,7 @@ from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from astropy.cosmology import default_cosmology
+from lenstronomy.Util import constants as const
 
 
 class LensModel(object):
@@ -71,9 +72,11 @@ class LensModel(object):
         """
         return self.lens_model.ray_shooting(x, y, kwargs, k=k)
 
-    def fermat_potential(self, x_image, y_image, x_source, y_source, kwargs_lens):
+    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
         """
         fermat potential (negative sign means earlier arrival time)
+        for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
+        subtracted off the time-delay distance for the given cosmology). The units are given in arcsecond square.
 
         :param x_image: image position
         :param y_image: image position
@@ -83,26 +86,32 @@ class LensModel(object):
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
         if hasattr(self.lens_model, 'fermat_potential'):
-            return self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
+            return self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source, y_source)
+        elif hasattr(self.lens_model, 'arrival_time') and hasattr(self, '_lensCosmo'):
+            dt = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+            fermat_pot_eff = dt * const.c / self._lensCosmo.D_dt / const.Mpc * const.day_s / const.arcsec ** 2
+            return fermat_pot_eff
         else:
-            raise ValueError("Fermat potential is not defined in multi-plane lensing. Please use single plane lens models.")
+            raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs_lens):
+    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
         """
 
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
+        :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
+         observables in position and relative fluxes but rescales the time delays
         :return: arrival time of image positions in units of days
         """
-        try:
+        if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
-        except:
-            x_source, y_source = self.lens_model.ray_shooting(x_image, y_image, kwargs_lens)
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, x_source, y_source, kwargs_lens)
+        else:
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)
+        arrival_time *= (1 - kappa_ext)
         return arrival_time
 
     def potential(self, x, y, kwargs, k=None):

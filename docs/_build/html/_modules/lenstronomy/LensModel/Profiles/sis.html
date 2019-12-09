@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.sis &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.sis &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,6 +42,7 @@
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">special</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
 
 
@@ -95,7 +96,121 @@
         <span class="n">f_xx</span> <span class="o">=</span> <span class="n">y_shift</span><span class="o">*</span><span class="n">y_shift</span> <span class="o">*</span> <span class="n">prefac</span>
         <span class="n">f_yy</span> <span class="o">=</span> <span class="n">x_shift</span><span class="o">*</span><span class="n">x_shift</span> <span class="o">*</span> <span class="n">prefac</span>
         <span class="n">f_xy</span> <span class="o">=</span> <span class="o">-</span><span class="n">x_shift</span><span class="o">*</span><span class="n">y_shift</span> <span class="o">*</span> <span class="n">prefac</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div></div>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
+
+<div class="viewcode-block" id="SIS.rho2theta"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.rho2theta">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">rho2theta</span><span class="p">(</span><span class="n">rho0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        converts 3d density into 2d projected density parameter</span>
+<span class="sd">        :param rho0:</span>
+<span class="sd">        :param gamma:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theta_E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span>
+        <span class="k">return</span> <span class="n">theta_E</span></div>
+
+<div class="viewcode-block" id="SIS.theta2rho"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.theta2rho">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">theta2rho</span><span class="p">(</span><span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        converts projected density parameter (in units of deflection) into 3d density parameter</span>
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fac1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="n">fac1</span>
+        <span class="k">return</span> <span class="n">rho0</span></div>
+
+<div class="viewcode-block" id="SIS.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.mass_3d">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r</span>
+<span class="sd">        :param r: radius in angular units</span>
+<span class="sd">        :param rho0: density at angle=1</span>
+<span class="sd">        :return: mass in angular units</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mass_3d</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="n">mass_3d</span></div>
+
+<div class="viewcode-block" id="SIS.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units</span>
+
+<span class="sd">        :param r: radius in angular units</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :return: mass in angular units</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2rho</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SIS.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed projected 2d sphere of radius r</span>
+<span class="sd">        :param r:</span>
+<span class="sd">        :param rho0:</span>
+<span class="sd">        :param a:</span>
+<span class="sd">        :param s:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span>
+        <span class="n">mass_2d</span> <span class="o">=</span> <span class="n">alpha</span><span class="o">*</span><span class="n">r</span>
+        <span class="k">return</span> <span class="n">mass_2d</span></div>
+
+<div class="viewcode-block" id="SIS.mass_2d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.mass_2d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r:</span>
+<span class="sd">        :param theta_E:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2rho</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SIS.grav_pot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.grav_pot">[docs]</a>    <span class="k">def</span> <span class="nf">grav_pot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gravitational potential (modulo 4 pi G and rho0 in appropriate units)</span>
+<span class="sd">        :param x:</span>
+<span class="sd">        :param y:</span>
+<span class="sd">        :param rho0:</span>
+<span class="sd">        :param a:</span>
+<span class="sd">        :param s:</span>
+<span class="sd">        :param center_x:</span>
+<span class="sd">        :param center_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">mass_3d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">)</span>
+        <span class="n">pot</span> <span class="o">=</span> <span class="n">mass_3d</span><span class="o">/</span><span class="n">r</span>
+        <span class="k">return</span> <span class="n">pot</span></div>
+
+<div class="viewcode-block" id="SIS.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.density">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density</span>
+<span class="sd">        :param r: radius in angles</span>
+<span class="sd">        :param rho0: density at angle=1</span>
+<span class="sd">        :return: density at r</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">rho</span></div>
+
+<div class="viewcode-block" id="SIS.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sis.SIS.density_2d">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        projected density</span>
+<span class="sd">        :param x:</span>
+<span class="sd">        :param y:</span>
+<span class="sd">        :param rho0:</span>
+<span class="sd">        :param center_x:</span>
+<span class="sd">        :param center_y:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">/</span> <span class="n">r</span>
+        <span class="k">return</span> <span class="n">sigma</span></div></div>
 </pre></div>
 
           </div>
@@ -128,7 +243,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

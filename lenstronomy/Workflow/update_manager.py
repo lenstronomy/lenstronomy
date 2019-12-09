@@ -55,6 +55,8 @@ class UpdateManager(object):
 
         self._kwargs_temp = self.init_kwargs
 
+    #TODO check compatibility with number of point sources provided as well as other parameter labelings
+
     @property
     def init_kwargs(self):
         return {'kwargs_lens': self._lens_init, 'kwargs_source': self._source_init,

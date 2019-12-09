@@ -60,7 +60,7 @@ class SersicEllipseKappa(LensProfileBase):
 
     def derivatives(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y = 0):
 
-        phi_G, gam = param_util.ellipticity2phi_gamma(e1, e2)
+        phi_G, gam = param_util.shear_cartesian2polar(e1, e2)
         q = max(1-gam, 0.00001)
 
         x, y = self._coord_rotate(x, y, phi_G, center_x, center_y)

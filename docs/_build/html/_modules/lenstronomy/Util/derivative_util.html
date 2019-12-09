@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.derivative_util &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Util.derivative_util &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -57,6 +57,7 @@
 
 <div class="viewcode-block" id="d_r_dy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_r_dy">[docs]</a><span class="k">def</span> <span class="nf">d_r_dy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    differential dr/dy</span>
 
 <span class="sd">    :param x:</span>
 <span class="sd">    :param y:</span>
@@ -65,9 +66,96 @@
     <span class="k">return</span> <span class="n">y</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="d_r_dxx"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_r_dxx">[docs]</a><span class="k">def</span> <span class="nf">d_r_dxx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative dr/dxdx</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="d_r_dyy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_r_dyy">[docs]</a><span class="k">def</span> <span class="nf">d_r_dyy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative dr/dxdx</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">3.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="d_r_dxy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_r_dxy">[docs]</a><span class="k">def</span> <span class="nf">d_r_dxy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative dr/dxdx</span>
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">3</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="d_phi_dx"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_phi_dx">[docs]</a><span class="k">def</span> <span class="nf">d_phi_dx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    angular derivative in respect to x when phi = arctan2(y, x)</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="d_phi_dy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_phi_dy">[docs]</a><span class="k">def</span> <span class="nf">d_phi_dy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    angular derivative in respect to y when phi = arctan2(y, x)</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="d_phi_dxx"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_phi_dxx">[docs]</a><span class="k">def</span> <span class="nf">d_phi_dxx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative of the orientation angle</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="d_phi_dyy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_phi_dyy">[docs]</a><span class="k">def</span> <span class="nf">d_phi_dyy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative of the orientation angle in dydy</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="d_phi_dxy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_phi_dxy">[docs]</a><span class="k">def</span> <span class="nf">d_phi_dxy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    second derivative of the orientation angle in dxdy</span>
+
+<span class="sd">    :param x:</span>
+<span class="sd">    :param y:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
 <div class="viewcode-block" id="d_x_diffr_dx"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_x_diffr_dx">[docs]</a><span class="k">def</span> <span class="nf">d_x_diffr_dx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    derivative of d(x/r)/dx</span>
+<span class="sd">    equivalent to second order derivatives dr_dxx</span>
+
 <span class="sd">    :param x:</span>
 <span class="sd">    :param y:</span>
 <span class="sd">    :return:</span>
@@ -78,6 +166,8 @@
 <div class="viewcode-block" id="d_y_diffr_dy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_y_diffr_dy">[docs]</a><span class="k">def</span> <span class="nf">d_y_diffr_dy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    derivative of d(y/r)/dy</span>
+<span class="sd">    equivalent to second order derivatives dr_dyy</span>
+
 <span class="sd">    :param x:</span>
 <span class="sd">    :param y:</span>
 <span class="sd">    :return:</span>
@@ -88,6 +178,8 @@
 <div class="viewcode-block" id="d_y_diffr_dx"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_y_diffr_dx">[docs]</a><span class="k">def</span> <span class="nf">d_y_diffr_dx</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    derivative of d(y/r)/dx</span>
+<span class="sd">    equivalent to second order derivatives dr_dxy</span>
+
 <span class="sd">    :param x:</span>
 <span class="sd">    :param y:</span>
 <span class="sd">    :return:</span>
@@ -98,6 +190,8 @@
 <div class="viewcode-block" id="d_x_diffr_dy"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.derivative_util.d_x_diffr_dy">[docs]</a><span class="k">def</span> <span class="nf">d_x_diffr_dy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    derivative of d(x/r)/dy</span>
+<span class="sd">    equivalent to second order derivatives dr_dyx</span>
+
 <span class="sd">    :param x:</span>
 <span class="sd">    :param y:</span>
 <span class="sd">    :return:</span>
@@ -135,7 +229,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -112,6 +112,54 @@ class TestNumerics(object):
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
         npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
 
+    def test_sis(self):
+        from lenstronomy.LensModel.Profiles.sis import SIS as Model
+        kwargs = {'rho0': 1.}
+        self.assert_integrals(Model, kwargs)
+
+    def test_sis_density_deflection(self):
+        """
+        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
+        :return:
+        """
+
+        from lenstronomy.LensModel.Profiles.sis import SIS as Model
+        lensModel = Model()
+        theta_E = 1.
+        rho0 = lensModel.theta2rho(theta_E)
+        kwargs_lens = {'theta_E': theta_E}
+        kwargs_density = {'rho0': rho0}
+        r = .5
+        mass_2d = lensModel.mass_2d(r, **kwargs_density)
+        alpha_mass = mass_2d/r
+        alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
+        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        lensModel.density_2d(1, 1, rho0=1)
+        #assert 1 == 0
+
+    def test_sie(self):
+        from lenstronomy.LensModel.Profiles.sie import SIE as Model
+        kwargs = {'rho0': 1., 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
+    def test_sie_density_deflection(self):
+        """
+        tests whether the unit conversion between the lensing parameter 'sigma0' and the units in the density profile are ok
+        :return:
+        """
+
+        from lenstronomy.LensModel.Profiles.sie import SIE as Model
+        lensModel = Model()
+        theta_E = 1.
+        rho0 = lensModel.theta2rho(theta_E)
+        kwargs_lens = {'theta_E': theta_E, 'e1': 0, 'e2': 0}
+        kwargs_density = {'rho0': rho0, 'e1': 0, 'e2': 0}
+        r = .5
+        mass_2d = lensModel.mass_2d(r, **kwargs_density)
+        alpha_mass = mass_2d/r
+        alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
+        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+
     def test_spp(self):
         from lenstronomy.LensModel.Profiles.spp import SPP as Model
         kwargs = {'rho0': 10., 'gamma': 2.2}
@@ -197,6 +245,7 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     """
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

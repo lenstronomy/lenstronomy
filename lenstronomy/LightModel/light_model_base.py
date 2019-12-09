@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 #this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
+from lenstronomy.Util.util import convert_bool_list
 
 
 class LightModelBase(object):
@@ -92,6 +93,7 @@ class LightModelBase(object):
                 self.func_list.append(Starlets(fast_inverse=True, second_gen=False))
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
+        self._num_func = len(self.func_list)
 
     def surface_brightness(self, x, y, kwargs_list, k=None):
         """
@@ -103,14 +105,16 @@ class LightModelBase(object):
         y = np.array(y, dtype=float)
         if 'STARLETS' in self.profile_type_list:
             pixelated_light = True
+            # flux not initialised here because shape depends on profile parameters
         else:
             pixelated_light = False
             flux = np.zeros_like(x)
+        bool_list = self._bool_list(k=k)
         for i, func in enumerate(self.func_list):
-            if k is None or k == i:
+            if bool_list[i] is True:
                 if pixelated_light:
-                    out = np.array(func.function(**kwargs_list_standard[i]), dtype=float)
-                    flux = out  # warning, overwrites previous flux
+                    flux = np.array(func.function(**kwargs_list_standard[i]), dtype=float)
+                    # warning, this implies that superimposed pixelated light is not supported here (TODO ?)
                 else:
                     out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
                     flux += out
@@ -125,8 +129,9 @@ class LightModelBase(object):
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         r = np.array(r, dtype=float)
         flux = np.zeros_like(r)
+        bool_list = self._bool_list(k=k)
         for i, func in enumerate(self.func_list):
-            if k is None or k == i:
+            if bool_list[i] is True:
                 kwargs = {k: v for k, v in kwargs_list_standard[i].items() if not k in ['center_x', 'center_y']}
                 if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
                                                      'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
@@ -149,8 +154,9 @@ class LightModelBase(object):
         """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         norm_flux_list = []
+        bool_list = self._bool_list(k=k)
         for i, model in enumerate(self.profile_type_list):
-            if k is None or k == i:
+            if bool_list[i] is True:
                 if model in ['SERSIC', 'SERSIC_ELLIPSE', 'INTERPOL', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE',
                              'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                     kwargs_new = kwargs_list_standard[i].copy()
@@ -176,3 +182,16 @@ class LightModelBase(object):
         :return: keyword argument list as used in the individual models
         """
         return kwargs_list
+
+    def _bool_list(self, k=None):
+        """
+        returns a bool list of the length of the lens models
+        if k = None: returns bool list with True's
+        if k is int, returns bool list with False's but k'th is True
+        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
+        if k is a boolean list, checks for size to match the numbers of models and returns it
+
+        :param k: None, int, or list of ints
+        :return: bool list
+        """
+        return convert_bool_list(n=self._num_func, k=k)

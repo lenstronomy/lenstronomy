@@ -130,7 +130,7 @@ class NFW(LensProfileBase):
         :return:
         """
         Rs = float(Rs)
-        m_3d = 4. * np.pi * rho0 * Rs**3 *(np.log((Rs + R)/Rs) - R/(Rs + R))
+        m_3d = 4. * np.pi * rho0 * Rs**3 * (np.log((Rs + R)/Rs) - R/(Rs + R))
         return m_3d
 
     def mass_3d_lens(self, R, Rs, alpha_Rs):

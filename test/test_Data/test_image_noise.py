@@ -14,6 +14,10 @@ class TestData(object):
                         'noise_map': None, 'verbose': True}
         self.Noise = ImageNoise(**kwargs_noise)
 
+        kwargs_noise = {'image_data': np.zeros((self.numPix, self.numPix)), 'exposure_time': np.ones((self.numPix, self.numPix)), 'background_rms': 1,
+                        'noise_map': None, 'verbose': True}
+        noise = ImageNoise(**kwargs_noise)
+
     def test_get_covariance_matrix(self):
         d = np.array([1, 2, 3])
         sigma_b = 1

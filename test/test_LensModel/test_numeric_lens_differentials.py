@@ -116,7 +116,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_external_shear(self):
-        kwargs = {'e1': 0.1, 'e2': -0.1}
+        kwargs = {'gamma1': 0.1, 'gamma2': -0.1}
         lens_model = ['SHEAR']
         self.assert_differentials(lens_model, kwargs)
 
@@ -245,6 +245,11 @@ class TestNumericsProfile(object):
     def test_cnfw(self):
         kwargs={'Rs':2, 'alpha_Rs': 1, 'r_core':0.3}
         lens_model = ['CNFW']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_cnfw_ellipse(self):
+        kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_core': 0.1, 'e1': 0.04, 'e2': -0.04}
+        lens_model = ['CNFW_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
 
 

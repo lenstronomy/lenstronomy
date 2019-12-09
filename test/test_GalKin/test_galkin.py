@@ -49,18 +49,18 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.1  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
-        galkin = GalKinAnalytic(aperture=aperture_type, mass_profile=mass_profile, light_profile=light_profile,
-                                anisotropy_type=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_aperture, kwargs_light, kwargs_anisotropy, num=2000)
+        galkin = GalKinAnalytic(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, mass_profile=mass_profile, light_profile=light_profile,
+                                anisotropy_type=anisotropy_type, kwargs_cosmo=kwargs_cosmo)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, num=2000)
 
-        los_disp = AnalyticKinematics(**kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, R_slit=length, dR_slit=width,
-                                     rendering_number=2000)
+        los_disp = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, **kwargs_cosmo)
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, rendering_number=2000)
         npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
 
     def test_log_linear_integral(self):
@@ -89,16 +89,20 @@ class TestGalkin(object):
                            'max_integrate': 10, 'min_integrate': 0.001}
         kwargs_numerics_log = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
                            'max_integrate': 10, 'min_integrate': 0.001}
-        galkin_linear = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
-        galkin_log = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
+        kwargs_aperture = {'width': 1, 'length': 1., 'aperture_type': aperture_type}
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        galkin_linear = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
+                               kwargs_psf=kwargs_psf, anisotropy_model=anisotropy_type, kwargs_cosmo=kwargs_cosmo,
+                               **kwargs_numerics_linear)
+        galkin_log = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
+                            kwargs_psf=kwargs_psf, anisotropy_model=anisotropy_type, kwargs_cosmo=kwargs_cosmo,
+                            **kwargs_numerics_log)
         R = np.linspace(0.05, 1, 100)
         lin_I_R = np.zeros_like(R)
         log_I_R = np.zeros_like(R)
         for i in range(len(R)):
-            lin_I_R[i] = galkin_linear.I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
-            log_I_R[i] = galkin_log.I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            lin_I_R[i] = galkin_linear._I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            log_I_R[i] = galkin_log._I_R_simga2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
         print(log_I_R/lin_I_R)
         for i in range(len(R)):
             npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)
@@ -124,7 +128,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'aperture_type': aperture_type, 'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
@@ -132,12 +136,16 @@ class TestGalkin(object):
                            'max_integrate': 10}
         kwargs_numerics_linear = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': False,
                            'max_integrate': 10}
-        galkin_linear = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        galkin_linear = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
+                               kwargs_psf=kwargs_psf, anisotropy_model=anisotropy_type,
+                               kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
 
-        sigma_v = galkin_linear.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
-        galkin_log = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type,
-                        anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
-        sigma_v2 = galkin_log.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        sigma_v = galkin_linear.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
+        galkin_log = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture,
+                            kwargs_psf=kwargs_psf, anisotropy_model=anisotropy_type,
+                            kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
+        sigma_v2 = galkin_log.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         print(sigma_v, sigma_v2, 'sigma_v linear, sigma_v log')
         print((sigma_v/sigma_v2)**2)
 
@@ -168,22 +176,25 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 1.
         width = 0.3
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'aperture_type': aperture_type, 'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
 
         psf_fwhm = 1.  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
         kwargs_numerics = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
                            'max_integrate': 100}
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
+                        anisotropy_model=anisotropy_type, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         kwargs_numerics = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': False,
                            'max_integrate': 10}
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
+                        anisotropy_model=anisotropy_type, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        los_disp = AnalyticKinematics(fwhm=psf_fwhm, **kwargs_cosmo)
-        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff / 0.551, r_ani=r_ani, R_slit=length, dR_slit=width,
+        los_disp = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, **kwargs_cosmo)
+        sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff / 0.551, r_ani=r_ani,
                                      rendering_number=1000)
         print(sigma_v, sigma_v_lin, sigma_v2, 'sigma_v Galkin (log and linear), sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)
@@ -194,8 +205,8 @@ class TestGalkin(object):
         :return:
         """
         light_profile_list = ['HERNQUIST']
-        r_eff = 1.
-        kwargs_light = [{'Rs': r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        Rs = 1.
+        kwargs_light = [{'Rs': Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 2
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)
@@ -283,40 +294,45 @@ class TestGalkin(object):
         npt.assert_almost_equal(light2d/(out[0]*2), 1., decimal=3)
 
     def test_interpolated_sersic(self):
-        from lenstronomy.Analysis.lens_analysis import LensAnalysis
+        from lenstronomy.Analysis.light2mass import light2mass_interpol
         kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'amp': 1, 'center_x': 0.01, 'center_y': 0.01}]
         kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
         deltaPix = 0.1
         numPix = 100
 
-        kwargs_interp = LensAnalysis.light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
-                                                                                          deltaPix=deltaPix, subgrid_res=5)
+        kwargs_interp = light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+                                                            deltaPix=deltaPix, subgrid_res=5)
         kwargs_lens_interp = [kwargs_interp]
-        from lenstronomy.Analysis.lens_properties import LensProp
+        from lenstronomy.Analysis.kinematics_api import KinematicAPI
         z_lens = 0.5
         z_source = 1.5
         r_ani = 0.62
         kwargs_anisotropy = {'r_ani': r_ani}
         R_slit = 3.8
         dR_slit = 1.
-        kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0}
         aperture_type = 'slit'
+        kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0, 'aperture_type': aperture_type}
         psf_fwhm = 0.7
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         anisotropy_model = 'OsipkovMerritt'
         r_eff = 0.5
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
-        lensProp = LensProp(z_lens, z_source, kwargs_options)
+        kwargs_mge = {'n_comp': 20}
+        kinematic_api = KinematicAPI(z_lens, z_source, kwargs_options)
 
-        v_sigma = lensProp.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
-                                                         kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
-                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff)
+        v_sigma = kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
+                                                         kwargs_aperture, kwargs_psf, anisotropy_model,
+                                                         MGE_light=True, MGE_mass=True, r_eff=r_eff, theta_E=1,
+                                                              kwargs_mge_mass=kwargs_mge, kwargs_mge_light=kwargs_mge)
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
-        lensProp_interp = LensProp(z_lens, z_source, kwargs_options_interp)
-        v_sigma_interp = lensProp_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
-                                                         kwargs_aperture, psf_fwhm, aperture_type, anisotropy_model,
-                                                         kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff)
+        kinematic_api_interp = KinematicAPI(z_lens, z_source, kwargs_options_interp)
+        v_sigma_interp = kinematic_api_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
+                                                         kwargs_aperture, kwargs_psf, anisotropy_model, theta_E=1.,
+                                                         kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff,
+                                                                            kwargs_mge_mass=kwargs_mge,
+                                                                            kwargs_mge_light=kwargs_mge)
         npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 1)
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate

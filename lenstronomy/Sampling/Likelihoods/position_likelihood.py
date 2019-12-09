@@ -68,13 +68,13 @@ class PositionLikelihood(object):
         if self._force_no_add_image:
             bool = self.check_additional_images(kwargs_ps, kwargs_lens)
             if bool is True:
-                logL -= 10**10
+                logL -= 10.**5
                 if verbose is True:
                     print('force no additional image penalty as additional images are found!')
         if self._restrict_number_images is True:
             ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
             if len(ra_image_list[0]) > self._max_num_images:
-                logL -= 10**10
+                logL -= 10.**5
                 if verbose is True:
                     print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
         if self._source_position_likelihood is True:
@@ -106,7 +106,7 @@ class PositionLikelihood(object):
                 if verbose is True:
                     print('Image positions do not match to the same source position to the required precision. '
                           'Achieved: %s, Required: %s.' % (dist, tolerance))
-                return dist * 10**10
+                return dist * 10**5
         return 0
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
@@ -141,7 +141,7 @@ class PositionLikelihood(object):
             dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
             logL = -np.sum(dist)
             if np.isnan(logL) is True:
-                return -10 ** 15
+                return -np.inf
             return logL
         else:
             return 0
@@ -187,7 +187,7 @@ class PositionLikelihood(object):
             try:
                 Sigma_inv = inv(Sigma_beta)
             except:
-                return -10**15
+                return -np.inf
             chi2 = delta.T.dot(Sigma_inv.dot(delta))[0][0]
             logL -= chi2/2
         return logL

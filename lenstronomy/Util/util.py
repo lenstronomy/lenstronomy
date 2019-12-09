@@ -131,23 +131,6 @@ def image2array(image):
     imgh = np.reshape(image, nx*ny)  # change the shape to be 1d
     return imgh
 
-def array2cube(array, n_1, n_23):
-    """
-    """
-    n = int(np.sqrt(n_23))
-    if n**2 != n_23:
-        raise ValueError("2nd and 3rd dims (%s) are not square of integer number!" % n_23)
-    n_2, n_3 = n, n
-    cube = array.reshape(n_1, n_2, n_3)
-    return cube
-
-def cube2array(cube):
-    """
-    """
-    n_1, n_2, n_3 = cube.shape
-    array = cube.reshape(n_1 * n_2 * n_3)
-    return array
-
 
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     """
@@ -185,7 +168,7 @@ def make_grid_transformed(numPix, Mpix2Angle):
 
 def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, center_dec=0, left_lower=False, inverse=True):
     """
-    same as make_grid routine, but returns the transformaton matrix and shift between coordinates and pixel
+    same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel scale per axis
@@ -205,11 +188,11 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
     else:
         delta_x = deltapix_eff
     if left_lower is True:
-        ra_grid = matrix[:, 0]*deltapix
-        dec_grid = matrix[:, 1]*deltapix
+        ra_grid = matrix[:, 0] * delta_x
+        dec_grid = matrix[:, 1] * deltapix_eff
     else:
-        ra_grid = (matrix[:, 0] - (numPix_eff-1)/2.)*delta_x
-        dec_grid = (matrix[:, 1] - (numPix_eff-1)/2.)*deltapix_eff
+        ra_grid = (matrix[:, 0] - (numPix_eff-1)/2.) * delta_x
+        dec_grid = (matrix[:, 1] - (numPix_eff-1)/2.) * deltapix_eff
     shift = (subgrid_res-1)/(2.*subgrid_res)*deltapix
     ra_grid -= shift + center_ra
     dec_grid -= shift + center_dec
@@ -521,21 +504,40 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     return ra_coords_sub, dec_coords_sub
 
 
-def spectral_norm(num_pix, operator, inverse_operator, num_iter=20, tol=1e-10):
-    """compute spectral norm from operator and its inverse"""
-    random_array = np.random.randn(num_pix, num_pix)
-    norm = np.linalg.norm(random_array)
-    random_array /= norm
+def convert_bool_list(n, k=None):
+    """
+    returns a bool list of the length of the lens models
+    if k = None: returns bool list with True's
+    if k is int, returns bool list with False's but k'th is True
+    if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
+    if k is a boolean list, checks for size to match the numbers of models and returns it
 
-    i = 0
-    err = abs(tol)
-    while i < num_iter and err >= tol:
-        # print(i, norm)
-        coeffs = operator(random_array)
-        random_array = inverse_operator(coeffs)
-        norm_new = np.linalg.norm(random_array)
-        random_array /= norm_new
-        err = abs(norm_new - norm)/norm_new
-        norm = norm_new
-        i += 1
-    return norm
+    :param n: integer, total lenght of output boolean list
+    :param k: None, int, or list of ints
+    :return: bool list
+    """
+    if k is None:
+        bool_list = [True] * n
+    elif isinstance(k, (int, np.integer)):  # single integer
+        bool_list = [False] * n
+        bool_list[k] = True
+    elif len(k) == 0:  # empty list
+        bool_list = [False] * n
+    elif isinstance(k[0], bool):
+        if n != len(k):
+            raise ValueError('length of selected lens models in format of boolean list is %s '
+                             'and does not match the models of this class instance %s.' % (len(k), n))
+        bool_list = k
+    elif isinstance(k[0], (int, np.integer)):  # list of integers
+        bool_list = [False] * n
+        for i, k_i in enumerate(k):
+            if k_i is not False:
+                #if k_i is True:
+                #    bool_list[i] = True
+                if k_i < n:
+                    bool_list[k_i] = True
+                else:
+                    raise ValueError("k as set by %s is not convertable in a bool string!" % k)
+    else:
+        raise ValueError('input list k as %s not compatible' % k)
+    return bool_list

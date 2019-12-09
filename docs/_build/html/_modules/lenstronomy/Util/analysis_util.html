@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.analysis_util &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Util.analysis_util &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,7 +41,7 @@
   <h1>Source code for lenstronomy.Util.analysis_util</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">lenstronomy.Util.mask</span> <span class="k">as</span> <span class="nn">mask_util</span>
+<span class="kn">import</span> <span class="nn">lenstronomy.Util.mask_util</span> <span class="k">as</span> <span class="nn">mask_util</span>
 
 
 <div class="viewcode-block" id="half_light_radius"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.analysis_util.half_light_radius">[docs]</a><span class="k">def</span> <span class="nf">half_light_radius</span><span class="p">(</span><span class="n">lens_light</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -98,8 +98,8 @@
 
 <span class="sd">    image - The 2D image</span>
 <span class="sd">    center - The [x,y] pixel coordinates used as the center. The default is None, which then uses the center of the</span>
-<span class="sd">    image (including fracitonal pixels).</span>
-
+<span class="sd">    image (including fractional pixels).</span>
+<span class="sd">    :return: I(r) (averaged), r of bin edges</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Calculate the indices from the image</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">indices</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -125,10 +125,9 @@
     <span class="c1"># Cumulative sum to figure out sums for each radius bin</span>
     <span class="n">csim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">i_sorted</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
     <span class="n">tbin</span> <span class="o">=</span> <span class="n">csim</span><span class="p">[</span><span class="n">rind</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span> <span class="o">-</span> <span class="n">csim</span><span class="p">[</span><span class="n">rind</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
-
+    <span class="n">r_bin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tbin</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">tbin</span><span class="p">))</span>
     <span class="n">radial_prof</span> <span class="o">=</span> <span class="n">tbin</span> <span class="o">/</span> <span class="n">nr</span>
-
-    <span class="k">return</span> <span class="n">radial_prof</span></div>
+    <span class="k">return</span> <span class="n">radial_prof</span><span class="p">,</span> <span class="n">r_bin</span></div>
 
 
 <div class="viewcode-block" id="moments"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.analysis_util.moments">[docs]</a><span class="k">def</span> <span class="nf">moments</span><span class="p">(</span><span class="n">I_xy_input</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
@@ -169,16 +168,36 @@
     <span class="k">return</span> <span class="n">e1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">bkg</span><span class="p">),</span> <span class="n">e2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">bkg</span><span class="p">)</span></div>
 
 
-
-<div class="viewcode-block" id="bic_model"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.analysis_util.bic_model">[docs]</a><span class="k">def</span> <span class="nf">bic_model</span><span class="p">(</span><span class="n">logL</span><span class="p">,</span><span class="n">num_data</span><span class="p">,</span><span class="n">num_param</span><span class="p">):</span>
+<div class="viewcode-block" id="bic_model"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.analysis_util.bic_model">[docs]</a><span class="k">def</span> <span class="nf">bic_model</span><span class="p">(</span><span class="n">logL</span><span class="p">,</span> <span class="n">num_data</span><span class="p">,</span> <span class="n">num_param</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Bayesian information criteria</span>
+
 <span class="sd">    :param logL: log likelihood value</span>
 <span class="sd">    :param num_data: numbers of data</span>
 <span class="sd">    :param num_param: numbers of model parameters</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :return: BIC value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bic</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">logL</span> <span class="o">+</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">num_data</span><span class="p">)</span> <span class="o">*</span> <span class="n">num_param</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">bic</span></div>
+
+
+<div class="viewcode-block" id="profile_center"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.analysis_util.profile_center">[docs]</a><span class="k">def</span> <span class="nf">profile_center</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    utility routine that results in the centroid estimate for the profile estimates</span>
+
+<span class="sd">    :param kwargs_list: light parameter keyword argument list (can be light or mass)</span>
+<span class="sd">    :param center_x: None or center</span>
+<span class="sd">    :param center_y: None or center</span>
+<span class="sd">    :return: center_x, center_y</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">center_x</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">center_y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;center_x&#39;</span> <span class="ow">in</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">center_x</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+            <span class="n">center_y</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The center has to be provided as a function argument or the first profile in the list&#39;</span>
+                             <span class="s1">&#39; must come with a center.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span></div>
 </pre></div>
 
           </div>
@@ -211,7 +230,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

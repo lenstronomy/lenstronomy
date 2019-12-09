@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.correlation &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Util.correlation &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,9 +48,10 @@
 
 <div class="viewcode-block" id="correlation_2D"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.correlation_2D">[docs]</a><span class="k">def</span> <span class="nf">correlation_2D</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    #TODO document normalization output in units</span>
 
 <span class="sd">    :param image: 2d image</span>
-<span class="sd">    :return: psd1D, psd2D</span>
+<span class="sd">    :return: 2d fourier transform</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Take the fourier transform of the image.</span>
     <span class="n">F1</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
@@ -58,13 +59,30 @@
     <span class="c1"># Now shift the quadrants around so that low spatial frequencies are in</span>
     <span class="c1"># the center of the 2D fourier transformed image.</span>
     <span class="n">F2</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">F1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F2</span><span class="p">)</span></div>
 
-    <span class="c1"># Calculate a 2D power spectrum</span>
-    <span class="n">psd2D</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F2</span><span class="p">)</span>
 
+<div class="viewcode-block" id="power_spectrum_2d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.power_spectrum_2d">[docs]</a><span class="k">def</span> <span class="nf">power_spectrum_2d</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param image: 2d numpy array</span>
+<span class="sd">    :return: 2d power spectrum in frequency units of the pixels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">corr2d</span> <span class="o">=</span> <span class="n">correlation_2D</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">corr2d</span> <span class="o">/</span> <span class="n">nx</span> <span class="o">/</span> <span class="n">ny</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+
+<div class="viewcode-block" id="power_spectrum_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.power_spectrum_1d">[docs]</a><span class="k">def</span> <span class="nf">power_spectrum_1d</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param image: 2d numpy array</span>
+<span class="sd">    :return: 1d radially averaged power spectrum of image in frequency units of pixels</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">psd2D</span> <span class="o">=</span> <span class="n">power_spectrum_2d</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
     <span class="c1"># Calculate the azimuthally averaged 1D power spectrum</span>
-    <span class="n">psd1D</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">azimuthalAverage</span><span class="p">(</span><span class="n">psd2D</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">psd1D</span><span class="p">,</span> <span class="n">psd2D</span></div>
+    <span class="n">psd1D</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">analysis_util</span><span class="o">.</span><span class="n">azimuthalAverage</span><span class="p">(</span><span class="n">psd2D</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">psd1D</span><span class="p">,</span> <span class="n">r</span></div>
 </pre></div>
 
           </div>
@@ -97,7 +115,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

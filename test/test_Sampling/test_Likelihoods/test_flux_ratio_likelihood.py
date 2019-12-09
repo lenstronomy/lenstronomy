@@ -17,7 +17,7 @@ class TestFluxRatioLikelihood(object):
 
         x_source, y_source = 0.02, 0.01
         kwargs_lens = [{'theta_E': 1., 'e1': 0.1, 'e2': 0.1, 'gamma': 2., 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.06, 'e2': -0.03}]
+                       {'gamma1': 0.06, 'gamma2': -0.03}]
 
         x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,
                                                                      sourcePos_y=y_source)

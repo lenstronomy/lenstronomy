@@ -7,6 +7,7 @@ from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelih
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
 from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 import lenstronomy.Util.class_creator as class_creator
+import numpy as np
 
 
 class LikelihoodModule(object):
@@ -86,7 +87,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class, param_class)
+                                                             lens_model_class, point_source_class)
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:
@@ -141,8 +142,9 @@ class LikelihoodModule(object):
         kwargs_return = self.param.args2kwargs(args)
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
-            if bound_hit:
-                return -penalty
+            if bound_hit is True:
+                #print(-penalty, 'test penalty')
+                return -np.inf
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
     def log_likelihood(self, kwargs_return, verbose=False):
@@ -168,7 +170,7 @@ class LikelihoodModule(object):
         if self._check_positive_flux is True:
             bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
             if bool is False:
-                logL -= 10**10
+                logL -= 10**5
                 if verbose is True:
                     print('non-positive surface brightness parameters detected!')
         if self._flux_ratio_likelihood is True:
@@ -198,14 +200,15 @@ class LikelihoodModule(object):
         """
         checks whether the parameter vector has left its bound, if so, adds a big number
         """
-        penalty = 0
+        penalty = 0.
         bound_hit = False
         for i in range(0, len(args)):
             if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
-                penalty = 10**15
+                penalty = 10.**5
                 bound_hit = True
                 if verbose is True:
                     print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i], upperLimit[i]))
+                return penalty, bound_hit
         return penalty, bound_hit
 
     @property

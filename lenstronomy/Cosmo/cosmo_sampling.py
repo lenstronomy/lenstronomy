@@ -2,16 +2,7 @@ __author__ = 'sibirrer'
 
 import emcee
 import numpy as np
-import time
-import tempfile
-import os
-import shutil
-
-from cosmoHammer.util.InMemoryStorageUtil import InMemoryStorageUtil
-from cosmoHammer import LikelihoodComputationChain
-from cosmoHammer import CosmoHammerSampler
-from cosmoHammer import MpiCosmoHammerSampler
-from lenstronomy.Cosmo.lens_cosmo import LCDM
+from lenstronomy.Cosmo.lcdm import LCDM
 from lenstronomy.Cosmo.kde_likelihood import KDELikelihood
 
 

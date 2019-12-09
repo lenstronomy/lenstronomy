@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -239,7 +239,7 @@
 
         <span class="k">if</span> <span class="n">sampler_type</span> <span class="ow">is</span> <span class="s1">&#39;EMCEE&#39;</span><span class="p">:</span>
             <span class="n">n_walkers</span> <span class="o">=</span> <span class="n">num_param</span> <span class="o">*</span> <span class="n">walkerRatio</span>
-            <span class="n">samples</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">mcmc_class</span><span class="o">.</span><span class="n">mcmc_emcee</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpi</span><span class="p">)</span>
+            <span class="n">samples</span><span class="p">,</span> <span class="n">dist</span> <span class="o">=</span> <span class="n">mcmc_class</span><span class="o">.</span><span class="n">mcmc_emcee</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mpi</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="n">threadCount</span><span class="p">)</span>
             <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler_type</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">param_list</span><span class="p">,</span> <span class="n">dist</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;sampler_type </span><span class="si">%s</span><span class="s1"> not supported!&#39;</span> <span class="o">%</span> <span class="n">sampler_type</span><span class="p">)</span>
@@ -521,7 +521,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

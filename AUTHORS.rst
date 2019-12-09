@@ -22,6 +22,7 @@ Contributors (alphabetic)
 * Anna Nierenberg
 * Brian Nord
 * Ji Won Park
+* Thomas Schmidt
 * Anowar Shajib
 * Cyril Welschen
 * Lilan Yang

@@ -21,7 +21,7 @@ class MultiPlane(object):
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
-        :param observed_convention_index: a list of indicies where the 'center_x' and 'center_y' kwargs correspond
+        :param observed_convention_index: a list of indices where the 'center_x' and 'center_y' kwargs correspond
         to observed (lensed) positions, not physical positions. The code will compute the physical locations when
         performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
@@ -81,7 +81,7 @@ class MultiPlane(object):
 
     def ray_shooting(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """
-        ray-tracing (backwards light cone)
+        ray-tracing (backwards light cone) to the default z_source redshift
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
@@ -169,12 +169,27 @@ class MultiPlane(object):
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
-        :param kwargs_lens:
+        :param kwargs_lens: lens model keyword argument list
         :return: travel time in unit of days
+        """
+        dt_geo, dt_grav = self.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
+        return dt_geo + dt_grav
+
+    def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, check_convention=True):
+        """
+        geometric and Shapiro (gravitational) light travel time relative to a straight path through the coordinate (0,0)
+        Negative sign means earlier arrival time
+
+        :param theta_x: angle in x-direction on the image
+        :param theta_y: angle in y-direction on the image
+        :param kwargs_lens: lens model keyword argument list
+        :param check_convention: boolean, if True goes through the lens model list and checks whether the positional
+         conventions are satisfied.
+        :return: geometric delay, gravitational delay [days]
         """
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
-        return self._multi_plane_base.arrival_time(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
+        return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
                                                    T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):

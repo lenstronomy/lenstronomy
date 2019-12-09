@@ -24,6 +24,7 @@ class TNFW(LensProfileBase):
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
+        self._s = 0.001
         super(LensProfileBase, self).__init__()
 
     def function(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
@@ -38,11 +39,12 @@ class TNFW(LensProfileBase):
         :return:
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        #if Rs < 0.0001:
+        #    Rs = 0.0001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
+        R = np.maximum(R, self._s * Rs)
         f_ = self.nfwPot(R, Rs, rho0_input, r_trunc)
         Warning('the potential of a truncated NFW profile is not implemented and may lead to crucial inaccuracies!')
         #TODO: truncated NFW potential not in place yet!
@@ -55,7 +57,7 @@ class TNFW(LensProfileBase):
         :param tau: t/Rs
         :return:
         """
-
+        x = np.maximum(x, self._s)
         return np.log(x * (tau + np.sqrt(tau ** 2 + x ** 2)) ** -1)
 
     def F(self, x):
@@ -64,18 +66,23 @@ class TNFW(LensProfileBase):
         :param x: r/Rs
         :return:
         """
+        x = np.maximum(x, self._s)
         if isinstance(x, np.ndarray):
-            nfwvals = np.ones_like(x)
-            inds1 = np.where(x < 1)
+            nfwvals = np.zeros_like(x)
+            inds1 = np.where((x < 1) & (x > 0))
             inds2 = np.where(x > 1)
+            inds3 = np.where(x == 0)
             nfwvals[inds1] = (1 - x[inds1] ** 2) ** -.5 * np.arctanh((1 - x[inds1] ** 2) ** .5)
             nfwvals[inds2] = (x[inds2] ** 2 - 1) ** -.5 * np.arctan((x[inds2] ** 2 - 1) ** .5)
+            #nfwvals[inds3] = 0
             return nfwvals
 
         elif isinstance(x, float) or isinstance(x, int):
             if x == 1:
                 return 1
-            if x < 1:
+            elif x == 0:
+                return 0
+            elif x < 1:
                 return (1 - x ** 2) ** -.5 * np.arctanh((1 - x ** 2) ** .5)
             else:
                 return (x ** 2 - 1) ** -.5 * np.arctan((x ** 2 - 1) ** .5)
@@ -83,11 +90,12 @@ class TNFW(LensProfileBase):
     def derivatives(self, x, y, Rs=None, alpha_Rs=None, r_trunc=None, center_x=0, center_y=0):
 
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
+        #if Rs < 0.0000001:
+        #    Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
+        R = np.maximum(R, self._s * Rs)
         f_x, f_y = self.nfwAlpha(R, Rs, rho0_input, r_trunc, x_, y_)
         return f_x, f_y
 
@@ -99,11 +107,12 @@ class TNFW(LensProfileBase):
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0001:
-            Rs = 0.0001
+        #if Rs < 0.0001:
+        #    Rs = 0.0001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
+        R = np.maximum(R, self._s * Rs)
 
         kappa = self.density_2d(x_, y_, Rs, rho0_input, r_trunc)
         gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input, r_trunc, x_, y_)
@@ -128,7 +137,7 @@ class TNFW(LensProfileBase):
 
     def density_2d(self, x, y, Rs, rho0, r_trunc, center_x=0, center_y=0):
         """
-        projected two dimenstional NFW profile (kappa*Sigma_crit)
+        projected two dimensional NFW profile (kappa*Sigma_crit)
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -159,7 +168,7 @@ class TNFW(LensProfileBase):
         """
 
         x = R * Rs ** -1
-
+        x = np.maximum(x, self._s)
         func = (r_trunc ** 2 * (-2 * x * (1 + r_trunc ** 2) + 4 * (1 + x) * r_trunc * np.arctan(x / r_trunc) -
                                 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs) + 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs * (1 + x)) +
                                 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs * r_trunc) -
@@ -181,6 +190,7 @@ class TNFW(LensProfileBase):
         :return: Epsilon(R) projected density at radius R
         """
         x = R / Rs
+        x = np.maximum(x, self._s)
         tau = float(r_trunc) / Rs
         hx = self._h(x, tau)
         return 2 * rho0 * Rs ** 3 * hx
@@ -201,12 +211,14 @@ class TNFW(LensProfileBase):
         :type axis: same as R
         :return: Epsilon(R) projected density at radius R
         """
-        if isinstance(R, int) or isinstance(R, float):
-            R = max(R, 0.00001)
-        else:
-            R[R <= 0.00001] = 0.00001
+        R = np.maximum(R, self._s * Rs)
+        #if isinstance(R, int) or isinstance(R, float):
+        #    R = max(R, 0.00001)
+        #else:
+        #    R[R <= 0.00001] = 0.00001
 
         x = R / Rs
+        x = np.maximum(x, self._s)
         tau = float(r_trunc) / Rs
         gx = self._g(x, tau)
         a = 4 * rho0 * Rs * gx / x ** 2
@@ -230,12 +242,14 @@ class TNFW(LensProfileBase):
         :return: Epsilon(R) projected density at radius R
         """
         c = 0.000001
-        if isinstance(R, int) or isinstance(R, float):
-            R = max(R, c)
-        else:
-            R[R <= c] = c
-
+        #if isinstance(R, int) or isinstance(R, float):
+        #    R = max(R, c)
+        #else:
+        #    R[R <= c] = c
+        R = np.maximum(R, self._s * Rs)
         x = R / Rs
+        #x = np.maximum(x, self._s)
+        #R = np.maximum(R, self._s * Rs)
 
         tau = float(r_trunc) * Rs ** -1
 
@@ -257,6 +271,7 @@ class TNFW(LensProfileBase):
         """
 
         x = R / Rs
+        x = np.maximum(x, self._s)
         tau = r_trunc / Rs
         gx = self._g(x,tau)
         m_2d = 4 * rho0 * Rs * R ** 2 * gx / x ** 2 * np.pi
@@ -272,7 +287,7 @@ class TNFW(LensProfileBase):
         """
         t2 = tau ** 2
         #Fx = self.F(X)
-
+        X = np.maximum(X, self._s )
         _F = self.F(X)
         a = t2*(t2+1)**-2
         if isinstance(X, np.ndarray):
@@ -303,6 +318,7 @@ class TNFW(LensProfileBase):
         :param x: R/Rs
         :type x: float >0
         """
+        x = np.maximum(x, self._s)
         return tau ** 2 * (tau ** 2 + 1) ** -2 * (
                 (tau ** 2 + 1 + 2 * (x ** 2 - 1)) * self.F(x) + tau * np.pi + (tau ** 2 - 1) * np.log(tau) +
                 np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self.L(x, tau) * (tau ** 2 - 1) * tau ** -1))
@@ -316,7 +332,7 @@ class TNFW(LensProfileBase):
         :param tau: t/Rs
         :type x: float >0
         """
-
+        X = np.maximum(X, self._s)
         def cos_func(y):
             if isinstance(y, float) or isinstance(y, int):
                 if y > 1:
@@ -348,7 +364,7 @@ class TNFW(LensProfileBase):
                 return y
 
         def tnfw_func(x,tau):
-
+            x = np.maximum(x, self._s)
             u = x**2
             t2 = tau**2
             Lx = self.L(u**.5, tau)

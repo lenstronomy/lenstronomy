@@ -249,17 +249,20 @@ class ModelBandPlot(object):
         else:
             x_grid_source, y_grid_source, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
             numPix, deltaPix)
-        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
-                                    ra_at_xy_0=ra_at_xy_0,
-                                    dec_at_xy_0=dec_at_xy_0)
+
+        center_x = 0
+        center_y = 0
         if center is not None:
-            x_grid_source += center[0]
-            y_grid_source += center[1]
+            center_x, center_y = center[0], center[1]
         elif len(self._kwargs_source_partial) > 0:
-            x_center = self._kwargs_source_partial[0]['center_x']
-            y_center = self._kwargs_source_partial[0]['center_y']
-            x_grid_source += x_center
-            y_grid_source += y_center
+            center_x = self._kwargs_source_partial[0]['center_x']
+            center_y = self._kwargs_source_partial[0]['center_y']
+        x_grid_source += center_x
+        y_grid_source += center_y
+
+        coords_source = Coordinates(transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0 + center_x,
+                                    dec_at_xy_0=dec_at_xy_0 + center_y)
 
         source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
                                                                self._kwargs_source_partial)
@@ -310,8 +313,6 @@ class ModelBandPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
-
-
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
@@ -373,10 +374,9 @@ class ModelBandPlot(object):
                            **kwargs):
         """
 
-        :param ax:
-        :param v_min:
-        :param v_max:
-        :param with_caustics:
+        :param ax: matplotib axis instance
+        :param v_min: minimum range of plotting
+        :param v_max: maximum range of plotting
         :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """

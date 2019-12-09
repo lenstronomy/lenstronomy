@@ -37,7 +37,7 @@ class TestLensModel(object):
     def test_bool_list(self):
         lensModel = SinglePlane(['SPEMD', 'SHEAR'])
         kwargs = [{'theta_E': 1, 'gamma': 1, 'e1': 0.1, 'e2': -0.1, 'center_x': 0, 'center_y': 0},
-                           {'e1': 0.01, 'e2': -0.02}]
+                           {'gamma1': 0.01, 'gamma2': -0.02}]
         alphax_1, alphay_1 = lensModel.alpha(1, 1, kwargs, k=0)
         alphax_1_list, alphay_1_list = lensModel.alpha(1, 1, kwargs, k=[0])
         npt.assert_almost_equal(alphax_1, alphax_1_list, decimal=5)

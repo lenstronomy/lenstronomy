@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -32,7 +32,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.2.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -51,9 +51,9 @@
 <a class="reference external image-reference" href="https://arxiv.org/abs/1803.09746"><img alt="https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg" src="https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg" /></a>
 <p><code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 <a class="reference external" href="https://arxiv.org/abs/1803.09746v1">Birrer &amp; Amara 2018</a> and is based on <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>.
-<code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> finds application in e.g. <a class="reference external" href="http://adsabs.harvard.edu/abs/2016JCAP...08..020B">Birrer et al 2016</a> and
-<a class="reference external" href="http://adsabs.harvard.edu/abs/2018arXiv180901274B">Birrer et al 2018</a> for time-delay cosmography and measuring
-the expansion rate of the universe and <a class="reference external" href="http://adsabs.harvard.edu/abs/2017JCAP...05..037B">Birrer et al 2017</a> for
+<code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> finds application in e.g. <a class="reference external" href="http://adsabs.harvard.edu/abs/2016JCAP...08..020B">Birrer et al 2016</a>,
+<a class="reference external" href="http://adsabs.harvard.edu/abs/2018arXiv180901274B">Birrer et al 2018</a> and <a class="reference external" href="https://arxiv.org/abs/1910.06306">Shajib et al 2019</a> for time-delay cosmography and measuring
+the expansion rate of the universe and <a class="reference external" href="http://adsabs.harvard.edu/abs/2017JCAP...05..037B">Birrer et al 2017</a> and <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/2019arXiv190806983G/abstract">Gilman et al. 2019</a> for
 quantifying lensing substructure to infer dark matter properties.</p>
 <p>The development is coordinated on <a class="reference external" href="https://github.com/sibirrer/lenstronomy">GitHub</a> and contributions are welcome.
 The documentation of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
@@ -68,35 +68,28 @@ the package is distributed over <a class="reference external" href="https://pypi
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
 is also required and can be cloned from: <a class="reference external" href="https://github.com/sibirrer/fastell4py">https://github.com/sibirrer/fastell4py</a> (needs a fortran compiler)</p>
-<p>Additional python libraries:</p>
-<ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">CosmoHammer</span></code> (through PyPi)</li>
-<li><code class="docutils literal notranslate"><span class="pre">astropy</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">dynesty</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">pymultinest</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">pypolychord</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">nestcheck</span></code></li>
-<li>standard python libraries (<code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code>)</li>
-</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install gfortran
+$ git clone https://github.com/sibirrer/fastell4py.git &lt;desired location&gt;
+$ <span class="nb">cd</span> &lt;desired location&gt;
+$ python setup.py install --user
+</pre></div>
+</div>
+<p>Additional python libraries are e.g. : <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, <code class="docutils literal notranslate"><span class="pre">scipy</span></code>, <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> <code class="docutils literal notranslate"><span class="pre">astropy</span></code>, <code class="docutils literal notranslate"><span class="pre">dynesty</span></code>, <code class="docutils literal notranslate"><span class="pre">pymultinest</span></code>, <code class="docutils literal notranslate"><span class="pre">pypolychord</span></code>, <code class="docutils literal notranslate"><span class="pre">nestcheck</span></code>, <code class="docutils literal notranslate"><span class="pre">CosmoHammer</span></code></p>
 </div>
 <div class="section" id="modelling-features">
 <h2>Modelling Features<a class="headerlink" href="#modelling-features" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>a variety of lens models to use in arbitrary superposition</li>
-<li>lens equation solver</li>
-<li>multi-plane ray-tracing</li>
-<li>Extended source reconstruction with basis sets (shapelets) and analytic light profiles</li>
-<li>Point sources</li>
+<li>a variety of analytic lens model profiles</li>
+<li>various lensing computation tools (lens equation solver, ray-tracing etc)</li>
+<li>integrated support for multi-lens plane and multi-source plane modelling</li>
+<li>API to conveniently simulate mock lenses</li>
+<li>Extended source reconstruction with basis sets (shapelets)</li>
 <li>numerical options for sub-grid ray-tracing and sub-pixel convolution</li>
-<li>non-linear line-of-sight description</li>
-<li>iterative point spread function reconstruction</li>
-<li>linear and non-linear optimization modules</li>
-<li>Pre-defined plotting and illustration routines</li>
 <li>Particle swarm optimization for parameter fitting</li>
-<li>MCMC (emcee from CosmoHammer) for parameter inferences</li>
-<li>Nested Sampling (MultiNest, DyPolyChord, or Dynesty) for evidence computation and parameter inferences</li>
-<li>Kinematic modelling</li>
+<li>MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)</li>
+<li>Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy</li>
 <li>Cosmographic inference tools</li>
+<li>…and much more</li>
 </ul>
 </div>
 <div class="section" id="getting-started">
@@ -178,8 +171,12 @@ the relevant work that was implemented in <code class="docutils literal notransl
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="published.html">Published work with lenstronomy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="published.html#method-papers">Method papers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="published.html#science-papers">Science papers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#core-lenstronomy-methodology-and-software-publications">Core lenstronomy methodology and software publications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#measuring-the-hubble-constant">Measuring the Hubble constant</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#dark-matter-substructure">Dark Matter substructure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#automatized-lens-modeling">Automatized Lens Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#quasar-host-galaxy-decomposition">Quasar-host galaxy decomposition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="published.html#theory-papers">Theory papers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
@@ -207,6 +204,8 @@ the relevant work that was implemented in <code class="docutils literal notransl
 <li class="toctree-l2"><a class="reference internal" href="history.html#id22">0.9.3 (2019-9-25)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id23">1.0.0 (2019-9-25)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id24">1.0.1 (2019-10-01)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id25">1.1.0 (2019-11-5)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id26">1.2.0 (2019-11-17)</a></li>
 </ul>
 </li>
 </ul>
@@ -284,7 +283,7 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.2.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

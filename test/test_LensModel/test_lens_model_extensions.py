@@ -55,7 +55,8 @@ class TestLensModelExtensions(object):
 
         lens_model_list = ['SPEMD','SHEAR']
 
-        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},{'e1':0.01,'e2':0.03}]
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
+                       {'gamma1':0.01, 'gamma2':0.03}]
 
         extension = LensModelExtensions(LensModel(lens_model_list))
         x_image, y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
@@ -68,76 +69,6 @@ class TestLensModelExtensions(object):
 
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
-    def test_profile_slope(self):
-        lens_model = LensModelExtensions(LensModel(lens_model_list=['SPP']))
-        gamma_in = 2.
-        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
-        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-        gamma_in = 1.7
-        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
-        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-
-        gamma_in = 2.5
-        kwargs_lens = [{'theta_E': 1., 'gamma': gamma_in, 'center_x': 0, 'center_y': 0}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
-        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-
-        kwargs_lens_bad = [{'theta_E': 100, 'gamma': 2, 'center_x': 0, 'center_y': 0}]
-        gamma_out_bad = lens_model.profile_slope(kwargs_lens_bad, verbose=False)
-        assert np.isnan(gamma_out_bad)
-
-        lens_model = LensModelExtensions(LensModel(lens_model_list=['SPEP']))
-        gamma_in = 2.
-        phi, q = 0.34403343049704888, 0.89760957136967312
-        e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_lens = [{'theta_E': 1.4516812130749424, 'e1': e1, 'e2': e2, 'center_x': -0.04507598845306314,
-         'center_y': 0.054491803177414651, 'gamma': gamma_in}]
-        gamma_out = lens_model.profile_slope(kwargs_lens)
-        npt.assert_array_almost_equal(gamma_out, gamma_in, decimal=3)
-
-    def test_lens_center(self):
-        center_x, center_y = 0.43, -0.67
-        kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
-        lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
-        center_x_out, center_y_out = lensModel.lens_center(kwargs_lens)
-        npt.assert_almost_equal(center_x_out, center_x, 2)
-        npt.assert_almost_equal(center_y_out, center_y, 2)
-
-    def test_effective_einstein_radius(self):
-        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        lensModel = LensModelExtensions(LensModel(lens_model_list=['SIS']))
-        ret = lensModel.effective_einstein_radius(kwargs_lens,
-                                                  get_precision=True)
-
-        assert len(ret) == 2
-        npt.assert_almost_equal(ret[0], 1., decimal=2)
-        kwargs_lens_bad = [{'theta_E': 100, 'center_x': 0, 'center_y': 0}]
-        ret_nan = lensModel.effective_einstein_radius(kwargs_lens_bad,
-                                                      get_precision=True, verbose=False)
-        assert np.isnan(ret_nan)
-
-    def test_external_shear(self):
-        lens_model_list = ['SHEAR']
-        kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
-        lensModel = LensModelExtensions(LensModel(lens_model_list))
-        phi, gamma = lensModel.external_shear(kwargs_lens)
-        npt.assert_almost_equal(phi, 0.049834326245581012, decimal=8)
-        npt.assert_almost_equal(gamma, 0.10049875621120891, decimal=8)
-
-    def test_external_lensing_effect(self):
-        lens_model_list = ['SHEAR']
-        kwargs_lens = [{'e1': 0.1, 'e2': 0.01}]
-        lensModel = LensModelExtensions(LensModel(lens_model_list))
-        alpha0_x, alpha0_y, kappa_ext, shear1, shear2 = lensModel.external_lensing_effect(kwargs_lens, lens_model_internal_bool=[False])
-        print(alpha0_x, alpha0_y, kappa_ext, shear1, shear2)
-        assert alpha0_x == 0
-        assert alpha0_y == 0
-        assert shear1 == 0.1
-        assert shear2 == 0.01
-        assert kappa_ext == 0
-
     def test_zoom_source(self):
         lens_model_list = ['SPEMD', 'SHEAR']
         lensModel = LensModel(lens_model_list=lens_model_list)
@@ -146,7 +77,7 @@ class TestLensModelExtensions(object):
 
         x_source, y_source = 0.02, 0.01
         kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': 0.1, 'gamma': 2, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.05, 'e2': -0.03}]
+                       {'gamma1': 0.05, 'gamma2': -0.03}]
 
         x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,
                                                                      sourcePos_y=y_source)

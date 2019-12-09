@@ -6,8 +6,7 @@ class TimeDelayLikelihood(object):
     """
     class to compute the likelihood of a model given a measurement of time delays
     """
-    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class,
-                 param_class):
+    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
@@ -15,7 +14,6 @@ class TimeDelayLikelihood(object):
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
         time delays are imposed on
-        :param param_class: Param() class instance
         """
 
         if time_delays_measured is None:
@@ -26,7 +24,6 @@ class TimeDelayLikelihood(object):
         self._delays_errors = np.array(time_delays_uncertainties)
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
-        self._param = param_class
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """
@@ -37,10 +34,8 @@ class TimeDelayLikelihood(object):
         :return: log likelihood of the model given the time delay data
         """
         x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        #x_pos, y_pos = self._param.real_image_positions(x_pos[0], y_pos[0], kwargs_cosmo)
         x_pos, y_pos = x_pos[0], y_pos[0]
-        x_source, y_source = self._lensModel.ray_shooting(x_pos, y_pos, kwargs_lens)
-        delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, x_source, y_source, kwargs_lens)
+        delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']
         delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
         logL = self._logL_delays(delay_days, self._delays_measured, self._delays_errors)

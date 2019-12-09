@@ -180,7 +180,7 @@ class NIESimple(LensProfileBase):
         returns df/dx and df/dy of the function
         """
         if q >= 1:
-            q = 0.999999
+            q = 0.99999999
         psi = self._psi(x, y, q, s)
         f_x = theta_E / np.sqrt(1. - q ** 2) * np.arctan(np.sqrt(1. - q ** 2) * x / (psi+s))
         f_y = theta_E / np.sqrt(1. - q ** 2) * np.arctanh(np.sqrt(1. - q ** 2) * y / (psi + q**2*s))

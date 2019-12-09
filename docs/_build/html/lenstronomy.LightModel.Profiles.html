@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.0.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.2.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -210,6 +210,48 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.ellipsoid">
+<span id="lenstronomy-lightmodel-profiles-ellipsoid-module"></span><h2>lenstronomy.LightModel.Profiles.ellipsoid module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.ellipsoid" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.ellipsoid.Ellipsoid">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.ellipsoid.</code><code class="descname">Ellipsoid</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/ellipsoid.html#Ellipsoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.ellipsoid.Ellipsoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for an universal surface brightness within an ellipsoid</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.ellipsoid.Ellipsoid.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>radius</em>, <em>e1</em>, <em>e2</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/ellipsoid.html#Ellipsoid.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.ellipsoid.Ellipsoid.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>radius</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.LightModel.Profiles.ellipsoid.function">
+<code class="descclassname">lenstronomy.LightModel.Profiles.ellipsoid.</code><code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/ellipsoid.html#function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.ellipsoid.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns torus (ellipse with constant surface brightness) profile</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LightModel.Profiles.gaussian">
 <span id="lenstronomy-lightmodel-profiles-gaussian-module"></span><h2>lenstronomy.LightModel.Profiles.gaussian module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.gaussian" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -219,7 +261,7 @@
 <p>class for Gaussian light profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.Gaussian.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma_x</em>, <em>sigma_y</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>sigma</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -227,9 +269,8 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
-<li><strong>a</strong> – </li>
-<li><strong>s</strong> – </li>
+<li><strong>amp</strong> – amplitude</li>
+<li><strong>sigma</strong> – sigma of Gaussian</li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
 </ul>
@@ -244,7 +285,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.Gaussian.light_3d">
-<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma_x</em>, <em>sigma_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.light_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -267,7 +308,7 @@
 
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.gaussian.Gaussian.total_flux">
-<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>sigma_x</em>, <em>sigma_y</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.total_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>sigma</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/gaussian.html#Gaussian.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.gaussian.Gaussian.total_flux" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -597,9 +638,8 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
-<li><strong>sigma0</strong> – </li>
-<li><strong>a</strong> – </li>
-<li><strong>s</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>Rs</strong> – scale radius: half-light radius = Rs / 0.551</li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
 </ul>
@@ -703,6 +743,116 @@
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.hernquist.HernquistEllipse.upper_limit_default">
 <code class="descname">upper_limit_default</code><em class="property"> = {'Rs': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.hernquist.HernquistEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.interpolation">
+<span id="lenstronomy-lightmodel-profiles-interpolation-module"></span><h2>lenstronomy.LightModel.Profiles.interpolation module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.interpolation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.interpolation.</code><code class="descname">Interpol</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class which uses an interpolation of an image to compute the surface brightness</p>
+<p>parameters are
+‘image’: 2d numpy array of surface brightness
+‘center_x’: coordinate of center of image
+‘center_y’: coordinate of center of image
+‘phi_G’: rotation of image
+‘scale’: arcseconds per pixel of the image to be interpolated</p>
+<dl class="staticmethod">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.coord2image_pixel">
+<em class="property">static </em><code class="descname">coord2image_pixel</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>center_x</em>, <em>center_y</em>, <em>phi_G</em>, <em>scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.coord2image_pixel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.coord2image_pixel" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – angular coordinate</li>
+<li><strong>dec</strong> – angular coordinate</li>
+<li><strong>center_x</strong> – center of image in angular coordinates</li>
+<li><strong>center_y</strong> – center of image in angular coordinates</li>
+<li><strong>phi_G</strong> – rotation angle</li>
+<li><strong>scale</strong> – pixel scale of image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">pixel coordinates</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>image=None</em>, <em>amp=1</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>phi_G=0</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate to evaluate surface brightness</li>
+<li><strong>y</strong> – y-coordinate to evaluate surface brightness</li>
+<li><strong>image</strong> – 2d numpy array (image) to be used to interpolate</li>
+<li><strong>amp</strong> – amplitude of surface brightness scaling in respect of original image</li>
+<li><strong>center_x</strong> – center of interpolated image</li>
+<li><strong>center_y</strong> – center of interpolated image</li>
+<li><strong>phi_G</strong> – rotation angle of simulated image in respect to input gird</li>
+<li><strong>scale</strong> – pixel scale (in angular units) of the simulated image</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.image_interp">
+<code class="descname">image_interp</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>image</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.image_interp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.image_interp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -1000, 'center_y': -1000, 'phi_G': -3.141592653589793, 'scale': 1e-09}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.param_names">
+<code class="descname">param_names</code><em class="property"> = ['image', 'amp', 'center_x', 'center_y', 'phi_G', 'scale']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.total_flux">
+<code class="descname">total_flux</code><span class="sig-paren">(</span><em>image</em>, <em>scale</em>, <em>amp=1</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>phi_G=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.total_flux" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> – </li>
+<li><strong>scale</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+<li><strong>phi_G</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 1000000, 'center_x': 1000, 'center_y': 1000, 'phi_G': 3.141592653589793, 'scale': 10000000000}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1338,12 +1488,285 @@ this should be faster and numerically stable</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-lenstronomy.LightModel.Profiles.torus">
-<span id="lenstronomy-lightmodel-profiles-torus-module"></span><h2>lenstronomy.LightModel.Profiles.torus module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.torus" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="lenstronomy.LightModel.Profiles.torus.function">
-<code class="descclassname">lenstronomy.LightModel.Profiles.torus.</code><code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>a_x</em>, <em>a_y</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/torus.html#function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.torus.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns torus (ellipse with constant surface brightnes) profile</p>
+<div class="section" id="module-lenstronomy.LightModel.Profiles.shapelets_polar">
+<span id="lenstronomy-lightmodel-profiles-shapelets-polar-module"></span><h2>lenstronomy.LightModel.Profiles.shapelets_polar module<a class="headerlink" href="#module-lenstronomy.LightModel.Profiles.shapelets_polar" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.shapelets_polar.</code><code class="descname">ShapeletSetPolar</code><span class="sig-paren">(</span><em>exponential=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletSetPolar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to operate on entire shapelet set</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.decomposition">
+<code class="descname">decomposition</code><span class="sig-paren">(</span><em>image</em>, <em>x</em>, <em>y</em>, <em>n_max</em>, <em>beta</em>, <em>deltaPix</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletSetPolar.decomposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.decomposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>decomposes an image into the shapelet coefficients in same order as for the function call
+:param image:
+:param x:
+:param y:
+:param n_max:
+:param beta:
+:param center_x:
+:param center_y:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>n_max</em>, <em>beta</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletSetPolar.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>amp</strong> – </li>
+<li><strong>beta</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.function_split">
+<code class="descname">function_split</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>n_max</em>, <em>beta</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletSetPolar.function_split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.function_split" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.index2poly">
+<code class="descname">index2poly</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletSetPolar.index2poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.index2poly" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – index of coefficient in the convention here</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">n, m, complex_bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'beta': 0, 'center_x': -100, 'center_y': -100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'n_max', 'beta', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'beta': 100, 'center_x': 100, 'center_y': 100}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletSetPolar.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.shapelets_polar.</code><code class="descname">ShapeletsPolar</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>2D polar Shapelets, see Massey &amp; Refregier 2005</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>beta</em>, <em>n</em>, <em>m</em>, <em>complex_bool</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate, numpy array</li>
+<li><strong>y</strong> – y-ccordinate, numpy array</li>
+<li><strong>amp</strong> – amplitude normalization</li>
+<li><strong>beta</strong> – shaplet scale</li>
+<li><strong>n</strong> – order of polynomial</li>
+<li><strong>m</strong> – roational invariance</li>
+<li><strong>center_x</strong> – center of shapelet</li>
+<li><strong>center_y</strong> – center of shapelet</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">amplitude of shapelet at possition (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.index2poly">
+<code class="descname">index2poly</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.index2poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.index2poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>manages the convention from an iterative index to the specific polynomial n, m, (real/imaginary part)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – int, index of list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">n, m bool</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'beta': 0, 'center_x': -100, 'center_y': -100, 'm': 0, 'n': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.num_param">
+<code class="descname">num_param</code><span class="sig-paren">(</span><em>n_max</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_max</strong> – maximal polynomial order</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">number of basis components</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.poly2index">
+<code class="descname">poly2index</code><span class="sig-paren">(</span><em>n</em>, <em>m</em>, <em>complex_bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.poly2index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.poly2index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> – non-negative integer</li>
+<li><strong>m</strong> – integer, running from -n to n in steps of two</li>
+<li><strong>complex_bool</strong> – bool, if True, assigns complex part</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'beta': 100, 'center_x': 100, 'center_y': 100, 'm': 150, 'n': 150}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp">
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.shapelets_polar.</code><code class="descname">ShapeletsPolarExp</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>2D exponential shapelets, Berge et al. 2019</p>
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>beta</em>, <em>n</em>, <em>m</em>, <em>complex_bool</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate, numpy array</li>
+<li><strong>y</strong> – y-ccordinate, numpy array</li>
+<li><strong>amp</strong> – amplitude normalization</li>
+<li><strong>beta</strong> – shaplet scale</li>
+<li><strong>n</strong> – order of polynomial</li>
+<li><strong>m</strong> – roational invariance</li>
+<li><strong>center_x</strong> – center of shapelet</li>
+<li><strong>center_y</strong> – center of shapelet</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">amplitude of shapelet at possition (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.index2poly">
+<code class="descname">index2poly</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.index2poly"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.index2poly" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>index</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'beta': 0, 'center_x': -100, 'center_y': -100, 'm': 0, 'n': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.num_param">
+<code class="descname">num_param</code><span class="sig-paren">(</span><em>n_max</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_max</strong> – maximal polynomial order</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">number of basis components</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.param_names">
+<code class="descname">param_names</code><em class="property"> = ['amp', 'beta', 'n', 'm', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.poly2index">
+<code class="descname">poly2index</code><span class="sig-paren">(</span><em>n</em>, <em>m</em>, <em>complex_bool</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.poly2index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.poly2index" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n</strong> – </li>
+<li><strong>m</strong> – </li>
+<li><strong>complex_bool</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">index convention, integer</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'amp': 100, 'beta': 100, 'center_x': 100, 'center_y': 100, 'm': 150, 'n': 150}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -1413,15 +1836,17 @@ this should be faster and numerically stable</p>
 <li><a class="reference internal" href="#">lenstronomy.LightModel.Profiles package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.chameleon">lenstronomy.LightModel.Profiles.chameleon module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.ellipsoid">lenstronomy.LightModel.Profiles.ellipsoid module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.gaussian">lenstronomy.LightModel.Profiles.gaussian module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.hernquist">lenstronomy.LightModel.Profiles.hernquist module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.interpolation">lenstronomy.LightModel.Profiles.interpolation module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.moffat">lenstronomy.LightModel.Profiles.moffat module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.nie">lenstronomy.LightModel.Profiles.nie module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.p_jaffe">lenstronomy.LightModel.Profiles.p_jaffe module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.power_law">lenstronomy.LightModel.Profiles.power_law module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.sersic">lenstronomy.LightModel.Profiles.sersic module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.shapelets">lenstronomy.LightModel.Profiles.shapelets module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.torus">lenstronomy.LightModel.Profiles.torus module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.shapelets_polar">lenstronomy.LightModel.Profiles.shapelets_polar module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles.uniform">lenstronomy.LightModel.Profiles.uniform module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LightModel.Profiles">Module contents</a></li>
 </ul>
@@ -1472,7 +1897,7 @@ this should be faster and numerically stable</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.0.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

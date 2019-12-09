@@ -62,11 +62,11 @@ class TestLensModel(object):
 
     def test_gamma(self):
         lensModel = LensModel(lens_model_list=['SHEAR'])
-        e1, e2  = 0.1, -0.1
-        kwargs = [{'e1': e1, 'e2': e2}]
+        gamma1, gamm2  = 0.1, -0.1
+        kwargs = [{'gamma1': gamma1, 'gamma2': gamm2}]
         e1_out, e2_out = lensModel.gamma(x=1., y=1., kwargs=kwargs)
-        assert e1_out == e1
-        assert e2_out == e2
+        assert e1_out == gamma1
+        assert e2_out == gamm2
 
         output1, output2 = self.lensModel.gamma(x=1., y=1., kwargs=self.kwargs)
         assert output1 == 0
@@ -104,10 +104,20 @@ class TestLensModel(object):
         arrival_time_sp = lensModel_sp.arrival_time(x_image, y_image, kwargs)
         npt.assert_almost_equal(arrival_time_sp, arrival_time_mp, decimal=8)
 
+    def test_fermat_potential(self):
+        z_lens = 0.5
+        z_source = 1.5
+        x_image, y_image = 1., 0.
+        lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, lens_redshift_list=[z_lens], z_lens=z_lens, z_source=z_source)
+        kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
+        fermat_pot = lensModel.fermat_potential(x_image, y_image, kwargs)
+        arrival_time = lensModel.arrival_time(x_image, y_image, kwargs)
+        arrival_time_from_fermat_pot = lensModel._lensCosmo.time_delay_units(fermat_pot)
+        npt.assert_almost_equal(arrival_time_from_fermat_pot, arrival_time, decimal=8)
+
     def test_curl(self):
         z_lens_list = [0.2, 0.8]
         z_source = 1.5
-        x_image, y_image = 1., 0.
         lensModel = LensModel(lens_model_list=['SIS', 'SIS'], multi_plane=True, lens_redshift_list=z_lens_list, z_source=z_source)
         kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.},
                   {'theta_E': 0., 'center_x': 0., 'center_y': 0.2}]
@@ -135,6 +145,14 @@ class TestRaise(unittest.TestCase):
             kwargs = [{'alpha_Rs': 1, 'Rs': 0.5, 'center_x': 0, 'center_y': 0}]
             lensModel = LensModel(['NFW'], multi_plane=False)
             t_arrival = lensModel.arrival_time(1, 1, kwargs)
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            x_image, y_image = 1., 0.
+            lensModel = LensModel(lens_model_list=['SIS'], multi_plane=True, lens_redshift_list=[z_lens],
+                                  z_source=z_source)
+            kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
+            fermat_pot = lensModel.fermat_potential(x_image, y_image, kwargs)
 
 
 if __name__ == '__main__':

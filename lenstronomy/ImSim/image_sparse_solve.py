@@ -5,8 +5,8 @@ from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 
-from slitronomy.Optimization.sparse_solver import SparseSolver
-from slitronomy.Lensing.lensing_operator import LensingOperator
+from slitronomy.Optimization.sparse_solver import SparseSolverSource
+# from slitronomy.Optimization.sparse_solver import SparseSolverSourceLens
 
 
 class ImageSparseFit(ImageModel):
@@ -17,8 +17,7 @@ class ImageSparseFit(ImageModel):
 
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
-                 psf_error_map_bool_list=None, subgrid_res_source=1, minimal_source_plane=False, min_num_pix_source=10,
-                 kwargs_sparse_solver={}):
+                 psf_error_map_bool_list=None, kwargs_sparse_solver={}):
         """
 
         :param data_class: ImageData() instance
@@ -44,23 +43,20 @@ class ImageSparseFit(ImageModel):
         source_model_list = self.SourceModel.profile_type_list
         if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
             raise ValueError("'STARLETS' must be the only source model list for sparse fit")
-        source_profile = self.SourceModel.func_list[0]
 
         lens_light_model_list = self.LensLightModel.profile_type_list
         if len(lens_light_model_list) > 0:
-            if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
-                raise ValueError("'STARLETS' must be the only source model list for sparse fit")
-            lens_light_profile = self.LensLightModel.func_list[0]
+            if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) != 1:
+                raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
+            raise NotImplementedError("Sparse optimization for source and lens light not yet implemented in SLITronomy")
+            # lens_light_profile_class = 
+            # self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, psf_class=self.PSF, 
+            #                                            likelihood_mask=self.likelihood_mask, **kwargs_sparse_solver)
         else:
-            lens_light_profile = None
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, psf_class=self.PSF, 
+                                                   likelihood_mask=self.likelihood_mask, **kwargs_sparse_solver)
+        self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
-        self._subgrid_res_source = subgrid_res_source
-        self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=subgrid_res_source, 
-                                               likelihood_mask=self.likelihood_mask, minimal_source_plane=minimal_source_plane,
-                                               min_num_pix_source=min_num_pix_source, matrix_prod=True)
-        self.sparseSolver = SparseSolver(data_class, source_profile, psf_class=psf_class,
-                                         lens_light_profile_class=lens_light_profile, likelihood_mask=self.likelihood_mask, 
-                                         **kwargs_sparse_solver)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
                                   unconvolved=False, de_lensed=False, k=None, re_sized=True, original_grid=True):
@@ -78,6 +74,8 @@ class ImageSparseFit(ImageModel):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
+        :param re_sized: returns light distribution on grid with original resolution (if subgrid_res_source > 1)
+        :param original_grid: returns light distribution on the original grid (like before reduction to minimal source plane by solver)
         :return: 1d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
@@ -119,25 +117,18 @@ class ImageSparseFit(ImageModel):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        model, param, n_pixels_source = self.solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        model, param, n_pixels_source = self._solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         cov_param = None
         _, _ = self.update_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, n_pixels_source)
         return model, model_error
 
-    def solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
+    def _solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
         """
 
         :return: 2d numpy array, 3d numpy array
         """
-        kwargs_source_profile = kwargs_source[0]  # select first profile, should be pixel-based
-        if kwargs_lens_light is None or len(kwargs_lens_light) == 0:
-            kwargs_lens_light_profile = None
-        else:
-            kwargs_lens_light_profile = kwargs_lens_light[0]
-        # update the source <-> image plane mapping
-        self.lensingOperator.update_mapping(kwargs_lens)
         # solve using sparsity as a prior for surface brightness distributions
-        image_model, source_model, _, param = self.sparseSolver.solve(self.lensingOperator, kwargs_source_profile, kwargs_lens_light_profile)
+        image_model, source_model, _, param = self.sparseSolver.solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         n_pixels_source = source_model.size
         return image_model, param, n_pixels_source
 
@@ -224,15 +215,10 @@ class ImageSparseFit(ImageModel):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0
-        # num += self._source_num_param_linear(kwargs_source)
         num += self.SourceModel.num_param_linear(kwargs_source)
         num += self.LensLightModel.num_param_linear(kwargs_lens_light)
         num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
         return num
-
-    # def _source_num_param_linear(self, kwargs_source):
-    #     # TODO : adapt to 'synthesis' formulation
-    #     return self.num_data_evaluate
 
     def update_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, n_pixels_source=None):
         """

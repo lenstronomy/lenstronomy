@@ -140,7 +140,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, l
 
 
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
-                  band_index=0, subgrid_res_source=1, kwargs_sparse_solver={}):
+                  band_index=0, kwargs_sparse_solver={}):
     """
 
 
@@ -171,10 +171,9 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
         if not is_pixel_source and not is_pixel_lens:
             raise ValueError("Image type 'single-band-sparse' only supported with 'STARLETS' light model")
 
-        from slitronomy.ImSim.single_band_sparse_model import SingleBandMultiModelSparse
+        from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModelSparse
         multiband = SingleBandMultiModelSparse(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                               band_index=band_index, subgrid_res_source=subgrid_res_source,
-                                               kwargs_sparse_solver=kwargs_sparse_solver)
+                                               band_index=band_index, kwargs_sparse_solver=kwargs_sparse_solver)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

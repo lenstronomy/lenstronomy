@@ -36,6 +36,12 @@ class PixelKernelConvolution(object):
         self._type = convolution_type
         self._pre_computed = False
 
+    def copy_transpose(self):
+        """
+        returns copy of the class with kernel set to the transpose of original one
+        """
+        return PixelKernelConvolution(self._kernel.T, convolution_type=self._type)
+
     def convolution2d(self, image):
         """
 

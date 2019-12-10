@@ -26,6 +26,15 @@ class TestPixelKernelConvolution(object):
         image_convolved = pixel_conv.convolution2d(self.model)
         npt.assert_almost_equal(np.sum(image_convolved), np.sum(self.model), decimal=2)
 
+    def test_copy_transpose(self):
+        kernel = np.zeros((3, 3))
+        kernel[1, 1] = 1
+        pixel_conv = PixelKernelConvolution(kernel=kernel)
+        pixel_conv_t = pixel_conv.copy_transpose()
+        image_convolved = pixel_conv.convolution2d(self.model)
+        image_convolved_t = pixel_conv_t.convolution2d(self.model)
+        npt.assert_equal(image_convolved, image_convolved_t)
+
 
 class TestSubgridKernelConvolution(object):
 

@@ -13,7 +13,10 @@ _force_no_pysap = False
 
 class Starlets(object):
     """
+    Implementation of the Isotropic Undecimated Walevet Transform (aka "starlet") 
+    using the 'a trous' algorithm.
 
+    Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
     param_names = ['coeffs', 'n_scales', 'n_pixels']
     lower_limit_default = {'coeffs': [0], 'n_scales': 2, 'n_pixels': 10}

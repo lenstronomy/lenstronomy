@@ -559,23 +559,3 @@ def convert_bool_list(n, k=None):
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list
-
-
-def spectral_norm(num_pix, operator, inverse_operator, num_iter=20, tol=1e-10):
-    """compute spectral norm from operator and its inverse"""
-    random_array = np.random.randn(num_pix, num_pix)
-    norm = np.linalg.norm(random_array)
-    random_array /= norm
-
-    i = 0
-    err = abs(tol)
-    while i < num_iter and err >= tol:
-        # print(i, norm)
-        coeffs = operator(random_array)
-        random_array = inverse_operator(coeffs)
-        norm_new = np.linalg.norm(random_array)
-        random_array /= norm_new
-        err = abs(norm_new - norm)/norm_new
-        norm = norm_new
-        i += 1
-    return norm

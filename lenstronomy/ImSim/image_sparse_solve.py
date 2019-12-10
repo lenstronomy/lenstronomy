@@ -40,6 +40,9 @@ class ImageSparseFit(ImageModel):
                                              lens_light_model_class=lens_light_model_class,
                                              point_source_class=point_source_class, extinction_class=extinction_class, kwargs_numerics=kwargs_numerics)
         
+        # TODO : implement support for numba convolution
+        convolution_class = PixelKernelConvolution(self.PSF.kernel_point_source, convolution_type='fft_static')
+
         source_model_list = self.SourceModel.profile_type_list
         if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
             raise ValueError("'STARLETS' must be the only source model list for sparse fit")
@@ -54,7 +57,8 @@ class ImageSparseFit(ImageModel):
             #                                            likelihood_mask=self.likelihood_mask, **kwargs_sparse_solver)
         else:
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, psf_class=self.PSF, 
-                                                   likelihood_mask=self.likelihood_mask, **kwargs_sparse_solver)
+                                                   convolution_class=convolution_class, likelihood_mask=self.likelihood_mask, 
+                                                   **kwargs_sparse_solver)
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
 

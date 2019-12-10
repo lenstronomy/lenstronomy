@@ -4,9 +4,9 @@ import numpy as np
 
 from lenstronomy.Util import util
 from lenstronomy.LightModel.Profiles import starlets_slit
+import slitronomy.Util.util as util_s 
 
-
-_force_no_pysap = False  # for debug only
+_force_no_pysap = False  # for debug only
 
 
 class Starlets(object):
@@ -101,9 +101,9 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: spectral norm
         """
-        if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales_cache:
+        if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales:
             self._spectral_norm = self._compute_spectral_norm(num_pix, n_scales, num_iter=20, tol=1e-10)
-            self._n_scales_cache = n_scales
+            self._n_scales = n_scales
         return self._spectral_norm
 
     def _inverse_transform(self, coeffs, n_scales):
@@ -143,7 +143,7 @@ class Starlets(object):
         """compute spectral norm of the starlet operator"""
         operator = lambda x: self.decomposition(x, n_scales)
         inverse_operator = lambda c: self.function(c, n_scales)
-        return util.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
+        return util_s.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
     def _pysap2coeffs(self, coeffs):
         """convert pySAP decomposition coefficients to numpy array"""

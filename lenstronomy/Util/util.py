@@ -7,7 +7,7 @@ this file contains standard routines
 import numpy as np
 import mpmath
 import itertools
-
+from scipy.optimize import minimize
 
 def merge_dicts(*dict_args):
     """
@@ -541,3 +541,29 @@ def convert_bool_list(n, k=None):
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list
+
+def compute_freeform_alpha(source_x, source_y, x_image, y_image, lensModel, kwargs_list):
+
+    """
+
+    :param source_x: x source position [arcsec]
+    :param source_y: y source position [arcsec]
+    :param xpos: x image location(s) [arcsec] (numpy array)
+    :param ypos: y image location(s) [arcsec] (numpy array)
+    :param lens_model_list: a list of other deflector models
+    :param kwargs_list: kwargs for other deflectors
+    :return: (alpha_x, alpha_y) deflections that map image positions to source position for FREEFORM lensmodel
+    """
+
+    def _func_to_minimize(alpha):
+        kwargs = [{'potential': 0, 'alpha_x': alpha[0], 'alpha_y': alpha[1]}] + kwargs_list
+        betax, betay = lensModel.ray_shooting(x_image, y_image, kwargs)
+        penalty = (betax - source_x) ** 2 + (betay - source_y) ** 2
+        return penalty
+
+    alpha_start = np.array([x_image, y_image])
+    [alpha_x, alpha_y] = minimize(_func_to_minimize, x0=alpha_start, method='Nelder-Mead')['x']
+
+    return alpha_x, alpha_y
+
+

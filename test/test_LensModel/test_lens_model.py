@@ -24,7 +24,7 @@ class TestLensModel(object):
                            'SHAPELETS_POLAR', 'DIPOLE',
                            'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL',
                            'MULTI_GAUSSIAN_KAPPA', 'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'CHAMELEON',
-                           'DOUBLE_CHAMELEON']
+                           'DOUBLE_CHAMELEON', 'FREEFORM']
         lensModel = LensModel(lens_model_list)
         assert len(lensModel.lens_model_list) == len(lens_model_list)
 

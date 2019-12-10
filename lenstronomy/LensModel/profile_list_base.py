@@ -204,6 +204,9 @@ class ProfileListBase(object):
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)
+        elif lens_type == 'FREEFORM':
+            from lenstronomy.LensModel.Profiles.free_form import FreeForm
+            return FreeForm()
         else:
             raise ValueError('%s is not a valid lens model' % lens_type)
 

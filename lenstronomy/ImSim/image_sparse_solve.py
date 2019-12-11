@@ -5,8 +5,8 @@ from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 
-from slitronomy.Optimization.sparse_solver import SparseSolverSource
-# from slitronomy.Optimization.sparse_solver import SparseSolverSourceLens
+from slitronomy.Optimization.solver_source import SparseSolverSource
+# from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 
 
 class ImageSparseFit(ImageModel):

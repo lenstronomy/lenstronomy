@@ -217,6 +217,8 @@ def test_re_size():
     grid[100, 50] = 4
     grid_small = image_util.re_size(grid, factor=2)
     assert grid_small[50][25] == 1
+    grid_same = image_util.re_size(grid, factor=1)
+    assert grid_same == grid
 
 
 def test_stack_images():

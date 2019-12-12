@@ -185,6 +185,8 @@ def re_size(image, factor=1):
     """
     if factor < 1:
         raise ValueError('scaling factor in re-sizing %s < 1' %factor)
+    elif factor == 1:
+        return image
     f = int(factor)
     nx, ny = np.shape(image)
     if int(nx/f) == nx/f and int(ny/f) == ny/f:

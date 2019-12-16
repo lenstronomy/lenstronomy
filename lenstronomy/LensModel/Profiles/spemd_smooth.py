@@ -23,7 +23,6 @@ class SPEMD_SMOOTH(LensProfileBase):
     critical density, is kappa(x1,x2)=q [u2+s2]^(-gam), where
     u2=[x1^2+x2^2/(arat^2)].
     #TODO test smoothing with NIE profile
-    #TODO redefine smoothing to be in units of angles and not square angle
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}

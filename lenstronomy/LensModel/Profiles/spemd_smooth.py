@@ -13,6 +13,17 @@ class SPEMD_SMOOTH(LensProfileBase):
 
     The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
     (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+
+
+    FASTELL has the following defintions:
+    The parameters are position (x1,x2), overall factor
+    (q), power (gam), axis ratio (arat) which is <=1, core radius
+    squared (s2), and the output potential (phi).
+    The projected mass density distribution, in units of the
+    critical density, is kappa(x1,x2)=q [u2+s2]^(-gam), where
+    u2=[x1^2+x2^2/(arat^2)].
+    #TODO test smoothing with NIE profile
+    #TODO redefine smoothing to be in units of angles and not square angle
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
@@ -37,7 +48,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param s_scale: smoothing scale in the center of the profile
+        :param s_scale: smoothing scale in the center of the profile (angle)
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
         :return: lensing potential
@@ -46,14 +57,14 @@ class SPEMD_SMOOTH(LensProfileBase):
         theta_E, gamma, q, phi_G, s_scale = self._parameter_constraints(theta_E, gamma, q, phi_G, s_scale)
         x_shift = x - center_x
         y_shift = y - center_y
-        q_fastell, gam = self.convert_params(theta_E, gamma, q)
+        q_fastell, gam, s2 = self.convert_params(theta_E, gamma, q, s_scale)
 
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
         x1 = cos_phi*x_shift+sin_phi*y_shift
         x2 = -sin_phi*x_shift+cos_phi*y_shift
         if self._fastell4py_bool and self.is_not_empty(x1, x2):
-            potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
+            potential = self.fastell4py.ellipphi(x1, x2, q_fastell, gam, arat=q, s2=s2)
             n = len(np.atleast_1d(x))
             if n <= 1:
                 if np.shape(x) == ():
@@ -83,7 +94,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         theta_E, gamma, q, phi_G, s_scale = self._parameter_constraints(theta_E, gamma, q, phi_G, s_scale)
         x_shift = x - center_x
         y_shift = y - center_y
-        q_fastell, gam = self.convert_params(theta_E, gamma, q)
+        q_fastell, gam, s2 = self.convert_params(theta_E, gamma, q, s_scale)
 
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
@@ -92,7 +103,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         x2 = -sin_phi*x_shift+cos_phi*y_shift
 
         if self._fastell4py_bool and self.is_not_empty(x1, x2):
-            f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s_scale)
+            f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s2)
         else:
             f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
             Warning("SPEMD model output replaced by zeros as fastell4py package is not installed!")
@@ -124,7 +135,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         y = np.array(y)
         x_shift = x - center_x
         y_shift = y - center_y
-        q_fastell, gam = self.convert_params(theta_E, gamma, q)
+        q_fastell, gam, s2 = self.convert_params(theta_E, gamma, q, s_scale)
 
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
@@ -133,7 +144,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         x2 = -sin_phi*x_shift+cos_phi*y_shift
         if self._fastell4py_bool and self.is_not_empty(x1, x2):
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam,
-                                                                                             arat=q, s2=s_scale)
+                                                                                             arat=q, s2=s2)
             n = len(np.atleast_1d(x))
             if n <= 1:
                 if np.shape(x) == ():
@@ -155,7 +166,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         return f_xx, f_yy, f_xy
 
     @staticmethod
-    def convert_params(theta_E, gamma, q):
+    def convert_params(theta_E, gamma, q, s_scale):
         """
         converts parameter defintions into quantities used by the FASTELL fortran library
 
@@ -166,7 +177,8 @@ class SPEMD_SMOOTH(LensProfileBase):
         """
         gam = (gamma-1)/2.
         q_fastell = (3-gamma)/2. * (theta_E ** 2 / q) ** gam
-        return q_fastell, gam
+        s2 = s_scale ** 2
+        return q_fastell, gam, s2
 
     @staticmethod
     def is_not_empty(x1, x2):

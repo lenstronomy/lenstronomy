@@ -106,7 +106,7 @@ class PositionLikelihood(object):
                 if verbose is True:
                     print('Image positions do not match to the same source position to the required precision. '
                           'Achieved: %s, Required: %s.' % (dist, tolerance))
-                return dist * 10**5
+                return dist * 10**3
         return 0
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):

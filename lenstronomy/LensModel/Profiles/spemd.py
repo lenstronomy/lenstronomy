@@ -20,7 +20,7 @@ class SPEMD(LensProfileBase):
     upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self.s2 = 0.00000001  # smoothing scale as used to numerically compute a power-law profile
+        self._s_scale = 0.0001  # smoothing scale as used to numerically compute a power-law profile
         self.spp = SPP()
         self.spemd_smooth = SPEMD_SMOOTH()
         super(SPEMD, self).__init__()
@@ -38,7 +38,7 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: lensing potential
         """
-        return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
+        return self.spemd_smooth.function(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
 
     def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -53,7 +53,7 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: deflection angles alpha_x, alpha_y
         """
-        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
+        return self.spemd_smooth.derivatives(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
@@ -68,7 +68,7 @@ class SPEMD(LensProfileBase):
         :param center_y: y-position of lens center
         :return: Hessian components f_xx, f_yy, f_xy
         """
-        return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self.s2, center_x, center_y)
+        return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
 
     def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """

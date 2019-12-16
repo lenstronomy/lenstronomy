@@ -354,8 +354,6 @@ class LensModelExtensions(object):
         cos_dphi_rad_dtan = np.minimum(cos_dphi_rad_dtan, 1)
         dphi_rad_dtan = np.arccos(cos_dphi_rad_dtan) / smoothing_3rd
 
-        #dphi_rad_dtan = dphi_tan_dtan
-        #dphi_tan_drad = dphi_rad_drad
         return lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan
 
     def curved_arc_estimate(self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001):

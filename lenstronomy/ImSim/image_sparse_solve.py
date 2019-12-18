@@ -1,6 +1,7 @@
 import numpy as np
 
-from lenstronomy.ImSim.image_model import ImageModel
+# from lenstronomy.ImSim.image_model import ImageModel
+from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
@@ -9,7 +10,8 @@ from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 
 
-class ImageSparseFit(ImageModel):
+# class ImageSparseFit(ImageModel):
+class ImageSparseFit(ImageLinearFit):
     """
     #TODO
     linear version class, inherits ImageModel
@@ -192,25 +194,4 @@ class ImageSparseFit(ImageModel):
             n_pixels_lens_light = fixed_param[1]
             kwargs_lens_light[0]['n_pixels'] = n_pixels_lens_light
         return kwargs_source, kwargs_lens_light
-
-    def image2array_masked(self, image):
-        """
-        returns 1d array of values in image that are not masked out for the likelihood computation/linear minimization
-        :param image: 2d numpy array of full image
-        :return: 1d array
-        """
-        array = util.image2array(image)
-        return array[self._mask1d]
-
-    def array_masked2image(self, array):
-        """
-
-        :param array: 1d array of values not masked out (part of linear fitting)
-        :return: 2d array of full image
-        """
-        nx, ny = self.Data.num_pixel_axes
-        grid1d = np.zeros(nx * ny)
-        grid1d[self._mask1d] = array
-        grid2d = util.array2image(grid1d, nx, ny)
-        return grid2d
         

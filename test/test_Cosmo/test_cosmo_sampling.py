@@ -33,7 +33,9 @@ class TestCosmography(object):
         n_burn = 2
         mean_start = [self.H0_true]
         sigma_start = [5]
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                       'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian','bandwidth': 1}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_only", flat=True,
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
@@ -41,7 +43,7 @@ class TestCosmography(object):
 
         mean_start = [self.H0_true, self.omega_m_true]
         sigma_start = [5, 0.1]
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_omega_m",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
@@ -49,7 +51,7 @@ class TestCosmography(object):
 
         mean_start = [self.H0_true]
         sigma_start = [5]
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="fix_omega_mh2",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         samples = mcmc_sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start)
@@ -57,7 +59,7 @@ class TestCosmography(object):
 
         mean_start = [self.H0_true, self.omega_m_true, 1 - self.omega_m_true]
         sigma_start = [5, 0.1, 0.1]
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples,
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list,
                                    sampling_option="H0_omega_m_omega_de",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
@@ -65,7 +67,9 @@ class TestCosmography(object):
         assert len(samples) == n_walkers * n_run
 
     def test_sampling_H0_only(self):
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_only",
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                             'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_only",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
         n_walkers = 10
         n_run = 10
@@ -79,7 +83,9 @@ class TestCosmography(object):
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
 
     def test_sampling_H0_omega_m(self):
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                             'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_omega_m",
                                    omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
         n_walkers = 10
         n_run = 10
@@ -91,7 +97,9 @@ class TestCosmography(object):
         npt.assert_almost_equal(H0_mean/self.H0_true, 1, decimal=1)
 
     def test_sampling_fix_omega_mh2(self):
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="fix_omega_mh2",
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                             'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="fix_omega_mh2",
                                    omega_m_fixed=self.omega_m_true,
                                    omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
         n_walkers = 10
@@ -106,9 +114,11 @@ class TestCosmography(object):
         npt.assert_almost_equal(sigma, 1.5, decimal=0)
 
     def test_sampling_curvature(self):
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m_omega_de",
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                             'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_omega_m_omega_de",
                                    omega_m_fixed=self.omega_m_true,
-                                   omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2)
+                                   omega_mh2_fixed=self.omega_m_true * (self.H0_true / 100) ** 2, flat=False)
         n_walkers = 10
         n_run = 10
         n_burn = 10
@@ -121,9 +131,10 @@ class TestCosmography(object):
         npt.assert_almost_equal(Om0_mean / self.omega_m_true, 1, decimal=0)
 
     def test_sampling_H0_omega_m_sklearn(self):
-        mcmc_sampler = MCMCSampler(self.z_L, self.z_S, self.D_d_samples, self.D_dt_samples, sampling_option="H0_omega_m",
-                                   omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2,
-                                   kde_type='gaussian', bandwidth=10)
+        kwargs_lens_list = [{'z_d': self.z_L, 'z_s': self.z_S, 'D_d_sample': self.D_d_samples,
+                             'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'gaussian', 'bandwidth': 10}]
+        mcmc_sampler = MCMCSampler(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_omega_m",
+                                   omega_m_fixed=self.omega_m_true, omega_mh2_fixed=self.omega_m_true*(self.H0_true/100)**2)
         n_walkers = 10
         n_run = 10
         n_burn = 10
@@ -152,9 +163,10 @@ class TestCosmoLikelihood(object):
         self.D_dt_true = lensCosmo.D_dt
         D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
-        self.cosmoL = CosmoLikelihood(z_L, z_S, D_d_samples, D_dt_samples, sampling_option="H0_only", omega_m_fixed=0.3,
-                                 omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, kde_type='scipy_gaussian',
-                                 bandwidth=1, flat=True)
+        kwargs_lens_list = [{'z_d': z_L, 'z_s': z_S, 'D_d_sample': D_d_samples,
+                             'D_delta_t_sample': D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        self.cosmoL = CosmoLikelihood(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_only", omega_m_fixed=0.3,
+                                 omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, flat=True)
 
     def test_prior_H0(self):
         logL, bool = CosmoLikelihood.prior_H0(H0=10, H0_min=50, H0_max=100)
@@ -205,9 +217,10 @@ class TestRaise(unittest.TestCase):
         self.D_dt_true = lensCosmo.D_dt
         D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
-        self.cosmoL = CosmoLikelihood(z_L, z_S, D_d_samples, D_dt_samples, sampling_option="H0_only", omega_m_fixed=0.3,
-                                      omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, kde_type='scipy_gaussian',
-                                      bandwidth=1, flat=True)
+        kwargs_lens_list = [{'z_d': z_L, 'z_s': z_S, 'D_d_sample': D_d_samples,
+                             'D_delta_t_sample': D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        self.cosmoL = CosmoLikelihood(kwargs_lens_list=kwargs_lens_list, sampling_option="H0_only", omega_m_fixed=0.3,
+                                      omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, flat=True)
 
         self.cosmoL.sampling_option = 'WRONG'
 

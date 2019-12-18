@@ -17,7 +17,7 @@ class KDELikelihood(object):
             'scipy_gaussian' or
             ['gaussian'|'tophat'|'epanechnikov'|'exponential'|'linear'|'cosine']
             Default is 'gaussian'.
-        :param bandwidth: width of kernel (in same units as the angular diameter quantities
+        :param bandwidth: width of kernel (in same units as the angular diameter quantities)
         """
         values = np.vstack([D_d_sample, D_delta_t_sample])
         if kde_type == 'scipy_gaussian':

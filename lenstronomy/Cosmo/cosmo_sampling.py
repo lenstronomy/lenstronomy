@@ -6,24 +6,94 @@ from lenstronomy.Cosmo.lcdm import LCDM
 from lenstronomy.Cosmo.kde_likelihood import KDELikelihood
 
 
+class LensLikelihood(object):
+    """
+    class for evaluating single lens likelihood
+    """
+    def __init__(self, z_d, z_s, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1, flat=True):
+        """
+
+        :param z_d: lens redshift
+        :param z_s: source redshift
+        :param D_d_sample: angular diameter to the lens posteriors (in physical Mpc)
+        :param D_delta_t_sample: time-delay distance posteriors (in physical Mpc)
+        :param kde_type: kernel density estimator type (see KDELikelihood class)
+        :param bandwidth: width of kernel (in same units as the angular diameter quantities)
+        :param flat: boolean, flat or curved cosmology
+        """
+        self._z_d = z_d
+        self._z_s = z_s
+        self._cosmoProp = LCDM(z_lens=z_d, z_source=z_s, flat=flat)
+        self._kde_likelihood = KDELikelihood(D_d_sample, D_delta_t_sample, kde_type=kde_type, bandwidth=bandwidth)
+
+    def lens_log_likelihood(self, H0, omega_m, Ode0=None):
+        Dd = self._cosmoProp.D_d(H0, omega_m, Ode0)
+        Ddt = self._cosmoProp.D_dt(H0, omega_m, Ode0)
+        return self._kde_likelihood.logLikelihood(Dd, Ddt)
+
+
+class LensSampleLikelihood(object):
+    """
+    class to evaluate the likelihood of a cosmology given a sample of angular diameter posteriors
+    Currently this class does not include possible covariances between the lens samples
+    """
+    def __init__(self, kwargs_lens_list, flat=True):
+        """
+
+        :param kwargs_lens_list: keyword argument list specifying the arguments of the LensLikelihood class
+        :param flat: boolean, flat or curved cosmology
+        """
+        self._lens_list = []
+        for kwargs_lens in kwargs_lens_list:
+            self._lens_list.append(LensLikelihood(flat=flat, **kwargs_lens))
+
+    def log_likelihood(self, H0, omega_m, Ode0=None):
+        """
+
+        :param H0: Hubble constant in km/s/Mpc
+        :param omega_m: Omega_m
+        :param Ode0: dark energy density
+        :return: log likelihood of the combined lenses
+        """
+        logL = 0
+        for lens in self._lens_list:
+            logL += lens.lens_log_likelihood(H0, omega_m, Ode0)
+        return logL
+
+
 class CosmoLikelihood(object):
     """
     this class contains the likelihood function of the Strong lensing analysis
     """
 
-    def __init__(self, z_d, z_s, D_d_sample, D_delta_t_sample, sampling_option="H0_only", omega_m_fixed=0.3,
-                 omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1, flat=True):
+    def __init__(self, kwargs_lens_list, sampling_option="H0_only", omega_m_fixed=0.3,
+                 omega_lambda_fixed=0.7, omega_mh2_fixed=0.14157, flat=True):
         """
-        initializes all the classes needed for the chain (i.e. redshifts of lens and source)
+
+        :param kwargs_lens_list: keyword argument list specifying the arguments of the LensLikelihood class
+        :param sampling_option: string indicating what cosmology to sample from, supported are: 'H0_only', 'H0_omega_m',
+         "fix_omega_mh2", 'H0_omega_m_omega_de'
+        :param omega_m_fixed: float, value to be fixed if Omega_m is kept fixed
+        :param omega_lambda_fixed: float, value to be fixed if Omega_lambda is kept fixed
+        :param omega_mh2_fixed: float, value to be fixed if Omega_m h**2 is held fixed
+        :param flat: boolean, flat or curved cosmology
         """
-        self.z_d = z_d
-        self.z_s = z_s
-        self.cosmoProp = LCDM(z_lens=z_d, z_source=z_s, flat=flat)
-        self._kde_likelihood = KDELikelihood(D_d_sample, D_delta_t_sample, kde_type=kde_type, bandwidth=bandwidth)
+
+        self._likelihoodLensSample = LensSampleLikelihood(kwargs_lens_list, flat=flat)
         self.sampling_option = sampling_option
         self.omega_m_fixed = omega_m_fixed
         self.omega_mh2_fixed = omega_mh2_fixed
         self._omega_lambda_fixed = omega_lambda_fixed
+
+    def lcdm_likelihood(self, H0, omega_m, Ode0):
+        """
+
+        :param H0:
+        :param omega_m:
+        :param Ode0:
+        :return:
+        """
+        return self._likelihoodLensSample.log_likelihood(H0, omega_m, Ode0)
 
     def X2_chain_H0(self, args):
         """
@@ -35,7 +105,7 @@ class CosmoLikelihood(object):
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_H0(H0)
         if bool is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+            logL += self.lcdm_likelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_omega_mh2(self, args):
@@ -50,7 +120,7 @@ class CosmoLikelihood(object):
         Ode0 = self._omega_lambda_fixed
         logL, bool = self.prior_omega_mh2(h, omega_m)
         if bool is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+            logL += self.lcdm_likelihood(H0, omega_m, Ode0)
         return logL, None
 
     def X2_chain_H0_omgega_m(self, args):
@@ -66,7 +136,7 @@ class CosmoLikelihood(object):
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
         logL = logL_H0 + logL_omega_m
         if bool_H0 is True and bool_omega_m is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+            logL += self.lcdm_likelihood(H0, omega_m, Ode0)
         return logL + logL_H0 + logL_omega_m, None
 
     def X2_chain_H0_omgega_m_omega_de(self, args):
@@ -81,24 +151,8 @@ class CosmoLikelihood(object):
         logL_omega_m, bool_omega_m = self.prior_omega_m(omega_m)
         logL = logL_H0 + logL_omega_m
         if bool_H0 is True and bool_omega_m is True:
-            logL += self.LCDM_lensLikelihood(H0, omega_m, Ode0)
+            logL += self.lcdm_likelihood(H0, omega_m, Ode0)
         return logL + logL_H0 + logL_omega_m, None
-
-    def LCDM_lensLikelihood(self, H0, omega_m, Ode0=None):
-        Dd = self.cosmoProp.D_d(H0, omega_m, Ode0)
-        Ddt = self.cosmoProp.D_dt(H0, omega_m, Ode0)
-        return self.lensLikelihood(Dd, Ddt)
-
-    def lensLikelihood(self, Dd, Ddt):
-        """
-
-        :param alpha:
-        :param beta:
-        :param sigma_D:
-        :return:
-        """
-        logL = self._kde_likelihood.logLikelihood(Dd, Ddt)
-        return logL
 
     @staticmethod
     def prior_H0(H0, H0_min=0, H0_max=200):
@@ -106,7 +160,7 @@ class CosmoLikelihood(object):
         checks whether the parameter vector has left its bound, if so, adds a big number
         """
         if H0 < H0_min or H0 > H0_max:
-            penalty = -10**15
+            penalty = -np.inf
             return penalty, False
         else:
             return 0, True
@@ -121,7 +175,7 @@ class CosmoLikelihood(object):
         :return:
         """
         if omega_m < omega_m_min or omega_m > omega_m_max:
-            penalty = -10**15
+            penalty = -np.inf
             return penalty, False
         else:
             return 0, True
@@ -131,7 +185,7 @@ class CosmoLikelihood(object):
 
         """
         if omega_m > 1 or h > h_max:
-            penalty = -10**15
+            penalty = -np.inf
             return penalty, False
         else:
             prior = np.log(np.sqrt(1 + 4*self.omega_mh2_fixed**2/h**6))
@@ -200,15 +254,13 @@ class MCMCSampler(object):
     """
     class which executes the different sampling  methods
     """
-    def __init__(self, z_d, z_s, D_d_sample, D_dt_sample, sampling_option="H0_only", omega_m_fixed=0.3,
-                 omega_mh2_fixed=0.14157, kde_type='scipy_gaussian', bandwidth=1, flat=True, lower_limit=[0, 0, 0],
-                 upper_limit=[200, 1, 1]):
+    def __init__(self, kwargs_lens_list, sampling_option="H0_only", omega_m_fixed=0.3, omega_mh2_fixed=0.14157,
+                 flat=True, lower_limit=[0, 0, 0], upper_limit=[200, 1, 1]):
         """
         initialise the classes of the chain and for parameter options
         """
-        self.chain = CosmoLikelihood(z_d, z_s, D_d_sample, D_dt_sample, sampling_option=sampling_option,
-                                     omega_m_fixed=omega_m_fixed, omega_mh2_fixed=omega_mh2_fixed,
-                                     kde_type=kde_type, bandwidth=bandwidth, flat=flat)
+        self.chain = CosmoLikelihood(kwargs_lens_list, sampling_option=sampling_option, omega_m_fixed=omega_m_fixed,
+                                     omega_mh2_fixed=omega_mh2_fixed, flat=flat)
         self.cosmoParam = CosmoParam(sampling_option, lower_limit=lower_limit, upper_limit=upper_limit)
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start):

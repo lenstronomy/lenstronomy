@@ -37,16 +37,16 @@ class TestSIE(object):
             values_spemd = self.spemd.function(x, y, theta_E, gamma, e1, e2)
             assert values == values_spemd
 
-            values = self.sie_nie.function(x, y, theta_E, e1, e2)
+            values_nie = self.sie_nie.function(x, y, theta_E, e1, e2)
             s_scale = 0.0000001
             values_spemd = self.nie.function(x, y, theta_E, e1, e2, s_scale)
-            npt.assert_almost_equal(values, values_spemd, decimal=6)
+            npt.assert_almost_equal(values_nie, values_spemd, decimal=6)
 
         def test_derivatives(self):
             x = np.array([1])
             y = np.array([2])
             theta_E = 1.
-            q = 0.9
+            q = 0.7
             phi_G = 1.
             e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             values = self.sie.derivatives(x, y, theta_E, e1, e2)
@@ -63,7 +63,7 @@ class TestSIE(object):
             x = np.array([1])
             y = np.array([2])
             theta_E = 1.
-            q = 0.9
+            q = 0.7
             phi_G = 1.
             e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             values = self.sie.hessian(x, y, theta_E, e1, e2)

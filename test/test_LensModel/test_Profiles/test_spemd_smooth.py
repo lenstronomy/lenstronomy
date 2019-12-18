@@ -40,7 +40,7 @@ class TestSPEMD(object):
             delta_f_nie = values_nie[0] - values_nie[1]
             npt.assert_almost_equal(delta_f, delta_f_nie, decimal=5)
         else:
-            assert values == 0
+            npt.assert_almost_equal(values, 0, decimal=5)
 
     def test_derivatives(self):
         x = np.array([1])

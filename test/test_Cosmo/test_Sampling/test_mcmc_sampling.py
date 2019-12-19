@@ -26,9 +26,6 @@ class TestMCMCSampling(object):
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
-        self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'D_d_sample': self.D_d_samples,
-                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
-
     def test_mcmc_emcee(self):
         n_walkers = 6
         n_run = 2

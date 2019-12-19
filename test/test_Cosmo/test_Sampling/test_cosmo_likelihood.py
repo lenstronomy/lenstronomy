@@ -49,7 +49,13 @@ class TestCosmoLikelihood(object):
         logl = cosmoL.likelihood(args=args)
         assert logl == -np.inf
 
-        kwargs = {'h0': 100, 'om': .3, 'ok': -0.5}
+        kwargs = {'h0': 100, 'om': .1, 'ok': -0.6}
+        args = cosmoL._param.kwargs2args(kwargs)
+        logl = cosmoL.likelihood(args=args)
+        assert logl == -np.inf
+
+        # outside the prior limit
+        kwargs = {'h0': 1000, 'om': .3, 'ok': -0.1}
         args = cosmoL._param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
         assert logl == -np.inf

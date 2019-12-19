@@ -152,7 +152,7 @@ class CosmoParam(object):
         elif self._cosmology == "oLCDM":
             cosmo = LambdaCDM(H0=kwargs['h0'], Om0=kwargs['om'], Ode0=1.0 - kwargs['om'] - kwargs['ok'])
         else:
-            raise ValueError("I don't know the cosmology %s" % self._cosmology)
+            raise ValueError("Cosmology %s is not supported" % self._cosmology)
         return cosmo
 
     @property

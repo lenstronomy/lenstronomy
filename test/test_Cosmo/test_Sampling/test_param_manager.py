@@ -53,7 +53,7 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             CosmoParam(cosmology='wrong', kwargs_lower={}, kwargs_upper={}, kwargs_fixed={}, ppn_sampling=True)
         with self.assertRaises(ValueError):
-            param = CosmoParam(cosmology='LCDM', kwargs_lower={}, kwargs_upper={}, kwargs_fixed={}, ppn_sampling=True)
+            param = CosmoParam(cosmology='FLCDM', kwargs_lower={}, kwargs_upper={}, kwargs_fixed={}, ppn_sampling=True)
             param._cosmology = 'wrong'
             param.cosmo(kwargs={})
 

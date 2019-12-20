@@ -27,7 +27,7 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     flux = lightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
     flux_norm = np.sum(flux[mask == 1]) / np.sum(mask)
     flux /= flux_norm
-    from lenstronomy.LensModel.numerical_profile_integrals import ConvergenceIntegrals
+    from lenstronomy.LensModel.convergence_integrals import ConvergenceIntegrals
     integral = ConvergenceIntegrals()
 
     # compute lensing quantities with subgrid

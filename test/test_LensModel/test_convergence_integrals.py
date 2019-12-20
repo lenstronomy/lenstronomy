@@ -1,4 +1,4 @@
-from lenstronomy.LensModel.numerical_profile_integrals import ConvergenceIntegrals
+from lenstronomy.LensModel.convergence_integrals import ConvergenceIntegrals
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sis import SIS
 import numpy.testing as npt

@@ -1,4 +1,4 @@
-from lenstronomy.LensModel.convergence_integrals import ConvergenceIntegrals
+from lenstronomy.LensModel import convergence_integrals
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sis import SIS
 import numpy.testing as npt
@@ -10,7 +10,7 @@ class TestConvergenceIntegrals(object):
     test angular to mass unit conversions
     """
     def setup(self):
-        self.integral = ConvergenceIntegrals()
+        pass
 
     def test_potential_from_kappa(self):
 
@@ -22,8 +22,8 @@ class TestConvergenceIntegrals(object):
         f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
         f_ = sis.function(x_grid, y_grid, **kwargs_sis)
         f_ = util.array2image(f_)
-        kappa = (f_xx + f_yy) / 2.
-        potential_num = self.integral.potential_from_kappa(kappa, x_grid, y_grid, deltaPix)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        potential_num = convergence_integrals.potential_from_kappa(kappa, deltaPix)
 
         x1, y1 = 560, 500
         x2, y2 = 550, 500
@@ -41,8 +41,8 @@ class TestConvergenceIntegrals(object):
         f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
         f_x, f_y = sis.derivatives(x_grid, y_grid, **kwargs_sis)
         f_x = util.array2image(f_x)
-        kappa = (f_xx + f_yy) / 2.
-        f_x_num, f_y_num = self.integral.deflection_from_kappa(kappa, x_grid, y_grid, deltaPix)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa(kappa, deltaPix)
 
         x1, y1 = 550, 500
         # test relative potential at two different point way inside the kappa map
@@ -64,12 +64,12 @@ class TestConvergenceIntegrals(object):
         f_xx, f_yy, _ = sersic_lens.hessian(x_grid, y_grid, **kwargs_lens)
         f_x, f_y = sersic_lens.derivatives(x_grid, y_grid, **kwargs_lens)
         f_x = util.array2image(f_x)
-        kappa = (f_xx + f_yy) / 2.
-        f_x_num, f_y_num = self.integral.deflection_from_kappa(kappa, x_grid, y_grid, deltaPix)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa(kappa,  deltaPix)
         x1, y1 = 500, 550
         x0, y0 = int(numPix/2.), int(numPix/2.)
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
-        f_num = self.integral.potential_from_kappa(kappa, x_grid, y_grid, deltaPix)
+        f_num = convergence_integrals.potential_from_kappa(kappa, deltaPix)
         f_ = sersic_lens.function(x_grid2d[x1, y1], y_grid2d[x1, y1], **kwargs_lens)
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)

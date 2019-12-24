@@ -126,8 +126,8 @@ class ImageSparseFit(ImageLinearFit):
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         model, param, fixed_param = self._solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         cov_param = None
-        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         _, _ = self.update_fixed_kwargs(fixed_param, kwargs_source, kwargs_lens_light)
+        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return model, model_error
 
     def _solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
@@ -186,7 +186,7 @@ class ImageSparseFit(ImageLinearFit):
         :param param: some parameter vector corresponding for updating kwargs
         :return: updated list of kwargs with linear parameter values
         """
-        # TODO : write this method in the spirit than super().update_linear_kwargs() 
+        # TODO : write this method in the same spirit as super().update_linear_kwargs() 
         if fixed_param[0] is not None:
             n_pixels_source = fixed_param[0]
             kwargs_source[0]['n_pixels'] = n_pixels_source

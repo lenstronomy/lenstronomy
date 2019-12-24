@@ -212,7 +212,7 @@ class SingleBandMultiModelSparse(ImageSparseFit):
                                                    kwargs_sparse_solver=kwargs_sparse_solver)
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                           kwargs_extinction=None, kwargs_special=None, inv_bool=False):
+                           kwargs_extinction=None, kwargs_special=None):
         """
         computes the image (lens and source surface brightness with a given lens model).
         The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)

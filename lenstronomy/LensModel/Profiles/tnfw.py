@@ -46,8 +46,7 @@ class TNFW(LensProfileBase):
         R = np.sqrt(x_ ** 2 + y_ ** 2)
         R = np.maximum(R, self._s * Rs)
         f_ = self.nfwPot(R, Rs, rho0_input, r_trunc)
-        Warning('the potential of a truncated NFW profile is not implemented and may lead to crucial inaccuracies!')
-        #TODO: truncated NFW potential not in place yet!
+
         return f_
 
     def L(self, x, tau):
@@ -323,94 +322,58 @@ class TNFW(LensProfileBase):
                 (tau ** 2 + 1 + 2 * (x ** 2 - 1)) * self.F(x) + tau * np.pi + (tau ** 2 - 1) * np.log(tau) +
                 np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self.L(x, tau) * (tau ** 2 - 1) * tau ** -1))
 
-    def _h(self, X, tau):
+    @staticmethod
+    def _cos_function(x):
+
+        if isinstance(x, np.ndarray) or isinstance(x, list):
+            out = np.empty_like(x)
+            inds1 = np.where(x < 1)
+            inds2 = np.where(x >= 1)
+
+            out[inds1] = -np.arccosh(1 / x[inds1]) ** 2
+            out[inds2] = np.arccos(1 / x[inds2]) ** 2
+
+        elif isinstance(x, float) or isinstance(x, int):
+            if x < 1:
+                out = -np.arccosh(1 / x) ** 2
+            else:
+                out = np.arccos(1 / x) ** 2
+
+        return out
+
+    def _h(self, x, tau):
 
         """
-        a horrible expression for the integral to compute potential
+        expression for the integral to compute potential
 
         :param x: R/Rs
         :param tau: t/Rs
         :type x: float >0
         """
-        X = np.maximum(X, self._s)
-        def cos_func(y):
-            if isinstance(y, float) or isinstance(y, int):
-                if y > 1:
-                    return np.arccosh(y)
-                else:
-                    return np.arccos(y)
-            else:
-                values = np.ones_like(y)
-                inds1 = np.where(y < 1)
-                inds2 = np.where(y > 1)
-                values[inds1] = np.arccos(y[inds1])
-                # values[inds2] = np.arccosh(y[inds2])
-                values[inds2] = np.arccos((1 - y[inds2]) ** .5)
-                return values
+        x = np.maximum(x, self._s)
 
-        def nfw_func(x):
-            if isinstance(x,float) or isinstance(x,int):
-                if x<1:
-                    return np.log(x / 2.) ** 2 - np.arccosh(1. / x) ** 2
-                else:
-                    return np.log(x / 2.)**2 - np.arccos(1. /x)**2
-            else:
-                inds1 = np.where(x < 1)
-                inds2 = np.where(x >= 1)
-                y = np.zeros_like(x)
-                y[inds1] = np.log(x[inds1] / 2.) ** 2 - np.arccosh(1. / x[inds1]) ** 2
-                y[inds2] = np.log(x[inds2] / 2.) ** 2 - np.arccosh(1. / x[inds2]) ** 2
+        u = x ** 2
+        t2 = tau ** 2
+        Lx = self.L(x, tau)
+        Fx = self.F(x)
 
-                return y
-
-        def tnfw_func(x,tau):
-            x = np.maximum(x, self._s)
-            u = x**2
-            t2 = tau**2
-            Lx = self.L(u**.5, tau)
-
-            return (t2 + 1) ** -2 * (
+        return (t2 + 1) ** -2 * (
                 2 * t2 * np.pi * (tau - (t2 + u) ** .5 + tau * np.log(tau + (t2 + u) ** .5))
                 +
                 2 * (t2 - 1) * tau * (t2 + u) ** .5 * Lx
                 +
                 t2 * (t2 - 1) * Lx ** 2
                 +
-                4 * t2 * (u - 1) * self.F(u**.5)
+                4 * t2 * (u - 1) * Fx
                 +
-                t2 * (t2 - 1) * (cos_func(u ** -0.5)) ** 2
+                t2 * (t2 - 1) * self._cos_function(x)
                 +
                 t2 * ((t2 - 1) * np.log(tau) - t2 - 1) * np.log(u)
                 -
                 t2 * (
-                (t2 - 1) * np.log(tau) * np.log(4 * tau) + 2 * np.log(0.5 * tau) - 2 * tau * (tau - np.pi) * np.log(
+                        (t2 - 1) * np.log(tau) * np.log(4 * tau) + 2 * np.log(0.5 * tau) - 2 * tau * (
+                            tau - np.pi) * np.log(
                     tau * 2)))
-
-        c = 1e-9
-        rescale = 1
-
-        if np.any(X-c<1):
-
-            warnings.warn('Truncated NFW potential not yet implemented for x<1. Using the expression for the NFW '
-                          'potential in this regime isntead.')
-            rescale = tnfw_func(1.00001,tau)*nfw_func(1)**-1
-
-        if isinstance(X,float) or isinstance(X,int):
-            if X<1:
-                X = min(X,0.001)
-                return nfw_func(X)*rescale
-            else:
-                return tnfw_func(X,tau)
-        else:
-
-            X[np.where(X<0.001)] = 0.001
-
-            values = np.zeros_like(X)
-            inds1,inds2 = np.where(X<1),np.where(X>=1)
-            values[inds1] = nfw_func(X[inds1])*rescale
-            values[inds2] = tnfw_func(X[inds2],tau)
-
-            return values
 
     def _alpha2rho0(self, alpha_Rs, Rs):
         """

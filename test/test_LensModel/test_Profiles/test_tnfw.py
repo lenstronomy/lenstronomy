@@ -28,7 +28,8 @@ class TestTNFW(object):
         np.testing.assert_almost_equal(xdef_t, xdef, 5)
         np.testing.assert_almost_equal(ydef_t, ydef, 5)
 
-    def test_potential(self):
+    def test_potential_limit(self):
+
         Rs = 0.2
         alpha_Rs = 0.1
         r_trunc = 1000000000000 * Rs
@@ -40,15 +41,19 @@ class TestTNFW(object):
 
         np.testing.assert_almost_equal(pot, pot_t, 4)
 
-        Rs = 0.2
-        alpha_Rs = 0.1
-        r_trunc = 1000000000000 * Rs
+    def test_potential_derivative(self):
 
-        x = np.linspace(0.1, 0.7, 100)
+        Rs = 1.2
+        alpha_Rs = 1
+        r_trunc = 3*Rs
+        R = np.linspace(0.5 * Rs, 2.2 * Rs, 5000)
 
-        pot1 = self.tnfw.function(x, 0, Rs, alpha_Rs, r_trunc)
-        pot_nfw1 = self.nfw.function(x, 0, Rs, alpha_Rs)
-        npt.assert_almost_equal(pot1, pot_nfw1, 5)
+        alpha_tnfw = self.tnfw.nfwAlpha(R, Rs, 1, r_trunc, R, 0)[0]
+        potential = self.tnfw.nfwPot(R, Rs, 1, r_trunc)
+        dx = R[1] - R[0]
+        alpha_tnfw_num = np.gradient(potential, dx)
+
+        npt.assert_almost_equal(alpha_tnfw_num, alpha_tnfw, 4)
 
     def test_gamma(self):
         Rs = 0.2

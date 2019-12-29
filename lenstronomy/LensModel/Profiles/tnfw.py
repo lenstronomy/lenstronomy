@@ -339,6 +339,9 @@ class TNFW(LensProfileBase):
             else:
                 out = np.arccos(1 / x) ** 2
 
+        else:
+            raise Exception('x data type '+type(x)+' not recognized.')
+
         return out
 
     def _h(self, x, tau):
@@ -347,7 +350,7 @@ class TNFW(LensProfileBase):
         expression for the integral to compute potential
 
         :param x: R/Rs
-        :param tau: t/Rs
+        :param tau: r_trunc/Rs
         :type x: float >0
         """
         x = np.maximum(x, self._s)

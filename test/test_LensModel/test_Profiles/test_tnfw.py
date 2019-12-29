@@ -47,13 +47,18 @@ class TestTNFW(object):
         alpha_Rs = 1
         r_trunc = 3*Rs
         R = np.linspace(0.5 * Rs, 2.2 * Rs, 5000)
-
-        alpha_tnfw = self.tnfw.nfwAlpha(R, Rs, 1, r_trunc, R, 0)[0]
-        potential = self.tnfw.nfwPot(R, Rs, 1, r_trunc)
         dx = R[1] - R[0]
-        alpha_tnfw_num = np.gradient(potential, dx)
-
-        npt.assert_almost_equal(alpha_tnfw_num, alpha_tnfw, 4)
+        
+        alpha_tnfw = self.tnfw.nfwAlpha(R, Rs, 1, r_trunc, R, 0)[0]
+        
+        potential_array = self.tnfw.nfwPot(R, Rs, 1, r_trunc)
+        alpha_tnfw_num_array = np.gradient(potential_array, dx)
+        
+        potential_from_float = [self.tnfw.nfwPot(R_i, Rs, 1, r_trunc) for R_i in R]
+        alpha_tnfw_num_from_float = np.gradient(potential_from_float, dx)
+        
+        npt.assert_almost_equal(alpha_tnfw_num_array, alpha_tnfw, 4)
+        npt.assert_almost_equal(alpha_tnfw_num_from_float, alpha_tnfw, 4)
 
     def test_gamma(self):
         Rs = 0.2

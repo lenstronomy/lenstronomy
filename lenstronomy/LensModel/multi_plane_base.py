@@ -224,16 +224,16 @@ class MultiPlaneBase(ProfileListBase):
         :param theta_y: angle in y-direction on the image
         :param kwargs_lens: lens model keyword argument list
         :param z_stop: redshift of the source to stop the backwards ray-tracing
-        :param T_z_stop: optional, Transversal angular distance from z=0 to z_stop
+        :param T_z_stop: optional, transversal angular distance from z=0 to z_stop
         :param T_ij_end: optional, transversal angular distance between the last lensing plane and the source plane
         :return: dt_geo, dt_shapiro, [days]
         """
-        dt_grav = np.zeros_like(theta_x)
-        dt_geo = np.zeros_like(theta_x)
-        x = np.zeros_like(theta_x)
-        y = np.zeros_like(theta_y)
-        alpha_x = np.array(theta_x)
-        alpha_y = np.array(theta_y)
+        dt_grav = np.zeros_like(theta_x, dtype=float)
+        dt_geo = np.zeros_like(theta_x, dtype=float)
+        x = np.zeros_like(theta_x, dtype=float)
+        y = np.zeros_like(theta_y, dtype=float)
+        alpha_x = np.array(theta_x, dtype=float)
+        alpha_y = np.array(theta_y, dtype=float)
         i = 0
         z_lens_last = 0
         for i, index in enumerate(self._sorted_redshift_index):

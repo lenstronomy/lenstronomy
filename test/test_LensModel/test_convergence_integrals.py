@@ -23,7 +23,7 @@ class TestConvergenceIntegrals(object):
         f_ = sis.function(x_grid, y_grid, **kwargs_sis)
         f_ = util.array2image(f_)
         kappa = util.array2image((f_xx + f_yy) / 2.)
-        potential_num = convergence_integrals.potential_from_kappa(kappa, deltaPix)
+        potential_num = convergence_integrals.potential_from_kappa_grid(kappa, deltaPix)
 
         x1, y1 = 560, 500
         x2, y2 = 550, 500
@@ -42,7 +42,7 @@ class TestConvergenceIntegrals(object):
         f_x, f_y = sis.derivatives(x_grid, y_grid, **kwargs_sis)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.)
-        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa(kappa, deltaPix)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
 
         x1, y1 = 550, 500
         # test relative potential at two different point way inside the kappa map
@@ -65,11 +65,11 @@ class TestConvergenceIntegrals(object):
         f_x, f_y = sersic_lens.derivatives(x_grid, y_grid, **kwargs_lens)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.)
-        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa(kappa,  deltaPix)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid(kappa, deltaPix)
         x1, y1 = 500, 550
         x0, y0 = int(numPix/2.), int(numPix/2.)
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
-        f_num = convergence_integrals.potential_from_kappa(kappa, deltaPix)
+        f_num = convergence_integrals.potential_from_kappa_grid(kappa, deltaPix)
         f_ = sersic_lens.function(x_grid2d[x1, y1], y_grid2d[x1, y1], **kwargs_lens)
         f_00 = sersic_lens.function(x_grid2d[x0, y0], y_grid2d[x0, y0], **kwargs_lens)
         npt.assert_almost_equal(f_ - f_00, f_num[x1, y1] - f_num[x0, y0], decimal=2)

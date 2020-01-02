@@ -31,8 +31,8 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
 
     # compute lensing quantities with subgrid
     convergence_sub = util.array2image(flux)
-    f_x_sub, f_y_sub = integral.deflection_from_kappa(convergence_sub, deltaPix=deltaPix / float(subgrid_res))
-    f_sub = integral.potential_from_kappa(convergence_sub, deltaPix=deltaPix / float(subgrid_res))
+    f_x_sub, f_y_sub = integral.deflection_from_kappa_grid(convergence_sub, grid_spacing=deltaPix / float(subgrid_res))
+    f_sub = integral.potential_from_kappa_grid(convergence_sub, grid_spacing=deltaPix / float(subgrid_res))
     # interpolation function on lensing quantities
     x_axes_sub, y_axes_sub = util.get_axes(x_grid_sub, y_grid_sub)
     from lenstronomy.LensModel.Profiles.interpol import Interpol

@@ -7,14 +7,14 @@ from lenstronomy.Util import image_util
 class AdaptiveConvolution(object):
     """
     This class performs convolutions of a subset of pixels at higher supersampled resolution
-    Goal: speed up relative to higher resolution FFT when only considereing a (small) subset of pixels to be convolved
+    Goal: speed up relative to higher resolution FFT when only considering a (small) subset of pixels to be convolved
     on the higher resolution grid.
 
     strategy:
     1. lower resolution convolution over full image with FFT
     2. subset of pixels with higher resolution Numba convolution (with smaller kernel)
     3. the same subset of pixels with low resolution Numba convolution (with same kernel as step 2)
-    adaptive solution is 1 + 2 -3
+    adaptive solution is 1 + 2 - 3
 
     """
     def __init__(self, kernel_super, supersampling_factor, conv_supersample_pixels, supersampling_kernel_size=None,
@@ -39,8 +39,6 @@ class AdaptiveConvolution(object):
         n_cut_super = supersampling_kernel_size * supersampling_factor
         if n_cut_super % 2 == 0:
             n_cut_super += 1
-        #kernel_super_cut = image_util.cut_edges(kernel_super, n_cut_super)
-        #kernel_cut = kernel_util.degrade_kernel(kernel_super_cut, degrading_factor=supersampling_factor)
         kernel_super_cut = image_util.cut_edges(kernel_super, n_cut_super)
         kernel_cut = kernel_util.degrade_kernel(kernel_super_cut, degrading_factor=supersampling_factor)
 

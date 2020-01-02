@@ -101,7 +101,7 @@ class LensCosmo(object):
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
         """
-        return phys / self.D_d/ const.arcsec
+        return phys / self.D_d / const.arcsec
 
     def arcsec2phys_lens(self, arcsec):
         """

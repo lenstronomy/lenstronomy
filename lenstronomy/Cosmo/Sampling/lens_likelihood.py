@@ -33,7 +33,7 @@ class LensLikelihood(object):
         ds = cosmo.angular_diameter_distance(z=self._z_source).value
         dds = cosmo.angular_diameter_distance_z1z2(z1=self._z_lens, z2=self._z_source).value
         ddt = (1. + self._z_lens) * dd * ds / dds
-        dd_ = dd * 2. / (1 + gamma_ppn)
+        dd_ = dd * (1 + gamma_ppn) / 2.
         ddt_ = ddt / (1 - kappa_ext)
         return self._kde_likelihood.logLikelihood(dd_, ddt_)
 

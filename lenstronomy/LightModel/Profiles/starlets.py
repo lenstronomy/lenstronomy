@@ -2,8 +2,8 @@ __author__ = 'aymgal'
 
 import numpy as np
 
-from lenstronomy.Util import util
 from lenstronomy.LightModel.Profiles import starlets_slit
+
 import slitronomy.Util.util as util_s 
 
 _force_no_pysap = False  # for debug only
@@ -50,8 +50,8 @@ class Starlets(object):
         :return: reconstructed signal as 1D array of shape (n_pixels,)
         """
         if len(coeffs.shape) == 1:
-            coeffs = util.array2cube(coeffs, n_scales, n_pixels)
-        return util.image2array(self.function_2d(coeffs, n_scales, n_pixels))
+            coeffs = util_s.array2cube(coeffs, n_scales, n_pixels)
+        return util_s.image2array(self.function_2d(coeffs, n_scales, n_pixels))
 
     def function_2d(self, coeffs, n_scales, n_pixels):
         """
@@ -77,7 +77,7 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
-        return util.cube2array(self.decomposition_2d(image, n_scales))
+        return util_s.cube2array(self.decomposition_2d(image, n_scales))
 
     def decomposition_2d(self, image, n_scales):
         """

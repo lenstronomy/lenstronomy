@@ -14,7 +14,7 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     :param deltaPix: interpolation/pixel size
     :param center_x: center of the grid
     :param center_y: center of the grid
-    :param subgrid: subgrid for the numerical integrals
+    :param subgrid_res: subgrid for the numerical integrals
     :return:
     """
     # make super-sampled grid
@@ -27,15 +27,12 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     flux = lightModel.surface_brightness(x_grid_sub, y_grid_sub, kwargs_lens_light)
     flux_norm = np.sum(flux[mask == 1]) / np.sum(mask)
     flux /= flux_norm
-    from lenstronomy.LensModel.numerical_profile_integrals import ConvergenceIntegrals
-    integral = ConvergenceIntegrals()
+    from lenstronomy.LensModel import convergence_integrals as integral
 
     # compute lensing quantities with subgrid
-    convergence_sub = flux
-    f_x_sub, f_y_sub = integral.deflection_from_kappa(convergence_sub, x_grid_sub, y_grid_sub,
-                                                      deltaPix=deltaPix / float(subgrid_res))
-    f_sub = integral.potential_from_kappa(convergence_sub, x_grid_sub, y_grid_sub,
-                                          deltaPix=deltaPix / float(subgrid_res))
+    convergence_sub = util.array2image(flux)
+    f_x_sub, f_y_sub = integral.deflection_from_kappa_grid(convergence_sub, grid_spacing=deltaPix / float(subgrid_res))
+    f_sub = integral.potential_from_kappa_grid(convergence_sub, grid_spacing=deltaPix / float(subgrid_res))
     # interpolation function on lensing quantities
     x_axes_sub, y_axes_sub = util.get_axes(x_grid_sub, y_grid_sub)
     from lenstronomy.LensModel.Profiles.interpol import Interpol

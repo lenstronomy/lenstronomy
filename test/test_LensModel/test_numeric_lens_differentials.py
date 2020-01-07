@@ -145,7 +145,7 @@ class TestNumericsProfile(object):
         lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
-        kwargs = {'Rs': 2, 'alpha_Rs': 1, 'r_trunc': 7}
+        kwargs = {'Rs': 2., 'alpha_Rs': 1., 'r_trunc': 7}
         lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
@@ -251,7 +251,7 @@ class TestNumericsProfile(object):
         kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_core': 0.1, 'e1': 0.04, 'e2': -0.04}
         lens_model = ['CNFW_ELLIPSE']
         self.assert_differentials(lens_model, kwargs)
-
+       
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

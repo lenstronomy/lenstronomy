@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 
 from lenstronomy.LensModel.Profiles.spep import SPEP
+from lenstronomy.LensModel.Profiles.sie import SIE
 import lenstronomy.Util.param_util as param_util
 
 import numpy as np
@@ -14,6 +15,7 @@ class TestSPEP(object):
     """
     def setup(self):
         self.SPEP = SPEP()
+        self.SIE = SIE()
 
     def test_function(self):
         x = 1
@@ -100,6 +102,20 @@ class TestSPEP(object):
         npt.assert_almost_equal(values[0][1], 0.070999592014527796, decimal=7)
         npt.assert_almost_equal(values[1][1], 0.33245358685908111, decimal=7)
         npt.assert_almost_equal(values[2][1], -0.10270375656049677, decimal=7)
+
+    def test_spep_sie_conventions(self):
+        x = np.array([1., 2., 0.])
+        y = np.array([2, 1., 1.])
+        phi_E = 1.
+        gamma = 2
+        q = 0.9999
+        phi_G = 1.
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        f_xx, f_yy, f_xy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx_sie, f_yy_sie, f_xy_sie = self.SIE.hessian(x, y, phi_E, e1, e2)
+        npt.assert_almost_equal(f_xx, f_xx_sie, decimal=4)
+        npt.assert_almost_equal(f_yy, f_yy_sie, decimal=4)
+        npt.assert_almost_equal(f_xy, f_xy_sie, decimal=4)
 
 
 if __name__ == '__main__':

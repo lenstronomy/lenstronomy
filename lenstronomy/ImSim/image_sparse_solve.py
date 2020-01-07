@@ -10,7 +10,6 @@ from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 
 
-# class ImageSparseFit(ImageModel):
 class ImageSparseFit(ImageLinearFit):
     """
     #TODO
@@ -55,11 +54,11 @@ class ImageSparseFit(ImageLinearFit):
             if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) != 1:
                 raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, psf_class=self.PSF, 
-                                                       convolution_class=convolution_class, likelihood_mask=self.likelihood_mask, 
+                                                       convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                        **kwargs_sparse_solver)
         else:
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, psf_class=self.PSF, 
-                                                   convolution_class=convolution_class, likelihood_mask=self.likelihood_mask, 
+                                                   convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                    **kwargs_sparse_solver)
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 

@@ -13,7 +13,7 @@ class PositionLikelihood(object):
         """
 
         :param point_source_class: Instance of PointSource() class
-        :param position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian),
+        :param position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian in each of the two spatial direction),
         this is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
         image positions with an offset 'delta_x_image' and 'delta_y_image'
@@ -156,7 +156,7 @@ class PositionLikelihood(object):
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         logL = 0
         for i in range(len(ra_image_list)):  # sum over the images of the different model components
-            logL += -np.sum((ra_image_list[i] - self._ra_image_list[i])**2 / sigma**2 / 2)
+            logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
         return logL
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma):

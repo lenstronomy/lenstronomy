@@ -86,13 +86,14 @@ class TestLikelihoodModule(object):
         kwargs_likelihood = {'force_no_add_image': True,
                              'source_marg': True,
                              'astrometric_likelihood': True,
-                             'position_uncertainty': 0.004,
-                             'check_solver': True,
-                             'solver_tolerance': 0.001,
+                             'image_position_uncertainty': 0.004,
+                             'check_matched_source_position': False,
+                             'source_position_tolerance': 0.001,
+                             'source_position_sigma': 0.001,
                              'check_positive_flux': True,
                              'flux_ratio_likelihood': True,
                              'prior_lens': [[0, 'theta_E', 1, 0.1]],
-                             'condition_definition': condition_definition,
+                             'custom_logL_addition': condition_definition,
                              'image_position_likelihood': True
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',

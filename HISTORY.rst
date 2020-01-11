@@ -165,3 +165,8 @@ History
 * First implementation of a LightCone module for numerical ray-tracing
 * Improved cosmology sampling from time-delay cosmography measurements
 * TNFW profile lensing potential implemented
+
+
+1.3.0 (2020-01-10)
+++++++++++++++++++
+* image position likelihood description improved

@@ -24,6 +24,6 @@ Contributors (alphabetic)
 * Ji Won Park
 * Thomas Schmidt
 * Anowar Shajib
+* Lyne Van de Vyvere
 * Cyril Welschen
 * Lilan Yang
-

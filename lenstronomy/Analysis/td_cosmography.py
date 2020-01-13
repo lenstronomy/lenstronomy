@@ -72,9 +72,9 @@ class TDCosmography(KinematicAPI):
                                            theta_E=None, gamma=None):
         """
         sigma**2 = D_d/D_ds * c**2 *J(kwargs_lens, kwargs_light, anisotropy)
-         (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
-         cosmological independent quantity only depending on angular units. This function returns J given the lens
-         and light parameters and the anisotropy choice without an external mass sheet correction.
+        (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
+        cosmological independent quantity only depending on angular units. This function returns J given the lens
+        and light parameters and the anisotropy choice without an external mass sheet correction.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments

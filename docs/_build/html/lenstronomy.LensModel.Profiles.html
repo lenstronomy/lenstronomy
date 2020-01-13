@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.2.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.2.4 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -5946,9 +5946,17 @@ by Renan Barkana. The parameters are changed and represent a spherically average
 3D mass profile slope.</p>
 <p>The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
 (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]</p>
+<p>FASTELL has the following defintions:
+The parameters are position (x1,x2), overall factor
+(q), power (gam), axis ratio (arat) which is &lt;=1, core radius
+squared (s2), and the output potential (phi).
+The projected mass density distribution, in units of the
+critical density, is kappa(x1,x2)=q [u2+s2]^(-gam), where
+u2=[x1^2+x2^2/(arat^2)].
+#TODO test smoothing with NIE profile</p>
 <dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.convert_params">
-<em class="property">static </em><code class="descname">convert_params</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.convert_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.convert_params" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">convert_params</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>q</em>, <em>s_scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.convert_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.convert_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>converts parameter defintions into quantities used by the FASTELL fortran library</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -6009,7 +6017,7 @@ by Renan Barkana. The parameters are changed and represent a spherically average
 <li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
 <li><strong>e1</strong> – eccentricity component</li>
 <li><strong>e2</strong> – eccentricity component</li>
-<li><strong>s_scale</strong> – smoothing scale in the center of the profile</li>
+<li><strong>s_scale</strong> – smoothing scale in the center of the profile (angle)</li>
 <li><strong>center_x</strong> – x-position of lens center</li>
 <li><strong>center_y</strong> – y-position of lens center</li>
 </ul>
@@ -6247,7 +6255,7 @@ by Renan Barkana. The parameters are changed and represent a spherically average
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<em>array of size</em><em> (</em><em>n</em><em>)</em>) – set of x-coordinates</li>
 <li><strong>theta_E</strong> (<em>float.</em>) – Einstein radius of lense</li>
-<li><strong>gamma</strong> (<em>&lt;2 float</em>) – power law slope of mass profifle</li>
+<li><strong>gamma</strong> (<em>&lt;2 float</em>) – power law slope of mass profile</li>
 <li><strong>q</strong> (<em>0&lt;phi_G&lt;pi/2</em>) – Axis ratio</li>
 <li><strong>phi_G</strong> – position angel of SES</li>
 </ul>
@@ -6750,7 +6758,7 @@ by Renan Barkana. The parameters are changed and represent a spherically average
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.4 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

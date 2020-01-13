@@ -4,7 +4,7 @@ import pytest
 import numpy.testing as npt
 import numpy as np
 
-from lenstronomy.LensModel.numerical_profile_integrals import ProfileIntegrals
+from lenstronomy.LensModel.profile_integrals import ProfileIntegrals
 
 
 class TestNumerics(object):

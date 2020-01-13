@@ -124,19 +124,19 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax, orientation='vertical')
-        cb.set_label(text_string, fontsize=10)
-        plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
-        plot_util.text_description(ax, _frame_size, text=text_string, color="w",
-                                   backgroundcolor='k', font_size=font_size)
-        if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            plot_util.coordinate_arrows(ax, _frame_size, _coords,
-                                        color='w', arrow_size=_arrow_size,
-                                        font_size=font_size)
+        #cb.set_label(text_string, fontsize=10)
+        #plot_util.scale_bar(ax, _frame_size, dist=1, text='1"', font_size=font_size)
+        plot_util.text_description(ax, _frame_size, text=text_string, color="k",
+                                   backgroundcolor='w', font_size=font_size)
+        #if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+        #    plot_util.coordinate_arrows(ax, _frame_size, _coords,
+        #                                color='w', arrow_size=_arrow_size,
+        #                                font_size=font_size)
 
     f, axes = plt.subplots(3, 4, figsize=(12, 8))
-    _plot_frame(axes[0, 0], lambda_rad2d, vmin=0.6, vmax=1.4, text_string='radial stretch')
-    _plot_frame(axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, text_string='tangential stretch')
-    _plot_frame(axes[0, 2], orientation_angle2d, vmin=-np.pi / 10, vmax=np.pi / 10, text_string='orientation angle')
+    _plot_frame(axes[0, 0], lambda_rad2d, vmin=0.6, vmax=1.4, text_string=r"$\lambda_{rad}$")
+    _plot_frame(axes[0, 1], lambda_tan2d, vmin=-20, vmax=20, text_string=r"$\lambda_{tan}$")
+    _plot_frame(axes[0, 2], orientation_angle2d, vmin=-np.pi / 10, vmax=np.pi / 10, text_string=r"$\phi$")
     _plot_frame(axes[0, 3], util.array2image(lambda_tan * lambda_rad), vmin=-20, vmax=20, text_string='magnification')
     _plot_frame(axes[1, 0], dlambda_rad_drad2d/lambda_rad2d, vmin=-.1, vmax=.1, text_string='dlambda_rad_drad')
     _plot_frame(axes[1, 1], dlambda_tan_dtan2d/lambda_tan2d, vmin=-20, vmax=20, text_string='dlambda_tan_dtan')

@@ -10,7 +10,6 @@ from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 
 
-# class ImageSparseFit(ImageModel):
 class ImageSparseFit(ImageLinearFit):
     """
     #TODO
@@ -55,11 +54,11 @@ class ImageSparseFit(ImageLinearFit):
             if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) != 1:
                 raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, psf_class=self.PSF, 
-                                                       convolution_class=convolution_class, likelihood_mask=self.likelihood_mask, 
+                                                       convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                        **kwargs_sparse_solver)
         else:
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, psf_class=self.PSF, 
-                                                   convolution_class=convolution_class, likelihood_mask=self.likelihood_mask, 
+                                                   convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                    **kwargs_sparse_solver)
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
@@ -176,6 +175,8 @@ class ImageSparseFit(ImageLinearFit):
         im_sim, model_error = self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
+        if not np.isfinite(logL):
+            return -1e20  # penalty
         # if cov_matrix is not None and source_marg:
         #     marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
         #     logL += marg_const

@@ -175,6 +175,8 @@ class ImageSparseFit(ImageLinearFit):
         im_sim, model_error = self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
+        if not np.isfinite(logL):
+            return -1e20  # penalty
         # if cov_matrix is not None and source_marg:
         #     marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
         #     logL += marg_const

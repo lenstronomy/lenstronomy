@@ -279,15 +279,16 @@ def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     return kernel
 
 
-def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor):
+def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True):
     """
     pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
     performed, i.e. smaller subsampling PSF and hole in larger PSF
 
     :param kernel: PSF kernel of the size of the pixel
-    :param kernel_super: subsampled kernel
-    :param supersampling_kernel_size: size of subsampling PSF in units of image pixels
-    :return: pixel and subsampling kernel
+    :param kernel_super: super-sampled kernel
+    :param supersampling_kernel_size: size of super-sampled PSF in units of degraded pixels
+    :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel
+    :return: degraded kernel with hole and super-sampled kernel
     """
     if supersampling_factor <= 1:
         raise ValueError('To split a kernel, the supersampling_factor needs to be > 1, givn %s' %supersampling_factor)
@@ -306,12 +307,15 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor):
     kernel_hole[n_min:n_max, n_min:n_max] = 0
     kernel_hole_resized = degrade_kernel(kernel_hole, degrading_factor=supersampling_factor)
     kernel_subgrid_cut = kernel_super[n_min:n_max, n_min:n_max]
-    flux_subsampled = np.sum(kernel_subgrid_cut)
-    flux_hole = np.sum(kernel_hole_resized)
-    if flux_hole > 0:
-        kernel_hole_resized *= (1. - flux_subsampled) / np.sum(kernel_hole_resized)
+    if normalized is True:
+        flux_subsampled = np.sum(kernel_subgrid_cut)
+        flux_hole = np.sum(kernel_hole_resized)
+        if flux_hole > 0:
+            kernel_hole_resized *= (1. - flux_subsampled) / np.sum(kernel_hole_resized)
+        else:
+            kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
     else:
-        kernel_subgrid_cut /= np.sum(kernel_subgrid_cut)
+        kernel_hole_resized /= supersampling_factor ** 2
     return kernel_hole_resized, kernel_subgrid_cut
 
 
@@ -319,8 +323,8 @@ def degrade_kernel(kernel_super, degrading_factor):
     """
 
     :param kernel_super: higher resolution kernel (odd number per axis)
-    :param degrading_factor: degrading factor (effectively the supersampling resolution of the kernel given
-    :return: degraded kernel with odd axis number
+    :param degrading_factor: degrading factor (effectively the super-sampling resolution of the kernel given
+    :return: degraded kernel with odd axis number with the sum of the flux/values in the kernel being preserved
     """
     if degrading_factor == 1:
         return kernel_super
@@ -336,8 +340,9 @@ def degrade_kernel(kernel_super, degrading_factor):
         kernel_super_ = np.zeros((n_high, n_high))
         i_start = int((n_high-n_kernel)/2)
         kernel_super_[i_start:i_start+n_kernel, i_start:i_start+n_kernel] = kernel_super
-        kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix) * degrading_factor**2
+        kernel_low_res = util.averaging(kernel_super_, numGrid=n_high, numPix=numPix) * degrading_factor**2  # multiplicative factor added when providing flux conservation
     return kernel_low_res
+
 
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     """

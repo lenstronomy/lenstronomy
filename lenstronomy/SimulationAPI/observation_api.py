@@ -100,6 +100,8 @@ class Observation(object):
                 kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._kernel_point_source}
             else:
                 raise ValueError("You need to create the class instance with a psf_model!")
+        elif self._psf_type == 'NONE':
+            kwargs_psf = {'psf_type': "NONE"}
         else:
             raise ValueError("psf_type %s not supported!" % self._psf_type)
         psf_class = PSF(**kwargs_psf)

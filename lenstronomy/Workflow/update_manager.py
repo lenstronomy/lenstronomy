@@ -78,7 +78,7 @@ class UpdateManager(object):
         return self._lens_upper, self._source_upper, self._lens_light_upper, self._ps_upper, self._special_upper, self._extinction_upper
 
     @property
-    def _fixed_kwargs(self):
+    def fixed_kwargs(self):
         return self._lens_fixed, self._source_fixed, self._lens_light_fixed, self._ps_fixed, self._special_fixed, self._extinction_fixed
 
     def set_init_state(self):
@@ -132,7 +132,7 @@ class UpdateManager(object):
 
         :return: instance of the Param class with the recent options and bounds
         """
-        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction = self._fixed_kwargs
+        kwargs_fixed_lens, kwargs_fixed_source, kwargs_fixed_lens_light, kwargs_fixed_ps, kwargs_fixed_special, kwargs_fixed_extinction = self.fixed_kwargs
         kwargs_lower_lens, kwargs_lower_source, kwargs_lower_lens_light, kwargs_lower_ps, kwargs_lower_special, kwargs_lower_extinction = self._lower_kwargs
         kwargs_upper_lens, kwargs_upper_source, kwargs_upper_lens_light, kwargs_upper_ps, kwargs_upper_special, kwargs_upper_extinction = self._upper_kwargs
         kwargs_model = self.kwargs_model

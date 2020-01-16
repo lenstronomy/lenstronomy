@@ -32,6 +32,29 @@ class TestConvergenceIntegrals(object):
         d_f = f_[x1, y1] - f_[x2, y2]
         npt.assert_almost_equal(d_f_num, d_f, decimal=2)
 
+    def test_potential_from_kappa_adaptiv(self):
+        sis = SIS()
+        deltaPix = 0.01
+        kwargs_sis = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        low_res_factor = 5
+        high_res_kernel_size = 5
+        x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
+
+        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_num = convergence_integrals.potential_from_kappa_grid_adaptive(kappa, deltaPix, low_res_factor, high_res_kernel_size)
+
+        x_grid_low, y_grid_low = util.make_grid(numPix=1000/low_res_factor, deltapix=deltaPix*low_res_factor)
+        f_low = sis.function(x_grid_low, y_grid_low, **kwargs_sis)
+        f_low = util.array2image(f_low)
+        x1, y1 = 56, 50
+        x2, y2 = 55, 50
+        # test relative potential at two different point way inside the kappa map
+        d_f_num = f_num[x1, y1] - f_num[x2, y2]
+        d_f = f_low[x1, y1] - f_low[x2, y2]
+        npt.assert_almost_equal(d_f_num, d_f, decimal=2)
+
+
     def test_deflection_from_kappa(self):
         sis = SIS()
         deltaPix = 0.01
@@ -47,6 +70,25 @@ class TestConvergenceIntegrals(object):
         x1, y1 = 550, 500
         # test relative potential at two different point way inside the kappa map
         npt.assert_almost_equal(f_x[x1, y1], f_x_num[x1, y1], decimal=2)
+
+    def test_deflection_from_kappa_adaptiv(self):
+        sis = SIS()
+        deltaPix = 0.01
+        kwargs_sis = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
+        low_res_factor = 5
+        high_res_kernel_size = 5
+        x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
+
+        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        kappa = util.array2image((f_xx + f_yy) / 2.)
+        f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid_adaptive(kappa, deltaPix, low_res_factor, high_res_kernel_size)
+
+        x_grid_low, y_grid_low = util.make_grid(numPix=1000/low_res_factor, deltapix=deltaPix*low_res_factor)
+        f_x_low, f_y_low = sis.derivatives(x_grid_low, y_grid_low, **kwargs_sis)
+        f_x_low = util.array2image(f_x_low)
+        x1, y1 = 50, 51
+        # test relative potential at two different point way inside the kappa map
+        npt.assert_almost_equal(f_x_low[x1, y1], f_x_num[x1, y1], decimal=2)
 
     def test_sersic(self):
         from lenstronomy.LensModel.Profiles.sersic import Sersic

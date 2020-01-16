@@ -38,13 +38,13 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
-    #def kwargs_fixed(self):
-    #    """
-    #    returns the updated kwargs_fixed from the update Manager
+    def kwargs_fixed(self):
+        """
+        returns the updated kwargs_fixed from the update Manager
 
-    #    :return: list of fixed kwargs, see UpdateManager()
-    #    """
-    #    return self._updateManager.fixed_kwargs
+        :return: list of fixed kwargs, see UpdateManager()
+        """
+        return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
         """
@@ -85,6 +85,8 @@ class FittingSequence(object):
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs)
+                kwargs_result = self._result_from_mcmc(mcmc_output)
+                self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'nested_sampling':
@@ -448,3 +450,18 @@ class FittingSequence(object):
         """
         kwargs_result = self.param_class.args2kwargs(result, bijective=True)
         self._updateManager.update_param_state(**kwargs_result)
+
+    def _result_from_mcmc(self, mcmc_output):
+        """
+
+        :param mcmc_output: list returned by self.mcmc()
+        :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
+        """
+        _, samples, _, logL_values = mcmc_output
+        # get index of best logL sample
+        bestfit_idx = np.argmax(logL_values)
+        bestfit_sample = samples[bestfit_idx, :]
+        bestfit_result = bestfit_sample.tolist()
+        # get corresponding kwargs
+        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        return kwargs_result

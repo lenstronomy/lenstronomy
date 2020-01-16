@@ -96,6 +96,8 @@ class ImageSparseFit(ImageLinearFit):
         if not unconvolved:
             # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
             source_light = self.sparseSolver.project_original_grid_source(source_light)
+
+            # TODO : use numerics again
             source_light = image_util.re_size(source_light, self._subgrid_res_source)
             source_light = self.sparseSolver.psf_convolution(source_light)
         else:

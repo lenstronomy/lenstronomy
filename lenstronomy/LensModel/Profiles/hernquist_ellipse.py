@@ -6,9 +6,9 @@ import numpy as np
 
 class Hernquist_Ellipse(LensProfileBase):
     """
-    this class contains functions concerning the NFW profile
+    this class contains functions for the elliptical Hernquist profile. Ellipticity is defined in the potential.
 
-    relation are: R_200 = c * Rs
+
     """
     param_names = ['sigma0', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'sigma0': 0, 'Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}

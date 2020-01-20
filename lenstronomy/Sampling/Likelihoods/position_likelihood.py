@@ -151,7 +151,12 @@ class PositionLikelihood(object):
         if 'ra_image' not in kwargs_ps[0]:
             return 0
         if 'delta_x_image' in kwargs_special:
+            logL = 0
+            Sigma = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
             delta_x, delta_y = np.array(kwargs_special['delta_x_image']), np.array(kwargs_special['delta_y_image'])
+            for j in range(len(delta_x)):
+                d_r = np.array([delta_x[j], delta_y[j]])
+                logL -= d_r.dot(Sigma.dot(d_r)) / 2.
             dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
             logL = -np.sum(dist)
             if np.isnan(logL) is True:
@@ -172,8 +177,12 @@ class PositionLikelihood(object):
         """
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         logL = 0
+        Sigma = np.array([[1./(sigma**2), 0], [0, 1./(sigma**2)]])
         for i in range(len(ra_image_list)):  # sum over the images of the different model components
-            logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
+            #logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
+            for j in range(len(ra_image_list[i])):
+                d_r = np.array([ra_image_list[i][j] - self._ra_image_list[i][j], dec_image_list[i][j] - self._dec_image_list[i][j]])
+                logL -= d_r.dot(Sigma.dot(d_r)) / 2.
         return logL
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma):

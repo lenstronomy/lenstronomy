@@ -228,7 +228,8 @@ class SingleBandMultiModelSparse(ImageSparseFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        sparse_model, error_map = self._image_sparse_solve(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i)
+        sparse_model, error_map = self._image_sparse_solve(kwargs_lens=kwargs_lens_i, kwargs_source=kwargs_source_i, 
+                                                           kwargs_lens_light=kwargs_lens_light_i, kwargs_special=kwargs_special)
         return sparse_model, error_map
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
@@ -248,7 +249,8 @@ class SingleBandMultiModelSparse(ImageSparseFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i)
+        logL = self._likelihood_data_given_model(kwargs_lens=kwargs_lens_i, kwargs_source=kwargs_source_i, 
+                                                 kwargs_lens_light=kwargs_lens_light_i, kwargs_special=kwargs_special)
         return logL
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):

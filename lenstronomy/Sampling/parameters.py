@@ -67,7 +67,7 @@ class Param(object):
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
-                 source_size=False, num_tau0=0):
+                 source_size=False, num_tau0=0, source_grid_offset=False):
         """
 
         :return:
@@ -147,6 +147,11 @@ class Param(object):
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=lens_model_class,
                                          num_images=self._num_images)
 
+        # source_grid_offset only defined for pixelated source profiles
+        if source_grid_offset is True and self._source_light_model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
+            self._source_grid_offset = False
+        self._source_grid_offset = source_grid_offset
+
         self._joint_extinction_with_lens_light = joint_extinction_with_lens_light
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
@@ -181,7 +186,7 @@ class Param(object):
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size, num_tau0=num_tau0)
+                                          source_size=source_size, num_tau0=num_tau0, source_grid_offset=self._source_grid_offset)
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:

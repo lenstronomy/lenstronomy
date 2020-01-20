@@ -93,6 +93,8 @@ class ImageSparseFit(ImageLinearFit):
             raise NotImplementedError
         source_light = util.array2image(source_light)
 
+        # TODO : support source grid offsets (in kwargs_special)
+
         if not unconvolved:
             # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
             source_light = self.sparseSolver.project_original_grid_source(source_light)
@@ -125,8 +127,9 @@ class ImageSparseFit(ImageLinearFit):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        model, _, _, param, fixed_param = self.sparseSolver.solve(kwargs_lens, kwargs_source, 
-                                                                  kwargs_lens_light=kwargs_lens_light)
+        model, _, _, param, fixed_param = self.sparseSolver.solve(kwargs_lens, kwargs_source,
+                                                                  kwargs_lens_light=kwargs_lens_light,
+                                                                  kwargs_special=kwargs_special)
         cov_param = None
         _, _ = self.update_fixed_kwargs(fixed_param, kwargs_source, kwargs_lens_light)
         _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
@@ -160,7 +163,8 @@ class ImageSparseFit(ImageLinearFit):
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        im_sim, model_error = self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        im_sim, model_error = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
+                                                       kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         if not np.isfinite(logL):

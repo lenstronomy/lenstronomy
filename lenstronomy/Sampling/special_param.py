@@ -7,7 +7,8 @@ class SpecialParam(object):
     """
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed={}, kwargs_lower=None,
-                 kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0):
+                 kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
+                 source_grid_offset=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -31,6 +32,7 @@ class SpecialParam(object):
         self._num_tau0 = num_tau0
         self._kwargs_fixed = kwargs_fixed
         self._source_size = source_size
+        self._source_grid_offset = source_grid_offset
         if kwargs_lower is None:
             kwargs_lower = {}
             if self._D_dt_sampling is True:
@@ -44,6 +46,9 @@ class SpecialParam(object):
                 kwargs_lower['source_size'] = 0
             if self._num_tau0 > 0:
                 kwargs_lower['tau0_list'] = [0] * self._num_tau0
+            if self._source_grid_offset:
+                kwargs_lower['delta_x_source_grid'] = -100
+                kwargs_lower['delta_y_source_grid'] = -100
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._D_dt_sampling is True:
@@ -57,6 +62,9 @@ class SpecialParam(object):
                 kwargs_upper[source_size] = 1
             if self._num_tau0 > 0:
                 kwargs_upper['tau0_list'] = [1000] * self._num_tau0
+            if self._source_grid_offset:
+                kwargs_upper['delta_x_source_grid'] = 100
+                kwargs_upper['delta_y_source_grid'] = 100
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -103,6 +111,17 @@ class SpecialParam(object):
                 i += self._num_tau0
             else:
                 kwargs_special['tau0_list'] = self._kwargs_fixed['tau0_list']
+        if self._source_grid_offset:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                kwargs_special['delta_x_source_grid'] = args[i]
+                i += 1
+            else:
+                kwargs_special['delta_x_source_grid'] = self._kwargs_fixed['delta_x_source_grid']
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                kwargs_special['delta_y_source_grid'] = args[i]
+                i += 1
+            else:
+                kwargs_special['delta_y_source_grid'] = self._kwargs_fixed['delta_y_source_grid']
         return kwargs_special, i
 
     def setParams(self, kwargs_special):
@@ -133,6 +152,11 @@ class SpecialParam(object):
             if 'tau0_list' not in self._kwargs_fixed:
                 for i in range(self._num_tau0):
                     args.append(kwargs_special['tau0_list'][i])
+        if self._source_grid_offset is True:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                args.append(kwargs_special['delta_x_source_grid'])
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                args.append(kwargs_special['delta_y_source_grid'])
         return args
 
     def num_param(self):
@@ -169,4 +193,11 @@ class SpecialParam(object):
                 num += self._num_tau0
                 for i in range(self._num_tau0):
                     list.append('tau0')
+        if self._source_grid_offset is True:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                num += 1
+                list.append('delta_x_source_grid')
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                num += 1
+                list.append('delta_y_source_grid')
         return num, list

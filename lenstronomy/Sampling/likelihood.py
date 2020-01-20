@@ -20,18 +20,19 @@ class LikelihoodModule(object):
 
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
-    def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True, check_solver=False,
-                 astrometric_likelihood=False, image_position_likelihood=False, source_position_likelihood=False, position_uncertainty=0.004, check_positive_flux=False,
-                 solver_tolerance=0.001, force_no_add_image=False, source_marg=False, linear_prior=None, restrict_image_number=False,
+    def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True,
+                 check_matched_source_position=False, astrometric_likelihood=False, image_position_likelihood=False,
+                 source_position_likelihood=False, image_position_uncertainty=0.004, check_positive_flux=False,
+                 source_position_tolerance=0.001, source_position_sigma=0.001, force_no_add_image=False,
+                 source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
-                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[], prior_extinction=[],
-                 prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
-                 prior_special_kde=[], prior_extinction_kde=[],
-                 prior_lens_lognormal=[], prior_source_lognormal=[], prior_extinction_lognormal=[],
-                 prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[],
-                 condition_definition=None, kwargs_sparse_solver={}):
+                 flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
+                 prior_extinction=[], prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[],
+                 prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
+                 prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
+                 prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_sparse_solver={}):
         """
         initializing class
 
@@ -42,13 +43,13 @@ class LikelihoodModule(object):
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
         relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
-        :param check_solver: bool, option to check whether point source position solver finds a solution to match all
+        :param check_matched_source_position: bool, option to check whether point source position solver finds a solution to match all
          the image positions in the same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
-        :param flaot, position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
+        :param flaot, image_position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
         (only used if point_source_likelihood=True)
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
-        :param solver_tolerance: float, punishment of check_solver occurs when image positions are predicted further
+        :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted further
         away than this number
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
@@ -65,7 +66,7 @@ class LikelihoodModule(object):
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions have positive flux
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
-        :param condition_definition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
+        :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
         and returns a logL (punishing) value.
         """
         multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
@@ -100,8 +101,10 @@ class LikelihoodModule(object):
                                                        image_position_likelihood=image_position_likelihood,
                                                        source_position_likelihood=source_position_likelihood,
                                                        ra_image_list=ra_image_list, dec_image_list=dec_image_list,
-                                                       position_uncertainty=position_uncertainty,
-                                                       check_solver=check_solver, solver_tolerance=solver_tolerance,
+                                                       image_position_uncertainty=image_position_uncertainty,
+                                                       check_matched_source_position=check_matched_source_position,
+                                                       source_position_tolerance=source_position_tolerance,
+                                                       source_position_sigma=source_position_sigma,
                                                        force_no_add_image=force_no_add_image,
                                                        restrict_image_number=restrict_image_number,
                                                        max_num_images=max_num_images)
@@ -112,7 +115,7 @@ class LikelihoodModule(object):
                                                              **self._kwargs_flux_compute)
         self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
-        self._condition_definition = condition_definition
+        self._custom_logL_addition = custom_logL_addition
 
     def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[]):
@@ -187,11 +190,11 @@ class LikelihoodModule(object):
         logL += logL_prior
         if verbose is True:
             print('Prior likelihood = %s' % logL_prior)
-        if self._condition_definition is not None:
-            logL_cond = self._condition_definition(**kwargs_return)
+        if self._custom_logL_addition is not None:
+            logL_cond = self._custom_logL_addition(**kwargs_return)
             logL += logL_cond
             if verbose is True:
-                print('Condition definition logL = %s' % logL_cond)
+                print('custom added logL = %s' % logL_cond)
         self._reset_point_source_cache(bool=False)
         return logL#, None
 

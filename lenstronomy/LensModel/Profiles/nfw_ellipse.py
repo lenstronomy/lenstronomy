@@ -1,8 +1,5 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
-#the potential therefore is its integral
-
 import numpy as np
 from lenstronomy.LensModel.Profiles.nfw import NFW
 import lenstronomy.Util.param_util as param_util
@@ -11,7 +8,10 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 class NFW_ELLIPSE(LensProfileBase):
     """
-    this class contains functions concerning the NFW profile
+    this class contains functions concerning the NFW profile with an ellipticity defined in the potential
+    parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
+
+    from Glose & Kneib: https://cds.cern.ch/record/529584/files/0112138.pdf
 
     relation are: R_200 = c * Rs
     """
@@ -26,14 +26,24 @@ class NFW_ELLIPSE(LensProfileBase):
 
     def function(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
-        returns double integral of NFW profile
+        returns elliptically distorted NFW lensing potential
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param e1: eccentricity component in x-direction
+        :param e2: eccentricity component in y-direction
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: lensing potential
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = min(abs(1. - q), 0.99)
+        e = min(abs(1. - q), 0.9999)
         xt1 = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
         xt2 = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
         R_ = np.sqrt(xt1**2 + xt2**2)
@@ -45,14 +55,25 @@ class NFW_ELLIPSE(LensProfileBase):
 
     def derivatives(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
-        returns df/dx and df/dy of the function (integral of NFW)
+        returns df/dx and df/dy of the function, calculated as an elliptically distorted deflection angle of the
+        spherical NFW profile
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param e1: eccentricity component in x-direction
+        :param e2: eccentricity component in y-direction
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: deflection in x-direction, deflection in y-direction
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x_shift = x - center_x
         y_shift = y - center_y
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = min(abs(1. - q), 0.99)
+        e = min(abs(1. - q), 0.9999)
         xt1 = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
         xt2 = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
         R_ = np.sqrt(xt1**2 + xt2**2)
@@ -69,6 +90,17 @@ class NFW_ELLIPSE(LensProfileBase):
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        the calculation is performed as a numerical differential from the deflection field. Analytical relations are possible
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param e1: eccentricity component in x-direction
+        :param e2: eccentricity component in y-direction
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, Rs, alpha_Rs, e1, e2, center_x, center_y)
         diff = self._diff
@@ -85,11 +117,11 @@ class NFW_ELLIPSE(LensProfileBase):
     def mass_3d_lens(self, R, Rs, alpha_Rs, e1=1, e2=0):
         """
 
-        :param R:
+        :param R: radius (in angular units)
         :param Rs:
         :param alpha_Rs:
-        :param q:
-        :param phi_G:
+        :param e1:
+        :param e2:
         :return:
         """
         return self.nfw.mass_3d(R, Rs, alpha_Rs)

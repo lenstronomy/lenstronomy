@@ -72,6 +72,13 @@ class TestHernquist(object):
         grav_pot = self.profile.grav_pot(x, y, rho0, Rs, center_x=0, center_y=0)
         npt.assert_almost_equal(grav_pot, 42.411500823462205, decimal=8)
 
+    def test_sigma0_definition(self):
+        Rs = 2.
+        sigma0 = 0.5
+        f_x, f_y = self.profile.derivatives(Rs, 0, sigma0, Rs)
+        alpha = f_x
+        npt.assert_almost_equal(alpha, 2/3. * sigma0 * Rs, decimal=5)
+
 
 class TestHernquistEllipse(object):
 

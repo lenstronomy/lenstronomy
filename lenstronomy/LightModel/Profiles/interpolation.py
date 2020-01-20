@@ -11,10 +11,10 @@ class Interpol(object):
     class which uses an interpolation of an image to compute the surface brightness
 
     parameters are
-    'image': 2d numpy array of surface brightness
-    'center_x': coordinate of center of image
-    'center_y': coordinate of center of image
-    'phi_G': rotation of image
+    'image': 2d numpy array of surface brightness (not integrated flux per pixel!)
+    'center_x': coordinate of center of image in angular units (i.e. arc seconds)
+    'center_y': coordinate of center of image in angular units (i.e. arc seconds)
+    'phi_G': rotation of image relative to the rectangular ra-to-dec orientation
     'scale': arcseconds per pixel of the image to be interpolated
 
     """
@@ -36,7 +36,7 @@ class Interpol(object):
         :param center_y: center of interpolated image
         :param phi_G: rotation angle of simulated image in respect to input gird
         :param scale: pixel scale (in angular units) of the simulated image
-        :return:
+        :return: surface brightness from the model at coordinates (x, y)
         """
         #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         n = len(np.atleast_1d(x))
@@ -63,14 +63,16 @@ class Interpol(object):
 
     def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
         """
+        sums up all the image surface brightness (image pixels defined in surface brightness at the coordinate of the pixel)
+        times pixel area
 
-        :param image:
-        :param scale:
-        :param amp:
-        :param center_x:
-        :param center_y:
-        :param phi_G:
-        :return:
+        :param image: pixelized surface brightness
+        :param scale: scale of the pixel in units of angle
+        :param amp: linear scaling parameter of the surface brightness multiplicative with the initial image
+        :param center_x: center of image in angular coordinates
+        :param center_y: center of image in angular coordinates
+        :param phi_G: rotation angle
+        :return: total flux of the image
         """
         return np.sum(image) * scale**2 * amp
 

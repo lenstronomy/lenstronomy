@@ -30,6 +30,12 @@ class TestInstrumentObservation(object):
         observation = Observation(**kwargs_observations)
         assert observation.exposure_time == exposure_time * num_exposures
 
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'NONE'}
+        observation = Observation(**kwargs_observations)
+        assert observation.exposure_time == exposure_time * num_exposures
+
     def test_update_observation(self):
         exposure_time = 90
         sky_brightness = 20.

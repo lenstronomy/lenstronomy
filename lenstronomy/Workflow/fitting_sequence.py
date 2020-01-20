@@ -38,13 +38,13 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
-    #def kwargs_fixed(self):
-    #    """
-    #    returns the updated kwargs_fixed from the update Manager
+    def kwargs_fixed(self):
+        """
+        returns the updated kwargs_fixed from the update Manager
 
-    #    :return: list of fixed kwargs, see UpdateManager()
-    #    """
-    #    return self._updateManager.fixed_kwargs
+        :return: list of fixed kwargs, see UpdateManager()
+        """
+        return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
         """

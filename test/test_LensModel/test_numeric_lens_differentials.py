@@ -78,9 +78,9 @@ class TestNumericsProfile(object):
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
         f_xx_num, f_xy_num, f_yx_num, f_yy_num = lensModel.hessian(x, y, [kwargs], diff=diff)
 
-        npt.assert_almost_equal(f_xx , f_xx_num, decimal=3)
-        npt.assert_almost_equal(f_yy , f_yy_num, decimal=3)
-        npt.assert_almost_equal(f_xy , f_xy_num, decimal=3)
+        npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
+        npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
+        npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
 
         x, y = 1., 0.
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])

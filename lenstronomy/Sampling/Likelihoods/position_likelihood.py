@@ -6,15 +6,16 @@ class PositionLikelihood(object):
     """
     likelihood of positions of multiply imaged point sources
     """
-    def __init__(self, point_source_class, image_position_uncertainty=0.005, astrometric_likelihood=False,
+    def __init__(self, point_source_class, image_position_cov_error=0.005, astrometric_likelihood=False,
                  image_position_likelihood=False, ra_image_list=[], dec_image_list=[],
                  source_position_likelihood=False, check_matched_source_position=False, source_position_tolerance=0.001,
                  source_position_sigma=0.001, force_no_add_image=False, restrict_image_number=False, max_num_images=None):
         """
 
         :param point_source_class: Instance of PointSource() class
-        :param image_position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian radially),
-        this is applicable for astrometric uncertainties as well as if image positions are provided as data
+        :param image_position_cov_error: 2x2 matrix; error covariances of the image position uncertainties in RA, DEC
+        for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
+        This parameter is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
         image positions with an offset 'delta_x_image' and 'delta_y_image'
         :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position given the data/measured image positions
@@ -36,7 +37,7 @@ class PositionLikelihood(object):
         # TODO replace with public function of ray_shooting
         self._lensModel = point_source_class._lensModel
         self._astrometric_likelihood = astrometric_likelihood
-        self._image_position_sigma = image_position_uncertainty
+        self._image_position_cov_error = image_position_cov_error
         self._source_position_sigma = source_position_sigma
         self._check_matched_source_position = check_matched_source_position
         self._bound_source_position_scatter = source_position_tolerance
@@ -61,7 +62,7 @@ class PositionLikelihood(object):
 
         logL = 0
         if self._astrometric_likelihood is True:
-            logL_astrometry = self.astrometric_likelihood(kwargs_ps, kwargs_special, self._image_position_sigma)
+            logL_astrometry = self.astrometric_likelihood(kwargs_ps, kwargs_special, self._image_position_cov_error)
             logL += logL_astrometry
             if verbose is True:
                 print('Astrometric likelihood = %s' % logL_astrometry)
@@ -83,12 +84,12 @@ class PositionLikelihood(object):
                 if verbose is True:
                     print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
         if self._source_position_likelihood is True:
-            logL_source_pos = self.source_position_likelihood(kwargs_lens, kwargs_ps, sigma=self._image_position_sigma)
+            logL_source_pos = self.source_position_likelihood(kwargs_lens, kwargs_ps, cov_error=self._image_position_cov_error)
             logL += logL_source_pos
             if verbose is True:
                 print('source position likelihood %s' % logL_source_pos)
         if self._image_position_likelihood is True:
-            logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, sigma=self._image_position_sigma)
+            logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, cov_error=self._image_position_cov_error)
             logL += logL_image_pos
             if verbose is True:
                 print('image position likelihood %s' % logL_image_pos)
@@ -136,14 +137,15 @@ class PositionLikelihood(object):
                     return True
         return False
 
-    def astrometric_likelihood(self, kwargs_ps, kwargs_special, sigma):
+    def astrometric_likelihood(self, kwargs_ps, kwargs_special, cov_error):
         """
         evaluates the astrometric uncertainty of the model plotted point sources (only available for 'LENSED_POSITION'
         point source model) and predicted image position by the lens model including an astrometric correction term.
 
         :param kwargs_ps: point source model kwargs list
         :param kwargs_special: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
-        :param sigma: 1-sigma Gaussian uncertainty in the astrometry
+        :param cov_error: 2x2 matrix; error covariances of the astrometric uncertainties in RA, DEC
+        for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
         :return: log likelihood of the astrometirc correction between predicted image positions and model placement of the point sources
         """
         if not len(kwargs_ps) > 0:
@@ -152,47 +154,49 @@ class PositionLikelihood(object):
             return 0
         if 'delta_x_image' in kwargs_special:
             logL = 0
-            Sigma = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
             delta_x, delta_y = np.array(kwargs_special['delta_x_image']), np.array(kwargs_special['delta_y_image'])
             for j in range(len(delta_x)):
                 d_r = np.array([delta_x[j], delta_y[j]])
-                logL -= d_r.dot(Sigma.dot(d_r)) / 2.
-            dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
-            logL = -np.sum(dist)
+                logL -= d_r.dot(cov_error.dot(d_r)) / 2.
+            #dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
+            #logL = -np.sum(dist)
             if np.isnan(logL) is True:
                 return -np.inf
             return logL
         else:
             return 0
 
-    def image_position_likelihood(self, kwargs_ps, kwargs_lens, sigma):
+    def image_position_likelihood(self, kwargs_ps, kwargs_lens, cov_error):
         """
         computes the likelihood of the model predicted image position relative to measured image positions with an astrometric error.
         This routine requires the 'ra_image_list' and 'dec_image_list' being declared in the initiation of the class
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
-        :param sigma: 1-sigma uncertainty in the measured position of the images
+        :param cov_error: 2x2 matrix; error covariances of the astrometric uncertainties in RA, DEC
+        for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
         :return: log likelihood of the model predicted image positions given the data/measured image positions.
         """
         ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
         logL = 0
-        Sigma = np.array([[1./(sigma**2), 0], [0, 1./(sigma**2)]])
+        #Sigma = np.array([[1./(sigma**2), 0], [0, 1./(sigma**2)]])
         for i in range(len(ra_image_list)):  # sum over the images of the different model components
             #logL += -np.sum(((ra_image_list[i] - self._ra_image_list[i])**2 + (dec_image_list[i] - self._dec_image_list[i])**2) / sigma**2 / 2)
             for j in range(len(ra_image_list[i])):
                 d_r = np.array([ra_image_list[i][j] - self._ra_image_list[i][j], dec_image_list[i][j] - self._dec_image_list[i][j]])
-                logL -= d_r.dot(Sigma.dot(d_r)) / 2.
+                logL -= d_r.dot(cov_error.dot(d_r)) / 2.
         return logL
 
-    def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma):
+    def source_position_likelihood(self, kwargs_lens, kwargs_ps, cov_error):
         """
-        computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model..
+        computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model.
         The likelihood level is computed in respect of a displacement in the image plane and transposed through the
         Hessian into the source plane.
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
+        :param cov_error: 2x2 matrix; error covariances of the astrometric uncertainties in RA, DEC in the image plane
+        for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
         :return: log likelihood of the model reproducing the correct image positions given an image position uncertainty
         """
         if 'ra_image' not in kwargs_ps[0]:
@@ -207,8 +211,7 @@ class PositionLikelihood(object):
         for i in range(len(x_image)):
             f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
             A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
-            Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
-            Sigma_beta = image2source_covariance(A, Sigma_theta)
+            Sigma_beta = image2source_covariance(A, inv(cov_error))
             delta = np.array([source_x - x_source[i], source_y - y_source[i]])
             try:
                 Sigma_inv = inv(Sigma_beta)

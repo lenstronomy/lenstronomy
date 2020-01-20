@@ -83,10 +83,12 @@ class TestLikelihoodModule(object):
                 logL -= 10**15
             return logL
 
+        sigma = 0.01
+        cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
         kwargs_likelihood = {'force_no_add_image': True,
                              'source_marg': True,
                              'astrometric_likelihood': True,
-                             'image_position_uncertainty': 0.004,
+                             'image_position_cov_error': cov_error,
                              'check_matched_source_position': False,
                              'source_position_tolerance': 0.001,
                              'source_position_sigma': 0.001,

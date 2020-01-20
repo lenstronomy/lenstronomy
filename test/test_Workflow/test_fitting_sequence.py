@@ -89,7 +89,7 @@ class TestFittingSequence(object):
         self.kwargs_likelihood = {'force_no_add_image': True,
                                   'source_marg': True,
                                   'linear_prior': [1],
-                                  'image_position_uncertainty': 0.004,
+                                  #'image_position_uncertainty': 0.004,
                                   'check_matched_source_position': False,
                                   'source_position_tolerance': 0.001,
                                   'source_position_sigma': 0.001,

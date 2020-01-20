@@ -22,7 +22,7 @@ class LikelihoodModule(object):
     """
     def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True,
                  check_matched_source_position=False, astrometric_likelihood=False, image_position_likelihood=False,
-                 source_position_likelihood=False, image_position_uncertainty=0.004, check_positive_flux=False,
+                 source_position_likelihood=False, image_position_cov_error=0.004, check_positive_flux=False,
                  source_position_tolerance=0.001, source_position_sigma=0.001, force_no_add_image=False,
                  source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
@@ -46,8 +46,9 @@ class LikelihoodModule(object):
         :param check_matched_source_position: bool, option to check whether point source position solver finds a solution to match all
          the image positions in the same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
-        :param flaot, image_position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
-        (only used if point_source_likelihood=True)
+        :param image_position_cov_error: 2x2 matrix; error covariances of the image position uncertainties in RA, DEC
+        for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
+        This parameter is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
         :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted further
         away than this number
@@ -101,7 +102,7 @@ class LikelihoodModule(object):
                                                        image_position_likelihood=image_position_likelihood,
                                                        source_position_likelihood=source_position_likelihood,
                                                        ra_image_list=ra_image_list, dec_image_list=dec_image_list,
-                                                       image_position_uncertainty=image_position_uncertainty,
+                                                       image_position_cov_error=image_position_cov_error,
                                                        check_matched_source_position=check_matched_source_position,
                                                        source_position_tolerance=source_position_tolerance,
                                                        source_position_sigma=source_position_sigma,

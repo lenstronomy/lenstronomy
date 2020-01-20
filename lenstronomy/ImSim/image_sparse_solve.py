@@ -125,26 +125,12 @@ class ImageSparseFit(ImageLinearFit):
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        model, param, fixed_param = self._solve(kwargs_lens, kwargs_source, kwargs_lens_light)
+        model, _, _, param, fixed_param = self.sparseSolver.solve(kwargs_lens, kwargs_source, 
+                                                                  kwargs_lens_light=kwargs_lens_light)
         cov_param = None
         _, _ = self.update_fixed_kwargs(fixed_param, kwargs_source, kwargs_lens_light)
         _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return model, model_error
-
-    def _solve(self, kwargs_lens, kwargs_source, kwargs_lens_light=None):
-        """
-
-        :return: 2d numpy array, 3d numpy array
-        """
-        # solve using sparsity as a prior for surface brightness distributions
-        image_model, source_model, lens_light_model, param = self.sparseSolver.solve(kwargs_lens, kwargs_source, 
-                                                                                     kwargs_lens_light=kwargs_lens_light)
-        fixed_param = [source_model.size]
-        if lens_light_model is not None:
-            fixed_param.append(lens_light_model.size)
-        else:
-            fixed_param.append(None)
-        return image_model, param, fixed_param
 
     def _error_response(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
@@ -189,12 +175,14 @@ class ImageSparseFit(ImageLinearFit):
         :param param: some parameter vector corresponding for updating kwargs
         :return: updated list of kwargs with linear parameter values
         """
-        # TODO : write this method in the same spirit as super().update_linear_kwargs() 
-        if fixed_param[0] is not None:
-            n_pixels_source = fixed_param[0]
+        # TODO : write this method in the same spirit as super().update_linear_kwargs()
+        if kwargs_source is not None and len(kwargs_source) > 0:
+            n_pixels_source, pixel_scale_source = fixed_param[0], fixed_param[1]
             kwargs_source[0]['n_pixels'] = n_pixels_source
-        if fixed_param[1] is not None:
-            n_pixels_lens_light = fixed_param[1]
-            kwargs_lens_light[0]['n_pixels'] = n_pixels_lens_light
+            kwargs_source[0]['scale'] = pixel_scale_source
+        if kwargs_lens_light is not None and len(kwargs_lens_light) > 0:
+            n_pixels_lens_light, pixel_scale_lens_light = fixed_param[2], fixed_param[3]
+            kwargs_lens_light[0]['n_pixels'] = n_pixels_source
+            kwargs_lens_light[0]['scale'] = pixel_scale_source
         return kwargs_source, kwargs_lens_light
         

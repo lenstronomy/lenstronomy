@@ -3,6 +3,7 @@ __author__ = 'aymgal'
 import numpy as np
 
 from lenstronomy.LightModel.Profiles import starlets_slit
+from lenstronomy.LightModel.Profiles.interpolation import Interpol
 
 import slitronomy.Util.util as util_s 
 
@@ -38,8 +39,9 @@ class Starlets(object):
         self._fast_inverse = fast_inverse
         self._second_gen = second_gen
         self._show_pysap_plots = show_pysap_plots
+        self.interpol = Interpol()
 
-    def function(self, coeffs, n_scales, n_pixels):
+    def function(self, x, y, coeffs=None, n_scales=None, n_pixels=None, scale=1, center_x=0, center_y=0):
         """
         1D inverse starlet transform from starlet coefficients stored in coeffs
 
@@ -51,7 +53,11 @@ class Starlets(object):
         """
         if len(coeffs.shape) == 1:
             coeffs = util_s.array2cube(coeffs, n_scales, n_pixels)
-        return util_s.image2array(self.function_2d(coeffs, n_scales, n_pixels))
+        image = self.function_2d(coeffs, n_scales, n_pixels)
+        image = self.interpol.function(x, y, image=image, scale=scale,
+                                       center_x=center_x, center_y=center_y,
+                                       amp=1, phi_G=0)
+        return image
 
     def function_2d(self, coeffs, n_scales, n_pixels):
         """

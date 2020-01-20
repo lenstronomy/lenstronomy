@@ -106,21 +106,12 @@ class LightModelBase(object):
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
-        if 'STARLETS' in self.profile_type_list:
-            pixelated_light = True
-            # flux not initialised here because shape depends on profile parameters
-        else:
-            pixelated_light = False
-            flux = np.zeros_like(x)
+        flux = np.zeros_like(x)
         bool_list = self._bool_list(k=k)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                if pixelated_light:
-                    flux = np.array(func.function(**kwargs_list_standard[i]), dtype=float)
-                    # warning, this implies that superimposed pixelated light is not supported here (TODO ?)
-                else:
-                    out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
-                    flux += out
+                out = np.array(func.function(x, y, **kwargs_list_standard[i]), dtype=float)
+                flux += out
         return flux
 
     def light_3d(self, r, kwargs_list, k=None):

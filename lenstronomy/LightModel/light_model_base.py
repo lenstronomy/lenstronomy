@@ -91,6 +91,9 @@ class LightModelBase(object):
             elif profile_type == 'STARLETS':
                 from lenstronomy.LightModel.Profiles.starlets import Starlets
                 self.func_list.append(Starlets(fast_inverse=True, second_gen=False))
+            elif profile_type == 'STARLETS_GEN2':
+                from lenstronomy.LightModel.Profiles.starlets import Starlets
+                self.func_list.append(Starlets(second_gen=True))
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
         self._num_func = len(self.func_list)

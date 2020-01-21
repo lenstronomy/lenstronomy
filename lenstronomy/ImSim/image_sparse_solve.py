@@ -62,7 +62,6 @@ class ImageSparseFit(ImageLinearFit):
                                                    **kwargs_sparse_solver)
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
-
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
                                   unconvolved=False, de_lensed=False, k=None, re_sized=True, original_grid=True):
         """
@@ -85,28 +84,35 @@ class ImageSparseFit(ImageLinearFit):
         """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros((self.Data.num_pixel_axes))
-        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
-        if de_lensed is True:
-            source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
-        else:
-            # TODO
-            raise NotImplementedError
+
+        # TODO : integrate source grid from the sparseSolver into ImageNumerics
+        # ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        ra_grid, dec_grid = self.sparseSolver.lensingOperator.sourcePlane.grid()
+
+        source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         source_light = util.array2image(source_light)
 
-        # TODO : support source grid offsets (in kwargs_special)
-
-        if not unconvolved:
-            # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
-            source_light = self.sparseSolver.project_original_grid_source(source_light)
-
-            # TODO : use numerics again
-            source_light = image_util.re_size(source_light, self._subgrid_res_source)
-            source_light = self.sparseSolver.psf_convolution(source_light)
-        else:
-            if original_grid:
+        if de_lensed is True:
+            if not unconvolved:
+                # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
                 source_light = self.sparseSolver.project_original_grid_source(source_light)
-            if re_sized:
+
+                # TODO : use numerics again
                 source_light = image_util.re_size(source_light, self._subgrid_res_source)
+                source_light = self.sparseSolver.psf_convolution(source_light)
+            else:
+                if original_grid:
+                    source_light = self.sparseSolver.project_original_grid_source(source_light)
+                if re_sized:
+                    source_light = image_util.re_size(source_light, self._subgrid_res_source)
+        
+        else:
+            source_light = self.sparseSolver.lensingOperator.source2image_2d(source_light)
+            if not unconvolved:
+                source_light = self.sparseSolver.psf_convolution(source_light)
+
+        # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
+
         return source_light
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,

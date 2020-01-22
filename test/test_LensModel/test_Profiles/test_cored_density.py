@@ -1,0 +1,66 @@
+__author__ = 'sibirrer'
+
+
+from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
+from lenstronomy.LensModel.lens_model import LensModel
+
+import numpy as np
+import numpy.testing as npt
+import pytest
+
+
+class TestCoredDensity(object):
+    """
+    tests the Gaussian methods
+    """
+    def setup(self):
+        self.model = CoredDensity()
+
+    def test_function(self):
+        pass
+
+    def test_derivatives(self):
+        pass
+        """
+        
+        x = np.array([1])
+        y = np.array([2])
+        f_x, f_y = self.flex.derivatives(x, y, **self.kwargs_lens)
+        npt.assert_almost_equal(f_x[0], 0.105, decimal=5)
+        npt.assert_almost_equal(f_y[0], 0.15, decimal=5)
+
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        values = self.flex.derivatives(x, y, **self.kwargs_lens)
+        npt.assert_almost_equal(values[0][0], 0.105, decimal=5)
+        npt.assert_almost_equal(values[1][0], 0.15, decimal=5)
+        """
+
+    def test_dalpha_dr(self):
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        r = np.sqrt(x ** 2 + y ** 2)
+        sigma0 = 0.1
+        r_core = 7.
+        dalpha_dr = self.model.d_alpha_dr(r, sigma0, r_core)
+        alpha_r = self.model.alpha_r(r, sigma0, r_core)
+        delta = 0.00001
+        d_alpha_r = self.model.alpha_r(r + delta, sigma0, r_core)
+        d_alpha_dr_num = (d_alpha_r - alpha_r) / delta
+        npt.assert_almost_equal(dalpha_dr, d_alpha_dr_num)
+
+    def test_hessian(self):
+
+        x = np.array([1,3,4])
+        y = np.array([2,1,1])
+        r = np.sqrt(x**2 + y**2)
+        sigma0 = 0.1
+        r_core = 7
+        f_xx, f_yy, f_xy = self.model.hessian(x, y, sigma0, r_core)
+        kappa = 1./2 * (f_xx + f_yy)
+        kappa_direct = self.model.kappa_r(r, sigma0, r_core)
+        npt.assert_almost_equal(kappa, kappa_direct, decimal=5)
+
+
+if __name__ == '__main__':
+    pytest.main()

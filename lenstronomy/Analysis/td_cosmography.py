@@ -71,7 +71,7 @@ class TDCosmography(KinematicAPI):
     def velocity_dispersion_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                            theta_E=None, gamma=None):
         """
-        sigma**2 = D_d/D_ds * c**2 *J(kwargs_lens, kwargs_light, anisotropy)
+        sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy)
         (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
         cosmological independent quantity only depending on angular units. This function returns J given the lens
         and light parameters and the anisotropy choice without an external mass sheet correction.

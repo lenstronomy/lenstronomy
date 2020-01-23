@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 1.2.4 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 1.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -1038,11 +1038,11 @@ its shifted version with the input kernel.</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kernel_super</strong> – higher resolution kernel (odd number per axis)</li>
-<li><strong>degrading_factor</strong> – degrading factor (effectively the supersampling resolution of the kernel given</li>
+<li><strong>degrading_factor</strong> – degrading factor (effectively the super-sampling resolution of the kernel given</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">degraded kernel with odd axis number</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">degraded kernel with odd axis number with the sum of the flux/values in the kernel being preserved</p>
 </td>
 </tr>
 </tbody>
@@ -1165,7 +1165,7 @@ its shifted version with the input kernel.</dd>
 
 <dl class="function">
 <dt id="lenstronomy.Util.kernel_util.split_kernel">
-<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">split_kernel</code><span class="sig-paren">(</span><em>kernel_super</em>, <em>supersampling_kernel_size</em>, <em>supersampling_factor</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#split_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.split_kernel" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.kernel_util.</code><code class="descname">split_kernel</code><span class="sig-paren">(</span><em>kernel_super</em>, <em>supersampling_kernel_size</em>, <em>supersampling_factor</em>, <em>normalized=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/kernel_util.html#split_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.kernel_util.split_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
 performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1174,12 +1174,13 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kernel</strong> – PSF kernel of the size of the pixel</li>
-<li><strong>kernel_super</strong> – subsampled kernel</li>
-<li><strong>supersampling_kernel_size</strong> – size of subsampling PSF in units of image pixels</li>
+<li><strong>kernel_super</strong> – super-sampled kernel</li>
+<li><strong>supersampling_kernel_size</strong> – size of super-sampled PSF in units of degraded pixels</li>
+<li><strong>normalized</strong> – boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">pixel and subsampling kernel</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">degraded kernel with hole and super-sampled kernel</p>
 </td>
 </tr>
 </tbody>
@@ -2310,7 +2311,7 @@ precedence goes to key value pairs in latter dicts.</p>
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.2.4 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

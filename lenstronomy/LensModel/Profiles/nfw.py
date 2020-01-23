@@ -69,7 +69,7 @@ class NFW(LensProfileBase):
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return deflection angle in x, deflection angle in y
+        :return: deflection angle in x, deflection angle in y
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:

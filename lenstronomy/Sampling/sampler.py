@@ -88,7 +88,7 @@ class Sampler(object):
             print('===================')
         return result, [X2_list, pos_list, vel_list, []]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False,threadCount=1):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
         numParam, _ = self.chain.param.num_param()
         p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()

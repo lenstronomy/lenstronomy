@@ -157,7 +157,8 @@ class CoredDensity(LensProfileBase):
         """
         return self.alpha_r(r, sigma0, r_core) * np.pi * 2
 
-    def mass_3d(self, r, sigma0, r_core):
+    @staticmethod
+    def mass_3d(r, sigma0, r_core):
         """
         mass enclosed 3d radius
 
@@ -167,3 +168,15 @@ class CoredDensity(LensProfileBase):
         :return: mass enclosed 3d radius
         """
         return 8 * sigma0 * r_core**3 * (np.arctan(r/r_core)/(2*r_core) - r / (2 * (r**2 + r_core**2)))
+
+    def mass_3d_lens(self, r, sigma0, r_core):
+        """
+        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        For this profile those are identical.
+
+        :param r: radius (angular scale)
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :return: mass enclosed 3d radius
+        """
+        return self.mass_3d(r, sigma0, r_core)

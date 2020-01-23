@@ -1,8 +1,6 @@
 __author__ = 'sibirrer'
 
-
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
-from lenstronomy.LensModel.lens_model import LensModel
 
 import numpy as np
 import numpy.testing as npt
@@ -29,20 +27,6 @@ class TestCoredDensity(object):
 
     def test_derivatives(self):
         pass
-        """
-        
-        x = np.array([1])
-        y = np.array([2])
-        f_x, f_y = self.flex.derivatives(x, y, **self.kwargs_lens)
-        npt.assert_almost_equal(f_x[0], 0.105, decimal=5)
-        npt.assert_almost_equal(f_y[0], 0.15, decimal=5)
-
-        x = np.array([1, 3, 4])
-        y = np.array([2, 1, 1])
-        values = self.flex.derivatives(x, y, **self.kwargs_lens)
-        npt.assert_almost_equal(values[0][0], 0.105, decimal=5)
-        npt.assert_almost_equal(values[1][0], 0.15, decimal=5)
-        """
 
     def test_dalpha_dr(self):
         x = np.array([1, 3, 4])
@@ -68,6 +52,16 @@ class TestCoredDensity(object):
         kappa = 1./2 * (f_xx + f_yy)
         kappa_direct = self.model.kappa_r(r, sigma0, r_core)
         npt.assert_almost_equal(kappa, kappa_direct, decimal=5)
+
+    def test_mass_3d(self):
+        x = np.array([1, 3, 4])
+        y = np.array([2, 1, 1])
+        r = np.sqrt(x ** 2 + y ** 2)
+        sigma0 = 0.1
+        r_core = 7
+        m3d = self.model.mass_3d(r, sigma0, r_core)
+        m3d_lens = self.model.mass_3d_lens(r, sigma0, r_core)
+        npt.assert_almost_equal(m3d, m3d_lens, decimal=8)
 
 
 if __name__ == '__main__':

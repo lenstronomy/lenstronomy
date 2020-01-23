@@ -12,6 +12,7 @@ class CoredDensity(LensProfileBase):
     3d rho(r) = 2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
 
     """
+    _s = 0.000001  # numerical limit for minimal radius
     param_names = ['sigma0', 'r_core', 'center_x', 'center_y']
     lower_limit_default = {'sigma0': -1, 'r_core': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'sigma0': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
@@ -28,7 +29,11 @@ class CoredDensity(LensProfileBase):
         :param center_y: center of the profile
         :return: lensing potential at (x, y)
         """
-        raise ValueError('not implemented')
+        x_ = x - center_x
+        y_ = y - center_y
+        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.maximum(r, self._s)
+        return 2 * sigma0 * r_core ** 2 * (2 * np.log(r) - np.log(np.sqrt(r**2 + r_core**2) - r_core))
 
     def derivatives(self, x, y, sigma0, r_core, center_x=0, center_y=0):
         """
@@ -45,6 +50,7 @@ class CoredDensity(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_**2 + y_**2)
+        r = np.maximum(r, self._s)
         alpha_r = self.alpha_r(r, sigma0, r_core)
         f_x = alpha_r * x_ / r
         f_y = alpha_r * y_ / r
@@ -64,6 +70,7 @@ class CoredDensity(LensProfileBase):
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.maximum(r, self._s)
         d_alpha_dr = self.d_alpha_dr(r, sigma0, r_core)
         alpha = self.alpha_r(r, sigma0, r_core)
         dr_dx = calc_util.d_r_dx(x_, y_)
@@ -85,7 +92,8 @@ class CoredDensity(LensProfileBase):
         """
         return 2 * sigma0 * r_core ** 2 / r * (1 - (1 + (r/r_core)**2) **(-1./2))
 
-    def d_alpha_dr(self, r, sigma0, r_core):
+    @staticmethod
+    def d_alpha_dr(r, sigma0, r_core):
         """
         radial derivatives of the radial deflection angle
 
@@ -107,3 +115,55 @@ class CoredDensity(LensProfileBase):
         :return: convergence at r
         """
         return sigma0 * (1 + (r/r_core)**2) ** (-3./2)
+
+    @staticmethod
+    def density(r, sigma0, r_core):
+        """
+        rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
+
+        :param r: radius (angular scale)
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :return: density at radius r
+        """
+        return 2/np.pi * sigma0 * r_core**3 * (r_core**2 + r**2) ** (-2)
+
+    def density_2d(self, x, y, sigma0, r_core, center_x=0, center_y=0):
+        """
+        projected density at projected radius r
+
+        :param x: x-coordinate in angular units
+        :param y: y-coordinate in angular units
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :param center_x: center of the profile
+        :param center_y: center of the profile
+        :return: projected density
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.maximum(r, self._s)
+        return self.kappa_r(r, sigma0, r_core)
+
+    def mass_2d(self, r, sigma0, r_core):
+        """
+        mass enclosed in cylinder of radius r
+
+        :param r: radius (angular scale)
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :return: mass enclosed in cylinder of radius r
+        """
+        return self.alpha_r(r, sigma0, r_core) * np.pi * 2
+
+    def mass_3d(self, r, sigma0, r_core):
+        """
+        mass enclosed 3d radius
+
+        :param r: radius (angular scale)
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :return: mass enclosed 3d radius
+        """
+        return 8 * sigma0 * r_core**3 * (np.arctan(r/r_core)/(2*r_core) - r / (2 * (r**2 + r_core**2)))

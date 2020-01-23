@@ -17,7 +17,15 @@ class TestCoredDensity(object):
         self.model = CoredDensity()
 
     def test_function(self):
-        pass
+        r = np.linspace(start=0.01, stop=10, num=10)
+        sigma0 = 0.2
+        r_core = 5
+        f_ = self.model.function(r, 0, sigma0, r_core)
+        delta = 0.0001
+        f_d = self.model.function(r + delta, 0, sigma0, r_core)
+        f_x_num = (f_d - f_) / delta
+        f_x, _ = self.model.derivatives(r, 0, sigma0, r_core)
+        npt.assert_almost_equal(f_x_num, f_x, decimal=3)
 
     def test_derivatives(self):
         pass

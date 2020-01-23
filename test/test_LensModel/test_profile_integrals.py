@@ -135,7 +135,6 @@ class TestNumerics(object):
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
         npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
         lensModel.density_2d(1, 1, rho0=1)
-        #assert 1 == 0
 
     def test_sie(self):
         from lenstronomy.LensModel.Profiles.sie import SIE as Model
@@ -221,15 +220,18 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     def test_tnfw(self):
-
         from lenstronomy.LensModel.Profiles.tnfw import TNFW as Model
         kwargs = {'rho0': 1., 'Rs': 1, 'r_trunc': 4}
         self.assert_integrals(Model, kwargs)
 
     def test_cnfw(self):
-
         from lenstronomy.LensModel.Profiles.cnfw import CNFW as Model
         kwargs = {'rho0': 1., 'Rs': 1, 'r_core': 0.5}
+        self.assert_integrals(Model, kwargs)
+
+    def test_cored_density(self):
+        from lenstronomy.LensModel.Profiles.cored_density import CoredDensity as Model
+        kwargs = {'sigma0': 0.1, 'r_core': 6.}
         self.assert_integrals(Model, kwargs)
 
 

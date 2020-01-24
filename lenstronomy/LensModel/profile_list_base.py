@@ -204,6 +204,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY':
             from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
             return CoredDensity()
+        elif lens_type == 'CORED_DENSITY_MST':
+            from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
+            return CoredDensityMST()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

@@ -255,6 +255,11 @@ class TestNumericsProfile(object):
         kwargs = {'sigma0': 0.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY']
         self.assert_differentials(lens_model, kwargs)
+
+    def test_cored_density_mst(self):
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_MST']
+        self.assert_differentials(lens_model, kwargs)
        
 
 if __name__ == '__main__':

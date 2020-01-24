@@ -207,7 +207,6 @@ class Param(object):
         # update lens model joint parameters (including scaling)
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
-        kwargs_lens = self.mst_approx_correction(kwargs_lens)
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
@@ -412,21 +411,6 @@ class Param(object):
                 elif 'k_eff' in kwargs:
                     kwargs['k_eff'] *= scale_factor
         return kwargs_lens_updated
-
-    def mst_approx_correction(self, kwargs_lens):
-        """
-        approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
-        adds the approximate mass-sheet model parameter to counter-act (in approximation) this model. This allows for
-        better sampling of the mass-sheet transformed quantities that do not have strong covariances. Attention, the
-        interpretation of the result is that the mass sheet as 'CONVERGENCE' that is present needs to be subtracted
-        in post-processing.
-
-
-        :param kwargs_lens: lens model keyword argument list
-
-        :return: kwargs_lens with transformed CONVERGENCE profile from the CORED_DENSITY profile
-        """
-        return kwargs_lens
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)

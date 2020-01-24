@@ -1,0 +1,315 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Cosmo.Sampling package &#8212; lenstronomy 1.3.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Data package" href="lenstronomy.Data.html" />
+    <link rel="prev" title="lenstronomy.Cosmo package" href="lenstronomy.Cosmo.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Cosmo.html" accesskey="U">lenstronomy.Cosmo package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-cosmo-sampling-package">
+<h1>lenstronomy.Cosmo.Sampling package<a class="headerlink" href="#lenstronomy-cosmo-sampling-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.Sampling.cosmo_likelihood">
+<span id="lenstronomy-cosmo-sampling-cosmo-likelihood-module"></span><h2>lenstronomy.Cosmo.Sampling.cosmo_likelihood module<a class="headerlink" href="#module-lenstronomy.Cosmo.Sampling.cosmo_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.Sampling.cosmo_likelihood.CosmoLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.Sampling.cosmo_likelihood.</code><code class="descname">CosmoLikelihood</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>cosmology</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_fixed</em>, <em>ppn_sampling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/cosmo_likelihood.html#CosmoLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.cosmo_likelihood.CosmoLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>this class contains the likelihood function of the Strong lensing analysis</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.cosmo_likelihood.CosmoLikelihood.likelihood">
+<code class="descname">likelihood</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/cosmo_likelihood.html#CosmoLikelihood.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.cosmo_likelihood.CosmoLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – list of sampled parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">log likelihood of the combined lenses</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.Sampling.lens_likelihood">
+<span id="lenstronomy-cosmo-sampling-lens-likelihood-module"></span><h2>lenstronomy.Cosmo.Sampling.lens_likelihood module<a class="headerlink" href="#module-lenstronomy.Cosmo.Sampling.lens_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.Sampling.lens_likelihood.LensLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.Sampling.lens_likelihood.</code><code class="descname">LensLikelihood</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>D_d_sample</em>, <em>D_delta_t_sample</em>, <em>kde_type='scipy_gaussian'</em>, <em>bandwidth=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/lens_likelihood.html#LensLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.lens_likelihood.LensLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for evaluating single lens likelihood</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.lens_likelihood.LensLikelihood.lens_log_likelihood">
+<code class="descname">lens_log_likelihood</code><span class="sig-paren">(</span><em>cosmo</em>, <em>gamma_ppn=1</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/lens_likelihood.html#LensLikelihood.lens_log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.lens_likelihood.LensLikelihood.lens_log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cosmo</strong> – astropy.cosmology instance</li>
+<li><strong>gamma_ppn</strong> – post-newtonian gravity parameter (=1 is GR)</li>
+<li><strong>kappa_ext</strong> – external convergence to be added on top of the D_dt posterior</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the data given the model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.Cosmo.Sampling.lens_likelihood.LensSampleLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.Sampling.lens_likelihood.</code><code class="descname">LensSampleLikelihood</code><span class="sig-paren">(</span><em>kwargs_lens_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/lens_likelihood.html#LensSampleLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.lens_likelihood.LensSampleLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to evaluate the likelihood of a cosmology given a sample of angular diameter posteriors
+Currently this class does not include possible covariances between the lens samples</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.lens_likelihood.LensSampleLikelihood.log_likelihood">
+<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>cosmo</em>, <em>gamma_ppn=1</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/lens_likelihood.html#LensSampleLikelihood.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.lens_likelihood.LensSampleLikelihood.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cosmo</strong> – astropy.cosmology instance</li>
+<li><strong>gamma_ppn</strong> – post-newtonian gravity parameter (=1 is GR)</li>
+<li><strong>kappa_ext</strong> – external convergence to be added on top of the D_dt posterior</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the combined lenses</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.Sampling.mcmc_sampling">
+<span id="lenstronomy-cosmo-sampling-mcmc-sampling-module"></span><h2>lenstronomy.Cosmo.Sampling.mcmc_sampling module<a class="headerlink" href="#module-lenstronomy.Cosmo.Sampling.mcmc_sampling" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.Sampling.mcmc_sampling.MCMCSampler">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.Sampling.mcmc_sampling.</code><code class="descname">MCMCSampler</code><span class="sig-paren">(</span><em>kwargs_lens_list</em>, <em>cosmology</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_fixed</em>, <em>ppn_sampling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/mcmc_sampling.html#MCMCSampler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.mcmc_sampling.MCMCSampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class which executes the different sampling  methods</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.mcmc_sampling.MCMCSampler.mcmc_emcee">
+<code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_burn</em>, <em>n_run</em>, <em>kwargs_mean_start</em>, <em>kwargs_sigma_start</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/mcmc_sampling.html#MCMCSampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.mcmc_sampling.MCMCSampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the mcmc analysis of the parameter space</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.Sampling.param_manager">
+<span id="lenstronomy-cosmo-sampling-param-manager-module"></span><h2>lenstronomy.Cosmo.Sampling.param_manager module<a class="headerlink" href="#module-lenstronomy.Cosmo.Sampling.param_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam">
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.Sampling.param_manager.</code><code class="descname">CosmoParam</code><span class="sig-paren">(</span><em>cosmology</em>, <em>kwargs_lower</em>, <em>kwargs_upper</em>, <em>kwargs_fixed</em>, <em>ppn_sampling=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/param_manager.html#CosmoParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for managing the parameters involved</p>
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.args2kwargs">
+<code class="descname">args2kwargs</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/param_manager.html#CosmoParam.args2kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.args2kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – sampling argument list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">keyword argument list with parameter names</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.cosmo">
+<code class="descname">cosmo</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/param_manager.html#CosmoParam.cosmo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.cosmo" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – keyword arguments of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">astropy.cosmology instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.kwargs2args">
+<code class="descname">kwargs2args</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/Sampling/param_manager.html#CosmoParam.kwargs2args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.kwargs2args" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – keyword argument list of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sampling argument list in specified order</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.num_param">
+<code class="descname">num_param</code><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of free parameters and list of their names in order</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.param_bounds">
+<code class="descname">param_bounds</code><a class="headerlink" href="#lenstronomy.Cosmo.Sampling.param_manager.CosmoParam.param_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">argument list of the hard bounds</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Cosmo.Sampling">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Cosmo.Sampling" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Cosmo.Sampling package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.Sampling.cosmo_likelihood">lenstronomy.Cosmo.Sampling.cosmo_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.Sampling.lens_likelihood">lenstronomy.Cosmo.Sampling.lens_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.Sampling.mcmc_sampling">lenstronomy.Cosmo.Sampling.mcmc_sampling module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.Sampling.param_manager">lenstronomy.Cosmo.Sampling.param_manager module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Cosmo.Sampling">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.Cosmo.html"
+                        title="previous chapter">lenstronomy.Cosmo package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Data.html"
+                        title="next chapter">lenstronomy.Data package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Cosmo.Sampling.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Cosmo.html" >lenstronomy.Cosmo package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

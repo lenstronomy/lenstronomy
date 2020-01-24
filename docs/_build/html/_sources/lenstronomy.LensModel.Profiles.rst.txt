@@ -12,6 +12,22 @@ lenstronomy.LensModel.Profiles.alpha\_shift module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.arc\_perturbations module
+--------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.arc_perturbations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.base\_profile module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.base_profile
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.chameleon module
 -----------------------------------------------
 
@@ -28,6 +44,14 @@ lenstronomy.LensModel.Profiles.cnfw module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.cnfw\_ellipse module
+---------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.cnfw_ellipse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.convergence module
 -------------------------------------------------
 
@@ -40,6 +64,14 @@ lenstronomy.LensModel.Profiles.coreBurkert module
 -------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.coreBurkert
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.cored\_density module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.cored_density
     :members:
     :undoc-members:
     :show-inheritance:
@@ -168,6 +200,22 @@ lenstronomy.LensModel.Profiles.nfw\_lookup module
 -------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nfw_lookup
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.nfw\_mass\_concentration module
+--------------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nfw_mass_concentration
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.nfw\_vir\_trunc module
+-----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nfw_vir_trunc
     :members:
     :undoc-members:
     :show-inheritance:

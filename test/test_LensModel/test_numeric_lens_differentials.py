@@ -68,7 +68,7 @@ class TestNumericsProfile(object):
     def setup(self):
         pass
 
-    def assert_differentials(self, lens_model, kwargs):
+    def assert_differentials(self, lens_model, kwargs, potential=True):
         #lensModelNum = NumericLens(lens_model)
         diff = 0.000001
         #x, y = 1., 2.
@@ -82,13 +82,12 @@ class TestNumericsProfile(object):
         npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
         npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
 
-        x, y = 1., 0.
-        f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
-        f_xx_num, f_xy_num, f_yx_num, f_yy_num = lensModel.hessian(x, y, [kwargs], diff=diff)
+        if potential is True:
+            f_x, f_y = lensModel.alpha(x, y, [kwargs])
+            f_x_num, f_y_num = lensModel.alpha(x, y, [kwargs], diff=diff)
 
-        npt.assert_almost_equal(f_xx, f_xx_num, decimal=3)
-        npt.assert_almost_equal(f_yy, f_yy_num, decimal=3)
-        npt.assert_almost_equal(f_xy, f_xy_num, decimal=3)
+            npt.assert_almost_equal(f_x, f_x_num, decimal=3)
+            npt.assert_almost_equal(f_y, f_y_num, decimal=3)
 
     def test_gaussian(self):
         lens_model = ['GAUSSIAN']
@@ -245,11 +244,21 @@ class TestNumericsProfile(object):
     def test_cnfw(self):
         kwargs={'Rs':2, 'alpha_Rs': 1, 'r_core':0.3}
         lens_model = ['CNFW']
-        self.assert_differentials(lens_model, kwargs)
+        self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_cnfw_ellipse(self):
         kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_core': 0.1, 'e1': 0.04, 'e2': -0.04}
         lens_model = ['CNFW_ELLIPSE']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_cored_density(self):
+        kwargs = {'sigma0': 0.1, 'r_core': 8}
+        lens_model = ['CORED_DENSITY']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_cored_density_mst(self):
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_MST']
         self.assert_differentials(lens_model, kwargs)
        
 

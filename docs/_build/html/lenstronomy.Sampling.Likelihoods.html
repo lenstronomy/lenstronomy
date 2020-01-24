@@ -1,0 +1,420 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Sampling.Likelihoods package &#8212; lenstronomy 1.3.0 documentation</title>
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.Sampling.Samplers package" href="lenstronomy.Sampling.Samplers.html" />
+    <link rel="prev" title="lenstronomy.Sampling package" href="lenstronomy.Sampling.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" accesskey="U">lenstronomy.Sampling package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-sampling-likelihoods-package">
+<h1>lenstronomy.Sampling.Likelihoods package<a class="headerlink" href="#lenstronomy-sampling-likelihoods-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.image_likelihood">
+<span id="lenstronomy-sampling-likelihoods-image-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.image_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.image_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.image_likelihood.</code><code class="descname">ImageLikelihood</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>multi_band_type</em>, <em>kwargs_model</em>, <em>bands_compute=None</em>, <em>likelihood_mask_list=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em>, <em>force_minimum_source_surface_brightness=False</em>, <em>flux_min=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>manages imaging data likelihoods</p>
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL">
+<code class="descname">logL</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_special=None</em>, <em>kwargs_extinction=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_source</strong> – </li>
+<li><strong>kwargs_lens_light</strong> – </li>
+<li><strong>kwargs_ps</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data">
+<code class="descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of image data points</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear">
+<code class="descname">num_param_linear</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_special=None</em>, <em>kwargs_extinction=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of linear parameters solved for during the image reconstruction process</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache">
+<code class="descname">reset_point_source_cache</code><span class="sig-paren">(</span><em>bool=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.reset_point_source_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bool</strong> – boolean</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.position_likelihood">
+<span id="lenstronomy-sampling-likelihoods-position-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.position_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.position_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.position_likelihood.</code><code class="descname">PositionLikelihood</code><span class="sig-paren">(</span><em>point_source_class</em>, <em>image_position_uncertainty=0.005</em>, <em>astrometric_likelihood=False</em>, <em>image_position_likelihood=False</em>, <em>ra_image_list=[]</em>, <em>dec_image_list=[]</em>, <em>source_position_likelihood=False</em>, <em>check_matched_source_position=False</em>, <em>source_position_tolerance=0.001</em>, <em>source_position_sigma=0.001</em>, <em>force_no_add_image=False</em>, <em>restrict_image_number=False</em>, <em>max_num_images=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>likelihood of positions of multiply imaged point sources</p>
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood">
+<code class="descname">astrometric_likelihood</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_special</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.astrometric_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluates the astrometric uncertainty of the model plotted point sources (only available for ‘LENSED_POSITION’
+point source model) and predicted image position by the lens model including an astrometric correction term.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – point source model kwargs list</li>
+<li><strong>kwargs_special</strong> – kwargs list, should include the astrometric corrections ‘delta_x’, ‘delta_y’</li>
+<li><strong>sigma</strong> – 1-sigma Gaussian uncertainty in the astrometry</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the astrometirc correction between predicted image positions and model placement of the point sources</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images">
+<code class="descname">check_additional_images</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.check_additional_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether additional images have been found and placed in kwargs_ps
+:param kwargs_ps: point source kwargs
+:return: bool, True if more image positions are found than originally been assigned</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood">
+<code class="descname">image_position_likelihood</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.image_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the likelihood of the model predicted image position relative to measured image positions with an astrometric error.
+This routine requires the ‘ra_image_list’ and ‘dec_image_list’ being declared in the initiation of the class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>sigma</strong> – 1-sigma uncertainty in the measured position of the images</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the model predicted image positions given the data/measured image positions.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL">
+<code class="descname">logL</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kwargs_special</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model parameter keyword argument list</li>
+<li><strong>kwargs_ps</strong> – point source model parameter keyword argument list</li>
+<li><strong>kwargs_special</strong> – special keyword arguments</li>
+<li><strong>verbose</strong> – bool</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the optional likelihoods being computed</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data">
+<code class="descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">integer, number of data points assocated with the class instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood">
+<code class="descname">source_position_likelihood</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model..
+The likelihood level is computed in respect of a displacement in the image plane and transposed through the
+Hessian into the source plane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the model reproducing the correct image positions given an image position uncertainty</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_scatter">
+<code class="descname">source_position_scatter</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>hard_bound_rms</em>, <em>source_position_sigma=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_scatter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>computes the deviation of the predicted source positions from the image position ray-traced back to the source</dt>
+<dd>plane.</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>kwargs_ps</strong> – point source model keyword argument list</li>
+<li><strong>hard_bound_rms</strong> – float, hard bound rms value of the source position scatter. If the scatter is larger, the model is penalized.</li>
+<li><strong>source_position_sigma</strong> – r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model precision in matching the source position</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">add penalty when solver does not find a solution</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.image2source_covariance">
+<code class="descclassname">lenstronomy.Sampling.Likelihoods.position_likelihood.</code><code class="descname">image2source_covariance</code><span class="sig-paren">(</span><em>A</em>, <em>Sigma_theta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#image2source_covariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.image2source_covariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes error covariance in the source plane
+A: Hessian lensing matrix
+Sigma_theta: image plane covariance matrix of uncertainties</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.prior_likelihood">
+<span id="lenstronomy-sampling-likelihoods-prior-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.prior_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.prior_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.prior_likelihood.</code><code class="descname">PriorLikelihood</code><span class="sig-paren">(</span><em>prior_lens=[]</em>, <em>prior_source=[]</em>, <em>prior_lens_light=[]</em>, <em>prior_ps=[]</em>, <em>prior_special=[]</em>, <em>prior_extinction=[]</em>, <em>prior_lens_kde=[]</em>, <em>prior_source_kde=[]</em>, <em>prior_lens_light_kde=[]</em>, <em>prior_ps_kde=[]</em>, <em>prior_special_kde=[]</em>, <em>prior_extinction_kde=[]</em>, <em>prior_lens_lognormal=[]</em>, <em>prior_source_lognormal=[]</em>, <em>prior_lens_light_lognormal=[]</em>, <em>prior_ps_lognormal=[]</em>, <em>prior_special_lognormal=[]</em>, <em>prior_extinction_lognormal=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class containing additional Gaussian priors to be folded into the likelihood</p>
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL">
+<code class="descname">logL</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_special=None</em>, <em>kwargs_extinction=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_lens</strong> – lens model parameter list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">log likelihood of lens center</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood">
+<span id="lenstronomy-sampling-likelihoods-time-delay-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.time_delay_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood">
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.time_delay_likelihood.</code><code class="descname">TimeDelayLikelihood</code><span class="sig-paren">(</span><em>time_delays_measured</em>, <em>time_delays_uncertainties</em>, <em>lens_model_class</em>, <em>point_source_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class to compute the likelihood of a model given a measurement of time delays</p>
+<dl class="method">
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL">
+<code class="descname">logL</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kwargs_cosmo</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to compute the log likelihood of the time delay distance
+:param kwargs_lens: lens model kwargs list
+:param kwargs_ps: point source kwargs list
+:param kwargs_cosmo: cosmology and other kwargs
+:return: log likelihood of the model given the time delay data</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data">
+<code class="descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of time delay measurements</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.Sampling.Likelihoods package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Likelihoods.image_likelihood">lenstronomy.Sampling.Likelihoods.image_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Likelihoods.position_likelihood">lenstronomy.Sampling.Likelihoods.position_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Likelihoods.prior_likelihood">lenstronomy.Sampling.Likelihoods.prior_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood">lenstronomy.Sampling.Likelihoods.time_delay_likelihood module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.Sampling.Likelihoods">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.Sampling.html"
+                        title="previous chapter">lenstronomy.Sampling package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.Sampling.Samplers.html"
+                        title="next chapter">lenstronomy.Sampling.Samplers package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.Sampling.Likelihoods.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" >lenstronomy.Sampling package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

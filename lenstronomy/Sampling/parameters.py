@@ -80,16 +80,6 @@ class Param(object):
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
 
         lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
-        #source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []),
-        #                                deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
-        #                                source_redshift_list=kwargs_model.get('source_redshift_list', None))
-        #lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-        #                             z_lens=kwargs_model.get('z_lens', None),
-        #                             z_source=kwargs_model.get('z_source', None),
-        #                         lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-        #                         multi_plane=kwargs_model.get('multi_plane', False),
-        #                             cosmo=kwargs_model.get('cosmo', None),
-        #                         observed_convention_index=kwargs_model.get('observed_convention_index', None))
         self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:
@@ -217,10 +207,10 @@ class Param(object):
         # update lens model joint parameters (including scaling)
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
+        kwargs_lens = self.mst_approx_correction(kwargs_lens)
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,
@@ -422,6 +412,21 @@ class Param(object):
                 elif 'k_eff' in kwargs:
                     kwargs['k_eff'] *= scale_factor
         return kwargs_lens_updated
+
+    def mst_approx_correction(self, kwargs_lens):
+        """
+        approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
+        adds the approximate mass-sheet model parameter to counter-act (in approximation) this model. This allows for
+        better sampling of the mass-sheet transformed quantities that do not have strong covariances. Attention, the
+        interpretation of the result is that the mass sheet as 'CONVERGENCE' that is present needs to be subtracted
+        in post-processing.
+
+
+        :param kwargs_lens: lens model keyword argument list
+
+        :return: kwargs_lens with transformed CONVERGENCE profile from the CORED_DENSITY profile
+        """
+        return kwargs_lens
 
     def _add_fixed_lens(self, kwargs_fixed, kwargs_init):
         kwargs_fixed_update = copy.deepcopy(kwargs_fixed)

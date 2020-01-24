@@ -128,6 +128,18 @@ class CoredDensity(LensProfileBase):
         """
         return 2/np.pi * sigma0 * r_core**3 * (r_core**2 + r**2) ** (-2)
 
+    def density_lens(self, r, sigma0, r_core):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius (angular scale)
+        :param sigma0: convergence in the core
+        :param r_core: core radius
+        :return: desnity at radius r
+        """
+        return self.density(r, sigma0, r_core)
+
     def density_2d(self, x, y, sigma0, r_core, center_x=0, center_y=0):
         """
         projected density at projected radius r

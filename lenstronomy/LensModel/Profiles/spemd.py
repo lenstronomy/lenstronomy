@@ -81,3 +81,17 @@ class SPEMD(LensProfileBase):
         :return: mass enclosed a 3D radius r
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self.spp.density_lens(r, theta_E, gamma)

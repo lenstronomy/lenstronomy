@@ -39,6 +39,22 @@ class TestNumerics(object):
         mass_3d = lensModel.mass_3d(r, **kwargs)
         npt.assert_almost_equal(mass_3d/mass_3d_num, 1, decimal=2)
 
+    def assert_lens_integrals(self, Model, kwargs):
+        """
+        checks whether the integral in projection of the density_lens() function is the convergence
+
+        :param Model: lens model instance
+        :param kwargs: keyword arguments of lens model
+        :return:
+        """
+        lensModel = Model()
+        int_profile = ProfileIntegrals(lensModel)
+        r = 2.
+        kappa_num = int_profile.density_2d(r, kwargs, lens_param=True)
+        f_xx, f_yy, f_xy = lensModel.hessian(r, 0, **kwargs)
+        kappa = 1./2 * (f_xx + f_yy)
+        npt.assert_almost_equal(kappa_num, kappa, decimal=2)
+
     def test_PJaffe(self):
         kwargs = {'rho0': 1., 'Ra': 0.2, 'Rs': 2.}
         from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe as Model
@@ -68,6 +84,9 @@ class TestNumerics(object):
         kwargs = {'rho0': 1.,  'Rs': 5., 'center_x': 0, 'center_y': 0}
         from lenstronomy.LensModel.Profiles.nfw import NFW as Model
         self.assert_integrals(Model, kwargs)
+
+        #kwargs_lens = {'alpha_Rs': 1., 'Rs': 5., 'center_x': 0, 'center_y': 0}
+        #self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_nfw_density_deflection(self):
         """
@@ -116,6 +135,8 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.sis import SIS as Model
         kwargs = {'rho0': 1.}
         self.assert_integrals(Model, kwargs)
+        kwargs_lens = {'theta_E': 1.}
+        self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_sis_density_deflection(self):
         """
@@ -140,6 +161,13 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.sie import SIE as Model
         kwargs = {'rho0': 1., 'e1': 0, 'e2': 0}
         self.assert_integrals(Model, kwargs)
+        kwargs_lens = {'theta_E': 1., 'e1': 0, 'e2': 0}
+        self.assert_lens_integrals(Model, kwargs_lens)
+
+    def test_spep(self):
+        from lenstronomy.LensModel.Profiles.spep import SPEP as Model
+        kwargs_lens = {'theta_E': 1, 'gamma': 2, 'e1': 0, 'e2': 0}
+        self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_sie_density_deflection(self):
         """
@@ -166,6 +194,8 @@ class TestNumerics(object):
 
         kwargs = {'rho0': 1., 'gamma': 2.0}
         self.assert_integrals(Model, kwargs)
+        kwargs_lens = {'theta_E': 1., 'gamma': 2.0}
+        self.assert_lens_integrals(Model, kwargs_lens)
 
     def test_spp_density_deflection(self):
         """
@@ -233,6 +263,7 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.cored_density import CoredDensity as Model
         kwargs = {'sigma0': 0.1, 'r_core': 6.}
         self.assert_integrals(Model, kwargs)
+        self.assert_lens_integrals(Model, kwargs)
 
 
     """

@@ -234,12 +234,13 @@ class PositionLikelihood(object):
         return num
 
 
-# Equation (13) in Birrer & Treu 2019
 def image2source_covariance(A, Sigma_theta):
     """
     computes error covariance in the source plane
     A: Hessian lensing matrix
     Sigma_theta: image plane covariance matrix of uncertainties
+
+    # Equation (13) in Birrer & Treu 2019
     """
     ATSigma = np.matmul(A.T, Sigma_theta)
     return np.matmul(ATSigma, A)

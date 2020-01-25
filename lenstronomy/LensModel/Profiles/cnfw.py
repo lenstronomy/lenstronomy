@@ -320,8 +320,6 @@ class CNFW(LensProfileBase):
         b = max(b, 0.000001)
         gx = self._G(x, b)
 
-        #m_2d = 4 * np.pi* rho0 * Rs**3 * gx
-
         m_2d = 4*np.pi*rho0*Rs*R**2*gx/x**2
 
         return m_2d

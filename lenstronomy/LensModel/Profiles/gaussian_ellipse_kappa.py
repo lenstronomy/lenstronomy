@@ -111,9 +111,41 @@ class GaussianEllipseKappa(LensProfileBase):
 
             return alpha_y_
 
+        if isinstance(x_, int) or isinstance(x_, float):
+            return self._num_integral(x_, y_, amp_, sigma_, _p, q)
+        else:
+            f_ = []
+            for i in range(len(x_)):
+                f_.append(self._num_integral(x_[i], y_[i], amp_, sigma_, _p, q))
+            return np.array(f_)
+
+    def _num_integral(self, x_, y_, amp_, sigma_, _p, q):
+        """
+
+        :param x_:
+        :param y_:
+        :param _p:
+        :param q:
+        :return:
+        """
+        def pot_real_line_integrand(_x):
+            sig_func_re, sig_func_im = self.sigma_function(_p * _x, 0, q)
+
+            alpha_x_ = amp_*sigma_ * self.sgn(_x) * np.sqrt(2*np.pi / (
+                    1. - q ** 2)) * sig_func_re
+
+            return alpha_x_
+
+        def pot_imag_line_integrand(_y):
+            sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * _y, q)
+
+            alpha_y_ = -amp_*sigma_ * self.sgn(x_ + 1j*_y) * np.sqrt(2*np.pi /
+                        (1. - q ** 2)) * sig_func_im
+
+            return alpha_y_
+
         pot_on_real_line = quad(pot_real_line_integrand, 0, x_)[0]
         pot_on_imag_parallel = quad(pot_imag_line_integrand, 0, y_)[0]
-
         return (pot_on_real_line + pot_on_imag_parallel)
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):

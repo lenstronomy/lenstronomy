@@ -4,6 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.Profiles.sis import SIS
 
 
 class TestLensModel(object):
@@ -33,6 +34,15 @@ class TestLensModel(object):
         kwargs = [{'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}]
         output = lensModel.mass_2d(r=1, kwargs=kwargs)
         assert output == 0.11750309741540453
+
+    def test_density(self):
+        theta_E = 1
+        r = 1
+        lensModel = SinglePlane(lens_model_list=['SIS'])
+        density = lensModel.density(r=r, kwargs=[{'theta_E': theta_E}])
+        sis = SIS()
+        density_model = sis.density_lens(r=r, theta_E=theta_E)
+        npt.assert_almost_equal(density, density_model, decimal=8)
 
     def test_bool_list(self):
         lensModel = SinglePlane(['SPEMD', 'SHEAR'])

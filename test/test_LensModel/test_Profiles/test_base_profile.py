@@ -23,3 +23,5 @@ class TestRaise(unittest.TestCase):
             base.derivatives()
         with self.assertRaises(ValueError):
             base.hessian()
+        with self.assertRaises(ValueError):
+            base.density_lens()

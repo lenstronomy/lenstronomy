@@ -48,8 +48,8 @@ class ProfileListBase(object):
 
         :param lens_type: string, lens model type
         :param custom_class: custom class
-        :param z_lens:
-        :param z_source:
+        :param z_lens: lens redshift  # currently only used in NFW_MC model as this is redshift dependent
+        :param z_source: source redshift  # currently only used in NFW_MC model as this is redshift dependent
         :return: class instance of the lens model type
         """
 
@@ -131,7 +131,7 @@ class ProfileListBase(object):
         elif lens_type == 'CTNFW_GAUSS_DEC':
             from lenstronomy.LensModel.Profiles.gauss_decomposition import CTNFWGaussDec
             return CTNFWGaussDec()
-        elif lens_type =='NFW_MC':
+        elif lens_type == 'NFW_MC':
             from lenstronomy.LensModel.Profiles.nfw_mass_concentration import NFWMC
             return NFWMC(z_lens=z_lens, z_source=z_source)
         elif lens_type == 'SERSIC':
@@ -201,6 +201,12 @@ class ProfileListBase(object):
         elif lens_type == 'coreBURKERT':
             from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert
             return CoreBurkert()
+        elif lens_type == 'CORED_DENSITY':
+            from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
+            return CoredDensity()
+        elif lens_type == 'CORED_DENSITY_MST':
+            from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
+            return CoredDensityMST()
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

@@ -126,7 +126,7 @@ class SPEP(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def mass_3d_lens(self, r, theta_E, gamma, e1, e2):
+    def mass_3d_lens(self, r, theta_E, gamma, e1=0, e2=0):
         """
         computes the spherical power-law mass enclosed (with SPP routiune)
         :param r:
@@ -137,6 +137,18 @@ class SPEP(LensProfileBase):
         :return:
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, e1=0, e2=0):
+        """
+
+        :param r:
+        :param theta_E:
+        :param gamma:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.spp.density_lens(r, theta_E, gamma)
 
     def _param_bounds(self, gamma, q):
         """

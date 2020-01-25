@@ -134,7 +134,7 @@ class CoreBurkert(LensProfileBase):
 
     def density(self, R, Rs, rho0, r_core):
         """
-        three dimenstional cored Burkert profile
+        three dimensional cored Burkert profile
 
         :param R: radius of interest
         :type R: float/numpy array

@@ -40,6 +40,16 @@ class LensProfileBase(object):
         """
         raise ValueError('hessian definition is not defined in the profile you want to execute.')
 
+    def density_lens(self, **kwargs):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param kwargs: keywords of the profile
+        :return: raise as definition is not defined
+        """
+        raise ValueError('density_lens definition is not defined in the profile you want to execute.')
+
     def set_static(self, **kwargs):
         """
         pre-computes certain computations that do only relate to the lens model parameters and not to the specific

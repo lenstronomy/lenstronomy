@@ -18,6 +18,7 @@ Contents:
    mailinglist
    authors
    published
+   affiliatedpackages
    history
 
 Feedback

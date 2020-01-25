@@ -41,9 +41,9 @@ class TestCNFWELLIPSE(object):
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])
         values = self.nfw_e.function(x, y, Rs, alpha_Rs, r_core, e1, e2)
-        npt.assert_almost_equal(values[0], 1.8827504143588476, decimal=5)
-        npt.assert_almost_equal(values[1], 2.6436373117941852, decimal=5)
-        npt.assert_almost_equal(values[2], 3.394127018818891, decimal=5)
+        npt.assert_almost_equal(values[0], 1.8550220596738973, decimal=5)
+        npt.assert_almost_equal(values[1], 2.7684470762303537, decimal=5)
+        npt.assert_almost_equal(values[2], 3.7076606717487586, decimal=5)
 
     def test_derivatives(self):
         x = np.array([1])

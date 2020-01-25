@@ -52,10 +52,8 @@ class CNFW_ELLIPSE(LensProfileBase):
         e = min(abs(1. - q), 0.99)
         xt1 = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
         xt2 = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
-        R_ = np.sqrt(xt1**2 + xt2**2)
 
-        rho0_input = self.cnfw._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
-        f_x_prim, f_y_prim = self.cnfw.cnfwAlpha(R_, Rs, rho0_input, r_core, xt1, xt2)
+        f_x_prim, f_y_prim = self.cnfw.derivatives(xt1, xt2, Rs, alpha_Rs, r_core, center_x=0, center_y=0)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
         f_x = cos_phi*f_x_prim-sin_phi*f_y_prim

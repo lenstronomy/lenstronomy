@@ -204,6 +204,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY':
             from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
             return CoredDensity()
+        elif lens_type == 'CORED_DENSITY_2':
+            from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
+            return CoredDensity2()
         elif lens_type == 'CORED_DENSITY_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST()

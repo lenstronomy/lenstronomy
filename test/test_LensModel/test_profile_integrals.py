@@ -101,7 +101,7 @@ class TestNumerics(object):
         rho0 = lensModel._alpha2rho0(alpha_Rs, Rs)
         kwargs_lens = {'alpha_Rs': alpha_Rs, 'Rs': Rs}
         kwargs_density = {'rho0': rho0, 'Rs': Rs}
-        r = 1.
+        r = 2.
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
@@ -261,6 +261,12 @@ class TestNumerics(object):
 
     def test_cored_density(self):
         from lenstronomy.LensModel.Profiles.cored_density import CoredDensity as Model
+        kwargs = {'sigma0': 0.1, 'r_core': 6.}
+        self.assert_integrals(Model, kwargs)
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_cored_density_2(self):
+        from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2 as Model
         kwargs = {'sigma0': 0.1, 'r_core': 6.}
         self.assert_integrals(Model, kwargs)
         self.assert_lens_integrals(Model, kwargs)

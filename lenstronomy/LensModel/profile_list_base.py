@@ -209,7 +209,10 @@ class ProfileListBase(object):
             return CoredDensity2()
         elif lens_type == 'CORED_DENSITY_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
-            return CoredDensityMST()
+            return CoredDensityMST(profile_type='CORED_DENSITY')
+        elif lens_type == 'CORED_DENSITY_2_MST':
+            from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
+            return CoredDensityMST(profile_type='CORED_DENSITY_2')
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)

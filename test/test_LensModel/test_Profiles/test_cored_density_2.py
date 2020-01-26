@@ -25,6 +25,11 @@ class TestCoredDensity(object):
         f_x, _ = self.model.derivatives(r, 0, sigma0, r_core)
         npt.assert_almost_equal(f_x_num, f_x, decimal=3)
 
+        #test single value vs list of outputs
+        f_ = self.model.function(1, 0, sigma0, r_core)
+        f_list = self.model.function(np.array([1]), 0, sigma0, r_core)
+        npt.assert_almost_equal(f_, f_list[0], decimal=8)
+
     def test_derivatives(self):
         pass
 

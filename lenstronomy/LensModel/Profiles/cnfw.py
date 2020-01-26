@@ -10,6 +10,7 @@ class CNFW(LensProfileBase):
     """
     this class computes the lensing quantities of a cored NFW profile:
     rho = rho0 * (r + r_core)^-1 * (r + rs)^-2
+    alpha_Rs is the normalization equivalent to the deflection angle at rs in the absence of a core
 
     """
     model_name = 'CNFW'
@@ -32,7 +33,8 @@ class CNFW(LensProfileBase):
         :param x: angular position
         :param y: angular position
         :param Rs: angular turn over point
-        :param alpha_Rs: deflection at Rs
+        :param alpha_Rs: deflection at Rs (in the absence of a core
+        :param r_core: core radius
         :param center_x: center of halo
         :param center_y: center of halo
         :return:
@@ -85,15 +87,15 @@ class CNFW(LensProfileBase):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
         if Rs < 0.0001:
             Rs = 0.0001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
 
-        kappa = self.density_2d(x_, y_, Rs, rho0_input, r_core)
-        gamma1, gamma2 = self.cnfwGamma(R, Rs, rho0_input, r_core, x_, y_)
+        kappa = self.density_2d(x_, y_, Rs, rho0, r_core)
+        gamma1, gamma2 = self.cnfwGamma(R, Rs, rho0, r_core, x_, y_)
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
@@ -101,7 +103,7 @@ class CNFW(LensProfileBase):
 
     def density(self, R, Rs, rho0, r_core):
         """
-        three dimenstional truncated NFW profile
+        three dimensional truncated NFW profile
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -114,6 +116,15 @@ class CNFW(LensProfileBase):
 
         M0 = 4*np.pi*rho0 * Rs ** 3
         return (M0/4/np.pi) * ((r_core + R)*(R + Rs)**2) ** -1
+
+    def density_lens(self, R, Rs, alpha_Rs, r_core):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        """
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
+        return self.density(R, Rs, rho0, r_core)
 
     def density_2d(self, x, y, Rs, rho0, r_core, center_x=0, center_y=0):
         """
@@ -154,6 +165,15 @@ class CNFW(LensProfileBase):
 
         return M_0 * (x * (1+x) ** -1 * (-1+b) ** -1 + (-1+b) ** -2 *
                       ((2*b-1)*np.log(1/(1+x)) + b **2 * np.log(x / b + 1)))
+
+    def mass_3d_lens(self, R, Rs, alpha_Rs, r_core):
+        """
+        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+
+        :return:
+        """
+        rho0 = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs, r_core=r_core)
+        return self.mass_3d(R, Rs, rho0, r_core)
 
     def alpha_r(self, R, Rs, rho0, r_core):
         """

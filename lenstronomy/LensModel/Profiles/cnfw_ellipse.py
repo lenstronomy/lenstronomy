@@ -81,3 +81,19 @@ class CNFW_ELLIPSE(LensProfileBase):
         f_xy = dalpha_radec
         f_yx = dalpha_decra
         return f_xx, f_yy, f_xy
+
+    def mass_3d_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
+        """
+        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+
+        :return:
+        """
+        return self.cnfw.mass_3d_lens(R, Rs, alpha_Rs, r_core)
+
+    def density_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        """
+        return self.cnfw.density_lens(R, Rs, alpha_Rs, r_core)

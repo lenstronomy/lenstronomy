@@ -44,6 +44,17 @@ class Testcnfw(object):
         npt.assert_almost_equal(alpha/alpha_theory, 1)
         npt.assert_almost_equal(alpha/alpha_derivatives, 1)
 
+    def test_mass_3d(self):
+        Rs = 10.
+        rho0 = 1.
+        r_core = 7.
+
+        R = np.linspace(0.1 * Rs, 4 * Rs, 1000)
+        alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
+        m3d = self.cn.mass_3d(R, Rs, rho0, r_core)
+        m3d_lens = self.cn.mass_3d_lens(R, Rs, alpha_Rs, r_core)
+        npt.assert_almost_equal(m3d, m3d_lens, decimal=8)
+
     def test_mproj(self):
 
         Rs = 10.

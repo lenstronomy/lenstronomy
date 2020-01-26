@@ -25,3 +25,5 @@ class TestRaise(unittest.TestCase):
             base.hessian()
         with self.assertRaises(ValueError):
             base.density_lens()
+        with self.assertRaises(ValueError):
+            base.mass_3d_lens()

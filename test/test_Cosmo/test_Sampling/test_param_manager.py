@@ -18,12 +18,13 @@ class TestParamManager(object):
         self.param_list = param_list
 
     def test_num_param(self):
-        num, list = self.param_list[0].num_param
-        assert num == 0
-        num, list = self.param_list[1].num_param
+        list = self.param_list[0].param_list(latex_style=False)
+        assert len(list) == 0
+        num = self.param_list[1].num_param
         assert num == 3
         for param in self.param_list:
-            num, list = param.num_param
+            list = param.param_list(latex_style=True)
+            list = param.param_list(latex_style=False)
 
     def test_kwargs2args(self):
         kwargs = {'h0': 70, 'om': 0.3, 'ok': 0., 'w': -1, 'wa': -0, 'w0': -0, 'gamma_ppn': 1}

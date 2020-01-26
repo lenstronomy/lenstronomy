@@ -5,19 +5,23 @@ class CosmoParam(object):
     """
     class for managing the parameters involved
     """
-    def __init__(self, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed, ppn_sampling=False):
+    def __init__(self, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed, ppn_sampling=False,
+                 lambda_mst_sampling=False):
         """
 
         :param cosmology: string describing cosmological model
         :param ppn_sampling: post-newtonian parameter sampling
+        :param lambda_mst_sampling: bool, if True adds a global mass-sheet transform parameter in the sampling
         :param kwargs_lower: keyword arguments with lower limits of parameters
         :param kwargs_upper: keyword arguments with upper limits of parameters
         :param kwargs_fixed: keyword arguments and values of fixed parameters
         """
         self._cosmology = cosmology
         self._ppn_sampling = ppn_sampling
-        if cosmology not in ['FLCDM', "FwCDM", "w0waCDM", "oLCDM"]:
-            raise ValueError('cosmology %s not supported!' % cosmology)
+        self._lambda_mst_sampling = lambda_mst_sampling
+        self._supported_cosmologies = ['FLCDM', "FwCDM", "w0waCDM", "oLCDM"]
+        if cosmology not in self._supported_cosmologies:
+            raise ValueError('cosmology %s not supported!. Please chose among %s ' % (cosmology, self._supported_cosmologies))
         self._kwargs_fixed = kwargs_fixed
         self._kwargs_lower = kwargs_lower
         self._kwargs_upper = kwargs_upper
@@ -25,38 +29,63 @@ class CosmoParam(object):
     @property
     def num_param(self):
         """
+        number of parameters being sampled
 
-        :return: number of free parameters and list of their names in order
+        :return: integer
         """
-        num = 0
+        return len(self.param_list())
+
+    def param_list(self, latex_style=False):
+        """
+
+        :param latex_style: bool, if True returns strings in latex symbols, else in the convention of the sampler
+        :return: list of the free parameters being sampled in the same order as the sampling
+        """
         list = []
         if 'h0' not in self._kwargs_fixed:
-            num += 1
-            list.append('h0')
+            list.append(r'$H_0$')
         if self._cosmology in ['FLCDM', "FwCDM", "w0waCDM", "oLCDM"]:
             if 'om' not in self._kwargs_fixed:
-                num += 1
-                list.append('om')
+                if latex_style is True:
+                    list.append(r'$\Omega_{\rm m}$')
+                else:
+                    list.append('om')
         if self._cosmology in ["FwCDM"]:
             if 'w' not in self._kwargs_fixed:
-                num += 1
-                list.append('w')
+                if latex_style is True:
+                    list.append(r'$w$')
+                else:
+                    list.append('w')
         if self._cosmology in ["w0waCDM"]:
             if 'w0' not in self._kwargs_fixed:
-                num += 1
-                list.append('w0')
+                if latex_style is True:
+                    list.append(r'$w_0$')
+                else:
+                    list.append('w0')
             if 'wa' not in self._kwargs_fixed:
-                num += 1
-                list.append('wa')
+                if latex_style is True:
+                    list.append(r'$w_{\rm a}$')
+                else:
+                    list.append('wa')
         if self._cosmology in ["oLCDM"]:
             if 'ok' not in self._kwargs_fixed:
-                num += 1
-                list.append('ok')
+                if latex_style is True:
+                    list.append(r'$\Omega_{\rm k}$')
+                else:
+                    list.append('ok')
         if self._ppn_sampling is True:
             if 'gamma_ppn' not in self._kwargs_fixed:
-                num += 1
-                list.append('gamma_ppn')
-        return num, list
+                if latex_style is True:
+                    list.append(r'$\gamma_{\rm ppn}$')
+                else:
+                    list.append('gamma_ppn')
+        if self._lambda_mst_sampling is True:
+            if 'lambda_mst' not in self._kwargs_fixed:
+                if latex_style is True:
+                    list.append(r'$\lambda_{\rm mst}$')
+                else:
+                    list.append('lambda_mst')
+        return list
 
     def args2kwargs(self, args):
         """
@@ -106,6 +135,12 @@ class CosmoParam(object):
             else:
                 kwargs['gamma_ppn'] = args[i]
                 i += 1
+        if self._lambda_mst_sampling is True:
+            if 'lambda_mst' in self._kwargs_fixed:
+                kwargs['lambda_mst'] = self._kwargs_fixed['lambda_mst']
+            else:
+                kwargs['lambda_mst'] = args[i]
+                i += 1
         return kwargs
 
     def kwargs2args(self, kwargs):
@@ -135,6 +170,9 @@ class CosmoParam(object):
         if self._ppn_sampling is True:
             if 'gamma_ppn' not in self._kwargs_fixed:
                 args.append(kwargs['gamma_ppn'])
+        if self._lambda_mst_sampling is True:
+            if 'lambda_mst' not in self._kwargs_fixed:
+                args.append(kwargs['lambda_mst'])
         return args
 
     def cosmo(self, kwargs):

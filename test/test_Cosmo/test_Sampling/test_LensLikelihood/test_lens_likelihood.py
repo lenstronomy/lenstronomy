@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from lenstronomy.Cosmo.Sampling.lens_likelihood import LensSampleLikelihood
+from lenstronomy.Cosmo.Sampling.LensLikelihood.lens_sample_likelihood import LensSampleLikelihood
 from astropy.cosmology import FlatLambdaCDM
 
 
@@ -26,8 +26,9 @@ class TestLensLikelihood(object):
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
-        self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'D_d_sample': self.D_d_samples,
-                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'TDKin',
+                                  'kwargs_likelihood': {'D_d_sample': self.D_d_samples,
+                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}}]
 
     def test_log_likelihood(self):
         lens = LensSampleLikelihood(kwargs_lens_list=self.kwargs_lens_list)

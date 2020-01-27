@@ -1,13 +1,13 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.Cosmo.kde_likelihood import KDELikelihood
 
+class HierarchicalCosmography(object):
+    """
+    class to manage hierarchical hyper-parameter that impact the cosmographic posterior interpretation of individual
+    lenses.
+    """
 
-class LensLikelihood(object):
-    """
-    class for evaluating single lens likelihood
-    """
-    def __init__(self, z_lens, z_source, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
+    def __init__(self, z_lens, z_source):
         """
 
         :param z_lens: lens redshift
@@ -19,29 +19,6 @@ class LensLikelihood(object):
         """
         self._z_lens = z_lens
         self._z_source = z_source
-        self._kde_likelihood = KDELikelihood(D_d_sample, D_delta_t_sample, kde_type=kde_type, bandwidth=bandwidth)
-
-    def lens_log_likelihood(self, cosmo, gamma_ppn=1, lambda_mst=1, kappa_ext=0):
-        """
-
-        :param cosmo: astropy.cosmology instance
-        :param lambda_mst: overall global mass-sheet transform applied on the sample,
-        lambda_mst=1 corresponds to the input model
-        :param gamma_ppn: post-newtonian gravity parameter (=1 is GR)
-        :param kappa_ext: external convergence to be added on top of the D_dt posterior
-        :return: log likelihood of the data given the model
-        """
-
-        # here we compute the unperturbed angular diameter distances of the lens system given the cosmology
-        dd = cosmo.angular_diameter_distance(z=self._z_lens).value
-        ds = cosmo.angular_diameter_distance(z=self._z_source).value
-        dds = cosmo.angular_diameter_distance_z1z2(z1=self._z_lens, z2=self._z_source).value
-        ddt = (1. + self._z_lens) * dd * ds / dds
-
-        # here we effectively change the posteriors of the lens, but rather than changing the instance of the KDE we
-        # displace the predicted angular diameter distances in the opposite direction
-        ddt_, dd_ = self._displace_prediction(ddt, dd, gamma_ppn=gamma_ppn, lambda_mst=lambda_mst, kappa_ext=kappa_ext)
-        return self._kde_likelihood.logLikelihood(dd_, ddt_)
 
     def _displace_prediction(self, ddt, dd, gamma_ppn=1, lambda_mst=1, kappa_ext=0):
         """
@@ -111,33 +88,3 @@ class LensLikelihood(object):
         sigma_v2_scaling = lambda_mst
         dd_ = dd * sigma_v2_scaling / lambda_mst  # the kinematics constrain Dd/Dds and thus the constraints on Dd needs to devide out the change in Ddt
         return ddt_, dd_
-
-
-class LensSampleLikelihood(object):
-    """
-    class to evaluate the likelihood of a cosmology given a sample of angular diameter posteriors
-    Currently this class does not include possible covariances between the lens samples
-    """
-    def __init__(self, kwargs_lens_list):
-        """
-
-        :param kwargs_lens_list: keyword argument list specifying the arguments of the LensLikelihood class
-        """
-        self._lens_list = []
-        for kwargs_lens in kwargs_lens_list:
-            self._lens_list.append(LensLikelihood(**kwargs_lens))
-
-    def log_likelihood(self, cosmo, gamma_ppn=1, lambda_mst=1, kappa_ext=0):
-        """
-
-        :param cosmo: astropy.cosmology instance
-        :param gamma_ppn: post-newtonian gravity parameter (=1 is GR)
-        :param lambda_mst: overall global mass-sheet transform applied on the sample,
-        lambda_mst=1 corresponds to the input model
-        :param kappa_ext: external convergence to be added on top of the D_dt posterior
-        :return: log likelihood of the combined lenses
-        """
-        logL = 0
-        for lens in self._lens_list:
-            logL += lens.lens_log_likelihood(cosmo=cosmo, gamma_ppn=gamma_ppn, lambda_mst=lambda_mst, kappa_ext=kappa_ext)
-        return logL

@@ -1,4 +1,4 @@
-from lenstronomy.Cosmo.Sampling.lens_likelihood import LensSampleLikelihood
+from lenstronomy.Cosmo.Sampling.LensLikelihood.lens_sample_likelihood import LensSampleLikelihood
 from lenstronomy.Cosmo.Sampling.param_manager import CosmoParam
 import numpy as np
 

@@ -26,8 +26,10 @@ class TestCosmoLikelihood(object):
         self.D_dt_samples = np.random.normal(self.D_dt_true, self.sigma_Ddt, num_samples)
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
-        self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'D_d_sample': self.D_d_samples,
-                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
+        self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'TDKin',
+                                  'kwargs_likelihood': {'D_d_sample': self.D_d_samples,
+                                                        'D_delta_t_sample': self.D_dt_samples,
+                                                        'kde_type': 'scipy_gaussian', 'bandwidth': 1}}]
 
     def test_log_likelihood(self):
         kwargs_lower = {'h0': 10, 'om': 0., 'ok': -0.8, 'w': -2, 'wa': -1, 'w0': -2, 'gamma_ppn': 0}

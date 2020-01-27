@@ -163,7 +163,6 @@ class CosmoParam(object):
                 args.append(kwargs['w0'])
             if 'wa' not in self._kwargs_fixed:
                 args.append(kwargs['wa'])
-
         if self._cosmology in ["oLCDM"]:
             if 'ok' not in self._kwargs_fixed:
                 args.append(kwargs['ok'])
@@ -197,7 +196,7 @@ class CosmoParam(object):
     def param_bounds(self):
         """
 
-        :return: argument list of the hard bounds
+        :return: argument list of the hard bounds in the order of the sampling
         """
         lowerlimit = self.kwargs2args(self._kwargs_lower)
         upperlimit = self.kwargs2args(self._kwargs_upper)

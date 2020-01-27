@@ -14,7 +14,11 @@ class CosmoLikelihood(object):
 
         :param kwargs_lens_list: keyword argument list specifying the arguments of the LensLikelihood class
         :param cosmology: string describing cosmological model
+        :param kwargs_lower: keyword arguments with lower limits of parameters
+        :param kwargs_upper: keyword arguments with upper limits of parameters
+        :param kwargs_fixed: keyword arguments and values of fixed parameters
         :param ppn_sampling:post-newtonian parameter sampling
+        :param lambda_mst_sampling: bool, if True adds a global mass-sheet transform parameter in the sampling
         :param custom_prior: None or a definition that takes the keywords from the CosmoParam conventions and returns a
         log likelihood value (e.g. prior)
         """

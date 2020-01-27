@@ -102,11 +102,11 @@ class LensLikelihood(object):
         :param ddt: time-delay distance
         :param dd: angular diameter distance to the deflector
         :param lambda_mst: overall global mass-sheet transform applied on the sample,
-        lambda_mst=1 corresponds to the input model
+        lambda_mst=1 corresponds to the input model, 0.9 corresponds to a positive mass sheet of 0.1
+        kappa_ext = 1 - lambda_mst
         :return: ddt_, dd_
         """
-        kappa_mst = 1 - lambda_mst
-        ddt_ = ddt / (1. - kappa_mst)
+        ddt_ = ddt * lambda_mst  # the actual posteriors needed to be corrected by Ddt_true = Ddt_mst / (1-kappa_ext)
         # this line can be changed in case the physical 3-d approximation of the chosen profile does scale differently with the kinematics
         sigma_v2_scaling = lambda_mst
         dd_ = dd * sigma_v2_scaling / lambda_mst  # the kinematics constrain Dd/Dds and thus the constraints on Dd needs to devide out the change in Ddt

@@ -12,8 +12,16 @@ class MCMCSampler(object):
         """
         initialise the classes of the chain and for parameter options
 
+        :param kwargs_lens_list: keyword argument list specifying the arguments of the LensLikelihood class
+        :param cosmology: string describing cosmological model
+        :param kwargs_lower: keyword arguments with lower limits of parameters
+        :param kwargs_upper: keyword arguments with upper limits of parameters
+        :param kwargs_fixed: keyword arguments and values of fixed parameters
+        :param ppn_sampling:post-newtonian parameter sampling
+        :param lambda_mst_sampling: bool, if True adds a global mass-sheet transform parameter in the sampling
         :param custom_prior: None or a definition that takes the keywords from the CosmoParam conventions and returns a
         log likelihood value (e.g. prior)
+
         """
         self.chain = CosmoLikelihood(kwargs_lens_list, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed,
                                      ppn_sampling=ppn_sampling, lambda_mst_sampling=lambda_mst_sampling,
@@ -23,8 +31,16 @@ class MCMCSampler(object):
 
     def mcmc_emcee(self, n_walkers, n_burn, n_run, kwargs_mean_start, kwargs_sigma_start):
         """
-        returns the mcmc analysis of the parameter space
+        runs the EMCEE MCMC sampling
+
+        :param n_walkers: number of walkers
+        :param n_burn: number of iteration of burn in (not stored in the output sample
+        :param n_run: number of iterations (after burn in) to be sampled
+        :param kwargs_mean_start: keyword arguments of the mean starting position
+        :param kwargs_sigma_start: keyword arguments of the spread in the initial particles per parameter
+        :return: samples of the EMCEE run
         """
+
         num_param = self.cosmoParam.num_param
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.likelihood, args=())
         mean_start = self.cosmoParam.kwargs2args(kwargs_mean_start)

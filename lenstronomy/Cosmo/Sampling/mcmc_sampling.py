@@ -1,6 +1,7 @@
 import emcee
 from lenstronomy.Cosmo.Sampling.cosmo_likelihood import CosmoLikelihood
 from lenstronomy.Cosmo.Sampling.param_manager import CosmoParam
+from lenstronomy.Util import sampling_util
 
 
 class MCMCSampler(object):
@@ -45,7 +46,7 @@ class MCMCSampler(object):
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.likelihood, args=())
         mean_start = self.cosmoParam.kwargs2args(kwargs_mean_start)
         sigma_start = self.cosmoParam.kwargs2args(kwargs_sigma_start)
-        p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
+        p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         sampler.run_mcmc(p0, n_burn+n_run, progress=True)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         return flat_samples

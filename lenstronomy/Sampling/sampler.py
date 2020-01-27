@@ -7,6 +7,7 @@ import numpy as np
 from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import MpiUtil
+from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
 from multiprocess import Pool
@@ -90,7 +91,7 @@ class Sampler(object):
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
         numParam, _ = self.chain.param.num_param()
-        p0 = emcee.utils.sample_ball(mean_start, sigma_start, n_walkers)
+        p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()
         if mpi is True:
             pool = MPIPool()

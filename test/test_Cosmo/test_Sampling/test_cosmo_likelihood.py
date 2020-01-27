@@ -34,9 +34,15 @@ class TestCosmoLikelihood(object):
         kwargs_upper = {'h0': 200, 'om': 1, 'ok': 0.8, 'w': 0, 'wa': 1, 'w0': 1, 'gamma_ppn': 5}
         cosmology = 'oLCDM'
         cosmoL = CosmoLikelihood(self.kwargs_lens_list, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed={}, ppn_sampling=False)
+        def custom_prior(kwargs):
+            return -1
+        cosmoL_prior = CosmoLikelihood(self.kwargs_lens_list, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed={},
+                                 ppn_sampling=False, custom_prior=custom_prior)
         kwargs = {'h0': self.H0_true, 'om': self.omega_m_true, 'ok': 0}
         args = cosmoL._param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
+        logl_prior = cosmoL_prior.likelihood(args=args)
+        npt.assert_almost_equal(logl - logl_prior, 1, decimal=8)
 
         kwargs = {'h0': self.H0_true*0.99, 'om': self.omega_m_true, 'ok': 0}
         args = cosmoL._param.kwargs2args(kwargs)

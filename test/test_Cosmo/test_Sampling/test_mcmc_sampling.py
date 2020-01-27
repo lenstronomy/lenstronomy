@@ -42,6 +42,9 @@ class TestMCMCSampling(object):
         samples = mcmc_sampler.mcmc_emcee(n_walkers, n_burn, n_run, kwargs_mean_start, kwargs_sigma_start)
         assert len(samples) == n_walkers*n_run
 
+        name_list = mcmc_sampler.param_names(latex_style=False)
+        assert len(name_list) == 1
+
 
 if __name__ == '__main__':
     pytest.main()

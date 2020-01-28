@@ -21,9 +21,11 @@ class LensLikelihood(HierarchicalCosmography):
         self._z_source = z_source
         super(LensLikelihood, self).__init__(z_lens=z_lens, z_source=z_source)
         if likelihood_type == 'TDKin':
-            self._lens_type = TDKinLikelihood(**kwargs_likelihood)
+            self._lens_type = TDKinLikelihood(z_lens, z_source, **kwargs_likelihood)
+        elif likelihood_type == 'Kin':
+            self._lens_type = KinLikelihood(z_lens, z_source, **kwargs_likelihood)
         else:
-            ValueError('likelihood_type %s not supported!' % likelihood_type)
+            raise ValueError('likelihood_type %s not supported!' % likelihood_type)
 
     def lens_log_likelihood(self, cosmo, gamma_ppn=1, lambda_mst=1, kappa_ext=0):
         """
@@ -54,9 +56,11 @@ class TDKinLikelihood(object):
     """
     class for evaluating the 2-d posterior of Ddt vs Dd coming from a lens with time delays and kinematics measurement
     """
-    def __init__(self, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
+    def __init__(self, z_lens, z_source, D_d_sample, D_delta_t_sample, kde_type='scipy_gaussian', bandwidth=1):
         """
 
+        :param z_lens: lens redshift
+        :param z_source: source redshift
         :param D_d_sample: angular diameter to the lens posteriors (in physical Mpc)
         :param D_delta_t_sample: time-delay distance posteriors (in physical Mpc)
         :param kde_type: kernel density estimator type (see KDELikelihood class)
@@ -72,3 +76,34 @@ class TDKinLikelihood(object):
         :return: log likelihood given the single lens analysis
         """
         return self._kde_likelihood.logLikelihood(dd, ddt)
+
+
+class KinLikelihood(object):
+    """
+    class to handle cosmographic likelihood coming from modeling lenses with imaging and kinematic data but no time delays.
+    Thus Ddt is not constraint but the kinematics can constrain Ds/Dds
+
+    The current version includes a Gaussian in Ds/Dds but can be extended.
+    """
+    def __init__(self, z_lens, z_source, ds_dds_mean, ds_dds_sigma):
+        """
+
+        :param z_lens: lens redshift
+        :param z_source: source redshift
+        :param ds_dds_mean: mean of Ds/Dds distance ratio
+        :param ds_dds_sigma: 1-sigma uncertainty in the Ds/Dds distance ratio
+        """
+        self._z_lens = z_lens
+        self._ds_dds_mean = ds_dds_mean
+        self._ds_dds_sigma2 = ds_dds_sigma ** 2
+
+    def log_likelihood(self, ddt, dd):
+        """
+        Note: kinematics + imaging data can constrain Ds/Dds. The input of Ddt, Dd is transformed here to match Ds/Dds
+
+        :param ddt: time-delay distance
+        :param dd: angular diameter distance to the deflector
+        :return: log likelihood given the single lens analysis
+        """
+        ds_dds = ddt / dd / (1 + self._z_lens)
+        return - (ds_dds - self._ds_dds_mean) ** 2 / self._ds_dds_sigma2 / 2

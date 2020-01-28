@@ -1,8 +1,10 @@
 import numpy as np
 import pytest
 import numpy.testing as npt
+import unittest
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Cosmo.Sampling.LensLikelihood.lens_sample_likelihood import LensSampleLikelihood
+from lenstronomy.Cosmo.Sampling.LensLikelihood.lens_likelihood import LensLikelihood
 from astropy.cosmology import FlatLambdaCDM
 
 
@@ -28,7 +30,9 @@ class TestLensLikelihood(object):
 
         self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'TDKin',
                                   'kwargs_likelihood': {'D_d_sample': self.D_d_samples,
-                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}}]
+                         'D_delta_t_sample': self.D_dt_samples, 'kde_type': 'scipy_gaussian', 'bandwidth': 1}},
+                                 {'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'Kin',
+                                  'kwargs_likelihood': {'ds_dds_mean': lensCosmo.D_s/lensCosmo.D_ds, 'ds_dds_sigma': 1}}]
 
     def test_log_likelihood(self):
         lens = LensSampleLikelihood(kwargs_lens_list=self.kwargs_lens_list)
@@ -36,6 +40,15 @@ class TestLensLikelihood(object):
         cosmo = FlatLambdaCDM(H0=self.H0_true*0.99, Om0=self.omega_m_true, Ob0=0.05)
         logl_sigma = lens.log_likelihood(cosmo, gamma_ppn=1, kappa_ext=0)
         npt.assert_almost_equal(logl - logl_sigma, 0.12, decimal=2)
+
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+
+        with self.assertRaises(ValueError):
+            LensLikelihood(z_lens=0.5, z_source=2, likelihood_type='BAD')
 
 
 if __name__ == '__main__':

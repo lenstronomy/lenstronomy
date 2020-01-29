@@ -217,8 +217,8 @@ class KinematicAPI(object):
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light
 
-    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                  theta_E=None, gamma=None):
+    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
+                                  gamma=None):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
 

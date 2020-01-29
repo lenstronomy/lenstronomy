@@ -92,7 +92,7 @@ class AnalyticKinematics(object):
             if bool is True:
                 break
         sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
-        return sigma_s2
+        return np.array(sigma_s2, dtype=float)
 
     def P_r(self, a):
         """

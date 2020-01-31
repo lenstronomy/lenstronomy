@@ -27,9 +27,8 @@ class TestCosmoLikelihood(object):
         self.D_d_samples = np.random.normal(self.Dd_true, self.sigma_Dd, num_samples)
 
         self.kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'TDKin',
-                                  'kwargs_likelihood': {'D_d_sample': self.D_d_samples,
-                                                        'D_delta_t_sample': self.D_dt_samples,
-                                                        'kde_type': 'scipy_gaussian', 'bandwidth': 1}}]
+                                  'D_d_sample': self.D_d_samples, 'D_delta_t_sample': self.D_dt_samples,
+                                  'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
 
     def test_log_likelihood(self):
         kwargs_lower = {'h0': 10, 'om': 0., 'ok': -0.8, 'w': -2, 'wa': -1, 'w0': -2, 'gamma_ppn': 0}
@@ -41,30 +40,30 @@ class TestCosmoLikelihood(object):
         cosmoL_prior = CosmoLikelihood(self.kwargs_lens_list, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed={},
                                  ppn_sampling=False, custom_prior=custom_prior)
         kwargs = {'h0': self.H0_true, 'om': self.omega_m_true, 'ok': 0}
-        args = cosmoL._param.kwargs2args(kwargs)
+        args = cosmoL.param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
         logl_prior = cosmoL_prior.likelihood(args=args)
         npt.assert_almost_equal(logl - logl_prior, 1, decimal=8)
 
         kwargs = {'h0': self.H0_true*0.99, 'om': self.omega_m_true, 'ok': 0}
-        args = cosmoL._param.kwargs2args(kwargs)
+        args = cosmoL.param.kwargs2args(kwargs)
         logl_sigma = cosmoL.likelihood(args=args)
         print(logl)
         npt.assert_almost_equal(logl - logl_sigma, 0.12, decimal=2)
 
         kwargs = {'h0': 100, 'om': 1., 'ok': 0.1}
-        args = cosmoL._param.kwargs2args(kwargs)
+        args = cosmoL.param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
         assert logl == -np.inf
 
         kwargs = {'h0': 100, 'om': .1, 'ok': -0.6}
-        args = cosmoL._param.kwargs2args(kwargs)
+        args = cosmoL.param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
         assert logl == -np.inf
 
         # outside the prior limit
         kwargs = {'h0': 1000, 'om': .3, 'ok': -0.1}
-        args = cosmoL._param.kwargs2args(kwargs)
+        args = cosmoL.param.kwargs2args(kwargs)
         logl = cosmoL.likelihood(args=args)
         assert logl == -np.inf
 

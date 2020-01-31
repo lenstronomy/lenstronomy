@@ -58,18 +58,23 @@ class DsDdsConstraints(object):
         r_eff_draw = np.random.normal(loc=self._r_eff, scale=self._r_eff_error)
         return theta_E_draw, gamma_draw, r_eff_draw
 
-    def ds_dds_realization(self, kwargs_anisotropy):
+    def ds_dds_realization(self, kwargs_anisotropy, no_error=False):
         """
         creates a realization of Ds/Dds from the measurement uncertainties
 
+        :param kwargs_anisotropy: keyword argument of anisotropy setting
+        :param no_error: bool, if True, does not render from the uncertainty but uses the mean values instead
         """
 
         # compute dimensionless kinematic quantity
-        theta_E_draw, gamma_draw, r_eff_draw = self.draw_lens
+        if no_error is True:
+            theta_E_draw, gamma_draw, r_eff_draw, sigma_v_draw = self._theta_E, self._gamma, self._r_eff, self._sigma_v
+        else:
+            theta_E_draw, gamma_draw, r_eff_draw = self.draw_lens
+            sigma_v_draw = self.draw_vel_disp(num=1)
         J = self._td_cosmo.velocity_dispersion_dimension_less(kwargs_lens=None, kwargs_lens_light=None,
                                                         kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff_draw,
                                                         theta_E=theta_E_draw, gamma=gamma_draw)
-        sigma_v_draw = self.draw_vel_disp(num=1)
         ds_dds = self._td_cosmo.Ds_Dds_from_kinematics(sigma_v_draw, J, kappa_s=0, kappa_ds=0)
         return ds_dds
 

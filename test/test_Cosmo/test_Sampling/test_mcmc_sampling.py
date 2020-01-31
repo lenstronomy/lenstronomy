@@ -36,9 +36,8 @@ class TestMCMCSampling(object):
         kwargs_lower = {'h0': 10}
         kwargs_upper = {'h0': 200}
         kwargs_lens_list = [{'z_lens': self.z_L, 'z_source': self.z_S, 'likelihood_type': 'TDKin',
-                                  'kwargs_likelihood': {'D_d_sample': self.D_d_samples,
-                                                        'D_delta_t_sample': self.D_dt_samples,
-                                                        'kde_type': 'scipy_gaussian', 'bandwidth': 1}}]
+                             'D_d_sample': self.D_d_samples, 'D_delta_t_sample': self.D_dt_samples,
+                             'kde_type': 'scipy_gaussian', 'bandwidth': 1}]
         cosmology = 'FLCDM'
         mcmc_sampler = MCMCSampler(kwargs_lens_list, cosmology, kwargs_lower, kwargs_upper, kwargs_fixed, ppn_sampling=False)
         samples = mcmc_sampler.mcmc_emcee(n_walkers, n_burn, n_run, kwargs_mean_start, kwargs_sigma_start)

@@ -1,4 +1,5 @@
 __author__ = 'sibirrer'
+from scipy.interpolate import interp1d
 
 
 class HierarchicalCosmography(object):
@@ -7,20 +8,21 @@ class HierarchicalCosmography(object):
     lenses.
     """
 
-    def __init__(self, z_lens, z_source):
+    def __init__(self, z_lens, z_source, ani_param_array=None, ani_scaling_array=None):
         """
 
         :param z_lens: lens redshift
         :param z_source: source redshift
-        :param D_d_sample: angular diameter to the lens posteriors (in physical Mpc)
-        :param D_delta_t_sample: time-delay distance posteriors (in physical Mpc)
-        :param kde_type: kernel density estimator type (see KDELikelihood class)
-        :param bandwidth: width of kernel (in same units as the angular diameter quantities)
+        :param ani_param_array: array of anisotropy parameter values for which the kinematics are predicted
+        :param ani_scaling_array: velocity dispersion sigma**2 scaling of anisotropy parameter relative to default prediction
+
         """
         self._z_lens = z_lens
         self._z_source = z_source
+        if ani_param_array is not None and ani_param_array is not None:
+            self._f_ani = interp1d(ani_param_array, ani_scaling_array, kind='cubic')
 
-    def _displace_prediction(self, ddt, dd, gamma_ppn=1, lambda_mst=1, kappa_ext=0):
+    def _displace_prediction(self, ddt, dd, gamma_ppn=1, lambda_mst=1, kappa_ext=0, aniso_param=None):
         """
         here we effectively change the posteriors of the lens, but rather than changing the instance of the KDE we
         displace the predicted angular diameter distances in the opposite direction
@@ -33,11 +35,13 @@ class HierarchicalCosmography(object):
         lambda_mst=1 corresponds to the input model
         :param gamma_ppn: post-newtonian gravity parameter (=1 is GR)
         :param kappa_ext: external convergence to be added on top of the D_dt posterior
+        :param aniso_param: global stellar anisotropy parameter
         :return: ddt_, dd_
         """
         ddt_, dd_ = self._displace_ppn(ddt, dd, gamma_ppn=gamma_ppn)
         ddt_, dd_ = self._displace_kappa_ext(ddt_, dd_, kappa_ext=kappa_ext)
         ddt_, dd_ = self._displace_lambda_mst(ddt_, dd_, lambda_mst=lambda_mst)
+        ddt_, dd_ = self._displace_anisotropy(ddt_, dd_, anisotropy_param=aniso_param)
         return ddt_, dd_
 
     def _displace_ppn(self, ddt, dd, gamma_ppn=1):
@@ -88,3 +92,20 @@ class HierarchicalCosmography(object):
         sigma_v2_scaling = lambda_mst
         dd_ = dd * sigma_v2_scaling / lambda_mst  # the kinematics constrain Dd/Dds and thus the constraints on Dd needs to devide out the change in Ddt
         return ddt_, dd_
+
+    def _displace_anisotropy(self, ddt, dd, anisotropy_param):
+        """
+
+        :param ddt: time-delay distance
+        :param dd: angular diameter distance to the deflector
+        :param anisotropy_param: anisotropy parameter that changes the predicted Ds/Dds from the kinematic by:
+        Ds/Dds(aniso_param) = f(aniso_param) * Ds/Dds(initial)
+
+        :return: inverse predicted offset in Ds/Dds by the anisotropy model deviating from the original sample
+        """
+
+        if anisotropy_param is None or not hasattr(self, '_f_ani'):
+            dd_ = dd
+        else:
+            dd_ = dd * self._f_ani(anisotropy_param)
+        return ddt, dd_

@@ -94,14 +94,15 @@ def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fa
     kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing)
     grid_spacing_low_res = grid_spacing * low_res_factor
 
-    kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(kernel_x, high_res_kernel_size, low_res_factor, normalized=False)
+    kernel_low_res_x, kernel_high_res_x = kernel_util.split_kernel(kernel_x, high_res_kernel_size, low_res_factor,
+                                                                   normalized=False)
     f_x_high_res = scp.fftconvolve(kappa_high_res, kernel_high_res_x, mode='same') / np.pi * grid_spacing ** 2
     f_x_high_res = image_util.re_size(f_x_high_res, low_res_factor)
     f_x_low_res = scp.fftconvolve(kappa_low_res, kernel_low_res_x, mode='same') / np.pi * grid_spacing_low_res ** 2
     f_x = f_x_high_res + f_x_low_res
 
-    kernel_low_res_y, kernel_high_res_y = kernel_util.split_kernel(kernel_y, high_res_kernel_size, low_res_factor)
-    kernel_low_res_y /= low_res_factor ** 2
+    kernel_low_res_y, kernel_high_res_y = kernel_util.split_kernel(kernel_y, high_res_kernel_size, low_res_factor,
+                                                                   normalized=False)
     f_y_high_res = scp.fftconvolve(kappa_high_res, kernel_high_res_y, mode='same') / np.pi * grid_spacing ** 2
     f_y_high_res = image_util.re_size(f_y_high_res, low_res_factor)
     f_y_low_res = scp.fftconvolve(kappa_low_res, kernel_low_res_y, mode='same') / np.pi * grid_spacing_low_res ** 2

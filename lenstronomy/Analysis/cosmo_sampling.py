@@ -8,7 +8,8 @@ class DsDdsConstraints(object):
     """
 
     def __init__(self, z_lens, z_source, theta_E, theta_E_error, gamma, gamma_error, r_eff, r_eff_error, sigma_v,
-                 sigma_v_error, kwargs_aperture, kwargs_seeing, kwargs_numerics_galkin, anisotropy_model):
+                 sigma_v_error, kwargs_aperture, kwargs_seeing, kwargs_numerics_galkin, anisotropy_model,
+                 kwargs_lens_light=None, lens_light_model_list=['HERNQUIST'], MGE_light=False, kwargs_mge_light=None):
         """
 
         :param z_lens: lens redshift
@@ -25,9 +26,10 @@ class DsDdsConstraints(object):
         :param kwargs_seeing: seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin module specified in lenstronomy.GalKin.psf
         :param kwargs_numerics_galkin: numerical settings for the integrated line-of-sight velocity dispersion
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
+        :param kwargs_lens_light: keyword argument list of lens light model (optional)
+        :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         """
-        kwargs_model = {'lens_model_list': ['SPP'],
-                        'lens_light_model_list': ['HERNQUIST']}
+        kwargs_model = {'lens_model_list': ['SPP'], 'lens_light_model_list': lens_light_model_list}
         self._sigma_v, self._sigma_v_error = sigma_v, sigma_v_error
         self._theta_E, self._theta_E_error = theta_E, theta_E_error
         self._r_eff, self._r_eff_error = r_eff, r_eff_error
@@ -35,8 +37,17 @@ class DsDdsConstraints(object):
         self._td_cosmo = TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=None,
                                  lens_model_kinematics_bool=None, light_model_kinematics_bool=None)
         self._td_cosmo.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
-        self._td_cosmo.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
-                                              Hernquist_approx=True, MGE_light=False, MGE_mass=False)
+        if kwargs_lens_light is None:
+            analytic_kinematics = True
+            hernquist_approx = True
+        else:
+            analytic_kinematics = False
+            hernquist_approx = False
+        self._td_cosmo.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin,
+                                                    analytic_kinematics=analytic_kinematics,
+                                                    Hernquist_approx=hernquist_approx, MGE_light=MGE_light,
+                                                    MGE_mass=False, kwargs_mge_light=kwargs_mge_light)
+        self._kwargs_lens_light = kwargs_lens_light
 
     def draw_vel_disp(self, num=1):
         """
@@ -72,7 +83,8 @@ class DsDdsConstraints(object):
         else:
             theta_E_draw, gamma_draw, r_eff_draw = self.draw_lens
             sigma_v_draw = self.draw_vel_disp(num=1)
-        J = self._td_cosmo.velocity_dispersion_dimension_less(kwargs_lens=None, kwargs_lens_light=None,
+        kwargs_lens = [{'theta_E': theta_E_draw, 'gamma': gamma_draw, 'center_x': 0, 'center_y': 0}]
+        J = self._td_cosmo.velocity_dispersion_dimension_less(kwargs_lens=kwargs_lens, kwargs_lens_light=self._kwargs_lens_light,
                                                         kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff_draw,
                                                         theta_E=theta_E_draw, gamma=gamma_draw)
         ds_dds = self._td_cosmo.Ds_Dds_from_kinematics(sigma_v_draw, J, kappa_s=0, kappa_ds=0)

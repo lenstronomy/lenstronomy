@@ -9,17 +9,19 @@ class LensLikelihood(HierarchicalCosmography):
     master class containing the likelihood definitions of different analysis
     """
     def __init__(self, z_lens, z_source, likelihood_type='TDKin', ani_param_array=None, ani_scaling_array=None,
-                 **kwargs_likelihood):
+                 name='name', **kwargs_likelihood):
         """
 
         :param z_lens: lens redshift
         :param z_source: source redshift
+        :param name: string (optional) to name the specific lens
         :param likelihood_type: string to specify the likelihood type
         :param ani_param_array: array of anisotropy parameter values for which the kinematics are predicted
         :param ani_scaling_array: velocity dispersion sigma**2 scaling of anisotropy parameter relative to default prediction
         :param kwargs_likelihood: keyword arguments specifying the likelihood function,
         see individual classes for their use
         """
+        self._name = name
         self._z_lens = z_lens
         self._z_source = z_source
         super(LensLikelihood, self).__init__(z_lens=z_lens, z_source=z_source, ani_param_array=ani_param_array,

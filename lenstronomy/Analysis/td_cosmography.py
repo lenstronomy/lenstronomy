@@ -84,7 +84,8 @@ class TDCosmography(KinematicAPI):
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
         sigma_v = self.model_velocity_dispersion(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
-                                                 kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E, gamma=gamma)
+                                                 kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E,
+                                                 gamma=gamma)
         sigma_v *= 1000 # convert from [km/s] to  [m/s]
         J = sigma_v ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
         return J

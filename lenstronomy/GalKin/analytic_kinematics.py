@@ -3,7 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.psf import PSF
+from lenstronomy.GalKin.psf import psf_select
+from lenstronomy.GalKin.aperture import aperture_select
 import lenstronomy.Util.constants as const
 import math
 
@@ -27,7 +28,7 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d=1000, D_s=2000, D_ds=500, psf_type='GAUSSIAN', fwhm=0.7, moffat_beta=2.6):
+    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, kwargs_psf):
         """
 
         :param D_d: angular diameter to the deflector [MPC]
@@ -37,10 +38,13 @@ class AnalyticKinematics(object):
         :param fwhm: full width at half maximum seeing condition
         :param moffat_beta: float, beta parameter of Moffat profile
         """
+        if D_ds <= 0 or D_s <= 0 or D_d <=0:
+            raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens model!' % (D_d, D_s, D_ds) )
         self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
-        self._psf = PSF(psf_type=psf_type, fwhm=fwhm, moffat_beta=moffat_beta)
+        self._psf = psf_select(**kwargs_psf)
+        self.aperture = aperture_select(**kwargs_aperture)
 
-    def vel_disp(self, gamma, theta_E, r_eff, r_ani, R_slit, dR_slit, rendering_number=1000):
+    def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -48,8 +52,7 @@ class AnalyticKinematics(object):
         :param theta_E: Einstein radius of the lens (in arcseconds)
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param R_slit: length of the slit/box
-        :param dR_slit: width of the slit/box
+        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
         :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 
@@ -58,7 +61,7 @@ class AnalyticKinematics(object):
         sigma_s2_sum = 0
         rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
         for i in range(0, rendering_number):
-            sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit)
+            sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani)
             sigma_s2_sum += sigma_s2_draw
         sigma_s2_average = sigma_s2_sum / rendering_number
         return np.sqrt(sigma_s2_average)
@@ -68,7 +71,7 @@ class AnalyticKinematics(object):
         return -1 * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / \
                self._cosmo.arcsec2phys_lens(theta_E) * self._cosmo.epsilon_crit * const.M_sun / const.Mpc ** 3
 
-    def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani, R_slit, dR_slit):
+    def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani):
         """
         computes one realisation of the velocity dispersion realized in the slit
 
@@ -76,8 +79,7 @@ class AnalyticKinematics(object):
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param R_slit: length of the slit/box
-        :param dR_slit: width of the slit/box
+        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
         :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
         :return: projected velocity dispersion of a single drawn position in the potential [km/s]
         """
@@ -86,7 +88,7 @@ class AnalyticKinematics(object):
             r = self.P_r(a)  # draw r
             R, x, y = self.R_r(r)  # draw projected R
             x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.check_in_slit(x_, y_, R_slit, dR_slit)
+            bool = self.aperture.aperture_select(x_, y_)
             if bool is True:
                 break
         sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
@@ -114,22 +116,6 @@ class AnalyticKinematics(object):
         y = r * np.sin(theta) * np.sin(phi)
         R = np.sqrt(x**2 + y**2)
         return R, x, y
-
-    def check_in_slit(self, x, y, R_slit, dR_slit):
-        """
-
-        check whether a ray in position (x,y) is captured in the slit with Radius R_slit and width dR_slit
-
-        :param x:
-        :param y:
-        :param R_slit:
-        :param dR_slit:
-        :return:
-        """
-        if abs(x) < R_slit/2. and abs(y) < dR_slit/2.:
-            return True
-        else:
-            return False
 
     def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """
@@ -160,8 +146,8 @@ class AnalyticKinematics(object):
     def _beta_ani(self, r, r_ani):
         """
         anisotropy parameter beta
-        :param r:
-        :param r_ani:
-        :return:
+        :param r: radius
+        :param r_ani: anisotropy radius
+        :return: beta(r) in the OM parameterization
         """
         return r**2/(r_ani**2 + r**2)

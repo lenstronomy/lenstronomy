@@ -1,5 +1,4 @@
 from lenstronomy.LensModel.Optimizer.optimizer import Optimizer
-from lenstronomy.Util.util import sort_image_index
 import numpy.testing as npt
 import numpy as np
 import pytest
@@ -14,7 +13,7 @@ class TestSinglePlaneOptimizer(object):
 
     lens_model_list_simple = ['SPEP', 'SHEAR']
     kwargs_lens_simple = [{'theta_E': 0.7, 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
-                           'e2': 0.08890716633399057}, {'e1': 0.00418890660015825, 'e2': -0.02908846518073248}]
+                           'e2': 0.08890716633399057}, {'gamma1': 0.00418890660015825, 'gamma2': -0.02908846518073248}]
 
     lens_model_list_subs = lens_model_list_simple + ['NFW'] * 5
     kwargs_lens_subs = kwargs_lens_simple + [{'alpha_Rs': 0.005, 'center_y': -0.82, 'center_x': 0.944, 'Rs': 0.13},

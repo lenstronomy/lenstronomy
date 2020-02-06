@@ -77,12 +77,12 @@ class TestNestedSampler(object):
 
         kwargs_constraints = {'image_plane_source_list': [False] * len(source_model_list)}
 
-        kwargs_likelihood = {
-                                  'source_marg': True,
-                                  'position_uncertainty': 0.004,
-                                  'check_solver': False,
-                                  'solver_tolerance': 0.001,
-                                  }
+        kwargs_likelihood = {'source_marg': False,
+                             'image_position_uncertainty': 0.004,
+                             'check_matched_source_position': False,
+                             'source_position_tolerance': 0.001,
+                             'source_position_sigma': 0.001,
+                             }
 
         # reduce number of param to sample (for runtime)
         kwargs_fixed_lens = [{'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}]

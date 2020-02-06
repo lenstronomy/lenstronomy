@@ -38,13 +38,13 @@ class FittingSequence(object):
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
 
-    #def kwargs_fixed(self):
-    #    """
-    #    returns the updated kwargs_fixed from the update Manager
+    def kwargs_fixed(self):
+        """
+        returns the updated kwargs_fixed from the update Manager
 
-    #    :return: list of fixed kwargs, see UpdateManager()
-    #    """
-    #    return self._updateManager.fixed_kwargs
+        :return: list of fixed kwargs, see UpdateManager()
+        """
+        return self._updateManager.fixed_kwargs
 
     def fit_sequence(self, fitting_list):
         """
@@ -85,6 +85,8 @@ class FittingSequence(object):
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs)
+                kwargs_result = self._result_from_mcmc(mcmc_output)
+                self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
             elif fitting_type == 'nested_sampling':
@@ -160,7 +162,7 @@ class FittingSequence(object):
         return likelihoodModule
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE'):
+             sampler_type='EMCEE', progress=True):
         """
         MCMC routine
 
@@ -172,6 +174,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
+        :param progress: boolean, if True shows progress bar in EMCEE
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
         """
 
@@ -198,7 +201,8 @@ class FittingSequence(object):
 
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
-            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi, threadCount=threadCount)
+            samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
+                                                  threadCount=threadCount, progress=progress)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -448,3 +452,18 @@ class FittingSequence(object):
         """
         kwargs_result = self.param_class.args2kwargs(result, bijective=True)
         self._updateManager.update_param_state(**kwargs_result)
+
+    def _result_from_mcmc(self, mcmc_output):
+        """
+
+        :param mcmc_output: list returned by self.mcmc()
+        :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
+        """
+        _, samples, _, logL_values = mcmc_output
+        # get index of best logL sample
+        bestfit_idx = np.argmax(logL_values)
+        bestfit_sample = samples[bestfit_idx, :]
+        bestfit_result = bestfit_sample.tolist()
+        # get corresponding kwargs
+        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        return kwargs_result

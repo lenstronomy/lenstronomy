@@ -1,8 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to compute the Navaro-Frank-White function in mass/kappa space
-#the potential therefore is its integral
-
+#this file contains a class to compute the Navaro-Frank-White function
 import numpy as np
 import scipy.interpolate as interp
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
@@ -13,6 +11,11 @@ class NFW(LensProfileBase):
     this class contains functions concerning the NFW profile
 
     relation are: R_200 = c * Rs
+    The definition of 'Rs' is in angular (arc second) units and the normalization is put in in regards to a deflection
+    angle at 'Rs' - 'alpha_Rs'. To convert a physical mass and concentration definition into those lensing quantities
+    for a specific redshift configuration and cosmological model, you can find routines in lenstronomy.Cosmo.lens_cosmo.py
+
+
     """
     param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y']
     lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'center_x': -100, 'center_y': -100}
@@ -39,13 +42,13 @@ class NFW(LensProfileBase):
     def function(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
         
-        :param x: angular position
-        :param y: angular position
-        :param Rs: angular turn over point 
-        :param alpha_Rs: deflection at Rs
-        :param center_x: center of halo
-        :param center_y: center of halo
-        :return: 
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: lensing potential
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -58,7 +61,15 @@ class NFW(LensProfileBase):
 
     def derivatives(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
-        returns df/dx and df/dy of the function (integral of NFW)
+        returns df/dx and df/dy of the function (integral of NFW), which are the deflection angles
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: deflection angle in x, deflection angle in y
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -71,7 +82,14 @@ class NFW(LensProfileBase):
 
     def hessian(self, x, y, Rs, alpha_Rs, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -88,7 +106,7 @@ class NFW(LensProfileBase):
 
     def density(self, R, Rs, rho0):
         """
-        three dimenstional NFW profile
+        three dimensional NFW profile
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -100,9 +118,22 @@ class NFW(LensProfileBase):
         """
         return rho0/(R/Rs*(1+R/Rs)**2)
 
+    def density_lens(self, r, Rs, alpha_Rs):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: 3d radios
+        :param Rs: turn-over radius of NFW profile
+        :param alpha_Rs: deflection at Rs
+        :return: density rho(r)
+        """
+        rho0 = self._alpha2rho0(alpha_Rs, Rs)
+        return self.density(r, Rs, rho0)
+
     def density_2d(self, x, y, Rs, rho0, center_x=0, center_y=0):
         """
-        projected two dimenstional NFW profile (kappa*Sigma_crit)
+        projected two dimensional NFW profile (kappa*Sigma_crit)
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -125,24 +156,24 @@ class NFW(LensProfileBase):
         """
         mass enclosed a 3d sphere or radius r
         :param r:
-        :param Ra:
         :param Rs:
+        :param rho0:
         :return:
         """
         Rs = float(Rs)
-        m_3d = 4. * np.pi * rho0 * Rs**3 *(np.log((Rs + R)/Rs) - R/(Rs + R))
+        m_3d = 4. * np.pi * rho0 * Rs**3 * (np.log((Rs + R)/Rs) - R/(Rs + R))
         return m_3d
 
-    def mass_3d_lens(self, R, Rs, alpha_Rs):
+    def mass_3d_lens(self, r, Rs, alpha_Rs):
         """
         mass enclosed a 3d sphere or radius r
-        :param r:
-        :param Ra:
+        :param R:
         :param Rs:
+        :param alpha_Rs:
         :return:
         """
         rho0 = self._alpha2rho0(alpha_Rs, Rs)
-        m_3d = self.mass_3d(R, Rs, rho0)
+        m_3d = self.mass_3d(r, Rs, rho0)
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):

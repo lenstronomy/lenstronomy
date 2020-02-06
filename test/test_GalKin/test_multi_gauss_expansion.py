@@ -7,7 +7,7 @@ import lenstronomy.Util.multi_gauss_expansion as mge
 import numpy as np
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Analysis.lens_analysis import LensAnalysis
+from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 from lenstronomy.GalKin.galkin import Galkin
 
 
@@ -30,7 +30,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
@@ -47,6 +47,7 @@ class TestGalkin(object):
         amps, sigmas, norm = mge.mge_1d(r_array, flux_r, N=20)
         light_profile_list_mge = ['MULTI_GAUSSIAN']
         kwargs_light_mge = [{'amp': amps, 'sigma': sigmas}]
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
         # mass profile
         mass_profile_list = ['SPP']
@@ -54,11 +55,15 @@ class TestGalkin(object):
         gamma = 2.
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_mge,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -79,7 +84,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
@@ -102,13 +107,18 @@ class TestGalkin(object):
         amps, sigmas, norm = mge.mge_1d(r_array, kappa_r, N=20)
         mass_profile_list_mge = ['MULTI_GAUSSIAN_KAPPA']
         kwargs_profile_mge = [{'amp': amps, 'sigma': sigmas}]
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list_mge, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list_mge, light_profile_list,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -125,7 +135,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
@@ -156,13 +166,18 @@ class TestGalkin(object):
         amps, sigmas, norm = mge.mge_1d(r_array, kappa_r, N=20)
         mass_profile_list_mge = ['MULTI_GAUSSIAN_KAPPA']
         kwargs_profile_mge = [{'amp': amps, 'sigma': sigmas}]
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
 
-        galkin = Galkin(mass_profile_list, light_profile_list, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list_mge, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list_mge, light_profile_list_mge,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -184,7 +199,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
         length = 3.8
         width = 0.9
-        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
+        kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
@@ -193,7 +208,7 @@ class TestGalkin(object):
         light_profile_list = ['SERSIC']
         r_sersic = .3
         n_sersic = 2.8
-        kwargs_light = [{'amp': 1., 'R_sersic':  r_sersic, 'n_sersic': n_sersic}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'amp': 1., 'R_sersic':  r_sersic, 'n_sersic': n_sersic, 'center_x': 0, 'center_y': 0}]  # effective half light radius (2d projected) in arcsec
 
         # mass profile
         mass_profile_list = ['SPP']
@@ -202,8 +217,8 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # Hernquist fit to Sersic profile
-        lens_analysis = LensAnalysis({'lens_light_model_list': ['SERSIC'], 'lens_model_list': []})
-        r_eff = lens_analysis.half_light_radius_lens(kwargs_light, deltaPix=0.1, numPix=100)
+        profile_analysis = LightProfileAnalysis(LightModel(['SERSIC']))
+        r_eff = profile_analysis.half_light_radius(kwargs_light, grid_spacing=0.1, grid_num=100)
         print(r_eff)
         light_profile_list_hernquist = ['HERNQUIST']
         kwargs_light_hernquist = [{'Rs': r_eff*0.551, 'amp': 1.}]
@@ -217,12 +232,17 @@ class TestGalkin(object):
         light_profile_list_mge = ['MULTI_GAUSSIAN']
         kwargs_light_mge = [{'amp': amps, 'sigma': sigmas}]
         print(amps, sigmas, 'amp', 'sigma')
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
-        galkin = Galkin(mass_profile_list, light_profile_list_hernquist, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_hernquist,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy)
 
-        galkin = Galkin(mass_profile_list, light_profile_list_mge, aperture_type=aperture_type, anisotropy_model=anisotropy_type, fwhm=psf_fwhm, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy, kwargs_aperture)
+        galkin = Galkin(mass_profile_list, light_profile_list_mge,
+                        anisotropy_model=anisotropy_type, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
+                        kwargs_aperture=kwargs_aperture)
+        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)

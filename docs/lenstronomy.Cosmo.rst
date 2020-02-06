@@ -1,6 +1,13 @@
 lenstronomy.Cosmo package
 =========================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.Cosmo.Sampling
+
 Submodules
 ----------
 
@@ -20,18 +27,18 @@ lenstronomy.Cosmo.cosmo\_solver module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.Cosmo.cosmography module
-------------------------------------
-
-.. automodule:: lenstronomy.Cosmo.cosmography
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy.Cosmo.kde\_likelihood module
 ----------------------------------------
 
 .. automodule:: lenstronomy.Cosmo.kde_likelihood
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Cosmo.lcdm module
+-----------------------------
+
+.. automodule:: lenstronomy.Cosmo.lcdm
     :members:
     :undoc-members:
     :show-inheritance:

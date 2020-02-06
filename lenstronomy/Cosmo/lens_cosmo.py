@@ -6,7 +6,6 @@ import numpy as np
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
-from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 
 
 class LensCosmo(object):
@@ -83,13 +82,26 @@ class LensCosmo(object):
             self._Epsilon_Crit = self.D_s/(self.D_d*self.D_ds) * factor #[M_sun/Mpc^2]
         return self._Epsilon_Crit
 
+    @property
+    def epsilon_crit_angle(self):
+        """
+        returns the critical projected mass density in units of M_sun/arcsec^2 (in physical solar mass units)
+        :return: critical projected mass density
+        """
+        if not hasattr(self, '_Epsilon_Crit_arcsec'):
+            const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
+            conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
+            factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
+            self._Epsilon_Crit_arcsec = self.D_s / (self.D_d * self.D_ds) * factor * (self.D_d * const.arcsec)**2  # [M_sun/arcsec^2]
+        return self._Epsilon_Crit_arcsec
+
     def phys2arcsec_lens(self, phys):
         """
         convert physical Mpc into arc seconds
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
         """
-        return phys / self.D_d/const.arcsec
+        return phys / self.D_d / const.arcsec
 
     def arcsec2phys_lens(self, arcsec):
         """
@@ -138,7 +150,7 @@ class LensCosmo(object):
         """
 
         :param fermat_pot: in units of arcsec^2 (e.g. Fermat potential)
-        :param kappa_ext: unit-less
+        :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
         :return: time delay in days
         """
         D_dt = self.D_dt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
@@ -195,6 +207,17 @@ class LensCosmo(object):
         Rs = r200/c
         return rho0, Rs, r200
 
+    def nfw_M_theta_vir(self, M):
+        """
+        returns virial radius in angular units of arc seconds on the sky
+
+        :param M: physical mass in M_sun
+        :return: angle (in arc seconds) of the virial radius
+        """
+        r200 = self.nfw_param.r200_M(M * self.h) / self.h * self.a_z(self.z_lens)  # physical radius r200
+        theta_r200 = r200 / self.D_d / const.arcsec
+        return theta_r200
+
     def sis_theta_E2sigma_v(self, theta_E):
         """
         converts the lensing Einstein radius into a physical velocity dispersion
@@ -212,75 +235,3 @@ class LensCosmo(object):
         """
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c)**2 * self.D_ds / self.D_s / const.arcsec
         return theta_E
-
-
-class LCDM(object):
-    """
-    Flat LCDM cosmology background with free Hubble parameter and Omega_m at fixed lens redshift configuration
-    """
-
-    def __init__(self, z_lens, z_source, flat=True):
-        """
-
-        :param z_lens: redshift of lens
-        :param z_source: redshift of source
-        :param flat: bool, if True, flat universe is assumed
-        """
-        self.z_lens = z_lens
-        self.z_source = z_source
-        self._flat = flat
-
-    def _get_cosom(self, H_0, Om0, Ode0=None):
-        """
-
-        :param H_0:
-        :param Om0:
-        :param Ode0:
-        :return:
-        """
-        if self._flat is True:
-            cosmo = FlatLambdaCDM(H0=H_0, Om0=Om0)
-        else:
-            cosmo = LambdaCDM(H0=H_0, Om0=Om0, Ode0=Ode0)
-        lensCosmo = LensCosmo(z_lens=self.z_lens, z_source=self.z_source, cosmo=cosmo)
-        return lensCosmo
-
-    def D_d(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter to deflector
-        :param H_0: Hubble parameter [km/s/Mpc]
-        :param Om0: normalized matter density at present time
-        :return: float [Mpc]
-        """
-        lensCosmo = self._get_cosom(H_0, Om0, Ode0)
-        return lensCosmo.D_d
-
-    def D_s(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter to source
-        :param H_0: Hubble parameter [km/s/Mpc]
-        :param Om0: normalized matter density at present time
-        :return: float [Mpc]
-        """
-        lensCosmo = self._get_cosom(H_0, Om0, Ode0)
-        return lensCosmo.D_s
-
-    def D_ds(self, H_0, Om0, Ode0=None):
-        """
-        angular diameter from deflector to source
-        :param H_0: Hubble parameter [km/s/Mpc]
-        :param Om0: normalized matter density at present time
-        :return: float [Mpc]
-        """
-        lensCosmo = self._get_cosom(H_0, Om0, Ode0)
-        return lensCosmo.D_ds
-
-    def D_dt(self, H_0, Om0, Ode0=None):
-        """
-        time delay distance
-        :param H_0: Hubble parameter [km/s/Mpc]
-        :param Om0: normalized matter density at present time
-        :return: float [Mpc]
-        """
-        lensCosmo = self._get_cosom(H_0, Om0, Ode0)
-        return lensCosmo.D_dt

@@ -36,7 +36,7 @@ class TestFittingSequence(object):
         self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source, 'psf_error_map': np.zeros_like(psf_gaussian.kernel_point_source)}
         psf_class = PSF(**self.kwargs_psf)
         # 'EXTERNAL_SHEAR': external shear
-        kwargs_shear = {'e1': 0.01, 'e2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
+        kwargs_shear = {'gamma1': 0.01, 'gamma2': 0.01}  # gamma_ext: shear strength, psi_ext: shear angel (in radian)
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.8, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         lens_model_list = ['SPEP', 'SHEAR']
@@ -89,9 +89,10 @@ class TestFittingSequence(object):
         self.kwargs_likelihood = {'force_no_add_image': True,
                                   'source_marg': True,
                                   'linear_prior': [1],
-                                  'position_uncertainty': 0.004,
-                                  'check_solver': False,
-                                  'solver_tolerance': 0.001,
+                                  'image_position_uncertainty': 0.004,
+                                  'check_matched_source_position': False,
+                                  'source_position_tolerance': 0.001,
+                                  'source_position_sigma': 0.001,
                                   'check_positive_flux': True,
                                   }
 
@@ -104,11 +105,11 @@ class TestFittingSequence(object):
     def test_fitting_sequence(self):
         # kwargs_init = [self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps]
         lens_sigma = [{'theta_E': 0.1, 'gamma': 0.1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0.1, 'center_y': 0.1},
-                      {'e1': 0.1, 'e2': 0.1}]
+                      {'gamma1': 0.1, 'gamma2': 0.1}]
         lens_lower = [{'theta_E': 0., 'gamma': 1.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4},
-                      {'e1': -0.3, 'e2': -0.3}]
+                      {'gamma1': -0.3, 'gamma2': -0.3}]
         lens_upper = [{'theta_E': 10., 'gamma': 2.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4},
-                      {'e1': 0.3, 'e2': 0.3}]
+                      {'gamma1': 0.3, 'gamma2': 0.3}]
         source_sigma = [{'R_sersic': 0.05, 'n_sersic': 0.5, 'center_x': 0.1, 'center_y': 0.1, 'e1': 0.1, 'e2': 0.1}]
         source_lower = [{'R_sersic': 0.01, 'n_sersic': 0.5, 'center_x': -2, 'center_y': -2, 'e1': -0.4, 'e2': -0.4}]
         source_upper = [{'R_sersic': 10, 'n_sersic': 5.5, 'center_x': 2, 'center_y': 2, 'e1': 0.4, 'e2': 0.4}]
@@ -180,7 +181,7 @@ class TestFittingSequence(object):
         #source_remove_fixed = [], lens_light_remove_fixed = [], ps_remove_fixed = [], cosmo_remove_fixed = []
 
         chain_list = fittingSequence.fit_sequence(fitting_list)
-        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager._fixed_kwargs
+        lens_fixed, source_fixed, lens_light_fixed, ps_fixed, special_fixed, extinction_fixed = fittingSequence._updateManager.fixed_kwargs
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], self.kwargs_lens[0]['theta_E'], decimal=1)
         npt.assert_almost_equal(fittingSequence._updateManager._lens_light_fixed[0]['n_sersic'], n_sersic_overwrite, decimal=8)
@@ -195,7 +196,7 @@ class TestFittingSequence(object):
                           'lens_light_add_fixed': [[0, ['n_sersic', 'R_sersic', 'center_x', 'center_y'], [4, .1, 0, 0]]],
                           'source_add_fixed': [[0, ['R_sersic', 'e1', 'e2', 'center_x', 'center_y'], [.6, .1, .1, 0, 0]]],
                           'lens_add_fixed': [[0, ['gamma', 'theta_E', 'e1', 'e2', 'center_x', 'center_y'], [1.8, 1., .1, .1, 0, 0]],
-                                             [1, ['e1', 'e2'], [0.01, 0.01]]],
+                                             [1, ['gamma1', 'gamma2'], [0.01, 0.01]]],
                           'change_source_lower_limit': [[0, ['n_sersic'], [2.9]]], 
                           'change_source_upper_limit': [[0, ['n_sersic'], [3.1]]]
         }
@@ -242,8 +243,8 @@ class TestFittingSequence(object):
         fitting_list2.append(['nested_sampling', kwargs_dypolychord])
 
         chain_list2 = fittingSequence.fit_sequence(fitting_list2)
-        kwargs_fixed = fittingSequence._updateManager._fixed_kwargs
-        npt.assert_almost_equal(kwargs_fixed[0][1]['e1'], 0.01, decimal=2)
+        kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
+        npt.assert_almost_equal(kwargs_fixed[0][1]['gamma1'], 0.01, decimal=2)
         assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
         assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
 

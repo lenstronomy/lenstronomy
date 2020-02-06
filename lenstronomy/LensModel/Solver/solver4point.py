@@ -120,10 +120,10 @@ class Solver4Point(object):
             kwargs_list[1]['psi_ext'] = phi_G
         if self._solver_type == 'PROFILE_SHEAR':
             phi_G = x[5] % np.pi
-            phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
-            e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
-            kwargs_list[1]['e1'] = e1
-            kwargs_list[1]['e2'] = e2
+            phi_G_no_sense, gamma_ext = param_util.shear_cartesian2polar(kwargs_list[1]['gamma1'], kwargs_list[1]['gamma2'])
+            gamma1, gamma2 = param_util.shear_polar2cartesian(phi_G, gamma_ext)
+            kwargs_list[1]['gamma1'] = gamma1
+            kwargs_list[1]['gamma2'] = gamma2
         lens_model = self._lens_mode_list[0]
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'SPEMD_SMOOTH']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
@@ -160,9 +160,9 @@ class Solver4Point(object):
             #e2 = kwargs_list[1]['e2']
             #phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
         elif self._solver_type == 'PROFILE_SHEAR':
-            e1 = kwargs_list[1]['e1']
-            e2 = kwargs_list[1]['e2']
-            phi_ext, gamma_ext = param_util.ellipticity2phi_gamma(e1, e2)
+            gamma1 = kwargs_list[1]['gamma1']
+            gamma2 = kwargs_list[1]['gamma2']
+            phi_ext, gamma_ext = param_util.shear_cartesian2polar(gamma1, gamma2)
             #phi_G_no_sense, gamma_ext = param_util.ellipticity2phi_gamma(kwargs_list[1]['e1'], kwargs_list[1]['e2'])
             #e1, e2 = param_util.phi_gamma_ellipticity(phi_G, gamma_ext)
             #kwargs_list[1]['e1'] = e1

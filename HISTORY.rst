@@ -150,3 +150,23 @@ History
 * plotting routines split in different files
 * curved arc parameterization and eigenvector differentials
 * numerical differentials as part of the LensModel core class
+
+
+1.2.0 (2019-11-17)
+++++++++++++++++++
+* Analysis module re-designed
+* GalKin module partially re-designed
+* Added cosmography module
+* parameterization of cartesian shear coefficients changed
+
+
+1.2.4 (2020-01-02)
+++++++++++++++++++
+* First implementation of a LightCone module for numerical ray-tracing
+* Improved cosmology sampling from time-delay cosmography measurements
+* TNFW profile lensing potential implemented
+
+
+1.3.0 (2020-01-10)
+++++++++++++++++++
+* image position likelihood description improved

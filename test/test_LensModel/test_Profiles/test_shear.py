@@ -17,8 +17,8 @@ class TestShear(object):
     def setup(self):
         self.extShear = Shear()
 
-        e1, e2 = 0.1, 0.1
-        self.kwargs_lens = {'e1': e1, 'e2': e2}
+        gamma1, gamma2 = 0.1, 0.1
+        self.kwargs_lens = {'gamma1': gamma1, 'gamma2': gamma2}
 
     def test_function(self):
         x = np.array([1])
@@ -65,12 +65,12 @@ class TestShear(object):
         npt.assert_almost_equal(values[1], -0.1, decimal=5)
         npt.assert_almost_equal(values[2], 0.1, decimal=5)
 
-        e1, e2 = 0.1, -0.1
-        kwargs = {'e1': e1, 'e2': e2}
+        gamma1, gamma2 = 0.1, -0.1
+        kwargs = {'gamma1': gamma1, 'gamma2': gamma2}
         lensModel = LensModel(['SHEAR'])
         gamma1, gamma2 = lensModel.gamma(x, y, [kwargs])
-        npt.assert_almost_equal(gamma1, e1, decimal=9)
-        npt.assert_almost_equal(gamma2, e2, decimal=9)
+        npt.assert_almost_equal(gamma1, gamma1, decimal=9)
+        npt.assert_almost_equal(gamma2, gamma2, decimal=9)
 
 
 class TestShearGammaPsi(object):
@@ -83,27 +83,27 @@ class TestShearGammaPsi(object):
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
         gamma, psi = 0.1, 0.5
-        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        gamma1, gamma2 = param_util.shear_polar2cartesian(phi=psi, gamma=gamma)
         values = self.shear.function(x, y, gamma, psi)
-        values_e1e2 = self.shear_e1e2.function(x, y, e1, e2)
+        values_e1e2 = self.shear_e1e2.function(x, y, gamma1, gamma2)
         npt.assert_almost_equal(values, values_e1e2, decimal=5)
 
     def test_derivatives(self):
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
         gamma, psi = 0.1, 0.5
-        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        gamma1, gamma2 = param_util.shear_polar2cartesian(phi=psi, gamma=gamma)
         values = self.shear.derivatives(x, y, gamma, psi)
-        values_e1e2 = self.shear_e1e2.derivatives(x, y, e1, e2)
+        values_e1e2 = self.shear_e1e2.derivatives(x, y, gamma1, gamma2)
         npt.assert_almost_equal(values, values_e1e2, decimal=5)
 
     def test_hessian(self):
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
         gamma, psi = 0.1, 0.5
-        e1, e2 = param_util.phi_gamma_ellipticity(phi=psi, gamma=gamma)
+        gamma1, gamma2 = param_util.shear_polar2cartesian(phi=psi, gamma=gamma)
         values = self.shear.hessian(x, y, gamma, psi)
-        values_e1e2 = self.shear_e1e2.hessian(x, y, e1, e2)
+        values_e1e2 = self.shear_e1e2.hessian(x, y, gamma1, gamma2)
         npt.assert_almost_equal(values, values_e1e2, decimal=5)
 
 

@@ -100,6 +100,8 @@ class Observation(object):
                 kwargs_psf = {'psf_type': "PIXEL", 'kernel_point_source': self._kernel_point_source}
             else:
                 raise ValueError("You need to create the class instance with a psf_model!")
+        elif self._psf_type == 'NONE':
+            kwargs_psf = {'psf_type': "NONE"}
         else:
             raise ValueError("psf_type %s not supported!" % self._psf_type)
         psf_class = PSF(**kwargs_psf)
@@ -157,7 +159,7 @@ class SingleBand(Instrument, Observation):
     def sky_brightness(self):
         """
 
-        :return: sky brightness (counts per square arcseconds in unit of data)
+        :return: sky brightness (counts per square arcseconds in unit of data per unit time)
         """
         if self._sky_brightness is None:
             raise ValueError('sky_brightness is not set in the class instance!')
@@ -171,13 +173,13 @@ class SingleBand(Instrument, Observation):
         """
         Gaussian sigma of noise level per pixel (in counts per second)
 
-        :return: sqrt(variance) of background noise level
+        :return: sqrt(variance) of background noise level in data units
         """
         if self._background_noise is None:
             if self._read_noise is None:
                 raise ValueError('read_noise is not specified to evaluate background noise!')
             return data_util.bkg_noise(self.read_noise, self._exposure_time, self.sky_brightness, self.pixel_scale,
-                                   num_exposures=self._num_exposures)
+                                       num_exposures=self._num_exposures)
         else:
             if self._read_noise is not None:
                 warnings.warn('read noise is specified but not used for noise properties. background noise is estimated'

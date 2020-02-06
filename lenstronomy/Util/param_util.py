@@ -38,26 +38,26 @@ def polar2cart(r, phi, center):
     return x - center[0], y - center[1]
 
 
-def phi_gamma_ellipticity(phi, gamma):
+def shear_polar2cartesian(phi, gamma):
     """
 
-    :param phi: angel
-    :param gamma: ellipticity
-    :return: eccentricity components e1 and e2
+    :param phi: shear angle (radian)
+    :param gamma: shear strength
+    :return: shear components gamma1, gamma2
     """
-    e1 = gamma*np.cos(2*phi)
-    e2 = gamma*np.sin(2*phi)
-    return e1, e2
+    gamma1 = gamma*np.cos(2*phi)
+    gamma2 = gamma*np.sin(2*phi)
+    return gamma1, gamma2
 
 
-def ellipticity2phi_gamma(e1, e2):
+def shear_cartesian2polar(gamma1, gamma2):
     """
-    :param e1: ellipticity component
-    :param e2: ellipticity component
-    :return: angle and abs value of ellipticity
+    :param gamma1: cartesian shear component
+    :param gamma2: cartesian shear component
+    :return: shear angle, shear strength
     """
-    phi = np.arctan2(e2, e1)/2
-    gamma = np.sqrt(e1**2+e2**2)
+    phi = np.arctan2(gamma2, gamma1) / 2
+    gamma = np.sqrt(gamma1 ** 2 + gamma2 ** 2)
     return phi, gamma
 
 
@@ -105,7 +105,6 @@ def ellipticity2phi_q(e1, e2):
     """
     phi = np.arctan2(e2, e1)/2
     c = np.sqrt(e1**2+e2**2)
-    if c > 0.9999:
-        c = 0.9999
+    c = np.minimum(c, 0.9999)
     q = (1-c)/(1+c)
     return phi, q

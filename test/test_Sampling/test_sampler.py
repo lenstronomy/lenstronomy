@@ -75,12 +75,12 @@ class TestFittingSequence(object):
 
         kwargs_constraints = {'image_plane_source_list': [False] * len(source_model_list)}
 
-        kwargs_likelihood = {
-                                  'source_marg': True,
-                                  'position_uncertainty': 0.004,
-                                  'check_solver': False,
-                                  'solver_tolerance': 0.001,
-                                  }
+        kwargs_likelihood = {'source_marg': False,
+                             'image_position_uncertainty': 0.004,
+                             'check_matched_source_position': False,
+                             'source_position_tolerance': 0.001,
+                             'source_position_sigma': 0.001,
+                             }
         self.param_class = Param(kwargs_model, **kwargs_constraints)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data_joint, kwargs_model=kwargs_model,
                                            param_class=self.param_class, **kwargs_likelihood)
@@ -103,6 +103,7 @@ class TestFittingSequence(object):
         sigma_start = np.ones_like(mean_start) * 0.1
         samples, dist = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
         assert len(samples) == n_walkers * n_run
+        assert len(dist) == len(samples)
 
 
 if __name__ == '__main__':

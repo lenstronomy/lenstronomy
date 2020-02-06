@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 1.1.0 documentation</title>
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 1.3.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -241,6 +241,20 @@ lens models to the initial kwargs_fixed options</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed">
+<code class="descname">kwargs_fixed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.kwargs_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the updated kwargs_fixed from the update Manager</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of fixed kwargs, see UpdateManager()</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule">
 <code class="descname">likelihoodModule</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule" title="Permalink to this definition">¶</a></dt>
@@ -256,7 +270,7 @@ lens models to the initial kwargs_fixed options</p>
 
 <dl class="method">
 <dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc">
-<code class="descname">mcmc</code><span class="sig-paren">(</span><em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>sigma_scale=1</em>, <em>threadCount=1</em>, <em>init_samples=None</em>, <em>re_use_samples=True</em>, <em>sampler_type='EMCEE'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mcmc</code><span class="sig-paren">(</span><em>n_burn</em>, <em>n_run</em>, <em>walkerRatio</em>, <em>sigma_scale=1</em>, <em>threadCount=1</em>, <em>init_samples=None</em>, <em>re_use_samples=True</em>, <em>sampler_type='EMCEE'</em>, <em>progress=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>MCMC routine</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -271,6 +285,7 @@ lens models to the initial kwargs_fixed options</p>
 <li><strong>init_samples</strong> – initial sample from where to start the MCMC process</li>
 <li><strong>re_use_samples</strong> – bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.</li>
 <li><strong>sampler_type</strong> – string, which MCMC sampler to be used. Options are: ‘COSMOHAMMER, and ‘EMCEE’</li>
+<li><strong>progress</strong> – boolean, if True shows progress bar in EMCEE</li>
 </ul>
 </td>
 </tr>
@@ -636,6 +651,11 @@ constraint by the fitting of a sub-set of the images.</p>
 </dd></dl>
 
 <dl class="attribute">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs">
+<code class="descname">fixed_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs">
 <code class="descname">init_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -848,7 +868,7 @@ WARNING: some updates may not be valid depending on the model options. Use caref
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

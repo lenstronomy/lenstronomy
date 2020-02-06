@@ -272,8 +272,9 @@ class PointSource(object):
         for k, model in enumerate(self._point_source_list):
             kwargs = kwargs_ps[k]
             if self._fixed_magnification_list[k]:
-                mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
-                kwargs['point_amp'] = np.abs(mag) * param[i]
+                kwargs['source_amp'] = param[i]
+                #mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
+                #kwargs['point_amp'] = np.abs(mag) * param[i]
                 i += 1
             else:
                 n_points = len(ra_pos_list[k])

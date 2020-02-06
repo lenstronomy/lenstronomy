@@ -123,7 +123,7 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
         Dt = lensModelMutli._multi_plane_base._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
-        fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
+        fermat_pot = lensModel.fermat_potential(1, 0., kwargs_lens)
         dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
         print(dt, dt_simple)
         npt.assert_almost_equal(dt, dt_simple, decimal=8)
@@ -138,7 +138,7 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}, {'theta_E': 0., 'center_x': 0, 'center_y': 0}]
         dt = lensModelMutli.arrival_time(1., 0., kwargs_lens)
         Dt = lensModelMutli._multi_plane_base._cosmo_bkg.D_dt(z_lens=z_lens, z_source=z_source)
-        fermat_pot = lensModel.fermat_potential(1, 0., 0., 0., kwargs_lens)
+        fermat_pot = lensModel.fermat_potential(1, 0., kwargs_lens)
         dt_simple = const.delay_arcsec2days(fermat_pot, Dt)
         print(dt, dt_simple)
         npt.assert_almost_equal(dt, dt_simple, decimal=8)

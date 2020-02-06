@@ -14,7 +14,6 @@ class TestKDELikelihood(object):
     def setup(self):
         # set up seed
         np.random.seed(seed=41)
-        pass
 
     def test_kde_likelihood(self):
         # define redshift of lens and source
@@ -43,6 +42,25 @@ class TestKDELikelihood(object):
 
         # initialize a KDELikelihood class with the posterior sample
         kdeLikelihood = KDELikelihood(D_d_samples, D_dt_samples, kde_type='scipy_gaussian',  bandwidth=2)
+        # evaluate the maximum likelihood (arbitrary normalization!)
+        logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
+        # evaluate the likelihood 1-sigma away from Dd
+        logL_sigma = kdeLikelihood.logLikelihood(Dd_true + sigma_Dd, D_dt_true)
+        # compute likelihood ratio
+        delta_log = logL_max - logL_sigma
+        # check whether likelihood ratio is consistent with input distribution
+        # (in relative percent level in the likelihoods)
+        npt.assert_almost_equal(delta_log, 0.5, decimal=2)
+
+        # test the same in D_dt dimension
+        logL_sigma = kdeLikelihood.logLikelihood(Dd_true, D_dt_true + sigma_Ddt)
+        # compute likelihood ratio
+        delta_log = logL_max - logL_sigma
+        # check whether likelihood ratio is consistent with input distribution
+        npt.assert_almost_equal(delta_log, 0.5, decimal=2)
+
+        # initialize a KDELikelihood class with the posterior sample
+        kdeLikelihood = KDELikelihood(D_d_samples, D_dt_samples, kde_type='gaussian', bandwidth=20)
         # evaluate the maximum likelihood (arbitrary normalization!)
         logL_max = kdeLikelihood.logLikelihood(Dd_true, D_dt_true)
         # evaluate the likelihood 1-sigma away from Dd

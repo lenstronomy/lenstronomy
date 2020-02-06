@@ -67,7 +67,7 @@ class TestLensEquationSolver(object):
         lens_model_list = ['SPEP', 'SIS', 'SHEAR']
         kwargs_spep = {'theta_E': 1, 'gamma': 2, 'e1': 0.2, 'e2': -0.03, 'center_x': 0, 'center_y': 0}
         kwargs_sis = {'theta_E': 1, 'center_x': 1.5, 'center_y': 0}
-        kwargs_shear = {'e1': 0.01, 'e2': 0}
+        kwargs_shear = {'gamma1': 0.01, 'gamma2': 0}
         kwargs_lens = [kwargs_spep, kwargs_sis, kwargs_shear]
         lensModel = LensModel(lens_model_list)
         lensEquationSolver = LensEquationSolver(lensModel)
@@ -94,8 +94,8 @@ class TestLensEquationSolver(object):
         min_distance = 0.05
         search_window = 10
         gamma = 2.
-        e1, e2 = -0.04, -0.1
-        kwargs_shear = {'e1': e1, 'e2': e2}  # shear values to the source plane
+        gamma1, gamma2 = -0.04, -0.1
+        kwargs_shear = {'gamma1': gamma1, 'gamma2': gamma2}  # shear values to the source plane
         kwargs_spemd = {'theta_E': 1., 'gamma': gamma, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.01,
                         'e2': 0.05}  # parameters of the deflector lens model
 

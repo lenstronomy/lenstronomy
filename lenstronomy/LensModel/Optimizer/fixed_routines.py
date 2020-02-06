@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.Util.param_util import phi_gamma_ellipticity,ellipticity2phi_gamma,phi_q2_ellipticity,\
+from lenstronomy.Util.param_util import shear_polar2cartesian,shear_cartesian2polar,phi_q2_ellipticity,\
     ellipticity2phi_q
 from lenstronomy.Util.util import approx_theta_E
 
@@ -49,7 +49,7 @@ class FixedShearPowerLaw(object):
             low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self._kwargs_lens[0]['e1'], self._kwargs_lens[0]['e2'],
                                                               delta_phi, delta_ellip)
 
-            phi, _ = ellipticity2phi_gamma(self._kwargs_lens[1]['e1'], self._kwargs_lens[1]['e2'])
+            phi, _ = shear_cartesian2polar(self._kwargs_lens[1]['gamma1'], self._kwargs_lens[1]['gamma2'])
 
             low_shear_PA = phi * 0.8 * scale
             high_shear_pA = phi * 1.2 * scale
@@ -104,7 +104,7 @@ class FixedPowerLaw_Shear(object):
         self._theta_E_start = approx_theta_E(xpos, ypos)
 
         self._tovary_indicies = [0, 1]
-        self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['e1', 'e2']]
+        self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['gamma1', 'gamma2']]
         self.fixed_names = [['gamma'], []]
         self.fixed_values = [{'gamma': kwargs_lens[0]['gamma']}, {}]
         self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','shear_e1','shear_e2']
@@ -125,14 +125,14 @@ class FixedPowerLaw_Shear(object):
 
     def _new_shear(self, start_e1, start_e2, delta_phi, delta_gamma):
 
-        phi_start, gamma_start = ellipticity2phi_gamma(start_e1, start_e2)
+        phi_start, gamma_start = shear_cartesian2polar(start_e1, start_e2)
 
         phi_min, phi_max = phi_start + delta_phi, phi_start - delta_phi
 
         gamma_min, gamma_max = max(0.0001,gamma_start - delta_gamma), gamma_start + delta_gamma
 
-        e1_min, e2_min = phi_gamma_ellipticity(phi_min, gamma_min)
-        e1_max, e2_max = phi_gamma_ellipticity(phi_max, gamma_max)
+        e1_min, e2_min = shear_polar2cartesian(phi_min, gamma_min)
+        e1_max, e2_max = shear_polar2cartesian(phi_max, gamma_max)
 
         return e1_min, e2_min, e1_max, e2_max
 
@@ -147,8 +147,8 @@ class FixedPowerLaw_Shear(object):
             low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self._kwargs_lens[0]['e1'], self._kwargs_lens[0]['e2'],
                                                               delta_phi, delta_ellip)
 
-            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['e1'],
-                                                                                    self._kwargs_lens[1]['e2'],
+            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['gamma1'],
+                                                                                    self._kwargs_lens[1]['gamma2'],
                                                                                     delta_shear_phi, delta_shear)
             theta_E = scale * 0.005
             center = 0.005
@@ -164,14 +164,14 @@ class FixedPowerLaw_Shear(object):
             if self._constrain_params is not None:
                 # keep the same PA, but change the shear magnitude
                 if 'shear' in self._constrain_params.keys():
-                    phi_start, gamma_start = ellipticity2phi_gamma(self._kwargs_lens[1]['e1'], self._kwargs_lens[1]['e2'])
+                    phi_start, gamma_start = shear_cartesian2polar(self._kwargs_lens[1]['gamma1'], self._kwargs_lens[1]['gamma2'])
 
                     rescale = self._constrain_params['shear'][0] * gamma_start ** -1
-                    low_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 0.8
-                    high_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 1.2
+                    low_shear_e1 = self._kwargs_lens[1]['gamma1'] * rescale * 0.8
+                    high_shear_e1 = self._kwargs_lens[1]['gamma1'] * rescale * 1.2
 
-                    low_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 0.8
-                    high_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 1.2
+                    low_shear_e2 = self._kwargs_lens[1]['gamma2'] * rescale * 0.8
+                    high_shear_e2 = self._kwargs_lens[1]['gamma2'] * rescale * 1.2
 
         else:
 
@@ -221,7 +221,7 @@ class VariablePowerLaw_Shear(object):
         self._theta_E_start = approx_theta_E(xpos, ypos)
 
         self._tovary_indicies = [0, 1]
-        self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['e1', 'e2']]
+        self.param_names = [['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma'], ['gamma1', 'gamma2']]
         self.fixed_names = [[], []]
         self.fixed_values = [{}, {}]
         self.params_to_vary = ['theta_E', 'center_x', 'center_y', 'e1', 'e2','gamma','shear_e1','shear_e2']
@@ -242,14 +242,14 @@ class VariablePowerLaw_Shear(object):
 
     def _new_shear(self, start_e1, start_e2, delta_phi, delta_gamma):
 
-        phi_start, gamma_start = ellipticity2phi_gamma(start_e1, start_e2)
+        phi_start, gamma_start = shear_cartesian2polar(start_e1, start_e2)
 
         phi_min, phi_max = phi_start + delta_phi, phi_start - delta_phi
 
         gamma_min, gamma_max = max(0.0001,gamma_start - delta_gamma), gamma_start + delta_gamma
 
-        e1_min, e2_min = phi_gamma_ellipticity(phi_min, gamma_min)
-        e1_max, e2_max = phi_gamma_ellipticity(phi_max, gamma_max)
+        e1_min, e2_min = shear_polar2cartesian(phi_min, gamma_min)
+        e1_max, e2_max = shear_polar2cartesian(phi_max, gamma_max)
 
         return e1_min, e2_min, e1_max, e2_max
 
@@ -264,8 +264,8 @@ class VariablePowerLaw_Shear(object):
             low_e1,low_e2, high_e1,high_e2  = self._new_ellip(self._kwargs_lens[0]['e1'], self._kwargs_lens[0]['e2'],
                                                               delta_phi, delta_ellip)
 
-            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['e1'],
-                                                                                    self._kwargs_lens[1]['e2'],
+            low_shear_e1,low_shear_e2,high_shear_e1,high_shear_e2 = self._new_shear(self._kwargs_lens[1]['gamma1'],
+                                                                                    self._kwargs_lens[1]['gamma2'],
                                                                                     delta_shear_phi, delta_shear)
             theta_E = scale * 0.005
             center = 0.005
@@ -284,15 +284,15 @@ class VariablePowerLaw_Shear(object):
             if self._constrain_params is not None:
                 # keep the same PA, but change the shear magnitude
                 if 'shear' in self._constrain_params.keys():
-                    phi_start, gamma_start = ellipticity2phi_gamma(self._kwargs_lens[1]['e1'],
-                                                                   self._kwargs_lens[1]['e2'])
+                    phi_start, gamma_start = shear_cartesian2polar(self._kwargs_lens[1]['gamma1'],
+                                                                   self._kwargs_lens[1]['gamma2'])
 
                     rescale = self._constrain_params['shear'][0] * gamma_start ** -1
-                    low_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 0.8
-                    high_shear_e1 = self._kwargs_lens[1]['e1'] * rescale * 1.2
+                    low_shear_e1 = self._kwargs_lens[1]['gamma1'] * rescale * 0.8
+                    high_shear_e1 = self._kwargs_lens[1]['gamma1'] * rescale * 1.2
 
-                    low_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 0.8
-                    high_shear_e2 = self._kwargs_lens[1]['e2'] * rescale * 1.2
+                    low_shear_e2 = self._kwargs_lens[1]['gamma2'] * rescale * 0.8
+                    high_shear_e2 = self._kwargs_lens[1]['gamma2'] * rescale * 1.2
 
         else:
 

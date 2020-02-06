@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 1.1.0 documentation</title>
+    <title>lenstronomy.LensModel.multi_plane &#8212; lenstronomy 1.3.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -62,7 +62,7 @@
 <span class="sd">        :param cosmo: instance of astropy.cosmology</span>
 <span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
 <span class="sd">        (see documentation in Profiles/numerical_alpha)</span>
-<span class="sd">        :param observed_convention_index: a list of indicies where the &#39;center_x&#39; and &#39;center_y&#39; kwargs correspond</span>
+<span class="sd">        :param observed_convention_index: a list of indices where the &#39;center_x&#39; and &#39;center_y&#39; kwargs correspond</span>
 <span class="sd">        to observed (lensed) positions, not physical positions. The code will compute the physical locations when</span>
 <span class="sd">        performing computations</span>
 <span class="sd">        :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical</span>
@@ -122,7 +122,7 @@
 
 <div class="viewcode-block" id="MultiPlane.ray_shooting"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.ray_shooting">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        ray-tracing (backwards light cone)</span>
+<span class="sd">        ray-tracing (backwards light cone) to the default z_source redshift</span>
 
 <span class="sd">        :param theta_x: angle in x-direction on the image</span>
 <span class="sd">        :param theta_y: angle in y-direction on the image</span>
@@ -210,12 +210,27 @@
 
 <span class="sd">        :param theta_x: angle in x-direction on the image</span>
 <span class="sd">        :param theta_y: angle in y-direction on the image</span>
-<span class="sd">        :param kwargs_lens:</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
 <span class="sd">        :return: travel time in unit of days</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dt_geo</span><span class="p">,</span> <span class="n">dt_grav</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geo_shapiro_delay</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="n">check_convention</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dt_geo</span> <span class="o">+</span> <span class="n">dt_grav</span></div>
+
+<div class="viewcode-block" id="MultiPlane.geo_shapiro_delay"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.geo_shapiro_delay">[docs]</a>    <span class="k">def</span> <span class="nf">geo_shapiro_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        geometric and Shapiro (gravitational) light travel time relative to a straight path through the coordinate (0,0)</span>
+<span class="sd">        Negative sign means earlier arrival time</span>
+
+<span class="sd">        :param theta_x: angle in x-direction on the image</span>
+<span class="sd">        :param theta_y: angle in y-direction on the image</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param check_convention: boolean, if True goes through the lens model list and checks whether the positional</span>
+<span class="sd">         conventions are satisfied.</span>
+<span class="sd">        :return: geometric delay, gravitational delay [days]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">check_convention</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span><span class="p">:</span>
             <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span><span class="p">,</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">geo_shapiro_delay</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span><span class="p">,</span>
                                                    <span class="n">T_z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_z_source</span><span class="p">,</span> <span class="n">T_ij_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_stop</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="MultiPlane.alpha"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.multi_plane.MultiPlane.alpha">[docs]</a>    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -382,7 +397,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

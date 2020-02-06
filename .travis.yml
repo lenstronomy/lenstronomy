@@ -1,6 +1,6 @@
 language: python
 python:
-  - "2.7"
+  #- "2.7"
   - "3.6"
   #- "3.7"
   # PyPy versions
@@ -10,6 +10,7 @@ services:
   - xvfb
 before_install:
 #  - sudo apt-get build-dep python-scipy
+  - pip install coverage==4.5.4  # temporary fix for coveralls
   - pip install coveralls
   - pip install python-coveralls
   - pip install scipy

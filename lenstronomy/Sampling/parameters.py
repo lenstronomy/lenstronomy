@@ -80,16 +80,6 @@ class Param(object):
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
 
         lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
-        #source_model_class = LightModel(light_model_list=kwargs_model.get('source_light_model_list', []),
-        #                                deflection_scaling_list=kwargs_model.get('source_deflection_scaling_list', None),
-        #                                source_redshift_list=kwargs_model.get('source_redshift_list', None))
-        #lens_model_class = LensModel(lens_model_list=kwargs_model.get('lens_model_list', []),
-        #                             z_lens=kwargs_model.get('z_lens', None),
-        #                             z_source=kwargs_model.get('z_source', None),
-        #                         lens_redshift_list=kwargs_model.get('lens_redshift_list', None),
-        #                         multi_plane=kwargs_model.get('multi_plane', False),
-        #                             cosmo=kwargs_model.get('cosmo', None),
-        #                         observed_convention_index=kwargs_model.get('observed_convention_index', None))
         self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:
@@ -220,7 +210,6 @@ class Param(object):
         # update point source constraint solver
         if self._solver is True:
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
-            #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
         kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,

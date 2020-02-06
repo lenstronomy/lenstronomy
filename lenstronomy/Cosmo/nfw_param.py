@@ -86,7 +86,7 @@ class NFWParam(object):
         M_pivot = 2.*10**12
         return A*(M/M_pivot)**B*(1+z)**C
 
-    def profileMain(self, M, z):
+    def nfw_Mz(self, M, z):
         """
         returns all needed parameter (in comoving units modulo h) to draw the profile of the main halo
         r200 in co-moving Mpc/h

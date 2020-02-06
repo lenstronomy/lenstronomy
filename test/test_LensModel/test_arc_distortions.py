@@ -19,20 +19,20 @@ class TestArcDistortions(object):
 
     def test_radial_tangential_distortions(self):
         lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
-        center_x, center_y = 0, 0
+        center_x, center_y = 0.01, 0
         curvature = 1./2
         lens = LensModel(lens_model_list=lens_model_list)
         kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
                         'direction': -10, 'center_x': center_x, 'center_y': center_y},
-                       {'e1': -0., 'e2': -0.0},
+                       {'gamma1': -0., 'gamma2': -0.0},
                        {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
 
         extensions = LensModelExtensions(lensModel=lens)
 
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
             x=center_x, y=center_y, kwargs_lens=kwargs_lens, smoothing_3rd=0.0001)
-
-        l = 1. / d_angle_d_tang
+        print(orientation_angle, 'orientation angle')
+        l = 1. / dphi_tan_dtan
         npt.assert_almost_equal(l, 1./curvature)
 
     def test_hessian_eigenvector_mp(self):
@@ -42,7 +42,7 @@ class TestArcDistortions(object):
         lens = LensModel(lens_model_list=lens_model_list)
         x0, y0 = 1., 1.
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
@@ -63,7 +63,7 @@ class TestArcDistortions(object):
         x0, y0 = 1., 1.
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
@@ -90,39 +90,25 @@ class TestArcDistortions(object):
         x0, y0 = 2., 1.
 
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0},
-                       {'e1': 0.0, 'e2': 0.00001}]
+                       {'gamma1': 0.0, 'gamma2': 0.00001}]
 
         extensions = LensModelExtensions(lensModel=lens)
         extensions_mp = LensModelExtensions(lensModel=lens_mp)
 
-
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
             x=x0, y=y0, kwargs_lens=kwargs_lens, smoothing_3rd=0.0001)
 
-        radial_stretch_mp, tangential_stretch_mp, d_tang_d_tang_mp, d_tang_d_rad_mp, d_angle_d_tang_mp, d_rad_d_rad_mp, d_angle_d_rad_mp, orientation_angle_mp = extensions_mp.radial_tangential_differentials(
+        lambda_rad_mp, lambda_tan_mp, orientation_angle_mp, dlambda_tan_dtan_mp, dlambda_tan_drad_mp, dlambda_rad_drad_mp, dlambda_rad_dtan_mp, dphi_tan_dtan_mp, dphi_tan_drad_mp, dphi_rad_drad_mp, dphi_rad_dtan_mp = extensions_mp.radial_tangential_differentials(
             x=x0, y=y0, kwargs_lens=kwargs_lens, smoothing_3rd=0.0001)
-        print(radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle)
-        print(radial_stretch_mp, tangential_stretch_mp, d_tang_d_tang_mp, d_tang_d_rad_mp, d_angle_d_tang_mp, d_rad_d_rad_mp, d_angle_d_rad_mp, orientation_angle_mp)
-        npt.assert_almost_equal(radial_stretch, radial_stretch_mp, decimal=3)
-        npt.assert_almost_equal(tangential_stretch, tangential_stretch_mp, decimal=3)
-        npt.assert_almost_equal(d_angle_d_tang, d_angle_d_tang_mp, decimal=3)
+
+        npt.assert_almost_equal(lambda_rad, lambda_rad_mp, decimal=3)
+        npt.assert_almost_equal(lambda_tan, lambda_tan_mp, decimal=3)
+        npt.assert_almost_equal(dphi_tan_dtan, dphi_rad_dtan_mp, decimal=3)
 
     def test_radial_tangential_differentials(self):
-        lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
-        center_x, center_y = 0, 0
-        curvature = 1./2
-        lens = LensModel(lens_model_list=lens_model_list)
-        kwargs_lens = [{'tangential_stretch': 10, 'radial_stretch': 1., 'curvature': curvature,
-                        'direction': -10, 'center_x': center_x, 'center_y': center_y},
-                       {'e1': -0., 'e2': -0.0},
-                       {'g1': 0., 'g2': 0., 'g3': -0., 'g4': 0}]
 
-        extensions = LensModelExtensions(lensModel=lens)
         from lenstronomy.Util import util
         x, y = util.make_grid(numPix=10, deltapix=1)
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(x, y, kwargs_lens, smoothing_3rd=0.001)
-        npt.assert_almost_equal(np.sum(d_angle_d_rad), 0, decimal=3)
-        npt.assert_almost_equal(np.sum(d_rad_d_rad), 0, decimal=3)
 
         lens_model_list = ['SIS']
         center_x, center_y = 0, 0
@@ -130,23 +116,21 @@ class TestArcDistortions(object):
         kwargs_lens = [{'theta_E': 1, 'center_x': center_x, 'center_y': center_y}]
 
         extensions = LensModelExtensions(lensModel=lens)
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(2, 2, kwargs_lens, smoothing_3rd=0.001)
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(2, 2, kwargs_lens, smoothing_3rd=0.001)
 
-        npt.assert_almost_equal(radial_stretch, 1, decimal=5)
-        print(d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad)
-        npt.assert_almost_equal(tangential_stretch, 1.5469181606780271, decimal=5)
+        npt.assert_almost_equal(lambda_rad, 1, decimal=5)
+        npt.assert_almost_equal(lambda_tan, 1.5469181606780271, decimal=5)
 
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
             np.array([2]), np.array([2]), kwargs_lens, smoothing_3rd=0.001)
 
-        npt.assert_almost_equal(radial_stretch, 1, decimal=5)
-        print(d_tang_d_tang, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad)
-        npt.assert_almost_equal(tangential_stretch, 1.5469181606780271, decimal=5)
+        npt.assert_almost_equal(lambda_rad, 1, decimal=5)
+        npt.assert_almost_equal(lambda_tan, 1.5469181606780271, decimal=5)
 
         mag = lens.magnification(x, y, kwargs_lens)
-        radial_stretch, tangential_stretch, d_tang_d_tang, d_tang_d_rad, d_angle_d_tang, d_rad_d_rad, d_angle_d_rad, orientation_angle = extensions.radial_tangential_differentials(
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = extensions.radial_tangential_differentials(
             x, y, kwargs_lens, smoothing_3rd=0.001)
-        mag_tang_rad = tangential_stretch * radial_stretch
+        mag_tang_rad = lambda_tan * lambda_rad
         npt.assert_almost_equal(mag_tang_rad, mag, decimal=5)
 
     def test_curved_arc_estimate(self):
@@ -191,7 +175,6 @@ class TestArcDistortions(object):
 
     def test_arcs_at_image_position(self):
         # lensing quantities
-        kwargs_shear = {'e1': 0.02, 'e2': -0.04}  # shear values to the source plane
         kwargs_spp = {'theta_E': 1.26, 'gamma': 2., 'e1': 0.1, 'e2': -0.1, 'center_x': 0.0, 'center_y': 0.0}  # parameters of the deflector lens model
 
         # the lens model is a supperposition of an elliptical lens model with external shear

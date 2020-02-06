@@ -30,7 +30,13 @@ class GaussianKappa(LensProfileBase):
         r = np.sqrt(x_**2 + y_**2)
         sigma_x, sigma_y = sigma, sigma
         c = 1. / (2 * sigma_x * sigma_y)
-        num_int = self._num_integral(r, c)
+        if isinstance(x_, int) or isinstance(x_, float):
+            num_int = self._num_integral(r, c)
+        else:
+            num_int = []
+            for i in range(len(x_)):
+                num_int.append(self._num_integral(r[i], c))
+            num_int = np.array(num_int)
         amp_density = self._amp2d_to_3d(amp, sigma_x, sigma_y)
         amp2d = amp_density / (np.sqrt(np.pi) * np.sqrt(sigma_x * sigma_y * 2))
         amp2d *= 2 * 1. / (2 * c)

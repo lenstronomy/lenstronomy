@@ -217,6 +217,13 @@ class TestSPEMD(object):
         assert not func([], [])
         assert not func(np.array([]), np.array([]))
 
+    def test_density_lens(self):
+        r = 1
+        kwargs = {'theta_E': 1, 'gamma': 2, 'e1': 0, 'e2': 0}
+        rho = self.SPEMD.density_lens(r, **kwargs)
+        rho_spep = self.SPEP.density_lens(r, **kwargs)
+        npt.assert_almost_equal(rho, rho_spep, decimal=7)
+
 
 if __name__ == '__main__':
     pytest.main()

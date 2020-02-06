@@ -30,6 +30,12 @@ class TestInstrumentObservation(object):
         observation = Observation(**kwargs_observations)
         assert observation.exposure_time == exposure_time * num_exposures
 
+        kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
+                               'num_exposures': num_exposures,
+                               'seeing': seeing, 'psf_type': 'NONE'}
+        observation = Observation(**kwargs_observations)
+        assert observation.exposure_time == exposure_time * num_exposures
+
     def test_update_observation(self):
         exposure_time = 90
         sky_brightness = 20.
@@ -46,7 +52,7 @@ class TestInstrumentObservation(object):
         seeing = 1
         kwargs_observations = {'exposure_time': exposure_time, 'sky_brightness': sky_brightness,
                                'num_exposures': num_exposures,
-                               'seeing': seeing, 'psf_type': 'GAUSSIAN'}
+                               'seeing': seeing, 'psf_type': 'GAUSSIAN', 'kernel_point_source': 1}
         observation.update_observation(**kwargs_observations)
         assert observation.exposure_time == 1
         psf = observation.psf_class
@@ -192,3 +198,10 @@ class TestData(object):
         kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
         data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
         assert data_pixel._psf_type == 'PIXEL'
+
+        kwargs_observations = {'exposure_time': 1, 'sky_brightness': 1,
+                               'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': 1,
+                               'seeing': 1, 'psf_type': 'NONE'}
+        kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
+        data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
+        assert data_pixel._psf_type == 'NONE'

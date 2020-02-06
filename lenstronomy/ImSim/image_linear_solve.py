@@ -241,11 +241,13 @@ class ImageLinearFit(ImageModel):
     def reduced_residuals(self, model, error_map=0):
         """
 
-        :param model:
-        :return:
+        :param model: 2d numpy array of the modeled image
+        :param error_map: 2d numpy array of additional noise/error terms from model components (such as PSF model uncertainties)
+        :return: 2d numpy array of reduced residuals per pixel
         """
         mask = self.likelihood_mask
-        residual = (model - self.Data.data)/np.sqrt(self.Data.C_D+np.abs(error_map))*mask
+        C_D = self.Data.C_D_model(model)
+        residual = (model - self.Data.data)/np.sqrt(C_D+np.abs(error_map))*mask
         return residual
 
     def reduced_chi2(self, model, error_map=0):

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.hernquist &#8212; lenstronomy 1.1.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.hernquist &#8212; lenstronomy 1.3.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -45,7 +45,12 @@
 
 <div class="viewcode-block" id="Hernquist"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist">[docs]</a><span class="k">class</span> <span class="nc">Hernquist</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to compute the Hernquist 1990 model</span>
+<span class="sd">    class to compute the Hernquist 1990 model, which is in 3d:</span>
+<span class="sd">    rho(r) = rho0 / (r/Rs * (1 + (r/Rs))**3)</span>
+
+<span class="sd">    in lensing terms, the normalization parameter &#39;sigma0&#39; is defined such that the deflection at projected RS leads to</span>
+<span class="sd">    alpha = 2./3 * Rs * sigma0</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_diff</span> <span class="o">=</span> <span class="mf">0.00000001</span>
     <span class="n">_s</span> <span class="o">=</span> <span class="mf">0.00001</span>
@@ -55,28 +60,27 @@
 
 <div class="viewcode-block" id="Hernquist.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes the density</span>
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        computes the 3-d density</span>
+
+<span class="sd">        :param r: 3-d radius</span>
+<span class="sd">        :param rho0: density normalization</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: density at radius r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rho</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">Rs</span><span class="p">))</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rho</span></div>
 
 <div class="viewcode-block" id="Hernquist.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        projected density</span>
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        projected density along the line of sight at coordinate (x, y)</span>
+
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param rho0: density normalization</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :param center_x: x-center of the profile</span>
+<span class="sd">        :param center_y: y-center of the profile</span>
+<span class="sd">        :return: projected density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
@@ -91,11 +95,166 @@
         <span class="n">sigma</span> <span class="o">=</span> <span class="n">sigma0</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">3</span> <span class="o">+</span> <span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">sigma</span></div>
 
+<div class="viewcode-block" id="Hernquist.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r</span>
+
+<span class="sd">        :param r: 3-d radius within the mass is integrated (same distance units as density definition)</span>
+<span class="sd">        :param rho0: density normalization</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: enclosed mass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mass_3d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="n">rho0</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">Rs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">mass_3d</span></div>
+
+<div class="viewcode-block" id="Hernquist.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r for lens parameterisation</span>
+<span class="sd">        This function converts the lensing definition sigma0 into the 3d density</span>
+
+<span class="sd">        :param sigma0: rho0 * Rs (units of projected density)</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: enclosed mass in 3d</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hernquist.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed projected 2d sphere of radius r</span>
+
+<span class="sd">        :param r: projected radius</span>
+<span class="sd">        :param rho0: density normalization</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: mass enclosed 2d projected radius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">sigma0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho2sigma</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_2d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hernquist.mass_2d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_2d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed projected 2d sphere of radius r</span>
+<span class="sd">        Same as mass_2d but with input normalization in units of projected density</span>
+<span class="sd">        :param r: projected radius</span>
+<span class="sd">        :param sigma0: rho0 * Rs (units of projected density)</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: mass enclosed 2d projected radius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">Rs</span>
+        <span class="n">alpha_r</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mass_2d</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="k">return</span> <span class="n">mass_2d</span></div>
+
+<div class="viewcode-block" id="Hernquist.mass_tot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_tot">[docs]</a>    <span class="k">def</span> <span class="nf">mass_tot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        total mass within the profile</span>
+<span class="sd">        :param rho0: density normalization</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: total mass within profile</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">m_tot</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span>
+        <span class="k">return</span> <span class="n">m_tot</span></div>
+
+<div class="viewcode-block" id="Hernquist.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        lensing potential</span>
+
+<span class="sd">        :param x: x-coordinate position (units of angle)</span>
+<span class="sd">        :param y: y-coordinate position (units of angle)</span>
+<span class="sd">        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0</span>
+<span class="sd">        :param Rs: Hernquist radius in units of angle</span>
+<span class="sd">        :param center_x: x-center of the profile (units of angle)</span>
+<span class="sd">        :param center_y: y-center of the profile (units of angle)</span>
+<span class="sd">        :return: lensing potential at (x,y)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Rs</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">f_</span></div>
+
+<div class="viewcode-block" id="Hernquist.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate position (units of angle)</span>
+<span class="sd">        :param y: y-coordinate position (units of angle)</span>
+<span class="sd">        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0</span>
+<span class="sd">        :param Rs: Hernquist radius in units of angle</span>
+<span class="sd">        :param center_x: x-center of the profile (units of angle)</span>
+<span class="sd">        :param center_y: y-center of the profile (units of angle)</span>
+<span class="sd">        :return: derivative of function (deflection angles in x- and y-direction)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">Rs</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+        <span class="c1">#f = (1 - self._F(X)) / (X ** 2 - 1)  # this expression is 1/3 for X=1</span>
+            <span class="k">if</span> <span class="n">X</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">3</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty_like</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">X</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">3</span>
+            <span class="n">X_</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">X</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">X</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X_</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">alpha_r</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">X</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">x_</span><span class="o">/</span><span class="n">r</span>
+        <span class="n">f_y</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">y_</span><span class="o">/</span><span class="n">r</span>
+        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
+
+<div class="viewcode-block" id="Hernquist.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hessian terms of the function</span>
+
+<span class="sd">        :param x: x-coordinate position (units of angle)</span>
+<span class="sd">        :param y: y-coordinate position (units of angle)</span>
+<span class="sd">        :param sigma0: normalization parameter defined such that the deflection at projected RS leads to alpha = 2./3 * Rs * sigma0</span>
+<span class="sd">        :param Rs: Hernquist radius in units of angle</span>
+<span class="sd">        :param center_x: x-center of the profile (units of angle)</span>
+<span class="sd">        :param center_y: y-center of the profile (units of angle)</span>
+<span class="sd">        :return: df/dxdx, df/dydy, df/dxdy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diff</span>
+        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
+        <span class="c1">#f_yx = (alpha_dec_dx - alpha_dec)/diff</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
+
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
+
+<div class="viewcode-block" id="Hernquist.rho2sigma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.rho2sigma">[docs]</a>    <span class="k">def</span> <span class="nf">rho2sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        converts 3d density into 2d projected density parameter</span>
+<span class="sd">        :param rho0: 3d density normalization of Hernquist model</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: sigma0 defined quantity in projected units</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span></div>
+
+<div class="viewcode-block" id="Hernquist.sigma2rho"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.sigma2rho">[docs]</a>    <span class="k">def</span> <span class="nf">sigma2rho</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        converts projected density parameter (in units of deflection) into 3d density parameter</span>
+<span class="sd">        :param sigma0: density defined quantity in projected units</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: rho0 the 3d density normalization of Hernquist model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sigma0</span> <span class="o">/</span> <span class="n">Rs</span></div>
+
     <span class="k">def</span> <span class="nf">_F</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        function 48 in https://arxiv.org/pdf/astro-ph/0102341.pdf</span>
 <span class="sd">        :param X: r/rs</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: F(X)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
@@ -123,174 +282,25 @@
             <span class="c1"># a[X&gt;y] = 0</span>
         <span class="k">return</span> <span class="n">a</span>
 
-<div class="viewcode-block" id="Hernquist.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass enclosed a 3d sphere or radius r</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mass_3d</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span><span class="o">*</span><span class="n">rho0</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">Rs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
-        <span class="k">return</span> <span class="n">mass_3d</span></div>
-
-<div class="viewcode-block" id="Hernquist.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass enclosed a 3d sphere or radius r for lens parameterisation</span>
-<span class="sd">        :param sigma0:</span>
-<span class="sd">        :param Rs:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Hernquist.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass enclosed projected 2d sphere of radius r</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">sigma0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho2sigma</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_2d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Hernquist.mass_2d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_2d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass enclosed projected 2d sphere of radius r</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">Rs</span>
-        <span class="n">alpha_r</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">mass_2d</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
-        <span class="k">return</span> <span class="n">mass_2d</span></div>
-
-<div class="viewcode-block" id="Hernquist.mass_tot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.mass_tot">[docs]</a>    <span class="k">def</span> <span class="nf">mass_tot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        total mass within the profile</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">m_tot</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">3</span>
-        <span class="k">return</span> <span class="n">m_tot</span></div>
-
 <div class="viewcode-block" id="Hernquist.grav_pot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.grav_pot">[docs]</a>    <span class="k">def</span> <span class="nf">grav_pot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        #TODO desid whether these functions are needed or not</span>
+
 <span class="sd">        gravitational potential (modulo 4 pi G and rho0 in appropriate units)</span>
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate position (units of angle)</span>
+<span class="sd">        :param y: y-coordinate position (units of angle)</span>
+<span class="sd">        :param rho0: density normalization parameter of Hernquist profile</span>
+<span class="sd">        :param Rs: Hernquist radius in units of angle</span>
+<span class="sd">        :param center_x: x-center of the profile (units of angle)</span>
+<span class="sd">        :param center_y: y-center of the profile (units of angle)</span>
+<span class="sd">        :return: gravitational potential at projected radius</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">M</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_tot</span><span class="p">(</span><span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
         <span class="n">pot</span> <span class="o">=</span> <span class="n">M</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">Rs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pot</span></div>
-
-<div class="viewcode-block" id="Hernquist.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        lensing potential</span>
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0: sigma0/sigma_crit</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span> <span class="o">/</span> <span class="n">Rs</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="mf">4.</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">f_</span></div>
-
-<div class="viewcode-block" id="Hernquist.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0: sigma0/sigma_crit</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">r</span><span class="p">[</span><span class="n">r</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span>
-        <span class="n">X</span> <span class="o">=</span> <span class="n">r</span><span class="o">/</span><span class="n">Rs</span>
-        <span class="n">alpha_r</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sigma0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">X</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">f_x</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">x_</span><span class="o">/</span><span class="n">r</span>
-        <span class="n">f_y</span> <span class="o">=</span> <span class="n">alpha_r</span> <span class="o">*</span> <span class="n">y_</span><span class="o">/</span><span class="n">r</span>
-        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
-
-<div class="viewcode-block" id="Hernquist.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param sigma0: sigma0/sigma_crit</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
-        <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diff</span>
-        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
-        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
-
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-        <span class="c1">#f_yx = (alpha_dec_dx - alpha_dec)/diff</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span><span class="o">/</span><span class="n">diff</span>
-
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
-
-<div class="viewcode-block" id="Hernquist.rho2sigma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.rho2sigma">[docs]</a>    <span class="k">def</span> <span class="nf">rho2sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        converts 3d density into 2d projected density parameter</span>
-<span class="sd">        :param rho0:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span></div>
-
-<div class="viewcode-block" id="Hernquist.sigma2rho"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.sigma2rho">[docs]</a>    <span class="k">def</span> <span class="nf">sigma2rho</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        converts projected density parameter (in units of deflection) into 3d density parameter</span>
-<span class="sd">        :param sigma0:</span>
-<span class="sd">        :param Rs:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">sigma0</span> <span class="o">/</span> <span class="n">Rs</span></div></div>
+        <span class="k">return</span> <span class="n">pot</span></div></div>
 </pre></div>
 
           </div>
@@ -323,7 +333,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.1.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

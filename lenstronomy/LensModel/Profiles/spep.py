@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.spp import SPP
 
@@ -84,16 +85,26 @@ class SPEP(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         gamma, q = self._param_bounds(gamma, q)
         phi_E_new = theta_E * q
-        x_shift = x - center_x
-        y_shift = y - center_y
+        #x_shift = x - center_x
+        #y_shift = y - center_y
+
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, phi_G)
+
+
         E = phi_E_new / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
         if E <= 0:
             return np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         # E = phi_E
         eta = float(-gamma+3)
-        xt1 = np.cos(phi_G)*x_shift+np.sin(phi_G)*y_shift
-        xt2 = -np.sin(phi_G)*x_shift+np.cos(phi_G)*y_shift
+        #xt1 = np.cos(phi_G)*x_shift+np.sin(phi_G)*y_shift
+        #xt2 = -np.sin(phi_G)*x_shift+np.cos(phi_G)*y_shift
+        xt1, xt2 = x__, y__
         P2 = xt1**2+xt2**2/q**2
+
         if isinstance(P2, int) or isinstance(P2, float):
             a = max(0.000001, P2)
         else:
@@ -109,12 +120,13 @@ class SPEP(LensProfileBase):
 
         gamma1 = np.cos(2*phi_G)*gamma1_value-np.sin(2*phi_G)*gamma2_value
         gamma2 = +np.sin(2*phi_G)*gamma1_value+np.cos(2*phi_G)*gamma2_value
+
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_yy, f_xy
 
-    def mass_3d_lens(self, r, theta_E, gamma, e1, e2):
+    def mass_3d_lens(self, r, theta_E, gamma, e1=0, e2=0):
         """
         computes the spherical power-law mass enclosed (with SPP routiune)
         :param r:
@@ -125,6 +137,18 @@ class SPEP(LensProfileBase):
         :return:
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, e1=0, e2=0):
+        """
+
+        :param r:
+        :param theta_E:
+        :param gamma:
+        :param e1:
+        :param e2:
+        :return:
+        """
+        return self.spp.density_lens(r, theta_E, gamma)
 
     def _param_bounds(self, gamma, q):
         """

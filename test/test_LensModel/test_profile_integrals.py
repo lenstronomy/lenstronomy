@@ -119,6 +119,15 @@ class TestNumerics(object):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Model
         kwargs = {'rho0': 1., 'Rs': 5.}
         self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'Rs': 5.}
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_hernquist_ellipse(self):
+        from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse as Model
+        kwargs = {'rho0': 1., 'Rs': 5., 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'Rs': 5., 'e1': 0, 'e2': 0}
+        self.assert_lens_integrals(Model, kwargs)
 
     def test_hernquist_density_deflection(self):
         """

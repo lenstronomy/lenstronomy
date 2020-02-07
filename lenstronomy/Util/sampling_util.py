@@ -96,3 +96,18 @@ def scale_limits(lowers, uppers, scale):
     lowers_scaled = mid_points - widths_scaled / 2.
     uppers_scaled = mid_points + widths_scaled / 2.
     return lowers_scaled, uppers_scaled
+
+
+def sample_ball(p0, std, size=1):
+    """
+    Produce a ball of walkers around an initial parameter value.
+    this routine is from the emcee package as it became deprecated there
+
+    :param p0: The initial parameter value.
+    :param std: The axis-aligned standard deviation.
+    :param size: The number of samples to produce.
+
+    """
+    assert(len(p0) == len(std))
+    return np.vstack([p0 + std * np.random.normal(size=len(p0))
+                      for i in range(size)])

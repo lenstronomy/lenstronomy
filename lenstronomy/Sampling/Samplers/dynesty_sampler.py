@@ -43,7 +43,7 @@ class DynestySampler(NestedSampler):
             from schwimmbad import MPIPool
             import sys
 
-            pool =  MPIPool(use_dill=True)
+            pool = MPIPool(use_dill=True)
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)

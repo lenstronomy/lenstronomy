@@ -68,3 +68,73 @@ class Hernquist_Ellipse(LensProfileBase):
         #f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
         return f_xx, f_yy, f_xy
+
+    def density(self, r, rho0, Rs, e1=0, e2=0):
+        """
+        computes the 3-d density
+
+        :param r: 3-d radius
+        :param rho0: density normalization
+        :param Rs: Hernquist radius
+        :return: density at radius r
+        """
+        return self.spherical.density(r, rho0, Rs)
+
+    def density_lens(self, r, sigma0, Rs, e1=0, e2=0):
+        """
+        Density as a function of 3d radius in lensing parameters
+        This function converts the lensing definition sigma0 into the 3d density
+
+        :param r: 3d radius
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :return: enclosed mass in 3d
+        """
+        return self.spherical.density_lens(r, sigma0, Rs)
+
+    def density_2d(self, x, y, rho0, Rs, e1=0, e2=0, center_x=0, center_y=0):
+        """
+        projected density along the line of sight at coordinate (x, y)
+
+        :param x: x-coordinate
+        :param y: y-coordinate
+        :param rho0: density normalization
+        :param Rs: Hernquist radius
+        :param center_x: x-center of the profile
+        :param center_y: y-center of the profile
+        :return: projected density
+        """
+        return self.spherical.density_2d(x, y, rho0, Rs, center_x, center_y)
+
+    def mass_2d_lens(self, r, sigma0, Rs, e1=0, e2=0):
+        """
+        mass enclosed projected 2d sphere of radius r
+        Same as mass_2d but with input normalization in units of projected density
+        :param r: projected radius
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :return: mass enclosed 2d projected radius
+        """
+        return self.spherical.mass_2d_lens(r, sigma0, Rs)
+
+    def mass_2d(self, r, rho0, Rs, e1=0, e2=0):
+        """
+        mass enclosed projected 2d sphere of radius r
+
+        :param r: projected radius
+        :param rho0: density normalization
+        :param Rs: Hernquist radius
+        :return: mass enclosed 2d projected radius
+        """
+        return self.spherical.mass_2d(r, rho0, Rs)
+
+    def mass_3d(self, r, rho0, Rs, e1=0, e2=0):
+        """
+        mass enclosed a 3d sphere or radius r
+
+        :param r: 3-d radius within the mass is integrated (same distance units as density definition)
+        :param rho0: density normalization
+        :param Rs: Hernquist radius
+        :return: enclosed mass
+        """
+        return self.spherical.mass_3d(r, rho0, Rs)

@@ -48,7 +48,8 @@ class KinematicAPI(object):
                                        kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
-        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
+        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
+        an 'OsipkovMerritt' stellar anisotropy distribution.
 
         Further information can be found in the AnalyticKinematics() class.
 
@@ -95,6 +96,8 @@ class KinematicAPI(object):
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
         :param kappa_ext: external convergence not accounted in the lens models
+        :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
+        :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
         :return: LOS velocity dispersion [km/s]
         """
 
@@ -217,8 +220,8 @@ class KinematicAPI(object):
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light
 
-    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                  theta_E=None, gamma=None):
+    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
+                                  gamma=None):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
 
@@ -259,9 +262,11 @@ class KinematicAPI(object):
                                                          r_eff=r_eff, theta_E=theta_E,
                                                          kwargs_numerics=self._kwargs_numerics_kin,
                                                          MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
+
                                                          Hernquist_approx=self._Hernquist_approx, kappa_ext=0,
                                                          kwargs_mge_mass= self._kwargs_mge_mass,
                                                          kwargs_mge_light = self._kwargs_mge_light)
+
         return sigma_v
 
     def kinematic_observation_settings(self, kwargs_aperture, kwargs_seeing):
@@ -286,6 +291,8 @@ class KinematicAPI(object):
         :param MGE_light: bool, if true performs the MGE for the light distribution
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
         :param kwargs_numerics_galkin: numerical settings for the integrated line-of-sight velocity dispersion
+        :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
+        :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :return:
         """
         if kwargs_mge_mass is None :
@@ -303,3 +310,5 @@ class KinematicAPI(object):
         self._Hernquist_approx = Hernquist_approx
         self._MGE_light = MGE_light
         self._MGE_mass = MGE_mass
+        self._kwargs_mge_mass = kwargs_mge_mass
+        self._kwargs_mge_light = kwargs_mge_light

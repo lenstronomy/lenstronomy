@@ -7,9 +7,6 @@ from lenstronomy.Util import kernel_util
 class to compute lensing potentials and deflection angles provided a convergence map
 """
 
-#TODO adaptive map and kernel
-#TODO real space kernel with adaptive mesh refinement
-
 
 def potential_from_kappa_grid(kappa, grid_spacing):
     """

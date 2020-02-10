@@ -231,19 +231,20 @@ class KinematicAPI(object):
         :return: velocity dispersion [km/s]
         """
 
+        if r_eff is None:
+            r_eff = self._lensLightProfile.half_light_radius(kwargs_lens_light, grid_spacing=0.05, grid_num=200,
+                                                             center_x=None, center_y=None,
+                                                             model_bool_list=self._light_model_kinematics_bool)
+        if theta_E is None:
+            theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
+                                                                      model_bool_list=self._lens_model_kinematics_bool,
+                                                                      grid_num=200, grid_spacing=0.05,
+                                                                      get_precision=False, verbose=True)
+        if gamma is None:
+            gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
+                                                        model_list_bool=self._lens_model_kinematics_bool,
+                                                        num_points=10)
         if self._analytic_kinematics is True:
-            if r_eff is None:
-                r_eff = self._lensLightProfile.half_light_radius(kwargs_lens_light, grid_spacing=0.05, grid_num=200,
-                                                                 center_x=None, center_y=None,
-                                                                 model_bool_list=self._light_model_kinematics_bool)
-            if theta_E is None:
-                theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
-                                                              model_bool_list=self._lens_model_kinematics_bool, grid_num=200, grid_spacing=0.05,
-                                                              get_precision=False, verbose=True)
-            if gamma is None:
-                gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
-                                                            model_list_bool=self._lens_model_kinematics_bool,
-                                                            num_points=10)
             r_ani = kwargs_anisotropy.get('r_ani')
             num_evaluate = self._kwargs_numerics_kin.get('sampling_number', 1000)
             sigma_v = self.velocity_dispersion_analytical(theta_E, gamma, r_eff, self._kwargs_aperture_kin,

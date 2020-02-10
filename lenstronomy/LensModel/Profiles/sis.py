@@ -117,9 +117,9 @@ class SIS(LensProfileBase):
     def mass_2d_lens(self, r, theta_E):
         """
 
-        :param r:
-        :param theta_E:
-        :return:
+        :param r: radius
+        :param theta_E: Einstein radius
+        :return: mass within a radius in projection
         """
         rho0 = self.theta2rho(theta_E)
         return self.mass_2d(r, rho0)

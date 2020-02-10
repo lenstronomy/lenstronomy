@@ -48,7 +48,8 @@ class KinematicAPI(object):
                                        kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
-        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
+        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
+        an 'OsipkovMerritt' stellar anisotropy distribution.
 
         Further information can be found in the AnalyticKinematics() class.
 

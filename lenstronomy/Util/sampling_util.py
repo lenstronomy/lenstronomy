@@ -109,5 +109,5 @@ def sample_ball(p0, std, size=1):
 
     """
     assert(len(p0) == len(std))
-    return np.vstack([p0 + std * np.random.normal(size=len(p0))
+    return np.vstack([p0 + std * np.random.uniform(low=-1, high=1, size=len(p0))
                       for i in range(size)])

@@ -310,5 +310,3 @@ class KinematicAPI(object):
         self._Hernquist_approx = Hernquist_approx
         self._MGE_light = MGE_light
         self._MGE_mass = MGE_mass
-        self._kwargs_mge_mass = kwargs_mge_mass
-        self._kwargs_mge_light = kwargs_mge_light

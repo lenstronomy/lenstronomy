@@ -189,7 +189,7 @@ class PositionLikelihood(object):
                     except:
                         return -np.inf
                     chi2 = delta.T.dot(Sigma_inv.dot(delta))
-                    logL -= chi2/2
+                    logL -= chi2 / 2
         return logL
 
     @property

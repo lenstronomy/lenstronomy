@@ -10,8 +10,8 @@ class Shear(LensProfileBase):
     class for external shear e1, e2 expression
     """
     param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']
-    lower_limit_default = {'e1': -0.5, 'e2': -0.5, 'ra_0': -100, 'dec_0': -100}
-    upper_limit_default = {'e1': 0.5, 'e2': 0.5, 'ra_0': 100, 'dec_0': 100}
+    lower_limit_default = {'gamma1': -0.5, 'gamma2': -0.5, 'ra_0': -100, 'dec_0': -100}
+    upper_limit_default = {'gamma1': 0.5, 'gamma2': 0.5, 'ra_0': 100, 'dec_0': 100}
 
     def function(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
         """

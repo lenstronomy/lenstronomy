@@ -214,11 +214,11 @@ class SPEMD_SMOOTH(LensProfileBase):
         if gamma < 1.2:
             gamma = 1.2
             theta_E = 0
-        if gamma > 2.9:
-            gamma = 2.9
+        if gamma > 2.7:
+            gamma = 2.7
             theta_E = 0
-        if q < 0.01:
-            q = 0.01
+        if q < 0.02:
+            q = 0.02
             theta_E = 0
         if q > 1:
             q = 1.

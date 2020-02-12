@@ -295,15 +295,16 @@ class KinematicAPI(object):
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :return:
         """
-        if kwargs_mge_mass is None :
-            self._kwargs_mge_mass = { 'n_comp' : 20}
+        if kwargs_mge_mass is None:
+            self._kwargs_mge_mass = {'n_comp': 20}
         else :
             self._kwargs_mge_mass = kwargs_mge_mass
 
-        if kwargs_mge_light is None :
-            self._kwargs_mge_light = {'grid_spacing': 0.01, 'grid_num': 100, 'n_comp': 20, 'center_x': None, 'center_y': None}
-        else :
-            self._kargs_mge_light = kwargs_mge_light
+        if kwargs_mge_light is None:
+            self._kwargs_mge_light = {'grid_spacing': 0.01, 'grid_num': 100, 'n_comp': 20, 'center_x': None,
+                                      'center_y': None}
+        else:
+            self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics

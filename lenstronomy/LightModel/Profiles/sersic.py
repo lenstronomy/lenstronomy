@@ -85,7 +85,18 @@ class CoreSersic(SersicUtil):
 
     def function(self, x, y, amp, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.):
         """
-        returns Core-Sersic function
+        :param x:
+        :param y:
+        :param amp: surface brightness/amplitude value at the half light radius
+        :param R_sersic: semi-major axis half light radius
+        :param Re: "break" core radius
+        :param n_sersic: Sersic index
+        :param gamma: inner power-law exponent
+        :param e1: eccentricity parameter
+        :param e2: eccentricity parameter
+        :param center_x: center in x-coordinate
+        :param center_y: center in y-coordinate
+        :return: Cored Sersic profile value at (x, y)
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         Rb = R_sersic

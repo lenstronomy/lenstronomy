@@ -158,12 +158,13 @@ class SersicUtil(object):
             R[R < self._smoothing] = self._smoothing
         return R
 
-    def _r_sersic(self, R, R_sersic, n_sersic):
+    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=100.0):
         """
 
         :param R: radius (array or float)
         :param R_sersic: Sersic radius (half-light radius)
         :param n_sersic: Sersic index (float)
+        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic surface brightness at R
         """
 
@@ -172,14 +173,14 @@ class SersicUtil(object):
         R_frac = R_ / R_sersic
         #R_frac = R_frac.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):
-            if R_frac > 100:
+            if R_frac > max_R_frac:
                 result = 0
             else:
                 exponent = -bn * (R_frac ** (1. / n_sersic) - 1.)
                 result = np.exp(exponent)
         else:
-            R_frac_real = R_frac[R_frac <= 100]
+            R_frac_real = R_frac[R_frac <= max_R_frac]
             exponent = -bn * (R_frac_real ** (1. / n_sersic) - 1.)
             result = np.zeros_like(R_)
-            result[R_frac <= 100] = np.exp(exponent)
+            result[R_frac <= max_R_frac] = np.exp(exponent)
         return np.nan_to_num(result)

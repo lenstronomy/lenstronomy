@@ -32,14 +32,12 @@ class ImageSparseFit(ImageLinearFit):
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
         being applied to the point sources.
         """
-        if likelihood_mask is None:
-            likelihood_mask = np.ones_like(data_class.data)
-        self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
-        self._mask1d = util.image2array(self.likelihood_mask)
         super(ImageSparseFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
-                                             point_source_class=point_source_class, extinction_class=extinction_class, kwargs_numerics=kwargs_numerics)
+                                             point_source_class=point_source_class, extinction_class=extinction_class, 
+                                             kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
+                                             psf_error_map_bool_list=psf_error_map_bool_list)
         
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics

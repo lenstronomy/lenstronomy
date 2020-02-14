@@ -29,12 +29,32 @@ class SersicUtil(object):
     @staticmethod
     def b_n(n):
         """
-        b(n) computation
-        :param n:
+        b(n) computation. This is the approximation of the exact solution to the relation, 2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).
+        :param n: the sersic index
         :return:
         """
-        bn = 1.9992 * n - 0.3271
+        bn = 1.9992*n - 0.3271
         return bn
+
+    def get_distance_from_center(self, x, y, phi_G, q, center_x, center_y):
+        """
+        Get the distance from the center of Sersic, accounting for orientation and axis ratio
+        :param x:
+        :param y:
+        :param phi_G: orientation angle in rad
+        :param q: axis ratio
+        :param center_x: center x of sersic
+        :param center_y: center y of sersic
+        """
+        x_shift = x - center_x
+        y_shift = y - center_y
+        cos_phi = np.cos(phi_G)
+        sin_phi = np.sin(phi_G)
+        xt1 = cos_phi*x_shift+sin_phi*y_shift
+        xt2 = -sin_phi*x_shift+cos_phi*y_shift
+        xt2difq2 = xt2/(q*q)
+        R = np.sqrt(xt1*xt1+xt2*xt2difq2)
+        return R
 
     def _x_reduced(self, x, y, n_sersic, r_eff, center_x, center_y):
         """
@@ -147,29 +167,24 @@ class SersicUtil(object):
 
     def _R_stable(self, R):
         """
-
+        Floor R_ at self._smoothing for numerical stability
         :param R: radius
         :return: smoothed and stabilized radius
         """
+        return np.maximum(self._smoothing, R)
 
-        if isinstance(R, int) or isinstance(R, float):
-            R = max(self._smoothing, R)
-        else:
-            R[R < self._smoothing] = self._smoothing
-        return R
-
-    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=100.0):
+    def _r_sersic(self, R, R_sersic, n_sersic, max_R_frac=100.0, alpha=1.0, R_break=0.0):
         """
 
         :param R: radius (array or float)
         :param R_sersic: Sersic radius (half-light radius)
         :param n_sersic: Sersic index (float)
         :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
-        :return: Sersic surface brightness at R
+        :return: kernel of the Sersic surface brightness at R
         """
 
         R_ = self._R_stable(R)
-        k, bn = self.k_bn(n_sersic, R_sersic)
+        bn = self.b_n(n_sersic)
         R_frac = R_ / R_sersic
         #R_frac = R_frac.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):

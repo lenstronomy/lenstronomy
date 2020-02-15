@@ -73,31 +73,6 @@ class CoreSersic(SersicUtil):
     upper_limit_default = {'amp': 100, 'Re': 100, 'n_sersic': 8, 'gamma': 10, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
                            'center_y': 100}
 
-    def function_old(self, x, y, amp, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.0, max_R_frac=100.0):
-        """
-        :param x:
-        :param y:
-        :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: semi-major axis half light radius
-        :param Re: "break" core radius
-        :param n_sersic: Sersic index
-        :param gamma: inner power-law exponent
-        :param e1: eccentricity parameter
-        :param e2: eccentricity parameter
-        :param center_x: center in x-coordinate
-        :param center_y: center in y-coordinate
-        :param alpha: sharpness of the transition between the cusp and the outer Sersic profile (float)
-        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
-        :return: Cored Sersic profile value at (x, y)
-        """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        R_ = self.get_distance_from_center(x, y, phi_G, q, center_x, center_y)
-        R = self._R_stable(R_)
-        bn = self.b_n(n_sersic)
-        # FIXME: the normalization may be wrong.
-        result = amp * (1 + (R_sersic / R)**alpha)**(gamma/alpha)*np.exp(-bn*(((R** alpha + R_sersic**alpha)/Re**alpha)**(1./(alpha*n_sersic)) - 1.))
-        return np.nan_to_num(result)
-
     def function(self, x, y, amp, R_sersic, Re, n_sersic, gamma, e1, e2, center_x=0, center_y=0, alpha=3.0, max_R_frac=100.0):
         """
         :param x:

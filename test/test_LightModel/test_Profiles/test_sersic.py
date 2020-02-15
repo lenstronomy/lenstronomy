@@ -40,8 +40,7 @@ class TestSersic(object):
         npt.assert_almost_equal(values[2], 0.0053957432862338055, decimal=6)
 
         value = self.sersic.function(1000, 0, I0_sersic, R_sersic, n_sersic, center_x, center_y)
-        npt.assert_almost_equal(value, 0 , decimal=8)
-
+        npt.assert_almost_equal(value, 0, decimal=8)
 
     def test_symmetry_r_sersic(self):
         x = np.array([2,3,4])

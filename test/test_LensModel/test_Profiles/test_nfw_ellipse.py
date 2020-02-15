@@ -9,6 +9,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestNFWELLIPSE(object):
     """
     tests the Gaussian methods
@@ -101,6 +102,13 @@ class TestNFWELLIPSE(object):
         npt.assert_almost_equal(values[0][1], -0.014833136829928151, decimal=5)
         npt.assert_almost_equal(values[1][1], 0.31399726446723619, decimal=5)
         npt.assert_almost_equal(values[2][1], -0.13449884961325154, decimal=5)
+
+    def test_mass_3d_lens(self):
+        R = 1
+        Rs = 3
+        alpha_Rs = 1
+        m_3d = self.nfw_e.mass_3d_lens(R, Rs, alpha_Rs)
+        npt.assert_almost_equal(m_3d, 1.1573795105019022, decimal=8)
 
 
 if __name__ == '__main__':

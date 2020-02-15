@@ -1,5 +1,4 @@
-__author__ = 'dgilman'
-
+__author__ = 'dgilman', 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.cnfw import CNFW
 from lenstronomy.LensModel.Profiles.nfw import NFW
@@ -7,6 +6,7 @@ from lenstronomy.LensModel.Profiles.nfw import NFW
 import numpy as np
 import numpy.testing as npt
 import pytest
+
 
 class Testcnfw(object):
     """
@@ -18,11 +18,10 @@ class Testcnfw(object):
         self.n = NFW()
 
     def test_pot(self):
-
-        pot1 = self.cn.function(2, 0, 1, 1, 0.5)
-        pot2 = self.n.function(2, 0, 1, 1)
-
-        npt.assert_almost_equal(pot1, pot2)
+        # this test requires that the CNFW profile with a very small core results in the potential of the NFW profile
+        pot1 = self.cn.function(x=2, y=0, Rs=1, alpha_Rs=1, r_core=0.001)
+        pot2 = self.n.function(x=2, y=0, Rs=1, alpha_Rs=1)
+        npt.assert_almost_equal(pot1/pot2, 1, decimal=3)
 
     def _kappa_integrand(self, x, y, Rs, m0, r_core):
 
@@ -36,15 +35,25 @@ class Testcnfw(object):
 
         R = np.linspace(0.1*Rs, 4*Rs, 1000)
 
-        alpha = self.cn.cnfwAlpha(R, Rs, rho0, r_core, R, 0)[0]
-
-        alpha_theory = self.cn.mass_2d(R, Rs, rho0, r_core) / np.pi / R
-
         alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
+        alpha = self.cn.alpha_r(R, Rs, rho0, r_core)
+        alpha_theory = self.cn.mass_2d(R, Rs, rho0, r_core) / np.pi / R
         alpha_derivatives = self.cn.derivatives(R, 0, Rs, alpha_Rs, r_core)[0]
 
+        npt.assert_almost_equal(alpha_derivatives / alpha_theory, 1)
         npt.assert_almost_equal(alpha/alpha_theory, 1)
         npt.assert_almost_equal(alpha/alpha_derivatives, 1)
+
+    def test_mass_3d(self):
+        Rs = 10.
+        rho0 = 1.
+        r_core = 7.
+
+        R = np.linspace(0.1 * Rs, 4 * Rs, 1000)
+        alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
+        m3d = self.cn.mass_3d(R, Rs, rho0, r_core)
+        m3d_lens = self.cn.mass_3d_lens(R, Rs, alpha_Rs, r_core)
+        npt.assert_almost_equal(m3d, m3d_lens, decimal=8)
 
     def test_mproj(self):
 
@@ -85,20 +94,6 @@ class Testcnfw(object):
             g1, g2 = self.cn.cnfwGamma(R[i], Rs, rho0, r_core, R[i], 0.6*Rs)
             npt.assert_almost_equal(g1_array[i], g1)
             npt.assert_almost_equal(g2_array[i], g2)
-
-    def test_rho_angle_transform(self):
-
-        Rs = float(10)
-        rho0 = float(1)
-        r_core = float(7)
-
-        alpha_Rs = self.cn._rho2alpha(rho0, Rs, r_core)
-        alpha_Rs_2 = self.cn.cnfwAlpha(Rs, Rs, rho0, r_core, Rs, 0)[0]
-
-        npt.assert_almost_equal(alpha_Rs*alpha_Rs_2**-1,1)
-
-        rho0_2 = self.cn._alpha2rho0(alpha_Rs, Rs, r_core)
-        npt.assert_almost_equal(rho0, rho0_2)
 
 
 if __name__ == '__main__':

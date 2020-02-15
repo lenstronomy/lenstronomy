@@ -67,7 +67,7 @@ class PositionLikelihood(object):
             if verbose is True:
                 print('Astrometric likelihood = %s' % logL_astrometry)
         if self._check_matched_source_position is True:
-            logL_source_scatter = self.source_position_scatter(kwargs_lens, kwargs_ps, self._bound_source_position_scatter, self._source_position_sigma, verbose=verbose)
+            logL_source_scatter = self.source_position_likelihood(kwargs_lens, kwargs_ps, self._source_position_sigma, hard_bound_rms=self._bound_source_position_scatter, verbose=verbose)
             logL += logL_source_scatter
             if verbose is True:
                 print('Source scatter punishing likelihood = %s' % logL_source_scatter)
@@ -93,35 +93,6 @@ class PositionLikelihood(object):
             logL += logL_image_pos
             if verbose is True:
                 print('image position likelihood %s' % logL_image_pos)
-        return logL
-
-    def source_position_scatter(self, kwargs_lens, kwargs_ps, hard_bound_rms, source_position_sigma=None, verbose=False):
-        """
-        computes the deviation of the predicted source positions from the image position ray-traced back to the source
-         plane.
-
-        :param kwargs_lens: lens model keyword argument list
-        :param kwargs_ps: point source model keyword argument list
-        :param hard_bound_rms: float, hard bound rms value of the source position scatter. If the scatter is larger, the model is penalized.
-        :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model precision in matching the source position
-        :return: add penalty when solver does not find a solution
-        """
-        if len(kwargs_ps) < 1:
-            return 0
-        logL = 0
-        for i in range(len(kwargs_ps)):
-            if 'ra_image' in kwargs_ps[i]:
-                ra_image, dec_image = kwargs_ps[i]['ra_image'], kwargs_ps[i]['dec_image']
-                source_x, source_y = self._lensModel.ray_shooting(ra_image, dec_image, kwargs_lens)
-                var = np.var(source_x) + np.var(source_y)
-                std = np.sqrt(var)
-                if std > hard_bound_rms:
-                    if verbose is True:
-                        print('Image positions do not match to the same source position to the required precision. '
-                              'Achieved: %s, Required: %s.' % (std, hard_bound_rms))
-                    logL -= 10 ** 3
-                if source_position_sigma is not None:
-                    logL += -var / source_position_sigma ** 2 / 2
         return logL
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
@@ -187,7 +158,7 @@ class PositionLikelihood(object):
                 logL -= d_r.dot(cov_error.dot(d_r)) / 2.
         return logL
 
-    def source_position_likelihood(self, kwargs_lens, kwargs_ps, cov_error):
+    def source_position_likelihood(self, kwargs_lens, kwargs_ps, cov_error, hard_bound_rms=None, verbose=False):
         """
         computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model.
         The likelihood level is computed in respect of a displacement in the image plane and transposed through the
@@ -197,28 +168,38 @@ class PositionLikelihood(object):
         :param kwargs_ps: point source keyword argument list
         :param cov_error: 2x2 matrix; error covariances of the astrometric uncertainties in RA, DEC in the image plane
         for a symmetric Gaussian uncertainty sigma, cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
+        :param hard_bound_rms: hard bound deviation between the mapping of the images back to the source plane (in source frame)
+        :param verbose: bool, if True provides print statements with useful information.
         :return: log likelihood of the model reproducing the correct image positions given an image position uncertainty
         """
-        if 'ra_image' not in kwargs_ps[0]:
+        if len(kwargs_ps) < 1:
             return 0
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
+        for k in range(len(kwargs_ps)):
+            if 'ra_image' in kwargs_ps[k]:
 
-        x_image = kwargs_ps[0]['ra_image']
-        y_image = kwargs_ps[0]['dec_image']
-        # calculating the individual source positions from the image positions
-        x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
-        for i in range(len(x_image)):
-            f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
-            A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
-            Sigma_beta = image2source_covariance(A, inv(cov_error))
-            delta = np.array([source_x - x_source[i], source_y - y_source[i]])
-            try:
-                Sigma_inv = inv(Sigma_beta)
-            except:
-                return -np.inf
-            chi2 = delta.T.dot(Sigma_inv.dot(delta))[0][0]
-            logL -= chi2/2
+                x_image = kwargs_ps[k]['ra_image']
+                y_image = kwargs_ps[k]['dec_image']
+                # calculating the individual source positions from the image positions
+                x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
+                for i in range(len(x_image)):
+                    f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
+                    A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
+                    Sigma_beta = image2source_covariance(A, inv(cov_error))
+                    delta = np.array([source_x[k] - x_source[i], source_y[k] - y_source[i]])
+                    if hard_bound_rms is not None:
+                        if delta[0]**2 + delta[1]**2 > hard_bound_rms**2:
+                            if verbose is True:
+                                print('Image positions do not match to the same source position to the required precision. '
+                                      'Achieved: %s, Required: %s.' % (delta, hard_bound_rms))
+                            logL -= 10 ** 3
+                    try:
+                        Sigma_inv = inv(Sigma_beta)
+                    except:
+                        return -np.inf
+                    chi2 = delta.T.dot(Sigma_inv.dot(delta))
+                    logL -= chi2 / 2
         return logL
 
     @property

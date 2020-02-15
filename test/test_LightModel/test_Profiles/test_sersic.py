@@ -40,8 +40,7 @@ class TestSersic(object):
         npt.assert_almost_equal(values[2], 0.0053957432862338055, decimal=6)
 
         value = self.sersic.function(1000, 0, I0_sersic, R_sersic, n_sersic, center_x, center_y)
-        npt.assert_almost_equal(value, 0 , decimal=8)
-
+        npt.assert_almost_equal(value, 0, decimal=8)
 
     def test_symmetry_r_sersic(self):
         x = np.array([2,3,4])
@@ -108,18 +107,18 @@ class TestSersic(object):
         center_x = 0
         center_y = 0
         values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
-        npt.assert_almost_equal(values[0], 0.84489101, decimal=8)
+        npt.assert_almost_equal(values[0], 0.10338957116342086, decimal=8)
         x = np.array([0])
         y = np.array([0])
         values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
-        npt.assert_almost_equal(values[0], 288406.09, decimal=0)
+        npt.assert_almost_equal(values[0], 187852.14004235074, decimal=0)
 
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.core_sersic.function(x, y, I0, Rb, Re, n, gamma, e1, e2, center_x, center_y)
-        npt.assert_almost_equal(values[0], 0.79749529635325933, decimal=6)
-        npt.assert_almost_equal(values[1], 0.33653478121594838, decimal=6)
-        npt.assert_almost_equal(values[2], 0.14050402887681532, decimal=6)
+        npt.assert_almost_equal(values[0], 0.09255079955772508, decimal=6)
+        npt.assert_almost_equal(values[1], 0.01767817014938002, decimal=6)
+        npt.assert_almost_equal(values[2], 0.0032541063777438853, decimal=6)
 
     def test_total_flux(self):
         r_eff = 0.2

@@ -149,6 +149,12 @@ class TestKinematicsAPI(object):
                                                               r_eff=None,theta_E=None, gamma=None)
         npt.assert_almost_equal(vel_disp_numerical/ vel_disp_analytic, 1, decimal=2)
 
+        kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
+                                             Hernquist_approx=False, MGE_light=False, MGE_mass=False,
+                                             kwargs_mge_light={'n_comp': 10}, kwargs_mge_mass={'n_comp': 5})
+        assert kin_api._kwargs_mge_mass['n_comp'] == 5
+        assert kin_api._kwargs_mge_light['n_comp'] == 10
+
 
 class TestRaise(unittest.TestCase):
 

@@ -86,9 +86,12 @@ class TestConvergenceIntegrals(object):
         x_grid_low, y_grid_low = util.make_grid(numPix=1000/low_res_factor, deltapix=deltaPix*low_res_factor)
         f_x_low, f_y_low = sis.derivatives(x_grid_low, y_grid_low, **kwargs_sis)
         f_x_low = util.array2image(f_x_low)
+        f_y_low = util.array2image(f_y_low)
         x1, y1 = 50, 51
         # test relative potential at two different point way inside the kappa map
         npt.assert_almost_equal(f_x_low[x1, y1], f_x_num[x1, y1], decimal=2)
+        print(f_x_low[x1, y1], f_x_num[x1, y1])
+        npt.assert_almost_equal(f_y_low[x1, y1], f_y_num[x1, y1], decimal=2)
 
     def test_sersic(self):
         from lenstronomy.LensModel.Profiles.sersic import Sersic

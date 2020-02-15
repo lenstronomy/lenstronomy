@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
+from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 
 
@@ -17,8 +18,13 @@ class CoredDensityMST(LensProfileBase):
     lower_limit_default = {'lambda_approx': -1, 'r_core': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'lambda_approx': 10, 'r_core': 100, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self):
-        self._cored_density = CoredDensity()
+    def __init__(self, profile_type='CORED_DENSITY'):
+        if profile_type == 'CORED_DENSITY':
+            self._profile = CoredDensity()
+        elif profile_type == 'CORED_DENSITY_2':
+            self._profile = CoredDensity2()
+        else:
+            raise ValueError('profile_type %s not supported for CoredDensityMST instance.' % profile_type)
         self._convergence = Convergence()
         super(CoredDensityMST, self).__init__()
 
@@ -35,7 +41,7 @@ class CoredDensityMST(LensProfileBase):
         :return: lensing potential correction
         """
         kappa_ext = 1 - lambda_approx
-        f_cored_density = self._cored_density.function(x, y, kappa_ext, r_core, center_x, center_y)
+        f_cored_density = self._profile.function(x, y, kappa_ext, r_core, center_x, center_y)
         f_ms = self._convergence.function(x, y, kappa_ext, center_x, center_y)
         return f_cored_density - f_ms
 
@@ -52,7 +58,7 @@ class CoredDensityMST(LensProfileBase):
         :return: alpha_x, alpha_y
         """
         kappa_ext = 1 - lambda_approx
-        f_x_cd, f_y_cd = self._cored_density.derivatives(x, y, kappa_ext, r_core, center_x, center_y)
+        f_x_cd, f_y_cd = self._profile.derivatives(x, y, kappa_ext, r_core, center_x, center_y)
         f_x_ms, f_y_ms = self._convergence.derivatives(x, y, kappa_ext, center_x, center_y)
         return f_x_cd - f_x_ms, f_y_cd - f_y_ms
 
@@ -69,6 +75,6 @@ class CoredDensityMST(LensProfileBase):
         :return: df/dxx, df/dyy, df/dxy
         """
         kappa_ext = 1 - lambda_approx
-        f_xx_cd, f_yy_cd, f_xy_cd = self._cored_density.hessian(x, y, kappa_ext, r_core, center_x, center_y)
+        f_xx_cd, f_yy_cd, f_xy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
         f_xx_ms, f_yy_ms, f_xy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
         return f_xx_cd - f_xx_ms, f_yy_cd - f_yy_ms, f_xy_cd - f_xy_ms

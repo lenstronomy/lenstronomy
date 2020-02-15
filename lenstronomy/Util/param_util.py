@@ -75,7 +75,7 @@ def phi_q2_ellipticity(phi, q):
 
 def transform_e1e2(x, y, e1, e2, center_x, center_y):
     """
-    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordianate system
+    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
 
     :param x: x-coordinate
     :param y: y-coordinate

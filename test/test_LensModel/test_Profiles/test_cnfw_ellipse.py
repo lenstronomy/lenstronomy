@@ -41,9 +41,9 @@ class TestCNFWELLIPSE(object):
         x = np.array([2, 3, 4])
         y = np.array([1, 1, 1])
         values = self.nfw_e.function(x, y, Rs, alpha_Rs, r_core, e1, e2)
-        npt.assert_almost_equal(values[0], 1.8827504143588476, decimal=5)
-        npt.assert_almost_equal(values[1], 2.6436373117941852, decimal=5)
-        npt.assert_almost_equal(values[2], 3.394127018818891, decimal=5)
+        npt.assert_almost_equal(values[0], 1.8550220596738973, decimal=5)
+        npt.assert_almost_equal(values[1], 2.7684470762303537, decimal=5)
+        npt.assert_almost_equal(values[2], 3.7076606717487586, decimal=5)
 
     def test_derivatives(self):
         x = np.array([1])
@@ -104,6 +104,17 @@ class TestCNFWELLIPSE(object):
         npt.assert_almost_equal(values[0][1], 0.020280774837289073, decimal=5)
         npt.assert_almost_equal(values[1][1], 0.3955523575349673, decimal=5)
         npt.assert_almost_equal(values[2][1], -0.14605247788956888, decimal=5)
+
+    def test_mass_3d(self):
+        Rs = 10.
+        rho0 = 1.
+        r_core = 7.
+
+        R = np.linspace(0.1 * Rs, 4 * Rs, 1000)
+        alpha_Rs = self.nfw._rho2alpha(rho0, Rs, r_core)
+        m3d = self.nfw.mass_3d(R, Rs, rho0, r_core)
+        m3d_lens = self.nfw_e.mass_3d_lens(R, Rs, alpha_Rs, r_core)
+        npt.assert_almost_equal(m3d, m3d_lens, decimal=8)
 
 
 if __name__ == '__main__':

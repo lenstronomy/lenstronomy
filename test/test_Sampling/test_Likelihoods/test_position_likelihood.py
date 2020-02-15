@@ -1,6 +1,5 @@
 import pytest
 import numpy.testing as npt
-import numpy as np
 import copy
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.PointSource.point_source import PointSource
@@ -71,19 +70,19 @@ class TestPositionLikelihood(object):
 
     def test_solver_penalty(self):
         kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]
-        logL = self.likelihood.source_position_scatter(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.0001, source_position_sigma=0.001, verbose=False)
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.0001, sigma=0.001, verbose=False)
         npt.assert_almost_equal(logL, 0, decimal=9)
 
         kwargs_ps = [{'ra_image': self._x_pos + 0.01, 'dec_image': self._y_pos}]
-        logL = self.likelihood.source_position_scatter(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.001, source_position_sigma=0.0001, verbose=False)
-        npt.assert_almost_equal(logL, -1972.075881220904, decimal=0)
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.001, sigma=0.0001, verbose=False)
+        npt.assert_almost_equal(logL, -126453.36820694887, decimal=0)
         #assert logL == -np.inf
 
     def test_logL(self):
         kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]
         kwargs_special = {'delta_x_image': [0, 0, 0, 0.], 'delta_y_image': [0, 0, 0, 0.]}
         logL = self.likelihood.logL(self._kwargs_lens, kwargs_ps, kwargs_special, verbose=True)
-        npt.assert_almost_equal(logL, 0 , decimal=9)
+        npt.assert_almost_equal(logL, 0, decimal=9)
 
     def test_source_position_likelihood(self):
         kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]

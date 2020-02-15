@@ -11,17 +11,21 @@ class Solver4Point(object):
     """
     class to make the constraints for the solver
     """
-    def __init__(self, lensModel, solver_type='PROFILE'):
+    def __init__(self, lensModel, solver_type='PROFILE_SHEAR'):
         self._solver_type = solver_type  # supported:
+        if lensModel.lens_model_list[0] == 'SHAPELETS_CART':
+            self._solver_type = 'SHAPELETS'
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'SPEMD_SMOOTH', 'SIE', 'NIE', 'NFW_ELLIPSE',
                                                 'SHAPELETS_CART', 'CNFW_ELLIPSE']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'SPEMD_SMOOTH',"
                              " 'SIE', 'NIE', 'NFW_ELLIPSE', 'SHAPELETS_CART', 'CNFW_ELLIPSE'. "
                              "Your choice was %s" % lensModel.lens_model_list[0])
-        if not solver_type in ['PROFILE', 'PROFILE_SHEAR']:
-            raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
+        if not self._solver_type in ['PROFILE_SHEAR', 'SHAPELETS']:
+            raise ValueError("solver_type %s not supported! Choose from 'PROFILE_SHEAR', 'SHAPELETS' "
                              % solver_type)
-        if solver_type in ['PROFILE_SHEAR']:
+        if self._solver_type in ['PROFILE_SHEAR']:
+            if len(lensModel.lens_model_list) < 2:
+                raise ValueError('There needs to be a second lens model called "SHEAR" to enable the solver.')
             if lensModel.lens_model_list[1] == 'SHEAR':
                 self._solver_type = 'PROFILE_SHEAR'
             elif lensModel.lens_model_list[1] == 'SHEAR_GAMMA_PSI':
@@ -93,8 +97,6 @@ class Solver4Point(object):
     def _subtract_constraint(x_sub, y_sub):
         """
 
-        :param x_pos:
-        :param y_pos:
         :param x_sub:
         :param y_sub:
         :return:
@@ -202,8 +204,8 @@ class Solver4Point(object):
         lens_model = self.lensModel.lens_model_list[0]
         kwargs_fixed = kwargs_fixed_lens_list[0]
         kwargs_lens = kwargs_lens_init[0]
-        if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
-            pass
+        #if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
+        #    pass
             #kwargs_fixed_lens_list[1]['psi_ext'] = kwargs_lens_init[1]['psi_ext']
         if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'SPEMD_SMOOTH']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
@@ -221,5 +223,5 @@ class Solver4Point(object):
             pass
         else:
             raise ValueError(
-                "%s is not a valid option. Choose from 'PROFILE', 'PROFILE_SHEAR', 'SHAPELETS'" % self._solver_type)
+                "%s is not a valid option. Choose from 'PROFILE_SHEAR', 'SHAPELETS'" % self._solver_type)
         return kwargs_fixed_lens_list

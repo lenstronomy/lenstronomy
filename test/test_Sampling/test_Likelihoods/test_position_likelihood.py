@@ -1,6 +1,7 @@
 import pytest
 import numpy.testing as npt
 import copy
+import numpy as np
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
@@ -70,11 +71,17 @@ class TestPositionLikelihood(object):
 
     def test_solver_penalty(self):
         kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]
-        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.0001, sigma=0.001, verbose=False)
+        sigma = 0.001
+        cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.0001,
+                                                          cov_error=cov_error, verbose=False)
         npt.assert_almost_equal(logL, 0, decimal=9)
 
+        sigma = 0.0001
+        cov_error = np.array([[1. / (sigma ** 2), 0], [0, 1. / (sigma ** 2)]])
         kwargs_ps = [{'ra_image': self._x_pos + 0.01, 'dec_image': self._y_pos}]
-        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.001, sigma=0.0001, verbose=False)
+        logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.001,
+                                                          cov_error=cov_error, verbose=False)
         npt.assert_almost_equal(logL, -126453.36820694887, decimal=0)
         #assert logL == -np.inf
 

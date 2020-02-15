@@ -221,12 +221,13 @@ class TestParam(object):
         assert kwargs_lens_light_out[0]['center_x'] == kwargs_ps_out[0]['ra_image']
 
     def test_with_solver(self):
-        kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['SERSIC'],
+        kwargs_model = {'lens_model_list': ['SPEP', 'SHEAR'], 'source_light_model_list': ['SERSIC'],
                         'point_source_model_list': ['LENSED_POSITION']}
         i_lens_light, k_ps = 0, 0
-        kwargs_constraints = {'solver_type': 'PROFILE', 'num_point_source_list': [4]}
+        kwargs_constraints = {'solver_type': 'PROFILE_SHEAR', 'num_point_source_list': [4]}
 
-        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens = [{'theta_E': 1, 'gamma': 2, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
+                       {'gamma1': 0, 'gamma2': 0, 'ra_0': 0, 'dec_0': 0}]
         kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]
         kwargs_lens_light = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 0.2, 'center_y': 0.2}]
         lensModel = LensModel(lens_model_list=['SPEP'])

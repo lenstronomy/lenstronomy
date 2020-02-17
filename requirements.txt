@@ -1,4 +1,3 @@
-python-pysap   # TODO check if that should stay at top of the list
 numpy>=1.13
 astropy>=2.0
 scipy>=0.19.1

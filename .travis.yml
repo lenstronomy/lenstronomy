@@ -10,6 +10,8 @@ services:
   - xvfb
 before_install:
 #  - sudo apt-get build-dep python-scipy
+  - pip install pybind11
+  - pip install python-pysap   # TODO check if that should stay at top of the list
   - pip install coveralls
   - pip install python-coveralls
   - pip install scipy

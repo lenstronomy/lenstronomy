@@ -4,9 +4,7 @@ Tests for `galkin` module.
 import pytest
 import numpy.testing as npt
 import numpy as np
-import unittest
 import scipy.integrate as integrate
-from lenstronomy.GalKin.galkin_old import GalKinAnalytic
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
@@ -16,12 +14,11 @@ import lenstronomy.Util.param_util as param_util
 class TestGalkin(object):
 
     def setup(self):
-        pass
+        np.random.seed(42)
 
     def test_galkin_vs_LOS_dispersion(self):
         """
         tests whether the old and new version provide the same answer
-        :return:
         """
         # light profile
         light_profile = 'Hernquist'
@@ -55,13 +52,10 @@ class TestGalkin(object):
         kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
-        galkin = GalKinAnalytic(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, mass_profile=mass_profile, light_profile=light_profile,
-                                anisotropy_type=anisotropy_type, kwargs_cosmo=kwargs_cosmo)
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy, num=2000)
 
         los_disp = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, **kwargs_cosmo)
         sigma_v2 = los_disp.vel_disp(gamma, theta_E, r_eff, r_ani=r_ani, rendering_number=2000)
-        npt.assert_almost_equal((sigma_v-sigma_v2)/sigma_v2, 0, decimal=2)
+        npt.assert_almost_equal(sigma_v2, 267., decimal=-1)
 
     def test_log_linear_integral(self):
         # light profile

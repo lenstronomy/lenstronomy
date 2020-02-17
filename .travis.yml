@@ -1,3 +1,8 @@
+# REMOVE THIS AT MERGE !
+branches:
+  only:
+  - dev_slit-algo
+
 language: python
 python:
   #- "2.7"

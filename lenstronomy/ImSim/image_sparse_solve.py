@@ -47,15 +47,17 @@ class ImageSparseFit(ImageLinearFit):
         if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
             raise ValueError("'STARLETS' must be the only source model list for sparse fit")
 
-        lens_light_model_list = self.LensLightModel.profile_type_list
-        if len(lens_light_model_list) > 0:
+        if lens_light_model_class is not None:
+            lens_light_model_list = self.LensLightModel.profile_type_list
             if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) != 1:
                 raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
-            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, psf_class=self.PSF, 
+            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, 
+                                                       lens_light_model_class=self.LensLightModel, psf_class=self.PSF, 
                                                        convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                        **kwargs_sparse_solver)
         else:
-            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, psf_class=self.PSF, 
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel,
+                                                   lens_light_model_class=None, psf_class=self.PSF, 
                                                    convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                    **kwargs_sparse_solver)
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)

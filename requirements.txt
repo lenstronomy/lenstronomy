@@ -14,5 +14,5 @@ pypolychord
 nestcheck
 schwimmbad
 multiprocess>=0.70.8
-git://github.com/aymgal/SLITronomy.git#egg=slitronomy
+-e git://github.com/aymgal/SLITronomy.git#egg=slitronomy
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

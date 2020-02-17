@@ -118,6 +118,19 @@ class NFW(LensProfileBase):
         """
         return rho0/(R/Rs*(1+R/Rs)**2)
 
+    def density_lens(self, r, Rs, alpha_Rs):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: 3d radios
+        :param Rs: turn-over radius of NFW profile
+        :param alpha_Rs: deflection at Rs
+        :return: density rho(r)
+        """
+        rho0 = self._alpha2rho0(alpha_Rs, Rs)
+        return self.density(r, Rs, rho0)
+
     def density_2d(self, x, y, Rs, rho0, center_x=0, center_y=0):
         """
         projected two dimensional NFW profile (kappa*Sigma_crit)
@@ -151,7 +164,7 @@ class NFW(LensProfileBase):
         m_3d = 4. * np.pi * rho0 * Rs**3 * (np.log((Rs + R)/Rs) - R/(Rs + R))
         return m_3d
 
-    def mass_3d_lens(self, R, Rs, alpha_Rs):
+    def mass_3d_lens(self, r, Rs, alpha_Rs):
         """
         mass enclosed a 3d sphere or radius r
         :param R:
@@ -160,7 +173,7 @@ class NFW(LensProfileBase):
         :return:
         """
         rho0 = self._alpha2rho0(alpha_Rs, Rs)
-        m_3d = self.mass_3d(R, Rs, rho0)
+        m_3d = self.mass_3d(r, Rs, rho0)
         return m_3d
 
     def mass_2d(self, R, Rs, rho0):

@@ -4,10 +4,10 @@ class LensProfileBase(object):
     if these functions are not defined in the specific lens model class
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         self._static = False
 
-    def function(self, **kwargs):
+    def function(self, *args, **kwargs):
         """
         lensing potential
 
@@ -18,7 +18,7 @@ class LensProfileBase(object):
         """
         raise ValueError('function definition is not defined in the profile you want to execute.')
 
-    def derivatives(self, **kwargs):
+    def derivatives(self, *args, **kwargs):
         """
         deflection angles
 
@@ -29,7 +29,7 @@ class LensProfileBase(object):
         """
         raise ValueError('derivatives definition is not defined in the profile you want to execute.')
 
-    def hessian(self, **kwargs):
+    def hessian(self, *args, **kwargs):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
 
@@ -39,6 +39,26 @@ class LensProfileBase(object):
         :return: raise as definition is not defined
         """
         raise ValueError('hessian definition is not defined in the profile you want to execute.')
+
+    def density_lens(self, *args, **kwargs):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param kwargs: keywords of the profile
+        :return: raise as definition is not defined
+        """
+        raise ValueError('density_lens definition is not defined in the profile you want to execute.')
+
+    def mass_3d_lens(self, *args, **kwargs):
+        """
+        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+        For this profile those are identical.
+
+        :param kwargs: keywords of the profile
+        :return: raise as definition is not defined
+        """
+        raise ValueError('mass_3d_lens definition is not defined in the profile you want to execute.')
 
     def set_static(self, **kwargs):
         """

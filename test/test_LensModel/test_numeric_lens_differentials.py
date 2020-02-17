@@ -72,7 +72,7 @@ class TestNumericsProfile(object):
         #lensModelNum = NumericLens(lens_model)
         diff = 0.000001
         #x, y = 1., 2.
-        x = np.linspace(start=0.1, stop=8, num=10)
+        x = np.linspace(start=0.1, stop=5.5, num=10)
         y = np.zeros_like(x)
         lensModel = LensModel(lens_model)
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(x, y, [kwargs])
@@ -242,25 +242,35 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_cnfw(self):
-        kwargs={'Rs':2, 'alpha_Rs': 1, 'r_core':0.3}
+        kwargs={'Rs': 15.5, 'alpha_Rs': 1., 'r_core': 8.}
         lens_model = ['CNFW']
-        self.assert_differentials(lens_model, kwargs, potential=False)
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_cnfw_ellipse(self):
         kwargs = {'alpha_Rs': .1, 'Rs': 5., 'r_core': 0.1, 'e1': 0.04, 'e2': -0.04}
         lens_model = ['CNFW_ELLIPSE']
-        self.assert_differentials(lens_model, kwargs, potential=False)
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
     def test_cored_density(self):
         kwargs = {'sigma0': 0.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_cored_density_2(self):
+        kwargs = {'sigma0': 0.1, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_2']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_cored_density_mst(self):
         kwargs = {'lambda_approx': 1.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY_MST']
         self.assert_differentials(lens_model, kwargs)
-       
+
+    def test_cored_density_2_mst(self):
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_2_MST']
+        self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

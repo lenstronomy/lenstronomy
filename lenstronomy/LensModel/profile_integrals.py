@@ -34,11 +34,12 @@ class ProfileIntegrals(object):
         out = integrate.quad(lambda x: self._profile.density(x, **kwargs)*4*np.pi*x**2, 0, r)
         return out[0]
 
-    def density_2d(self, r, kwargs_profile):
+    def density_2d(self, r, kwargs_profile, lens_param=False):
         """
         computes the projected density along the line-of-sight
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
+        :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention and the return is the convergence
         :return: 2d projected density at projected radius r
         """
         kwargs = copy.deepcopy(kwargs_profile)
@@ -48,7 +49,10 @@ class ProfileIntegrals(object):
         except:
             pass
         # integral of self._profile.density(np.sqrt(x^2+r^2))* dx, 0, infty
-        out = integrate.quad(lambda x: 2*self._profile.density(np.sqrt(x**2+r**2), **kwargs), 0, 100)
+        if lens_param is True:
+            out = integrate.quad(lambda x: 2 * self._profile.density_lens(np.sqrt(x ** 2 + r ** 2), **kwargs), 0, 100)
+        else:
+            out = integrate.quad(lambda x: 2*self._profile.density(np.sqrt(x**2+r**2), **kwargs), 0, 100)
         return out[0]
 
     def mass_enclosed_2d(self, r, kwargs_profile):

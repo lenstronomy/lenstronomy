@@ -198,3 +198,10 @@ class TestData(object):
         kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
         data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
         assert data_pixel._psf_type == 'PIXEL'
+
+        kwargs_observations = {'exposure_time': 1, 'sky_brightness': 1,
+                               'magnitude_zero_point': self.magnitude_zero_point, 'num_exposures': 1,
+                               'seeing': 1, 'psf_type': 'NONE'}
+        kwargs_data = util.merge_dicts(self.kwargs_instrument, kwargs_observations)
+        data_pixel = SingleBand(data_count_unit='ADU', **kwargs_data)
+        assert data_pixel._psf_type == 'NONE'

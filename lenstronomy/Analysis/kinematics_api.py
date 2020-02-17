@@ -48,7 +48,8 @@ class KinematicAPI(object):
                                        kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
-        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.
+        The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
+        an 'OsipkovMerritt' stellar anisotropy distribution.
 
         Further information can be found in the AnalyticKinematics() class.
 
@@ -95,6 +96,8 @@ class KinematicAPI(object):
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
         :param Hernquist_approx: bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics
         :param kappa_ext: external convergence not accounted in the lens models
+        :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
+        :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
         :return: LOS velocity dispersion [km/s]
         """
 
@@ -217,8 +220,8 @@ class KinematicAPI(object):
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light
 
-    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                  theta_E=None, gamma=None):
+    def model_velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
+                                  gamma=None):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
 
@@ -231,19 +234,20 @@ class KinematicAPI(object):
         :return: velocity dispersion [km/s]
         """
 
+        if r_eff is None:
+            r_eff = self._lensLightProfile.half_light_radius(kwargs_lens_light, grid_spacing=0.05, grid_num=200,
+                                                             center_x=None, center_y=None,
+                                                             model_bool_list=self._light_model_kinematics_bool)
+        if theta_E is None:
+            theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
+                                                                      model_bool_list=self._lens_model_kinematics_bool,
+                                                                      grid_num=200, grid_spacing=0.05,
+                                                                      get_precision=False, verbose=True)
+        if gamma is None:
+            gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
+                                                        model_list_bool=self._lens_model_kinematics_bool,
+                                                        num_points=10)
         if self._analytic_kinematics is True:
-            if r_eff is None:
-                r_eff = self._lensLightProfile.half_light_radius(kwargs_lens_light, grid_spacing=0.05, grid_num=200,
-                                                                 center_x=None, center_y=None,
-                                                                 model_bool_list=self._light_model_kinematics_bool)
-            if theta_E is None:
-                theta_E = self._lensMassProfile.effective_einstein_radius(kwargs_lens, center_x=None, center_y=None,
-                                                              model_bool_list=self._lens_model_kinematics_bool, grid_num=200, grid_spacing=0.05,
-                                                              get_precision=False, verbose=True)
-            if gamma is None:
-                gamma = self._lensMassProfile.profile_slope(kwargs_lens, theta_E, center_x=None, center_y=None,
-                                                            model_list_bool=self._lens_model_kinematics_bool,
-                                                            num_points=10)
             r_ani = kwargs_anisotropy.get('r_ani')
             num_evaluate = self._kwargs_numerics_kin.get('sampling_number', 1000)
             sigma_v = self.velocity_dispersion_analytical(theta_E, gamma, r_eff, self._kwargs_aperture_kin,
@@ -258,7 +262,11 @@ class KinematicAPI(object):
                                                          r_eff=r_eff, theta_E=theta_E,
                                                          kwargs_numerics=self._kwargs_numerics_kin,
                                                          MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
-                                                         Hernquist_approx=self._Hernquist_approx, kappa_ext=0)
+
+                                                         Hernquist_approx=self._Hernquist_approx, kappa_ext=0,
+                                                         kwargs_mge_mass= self._kwargs_mge_mass,
+                                                         kwargs_mge_light = self._kwargs_mge_light)
+
         return sigma_v
 
     def kinematic_observation_settings(self, kwargs_aperture, kwargs_seeing):
@@ -273,7 +281,7 @@ class KinematicAPI(object):
         self._kwargs_psf_kin = kwargs_seeing
 
     def kinematics_modeling_settings(self, anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
-                                     Hernquist_approx=False, MGE_light=False, MGE_mass=False):
+                                     Hernquist_approx=False, MGE_light=False, MGE_mass=False, kwargs_mge_light=None, kwargs_mge_mass=None):
         """
 
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
@@ -283,8 +291,20 @@ class KinematicAPI(object):
         :param MGE_light: bool, if true performs the MGE for the light distribution
         :param MGE_mass: bool, if true performs the MGE for the mass distribution
         :param kwargs_numerics_galkin: numerical settings for the integrated line-of-sight velocity dispersion
+        :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
+        :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :return:
         """
+        if kwargs_mge_mass is None:
+            self._kwargs_mge_mass = {'n_comp': 20}
+        else :
+            self._kwargs_mge_mass = kwargs_mge_mass
+
+        if kwargs_mge_light is None:
+            self._kwargs_mge_light = {'grid_spacing': 0.01, 'grid_num': 100, 'n_comp': 20, 'center_x': None,
+                                      'center_y': None}
+        else:
+            self._kwargs_mge_light = kwargs_mge_light
         self._kwargs_numerics_kin = kwargs_numerics_galkin
         self._anisotropy_model = anisotropy_model
         self._analytic_kinematics = analytic_kinematics

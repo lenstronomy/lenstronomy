@@ -190,6 +190,15 @@ class SPP(LensProfileBase):
         rho = rho0 / r**gamma
         return rho
 
+    def density_lens(self, r, theta_E, gamma):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in projected in units of angles (i.e. arc seconds) results in the convergence quantity.
+
+        """
+        rho0 = self.theta2rho(theta_E, gamma)
+        return self.density(r, rho0, gamma)
+
     @staticmethod
     def density_2d(x, y, rho0, gamma, center_x=0, center_y=0):
         """

@@ -1,15 +1,13 @@
 __author__ = 'sibirrer'
 
-#file which contains class for lens model routines
 import numpy as np
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
 
 
 class SinglePlane(ProfileListBase):
     """
-    class to handle an arbitrary list of lens models
+    class to handle an arbitrary list of lens models in a single lensing plane
     """
-
 
     def ray_shooting(self, x, y, kwargs, k=None):
         """
@@ -134,8 +132,6 @@ class SinglePlane(ProfileListBase):
                 kwargs_i = {k:v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
                 mass_3d_i = func.mass_3d_lens(r, **kwargs_i)
                 mass_3d += mass_3d_i
-                #except:
-                #    raise ValueError('Lens profile %s does not support a 3d mass function!' % self.model_list[i])
         return mass_3d
 
     def mass_2d(self, r, kwargs, bool_list=None):
@@ -154,6 +150,23 @@ class SinglePlane(ProfileListBase):
                 kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
                 mass_2d_i = func.mass_2d_lens(r, **kwargs_i)
                 mass_2d += mass_2d_i
-                #except:
-                #    raise ValueError('Lens profile %s does not support a 2d mass function!' % self.model_list[i])
         return mass_2d
+
+    def density(self, r, kwargs, bool_list=None):
+        """
+        3d mass density at radius r
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius (in angular units)
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param bool_list: list of bools that are part of the output
+        :return: mass density at radius r (in angular units, modulo epsilon_crit)
+        """
+        bool_list = self._bool_list(bool_list)
+        density = 0
+        for i, func in enumerate(self.func_list):
+            if bool_list[i] is True:
+                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                density_i = func.density_lens(r, **kwargs_i)
+                density += density_i
+        return density

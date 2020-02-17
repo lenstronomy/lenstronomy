@@ -53,8 +53,6 @@ class FittingSequence(object):
         :return: fitting results
         """
         chain_list = []
-        #param_list = []
-        #samples_mcmc, param_mcmc, dist_mcmc = [], [], []
         for i, fitting in enumerate(fitting_list):
             fitting_type = fitting[0]
             kwargs = fitting[1]

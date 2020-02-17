@@ -82,8 +82,8 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_xy, 0, decimal=7)
 
     def test_bounds(self):
-        theta_E, gamma, q, phi_G, s_scale = self.SPEMD_SMOOT._parameter_constraints(theta_E=-1, s_scale=0, gamma=3, q=2, phi_G=0)
-        assert theta_E == 0
+        compute_bool = self.SPEMD_SMOOT._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)
+        assert compute_bool is False
 
     def test_is_not_empty(self):
         func = self.SPEMD_SMOOT.is_not_empty

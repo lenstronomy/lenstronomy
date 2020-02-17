@@ -117,9 +117,9 @@ class SIS(LensProfileBase):
     def mass_2d_lens(self, r, theta_E):
         """
 
-        :param r:
-        :param theta_E:
-        :return:
+        :param r: radius
+        :param theta_E: Einstein radius
+        :return: mass within a radius in projection
         """
         rho0 = self.theta2rho(theta_E)
         return self.mass_2d(r, rho0)
@@ -153,6 +153,18 @@ class SIS(LensProfileBase):
         """
         rho = rho0 / r**2
         return rho
+
+    def density_lens(self, r, theta_E):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in projected in units of angles (i.e. arc seconds) results in the convergence quantity.
+
+        :param r: 3d radius
+        :param theta_E: Einstein radius
+        :return: density(r)
+        """
+        rho0 = self.theta2rho(theta_E)
+        return self.density(r, rho0)
 
     @staticmethod
     def density_2d(x, y, rho0, center_x=0, center_y=0):

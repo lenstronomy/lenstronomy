@@ -35,6 +35,18 @@ class NIE(object):
         # rotate back
         return f_
 
+    def light_3d(self, r, amp, e1, e2, s_scale):
+        """
+        3d light distribution
+
+        :param r:
+        :param amp:
+        :param e1:
+        :param e2:
+        :param s_scale:
+        :return:
+        """
+
     def _nie_simple_function(self, x, y, amp, s, q):
         """
 

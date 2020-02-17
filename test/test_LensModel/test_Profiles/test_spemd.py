@@ -204,8 +204,8 @@ class TestSPEMD(object):
     def test_bounds(self):
         from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
         profile = SPEMD_SMOOTH()
-        theta_E, gamma, q, phi_G, s_scale = profile._parameter_constraints(theta_E=-1, s_scale=0, gamma=3, q=2, phi_G=0)
-        assert theta_E == 0
+        compute_bool = profile._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)
+        assert compute_bool is False
 
     def test_is_not_empty(self):
         func = self.SPEMD.spemd_smooth.is_not_empty
@@ -216,6 +216,13 @@ class TestSPEMD(object):
         assert func(np.array([0.1]), np.array([0.2]))
         assert not func([], [])
         assert not func(np.array([]), np.array([]))
+
+    def test_density_lens(self):
+        r = 1
+        kwargs = {'theta_E': 1, 'gamma': 2, 'e1': 0, 'e2': 0}
+        rho = self.SPEMD.density_lens(r, **kwargs)
+        rho_spep = self.SPEP.density_lens(r, **kwargs)
+        npt.assert_almost_equal(rho, rho_spep, decimal=7)
 
 
 if __name__ == '__main__':

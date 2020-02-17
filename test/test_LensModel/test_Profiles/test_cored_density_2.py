@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
+from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
 
 import numpy as np
 import numpy.testing as npt
@@ -12,25 +12,30 @@ class TestCoredDensity(object):
     tests the Gaussian methods
     """
     def setup(self):
-        self.model = CoredDensity()
+        self.model = CoredDensity2()
 
     def test_function(self):
-        r = np.linspace(start=0.01, stop=2, num=10)
+        r = np.linspace(start=0.01, stop=10, num=10)
         sigma0 = 0.2
         r_core = 5
         f_ = self.model.function(r, 0, sigma0, r_core)
-        delta = 0.0001
+        delta = 0.00001
         f_d = self.model.function(r + delta, 0, sigma0, r_core)
         f_x_num = (f_d - f_) / delta
         f_x, _ = self.model.derivatives(r, 0, sigma0, r_core)
         npt.assert_almost_equal(f_x_num, f_x, decimal=3)
 
+        #test single value vs list of outputs
+        f_ = self.model.function(1, 0, sigma0, r_core)
+        f_list = self.model.function(np.array([1]), 0, sigma0, r_core)
+        npt.assert_almost_equal(f_, f_list[0], decimal=8)
+
     def test_derivatives(self):
         pass
 
     def test_dalpha_dr(self):
-        x = np.array([1, 3, 4])
-        y = np.array([2, 1, 1])
+        x = np.array([1., 3., 4.])
+        y = np.array([2., 1., 1.])
         r = np.sqrt(x ** 2 + y ** 2)
         sigma0 = 0.1
         r_core = 7.
@@ -42,15 +47,16 @@ class TestCoredDensity(object):
         npt.assert_almost_equal(dalpha_dr, d_alpha_dr_num)
 
     def test_hessian(self):
-        x = np.linspace(start=0.01, stop=100, num=100)
+
+        x = np.linspace(start=0.1, stop=10, num=100)
         y = 0
         r = np.sqrt(x**2 + y**2)
         sigma0 = 0.1
-        r_core = 7
+        r_core = 2.
         f_xx, f_yy, f_xy = self.model.hessian(x, y, sigma0, r_core)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_direct = self.model.kappa_r(r, sigma0, r_core)
-        npt.assert_almost_equal(kappa, kappa_direct, decimal=5)
+        npt.assert_almost_equal(kappa/kappa_direct, 1, decimal=5)
 
     def test_mass_3d(self):
         x = np.array([1, 3, 4])

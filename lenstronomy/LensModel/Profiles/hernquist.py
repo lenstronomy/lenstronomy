@@ -29,6 +29,19 @@ class Hernquist(LensProfileBase):
         rho = rho0 / (r/Rs * (1 + (r/Rs))**3)
         return rho
 
+    def density_lens(self, r, sigma0, Rs):
+        """
+        Density as a function of 3d radius in lensing parameters
+        This function converts the lensing definition sigma0 into the 3d density
+
+        :param r: 3d radius
+        :param sigma0: rho0 * Rs (units of projected density)
+        :param Rs: Hernquist radius
+        :return: enclosed mass in 3d
+        """
+        rho0 = self.sigma2rho(sigma0, Rs)
+        return self.density(r, rho0, Rs)
+
     def density_2d(self, x, y, rho0, Rs, center_x=0, center_y=0):
         """
         projected density along the line of sight at coordinate (x, y)
@@ -243,7 +256,7 @@ class Hernquist(LensProfileBase):
 
     def grav_pot(self, x, y, rho0, Rs, center_x=0, center_y=0):
         """
-        #TODO desid whether these functions are needed or not
+        #TODO decide whether these functions are needed or not
 
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
         :param x: x-coordinate position (units of angle)

@@ -36,6 +36,7 @@ class SimAPI(DataAPI, ModelAPI):
 
     def magnitude2amplitude(self, kwargs_lens_light_mag=None, kwargs_source_mag=None, kwargs_ps_mag=None):
         """
+        'magnitued' definition are in APPARENT magnitudes as observed on the sky, not intrinsic!
 
         :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
         :param kwargs_source_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.

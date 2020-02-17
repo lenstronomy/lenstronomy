@@ -10,6 +10,7 @@ services:
   - xvfb
 before_install:
 #  - sudo apt-get build-dep python-scipy
+  - if [ $TRAVIS_PYTHON_VERSION == "2.7" ]; then pip install PySide; else pip install pyqt5==5.14.0; fi
   - pip install pybind11
   - pip install python-pysap   # TODO check if that should stay at top of the list
   - pip install coverage==4.5.4  # temporary fix for coveralls

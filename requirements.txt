@@ -1,3 +1,4 @@
+python-pysap   # TODO check if that should stay at top of the list
 numpy>=1.13
 astropy>=2.0
 scipy>=0.19.1
@@ -14,5 +15,4 @@ pypolychord
 nestcheck
 schwimmbad
 multiprocess>=0.70.8
-python-pysap
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

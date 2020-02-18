@@ -95,7 +95,7 @@ class Galkin(object):
         sigma_s2_average = sigma2_R_sum / self._num_sampling
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         sigma_s2_average *= 2 * const.G  # correcting for integral prefactor
-        return np.sqrt(sigma_s2_average/(const.arcsec**2 * self.cosmo.D_d**2 * const.Mpc))/1000.  # in units of km/s
+        return np.sqrt(sigma_s2_average / (const.arcsec ** 2 * self.cosmo.dd ** 2 * const.Mpc)) / 1000.  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -155,7 +155,7 @@ class Galkin(object):
             r_array = np.linspace(R+0.001, self._max_integrate, self._interp_grid_num)
             dr = r_array[2] - r_array[1]
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dr
-        IR_sigma2 = np.sum(IR_sigma2_dr) * const.arcsec * self.cosmo.D_d  # integral from angle to physical scales
+        IR_sigma2 = np.sum(IR_sigma2_dr) * const.arcsec * self.cosmo.dd  # integral from angle to physical scales
         return IR_sigma2
 
     def _integrand_A15(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):

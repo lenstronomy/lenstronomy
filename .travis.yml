@@ -10,15 +10,15 @@ services:
   - xvfb
 before_install:
 #  - sudo apt-get build-dep python-scipy
-  - if [ $TRAVIS_PYTHON_VERSION == "2.7" ]; then pip install PySide; else pip install pyqt5==5.14.0; fi
-  - pip install pybind11
-  - pip install python-pysap   # TODO check if that should stay at top of the list
   - pip install coverage==4.5.4  # temporary fix for coveralls
   - pip install coveralls
   - pip install python-coveralls
-  - pip install scipy
+
 # command to install dependencies
 install:
+  - pip install PyQt5==5.14.0  # for python-pysap
+  - pip install pybind11  # for python-pysap
+  - pip install python-pysap
   - pip install .
   - pip install -r requirements.txt
 before_script: # configure a headless display to test plot generation

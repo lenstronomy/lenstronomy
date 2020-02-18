@@ -99,3 +99,19 @@ def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
         return True
     else:
         return False
+
+
+class IFUShells(object):
+    """
+    class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured
+    """
+    def __init__(self, r_bin, center_ra=0, center_dec=0):
+        """
+
+        :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
+        It starts with the inner-most edge to the outermost edge.
+        :param center_ra: center of the sphere
+        :param center_dec: center of the sphere
+        """
+        self._r_bin = r_bin
+        self._center_ra, self._center_dec = center_ra, center_dec

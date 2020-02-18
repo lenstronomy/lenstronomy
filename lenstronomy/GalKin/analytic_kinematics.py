@@ -120,12 +120,12 @@ class AnalyticKinematics(object):
     def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """
         projected velocity dispersion
-        :param r:
-        :param R:
-        :param r_ani:
-        :param a:
-        :param gamma:
-        :param phi_E:
+        :param r: 3d radius of the light tracer particle
+        :param R: 2d projected radius of the light tracer particle
+        :param r_ani: anisotropy radius
+        :param a: scale of the Hernquist light profile
+        :param gamma: power-law slope of the mass profile
+        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :return:
         """
         beta = self._beta_ani(r, r_ani)
@@ -143,7 +143,8 @@ class AnalyticKinematics(object):
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc / 1000) ** 2
 
-    def _beta_ani(self, r, r_ani):
+    @staticmethod
+    def _beta_ani(r, r_ani):
         """
         anisotropy parameter beta
         :param r: radius

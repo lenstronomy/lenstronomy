@@ -44,6 +44,7 @@ class Starlets(object):
     def function(self, x, y, coeffs=None, n_scales=None, n_pixels=None, scale=1, center_x=0, center_y=0):
         """
         1D inverse starlet transform from starlet coefficients stored in coeffs
+        Follows lenstronomy conventions for light profiles.
 
         :param coeffs: decomposition coefficients, 
         ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
@@ -99,7 +100,7 @@ class Starlets(object):
             coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
         return coeffs
 
-    def spectral_norm(self, num_pix, n_scales):
+    def spectral_norm(self, n_scales, n_pixels):
         """
         spectral norm associated to the starlet transform operator
 
@@ -108,7 +109,7 @@ class Starlets(object):
         :return: spectral norm
         """
         if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales:
-            self._spectral_norm = self._compute_spectral_norm(num_pix, n_scales, num_iter=20, tol=1e-10)
+            self._spectral_norm = self._compute_spectral_norm(n_scales, n_pixels, num_iter=20, tol=1e-10)
             self._n_scales = n_scales
         return self._spectral_norm
 
@@ -141,14 +142,17 @@ class Starlets(object):
     def _check_transform_pysap(self, n_scales):
         """if needed, update the loaded pySAP transform to correct number of scales"""
         if not hasattr(self, '_transf') or n_scales != self._n_scales:
-            self._transf = self._transf_class(nb_scale=n_scales, verbose=False, 
+            self._transf = self._transf_class(nb_scale=n_scales, verbose=True, 
                                               nb_procs=self._thread_count)
             self._n_scales = n_scales
+        # if getattr(self._transf, 'nb_band_per_scale', 0) is None:
+        #     self._transf.nb_band_per_scale = [1]*self._n_scales  # dirty patch to PySAP bug
 
-    def _compute_spectral_norm(self, num_pix, n_scales, num_iter=20, tol=1e-10):
+    def _compute_spectral_norm(self, n_scales, n_pixels, num_iter=20, tol=1e-10):
         """compute spectral norm of the starlet operator"""
-        operator = lambda x: self.decomposition(x, n_scales)
-        inverse_operator = lambda c: self.function(c, n_scales)
+        operator = lambda x: self.decomposition_2d(x, n_scales)
+        inverse_operator = lambda c: self.function_2d(c, n_scales, n_pixels)
+        num_pix = int(np.sqrt(n_pixels))
         return util_s.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
     def _pysap2coeffs(self, coeffs):

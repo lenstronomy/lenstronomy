@@ -15,7 +15,4 @@ nestcheck
 schwimmbad
 multiprocess>=0.70.8
 slitronomy==0.1.0
-#pip install pybind11  # for python-pysap
-#pip install python-pysap
-#-e git://github.com/aymgal/SLITronomy.git#egg=slitronomy
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

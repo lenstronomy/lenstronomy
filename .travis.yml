@@ -16,10 +16,9 @@ before_install:
 
 # command to install dependencies
 install:
-  #- pip install PyQt5==5.14.0  # for python-pysap
-  #- pip install pybind11  # for python-pysap
-  #- pip install python-pysap
-  #- pip install slitronomy==0.1.0
+  - pip install PyQt5==5.14.0  # for python-pysap
+  - pip install pybind11  # for python-pysap
+  - pip install python-pysap
   - pip install -r requirements.txt
   - pip install .
 before_script: # configure a headless display to test plot generation

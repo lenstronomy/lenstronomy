@@ -3,13 +3,13 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.anisotropy import OsipkovMerritt
+from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.GalKin.observation import GalkinObservation
 import lenstronomy.Util.constants as const
 import math
 
 
-class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
+class AnalyticKinematics(GalkinObservation, Anisotropy):
     """
     class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
     light profile distribution and displacing them with a Gaussian seeing convolution
@@ -38,7 +38,7 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
-        OsipkovMerritt.__init__(self)
+        Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
         """
@@ -121,7 +121,7 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :return: projected velocity dispersion
         """
-        beta = self.beta_r(r, r_ani)
+        beta = self.beta_r(r, **{'r_ani': r_ani})
         return (1 - beta * R**2/r**2) * self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
 
     def sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):

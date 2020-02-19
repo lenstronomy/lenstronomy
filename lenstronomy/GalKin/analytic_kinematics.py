@@ -3,13 +3,13 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.psf import psf_select
-from lenstronomy.GalKin.aperture import aperture_select
+from lenstronomy.GalKin.anisotropy import OsipkovMerritt
+from lenstronomy.GalKin.observation import GalkinObservation
 import lenstronomy.Util.constants as const
 import math
 
 
-class AnalyticKinematics(object):
+class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
     """
     class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
     light profile distribution and displacing them with a Gaussian seeing convolution
@@ -34,15 +34,11 @@ class AnalyticKinematics(object):
         :param D_d: angular diameter to the deflector [MPC]
         :param D_s: angular diameter to the source [MPC]
         :param D_ds: angular diameter from the deflector to the source [MPC]
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param fwhm: full width at half maximum seeing condition
-        :param moffat_beta: float, beta parameter of Moffat profile
         """
-        if D_ds <= 0 or D_s <= 0 or D_d <=0:
-            raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens model!' % (D_d, D_s, D_ds) )
-        self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
-        self._psf = psf_select(**kwargs_psf)
-        self.aperture = aperture_select(**kwargs_aperture)
+
+        self._cosmo = Cosmo(d_d=D_d, d_s=D_s, d_ds=D_ds)
+        GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
+        OsipkovMerritt.__init__(self)
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
         """
@@ -79,16 +75,14 @@ class AnalyticKinematics(object):
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
-        :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
         :return: projected velocity dispersion of a single drawn position in the potential [km/s]
         """
         a = 0.551 * r_eff
         while True:
             r = self.P_r(a)  # draw r
             R, x, y = self.R_r(r)  # draw projected R
-            x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.aperture.aperture_select(x_, y_)
+            x_, y_ = self.displace_psf(x, y)
+            bool = self.aperture_select(x_, y_)
             if bool is True:
                 break
         sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
@@ -126,9 +120,9 @@ class AnalyticKinematics(object):
         :param a: scale of the Hernquist light profile
         :param gamma: power-law slope of the mass profile
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
-        :return:
+        :return: projected velocity dispersion
         """
-        beta = self._beta_ani(r, r_ani)
+        beta = self.beta_r(r, r_ani)
         return (1 - beta * R**2/r**2) * self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
 
     def sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
@@ -143,12 +137,3 @@ class AnalyticKinematics(object):
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc / 1000) ** 2
 
-    @staticmethod
-    def _beta_ani(r, r_ani):
-        """
-        anisotropy parameter beta
-        :param r: radius
-        :param r_ani: anisotropy radius
-        :return: beta(r) in the OM parameterization
-        """
-        return r**2/(r_ani**2 + r**2)

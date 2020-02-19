@@ -1,10 +1,16 @@
 import numpy as np
 import lenstronomy.Util.constants as const
+from lenstronomy.GalKin.light_profile import LightProfile
+from lenstronomy.GalKin.mass_profile import MassProfile
+from lenstronomy.GalKin.anisotropy import Anisotropy
+from lenstronomy.GalKin.cosmo import Cosmo
 
 
-class NumericKinematics(object):
+class NumericKinematics(Anisotropy):
 
-    def __init__(self, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
+    def __init__(self, mass_profile_list, light_profile_list, anisotropy_model='isotropic',
+                 kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, interpol_grid_num=500, log_integration=False,
+                 max_integrate=10, min_integrate=0.001):
         """
 
         :param interpol_grid_num:
@@ -16,6 +22,12 @@ class NumericKinematics(object):
         self._log_int = log_integration
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
+        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, interpol_grid_num=interpol_grid_num,
+                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
+        self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
+                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
+        Anisotropy.__init__(self, anisotropy_type=anisotropy_model)
+        self.cosmo = Cosmo(**kwargs_cosmo)
 
     def _sigma2_R(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -70,7 +82,7 @@ class NumericKinematics(object):
             We refer to the Anisotropy() class for details on the parameters.
         :return:
         """
-        k_r = self.anisotropy.K(r, R, kwargs_anisotropy)
+        k_r = self.K(r, R, **kwargs_anisotropy)
         l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
         m_r = self.massProfile.mass_3d_interp(r, kwargs_mass)
         out = k_r * l_r * m_r / r

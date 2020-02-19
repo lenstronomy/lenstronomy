@@ -49,7 +49,7 @@ class TestGalkin(object):
         kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.1  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
 
@@ -78,7 +78,7 @@ class TestGalkin(object):
         aperture_type = 'slit'
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics_linear = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': False,
                            'max_integrate': 10, 'min_integrate': 0.001}
         kwargs_numerics_log = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
@@ -125,7 +125,7 @@ class TestGalkin(object):
         kwargs_aperture = {'aperture_type': aperture_type, 'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics_log = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
                            'max_integrate': 10}
         kwargs_numerics_linear = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': False,
@@ -173,7 +173,7 @@ class TestGalkin(object):
         kwargs_aperture = {'aperture_type': aperture_type, 'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0}
 
         psf_fwhm = 1.  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
                            'max_integrate': 100}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}

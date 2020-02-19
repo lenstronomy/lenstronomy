@@ -13,7 +13,7 @@ class LightProfile(object):
 
         :param profile_list:
         """
-        self.light_model = LightModel(light_model_list=profile_list, smoothing=0.000001)
+        self.light_model = LightModel(light_model_list=profile_list)
         self._interp_grid_num = interpol_grid_num
         self._max_interpolate = max_interpolate
         self._min_interpolate = min_interpolate

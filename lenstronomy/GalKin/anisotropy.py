@@ -21,7 +21,7 @@ class Anisotropy(object):
             self._model = Isotropic()
         elif self._type == 'OsipkovMerritt':
             self._model = OsipkovMerritt()
-        elif self._type == 'colin':
+        elif self._type == 'Colin':
             self._model = Colin()
         else:
             raise ValueError('anisotropy type %s not supported!' % self._type)

@@ -28,15 +28,15 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
     distances
 
     """
-    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, kwargs_psf):
+    def __init__(self, d_d, d_s, d_ds, kwargs_aperture, kwargs_psf):
         """
 
-        :param D_d: angular diameter to the deflector [MPC]
-        :param D_s: angular diameter to the source [MPC]
-        :param D_ds: angular diameter from the deflector to the source [MPC]
+        :param d_d: angular diameter to the deflector [MPC]
+        :param d_s: angular diameter to the source [MPC]
+        :param d_ds: angular diameter from the deflector to the source [MPC]
         """
 
-        self._cosmo = Cosmo(d_d=D_d, d_s=D_s, d_ds=D_ds)
+        self._cosmo = Cosmo(d_d=d_d, d_s=d_s, d_ds=d_ds)
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         OsipkovMerritt.__init__(self)
 
@@ -136,4 +136,3 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc / 1000) ** 2
-

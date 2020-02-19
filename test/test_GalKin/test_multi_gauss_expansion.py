@@ -33,7 +33,7 @@ class TestGalkin(object):
         kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
         # light profile
         light_profile_list = ['HERNQUIST']
@@ -87,7 +87,7 @@ class TestGalkin(object):
         kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
         # light profile
         light_profile_list = ['HERNQUIST']
@@ -138,7 +138,7 @@ class TestGalkin(object):
         kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
         # light profile
         light_profile_list = ['HERNQUIST']
@@ -202,7 +202,7 @@ class TestGalkin(object):
         kwargs_aperture = {'length': length, 'width': width, 'center_ra': 0, 'center_dec': 0, 'angle': 0, 'aperture_type': aperture_type}
 
         psf_fwhm = 0.7  # Gaussian FWHM psf
-        kwargs_cosmo = {'D_d': 1000, 'D_s': 1500, 'D_ds': 800}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
         # light profile
         light_profile_list = ['SERSIC']

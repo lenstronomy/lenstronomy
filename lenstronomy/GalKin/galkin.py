@@ -1,16 +1,13 @@
-from lenstronomy.GalKin.light_profile import LightProfile
-from lenstronomy.GalKin.mass_profile import MassProfile
-from lenstronomy.GalKin.aperture import aperture_select
-from lenstronomy.GalKin.anisotropy import MamonLokasAnisotropy
-from lenstronomy.GalKin.psf import psf_select
 from lenstronomy.GalKin.cosmo import Cosmo
+from lenstronomy.GalKin.observation import GalkinObservation
+from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 import lenstronomy.GalKin.velocity_util as util
 import lenstronomy.Util.constants as const
 
 import numpy as np
 
 
-class Galkin(object):
+class Galkin(GalkinObservation, NumericKinematics):
     """
     Major class to compute velocity dispersion measurements given light and mass models
 
@@ -52,7 +49,7 @@ class Galkin(object):
 
     """
     def __init__(self, mass_profile_list, light_profile_list, kwargs_aperture, kwargs_psf, anisotropy_model='isotropic',
-                 kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500},
+                 kwargs_cosmo={'d_d': 1000, 'd_s': 2000, 'd_ds': 500},
                  sampling_number=1000, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
@@ -63,16 +60,12 @@ class Galkin(object):
         :param kwargs_psf: keyword argument specifying the PSF of the observation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
-        self.massProfile = MassProfile(mass_profile_list, kwargs_cosmo, interpol_grid_num=interpol_grid_num,
-                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
-        self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
-                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
+        NumericKinematics.__init__(self, mass_profile_list, light_profile_list, anisotropy_model=anisotropy_model,
+                 kwargs_cosmo=kwargs_cosmo, interpol_grid_num=interpol_grid_num, log_integration=log_integration,
+                 max_integrate=max_integrate, min_integrate=min_integrate)
+        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
 
-        self.anisotropy = MamonLokasAnisotropy(anisotropy_model)
-
-        self.aperture = aperture_select(**kwargs_aperture)
         self.cosmo = Cosmo(**kwargs_cosmo)
-        self._psf = psf_select(**kwargs_psf)
         self._num_sampling = sampling_number
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
@@ -107,8 +100,8 @@ class Galkin(object):
         while True:
             R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
             x, y = util.draw_xy(R)  # draw projected R in arcsec
-            x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.aperture.aperture_select(x_, y_)
+            x_, y_ = self.displace_psf(x, y)
+            bool = self.aperture_select(x_, y_)
             if bool is True:
                 break
         sigma2_R = self._sigma2_R(R, kwargs_mass, kwargs_light, kwargs_anisotropy)

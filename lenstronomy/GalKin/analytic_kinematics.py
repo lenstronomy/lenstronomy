@@ -28,15 +28,15 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
     distances
 
     """
-    def __init__(self, d_d, d_s, d_ds, kwargs_aperture, kwargs_psf):
+    def __init__(self, kwargs_aperture, kwargs_psf, kwargs_cosmo):
         """
 
-        :param d_d: angular diameter to the deflector [MPC]
-        :param d_s: angular diameter to the source [MPC]
-        :param d_ds: angular diameter from the deflector to the source [MPC]
+        :param kwargs_aperture:
+        :param kwargs_psf:
+        :param kwargs_cosmo:
         """
 
-        self._cosmo = Cosmo(d_d=d_d, d_s=d_s, d_ds=d_ds)
+        self._cosmo = Cosmo(**kwargs_cosmo)
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         OsipkovMerritt.__init__(self)
 
@@ -48,7 +48,6 @@ class AnalyticKinematics(GalkinObservation, OsipkovMerritt):
         :param theta_E: Einstein radius of the lens (in arcseconds)
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
         :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 

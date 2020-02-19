@@ -63,7 +63,8 @@ class KinematicAPI(object):
         :return: velocity dispersion in units [km/s]
         """
 
-        analytic_kinematics = AnalyticKinematics(kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture, **self._kwargs_cosmo)
+        analytic_kinematics = AnalyticKinematics(kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture,
+                                                 kwargs_cosmo=self._kwargs_cosmo)
         sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, rendering_number=num_evaluate)
         sigma *= np.sqrt(1-kappa_ext)
         return sigma

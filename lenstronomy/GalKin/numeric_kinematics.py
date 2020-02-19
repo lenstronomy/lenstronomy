@@ -47,7 +47,6 @@ class NumericKinematics(Anisotropy):
     def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)
-        modulo pre-factor 2*G
 
         :param R: 2d projected radius (in angular units)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
@@ -68,7 +67,7 @@ class NumericKinematics(Anisotropy):
             dr = r_array[2] - r_array[1]
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dr
         IR_sigma2 = np.sum(IR_sigma2_dr) * const.arcsec * self.cosmo.dd  # integral from angle to physical scales
-        return IR_sigma2
+        return IR_sigma2 * 2 * const.G
 
     def _integrand_A15(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

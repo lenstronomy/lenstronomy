@@ -9,7 +9,7 @@ from lenstronomy.GalKin.cosmo import Cosmo
 class NumericKinematics(Anisotropy):
 
     def __init__(self, mass_profile_list, light_profile_list, anisotropy_model='isotropic',
-                 kwargs_cosmo={'D_d': 1000, 'D_s': 2000, 'D_ds': 500}, interpol_grid_num=500, log_integration=False,
+                 kwargs_cosmo={'d_d': 1000, 'd_s': 2000, 'd_ds': 500}, interpol_grid_num=500, log_integration=False,
                  max_integrate=10, min_integrate=0.001):
         """
 
@@ -66,8 +66,8 @@ class NumericKinematics(Anisotropy):
             r_array = np.linspace(R+0.001, self._max_integrate, self._interp_grid_num)
             dr = r_array[2] - r_array[1]
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dr
-        IR_sigma2 = np.sum(IR_sigma2_dr) * const.arcsec * self.cosmo.dd  # integral from angle to physical scales
-        return IR_sigma2 * 2 * const.G
+        IR_sigma2 = np.sum(IR_sigma2_dr) # integral from angle to physical scales
+        return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
 
     def _integrand_A15(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

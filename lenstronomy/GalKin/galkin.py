@@ -84,8 +84,7 @@ class Galkin(GalkinObservation, NumericKinematics):
             sigma2_R_sum += sigma2_R
         sigma_s2_average = sigma2_R_sum / self._num_sampling
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
-        #sigma_s2_average *= 2 * const.G  # correcting for integral prefactor
-        return np.sqrt(sigma_s2_average / (const.arcsec ** 2 * self.cosmo.dd ** 2 * const.Mpc)) / 1000.  # in units of km/s
+        return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

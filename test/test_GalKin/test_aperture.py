@@ -16,6 +16,7 @@ class TestAperture(object):
         assert bool is True
         bool, i = slit.aperture_select(ra=1.1, dec=0.2)
         assert bool is False
+        assert slit.num_segments == 1
 
         kwargs_shell = {'r_in': 0.2, 'r_out': 1., 'center_ra': 0, 'center_dec': 0}
         shell = Aperture(aperture_type='shell', **kwargs_shell)
@@ -25,6 +26,7 @@ class TestAperture(object):
         assert bool is False
         bool, i = shell.aperture_select(ra=0.1, dec=0)
         assert bool is False
+        assert shell.num_segments == 1
 
 
 class TestRaise(unittest.TestCase):

@@ -43,3 +43,7 @@ class Aperture(object):
         :return: bool, True if photon/ray is within the slit, False otherwise, int of the segment of the IFU
         """
         return self._aperture.aperture_select(ra, dec)
+
+    @property
+    def num_segments(self):
+        return self._aperture.num_segments

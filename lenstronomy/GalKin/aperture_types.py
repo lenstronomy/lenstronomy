@@ -31,6 +31,14 @@ class Slit(object):
         """
         return slit_select(ra, dec, self._length, self._width, self._center_ra, self._center_dec, self._angle), 0
 
+    @property
+    def num_segments(self):
+        """
+        number of segments with separate measurements of the velocity dispersion
+        :return: int
+        """
+        return 1
+
 
 def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
     """
@@ -80,6 +88,14 @@ class Shell(object):
         """
         return shell_select(ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec), 0
 
+    @property
+    def num_segments(self):
+        """
+        number of segments with separate measurements of the velocity dispersion
+        :return: int
+        """
+        return 1
+
 
 def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
     """
@@ -105,15 +121,15 @@ class IFUShells(object):
     """
     class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured
     """
-    def __init__(self, r_bin, center_ra=0, center_dec=0):
+    def __init__(self, r_bins, center_ra=0, center_dec=0):
         """
 
-        :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
+        :param r_bins: array of radial bins to average the dispersion spectra in ascending order.
         It starts with the inner-most edge to the outermost edge.
         :param center_ra: center of the sphere
         :param center_dec: center of the sphere
         """
-        self._r_bin = r_bin
+        self._r_bins = r_bins
         self._center_ra, self._center_dec = center_ra, center_dec
 
     def aperture_select(self, ra, dec):
@@ -123,7 +139,15 @@ class IFUShells(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
         """
-        return shell_ifu_select(ra, dec, self._r_bin, self._center_ra, self._center_dec)
+        return shell_ifu_select(ra, dec, self._r_bins, self._center_ra, self._center_dec)
+
+    @property
+    def num_segments(self):
+        """
+        number of segments with separate measurements of the velocity dispersion
+        :return: int
+        """
+        return len(self._r_bins) - 1
 
 
 def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):

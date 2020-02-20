@@ -103,6 +103,8 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         :param kwargs_light: keyword argument (list) of the light model
         :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
         """
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
         a = kwargs_light['a']
         r = self.draw_hernquist(a)
         R, x, y = vel_util.project2d_random(r)
@@ -134,6 +136,10 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
         """
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
+        if 'rho0_r0_gamma' not in kwargs_light:
+            kwargs_mass['rho0_r0_gamma'] = self._rho0_r0_gamma(kwargs_mass['theta_E'], kwargs_mass['gamma'])
         a = kwargs_light['a']
         gamma = kwargs_mass['gamma']
         rho0_r0_gamma = kwargs_mass['rho0_r0_gamma']

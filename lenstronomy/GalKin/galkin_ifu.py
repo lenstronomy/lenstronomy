@@ -43,9 +43,10 @@ class GalkinIFU(GalkinObservation):
         # add it and keep track of how many draws are added on each segment
         # compute average in each segment
         # return value per segment
-        num_segments = 1
+        num_segments = self.num_segments
         sigma2_R_sum = np.zeros(num_segments)
         count_draws = np.zeros(num_segments)
+
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
             sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)

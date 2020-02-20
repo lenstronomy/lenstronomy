@@ -48,6 +48,7 @@ class LightProfile(object):
         :param kwargs_list:
         :return:
         """
+        #TODO make sure averaging is done azimuthally
         kwargs_list_copy = copy.deepcopy(kwargs_list)
         kwargs_list_new = []
         for kwargs in kwargs_list_copy:

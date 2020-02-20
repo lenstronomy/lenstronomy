@@ -2,7 +2,6 @@ from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 import lenstronomy.GalKin.velocity_util as util
-import lenstronomy.Util.constants as const
 
 import numpy as np
 
@@ -48,9 +47,8 @@ class Galkin(GalkinObservation, NumericKinematics):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, mass_profile_list, light_profile_list, kwargs_aperture, kwargs_psf, anisotropy_model='isotropic',
-                 kwargs_cosmo={'d_d': 1000, 'd_s': 2000, 'd_ds': 500},
-                 sampling_number=1000, interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
+    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, sampling_number=1000,
+                 interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
         """
 
         :param mass_profile_list: list of lens (mass) model profiles
@@ -60,9 +58,9 @@ class Galkin(GalkinObservation, NumericKinematics):
         :param kwargs_psf: keyword argument specifying the PSF of the observation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
-        NumericKinematics.__init__(self, mass_profile_list, light_profile_list, anisotropy_model=anisotropy_model,
-                 kwargs_cosmo=kwargs_cosmo, interpol_grid_num=interpol_grid_num, log_integration=log_integration,
-                 max_integrate=max_integrate, min_integrate=min_integrate)
+        NumericKinematics.__init__(self, kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo,
+                                   interpol_grid_num=interpol_grid_num, log_integration=log_integration,
+                                   max_integrate=max_integrate, min_integrate=min_integrate)
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
 
         self.cosmo = Cosmo(**kwargs_cosmo)

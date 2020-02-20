@@ -1,4 +1,3 @@
-from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 import lenstronomy.GalKin.velocity_util as util
@@ -26,9 +25,9 @@ class Galkin(GalkinObservation, NumericKinematics):
     from the light distribution.
 
     The cosmology assumed to compute the physical mass and distances are set via the kwargs_cosmo keyword arguments.
-        D_d: Angular diameter distance to the deflector (in Mpc)
-        D_s: Angular diameter distance to the source (in Mpc)
-        D_ds: Angular diameter distance from the deflector to the source (in Mpc)
+        d_d: Angular diameter distance to the deflector (in Mpc)
+        d_s: Angular diameter distance to the source (in Mpc)
+        d_ds: Angular diameter distance from the deflector to the source (in Mpc)
 
     The numerical options can be chosen through the kwargs_numerics keywords
         sampling_number: number of spectral rendering to compute the light weighted integrated LOS dispersion within
@@ -47,23 +46,16 @@ class Galkin(GalkinObservation, NumericKinematics):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, sampling_number=1000,
-                 interpol_grid_num=500, log_integration=False, max_integrate=10, min_integrate=0.001):
+    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics, sampling_number=1000):
         """
 
-        :param mass_profile_list: list of lens (mass) model profiles
-        :param light_profile_list: list of light model profiles of the lensing galaxy
+        :param kwargs_model: keyword arguments describing the model components
         :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
-        :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class.
         :param kwargs_psf: keyword argument specifying the PSF of the observation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
         """
-        NumericKinematics.__init__(self, kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo,
-                                   interpol_grid_num=interpol_grid_num, log_integration=log_integration,
-                                   max_integrate=max_integrate, min_integrate=min_integrate)
+        NumericKinematics.__init__(self, kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-
-        self.cosmo = Cosmo(**kwargs_cosmo)
         self._num_sampling = sampling_number
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):

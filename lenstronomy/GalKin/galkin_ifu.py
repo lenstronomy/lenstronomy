@@ -14,10 +14,8 @@ class GalkinIFU(Galkin):
         :param kwargs_model: keyword arguments of the models
         :param kwargs_numerics: keyword arguments of the numerical description
         """
-        Galkin.__init__(self, mass_profile_list=kwargs_model.get('mass_profile_list', None),
-                        light_profile_list=kwargs_model.get('light_profile_list', None),
-                        anisotropy_model=kwargs_model.get('anisotropy_model'), kwargs_cosmo=kwargs_cosmo,
-                        kwargs_aperture=kwargs_ifu, kwargs_psf=kwargs_psf, **kwargs_numerics)
+        Galkin.__init__(self, kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, kwargs_aperture=kwargs_ifu,
+                        kwargs_psf=kwargs_psf, kwargs_numerics=kwargs_numerics)
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, **kwargs_numerics):
         """

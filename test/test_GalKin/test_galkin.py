@@ -89,11 +89,9 @@ class TestGalkin(object):
                         'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_type}
         galkin_linear = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture,
-                               kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
-                               **kwargs_numerics_linear)
+                               kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics_linear)
         galkin_log = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture,
-                            kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
-                            **kwargs_numerics_log)
+                            kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics_log)
         R = np.linspace(0.05, 1, 100)
         lin_I_R = np.zeros_like(R)
         log_I_R = np.zeros_like(R)
@@ -138,11 +136,11 @@ class TestGalkin(object):
                         'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_type}
         galkin_linear = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                               kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
+                               kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics_linear)
 
         sigma_v = galkin_linear.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         galkin_log = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                            kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
+                            kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics_log)
         sigma_v2 = galkin_log.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         print(sigma_v, sigma_v2, 'sigma_v linear, sigma_v log')
         print((sigma_v/sigma_v2)**2)
@@ -185,14 +183,14 @@ class TestGalkin(object):
                         'anisotropy_model': anisotropy_type}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+                        kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         kwargs_numerics = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': False,
                            'max_integrate': 10}
 
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                        kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+                        kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
         sigma_v_lin = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         los_disp = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo)

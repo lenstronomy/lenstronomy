@@ -49,12 +49,12 @@ class GalkinIFU(GalkinObservation):
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
             sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-            for i in range(0, num_psf_sampling):
+            for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
-                bool, i = self.aperture_select(x_, y_)
+                bool, ifu_index = self.aperture_select(x_, y_)
                 if bool is True:
-                    sigma2_R_sum[i] += sigma2_R
-                    count_draws[i] += 1
+                    sigma2_R_sum[ifu_index] += sigma2_R
+                    count_draws[ifu_index] += 1
 
         sigma_s2_average = sigma2_R_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)

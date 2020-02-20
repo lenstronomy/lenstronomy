@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-from lenstronomy.GalKin.aperture_types import Shell, Slit
+from lenstronomy.GalKin.aperture_types import Shell, Slit, IFUShells
 
 
 """
@@ -13,6 +13,7 @@ Available aperture types:
 'shell': r_in, r_out, center_ra, center_dec
 
 """
+
 
 class Aperture(object):
     """
@@ -29,6 +30,8 @@ class Aperture(object):
             self._aperture = Slit(**kwargs_aperture)
         elif aperture_type == 'shell':
             self._aperture = Shell(**kwargs_aperture)
+        elif aperture_type == 'IFU_shells':
+            self._aperture = IFUShells(**kwargs_aperture)
         else:
             raise ValueError("aperture type %s not implemented!" % aperture_type)
 

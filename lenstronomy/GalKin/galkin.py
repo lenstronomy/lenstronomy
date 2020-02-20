@@ -46,7 +46,7 @@ class Galkin(GalkinObservation, NumericKinematics):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics, sampling_number=1000):
+    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics={}):
         """
 
         :param kwargs_model: keyword arguments describing the model components
@@ -56,7 +56,6 @@ class Galkin(GalkinObservation, NumericKinematics):
         """
         NumericKinematics.__init__(self, kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-        self._num_sampling = sampling_number
 
     def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -69,10 +68,10 @@ class Galkin(GalkinObservation, NumericKinematics):
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_R_sum = 0
-        for i in range(0, self._num_sampling):
+        for i in range(0, self._sampling_number):
             sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma2_R_sum += sigma2_R
-        sigma_s2_average = sigma2_R_sum / self._num_sampling
+        sigma_s2_average = sigma2_R_sum / self._sampling_number
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
 

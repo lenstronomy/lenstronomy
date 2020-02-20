@@ -3,13 +3,13 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.psf import psf_select
-from lenstronomy.GalKin.aperture import aperture_select
+from lenstronomy.GalKin.anisotropy import Anisotropy
+from lenstronomy.GalKin.observation import GalkinObservation
 import lenstronomy.Util.constants as const
 import math
 
 
-class AnalyticKinematics(object):
+class AnalyticKinematics(GalkinObservation, Anisotropy):
     """
     class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
     light profile distribution and displacing them with a Gaussian seeing convolution
@@ -28,21 +28,17 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, kwargs_psf):
+    def __init__(self, kwargs_aperture, kwargs_psf, kwargs_cosmo):
         """
 
-        :param D_d: angular diameter to the deflector [MPC]
-        :param D_s: angular diameter to the source [MPC]
-        :param D_ds: angular diameter from the deflector to the source [MPC]
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param fwhm: full width at half maximum seeing condition
-        :param moffat_beta: float, beta parameter of Moffat profile
+        :param kwargs_aperture:
+        :param kwargs_psf:
+        :param kwargs_cosmo:
         """
-        if D_ds <= 0 or D_s <= 0 or D_d <=0:
-            raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens model!' % (D_d, D_s, D_ds) )
-        self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
-        self._psf = psf_select(**kwargs_psf)
-        self.aperture = aperture_select(**kwargs_aperture)
+
+        self._cosmo = Cosmo(**kwargs_cosmo)
+        GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
+        Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
 
     def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
         """
@@ -52,7 +48,6 @@ class AnalyticKinematics(object):
         :param theta_E: Einstein radius of the lens (in arcseconds)
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
         :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 
@@ -64,7 +59,7 @@ class AnalyticKinematics(object):
             sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani)
             sigma_s2_sum += sigma_s2_draw
         sigma_s2_average = sigma_s2_sum / rendering_number
-        return np.sqrt(sigma_s2_average)
+        return np.sqrt(sigma_s2_average) / 1000
 
     def _rho0_r0_gamma(self, theta_E, gamma):
         # equation (14) in Suyu+ 2010
@@ -79,22 +74,20 @@ class AnalyticKinematics(object):
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
-        :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
         :return: projected velocity dispersion of a single drawn position in the potential [km/s]
         """
         a = 0.551 * r_eff
         while True:
-            r = self.P_r(a)  # draw r
-            R, x, y = self.R_r(r)  # draw projected R
-            x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.aperture.aperture_select(x_, y_)
+            r, R, x, y = self.draw_light({'a': a, 'r_eff': r_eff})
+            x_, y_ = self.displace_psf(x, y)
+            bool, _ = self.aperture_select(x_, y_)
             if bool is True:
                 break
-        sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
+        sigma_s2 = self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
         return np.array(sigma_s2, dtype=float)
 
-    def P_r(self, a):
+    @staticmethod
+    def draw_hernquist(a):
         """
 
         :param a: 0.551*r_eff
@@ -104,32 +97,54 @@ class AnalyticKinematics(object):
         r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
         return r
 
-    def R_r(self, r):
+    def draw_light(self, kwargs_light):
         """
-        draws a random projection from radius r in 2d and 1d
-        :param r: 3d radius
-        :return: R, x, y
-        """
-        phi = np.random.uniform(0, 2*np.pi)
-        theta = np.random.uniform(0, np.pi)
-        x = r * np.sin(theta) * np.cos(phi)
-        y = r * np.sin(theta) * np.sin(phi)
-        R = np.sqrt(x**2 + y**2)
-        return R, x, y
 
-    def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        """
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
+        a = kwargs_light['a']
+        r = self.draw_hernquist(a)
+        R, x, y = vel_util.project2d_random(r)
+        return r, R, x, y
+
+    def _sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """
         projected velocity dispersion
-        :param r:
-        :param R:
-        :param r_ani:
-        :param a:
-        :param gamma:
-        :param phi_E:
-        :return:
+        :param r: 3d radius of the light tracer particle
+        :param R: 2d projected radius of the light tracer particle
+        :param r_ani: anisotropy radius
+        :param a: scale of the Hernquist light profile
+        :param gamma: power-law slope of the mass profile
+        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
+        :return: projected velocity dispersion
         """
-        beta = self._beta_ani(r, r_ani)
+        beta = self.beta_r(r, **{'r_ani': r_ani})
         return (1 - beta * R**2/r**2) * self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
+
+    def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        returns unweighted los velocity dispersion for a specified projected radius
+
+        :param r: 3d radius (not needed for this calculation)
+        :param R: 2d projected radius (in angular units of arcsec)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
+        """
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
+        if 'rho0_r0_gamma' not in kwargs_light:
+            kwargs_mass['rho0_r0_gamma'] = self._rho0_r0_gamma(kwargs_mass['theta_E'], kwargs_mass['gamma'])
+        a = kwargs_light['a']
+        gamma = kwargs_mass['gamma']
+        rho0_r0_gamma = kwargs_mass['rho0_r0_gamma']
+        r_ani = kwargs_anisotropy['r_ani']
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
 
     def sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
         """
@@ -141,13 +156,4 @@ class AnalyticKinematics(object):
         hyp1 = vel_util.hyp_2F1(a=2+gamma, b=gamma, c=3+gamma, z=1./(1+r/a))
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
-        return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc / 1000) ** 2
-
-    def _beta_ani(self, r, r_ani):
-        """
-        anisotropy parameter beta
-        :param r: radius
-        :param r_ani: anisotropy radius
-        :return: beta(r) in the OM parameterization
-        """
-        return r**2/(r_ani**2 + r**2)
+        return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2

@@ -23,6 +23,7 @@ Contributors (alphabetic)
 * Brian Nord
 * Ji Won Park
 * Thomas Schmidt
+* Dominique Sluse
 * Anowar Shajib
 * Lyne Van de Vyvere
 * Cyril Welschen

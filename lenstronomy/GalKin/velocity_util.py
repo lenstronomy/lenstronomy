@@ -88,7 +88,7 @@ def draw_cdf_Y(beta):
     return (1-x) ** (1./(1-beta))
 
 
-def R_r(r):
+def project2d_random(r):
     """
     draws a random projection from radius r in 2d and 1d
     :param r: 3d radius

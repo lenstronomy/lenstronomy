@@ -78,8 +78,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         a = 0.551 * r_eff
         while True:
-            r = self.draw_hernquist(a)  # draw r
-            R, x, y = self.project2d_random(r)  # draw projected R
+            r, R, x, y = self.draw_light({'a': a})
             x_, y_ = self.displace_psf(x, y)
             bool = self.aperture_select(x_, y_)
             if bool is True:
@@ -97,18 +96,16 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
         return r
 
-    def project2d_random(self, r):
+    def draw_light(self, kwargs_light):
         """
-        draws a random projection from radius r in 2d and 1d
-        :param r: 3d radius
-        :return: R, x, y
+
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
         """
-        phi = np.random.uniform(0, 2*np.pi)
-        theta = np.random.uniform(0, np.pi)
-        x = r * np.sin(theta) * np.cos(phi)
-        y = r * np.sin(theta) * np.sin(phi)
-        R = np.sqrt(x**2 + y**2)
-        return R, x, y
+        a = kwargs_light['a']
+        r = self.draw_hernquist(a)
+        R, x, y = vel_util.project2d_random(r)
+        return r, R, x, y
 
     def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """

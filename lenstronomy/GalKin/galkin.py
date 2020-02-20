@@ -1,6 +1,5 @@
 from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
-import lenstronomy.GalKin.velocity_util as util
 
 import numpy as np
 
@@ -87,11 +86,9 @@ class Galkin(GalkinObservation, NumericKinematics):
         """
         while True:
             r, R, x, y = self.draw_light(kwargs_light)
-            #R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
-            #x, y = util.draw_xy(R)  # draw projected R in arcsec
             x_, y_ = self.displace_psf(x, y)
             bool = self.aperture_select(x_, y_)
             if bool is True:
                 break
-        sigma2_R = self.sigma_s2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        sigma2_R = self.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_R

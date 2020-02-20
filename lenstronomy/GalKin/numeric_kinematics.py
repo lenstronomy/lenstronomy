@@ -36,10 +36,11 @@ class NumericKinematics(Anisotropy):
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = SinglePlane(mass_profile_list)
 
-    def sigma_s2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         returns unweighted los velocity dispersion for a specified projected radius
 
+        :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)

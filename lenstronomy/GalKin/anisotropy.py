@@ -200,12 +200,17 @@ class Colin(object):
         :return: K(r, R)
         """
         u = r / R
+        if np.min(u) < 1:
+            raise ValueError("3d radius is smaller than projected radius! Does not make sense.")
         ua = r_ani / R
         if ua == 1:
             k = (1 + 1. / u) * np.arccosh(u) - 1. / 6 * (8. / u + 7) * np.sqrt((u - 1.) / (u + 1.))
-        else:
-            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.cosh(u) - np.sign(ua - 1) * ua * \
+        elif ua > 1:
+            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua * \
                 (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccosh((ua * u + 1) / (u + ua))
+        else:  # ua < 1
+            k = 0.5 / (ua ** 2 - 1) * np.sqrt(1 - 1. / u ** 2) + (1. + ua / u) * np.arccosh(u) - np.sign(ua - 1) * ua * \
+                (ua ** 2 - 0.5) / np.abs(ua ** 2 - 1) ** (3. / 2) * (1. + ua / u) * np.arccos((ua * u + 1) / (u + ua))
         return k
 
     @staticmethod

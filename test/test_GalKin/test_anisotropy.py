@@ -3,6 +3,7 @@ Tests for `galkin` module.
 """
 import pytest
 import numpy.testing as npt
+import unittest
 
 from lenstronomy.GalKin.anisotropy import Anisotropy
 
@@ -25,6 +26,10 @@ class TestAnisotropy(object):
         kwargs = {'r_ani': 1}
         k = anisoClass.K(r, R, **kwargs)
         npt.assert_almost_equal(k, 0.91696135187291117, decimal=5)
+        k = anisoClass.K(r, R-0.001, **kwargs)
+        npt.assert_almost_equal(k, 0.91696135187291117, decimal=2)
+        k = anisoClass.K(r, R + 0.001, **kwargs)
+        npt.assert_almost_equal(k, 0.91696135187291117, decimal=2)
 
         anisoClass = Anisotropy(anisotropy_type='radial')
         kwargs = {}
@@ -102,6 +107,12 @@ class TestAnisotropy(object):
         print(k, k_mamon)
         npt.assert_almost_equal(k, k_mamon, decimal=5)
 
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            Anisotropy(anisotropy_type='wrong')
 
 if __name__ == '__main__':
     pytest.main()

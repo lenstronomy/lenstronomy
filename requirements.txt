@@ -10,9 +10,10 @@ numba>=0.43.1
 future
 dynesty
 pymultinest
-pypolychord
+#pypolychord  # only compatible with python 2.7 ...
 nestcheck
 schwimmbad
 multiprocess>=0.70.8
+python-pysap
 slitronomy==0.1.0
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

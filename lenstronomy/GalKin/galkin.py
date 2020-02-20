@@ -86,11 +86,12 @@ class Galkin(GalkinObservation, NumericKinematics):
          falls in the aperture after displacing with the seeing
         """
         while True:
-            R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
-            x, y = util.draw_xy(R)  # draw projected R in arcsec
+            r, R, x, y = self.draw_light(kwargs_light)
+            #R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]  # draw r in arcsec
+            #x, y = util.draw_xy(R)  # draw projected R in arcsec
             x_, y_ = self.displace_psf(x, y)
             bool = self.aperture_select(x_, y_)
             if bool is True:
                 break
-        sigma2_R = self._sigma2_R(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        sigma2_R = self.sigma_s2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_R

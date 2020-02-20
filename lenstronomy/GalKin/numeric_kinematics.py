@@ -6,6 +6,7 @@ from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.LensModel.single_plane import SinglePlane
+import lenstronomy.GalKin.velocity_util as util
 
 
 class NumericKinematics(Anisotropy):
@@ -35,7 +36,7 @@ class NumericKinematics(Anisotropy):
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = SinglePlane(mass_profile_list)
 
-    def _sigma2_R(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def sigma_s2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         returns unweighted los velocity dispersion for a specified projected radius
 
@@ -123,3 +124,14 @@ class NumericKinematics(Anisotropy):
         mass_dim = mass_dimless * const.arcsec ** 2 * self.cosmo.dd * self.cosmo.ds / self.cosmo.dds * const.Mpc * \
                    const.c ** 2 / (4 * np.pi * const.G)
         return mass_dim
+
+    def draw_light(self, kwargs_light):
+        """
+
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        """
+        R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]
+        x, y = util.draw_xy(R)
+        r = None
+        return r, R, x, y

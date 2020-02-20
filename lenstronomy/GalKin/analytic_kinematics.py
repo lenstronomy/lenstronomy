@@ -78,8 +78,8 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         a = 0.551 * r_eff
         while True:
-            r = self.P_r(a)  # draw r
-            R, x, y = self.R_r(r)  # draw projected R
+            r = self.draw_hernquist(a)  # draw r
+            R, x, y = self.project2d_random(r)  # draw projected R
             x_, y_ = self.displace_psf(x, y)
             bool = self.aperture_select(x_, y_)
             if bool is True:
@@ -87,7 +87,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
         return np.array(sigma_s2, dtype=float)
 
-    def P_r(self, a):
+    def draw_hernquist(self, a):
         """
 
         :param a: 0.551*r_eff
@@ -97,7 +97,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
         return r
 
-    def R_r(self, r):
+    def project2d_random(self, r):
         """
         draws a random projection from radius r in 2d and 1d
         :param r: 3d radius
@@ -134,4 +134,4 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         hyp1 = vel_util.hyp_2F1(a=2+gamma, b=gamma, c=3+gamma, z=1./(1+r/a))
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
-        return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc) ** 2
+        return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2

@@ -78,15 +78,16 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         a = 0.551 * r_eff
         while True:
-            r, R, x, y = self.draw_light({'a': a})
+            r, R, x, y = self.draw_light({'a': a, 'r_eff': r_eff})
             x_, y_ = self.displace_psf(x, y)
-            bool = self.aperture_select(x_, y_)
+            bool, _ = self.aperture_select(x_, y_)
             if bool is True:
                 break
-        sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
+        sigma_s2 = self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
         return np.array(sigma_s2, dtype=float)
 
-    def draw_hernquist(self, a):
+    @staticmethod
+    def draw_hernquist(a):
         """
 
         :param a: 0.551*r_eff
@@ -107,7 +108,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         R, x, y = vel_util.project2d_random(r)
         return r, R, x, y
 
-    def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
+    def _sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """
         projected velocity dispersion
         :param r: 3d radius of the light tracer particle
@@ -120,6 +121,24 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         beta = self.beta_r(r, **{'r_ani': r_ani})
         return (1 - beta * R**2/r**2) * self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
+
+    def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        returns unweighted los velocity dispersion for a specified projected radius
+
+        :param r: 3d radius (not needed for this calculation)
+        :param R: 2d projected radius (in angular units of arcsec)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
+        """
+        a = kwargs_light['a']
+        gamma = kwargs_mass['gamma']
+        rho0_r0_gamma = kwargs_mass['rho0_r0_gamma']
+        r_ani = kwargs_anisotropy['r_ani']
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
 
     def sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
         """

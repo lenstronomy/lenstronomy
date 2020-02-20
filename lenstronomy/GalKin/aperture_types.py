@@ -29,7 +29,7 @@ class Slit(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise
         """
-        return slit_select(ra, dec, self._length, self._width, self._center_ra, self._center_dec, self._angle)
+        return slit_select(ra, dec, self._length, self._width, self._center_ra, self._center_dec, self._angle), 0
 
 
 def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
@@ -78,7 +78,7 @@ class Shell(object):
         :param dec: angular coordinate of photon/ray
         :return: bool, True if photon/ray is within the slit, False otherwise
         """
-        return shell_select(ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec)
+        return shell_select(ra, dec, self._r_in, self._r_out, self._center_ra, self._center_dec), 0
 
 
 def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):

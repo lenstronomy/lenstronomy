@@ -87,7 +87,7 @@ class Galkin(GalkinObservation, NumericKinematics):
         while True:
             r, R, x, y = self.draw_light(kwargs_light)
             x_, y_ = self.displace_psf(x, y)
-            bool = self.aperture_select(x_, y_)
+            bool, _ = self.aperture_select(x_, y_)
             if bool is True:
                 break
         sigma2_R = self.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)

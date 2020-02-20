@@ -37,6 +37,6 @@ class Aperture(object):
 
         :param ra: angular coordinate of photon/ray
         :param dec: angular coordinate of photon/ray
-        :return: bool, True if photon/ray is within the slit, False otherwise
+        :return: bool, True if photon/ray is within the slit, False otherwise, int of the segment of the IFU
         """
         return self._aperture.aperture_select(ra, dec)

@@ -4,8 +4,10 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 import unittest
+import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 
 
 class TestLightModel(object):
@@ -104,6 +106,25 @@ class TestLightModel(object):
         assert total_flux_list[4] == 1
         assert total_flux_list[5] == 2
         assert total_flux_list[6] == 2
+
+    def test_delete_interpol_caches(self):
+        x, y = util.make_grid(numPix=20, deltapix=1.)
+        gauss = Gaussian()
+        flux = gauss.function(x, y, amp=1., center_x=0., center_y=0., sigma=1.)
+        image = util.array2image(flux)
+
+        light_model_list = ['INTERPOL', 'INTERPOL']
+        kwargs_list = [
+            {'image': image, 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},
+            {'image': image, 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0}
+        ]
+        lightModel = LightModel(light_model_list=light_model_list)
+        output = lightModel.surface_brightness(x, y, kwargs_list)
+        for func in lightModel.func_list:
+            assert hasattr(func, '_image_interp')
+        lightModel.delete_interpol_caches()
+        for func in lightModel.func_list:
+            assert not hasattr(func, '_image_interp')
 
 
 class TestRaise(unittest.TestCase):

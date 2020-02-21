@@ -26,6 +26,14 @@ class TestApertureTypes(object):
         bool_select = aperture_types.slit_select(ra=0.9, dec=0, length=2, width=0.5, center_ra=0, center_dec=0, angle=np.pi/2)
         assert bool_select is False
 
+    def test_ifu_shell_select(self):
+        ra, dec = 1, 1
+        r_bin = np.linspace(0, 10, 11)
+        bool_select, i = aperture_types.shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0)
+        assert bool_select is True
+        assert i == 1
+
+
 
 if __name__ == '__main__':
     pytest.main()

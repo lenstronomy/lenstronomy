@@ -97,4 +97,5 @@ class Interpol(object):
 
     def delete_cache(self):
         """delete the cached interpolated image"""
-        del self._image_interp
+        if hasattr(self, '_image_interp'):
+            del self._image_interp

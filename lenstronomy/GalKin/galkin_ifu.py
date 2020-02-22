@@ -9,21 +9,22 @@ class GalkinIFU(GalkinObservation):
     """
     class to compute the kinematics of an integral field unit
     """
-    def __init__(self, kwargs_ifu, kwargs_psf, kwargs_cosmo, kwargs_model, kwargs_numerics={}, analytic_kinematics=False):
+    def __init__(self, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_model, kwargs_numerics={},
+                 analytic_kinematics=False):
         """
 
-        :param kwargs_ifu: keyword arguments of the aperture
+        :param kwargs_aperture: keyword arguments of the aperture
         :param kwargs_psf: keyword arguments of the seeing condition
         :param kwargs_cosmo: cosmological distances used in the calculation
         :param kwargs_model: keyword arguments of the models
         :param kwargs_numerics: keyword arguments of the numerical description
         """
         if analytic_kinematics is True:
-            self.numerics = AnalyticKinematics(kwargs_aperture=kwargs_ifu, kwargs_psf=kwargs_psf,
+            self.numerics = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                                kwargs_cosmo=kwargs_cosmo)
         else:
             self.numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        GalkinObservation.__init__(self, kwargs_aperture=kwargs_ifu, kwargs_psf=kwargs_psf)
+        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
         self._analytic_kinematics = analytic_kinematics
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
@@ -59,4 +60,5 @@ class GalkinIFU(GalkinObservation):
 
         sigma_s2_average = sigma2_R_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
+        self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s        while True:

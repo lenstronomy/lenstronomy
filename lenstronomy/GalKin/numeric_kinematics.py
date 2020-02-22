@@ -136,3 +136,13 @@ class NumericKinematics(Anisotropy):
         x, y = util.draw_xy(R)
         r = None
         return r, R, x, y
+
+    def delete_cache(self):
+        """
+        delete interpolation function for a specific mass and light profile
+
+        :return:
+        """
+        if hasattr(self, '_log_mass_3d'):
+            del self._log_mass_3d
+        self.lightProfile.delete_cache()

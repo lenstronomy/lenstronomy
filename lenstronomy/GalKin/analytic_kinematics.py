@@ -157,3 +157,11 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2
+
+    def delete_cache(self):
+        """
+        deletes temporary cache tight to a specific model
+
+        :return:
+        """
+        pass

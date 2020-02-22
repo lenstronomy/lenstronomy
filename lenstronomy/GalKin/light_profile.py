@@ -104,3 +104,16 @@ class LightProfile(object):
         cdf_draw = np.random.uniform(0., 1, n)
         r_log_draw = self._light_cdf_log(cdf_draw)
         return np.exp(r_log_draw)
+
+    def delete_cache(self):
+        """
+        deletes cached interpolation function of the CDF for a specific light profile
+
+        :return: None
+        """
+        if hasattr(self, '_light_cdf_log'):
+            del self._light_cdf_log
+        if hasattr(self, '_light_cdf'):
+            del self._light_cdf
+        if hasattr(self, '_f_light_3d'):
+            del self._f_light_3d

@@ -27,7 +27,7 @@ class Ellipsoid(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         r2 = x_**2 + y_**2
         flux = np.zeros_like(x)
         flux[r2 <= radius**2] = 1

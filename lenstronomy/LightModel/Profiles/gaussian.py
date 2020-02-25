@@ -75,7 +75,7 @@ class GaussianEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         return self.gaussian.function(x_, y_, amp, sigma, center_x=0, center_y=0)
 
     def total_flux(self, amp, sigma=None, e1=None, e2=None, center_x=None, center_y=None):
@@ -191,7 +191,7 @@ class MultiGaussianEllipse(object):
         :param center_y:
         :return:
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
 
         f_ = np.zeros_like(x)
         for i in range(len(amp)):
@@ -215,7 +215,7 @@ class MultiGaussianEllipse(object):
         return flux
 
     def function_split(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         f_list = []
         for i in range(len(amp)):
             f_list.append(self.gaussian.function(x_, y_, amp[i], sigma[i], center_x=0, center_y=0))

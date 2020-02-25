@@ -8,7 +8,7 @@ class LightProfileBase(object):
     def __init__(self):
         pass
 
-    def function(self, x, y, **kwargs):
+    def function(self, *args, **kwargs):
         """
 
         :param x: x-coordinate
@@ -18,7 +18,7 @@ class LightProfileBase(object):
         """
         raise ValueError('function definition not defined in the light profile.')
 
-    def light_3d(self, r, **kwargs):
+    def light_3d(self, *args, **kwargs):
         """
 
         :param r: 3d radius

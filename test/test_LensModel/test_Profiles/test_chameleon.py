@@ -226,7 +226,7 @@ class TestDoubleChameleonPointMass(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1, 'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         flux = doublechameleon.function(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(flux, 1.1265977824267455, decimal=4)
+        npt.assert_almost_equal(flux, 1.2767176964863585, decimal=4)
 
     def test_derivatives(self):
         """
@@ -240,8 +240,8 @@ class TestDoubleChameleonPointMass(object):
         kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_x, f_y = doublechameleon.derivatives(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(f_x, 0.4282906692625763, decimal=4)
-        npt.assert_almost_equal(f_y, 0.44457434634742427, decimal=4)
+        npt.assert_almost_equal(f_x, 0.4348690461571936, decimal=4)
+        npt.assert_almost_equal(f_y, 0.4530081649948411, decimal=4)
 
     def test_hessian(self):
         """
@@ -255,9 +255,9 @@ class TestDoubleChameleonPointMass(object):
         kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_xx, f_yy, f_xy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
-        npt.assert_almost_equal(f_xx, 0.05544254995059526, decimal=4)
-        npt.assert_almost_equal(f_xy, -0.49181674712159473, decimal=4)
-        npt.assert_almost_equal(f_yy, 0.03985372092386123, decimal=4)
+        npt.assert_almost_equal(f_xx, 0.0633838122066912, decimal=4)
+        npt.assert_almost_equal(f_xy, -0.4924032840628945, decimal=4)
+        npt.assert_almost_equal(f_yy, 0.04802318253385707, decimal=4)
 
 
 class TestTripleChameleon(object):
@@ -365,7 +365,6 @@ class TestTripleChameleon(object):
         kwargs_1 = {'alpha_1': amp1, 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
         kwargs_2 = {'alpha_1': amp2, 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
         kwargs_3 = {'alpha_1': amp3, 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
-
 
         f_xx, f_yy, f_xy = triplechameleon.hessian(x=x, y=1., **kwargs_lens)
         f_xx1, f_yy1, f_xy1 = chameleon.hessian(x=x, y=1., **kwargs_1)

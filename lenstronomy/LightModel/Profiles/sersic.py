@@ -97,5 +97,5 @@ class CoreSersic(SersicUtil):
         R_ = self.get_distance_from_center(x, y, phi_G, q, center_x, center_y)
         R = self._R_stable(R_)
         bn = self.b_n(n_sersic)
-        result = amp * (1 + (Re / R)**alpha)**(gamma/alpha)*np.exp(-bn*(((R** alpha + Re**alpha)/R_sersic**alpha)**(1./(alpha*n_sersic)) - 1.))
+        result = amp * (1 + (Re / R)**alpha)**(gamma/alpha)*np.exp(-bn*(((R ** alpha + Re ** alpha)/R_sersic**alpha)**(1./(alpha*n_sersic)) - 1.))
         return np.nan_to_num(result)

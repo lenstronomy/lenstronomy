@@ -84,7 +84,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
             if bool is True:
                 break
         sigma_s2 = self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
-        return np.array(sigma_s2, dtype=float)
+        return np.asarray(sigma_s2, dtype=float)
 
     @staticmethod
     def draw_hernquist(a):

@@ -2,6 +2,8 @@
 lenstronomy - gravitational lensing software package
 ========================================================
 
+.. image:: docs/figures/readme_fig.png
+
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: http://badge.fury.io/py/lenstronomy
 
@@ -92,7 +94,8 @@ We have made an extension module available at `https://github.com/sibirrer/lenst
 You can find simple examle notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.
 
 * `Units, coordiante system and parameter definitions in lenstronomy <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb>`_
-* `FITS handling and extracting needed information from the data prior to modeling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb>`_
+* `FITS handling and extracting needed information from the data prior to modeling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/fits_handling.ipynb>`_
+* `Modeling a simple Einstein ring <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/simple_ring.ipynb>`_
 * `Quadrupoly lensed quasar modelling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quad_model.ipynb>`_
 * `Double lensed quasar modelling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/double_model.ipynb>`_
 * `Time-delay cosmography <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/time-delay%20cosmography.ipynb>`_

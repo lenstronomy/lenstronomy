@@ -38,6 +38,17 @@ class TestInterpol(object):
         out = interp.function(x=1000, y=0, **kwargs_interp)
         assert out == 0
 
+    def test_delete_cache(self):
+        x, y = util.make_grid(numPix=20, deltapix=1.)
+        gauss = Gaussian()
+        flux = gauss.function(x, y, amp=1., center_x=0., center_y=0., sigma=1.)
+        image = util.array2image(flux)
+        interp = Interpol()
+        kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
+        output = interp.function(x, y, **kwargs_interp)
+        assert hasattr(interp, '_image_interp')
+        interp.delete_cache()
+        assert not hasattr(interp, '_image_interp')
 
 if __name__ == '__main__':
     pytest.main()

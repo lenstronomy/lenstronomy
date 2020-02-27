@@ -13,7 +13,7 @@ class LightProfile(object):
 
         :param profile_list:
         """
-        self.light_model = LightModel(light_model_list=profile_list, smoothing=0.000001)
+        self.light_model = LightModel(light_model_list=profile_list)
         self._interp_grid_num = interpol_grid_num
         self._max_interpolate = max_interpolate
         self._min_interpolate = min_interpolate
@@ -48,6 +48,7 @@ class LightProfile(object):
         :param kwargs_list:
         :return:
         """
+        #TODO make sure averaging is done azimuthally
         kwargs_list_copy = copy.deepcopy(kwargs_list)
         kwargs_list_new = []
         for kwargs in kwargs_list_copy:
@@ -104,34 +105,15 @@ class LightProfile(object):
         r_log_draw = self._light_cdf_log(cdf_draw)
         return np.exp(r_log_draw)
 
-
-class LightProfileOld(object):
-    """
-    class to deal with the light distribution
-    """
-    def __init__(self, profile_type='Hernquist'):
-        self._profile_type = profile_type
-
-    def draw_light(self, kwargs_light):
+    def delete_cache(self):
         """
+        deletes cached interpolation function of the CDF for a specific light profile
 
-        :param kwargs_light:
-        :return:
+        :return: None
         """
-        if self._profile_type == 'Hernquist':
-            r = self.P_r_hernquist(kwargs_light)
-        else:
-            raise ValueError('light profile %s not supported!')
-        return r
-
-    def P_r_hernquist(self, kwargs_light):
-        """
-
-        :param a: 0.551*r_eff
-        :return: realisation of radius of Hernquist luminosity weighting in 3d
-        """
-        r_eff = kwargs_light['r_eff']
-        a = 0.551 * r_eff
-        P = np.random.uniform()  # draws uniform between [0,1)
-        r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
-        return r
+        if hasattr(self, '_light_cdf_log'):
+            del self._light_cdf_log
+        if hasattr(self, '_light_cdf'):
+            del self._light_cdf
+        if hasattr(self, '_f_light_3d'):
+            del self._f_light_3d

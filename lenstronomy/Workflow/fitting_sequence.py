@@ -63,6 +63,9 @@ class FittingSequence(object):
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
 
+            elif fitting_type == 'set_param_value':
+                self.set_param_value(**kwargs)
+
             elif fitting_type == 'fix_not_computed':
                 self.fix_not_computed(**kwargs)
 
@@ -420,6 +423,57 @@ class FittingSequence(object):
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
+        return 0
+
+    def set_param_value(self, lens=[], source=[], lens_light=[], ps=[]):
+        """
+        Set a parameter to a specific value.
+        :param lens: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens:
+        :param source: [[i_model, ['param1', 'param2',...], [...]]
+        :type source:
+        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens_light:
+        :param ps: [[i_model, ['param1', 'param2',...], [...]]
+        :type ps:
+        :return: 0, the value of the param is overwritten
+        :rtype:
+        """
+        current_params = self._updateManager.parameter_state
+
+        for item in lens:
+            index = item[0]
+            keys = item[1]
+            values = item[2]
+
+            for key, value in zip(keys, values):
+                current_params['kwargs_lens'][index][key] = value
+
+        for item in source:
+            index = item[0]
+            keys = item[1]
+            values = item[2]
+
+            for key, value in zip(keys, values):
+                current_params['kwargs_source'][index][key] = value
+
+        for item in lens_light:
+            index = item[0]
+            keys = item[1]
+            values = item[2]
+
+            for key, value in zip(keys, values):
+                current_params['kwargs_lens_light'][index][key] = value
+
+        for item in ps:
+            index = item[0]
+            keys = item[1]
+            values = item[2]
+
+            for key, value in zip(keys, values):
+                current_params['kwargs_ps'][index][key] = value
+
+        self.update_state(current_params)
         return 0
 
     def fix_not_computed(self, free_bands):

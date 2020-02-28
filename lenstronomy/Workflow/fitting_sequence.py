@@ -9,6 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
+from copy import deepcopy
 import lenstronomy.Util.analysis_util as analysis_util
 
 
@@ -440,6 +441,7 @@ class FittingSequence(object):
         :rtype:
         """
         current_params = self._updateManager.parameter_state
+        updated_params = deepcopy(current_params)
 
         for items, kwargs_key in zip([lens, source, lens_light, ps],
             ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
@@ -449,9 +451,9 @@ class FittingSequence(object):
                 values = item[2]
 
                 for key, value in zip(keys, values):
-                    current_params[kwargs_key][index][key] = value
+                    updated_params[kwargs_key][index][key] = value
 
-        self.update_state(current_params)
+        self.update_state(updated_params)
         return 0
 
     def fix_not_computed(self, free_bands):

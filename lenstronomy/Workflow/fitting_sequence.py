@@ -441,37 +441,15 @@ class FittingSequence(object):
         """
         current_params = self._updateManager.parameter_state
 
-        for item in lens:
-            index = item[0]
-            keys = item[1]
-            values = item[2]
+        for items, kwargs_key in zip([lens, source, lens_light, ps],
+            ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
+            for item in items:
+                index = item[0]
+                keys = item[1]
+                values = item[2]
 
-            for key, value in zip(keys, values):
-                current_params['kwargs_lens'][index][key] = value
-
-        for item in source:
-            index = item[0]
-            keys = item[1]
-            values = item[2]
-
-            for key, value in zip(keys, values):
-                current_params['kwargs_source'][index][key] = value
-
-        for item in lens_light:
-            index = item[0]
-            keys = item[1]
-            values = item[2]
-
-            for key, value in zip(keys, values):
-                current_params['kwargs_lens_light'][index][key] = value
-
-        for item in ps:
-            index = item[0]
-            keys = item[1]
-            values = item[2]
-
-            for key, value in zip(keys, values):
-                current_params['kwargs_ps'][index][key] = value
+                for key, value in zip(keys, values):
+                    current_params[kwargs_key][index][key] = value
 
         self.update_state(current_params)
         return 0

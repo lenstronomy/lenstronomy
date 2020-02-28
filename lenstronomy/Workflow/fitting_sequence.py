@@ -426,9 +426,9 @@ class FittingSequence(object):
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
 
-    def set_param_value(self, lens=[], source=[], lens_light=[], ps=[]):
+    def set_param_value(self, **kwargs):
         """
-        Set a parameter to a specific value.
+        Set a parameter to a specific value. `kwargs` are below.
         :param lens: [[i_model, ['param1', 'param2',...], [...]]
         :type lens:
         :param source: [[i_model, ['param1', 'param2',...], [...]]
@@ -440,21 +440,7 @@ class FittingSequence(object):
         :return: 0, the value of the param is overwritten
         :rtype:
         """
-        current_params = self._updateManager.parameter_state
-        updated_params = deepcopy(current_params)
-
-        for items, kwargs_key in zip([lens, source, lens_light, ps],
-            ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
-            for item in items:
-                index = item[0]
-                keys = item[1]
-                values = item[2]
-
-                for key, value in zip(keys, values):
-                    updated_params[kwargs_key][index][key] = value
-
-        self.update_state(updated_params)
-        return 0
+        self._updateManager.update_param_value(**kwargs)
 
     def fix_not_computed(self, free_bands):
         """

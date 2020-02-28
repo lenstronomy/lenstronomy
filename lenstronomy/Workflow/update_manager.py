@@ -126,6 +126,30 @@ class UpdateManager(object):
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
                              'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
 
+    def update_param_value(self, lens=[], source=[], lens_light=[], ps=[]):
+        """
+        Set a model parameter to a specific value.
+        :param lens: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens:
+        :param source: [[i_model, ['param1', 'param2',...], [...]]
+        :type source:
+        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens_light:
+        :param ps: [[i_model, ['param1', 'param2',...], [...]]
+        :type ps:
+        :return: 0, the value of the param is overwritten
+        :rtype:
+        """
+        for items, kwargs_key in zip([lens, source, lens_light, ps],
+            ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
+            for item in items:
+                index = item[0]
+                keys = item[1]
+                values = item[2]
+
+                for key, value in zip(keys, values):
+                    self._kwargs_temp[kwargs_key][index][key] = value
+
     @property
     def param_class(self):
         """

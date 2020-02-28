@@ -9,7 +9,6 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-from copy import deepcopy
 import lenstronomy.Util.analysis_util as analysis_util
 
 
@@ -35,6 +34,7 @@ class FittingSequence(object):
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
         self._verbose = verbose
         self._mpi = mpi
+        # TODO make this class inherit from MultiBandUpdateManager
         self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
                                                      num_bands=len(self.multi_band_list))
         self._mcmc_init_samples = None
@@ -338,7 +338,6 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        #param_class = self.param_class
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
@@ -374,10 +373,6 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        #param_class = self.param_class
-        #lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        #lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
-        #source_updated = param_class.image2source_plane(source_temp, lens_updated)
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
@@ -428,17 +423,10 @@ class FittingSequence(object):
 
     def set_param_value(self, **kwargs):
         """
-        Set a parameter to a specific value. `kwargs` are below.
-        :param lens: [[i_model, ['param1', 'param2',...], [...]]
-        :type lens:
-        :param source: [[i_model, ['param1', 'param2',...], [...]]
-        :type source:
-        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
-        :type lens_light:
-        :param ps: [[i_model, ['param1', 'param2',...], [...]]
-        :type ps:
+        Set a parameter to a specific value in the parameter state of the fitting sequence.
+
+        :param kwargs: keyword as specified in update_param_value() in the UpdateManager class
         :return: 0, the value of the param is overwritten
-        :rtype:
         """
         self._updateManager.update_param_value(**kwargs)
 

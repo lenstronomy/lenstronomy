@@ -189,6 +189,22 @@ class TestFittingSequence(object):
         assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 0.1
         assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 10
 
+        # test 'set_param_value' fitting sequence
+        fitting_list = [
+            ['set_param_value', {'lens': [[1, ['gamma1'], [0.013]]]}],
+            ['set_param_value', {'lens_light': [[0, ['center_x'], [0.009]]]}],
+            ['set_param_value', {'source': [[0, ['n_sersic'], [2.993]]]}],
+            ['set_param_value', {'ps': [[0, ['ra_source'], [0.007]]]}]
+        ]
+
+        fittingSequence.fit_sequence(fitting_list)
+
+        kwargs_set = fittingSequence._updateManager.parameter_state
+        assert kwargs_set['kwargs_lens'][1]['gamma1'] == 0.013
+        assert kwargs_set['kwargs_lens_light'][0]['center_x'] == 0.009
+        assert kwargs_set['kwargs_source'][0]['n_sersic'] == 2.993
+        assert kwargs_set['kwargs_ps'][0]['ra_source'] == 0.007
+
         # Nested sampler tests
         # further decrease the parameter space for nested samplers to run faster
         fitting_list2 = []

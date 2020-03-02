@@ -9,6 +9,7 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
+from copy import deepcopy
 import lenstronomy.Util.analysis_util as analysis_util
 
 
@@ -62,6 +63,9 @@ class FittingSequence(object):
 
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
+
+            elif fitting_type == 'set_param_value':
+                self.set_param_value(**kwargs)
 
             elif fitting_type == 'fix_not_computed':
                 self.fix_not_computed(**kwargs)
@@ -421,6 +425,22 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+    def set_param_value(self, **kwargs):
+        """
+        Set a parameter to a specific value. `kwargs` are below.
+        :param lens: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens:
+        :param source: [[i_model, ['param1', 'param2',...], [...]]
+        :type source:
+        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens_light:
+        :param ps: [[i_model, ['param1', 'param2',...], [...]]
+        :type ps:
+        :return: 0, the value of the param is overwritten
+        :rtype:
+        """
+        self._updateManager.update_param_value(**kwargs)
 
     def fix_not_computed(self, free_bands):
         """

@@ -42,6 +42,11 @@ class TestUpdateManager(object):
         kwargs_temp = self.manager.parameter_state
         assert kwargs_temp['kwargs_lens'][0]['e1'] == 0
 
+    def test_update_param_value(self):
+        self.manager.update_param_value(lens=[[1, ['e1'], [0.029]]])
+        kwargs_temp = self.manager.parameter_state
+        assert kwargs_temp['kwargs_lens'][1]['e1'] == 0.029
+
     def test_param_class(self):
         param_class = self.manager.param_class
         num_param, param_names = param_class.num_param()

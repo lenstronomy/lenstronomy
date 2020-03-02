@@ -80,7 +80,7 @@ class TestTDCosmography(object):
         self.td_cosmo.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
 
         anisotropy_model = 'OsipkovMerritt'
-        kwargs_numerics_galkin = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
+        kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,
                                   'max_integrate': 10, 'min_integrate': 0.001}
         self.td_cosmo.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
                                              Hernquist_approx=False, MGE_light=False, MGE_mass=False)

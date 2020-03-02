@@ -30,8 +30,6 @@ class Galkin(GalkinObservation):
         d_ds: Angular diameter distance from the deflector to the source (in Mpc)
 
     The numerical options can be chosen through the kwargs_numerics keywords
-        sampling_number: number of spectral rendering to compute the light weighted integrated LOS dispersion within
-        the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
 
         interpol_grid_num: number of interpolation points in the light and mass profile (radially). This number should
         be chosen high enough to accurately describe the true light profile underneath.
@@ -69,7 +67,7 @@ class Galkin(GalkinObservation):
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
         self._analytic_kinematics = analytic_kinematics
 
-    def vel_disp(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -77,13 +75,14 @@ class Galkin(GalkinObservation):
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
+        :param sampling_number: int, number of spectral sampling of the light distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """
         sigma2_R_sum = 0
-        for i in range(0, self.numerics._sampling_number):
+        for i in range(0, sampling_number):
             sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma2_R_sum += sigma2_R
-        sigma_s2_average = sigma2_R_sum / self.numerics._sampling_number
+        sigma_s2_average = sigma2_R_sum / sampling_number
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s

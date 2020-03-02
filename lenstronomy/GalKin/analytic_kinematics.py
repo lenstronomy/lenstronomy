@@ -40,7 +40,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
 
-    def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
+    def dispersion(self, gamma, theta_E, r_eff, r_ani, sampling_number=1000):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -48,17 +48,17 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         :param theta_E: Einstein radius of the lens (in arcseconds)
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
+        :param sampling_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 
         :return: LOS integrated velocity dispersion in units [km/s]
         """
         sigma_s2_sum = 0
         rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
-        for i in range(0, rendering_number):
+        for i in range(0, sampling_number):
             sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani)
             sigma_s2_sum += sigma_s2_draw
-        sigma_s2_average = sigma_s2_sum / rendering_number
+        sigma_s2_average = sigma_s2_sum / sampling_number
         return np.sqrt(sigma_s2_average) / 1000
 
     def _rho0_r0_gamma(self, theta_E, gamma):

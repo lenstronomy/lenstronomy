@@ -63,7 +63,7 @@ class TestKinematicsAPI(object):
                                                                   r_eff=r_eff, Hernquist_approx=True)
         vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
                                                                     kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                                                                    num_evaluate=5000)
+                                                                    sampling_number=5000)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
@@ -136,7 +136,7 @@ class TestKinematicsAPI(object):
         kin_api.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
 
         anisotropy_model = 'OsipkovMerritt'
-        kwargs_numerics_galkin = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
+        kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,
                                   'max_integrate': 10, 'min_integrate': 0.001}
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
                                      Hernquist_approx=False, MGE_light=False, MGE_mass=False)

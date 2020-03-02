@@ -12,7 +12,7 @@ import lenstronomy.GalKin.velocity_util as util
 class NumericKinematics(Anisotropy):
 
     def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=500, log_integration=False, max_integrate=10,
-                 min_integrate=0.001, sampling_number=1000):
+                 min_integrate=0.001):
         """
 
         :param interpol_grid_num:
@@ -25,7 +25,6 @@ class NumericKinematics(Anisotropy):
         anisotropy_model = kwargs_model.get('anisotropy_model')
         self._interp_grid_num = interpol_grid_num
         self._log_int = log_integration
-        self._sampling_number = sampling_number
         self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
         self._max_interpolate = max_integrate  # we chose to set the interpolation range to the integration range

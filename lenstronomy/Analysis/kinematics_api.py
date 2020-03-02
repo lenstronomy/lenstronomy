@@ -44,8 +44,8 @@ class KinematicsAPI(object):
         self._lens_model_kinematics_bool = lens_model_kinematics_bool
         self._light_model_kinematics_bool = light_model_kinematics_bool
 
-    def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, kwargs_aperture, kwargs_psf, r_ani, num_evaluate=1000,
-                                       kappa_ext=0):
+    def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, kwargs_aperture, kwargs_psf, r_ani,
+                                       sampling_number=1000, kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
@@ -58,14 +58,14 @@ class KinematicsAPI(object):
         :param r_ani: anisotropy radius in units of angles
         :param r_eff: projected half-light radius
         :param kwargs_aperture: aperture parameters (see Galkin module)
-        :param num_evaluate: number of spectral rendering of the light distribution that end up on the slit
+        :param sampling_number: number of spectral rendering of the light distribution that end up on the slit
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
 
         analytic_kinematics = AnalyticKinematics(kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture,
                                                  kwargs_cosmo=self._kwargs_cosmo)
-        sigma = analytic_kinematics.vel_disp(gamma, theta_E, r_eff, r_ani, rendering_number=num_evaluate)
+        sigma = analytic_kinematics.dispersion(gamma, theta_E, r_eff, r_ani, sampling_number=sampling_number)
         sigma *= np.sqrt(1-kappa_ext)
         return sigma
 
@@ -73,7 +73,7 @@ class KinematicsAPI(object):
                                       kwargs_psf, anisotropy_model, r_eff=None, theta_E=None,
                                       kwargs_numerics={}, MGE_light=False, kwargs_mge_light=None,
                                       MGE_mass=False, kwargs_mge_mass=None,
-                                      Hernquist_approx=False, kappa_ext=0):
+                                      Hernquist_approx=False, kappa_ext=0, sampling_number=1000):
         """
         Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
         For a detailed description, visit the description of the Galkin() class.
@@ -99,6 +99,8 @@ class KinematicsAPI(object):
         :param kappa_ext: external convergence not accounted in the lens models
         :param kwargs_mge_light: keyword arguments that go into the MGE decomposition routine
         :param kwargs_mge_mass: keyword arguments that go into the MGE decomposition routine
+        :param sampling_number: int, number of spectral rendering to compute the light weighted integrated LOS
+        dispersion within the aperture. This keyword should be chosen high enough to result in converged results within the tolerance.
         :return: LOS velocity dispersion [km/s]
         """
 
@@ -113,7 +115,7 @@ class KinematicsAPI(object):
                         'anisotropy_model': anisotropy_model}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                         kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics=kwargs_numerics, analytic_kinematics=False)
-        sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
+        sigma = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=sampling_number)
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma
 
@@ -253,8 +255,8 @@ class KinematicsAPI(object):
             r_ani = kwargs_anisotropy.get('r_ani')
             num_evaluate = self._kwargs_numerics_kin.get('sampling_number', 1000)
             sigma_v = self.velocity_dispersion_analytical(theta_E, gamma, r_eff, self._kwargs_aperture_kin,
-                                                                         self._kwargs_psf_kin, r_ani=r_ani,
-                                                                         num_evaluate=num_evaluate, kappa_ext=0)
+                                                          self._kwargs_psf_kin, r_ani=r_ani,
+                                                          sampling_number=num_evaluate, kappa_ext=0)
         else:
             sigma_v = self.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light,
                                                          kwargs_anisotropy=kwargs_anisotropy,

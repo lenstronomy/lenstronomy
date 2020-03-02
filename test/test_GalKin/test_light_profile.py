@@ -111,6 +111,16 @@ class TestLightProfile(object):
         for i in range(len(r)):
             npt.assert_almost_equal(light_3d[i]/light_3d_exact[i], 1, decimal=3)
 
+    def test_del_cache(self):
+        lightProfile = LightProfile(profile_list=['HERNQUIST'])
+        lightProfile._light_cdf = 1
+        lightProfile._light_cdf_log = 2
+        lightProfile._f_light_3d = 3
+        lightProfile.delete_cache()
+        assert hasattr(lightProfile, '_light_cdf') is False
+        assert hasattr(lightProfile, '_light_cdf_log') is False
+        assert hasattr(lightProfile, '_f_light_3d') is False
+
 
 if __name__ == '__main__':
     pytest.main()

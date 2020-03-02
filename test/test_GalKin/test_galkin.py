@@ -2,6 +2,7 @@
 Tests for `galkin` module.
 """
 import pytest
+import unittest
 import numpy.testing as npt
 import numpy as np
 import scipy.integrate as integrate
@@ -384,6 +385,19 @@ class TestGalkin(object):
         galkin_analytic = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo)
         sigma_v2 = galkin_analytic.dispersion(gamma, theta_E, r_eff, r_ani=r_ani, sampling_number=2000)
         npt.assert_almost_equal(sigma_v2, sigma_v_ifu[0], decimal=-1)
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            kwargs_model = {'anisotropy_model': 'const'}
+            kwargs_aperture = {'center_ra': 0, 'width': 1, 'length': 1, 'angle': 0, 'center_dec': 0,
+                               'aperture_type': 'slit'}
+            kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+            kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
+            Galkin(kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics={},
+                   analytic_kinematics=True)
 
 
 if __name__ == '__main__':

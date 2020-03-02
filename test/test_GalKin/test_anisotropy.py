@@ -113,6 +113,10 @@ class TestRaise(unittest.TestCase):
     def test_raise(self):
         with self.assertRaises(ValueError):
             Anisotropy(anisotropy_type='wrong')
+        with self.assertRaises(ValueError):
+            ani = Anisotropy(anisotropy_type='Colin')
+            ani.K(r=1, R=2, r_ani=1)
+
 
 if __name__ == '__main__':
     pytest.main()

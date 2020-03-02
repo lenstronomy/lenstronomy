@@ -58,6 +58,14 @@ class TestInstrumentObservation(object):
         psf = observation.psf_class
         assert psf.fwhm == 1
 
+    def test_psf_class(self):
+        kwargs_observations = {'exposure_time': 1, 'sky_brightness': 1,
+                               'num_exposures': 1,
+                               'psf_type': 'NONE'}
+        observation = Observation(**kwargs_observations)
+        psf_class = observation.psf_class
+        assert psf_class.psf_type == 'NONE'
+
 
 class TestRaise(unittest.TestCase):
 

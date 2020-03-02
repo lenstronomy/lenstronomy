@@ -204,7 +204,14 @@ class TestRaise(unittest.TestCase):
             kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
             kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
                                                  Hernquist_approx=True, r_eff=None, model_kinematics_bool=[True])
-            raise ValueError()
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_options = {'lens_light_model_list': ['HERNQUIST']}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_options)
+            kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
+            kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
+                                                 Hernquist_approx=False, r_eff=None, analytic_kinematics=True)
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5
@@ -212,6 +219,13 @@ class TestRaise(unittest.TestCase):
             kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_options)
             kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
             kinematicAPI.kinematic_lens_profiles(kwargs_light, MGE_fit=True, model_kinematics_bool=[True])
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_options = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_options)
+            kinematicAPI.kinematic_lens_profiles(kwargs_lens=None, analytic_kinematics=True)
+
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5

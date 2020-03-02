@@ -87,6 +87,12 @@ class TestTDCosmography(object):
 
         J = self.td_cosmo.velocity_dispersion_dimension_less(self.kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff,
                                            theta_E=self.kwargs_lens[0]['theta_E'], gamma=2)
+
+        J_map = self.td_cosmo.velocity_dispersion_map_dimension_less(self.kwargs_lens, kwargs_lens_light,
+                                                                     kwargs_anisotropy, r_eff=r_eff,
+                                                                     theta_E=self.kwargs_lens[0]['theta_E'], gamma=2)
+        assert len(J_map) == 1
+        npt.assert_almost_equal(J_map[0]/J, 1, decimal=1)
         sigma_v2 = J * D_s/D_ds * const.c ** 2
         sigma_v = np.sqrt(sigma_v2) / 1000.  # convert to [km/s]
         print(sigma_v, 'test sigma_v')

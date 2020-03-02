@@ -90,6 +90,32 @@ class TDCosmography(KinematicsAPI):
         J = sigma_v ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
         return J
 
+    def velocity_dispersion_map_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
+                                           theta_E=None, gamma=None, num_kin_sampling=1000, num_psf_sampling=100):
+        """
+        sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy)
+        (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
+        cosmological independent quantity only depending on angular units. This function returns J given the lens
+        and light parameters and the anisotropy choice without an external mass sheet correction.
+        This routine computes the IFU map of the kinematic quantities.
+
+        :param kwargs_lens: lens model keyword arguments
+        :param kwargs_lens_light: lens light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
+         if set to None will be computed in this function with default settings that may not be accurate.
+        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
+        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
+        """
+        sigma_v_map = self.velocity_dispersion_map(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
+                                               kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E,
+                                               gamma=gamma, num_kin_sampling=num_kin_sampling,
+                                               num_psf_sampling=num_psf_sampling)
+        sigma_v_map *= 1000 # convert from [km/s] to  [m/s]
+        J_map = sigma_v_map ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
+        return J_map
+
     @staticmethod
     def ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=0, kappa_ds=0, kappa_d=0):
         """

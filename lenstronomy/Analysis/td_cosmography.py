@@ -90,7 +90,8 @@ class TDCosmography(KinematicsAPI):
         J = sigma_v ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
         return J
 
-    def Ddt_from_time_delay(self, d_fermat_model, dt_measured, kappa_s=0, kappa_ds=0, kappa_d=0):
+    @staticmethod
+    def ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=0, kappa_ds=0, kappa_d=0):
         """
         Time-delay distance in units of Mpc from the modeled Fermat potential and measured time delay from an image pair.
 
@@ -102,7 +103,8 @@ class TDCosmography(KinematicsAPI):
         D_dt = D_dt_model * (1-kappa_ds) / (1 - kappa_s) / (1 - kappa_d)
         return D_dt
 
-    def Ds_Dds_from_kinematics(self, sigma_v, J, kappa_s=0, kappa_ds=0):
+    @staticmethod
+    def ds_dds_from_kinematics(sigma_v, J, kappa_s=0, kappa_ds=0):
         """
         computes the estimate of the ratio of angular diameter distances Ds/Dds from the kinematic estimate of the lens
         and the measured dispersion.
@@ -111,11 +113,11 @@ class TDCosmography(KinematicsAPI):
         :param J: dimensionless kinematic constraint (see Birrer et al. 2016, 2019)
         :return: Ds/Dds
         """
-        Ds_Dds_model = (sigma_v * 1000) ** 2 / const.c ** 2 / J
-        Ds_Dds = Ds_Dds_model * (1 - kappa_ds) / (1 - kappa_s)
-        return Ds_Dds
+        ds_dds_model = (sigma_v * 1000) ** 2 / const.c ** 2 / J
+        ds_dds = ds_dds_model * (1 - kappa_ds) / (1 - kappa_s)
+        return ds_dds
 
-    def Ddt_Dd_from_time_delay_and_kinematics(self, d_fermat_model, dt_measured, sigma_v_measured, J, kappa_s=0,
+    def ddt_dd_from_time_delay_and_kinematics(self, d_fermat_model, dt_measured, sigma_v_measured, J, kappa_s=0,
                                               kappa_ds=0, kappa_d=0):
         """
 
@@ -128,8 +130,7 @@ class TDCosmography(KinematicsAPI):
         :param kappa_d: LOS convergence from observer to deflector
         :return: D_dt, D_d
         """
-        D_dt = self.Ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=kappa_s, kappa_ds=kappa_ds,
-                                        kappa_d=kappa_d)
-        Ds_Dds = self.Ds_Dds_from_kinematics(sigma_v_measured, J, kappa_s=kappa_s, kappa_ds=kappa_ds)
-        Dd = D_dt / Ds_Dds / (1 + self._z_lens)
-        return D_dt, Dd
+        ddt = self.ddt_from_time_delay(d_fermat_model, dt_measured, kappa_s=kappa_s, kappa_ds=kappa_ds, kappa_d=kappa_d)
+        ds_dds = self.ds_dds_from_kinematics(sigma_v_measured, J, kappa_s=kappa_s, kappa_ds=kappa_ds)
+        dd = ddt / ds_dds / (1 + self._z_lens)
+        return ddt, dd

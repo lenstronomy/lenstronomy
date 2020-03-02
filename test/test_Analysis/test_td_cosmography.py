@@ -64,7 +64,7 @@ class TestTDCosmography(object):
         dt = dt_list[0] - dt_list[1]
         d_fermat = fermat_potential_list[0] - fermat_potential_list[1]
 
-        D_dt_infered = self.td_cosmo.Ddt_from_time_delay(d_fermat_model=d_fermat, dt_measured=dt)
+        D_dt_infered = self.td_cosmo.ddt_from_time_delay(d_fermat_model=d_fermat, dt_measured=dt)
         npt.assert_almost_equal(D_dt_infered, D_dt, decimal=5)
         r_eff = 0.5
         kwargs_lens_light = [{'Rs': r_eff * 0.551, 'center_x': 0, 'center_y': 0}]
@@ -90,7 +90,7 @@ class TestTDCosmography(object):
         sigma_v2 = J * D_s/D_ds * const.c ** 2
         sigma_v = np.sqrt(sigma_v2) / 1000.  # convert to [km/s]
         print(sigma_v, 'test sigma_v')
-        Ds_Dds = self.td_cosmo.Ds_Dds_from_kinematics(sigma_v, J, kappa_s=0, kappa_ds=0)
+        Ds_Dds = self.td_cosmo.ds_dds_from_kinematics(sigma_v, J, kappa_s=0, kappa_ds=0)
         npt.assert_almost_equal(Ds_Dds, D_s/D_ds)
 
         # now we perform a mass-sheet transform in the observables but leave the models identical with a convergence correction
@@ -98,9 +98,9 @@ class TestTDCosmography(object):
         dt_list = self.td_cosmo.time_delays(self.kwargs_lens, self.kwargs_ps, kappa_ext=kappa_s)
         sigma_v_kappa = sigma_v * np.sqrt(1-kappa_s)
         dt = dt_list[0] - dt_list[1]
-        D_dt_infered, D_d_infered = self.td_cosmo.Ddt_Dd_from_time_delay_and_kinematics(d_fermat_model=d_fermat, dt_measured=dt,
-                                                                        sigma_v_measured=sigma_v_kappa, J=J, kappa_s=kappa_s,
-                                                                        kappa_ds=0, kappa_d=0)
+        D_dt_infered, D_d_infered = self.td_cosmo.ddt_dd_from_time_delay_and_kinematics(d_fermat_model=d_fermat, dt_measured=dt,
+                                                                                        sigma_v_measured=sigma_v_kappa, J=J, kappa_s=kappa_s,
+                                                                                        kappa_ds=0, kappa_d=0)
         npt.assert_almost_equal(D_dt_infered, D_dt, decimal=6)
         npt.assert_almost_equal(D_d_infered, D_d, decimal=6)
 

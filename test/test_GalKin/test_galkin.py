@@ -292,7 +292,7 @@ class TestGalkin(object):
         kwargs_interp = light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
                                                             deltaPix=deltaPix, subgrid_res=5)
         kwargs_lens_interp = [kwargs_interp]
-        from lenstronomy.Analysis.kinematics_api import KinematicAPI
+        from lenstronomy.Analysis.kinematics_api import KinematicsAPI
         z_lens = 0.5
         z_source = 1.5
         r_ani = 0.62
@@ -308,7 +308,7 @@ class TestGalkin(object):
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
         kwargs_mge = {'n_comp': 20}
-        kinematic_api = KinematicAPI(z_lens, z_source, kwargs_options)
+        kinematic_api = KinematicsAPI(z_lens, z_source, kwargs_options)
 
         v_sigma = kinematic_api.velocity_dispersion_numerical(kwargs_lens, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
@@ -316,7 +316,7 @@ class TestGalkin(object):
                                                               kwargs_mge_mass=kwargs_mge, kwargs_mge_light=kwargs_mge)
         kwargs_options_interp = {'lens_model_list': ['INTERPOL'],
                                  'lens_light_model_list': ['SERSIC']}
-        kinematic_api_interp = KinematicAPI(z_lens, z_source, kwargs_options_interp)
+        kinematic_api_interp = KinematicsAPI(z_lens, z_source, kwargs_options_interp)
         v_sigma_interp = kinematic_api_interp.velocity_dispersion_numerical(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
                                                          kwargs_aperture, kwargs_psf, anisotropy_model, theta_E=1.,
                                                          kwargs_numerics={}, MGE_light=True, MGE_mass=True, r_eff=r_eff,

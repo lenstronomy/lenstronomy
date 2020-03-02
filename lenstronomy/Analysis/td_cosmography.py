@@ -7,10 +7,10 @@ from astropy.cosmology import default_cosmology
 from lenstronomy.Util import class_creator
 from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from lenstronomy.Analysis.kinematics_api import KinematicAPI
+from lenstronomy.Analysis.kinematics_api import KinematicsAPI
 
 
-class TDCosmography(KinematicAPI):
+class TDCosmography(KinematicsAPI):
     """
     class equipped to perform a cosmographic analysis from a lens model with added measurements of time delays and
     kinematics.

@@ -11,7 +11,7 @@ from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 import lenstronomy.Util.multi_gauss_expansion as mge
 
 
-class KinematicAPI(object):
+class KinematicsAPI(object):
     """
     this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
     for a given lens model
@@ -136,7 +136,6 @@ class KinematicAPI(object):
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
         :return: mass_profile_list, keyword argument list
         """
-
         mass_profile_list = []
         kwargs_profile = []
         if model_kinematics_bool is None:

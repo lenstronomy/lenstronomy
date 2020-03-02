@@ -138,7 +138,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         if 'a' not in kwargs_light:
             kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
-        if 'rho0_r0_gamma' not in kwargs_light:
+        if 'rho0_r0_gamma' not in kwargs_mass:
             kwargs_mass['rho0_r0_gamma'] = self._rho0_r0_gamma(kwargs_mass['theta_E'], kwargs_mass['gamma'])
         a = kwargs_light['a']
         gamma = kwargs_mass['gamma']

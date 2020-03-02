@@ -112,7 +112,7 @@ class KinematicAPI(object):
         kwargs_model = {'mass_profile_list': mass_profile_list, 'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_model}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                        kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics=kwargs_numerics)
+                        kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics=kwargs_numerics, analytic_kinematics=False)
         sigma = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
         sigma *= np.sqrt(1 - kappa_ext)
         return sigma
@@ -265,7 +265,6 @@ class KinematicAPI(object):
                                                          r_eff=r_eff, theta_E=theta_E,
                                                          kwargs_numerics=self._kwargs_numerics_kin,
                                                          MGE_light=self._MGE_light, MGE_mass=self._MGE_mass,
-
                                                          Hernquist_approx=self._Hernquist_approx, kappa_ext=0,
                                                          kwargs_mge_mass= self._kwargs_mge_mass,
                                                          kwargs_mge_light = self._kwargs_mge_light)

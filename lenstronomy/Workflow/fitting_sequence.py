@@ -9,7 +9,6 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-from copy import deepcopy
 import lenstronomy.Util.analysis_util as analysis_util
 
 
@@ -205,6 +204,10 @@ class FittingSequence(object):
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress)
+            output = [sampler_type, samples, param_list, dist]
+        elif sampler_type is 'COSMOHAMMER':
+            samples, dist = mcmc_class.mcmc_CH(walkerRatio, n_run, n_burn, mean_start, sigma_start,
+                                               threadCount=threadCount, mpi=self._mpi, init_pos=initpos)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

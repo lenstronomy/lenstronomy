@@ -20,7 +20,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     if chain_type == 'PSO':
         chain, param = chain_i[1:]
         f, axes = plot_chain(chain, param)
-    elif chain_type == 'EMCEE':
+    elif chain_type in ['EMCEE', 'COSMOHAMMER']:
         samples, param, dist = chain_i[1:]
         f, ax = plt.subplots(1, 1, figsize=(6, 6))
         axes = plot_mcmc_behaviour(ax, samples, param, dist, num_average=num_average)

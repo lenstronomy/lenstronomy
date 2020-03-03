@@ -1,7 +1,5 @@
 __author__ = 'aymgal'
 
-import os
-import shutil
 import numpy as np
 
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler

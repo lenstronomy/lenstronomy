@@ -1,16 +1,27 @@
 __author__ = 'sibirrer'
 
+
+import os
+import shutil
+import tempfile
 import time
 import sys
 
-import numpy as np
+from cosmoHammer import CosmoHammerSampler
+from cosmoHammer import LikelihoodComputationChain
+from cosmoHammer import MpiCosmoHammerSampler
 from cosmoHammer import MpiParticleSwarmOptimizer
 from cosmoHammer import ParticleSwarmOptimizer
+from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
+
+
+import numpy as np
+
 from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
-from multiprocess import Pool
+#from multiprocess import Pool
 
 
 class Sampler(object):
@@ -119,3 +130,76 @@ class Sampler(object):
             time_end = time.time()
             print(time_end - time_start, 'time taken for MCMC sampling')
         return flat_samples, dist
+
+    def mcmc_CH(self, walkerRatio, n_run, n_burn, mean_start, sigma_start, threadCount=1, init_pos=None, mpi=False):
+        """
+        runs mcmc on the parameter space given parameter bounds with CosmoHammerSampler
+        returns the chain
+        """
+        lowerLimit, upperLimit = self.lower_limit, self.upper_limit
+
+        mean_start = np.maximum(lowerLimit, mean_start)
+        mean_start = np.minimum(upperLimit, mean_start)
+
+        low_start = mean_start - sigma_start
+        high_start = mean_start + sigma_start
+        low_start = np.maximum(lowerLimit, low_start)
+        high_start = np.minimum(upperLimit, high_start)
+        sigma_start = (high_start - low_start) / 2
+        mean_start = (high_start + low_start) / 2
+        params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
+
+        chain = LikelihoodComputationChain(
+            min=lowerLimit,
+            max=upperLimit)
+
+        temp_dir = tempfile.mkdtemp("Hammer")
+        file_prefix = os.path.join(temp_dir, "logs")
+        #file_prefix = "./lenstronomy_debug"
+        # chain.addCoreModule(CambCoreModule())
+        chain.addLikelihoodModule(self.chain)
+        chain.setup()
+
+        store = InMemoryStorageUtil()
+        #store = None
+        if mpi is True:
+            sampler = MpiCosmoHammerSampler(
+            params=params,
+            likelihoodComputationChain=chain,
+            filePrefix=file_prefix,
+            walkersRatio=walkerRatio,
+            burninIterations=n_burn,
+            sampleIterations=n_run,
+            threadCount=1,
+            initPositionGenerator=init_pos,
+            storageUtil=store)
+        else:
+            sampler = CosmoHammerSampler(
+                params=params,
+                likelihoodComputationChain=chain,
+                filePrefix=file_prefix,
+                walkersRatio=walkerRatio,
+                burninIterations=n_burn,
+                sampleIterations=n_run,
+                threadCount=threadCount,
+                initPositionGenerator=init_pos,
+                storageUtil=store)
+        time_start = time.time()
+        if sampler.isMaster():
+            print('Computing the MCMC...')
+            print('Number of walkers = ', len(mean_start)*walkerRatio)
+            print('Burn-in iterations: ', n_burn)
+            print('Sampling iterations:', n_run)
+        sampler.startSampling()
+        if sampler.isMaster():
+            time_end = time.time()
+            print(time_end - time_start, 'time taken for MCMC sampling')
+        # if sampler._sampler.pool is not None:
+        #     sampler._sampler.pool.close()
+        try:
+            shutil.rmtree(temp_dir)
+        except Exception as ex:
+            print(ex, 'shutil.rmtree did not work')
+            pass
+
+        return store.samples, store.prob

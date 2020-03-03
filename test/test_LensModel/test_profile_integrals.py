@@ -54,6 +54,11 @@ class TestNumerics(object):
         f_xx, f_yy, f_xy = lensModel.hessian(r, 0, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_num, kappa, decimal=2)
+        if hasattr(lensModel, 'mass_2d_lens'):
+            mass_2d = lensModel.mass_2d_lens(r, **kwargs)
+            alpha_x, alpha_y = lensModel.derivatives(r, 0, **kwargs)
+            alpha = np.sqrt(alpha_x**2 + alpha_y**2)
+            npt.assert_almost_equal(alpha, mass_2d/r / np.pi, decimal=5)
 
     def test_PJaffe(self):
         kwargs = {'rho0': 1., 'Ra': 0.2, 'Rs': 2.}

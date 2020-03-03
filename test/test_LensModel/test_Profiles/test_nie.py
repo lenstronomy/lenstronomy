@@ -5,6 +5,10 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
+from lenstronomy.LensModel.Profiles.nie import NIE, NIEMajorAxis
+from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
+from lenstronomy.LensModel.Profiles.sis import SIS
 
 try:
     import fastell4py
@@ -19,9 +23,7 @@ class TestNIE(object):
     tests the Gaussian methods
     """
     def setup(self):
-        from lenstronomy.LensModel.Profiles.nie import NIE
-        from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
-        from lenstronomy.LensModel.Profiles.sis import SIS
+
         self.nie = NIE()
         self.spemd = SPEMD_SMOOTH()
         self.sis = SIS()
@@ -91,6 +93,16 @@ class TestNIE(object):
         npt.assert_almost_equal(f_yy, f_yy_spemd, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_spemd, decimal=4)
 
+    def test_convergence2surface_brightness(self):
+        from lenstronomy.LightModel.Profiles.nie import NIE as NIE_Light
+        nie_light = NIE_Light()
+        kwargs = {'e1': 0.3, 'e2': -0.05, 's_scale': 0.5}
+        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        f_xx, f_yy, f_xy = self.nie.hessian(x, y, theta_E=1, **kwargs)
+        kappa = 1/2. * (f_xx + f_yy)
+        flux = nie_light.function(x, y, amp=1, **kwargs)
+        npt.assert_almost_equal(kappa/np.sum(kappa), flux/np.sum(flux), decimal=5)
+
     def test_static(self):
         x, y = 1., 1.
         phi_G, q = 0.3, 0.8
@@ -104,6 +116,21 @@ class TestNIE(object):
         kwargs_lens = {'theta_E': 2., 's_scale': .1, 'e1': e1, 'e2': e2}
         f_dyn = self.nie.function(x, y, **kwargs_lens)
         assert f_dyn != f_static
+
+
+class TestNIEMajorAxis(object):
+
+    def setup(self):
+        pass
+
+    def test_kappa(self):
+        nie = NIEMajorAxis()
+        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        kwargs = {'b': 1, 's': 0.2, 'q': 0.3}
+        f_xx, f_yy, f_xy = nie.hessian(x, y, **kwargs)
+        kappa_num = 1./2 * (f_xx + f_yy)
+        kappa = nie.kappa(x, y, **kwargs)
+        npt.assert_almost_equal(kappa_num, kappa, decimal=5)
 
 
 if __name__ == '__main__':

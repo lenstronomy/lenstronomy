@@ -90,8 +90,8 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.nie import NIE
             return NIE()
         elif lens_type == 'NIE_SIMPLE':
-            from lenstronomy.LensModel.Profiles.nie import NIESimple
-            return NIESimple()
+            from lenstronomy.LensModel.Profiles.nie import NIEMajorAxis
+            return NIEMajorAxis()
         elif lens_type == 'CHAMELEON':
             from lenstronomy.LensModel.Profiles.chameleon import Chameleon
             return Chameleon()

@@ -230,7 +230,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_NIE_simple(self):
-        kwargs = {'theta_E': 2., 'q': 0.3, 's': 0.04}
+        kwargs = {'b': 2., 'q': 0.3, 's': 0.04}
         lens_model = ['NIE_SIMPLE']
         self.assert_differentials(lens_model, kwargs)
 

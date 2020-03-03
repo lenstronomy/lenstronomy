@@ -158,10 +158,11 @@ class TestFittingSequence(object):
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
-        fitting_list.append(['MCMC', kwargs_mcmc])
-        kwargs_mcmc['re_use_samples'] = True
+        kwargs_mcmc['sampler_type'] = 'COSMOHAMMER'
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['sampler_type'] = 'EMCEE'
+        fitting_list.append(['MCMC', kwargs_mcmc])
+        kwargs_mcmc['re_use_samples'] = True
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])

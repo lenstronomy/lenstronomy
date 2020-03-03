@@ -257,3 +257,9 @@ class LikelihoodModule(object):
         :return: logL, derivative estimatoe (None)
         """
         return self.logL(a), None
+
+    def computeLikelihood(self, ctx):
+        return self.logL(ctx.getParams())
+
+    def setup(self):
+        pass

@@ -142,7 +142,7 @@ class Starlets(object):
     def _check_transform_pysap(self, n_scales):
         """if needed, update the loaded pySAP transform to correct number of scales"""
         if not hasattr(self, '_transf') or n_scales != self._n_scales:
-            self._transf = self._transf_class(nb_scale=n_scales, verbose=True, 
+            self._transf = self._transf_class(nb_scale=n_scales, verbose=False, 
                                               nb_procs=self._thread_count)
             self._n_scales = n_scales
         # if getattr(self._transf, 'nb_band_per_scale', 0) is None:

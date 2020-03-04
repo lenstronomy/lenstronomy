@@ -10,8 +10,6 @@ import sys
 from cosmoHammer import CosmoHammerSampler
 from cosmoHammer import LikelihoodComputationChain
 from cosmoHammer import MpiCosmoHammerSampler
-from cosmoHammer import MpiParticleSwarmOptimizer
-from cosmoHammer import ParticleSwarmOptimizer
 from cosmoHammer.util import InMemoryStorageUtil
 from cosmoHammer.util import MpiUtil
 
@@ -21,6 +19,7 @@ import numpy as np
 from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
+from multiprocessing import Pool
 #from multiprocess import Pool
 
 
@@ -41,7 +40,7 @@ class Sampler(object):
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
     def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None, threadCount=1, init_pos=None,
-            mpi=False, print_key='PSO'):
+            mpi=False, print_key='PSO', mpipso=True):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
@@ -52,10 +51,18 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
         if mpi is True:
+            if mpipso is True:
+                from mpipso.mpipso import MpiParticleSwarmOptimizer
+            else:
+                from cosmoHammer import MpiParticleSwarmOptimizer
             pso = MpiParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=1)
             if pso.isMaster():
                 print('MPI option chosen')
         else:
+            if mpipso is True:
+                from mpipso.pso import ParticleSwarmOptimizer
+            else:
+                from cosmoHammer import ParticleSwarmOptimizer
             pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=threadCount)
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
@@ -143,10 +150,10 @@ class Sampler(object):
 
         low_start = mean_start - sigma_start
         high_start = mean_start + sigma_start
-        low_start = np.maximum(lowerLimit, low_start)
-        high_start = np.minimum(upperLimit, high_start)
-        sigma_start = (high_start - low_start) / 2
-        mean_start = (high_start + low_start) / 2
+        #low_start = np.maximum(lowerLimit, low_start)
+        #high_start = np.minimum(upperLimit, high_start)
+        #sigma_start = (high_start - low_start) / 2
+        #mean_start = (high_start + low_start) / 2
         params = np.array([mean_start, lowerLimit, upperLimit, sigma_start]).T
 
         chain = LikelihoodComputationChain(

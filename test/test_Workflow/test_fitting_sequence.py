@@ -162,6 +162,10 @@ class TestFittingSequence(object):
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['sampler_type'] = 'EMCEE'
         fitting_list.append(['MCMC', kwargs_mcmc])
+
+
+
+
         kwargs_mcmc['re_use_samples'] = True
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
@@ -269,7 +273,6 @@ class TestFittingSequence(object):
         fittingSequence.update_state(kwargs_test)
         kwargs_out = fittingSequence.best_fit(bijective=True)
         assert kwargs_out['kwargs_lens'] == 1
-
 
 
 if __name__ == '__main__':

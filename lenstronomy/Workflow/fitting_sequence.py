@@ -87,6 +87,7 @@ class FittingSequence(object):
                     kwargs['init_samples'] = self._mcmc_init_samples
                 mcmc_output = self.mcmc(**kwargs)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
+                print(kwargs_result, 'test kwargs result')
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 

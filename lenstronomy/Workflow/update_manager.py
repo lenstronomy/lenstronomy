@@ -113,18 +113,44 @@ class UpdateManager(object):
     def update_param_state(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_special=None, kwargs_extinction=None):
         """
-        updates the temporary state of the parameters being saved
+        updates the temporary state of the parameters being saved. ATTENTION: Any previous knowledge gets lost if you
+        call this function
 
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
         :param kwargs_special:
+        :param kwargs_extinction:
         :return:
         """
         self._kwargs_temp = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
                              'kwargs_lens_light': kwargs_lens_light, 'kwargs_ps': kwargs_ps,
                              'kwargs_special': kwargs_special, 'kwargs_extinction': kwargs_extinction}
+
+    def update_param_value(self, lens=[], source=[], lens_light=[], ps=[]):
+        """
+        Set a model parameter to a specific value.
+        :param lens: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens:
+        :param source: [[i_model, ['param1', 'param2',...], [...]]
+        :type source:
+        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens_light:
+        :param ps: [[i_model, ['param1', 'param2',...], [...]]
+        :type ps:
+        :return: 0, the value of the param is overwritten
+        :rtype:
+        """
+        for items, kwargs_key in zip([lens, source, lens_light, ps],
+            ['kwargs_lens', 'kwargs_source', 'kwargs_lens_light', 'kwargs_ps']):
+            for item in items:
+                index = item[0]
+                keys = item[1]
+                values = item[2]
+
+                for key, value in zip(keys, values):
+                    self._kwargs_temp[kwargs_key][index][key] = value
 
     @property
     def param_class(self):
@@ -190,17 +216,12 @@ class UpdateManager(object):
                 kwargs_limit_updated[i_model][param_name] = values[j]
         return kwargs_limit_updated
 
-    def update_fixed(self, lens_add_fixed=[],
-                     source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], special_add_fixed=[], lens_remove_fixed=[],
-                     source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], special_remove_fixed=[]):
+    def update_fixed(self, lens_add_fixed=[], source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[],
+                     special_add_fixed=[], lens_remove_fixed=[], source_remove_fixed=[], lens_light_remove_fixed=[],
+                     ps_remove_fixed=[], special_remove_fixed=[]):
         """
         adds the values of the keyword arguments that are stated in the _add_fixed to the existing fixed arguments.
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :param kwargs_cosmo:
         :param lens_add_fixed:
         :param source_add_fixed:
         :param lens_light_add_fixed:

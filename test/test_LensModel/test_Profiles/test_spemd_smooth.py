@@ -47,16 +47,28 @@ class TestSPEMD(object):
         y = np.array([2])
         phi_E = 1.
         gamma = 2.
-        q = 0.7
+        q = 1.
         phi_G = 1.
         s_scale = 0.1
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_x, f_y = self.SPEMD_SMOOT.derivatives(x, y, phi_E, gamma, e1, e2, s_scale)
         if fastell4py_bool:
             f_x_nie, f_y_nie = self.NIE.derivatives(x, y, phi_E, e1, e2, s_scale)
-            #TODO test with higher precision, convention of theta_E might be slightly different from NIE with SPEMD
-            npt.assert_almost_equal(f_x, f_x_nie, decimal=2)
-            npt.assert_almost_equal(f_y, f_y_nie, decimal=2)
+            npt.assert_almost_equal(f_x, f_x_nie, decimal=4)
+            npt.assert_almost_equal(f_y, f_y_nie, decimal=4)
+        else:
+            npt.assert_almost_equal(f_x, 0, decimal=7)
+            npt.assert_almost_equal(f_y, 0, decimal=7)
+
+        q = 0.7
+        phi_G = 1.
+        s_scale = 0.001
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+        f_x, f_y = self.SPEMD_SMOOT.derivatives(x, y, phi_E, gamma, e1, e2, s_scale)
+        if fastell4py_bool:
+            f_x_nie, f_y_nie = self.NIE.derivatives(x, y, phi_E, e1, e2, s_scale)
+            npt.assert_almost_equal(f_x, f_x_nie, decimal=4)
+            npt.assert_almost_equal(f_y, f_y_nie, decimal=4)
         else:
             npt.assert_almost_equal(f_x, 0, decimal=7)
             npt.assert_almost_equal(f_y, 0, decimal=7)
@@ -68,14 +80,14 @@ class TestSPEMD(object):
         gamma = 2.
         q = 0.9
         phi_G = 1.
-        s_scale = 0.1
+        s_scale = 0.001
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         f_xx, f_yy,f_xy = self.SPEMD_SMOOT.hessian(x, y, phi_E, gamma, e1, e2, s_scale)
         if fastell4py_bool:
             f_xx_nie, f_yy_nie, f_xy_nie = self.NIE.hessian(x, y, phi_E, e1, e2, s_scale)
-            npt.assert_almost_equal(f_xx, f_xx_nie, decimal=3)
-            npt.assert_almost_equal(f_yy, f_yy_nie, decimal=3)
-            npt.assert_almost_equal(f_xy, f_xy_nie, decimal=3)
+            npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
+            npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
+            npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
         else:
             npt.assert_almost_equal(f_xx, 0, decimal=7)
             npt.assert_almost_equal(f_yy, 0, decimal=7)

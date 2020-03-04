@@ -166,6 +166,12 @@ class LightModelBase(object):
                 # 'TRIPLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list
 
+    def delete_interpol_caches(self):
+        """Call the delete_cache method of INTERPOL profiles"""
+        for i, model in enumerate(self.profile_type_list):
+            if model == 'INTERPOL':
+                self.func_list[i].delete_cache()
+
     def _transform_kwargs(self, kwargs_list):
         """
 

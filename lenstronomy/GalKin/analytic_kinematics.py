@@ -40,7 +40,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
 
-    def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
+    def dispersion(self, gamma, theta_E, r_eff, r_ani, sampling_number=1000):
         """
         computes the averaged LOS velocity dispersion in the slit (convolved)
 
@@ -48,17 +48,17 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         :param theta_E: Einstein radius of the lens (in arcseconds)
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
+        :param sampling_number: number of spectral renderings drawn from the light distribution that go through the
             slit of the observations
 
         :return: LOS integrated velocity dispersion in units [km/s]
         """
         sigma_s2_sum = 0
         rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
-        for i in range(0, rendering_number):
+        for i in range(0, sampling_number):
             sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani)
             sigma_s2_sum += sigma_s2_draw
-        sigma_s2_average = sigma_s2_sum / rendering_number
+        sigma_s2_average = sigma_s2_sum / sampling_number
         return np.sqrt(sigma_s2_average) / 1000
 
     def _rho0_r0_gamma(self, theta_E, gamma):
@@ -84,7 +84,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
             if bool is True:
                 break
         sigma_s2 = self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
-        return np.array(sigma_s2, dtype=float)
+        return np.asarray(sigma_s2, dtype=float)
 
     @staticmethod
     def draw_hernquist(a):
@@ -138,7 +138,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
         if 'a' not in kwargs_light:
             kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
-        if 'rho0_r0_gamma' not in kwargs_light:
+        if 'rho0_r0_gamma' not in kwargs_mass:
             kwargs_mass['rho0_r0_gamma'] = self._rho0_r0_gamma(kwargs_mass['theta_E'], kwargs_mass['gamma'])
         a = kwargs_light['a']
         gamma = kwargs_mass['gamma']
@@ -157,3 +157,11 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2
+
+    def delete_cache(self):
+        """
+        deletes temporary cache tight to a specific model
+
+        :return:
+        """
+        pass

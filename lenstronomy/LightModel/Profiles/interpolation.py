@@ -94,3 +94,8 @@ class Interpol(object):
         y_ = dec_ / scale
         x, y = util.rotate(x_, y_, phi_G)
         return x, y
+
+    def delete_cache(self):
+        """delete the cached interpolated image"""
+        if hasattr(self, '_image_interp'):
+            del self._image_interp

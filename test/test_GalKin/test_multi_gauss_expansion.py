@@ -60,14 +60,14 @@ class TestGalkin(object):
                         'anisotropy_model': anisotropy_type}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
+        sigma_v = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         kwargs_model_mge = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list_mge,
                         'anisotropy_model': anisotropy_type}
         galkin = Galkin(kwargs_model=kwargs_model_mge, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
+        sigma_v2 = galkin.dispersion(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -118,14 +118,14 @@ class TestGalkin(object):
 
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
+        sigma_v = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         kwargs_model = {'mass_profile_list': mass_profile_list_mge,
                         'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_type}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light, kwargs_anisotropy)
+        sigma_v2 = galkin.dispersion(kwargs_profile_mge, kwargs_light, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -180,7 +180,7 @@ class TestGalkin(object):
 
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light, kwargs_anisotropy)
+        sigma_v = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy)
 
         kwargs_model_mge = {'mass_profile_list': mass_profile_list_mge,
                         'light_profile_list': light_profile_list_mge,
@@ -188,7 +188,7 @@ class TestGalkin(object):
 
         galkin = Galkin(kwargs_model=kwargs_model_mge, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v2 = galkin.vel_disp(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy)
+        sigma_v2 = galkin.dispersion(kwargs_profile_mge, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)
@@ -251,14 +251,14 @@ class TestGalkin(object):
 
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v = galkin.vel_disp(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy)
+        sigma_v = galkin.dispersion(kwargs_profile, kwargs_light_hernquist, kwargs_anisotropy)
 
         kwargs_model = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list_mge,
                         'anisotropy_model': anisotropy_type}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo,
                         kwargs_aperture=kwargs_aperture, kwargs_numerics={})
-        sigma_v2 = galkin.vel_disp(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
+        sigma_v2 = galkin.dispersion(kwargs_profile, kwargs_light_mge, kwargs_anisotropy)
 
         print(sigma_v, sigma_v2, 'sigma_v Galkin, sigma_v MGEn')
         print((sigma_v/sigma_v2)**2)

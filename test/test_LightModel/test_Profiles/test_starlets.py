@@ -54,16 +54,13 @@ class TestStarlets(object):
         self.starlets_fast.decomposition(self.test_image, self.n_scales)
         self.starlets_2nd.decomposition(self.test_image, self.n_scales)
 
-        image = self.starlets.function_2d(coeffs=self.test_coeffs, 
-                                       n_scales=self.n_scales, n_pixels=self.n_pixels)
-        image_fast = self.starlets_fast.function_2d(coeffs=self.test_coeffs, 
-                                                 n_scales=self.n_scales, n_pixels=self.n_pixels)
+        image = self.starlets.function_2d(coeffs=self.test_coeffs, n_scales=self.n_scales)
+        image_fast = self.starlets_fast.function_2d(coeffs=self.test_coeffs, n_scales=self.n_scales)
         assert image.shape == (self.num_pix, self.num_pix)
         assert image_fast.shape == (self.num_pix, self.num_pix)
         npt.assert_almost_equal(image, image_fast, decimal=7)
 
-        image_2nd = self.starlets_2nd.function_2d(coeffs=self.test_coeffs, 
-                                       n_scales=self.n_scales, n_pixels=self.n_pixels)
+        image_2nd = self.starlets_2nd.function_2d(coeffs=self.test_coeffs, n_scales=self.n_scales)
         assert image_2nd.shape == (self.num_pix, self.num_pix)
         assert np.all(image_2nd >= 0)
 
@@ -80,15 +77,15 @@ class TestStarlets(object):
         coeffs_1d = self.test_coeffs.reshape(self.n_scales*self.num_pix**2)
         
         image_1d = self.starlets.function(self.x, self.y, coeffs=coeffs_1d, 
-                                       n_scales=self.n_scales, n_pixels=self.n_pixels)
+                                          n_scales=self.n_scales, n_pixels=self.n_pixels)
         image_1d_fast = self.starlets_fast.function(self.x, self.y, coeffs=coeffs_1d, 
-                                                 n_scales=self.n_scales, n_pixels=self.n_pixels)
+                                                    n_scales=self.n_scales, n_pixels=self.n_pixels)
         assert image_1d.shape == (self.num_pix**2,)
         assert image_1d_fast.shape == (self.num_pix**2,)
         npt.assert_almost_equal(image_1d, image_1d_fast, decimal=7)
 
         image_1d_2nd = self.starlets_2nd.function(self.x, self.y, coeffs=coeffs_1d, 
-                                       n_scales=self.n_scales, n_pixels=self.n_pixels)
+                                                  n_scales=self.n_scales, n_pixels=self.n_pixels)
         assert image_1d_2nd.shape == (self.num_pix**2,)
         assert np.all(image_1d_2nd >= 0)
 
@@ -133,15 +130,15 @@ class TestStarlets(object):
         :return:
         """
         coeffs = self.starlets.decomposition_2d(self.test_image, self.n_scales)
-        test_image_recon = self.starlets.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
+        test_image_recon = self.starlets.function_2d(coeffs=coeffs, n_scales=self.n_scales)
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=3) # 7
 
         coeffs = self.starlets_fast.decomposition_2d(self.test_image, self.n_scales)
-        test_image_recon = self.starlets_fast.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
+        test_image_recon = self.starlets_fast.function_2d(coeffs=coeffs, n_scales=self.n_scales)
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=3) # 7
 
         coeffs = self.starlets_2nd.decomposition_2d(self.test_image, self.n_scales)
-        test_image_recon = self.starlets_2nd.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
+        test_image_recon = self.starlets_2nd.function_2d(coeffs=coeffs, n_scales=self.n_scales)
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=3) # 7
         
     def test_spectral_norm(self):

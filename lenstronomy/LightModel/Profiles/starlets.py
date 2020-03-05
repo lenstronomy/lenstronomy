@@ -54,21 +54,20 @@ class Starlets(object):
         """
         if len(coeffs.shape) == 1:
             coeffs = util_s.array2cube(coeffs, n_scales, n_pixels)
-        image = self.function_2d(coeffs, n_scales, n_pixels)
+        image = self.function_2d(coeffs, n_scales)
         image = self.interpol.function(x, y, image=image, scale=scale,
                                        center_x=center_x, center_y=center_y,
                                        amp=1, phi_G=0)
         return image
 
-    def function_2d(self, coeffs, n_scales, n_pixels):
+    def function_2d(self, coeffs, n_scales):
         """
         2D inverse starlet transform from starlet coefficients stored in coeffs
 
         :param coeffs: decomposition coefficients, 
         ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         :param n_scales: number of decomposition scales
-        :param n_pixels: number of pixels in a single scale
-        :return: reconstructed signal as 2D array of shape (n_pixels,)
+        :return: reconstructed signal as 2D array of shape (sqrt(n_pixels), sqrt(n_pixels))
         """
         if self.use_pysap:
             return self._inverse_transform(coeffs, n_scales)
@@ -151,7 +150,7 @@ class Starlets(object):
     def _compute_spectral_norm(self, n_scales, n_pixels, num_iter=20, tol=1e-10):
         """compute spectral norm of the starlet operator"""
         operator = lambda x: self.decomposition_2d(x, n_scales)
-        inverse_operator = lambda c: self.function_2d(c, n_scales, n_pixels)
+        inverse_operator = lambda c: self.function_2d(c, n_scales)
         num_pix = int(np.sqrt(n_pixels))
         return util_s.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 

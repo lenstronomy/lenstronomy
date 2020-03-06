@@ -235,7 +235,8 @@ class GeneralizedOM(object):
         :return: k_beta(r, R)
         """
         z = (R**2 - r**2) / (r_ani**2 + R**2)
-        return - self.beta_r(R, r_ani, beta_inf) * ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf *\
+        # ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf
+        return - self.beta_r(R, r_ani, beta_inf) * self._j_beta(R, r, r_ani, beta_inf) *\
                np.sqrt(r**2 - R**2) * (self._F(1/2., z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F(3/2., z, beta_inf))
 
     def _j_beta(self, r, s, r_ani, beta_inf):

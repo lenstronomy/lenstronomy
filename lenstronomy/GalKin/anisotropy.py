@@ -1,10 +1,17 @@
 import numpy as np
 import scipy.special as special
+from lenstronomy.GalKin import velocity_util
 
 
 class Anisotropy(object):
     """
     class that handles the kinematic anisotropy
+    sources: Mamon & Lokas 2005
+    https://arxiv.org/pdf/astro-ph/0405491.pdf
+
+    also helpful:
+    Agnello et al. 2014
+    https://arxiv.org/pdf/1401.4462.pdf
     """
 
     def __init__(self, anisotropy_type):
@@ -21,6 +28,8 @@ class Anisotropy(object):
             self._model = Isotropic()
         elif self._type == 'OsipkovMerritt':
             self._model = OsipkovMerritt()
+        elif self._type == 'GeneralizedOM':
+            self._model = GeneralizedOM()
         elif self._type == 'Colin':
             self._model = Colin()
         else:
@@ -180,6 +189,76 @@ class OsipkovMerritt(object):
         :return: beta
         """
         return r**2/(r_ani**2 + r**2)
+
+
+class GeneralizedOM(object):
+    """
+    generalized Osipkov&Merrit profile
+    see Agnello et al. 2014 https://arxiv.org/pdf/1401.4462.pdf
+    b(r) = beta_inf * r^2 / (r^2 + r_ani^2)
+    """
+
+    @staticmethod
+    def beta_r(r, r_ani, beta_inf):
+        """
+        anisotropy as a function of radius
+
+        :param r: 3d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: beta
+        """
+        return beta_inf * r**2/(r_ani**2 + r**2)
+
+    def K(self, r, R, r_ani, beta_inf):
+        """
+        equation19 in Agnello et al. 2014 for k_beta(R, r) such that
+        K(R, r) = (sqrt(r^2 - R^2) + k_beta(R, r)) / r
+
+        :param r: 3d radius
+        :param R: projected 2d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: K(r, R)
+        """
+        return (np.sqrt(r**2 - R**2) + self._k_beta(r, R, r_ani, beta_inf)) / r
+
+    def _k_beta(self, r, R, r_ani, beta_inf):
+        """
+        equation19 in Agnello et al. 2014 for k_beta(R, r) such that
+        K(R, r) = (sqrt(r^2 - R^2) + k_beta(R, r)) / r
+
+        :param r: 3d radius
+        :param R: projected 2d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: k_beta(r, R)
+        """
+        z = (R**2 - r**2) / (r_ani**2 + R**2)
+        return - self.beta_r(R, r_ani, beta_inf) * ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf *\
+               np.sqrt(r**2 - R**2) * (self._F(1/2., z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F(3/2., z, beta_inf))
+
+    def _j_beta(self, r, s, r_ani, beta_inf):
+        """
+        equation (12) in Agnello et al. 2014
+
+        :param r:
+        :param s:
+        :param r_ani:
+        :param beta_inf
+        :return:
+        """
+        return ((s**2 + r_ani**2) / (r**2 + r_ani**2)) ** beta_inf
+
+    def _F(self, a, z, beta_inf):
+        """
+        the hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
+
+        :param a:
+        :param z:
+        :return:
+        """
+        return velocity_util.hyp_2F1(a=a, b=1+beta_inf, c=a+1, z=z)
 
 
 class Colin(object):

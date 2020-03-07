@@ -42,9 +42,8 @@ class AlignmentFitting(object):
         result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
         kwargs_data = self.chain.update_data(result)
-        if mpi is True and not pool.is_master():
-            pass
-        else:
+
+        if pool.is_master():
             time_end = time.time()
             print("Shifts found: ", result)
             print(time_end - time_start, 'time used for ', print_key)

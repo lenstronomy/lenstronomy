@@ -78,6 +78,15 @@ class ParticleSwarmOptimizer(object):
 
         self.func = _FunctionWrapper(func, args, kwargs)
 
+    def __getstate__(self):
+        """
+        In order to be generally picklable, we need to discard the pool
+        object before trying.
+        """
+        d = self.__dict__
+        d["pool"] = None
+        return d
+
     def set_global_best(self, position, velocity, fitness):
         """
         Set the global best particle.

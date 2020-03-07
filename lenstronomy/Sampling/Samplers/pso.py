@@ -40,11 +40,28 @@ class ParticleSwarmOptimizer(object):
     """
 
     def __init__(self, func, low, high, particle_count=25, threads=1,
-                 pool=None):
+                 pool=None, args=None, kwargs=None):
         """
-        Constructor
+
+        :param func:
+        :type func:
+        :param low:
+        :type low:
+        :param high:
+        :type high:
+        :param particle_count:
+        :type particle_count:
+        :param threads:
+        :type threads:
+        :param pool:
+        :type pool:
+        :param args: positional arguments to send to `func`. The function
+        will be called as `func(x, *args, **kwargs)`.
+        :type args: `list`
+        :param kwargs: keyword arguments to send to `func`. The function
+        will be called as `func(x, *args, **kwargs)`
+        :type kwargs: `dict`
         """
-        self.func = func
         self.low = low
         self.high = high
         self.particleCount = particle_count
@@ -58,6 +75,8 @@ class ParticleSwarmOptimizer(object):
 
         self.swarm = self._init_swarm()
         self.global_best = Particle.create(self.param_count)
+
+        self.func = _FunctionWrapper(func, args, kwargs)
 
     def set_global_best(self, position, velocity, fitness):
         """
@@ -341,3 +360,30 @@ class Particle(object):
 
     def __unicode__(self):
         return self.__str__()
+
+
+class _FunctionWrapper(object):
+    """
+    This is a hack to make the likelihood function pickleable when ``args``
+    or ``kwargs`` are also included. This hack is copied from
+    emcee: https://github.com/dfm/emcee/.
+    """
+
+    def __init__(self, f, args, kwargs):
+        self.f = f
+        self.args = [] if args is None else args
+        self.kwargs = {} if kwargs is None else kwargs
+
+    def __call__(self, x):
+        try:
+            return self.f(x, *self.args, **self.kwargs)
+        except:  # pragma: no cover
+            import traceback
+
+            print("PSO: Exception while calling your likelihood function:")
+            print("  params:", x)
+            print("  args:", self.args)
+            print("  kwargs:", self.kwargs)
+            print("  exception:")
+            traceback.print_exc()
+            raise

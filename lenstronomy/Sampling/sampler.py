@@ -41,10 +41,16 @@ class Sampler(object):
         else:
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
+
         if mpi is True:
+            pool = MPIPool()
+            if not pool.is_master():
+                pool.wait()
+                sys.exit(0)
+                
             pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative,
                                          lower_start, upper_start, n_particles,
-                                         threads=1, mpi=True)
+                                         threads=1, pool=pool)
             if pso.is_master():
                 print('MPI option chosen')
         else:

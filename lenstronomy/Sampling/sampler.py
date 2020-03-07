@@ -4,9 +4,10 @@ import time
 import sys
 
 import numpy as np
-from cosmoHammer import MpiParticleSwarmOptimizer
-from cosmoHammer import ParticleSwarmOptimizer
-from cosmoHammer.util import MpiUtil
+#from cosmoHammer import MpiParticleSwarmOptimizer
+#from cosmoHammer import ParticleSwarmOptimizer
+#from cosmoHammer.util import MpiUtil
+from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
@@ -41,43 +42,46 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
         if mpi is True:
-            pso = MpiParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=1)
-            if pso.isMaster():
+            pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative,
+                                         lower_start, upper_start, n_particles,
+                                         threads=1, mpi=True)
+            if pso.is_master():
                 print('MPI option chosen')
         else:
             pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=threadCount)
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
         if not init_pos is None:
-            pso.gbest.position = init_pos
-            pso.gbest.velocity = [0]*len(init_pos)
-            pso.gbest.fitness = self.chain.likelihood(init_pos)
+            pso.global_best.position = init_pos
+            pso.global_best.velocity = [0]*len(init_pos)
+            pso.global_best.fitness = self.chain.likelihood(init_pos)
         X2_list = []
         vel_list = []
         pos_list = []
         time_start = time.time()
-        if pso.isMaster():
+        if pso.is_master():
             print('Computing the %s ...' % print_key)
         num_iter = 0
         for swarm in pso.sample(n_iterations):
-            X2_list.append(pso.gbest.fitness*2)
-            vel_list.append(pso.gbest.velocity)
-            pos_list.append(pso.gbest.position)
+            X2_list.append(pso.global_best.fitness*2)
+            vel_list.append(pso.global_best.velocity)
+            pos_list.append(pso.global_best.position)
             num_iter += 1
-            if pso.isMaster():
+            if pso.is_master():
                 if num_iter % 10 == 0:
                     print(num_iter)
         if not mpi:
-            result = pso.gbest.position
+            result = pso.global_best.position
         else:
-            result = MpiUtil.mpiBCast(pso.gbest.position)
+            result = pso.global_best.position
 
-        if mpi is True and not pso.isMaster():
+        if mpi is True and not pso.is_master():
             pass
         else:
             kwargs_return = self.chain.param.args2kwargs(result)
-            print(pso.gbest.fitness * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
-            print(pso.gbest.fitness, 'logL')
+            print(pso.global_best.fitness * 2 / (max(
+                self.chain.effectiv_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
+            print(pso.global_best.fitness, 'logL')
             print(self.chain.effectiv_num_data_points(**kwargs_return), 'effective number of data points')
             print(kwargs_return.get('kwargs_lens', None), 'lens result')
             print(kwargs_return.get('kwargs_source', None), 'source result')

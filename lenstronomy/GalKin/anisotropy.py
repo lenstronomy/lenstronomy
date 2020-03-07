@@ -9,7 +9,6 @@ class Anisotropy(object):
     sources: Mamon & Lokas 2005
     https://arxiv.org/pdf/astro-ph/0405491.pdf
 
-    also helpful:
     Agnello et al. 2014
     https://arxiv.org/pdf/1401.4462.pdf
     """

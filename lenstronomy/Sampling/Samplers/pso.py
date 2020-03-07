@@ -80,7 +80,7 @@ class ParticleSwarmOptimizer(object):
 
     def __getstate__(self):
         """
-        In order to be generally picklable, we need to discard the pool
+        In order to be generally pickleable, we need to discard the pool
         object before trying.
         """
         d = self.__dict__

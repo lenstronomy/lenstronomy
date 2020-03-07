@@ -58,24 +58,6 @@ class Sampler(object):
 
         time_start = time.time()
 
-        # X2_list = []
-        # vel_list = []
-        # pos_list = []
-        #
-        # num_iter = 0
-        # for swarm in pso.sample(n_iterations):
-        #     X2_list.append(pso.global_best.fitness*2)
-        #     vel_list.append(pso.global_best.velocity)
-        #     pos_list.append(pso.global_best.position)
-        #     num_iter += 1
-        #     if pool.is_master():
-        #         if num_iter % 10 == 0:
-        #             print(num_iter)
-        # if not mpi:
-        #     result = pso.global_best.position
-        # else:
-        #     result = pso.global_best.position
-
         result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
         if pool.is_master():
@@ -95,6 +77,28 @@ class Sampler(object):
         return result, [chi2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
+        """
+        Run MCMC with emcee.
+
+        :param n_walkers:
+        :type n_walkers:
+        :param n_run:
+        :type n_run:
+        :param n_burn:
+        :type n_burn:
+        :param mean_start:
+        :type mean_start:
+        :param sigma_start:
+        :type sigma_start:
+        :param mpi:
+        :type mpi:
+        :param progress:
+        :type progress:
+        :param threadCount:
+        :type threadCount:
+        :return:
+        :rtype:
+        """
         numParam, _ = self.chain.param.num_param()
         p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()

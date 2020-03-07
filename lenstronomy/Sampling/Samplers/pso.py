@@ -149,7 +149,7 @@ class ParticleSwarmOptimizer(object):
             i += 1
 
     def optimize(self, max_iter=1000, verbose=True, c1=1.193, c2=1.193,
-                      p=0.7, m=1e-3, n=1e-2):
+                 p=0.7, m=1e-3, n=1e-2):
         """
         Run the optimization and return a full list of optimization outputs.
 

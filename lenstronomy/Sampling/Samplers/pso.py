@@ -166,8 +166,7 @@ class ParticleSwarmOptimizer(object):
         :rtype:
         """
         position = np.array([part.position for part in swarm])
-        results = self.pool.map(self.func, position)
-        ln_probability = np.array([l[0] for l in results])
+        ln_probability = list(self.pool.map(self.func, position))
 
         for i, particle in enumerate(swarm):
             particle.fitness = ln_probability[i]

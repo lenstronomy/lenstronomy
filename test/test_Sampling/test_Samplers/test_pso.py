@@ -86,7 +86,7 @@ class TestParticleSwarmOptimizer(object):
         high = np.ones(2)
 
         def func(p):
-            return -np.random.rand(), None
+            return -np.random.rand()
 
         pso = ParticleSwarmOptimizer(func, low, high, 10)
 
@@ -113,7 +113,7 @@ class TestParticleSwarmOptimizer(object):
         n_iterations = 100
 
         def ln_probability(x):
-            return - x ** 2, None
+            return - x**2
 
         pso = ParticleSwarmOptimizer(func=ln_probability, low=[-10], high=[10],
                                      particle_count=n_particle, threads=1)
@@ -121,7 +121,7 @@ class TestParticleSwarmOptimizer(object):
         init_pos = np.array([1])
         pso.global_best.position = init_pos
         pso.global_best.velocity = [0] * len(init_pos)
-        pso.global_best.fitness, _ = ln_probability(init_pos)
+        pso.global_best.fitness = ln_probability(init_pos)
         x2_list = []
         vel_list = []
         pos_list = []

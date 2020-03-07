@@ -10,7 +10,6 @@ import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 import emcee
-from schwimmbad import MPIPool
 from schwimmbad import choose_pool
 
 
@@ -43,6 +42,9 @@ class Sampler(object):
             upper_start = np.minimum(upper_start, self.upper_limit)
 
         pool = choose_pool(mpi, processes=threadCount)
+
+        if mpi is True and pool.is_master():
+            print('MPI option chosen for PSO.')
 
         pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative,
                                      lower_start, upper_start, n_particles,

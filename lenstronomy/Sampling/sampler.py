@@ -61,7 +61,7 @@ class Sampler(object):
         vel_list = []
         pos_list = []
         time_start = time.time()
-        if pso.is_master():
+        if pool.is_master():
             print('Computing the %s ...' % print_key)
         num_iter = 0
         for swarm in pso.sample(n_iterations):
@@ -69,7 +69,7 @@ class Sampler(object):
             vel_list.append(pso.global_best.velocity)
             pos_list.append(pso.global_best.position)
             num_iter += 1
-            if pso.is_master():
+            if pool.is_master():
                 if num_iter % 10 == 0:
                     print(num_iter)
         if not mpi:
@@ -77,7 +77,7 @@ class Sampler(object):
         else:
             result = pso.global_best.position
 
-        if mpi is True and not pso.is_master():
+        if mpi is True and not pool.is_master():
             pass
         else:
             kwargs_return = self.chain.param.args2kwargs(result)

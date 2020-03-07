@@ -4,9 +4,6 @@ import time
 import sys
 
 import numpy as np
-#from cosmoHammer import MpiParticleSwarmOptimizer
-#from cosmoHammer import ParticleSwarmOptimizer
-#from cosmoHammer.util import MpiUtil
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 import emcee

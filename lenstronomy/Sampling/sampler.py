@@ -51,7 +51,7 @@ class Sampler(object):
             init_pos = (upper_start - lower_start) / 2 + lower_start
 
         pso.set_global_best(init_pos, [0]*len(init_pos),
-                            self.chain.likelihood(init_pos))
+                            self.chain.logL(init_pos))
 
         if pool.is_master():
             print('Computing the %s ...' % print_key)

@@ -182,7 +182,7 @@ class ParticleSwarmOptimizer(object):
         :return:
         :rtype:
         """
-        position = np.array([part.position for part in swarm])
+        position = np.array([particle.position for particle in swarm])
         ln_probability = list(self.pool.map(self.func, position))
 
         for i, particle in enumerate(swarm):
@@ -244,7 +244,7 @@ class ParticleSwarmOptimizer(object):
         :rtype:
         """
         sorted_swarm = [particle for particle in self.swarm]
-        sorted_swarm.sort(key=lambda part: -part.fitness)
+        sorted_swarm.sort(key=lambda particle: -particle.fitness)
         best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         diffs = []
@@ -264,7 +264,7 @@ class ParticleSwarmOptimizer(object):
         """
         # Andres N. Ruiz et al.
         sorted_swarm = [particle for particle in self.swarm]
-        sorted_swarm.sort(key=lambda part: -part.fitness)
+        sorted_swarm.sort(key=lambda particle: -particle.fitness)
         best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         positions = [particle.position for particle in best_of_best]

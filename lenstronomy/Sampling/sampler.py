@@ -77,9 +77,7 @@ class Sampler(object):
         else:
             result = pso.global_best.position
 
-        if mpi is True and not pool.is_master():
-            pass
-        else:
+        if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
             print(pso.global_best.fitness * 2 / (max(
                 self.chain.effectiv_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')

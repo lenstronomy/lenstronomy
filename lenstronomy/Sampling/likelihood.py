@@ -249,11 +249,3 @@ class LikelihoodModule(object):
 
     def likelihood(self, a):
         return self.logL(a)
-
-    def likelihood_derivative(self, a):
-        """
-
-        :param a: array
-        :return: logL, derivative estimatoe (None)
-        """
-        return self.logL(a), None

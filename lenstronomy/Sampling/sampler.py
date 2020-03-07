@@ -11,7 +11,7 @@ from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
-from schwimmbad import MultiPool as Pool
+from schwimmbad import choose_pool
 
 
 class Sampler(object):
@@ -42,19 +42,13 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        if mpi is True:
-            pool = MPIPool()
-            if not pool.is_master():
-                pool.wait()
-                sys.exit(0)
-                
-            pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative,
-                                         lower_start, upper_start, n_particles,
-                                         threads=1, pool=pool)
-            if pso.is_master():
-                print('MPI option chosen')
-        else:
-            pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative, lower_start, upper_start, n_particles, threads=threadCount)
+        pool = choose_pool(mpi, processes=threadCount)
+
+        pso = ParticleSwarmOptimizer(self.chain.likelihood_derivative,
+                                     lower_start, upper_start, n_particles,
+                                     pool=pool)
+
+
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
         if not init_pos is None:

@@ -59,6 +59,23 @@ class ParticleSwarmOptimizer(object):
         self.swarm = self._init_swarm()
         self.global_best = Particle.create(self.param_count)
 
+    def set_global_best(self, position, velocity, fitness):
+        """
+        Set the global best particle.
+
+        :param position: position of the new global best
+        :type position: `list` or `ndarray`
+        :param velocity: velocity of the new global best
+        :type velocity: `list` or `ndarray`
+        :param fitness: fitness of the new global best
+        :type fitness: `float`
+        :return: `None`
+        :rtype:
+        """
+        self.global_best.position = position
+        self.global_best.velocity = velocity
+        self.global_best.fitness = fitness
+
     def _init_swarm(self):
         """
         Initiate the swarm.

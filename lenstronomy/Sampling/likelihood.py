@@ -247,6 +247,10 @@ class LikelihoodModule(object):
     def __call__(self, a):
         return self.logL(a)
 
+    def negativeChi2(self, a):
+        logL = self.logL(a)
+        return -logL
+
     def likelihood(self, a):
         return self.logL(a)
 

@@ -11,6 +11,7 @@ from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
 from multiprocess import Pool
+from scipy.optimize import minimize
 
 
 class Sampler(object):
@@ -28,6 +29,32 @@ class Sampler(object):
         """
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
+
+    def simplex(self, init_pos, n_iterations, print_key='SIMPLEX'):
+        """
+        returns the best fit for the lens model using a downhill simplex method Nelder-Mead
+        """
+        print('Computing the downhill simplex... ')
+        time_start = time.time()
+        result = minimize(self.chain.negativeChi2, x0=init_pos, method='Nelder-Mead',
+                          options={'maxiter': n_iterations, 'disp': True})
+
+        chi2 = -self.chain.negativeChi2(result['x'])
+        kwargs_return = self.chain.param.args2kwargs(result['x'])
+        print(chi2 * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)),
+              'reduced X^2 of best position')
+        print(chi2, 'logL')
+        print(self.chain.effectiv_num_data_points(**kwargs_return), 'effective number of data points')
+        print(kwargs_return.get('kwargs_lens', None), 'lens result')
+        print(kwargs_return.get('kwargs_source', None), 'source result')
+        print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')
+        print(kwargs_return.get('kwargs_ps', None), 'point source result')
+        print(kwargs_return.get('kwargs_special', None), 'special param result')
+        time_end = time.time()
+        print(time_end - time_start, 'time used for ', print_key)
+        print('===================')
+
+        return result['x']
 
     def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None, threadCount=1, init_pos=None,
             mpi=False, print_key='PSO'):

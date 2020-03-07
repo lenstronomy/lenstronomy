@@ -91,15 +91,22 @@ class TestParticleSwarmOptimizer(object):
         pso = ParticleSwarmOptimizer(func, low, high, 10)
 
         max_iter = 10
-        swarms, global_bests = pso.optimize(max_iter)
-        assert swarms is not None
-        assert global_bests is not None
-        assert len(swarms) == max_iter
-        assert len(global_bests) == max_iter
+        result, [chi2_list, pos_list, vel_list] = pso.optimize(max_iter)
+        assert result is not None
+        assert chi2_list is not None
+        assert pos_list is not None
+        assert vel_list is not None
 
-        fitness = [part.fitness != 0 for part in pso.swarm]
-        assert all(fitness)
+        assert len(result) == 2
 
+        assert len(chi2_list) == max_iter
+        assert len(pos_list) == max_iter
+        assert len(pos_list[0]) == 2
+
+        assert len(vel_list) == max_iter
+        assert len(vel_list[0]) == 2
+
+        assert np.all(chi2_list) != 0
         assert pso.global_best.fitness != -np.inf
 
     def test_sample(self):

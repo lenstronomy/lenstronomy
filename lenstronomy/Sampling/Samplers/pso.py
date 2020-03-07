@@ -91,8 +91,7 @@ class ParticleSwarmOptimizer(object):
 
         return swarm
 
-    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=10 ** -3,
-               n=10 ** -2):
+    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2):
         """
         Launches the PSO. Yields the complete swarm per iteration
 
@@ -149,7 +148,7 @@ class ParticleSwarmOptimizer(object):
 
             i += 1
 
-    def optimize_detailed(self, max_iter=1000, verbose=True, c1=1.193, c2=1.193,
+    def optimize(self, max_iter=1000, verbose=True, c1=1.193, c2=1.193,
                       p=0.7, m=1e-3, n=1e-2):
         """
         Run the optimization and return a full list of optimization outputs.
@@ -180,30 +179,6 @@ class ParticleSwarmOptimizer(object):
                     print(num_iter)
 
         return self.global_best.position, [chi2_list, pos_list, vel_list]
-
-    def optimize(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=10 ** -3, n=10 ** -2):
-        """
-        Runs the complete optimization.
-
-        :param max_iter: maximum iterations
-        :param c1: cognitive weight
-        :param c2: social weight
-        :param p: stop criterion, percentage of particles to use
-        :param m: stop criterion, difference between mean fitness and global
-        best
-        :param n: stop criterion, difference between norm of the particle
-        vector and norm of the global best
-
-        :return swarms, global_bests: the swarms and the global bests of all
-        iterations
-        """
-        swarms = []
-        global_bests = []
-        for swarm in self.sample(max_iter, c1, c2, p, m, n):
-            swarms.append(swarm)
-            global_bests.append(self.global_best.copy())
-
-        return swarms, global_bests
 
     def _get_fitness(self, swarm):
         """

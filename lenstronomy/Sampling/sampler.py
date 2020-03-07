@@ -53,9 +53,10 @@ class Sampler(object):
         pso.set_global_best(init_pos, [0]*len(init_pos),
                             self.chain.likelihood(init_pos))
 
-        time_start = time.time()
         if pool.is_master():
             print('Computing the %s ...' % print_key)
+
+        time_start = time.time()
 
         # X2_list = []
         # vel_list = []
@@ -75,8 +76,7 @@ class Sampler(object):
         # else:
         #     result = pso.global_best.position
 
-        result, [chi2_list, pos_list, vel_list] = pso.optimize_detailed(
-                                                                n_iterations)
+        result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)

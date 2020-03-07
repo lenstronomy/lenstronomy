@@ -11,7 +11,7 @@ from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 import emcee
 from schwimmbad import MPIPool
-from multiprocess import Pool
+from schwimmbad import MultiPool as Pool
 
 
 class Sampler(object):

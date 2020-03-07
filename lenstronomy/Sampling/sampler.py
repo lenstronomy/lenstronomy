@@ -26,10 +26,11 @@ class Sampler(object):
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
-    def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None, threadCount=1, init_pos=None,
-            mpi=False, print_key='PSO'):
+    def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None,
+            threadCount=1, init_pos=None, mpi=False, print_key='PSO'):
         """
-        returns the best fit for the lense model on catalogue basis with particle swarm optimizer
+        Return the best fit for the lens model on catalogue basis with
+        particle swarm optimizer.
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
@@ -99,13 +100,13 @@ class Sampler(object):
         :return:
         :rtype:
         """
-        numParam, _ = self.chain.param.num_param()
+        num_param, _ = self.chain.param.num_param()
         p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()
 
         pool = choose_pool(mpi=mpi, processes=threadCount)
 
-        sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL,
+        sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
                                         pool=pool)
 
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)

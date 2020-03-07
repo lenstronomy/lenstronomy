@@ -182,7 +182,7 @@ class ParticleSwarmOptimizer(object):
 
     def _get_fitness(self, swarm):
         """
-        Get fitness (probability) of the particles.
+        Set fitness (probability) of the particles in swarm.
         :param swarm:
         :type swarm:
         :return:
@@ -281,6 +281,7 @@ class ParticleSwarmOptimizer(object):
 
     def is_master(self):
         """
+        Check if the current processor is the master.
 
         :return:
         :rtype:

@@ -30,8 +30,8 @@ class AlignmentFitting(object):
 
         pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit,
                                      n_particles, pool=pool)
-        #if not init_pos is None:
-        pso.set_global_best(init_pos, [0]*len(init_pos),
+        if init_pos is not None:
+            pso.set_global_best(init_pos, [0]*len(init_pos),
                                 self.chain.likelihood(init_pos))
 
         if pool.is_master():

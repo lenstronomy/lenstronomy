@@ -53,25 +53,30 @@ class Sampler(object):
         pso.set_global_best(init_pos, [0]*len(init_pos),
                             self.chain.likelihood(init_pos))
 
-        X2_list = []
-        vel_list = []
-        pos_list = []
         time_start = time.time()
         if pool.is_master():
             print('Computing the %s ...' % print_key)
-        num_iter = 0
-        for swarm in pso.sample(n_iterations):
-            X2_list.append(pso.global_best.fitness*2)
-            vel_list.append(pso.global_best.velocity)
-            pos_list.append(pso.global_best.position)
-            num_iter += 1
-            if pool.is_master():
-                if num_iter % 10 == 0:
-                    print(num_iter)
-        if not mpi:
-            result = pso.global_best.position
-        else:
-            result = pso.global_best.position
+
+        # X2_list = []
+        # vel_list = []
+        # pos_list = []
+        #
+        # num_iter = 0
+        # for swarm in pso.sample(n_iterations):
+        #     X2_list.append(pso.global_best.fitness*2)
+        #     vel_list.append(pso.global_best.velocity)
+        #     pos_list.append(pso.global_best.position)
+        #     num_iter += 1
+        #     if pool.is_master():
+        #         if num_iter % 10 == 0:
+        #             print(num_iter)
+        # if not mpi:
+        #     result = pso.global_best.position
+        # else:
+        #     result = pso.global_best.position
+
+        result, [chi2_list, pos_list, vel_list] = pso.optimize_detailed(
+                                                                n_iterations)
 
         if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
@@ -87,7 +92,7 @@ class Sampler(object):
             time_end = time.time()
             print(time_end - time_start, 'time used for ', print_key)
             print('===================')
-        return result, [X2_list, pos_list, vel_list, []]
+        return result, [chi2_list, pos_list, vel_list, []]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
         numParam, _ = self.chain.param.num_param()

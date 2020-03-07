@@ -1,4 +1,4 @@
-__author__ = 'sibirrer'
+__author__ = ['sibirrer', 'ajshajib']
 
 import time
 import sys

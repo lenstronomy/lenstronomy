@@ -41,7 +41,7 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        pool = choose_pool(mpi, processes=threadCount)
+        pool = choose_pool(mpi=mpi, processes=threadCount)
 
         if mpi is True and pool.is_master():
             print('MPI option chosen for PSO.')
@@ -99,25 +99,16 @@ class Sampler(object):
         numParam, _ = self.chain.param.num_param()
         p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()
-        if mpi is True:
-            pool = MPIPool()
-            if not pool.is_master():
-                pool.wait()
-                sys.exit(0)
-            is_master_pool = pool.is_master()
-            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL, pool=pool)
-        else:
-            is_master_pool = True
-            if threadCount > 1 :
-                pool = Pool(processes=threadCount)
-            else :
-                pool = None
-            sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood, pool=pool)
+
+        pool = choose_pool(mpi=mpi, processes=threadCount)
+
+        sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood,
+                                        pool=pool)
 
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
-        if is_master_pool:
+        if pool.is_master():
             print('Computing the MCMC...')
             print('Number of walkers = ', n_walkers)
             print('Burn-in iterations: ', n_burn)

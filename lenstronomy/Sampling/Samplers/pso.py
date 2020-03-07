@@ -118,7 +118,8 @@ class ParticleSwarmOptimizer(object):
                     particle.update_personal_best()
 
             if i >= max_iter:
-                print("Max iteration reached! Stopping.")
+                if self.is_master():
+                    print("Max iteration reached! Stopping.")
                 return
 
             if self._converged(i, p=p, m=m, n=n):

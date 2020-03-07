@@ -102,7 +102,7 @@ class Sampler(object):
 
         pool = choose_pool(mpi=mpi, processes=threadCount)
 
-        sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.likelihood,
+        sampler = emcee.EnsembleSampler(n_walkers, numParam, self.chain.logL,
                                         pool=pool)
 
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)

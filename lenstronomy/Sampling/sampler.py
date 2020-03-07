@@ -50,9 +50,9 @@ class Sampler(object):
         if init_pos is None:
             init_pos = (upper_start - lower_start) / 2 + lower_start
 
-        pso.global_best.position = init_pos
-        pso.global_best.velocity = [0]*len(init_pos)
-        pso.global_best.fitness = self.chain.likelihood(init_pos)
+        pso.set_global_best(init_pos, [0]*len(init_pos),
+                            self.chain.likelihood(init_pos)
+                            )
 
         X2_list = []
         vel_list = []

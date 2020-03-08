@@ -1,8 +1,8 @@
 """
 Created on Sep 30, 2013
-modified on Mars 3, 2020
+modified on March 3-7, 2020
 
-@author: J. Akeret, S. Birrer, A. Shajib
+@authors: J. Akeret, S. Birrer, A. Shajib
 """
 
 from copy import copy
@@ -42,18 +42,16 @@ class ParticleSwarmOptimizer(object):
                  pool=None, args=None, kwargs=None):
         """
 
-        :param func:
-        :type func:
-        :param low:
-        :type low:
-        :param high:
-        :type high:
-        :param particle_count:
-        :type particle_count:
-        :param threads:
-        :type threads:
-        :param pool:
-        :type pool:
+        :param func: function to call to return log likelihood
+        :type func: python definition
+        :param low: lower bound of the parameters
+        :type low: numpy array
+        :param high: upper bound of the parameters
+        :type high: numpy array
+        :param particle_count: number of particles in each iteration of the PSO
+        :type particle_count: int
+        :param pool: MPI pool for mapping different processes
+        :type pool: None or MPI pool
         :param args: positional arguments to send to `func`. The function
         will be called as `func(x, *args, **kwargs)`.
         :type args: `list`
@@ -213,8 +211,8 @@ class ParticleSwarmOptimizer(object):
     def _get_fitness(self, swarm):
         """
         Set fitness (probability) of the particles in swarm.
-        :param swarm:
-        :type swarm:
+        :param swarm: PSO state
+        :type swarm: list of Particle() instances of the swarm
         :return:
         :rtype:
         """
@@ -337,6 +335,12 @@ class Particle(object):
 
     """
     def __init__(self, position, velocity, fitness=0):
+        """
+
+        :param position: parameter positions
+        :param velocity: parameter velocity
+        :param fitness:
+        """
         self.position = [p for p in position]
         self.velocity = [v for v in velocity]
 

@@ -12,6 +12,6 @@ dynesty
 pymultinest
 pypolychord
 nestcheck
-schwimmbad
+-e git://github.com/adrn/schwimmbad.git@061eb739a21695762ee4b90cc4f6e1b26986fffb#egg=schwimmbad
 multiprocess>=0.70.8
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py

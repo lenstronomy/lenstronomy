@@ -122,7 +122,7 @@ class TestParticleSwarmOptimizer(object):
         n_iterations = 100
 
         def ln_probability(x):
-            return - x**2
+            return -np.array(x)**2
 
         pso = ParticleSwarmOptimizer(func=ln_probability, low=[-10], high=[10],
                                      particle_count=n_particle)

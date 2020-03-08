@@ -61,8 +61,8 @@ class ParticleSwarmOptimizer(object):
         will be called as `func(x, *args, **kwargs)`
         :type kwargs: `dict`
         """
-        self.low = low
-        self.high = high
+        self.low = [l for l in low]
+        self.high = [h for h in high]
         self.particleCount = particle_count
         self.pool = pool
 
@@ -98,8 +98,8 @@ class ParticleSwarmOptimizer(object):
         :return: `None`
         :rtype:
         """
-        self.global_best.position = position
-        self.global_best.velocity = velocity
+        self.global_best.position = [p for p in position]
+        self.global_best.velocity = [v for v in velocity]
         self.global_best.fitness = fitness
 
     def _init_swarm(self):
@@ -158,13 +158,16 @@ class ParticleSwarmOptimizer(object):
             for particle in self.swarm:
                 w = 0.5 + np.random.uniform(0, 1, size=self.param_count) / 2
                 # w=0.72
-                part_vel = w * particle.velocity
+                part_vel = w * np.array(particle.velocity)
                 cog_vel = c1 * np.random.uniform(0, 1, size=self.param_count) \
-                    * (particle.personal_best.position - particle.position)
+                    * (np.array(particle.personal_best.position) -
+                       np.array(particle.position))
                 soc_vel = c2 * np.random.uniform(0, 1, size=self.param_count) \
-                    * (self.global_best.position - particle.position)
-                particle.velocity = part_vel + cog_vel + soc_vel
-                particle.position = particle.position + particle.velocity
+                    * (np.array(self.global_best.position) -
+                       np.array(particle.position))
+                particle.velocity = (part_vel + cog_vel + soc_vel).tolist()
+                particle.position = (np.array(particle.position) +
+                                     np.array(particle.velocity)).tolist()
 
             self._get_fitness(self.swarm)
 
@@ -215,7 +218,7 @@ class ParticleSwarmOptimizer(object):
         :return:
         :rtype:
         """
-        position = np.array([particle.position for particle in swarm])
+        position = [particle.position for particle in swarm]
         if self.pool is None:
             map_func = map
         else:
@@ -281,12 +284,13 @@ class ParticleSwarmOptimizer(object):
         :rtype:
         """
         sorted_swarm = [particle for particle in self.swarm]
-        sorted_swarm.sort(key=lambda particle: -particle.fitness)
+        sorted_swarm.sort()
         best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         diffs = []
         for particle in best_of_best:
-            diffs.append(self.global_best.position - particle.position)
+            diffs.append(np.array(self.global_best.position) -
+                         np.array(particle.position))
 
         max_norm = max(list(map(np.linalg.norm, diffs)))
         return abs(max_norm) < m
@@ -301,13 +305,13 @@ class ParticleSwarmOptimizer(object):
         """
         # Andres N. Ruiz et al.
         sorted_swarm = [particle for particle in self.swarm]
-        sorted_swarm.sort(key=lambda particle: -particle.fitness)
+        sorted_swarm.sort()
         best_of_best = sorted_swarm[0:int(floor(self.particleCount * p))]
 
         positions = [particle.position for particle in best_of_best]
         means = np.mean(positions, axis=0)
-        delta = np.mean((means - self.global_best.position) /
-                        self.global_best.position)
+        delta = np.mean((means - np.array(self.global_best.position)) /
+                        np.array(self.global_best.position))
         return np.log10(delta) < -3.0
 
     def is_master(self):
@@ -333,8 +337,8 @@ class Particle(object):
 
     """
     def __init__(self, position, velocity, fitness=0):
-        self.position = position
-        self.velocity = velocity
+        self.position = [p for p in position]
+        self.velocity = [v for v in velocity]
 
         self.fitness = fitness
         self.param_count = len(self.position)
@@ -383,6 +387,9 @@ class Particle(object):
         return "{:f}, pos: {:s} velocity: {:s}".format(self.fitness,
                                                        self.position,
                                                        self.velocity)
+
+    def __lt__(self, other):
+        return self.fitness > other.fitness
 
     def __getstate__(self):
         return self.__dict__

@@ -385,8 +385,8 @@ class Particle(object):
     def __getstate__(self):
         return self.__dict__
 
-    def __setstate__(self):
-        return self.__dict__
+    def __setstate__(self, state):
+        self.__dict__ = state
 
     def __unicode__(self):
         return self.__str__()
@@ -407,8 +407,8 @@ class _FunctionWrapper(object):
     def __getstate__(self):
         return self.__dict__
 
-    def __setstate__(self):
-        return self.__dict__
+    def __setstate__(self, state):
+        self.__dict__ = state
 
     def __call__(self, x):
         try:

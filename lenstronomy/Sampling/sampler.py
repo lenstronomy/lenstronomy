@@ -39,7 +39,7 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        pool = choose_pool(mpi=mpi, processes=threadCount)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         if mpi is True and pool.is_master():
             print('MPI option chosen for PSO.')

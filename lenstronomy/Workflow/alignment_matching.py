@@ -26,7 +26,7 @@ class AlignmentFitting(object):
         lowerLimit = [lowerLimit] * num_param
         upperLimit = [upperLimit] * num_param
 
-        pool = choose_pool(mpi=mpi, processes=threadCount)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit,
                                      n_particles, pool=pool)

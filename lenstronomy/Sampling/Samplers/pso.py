@@ -87,6 +87,9 @@ class ParticleSwarmOptimizer(object):
         d["pool"] = None
         return d
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+
     def set_global_best(self, position, velocity, fitness):
         """
         Set the global best particle.
@@ -382,6 +385,9 @@ class Particle(object):
     def __getstate__(self):
         return self.__dict__
 
+    def __setstate__(self):
+        return self.__dict__
+
     def __unicode__(self):
         return self.__str__()
 
@@ -397,6 +403,12 @@ class _FunctionWrapper(object):
         self.f = f
         self.args = [] if args is None else args
         self.kwargs = {} if kwargs is None else kwargs
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self):
+        return self.__dict__
 
     def __call__(self, x):
         try:

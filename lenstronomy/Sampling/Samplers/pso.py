@@ -379,6 +379,9 @@ class Particle(object):
                                                        self.position,
                                                        self.velocity)
 
+    def __getstate__(self):
+        return self.__dict__
+
     def __unicode__(self):
         return self.__str__()
 

@@ -9,7 +9,6 @@ from copy import copy
 from math import floor
 import math
 import numpy as np
-from schwimmbad import SerialPool
 
 
 class ParticleSwarmOptimizer(object):
@@ -39,7 +38,7 @@ class ParticleSwarmOptimizer(object):
 
     """
 
-    def __init__(self, func, low, high, particle_count=25, threads=1,
+    def __init__(self, func, low, high, particle_count=25,
                  pool=None, args=None, kwargs=None):
         """
 
@@ -65,11 +64,7 @@ class ParticleSwarmOptimizer(object):
         self.low = low
         self.high = high
         self.particleCount = particle_count
-        self.threads = threads
         self.pool = pool
-
-        if self.pool is None:
-            self.pool = SerialPool()  # this uses default map() in python
 
         self.param_count = len(self.low)
 
@@ -221,7 +216,11 @@ class ParticleSwarmOptimizer(object):
         :rtype:
         """
         position = np.array([particle.position for particle in swarm])
-        ln_probability = list(self.pool.map(self.func, position))
+        if self.pool is None:
+            map_func = map
+        else:
+            map_func = self.pool.map
+        ln_probability = list(map_func(self.func, position))
 
         for i, particle in enumerate(swarm):
             particle.fitness = ln_probability[i]
@@ -318,7 +317,10 @@ class ParticleSwarmOptimizer(object):
         :return:
         :rtype:
         """
-        return self.pool.is_master()
+        if self.pool is None:
+            return True
+        else:
+            return self.pool.is_master()
 
 
 class Particle(object):

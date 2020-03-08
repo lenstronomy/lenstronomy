@@ -125,7 +125,7 @@ class TestParticleSwarmOptimizer(object):
             return - x**2
 
         pso = ParticleSwarmOptimizer(func=ln_probability, low=[-10], high=[10],
-                                     particle_count=n_particle, threads=1)
+                                     particle_count=n_particle)
 
         init_pos = np.array([1])
         pso.global_best.position = init_pos

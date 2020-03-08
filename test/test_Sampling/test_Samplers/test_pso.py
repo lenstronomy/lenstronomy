@@ -37,7 +37,9 @@ class TestParticleSwarmOptimizer(object):
         particle = Particle.create(2)
         assert particle.fitness == -np.inf
 
-        assert particle == particle.personal_best
+        assert np.all(particle.personal_best.position == particle.position)
+        assert np.all(particle.personal_best.velocity == particle.velocity)
+        assert particle.personal_best.fitness == particle.fitness
 
         particle2 = particle.copy()
         assert particle.fitness == particle2.fitness

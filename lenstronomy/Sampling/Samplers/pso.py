@@ -333,7 +333,19 @@ class Particle(object):
 
         self.fitness = fitness
         self.param_count = len(self.position)
-        self.personal_best = self
+        self._personal_best = None
+
+    @property
+    def personal_best(self):
+        """
+
+        :return:
+        :rtype:
+        """
+        if self._personal_best is None:
+            return self
+        else:
+            return self._personal_best
 
     @classmethod
     def create(cls, param_count):
@@ -349,7 +361,7 @@ class Particle(object):
         """
         Sets the current particle representation as personal best
         """
-        self.personal_best = self.copy()
+        self._personal_best = self.copy()
 
     def copy(self):
         """

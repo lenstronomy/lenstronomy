@@ -60,7 +60,7 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -105,7 +105,7 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -154,7 +154,7 @@ class TestGalkin(object):
         kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -303,7 +303,7 @@ class TestGalkin(object):
         kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0, 'aperture_type': aperture_type}
         psf_fwhm = 0.7
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
-        anisotropy_model = 'OsipkovMerritt'
+        anisotropy_model = 'OM'
         r_eff = 0.5
         kwargs_options = {'lens_model_list': ['SERSIC'],
                           'lens_light_model_list': ['SERSIC']}
@@ -342,7 +342,7 @@ class TestGalkin(object):
         kwargs_mass = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
 
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 

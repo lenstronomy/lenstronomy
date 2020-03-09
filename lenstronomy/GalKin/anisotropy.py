@@ -25,9 +25,9 @@ class Anisotropy(object):
             self._model = Radial()
         elif self._type == 'isotropic':
             self._model = Isotropic()
-        elif self._type == 'OsipkovMerritt':
+        elif self._type == 'OM':
             self._model = OsipkovMerritt()
-        elif self._type == 'GeneralizedOM':
+        elif self._type == 'GOM':
             self._model = GeneralizedOM()
         elif self._type == 'Colin':
             self._model = Colin()

@@ -38,7 +38,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
-        Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
+        Anisotropy.__init__(self, anisotropy_type='OM')
 
     def dispersion(self, gamma, theta_E, r_eff, r_ani, sampling_number=1000):
         """

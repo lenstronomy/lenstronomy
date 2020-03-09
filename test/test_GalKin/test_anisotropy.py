@@ -41,7 +41,7 @@ class TestAnisotropy(object):
         k = anisoClass.K(r, R, **kwargs)
         npt.assert_almost_equal(k, 0.8660254037844386, decimal=5)
 
-        anisoClass = Anisotropy(anisotropy_type='OsipkovMerritt')
+        anisoClass = Anisotropy(anisotropy_type='OM')
         kwargs = {'r_ani': 1}
         k = anisoClass.K(r, R, **kwargs)
         npt.assert_almost_equal(k, 0.95827704196894481, decimal=5)
@@ -69,7 +69,7 @@ class TestAnisotropy(object):
         beta = anisoClass.beta_r(r, **kwargs)
         npt.assert_almost_equal(beta, 0, decimal=5)
 
-        anisoClass = Anisotropy(anisotropy_type='OsipkovMerritt')
+        anisoClass = Anisotropy(anisotropy_type='OM')
         kwargs = {'r_ani': 1}
         beta = anisoClass.beta_r(r, **kwargs)
         npt.assert_almost_equal(beta, 0.8, decimal=5)
@@ -109,10 +109,10 @@ class TestAnisotropy(object):
 
     def test_generalizedOM(self):
         # generalized OM model
-        anisoClass = Anisotropy(anisotropy_type='GeneralizedOM')
+        anisoClass = Anisotropy(anisotropy_type='GOM')
         r = 5.
         R = 2
-        anisoClassOM = Anisotropy(anisotropy_type='OsipkovMerritt')
+        anisoClassOM = Anisotropy(anisotropy_type='OM')
         kwargs_om = {'r_ani': 1.}
         kwargs_gom = {'r_ani': 1., 'beta_inf': 1.}
         beta_gom = anisoClass.beta_r(r, **kwargs_gom)

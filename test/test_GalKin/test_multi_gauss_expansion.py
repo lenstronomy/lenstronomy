@@ -22,7 +22,7 @@ class TestGalkin(object):
         :return:
         """
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -80,7 +80,7 @@ class TestGalkin(object):
         :return:
         """
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -134,7 +134,7 @@ class TestGalkin(object):
 
     def test_mge_light_and_mass(self):
         # anisotropy profile
-        anisotropy_model = 'OsipkovMerritt'
+        anisotropy_model = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
@@ -202,7 +202,7 @@ class TestGalkin(object):
         :return:
         """
         # anisotropy profile
-        anisotropy_type = 'OsipkovMerritt'
+        anisotropy_type = 'OM'
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 

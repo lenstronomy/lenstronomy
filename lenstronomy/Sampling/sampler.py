@@ -41,7 +41,7 @@ class Sampler(object):
         print(chi2 * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')
         print(chi2, 'logL')
-        print(self.chain.effectiv_num_data_points(**kwargs_return), 'effective number of data points')
+        print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
         print(kwargs_return.get('kwargs_lens', None), 'lens result')
         print(kwargs_return.get('kwargs_source', None), 'source result')
         print(kwargs_return.get('kwargs_lens_light', None), 'lens light result')

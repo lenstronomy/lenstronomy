@@ -118,9 +118,6 @@ class TestLikelihoodModule(object):
         num_data_evaluate = self.Likelihood.num_data
         npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
 
-        negative_logL = self.Likelihood.negativelogL(args)
-        assert negative_logL == -logL
-
     def test_time_delay_likelihood(self):
         kwargs_likelihood = {'time_delay_likelihood': True,
                              }

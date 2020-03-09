@@ -1,4 +1,4 @@
-__author__ = ['sibirrer', 'ajshajib']
+__author__ = ['sibirrer', 'ajshajib', 'dgilman']
 
 import time
 import sys
@@ -29,18 +29,25 @@ class Sampler(object):
 
     def simplex(self, init_pos, n_iterations, method, print_key='SIMPLEX'):
         """
+
+        :param init_pos: starting point for the optimization
+        :param n_iterations: maximum number of iterations
+        :param method: the optimization method, default is 'Nelder-Mead'
         returns the best fit for the lens model using the optimization routine specified by method
         """
         print('Performing the optimization using algorithm:', method)
         time_start = time.time()
-        result = minimize(self.chain.negativelogL, x0=init_pos, method=method,
+
+        negativelogL = lambda x: -1 * self.chain.logL(x)
+
+        result = minimize(negativelogL, x0=init_pos, method=method,
                           options={'maxiter': n_iterations, 'disp': True})
 
-        chi2 = -self.chain.negativelogL(result['x'])
+        negative_logL = negativelogL(result['x'])
         kwargs_return = self.chain.param.args2kwargs(result['x'])
-        print(chi2 * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)),
+        print(negative_logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')
-        print(chi2, 'logL')
+        print(-negative_logL, 'logL')
         print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
         print(kwargs_return.get('kwargs_lens', None), 'lens result')
         print(kwargs_return.get('kwargs_source', None), 'source result')

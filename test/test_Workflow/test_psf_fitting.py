@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy as np
+import copy
 import lenstronomy.Util.util as util
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
@@ -40,7 +41,9 @@ class TestImageModel(object):
         kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
-        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
+        psf_error_map = np.zeros_like(kernel_point_source)
+        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source,
+                           'psf_error_map': psf_error_map}
 
         psf_class = PSF(**self.kwargs_psf)
 
@@ -100,6 +103,8 @@ class TestImageModel(object):
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
         kwargs_psf_iter = {'stacking_method': 'median'}
+        #mag = np.ones_like(x_pos)
+
         kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_params, **kwargs_psf_iter)
         assert improved_bool
         kernel_new = kwargs_psf_return['kernel_point_source']
@@ -120,7 +125,12 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
         kwargs_psf_iter = {'stacking_method': 'median'}
-        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_params,
+
+        kwargs_params = copy.deepcopy(self.kwargs_params)
+        kwargs_ps = kwargs_params['kwargs_ps']
+        del kwargs_ps[0]['source_amp']
+        print(kwargs_params['kwargs_ps'])
+        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, kwargs_params,
                                                            **kwargs_psf_iter)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
@@ -130,7 +140,7 @@ class TestImageModel(object):
         assert diff_old > diff_new
         assert diff_new < 0.01
 
-        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, self.kwargs_params, num_iter=3,
+        kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, kwargs_params, num_iter=3,
                                                            no_break=True)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']

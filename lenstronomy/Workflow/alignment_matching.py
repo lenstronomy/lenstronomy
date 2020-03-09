@@ -2,10 +2,9 @@ __author__ = 'sibirrer'
 
 import time
 import copy
-from cosmoHammer import MpiParticleSwarmOptimizer
-from cosmoHammer import ParticleSwarmOptimizer
-from cosmoHammer.util import MpiUtil
+from schwimmbad import choose_pool
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
+from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 
 
 class AlignmentFitting(object):
@@ -26,41 +25,29 @@ class AlignmentFitting(object):
         num_param = self.chain.num_param
         lowerLimit = [lowerLimit] * num_param
         upperLimit = [upperLimit] * num_param
-        if mpi is True:
-            pso = MpiParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=1)
-        else:
-            pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit, n_particles, threads=threadCount)
-        if not init_pos is None:
-            pso.gbest.position = init_pos
-            pso.gbest.velocity = [0]*len(init_pos)
-            pso.gbest.fitness, _ = self.chain.likelihood(init_pos)
-        X2_list = []
-        vel_list = []
-        pos_list = []
-        time_start = time.time()
-        if pso.isMaster():
+
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+
+        pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit,
+                                     n_particles, pool=pool)
+        if init_pos is not None:
+            pso.set_global_best(init_pos, [0]*len(init_pos),
+                                self.chain.likelihood(init_pos))
+
+        if pool.is_master():
             print('Computing the %s ...' % print_key)
-        num_iter = 0
-        for swarm in pso.sample(n_iterations):
-            X2_list.append(pso.gbest.fitness*2)
-            vel_list.append(pso.gbest.velocity)
-            pos_list.append(pso.gbest.position)
-            num_iter += 1
-            if pso.isMaster():
-                if num_iter % 10 == 0:
-                    print(num_iter)
-        if not mpi:
-            result = pso.gbest.position
-        else:
-            result = MpiUtil.mpiBCast(pso.gbest.position)
+
+        time_start = time.time()
+
+        result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
+
         kwargs_data = self.chain.update_data(result)
-        if mpi is True and not pso.isMaster():
-            pass
-        else:
+
+        if pool.is_master():
             time_end = time.time()
             print("Shifts found: ", result)
             print(time_end - time_start, 'time used for ', print_key)
-        return kwargs_data, [X2_list, pos_list, vel_list, []]
+        return kwargs_data, [chi2_list, pos_list, vel_list, []]
 
 
 class AlignmentLikelihood(object):
@@ -89,7 +76,7 @@ class AlignmentLikelihood(object):
         image_model = SingleBandMultiModel(multi_band_list, self._kwargs_model,
                                            likelihood_mask_list=self._likelihood_mask_list, band_index=self._band_index)
         logL = image_model.likelihood_data_given_model(source_marg=self._source_marg, **self._kwargs_params)
-        return logL, None
+        return logL
 
     def __call__(self, a):
         return self._likelihood(a)

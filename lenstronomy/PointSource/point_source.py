@@ -154,18 +154,24 @@ class PointSource(object):
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
 
-    def point_source_list(self, kwargs_ps, kwargs_lens, k=None):
+    def point_source_list(self, kwargs_ps, kwargs_lens, k=None, with_amp=True):
         """
         returns the coordinates and amplitudes of all point sources in a single array
 
-        :param kwargs_ps:
-        :param kwargs_lens:
+        :param kwargs_ps: point source keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :param k: None, int or list of int's to select a subset of the point source models in the return
+        :param with_amp: bool, if False, ignores the amplitude parameters in the return and instead provides ones for
+        each point source image
         :return:
         """
         self._set_save_cache(True)
         # we make sure we do not re-compute the image positions twice when evaluating image position and their amplitudes
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
-        amp_list = self.image_amplitude(kwargs_ps, kwargs_lens, k=k)
+        if with_amp is True:
+            amp_list = self.image_amplitude(kwargs_ps, kwargs_lens, k=k)
+        else:
+            amp_list = np.ones_like(ra_list)
 
         if self._save_cache is False:
             self.delete_lens_model_cache()

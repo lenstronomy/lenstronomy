@@ -157,7 +157,9 @@ class TestFittingSequence(object):
 
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_simplex = {'n_iterations': 2}
+        kwargs_simplex = {'n_iterations': 2, 'method': 'Nelder-Mead'}
+        fitting_list.append(['SIMPLEX', kwargs_simplex])
+        kwargs_simplex = {'n_iterations': 2, 'method': 'Powell'}
         fitting_list.append(['SIMPLEX', kwargs_simplex])
         kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
         fitting_list.append(['MCMC', kwargs_mcmc])

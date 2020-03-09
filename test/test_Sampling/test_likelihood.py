@@ -120,7 +120,7 @@ class TestLikelihoodModule(object):
 
         negative_logL = self.Likelihood.negativelogL(args)
         assert negative_logL == -logL
-       
+
     def test_time_delay_likelihood(self):
         kwargs_likelihood = {'time_delay_likelihood': True,
                              }

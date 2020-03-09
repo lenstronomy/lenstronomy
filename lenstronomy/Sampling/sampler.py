@@ -30,16 +30,16 @@ class Sampler(object):
         self.chain = likelihoodModule
         self.lower_limit, self.upper_limit = self.chain.param_limits
 
-    def simplex(self, init_pos, n_iterations, print_key='SIMPLEX'):
+    def simplex(self, init_pos, n_iterations, method, print_key='SIMPLEX'):
         """
-        returns the best fit for the lens model using a downhill simplex method Nelder-Mead
+        returns the best fit for the lens model using the optimization routine specified by method
         """
-        print('Computing the downhill simplex... ')
+        print('Performing the optimization using algorithm:', method)
         time_start = time.time()
-        result = minimize(self.chain.negativeChi2, x0=init_pos, method='Nelder-Mead',
+        result = minimize(self.chain.negativelogL, x0=init_pos, method=method,
                           options={'maxiter': n_iterations, 'disp': True})
 
-        chi2 = -self.chain.negativeChi2(result['x'])
+        chi2 = -self.chain.negativelogL(result['x'])
         kwargs_return = self.chain.param.args2kwargs(result['x'])
         print(chi2 * 2 / (max(self.chain.effectiv_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')

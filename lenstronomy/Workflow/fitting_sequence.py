@@ -101,7 +101,7 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list
 
@@ -168,11 +168,12 @@ class FittingSequence(object):
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood)
         return likelihoodModule
 
-    def simplex(self, n_iterations):
+    def simplex(self, n_iterations, method='Nelder-Mead'):
         """
         Downhill simplex optimization using the Nelder-Mead algorithm.
 
         :param n_iterations: maximum number of iterations to perform
+        :param method: the optimization method used, see documentation in scipy.optimize.minimize
         :return: result of the best fit
         """
 
@@ -181,7 +182,7 @@ class FittingSequence(object):
         init_pos = param_class.kwargs2args(**kwargs_temp)
 
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
-        result = sampler.simplex(init_pos, n_iterations)
+        result = sampler.simplex(init_pos, n_iterations, method)
 
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result

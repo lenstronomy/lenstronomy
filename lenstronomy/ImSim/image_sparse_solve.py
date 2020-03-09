@@ -95,14 +95,14 @@ class ImageSparseFit(ImageLinearFit):
         if de_lensed is True:
             if not unconvolved:
                 # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
-                source_light = self.sparseSolver.project_original_grid_source(source_light)
+                source_light = self.sparseSolver.project_on_original_grid_source(source_light)
 
                 # TODO : use numerics again
                 source_light = image_util.re_size(source_light, self._subgrid_res_source)
                 source_light = self.sparseSolver.psf_convolution(source_light)
             else:
                 if original_grid:
-                    source_light = self.sparseSolver.project_original_grid_source(source_light)
+                    source_light = self.sparseSolver.project_on_original_grid_source(source_light)
                 if re_sized:
                     source_light = image_util.re_size(source_light, self._subgrid_res_source)
         
@@ -114,6 +114,29 @@ class ImageSparseFit(ImageLinearFit):
         # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
 
         return source_light
+
+    def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
+        """
+
+        computes the lens surface brightness distribution
+
+        If 'unconvolved' is True, a warning message will appear, and the convolved light is returned.
+        This is because the sparse optimizer does not solve for the unconvolved lens light, in order to prevent deconvolutions
+        that can otherwise reduce the quality of fit. Hence the deconvolution of the lens light should be performed in post-processing.
+
+        # TODO : make ImageModel.source_surface_brightness() to work without this overwriting.
+
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param unconvolved: not defined here. Here for keeping same method signatures as in super class.
+        :return: 1d array of surface brightness pixels
+        """
+        if unconvolved is True:
+            print("Warning : sparse solver for lens light does not perform deconvolution of lens light, returning convolved estimate instead")
+        # ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        ra_grid, dec_grid = self.sparseSolver.lensingOperator.imagePlane.grid()
+        lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
+        lens_light = util.array2image(lens_light)
+        return lens_light
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):

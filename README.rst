@@ -111,6 +111,20 @@ You can find simple examle notebooks for various cases. The latest versions of t
 * `Example of numerical ray-tracing and convolution options <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb>`_
 
 
+
+Contribution
+------------
+Check out the contributing page `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
+and become an author of lenstronomy! The current list of people having contributed in the development
+`can be found here <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_.
+
+
+Affiliated packages
+-------------------
+Multiple affiliated packages that make use of lenstronomy can be found `here <https://lenstronomy.readthedocs.io/en/latest/affiliatedpackages.html>`_
+(not complete) and further packages are under development by the community.
+
+
 Mailing list
 ------------
 

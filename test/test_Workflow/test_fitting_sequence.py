@@ -155,8 +155,8 @@ class TestFittingSequence(object):
         n_i = 2
         fitting_list = []
 
-        #kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
-        #fitting_list.append(['PSO', kwargs_pso])
+        kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
+        fitting_list.append(['PSO', kwargs_pso])
         #kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
         #fitting_list.append(['MCMC', kwargs_mcmc])
         #kwargs_mcmc['re_use_samples'] = True
@@ -287,20 +287,25 @@ class TestFittingSequence(object):
         kwargs_mcmc['sampler_type'] = 'EMCEE'
         fitting_list.append(['MCMC', kwargs_mcmc])
 
-        def custom_likelihood(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        def custom_likelihood(kwargs_lens, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                              kwargs_special=None, kwargs_extinction=None):
             theta_E = kwargs_lens[0]['theta_E']
             return -(theta_E - 1.)**2 / 0.1**2 / 2
-        kwargs_likelihood = {'custom_likelihood': custom_likelihood}
+        kwargs_likelihood = {'custom_logL_addition': custom_likelihood}
 
         kwargs_data_joint = {'multi_band_list': []}
-        kwargs_model = {'lens_model_list':['SIS']}
+        kwargs_model = {'lens_model_list': ['SIS']}
         kwargs_constraints = {}
         lens_param = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}], [{'theta_E': 0.1, 'center_x': 0.1, 'center_y': 0.1}], [{'center_x': 0, 'center_y': 0}], [{'theta_E': 0, 'center_x': -10, 'center_y': -10}], [{'theta_E': 10, 'center_x': 10, 'center_y': 10}]
 
         kwargs_params = {'lens_model': lens_param}
         fittingSequence = FittingSequence(kwargs_data_joint, kwargs_model, kwargs_constraints,
                                           kwargs_likelihood, kwargs_params)
-
+        args = fittingSequence.param_class.kwargs2args(kwargs_lens=[{'theta_E': 1, 'center_x': 0, 'center_y': 0}])
+        kwargs_result = fittingSequence.param_class.args2kwargs(args)
+        print(kwargs_result)
+        print(args, 'test args')
+        chain_list = fittingSequence.fit_sequence(fitting_list)
         kwargs_result = fittingSequence.best_fit(bijective=False)
         npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
 

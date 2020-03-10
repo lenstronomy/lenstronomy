@@ -190,6 +190,7 @@ class Param(object):
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0
+        args = np.atleast_1d(args)
         kwargs_lens, i = self.lensParams.getParams(args, i)
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)

@@ -179,7 +179,6 @@ class FittingSequence(object):
         param_class = self.param_class
         kwargs_temp = self._updateManager.parameter_state
         init_pos = param_class.kwargs2args(**kwargs_temp)
-
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result = sampler.simplex(init_pos, n_iterations, method)
 

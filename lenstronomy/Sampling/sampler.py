@@ -38,16 +38,15 @@ class Sampler(object):
         print('Performing the optimization using algorithm:', method)
         time_start = time.time()
 
-        negativelogL = lambda x: -1 * self.chain.logL(x)
+        #negativelogL = lambda x: -1 * self.chain.logL(x)
 
-        result = minimize(negativelogL, x0=init_pos, method=method,
+        result = minimize(self.chain.negativelogL, x0=init_pos, method=method,
                           options={'maxiter': n_iterations, 'disp': True})
-
-        negative_logL = negativelogL(result['x'])
+        logL = self.chain.logL(result['x'])
         kwargs_return = self.chain.param.args2kwargs(result['x'])
-        print(negative_logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
+        print(-logL * 2 / (max(self.chain.effective_num_data_points(**kwargs_return), 1)),
               'reduced X^2 of best position')
-        print(-negative_logL, 'logL')
+        print(logL, 'logL')
         print(self.chain.effective_num_data_points(**kwargs_return), 'effective number of data points')
         print(kwargs_return.get('kwargs_lens', None), 'lens result')
         print(kwargs_return.get('kwargs_source', None), 'source result')

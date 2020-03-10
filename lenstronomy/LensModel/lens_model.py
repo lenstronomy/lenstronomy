@@ -89,7 +89,7 @@ class LensModel(object):
             return self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source, y_source)
         elif hasattr(self.lens_model, 'arrival_time') and hasattr(self, '_lensCosmo'):
             dt = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
-            fermat_pot_eff = dt * const.c / self._lensCosmo.D_dt / const.Mpc * const.day_s / const.arcsec ** 2
+            fermat_pot_eff = dt * const.c / self._lensCosmo.ddt / const.Mpc * const.day_s / const.arcsec ** 2
             return fermat_pot_eff
         else:
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the effective Fermat potential is evaluated')

@@ -27,8 +27,8 @@ class TestKDELikelihood(object):
         cosmo = FlatLambdaCDM(H0_true, Om0=omega_m_true)
         lensCosmo = LensCosmo(z_L, z_S, cosmo=cosmo)
         # compute the true angular diameter distances
-        Dd_true = lensCosmo.D_d
-        D_dt_true = lensCosmo.D_dt
+        Dd_true = lensCosmo.dd
+        D_dt_true = lensCosmo.ddt
 
         # define a measurement uncertainty/spread in the posteriors
         # the example contains uncorrelated Gaussians

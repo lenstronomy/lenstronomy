@@ -55,10 +55,10 @@ class TestTDCosmography(object):
         # set up a cosmology
         # compute image postions
         # compute J and velocity dispersion
-        D_dt = self.td_cosmo._lens_cosmo.D_dt
-        D_d = self.td_cosmo._lens_cosmo.D_d
-        D_s = self.td_cosmo._lens_cosmo.D_s
-        D_ds = self.td_cosmo._lens_cosmo.D_ds
+        D_dt = self.td_cosmo._lens_cosmo.ddt
+        D_d = self.td_cosmo._lens_cosmo.dd
+        D_s = self.td_cosmo._lens_cosmo.ds
+        D_ds = self.td_cosmo._lens_cosmo.dds
         fermat_potential_list = self.td_cosmo.fermat_potential(self.kwargs_lens, self.kwargs_ps)
         dt_list = self.td_cosmo.time_delays(self.kwargs_lens, self.kwargs_ps, kappa_ext=0)
         dt = dt_list[0] - dt_list[1]

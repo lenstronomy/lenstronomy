@@ -200,10 +200,11 @@ class UpdateManager(object):
         if not change_source_upper_limit is None:
             self._source_upper = self._update_limit(change_source_upper_limit, self._source_upper)
 
-    def _update_limit(self, change_limit, kwargs_limit_previous):
+    @staticmethod
+    def _update_limit(change_limit, kwargs_limit_previous):
         """
 
-        :param change_limit: imput format of def update_limits
+        :param change_limit: input format of def update_limits
         :param kwargs_limit_previous: all limits of a model type
         :return: update limits
         """

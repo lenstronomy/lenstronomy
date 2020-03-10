@@ -12,3 +12,16 @@ lenstruction
 Versatile tool for cluster source reconstruction and local perturbative lens modeling. Supports Hubble Frontier Field
 lens models and Hubble imaging data and interfaces with the lenstronomy FittingSequence with the configurations being
 passed to lenstronomy to model disconnected multiple images of the same source. Here is the `link to the Github repository <https://github.com/ylilan/lenstruction>`_.
+
+
+# dolphin
+# baobab
+# h0rton
+# pyhalo
+# hierArc
+# deeplenstronomy
+
+
+
+guidelines for affiliated packages
+----------------------------------

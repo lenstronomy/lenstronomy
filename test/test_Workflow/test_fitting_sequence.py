@@ -155,18 +155,14 @@ class TestFittingSequence(object):
         n_i = 2
         fitting_list = []
 
-        kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
-        fitting_list.append(['PSO', kwargs_pso])
-        kwargs_simplex = {'n_iterations': 2, 'method': 'Nelder-Mead'}
-        fitting_list.append(['SIMPLEX', kwargs_simplex])
-        kwargs_simplex = {'n_iterations': 2, 'method': 'Powell'}
-        fitting_list.append(['SIMPLEX', kwargs_simplex])
-        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
-        fitting_list.append(['MCMC', kwargs_mcmc])
-        kwargs_mcmc['re_use_samples'] = True
-        fitting_list.append(['MCMC', kwargs_mcmc])
-        kwargs_mcmc['sampler_type'] = 'EMCEE'
-        fitting_list.append(['MCMC', kwargs_mcmc])
+        #kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
+        #fitting_list.append(['PSO', kwargs_pso])
+        #kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
+        #fitting_list.append(['MCMC', kwargs_mcmc])
+        #kwargs_mcmc['re_use_samples'] = True
+        #fitting_list.append(['MCMC', kwargs_mcmc])
+        #kwargs_mcmc['sampler_type'] = 'EMCEE'
+        #fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
         kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
@@ -273,6 +269,40 @@ class TestFittingSequence(object):
         kwargs_out = fittingSequence.best_fit(bijective=True)
         assert kwargs_out['kwargs_lens'] == 1
 
+    def test_minimizer(self):
+        n_p = 2
+        n_i = 2
+
+        fitting_list = []
+        kwargs_simplex = {'n_iterations': n_i, 'method': 'Nelder-Mead'}
+        fitting_list.append(['SIMPLEX', kwargs_simplex])
+        kwargs_simplex = {'n_iterations': n_i, 'method': 'Powell'}
+        fitting_list.append(['SIMPLEX', kwargs_simplex])
+        kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
+        fitting_list.append(['PSO', kwargs_pso])
+        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
+        fitting_list.append(['MCMC', kwargs_mcmc])
+        kwargs_mcmc['re_use_samples'] = True
+        fitting_list.append(['MCMC', kwargs_mcmc])
+        kwargs_mcmc['sampler_type'] = 'EMCEE'
+        fitting_list.append(['MCMC', kwargs_mcmc])
+
+        def custom_likelihood(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+            theta_E = kwargs_lens[0]['theta_E']
+            return -(theta_E - 1.)**2 / 0.1**2 / 2
+        kwargs_likelihood = {'custom_likelihood': custom_likelihood}
+
+        kwargs_data_joint = {'multi_band_list': []}
+        kwargs_model = {'lens_model_list':['SIS']}
+        kwargs_constraints = {}
+        lens_param = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}], [{'theta_E': 0.1, 'center_x': 0.1, 'center_y': 0.1}], [{'center_x': 0, 'center_y': 0}], [{'theta_E': 0, 'center_x': -10, 'center_y': -10}], [{'theta_E': 10, 'center_x': 10, 'center_y': 10}]
+
+        kwargs_params = {'lens_model': lens_param}
+        fittingSequence = FittingSequence(kwargs_data_joint, kwargs_model, kwargs_constraints,
+                                          kwargs_likelihood, kwargs_params)
+
+        kwargs_result = fittingSequence.best_fit(bijective=False)
+        npt.assert_almost_equal(kwargs_result['kwargs_lens'][0]['theta_E'], 1, decimal=2)
 
 
 if __name__ == '__main__':

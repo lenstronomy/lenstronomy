@@ -19,9 +19,9 @@ class TestLensCosmo(object):
         self.lensCosmo = LensCosmo(z_L, z_S, cosmo=cosmo)
 
     def test_ang_dist(self):
-        npt.assert_almost_equal(self.lensCosmo.D_s, 1588.9213590743666, decimal=8)
-        npt.assert_almost_equal(self.lensCosmo.D_d, 1548.7055203661785, decimal=8)
-        npt.assert_almost_equal(self.lensCosmo.D_ds, 892.0038749095863, decimal=8)
+        npt.assert_almost_equal(self.lensCosmo.ds, 1588.9213590743666, decimal=8)
+        npt.assert_almost_equal(self.lensCosmo.dd, 1548.7055203661785, decimal=8)
+        npt.assert_almost_equal(self.lensCosmo.dds, 892.0038749095863, decimal=8)
 
     def test_epsilon_crit(self):
         npt.assert_almost_equal(self.lensCosmo.epsilon_crit/1.9121e+15, 1, decimal=3)
@@ -58,7 +58,7 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(m_coin, 165279526936.52194, decimal=0)
 
     def test_D_dt_model(self):
-        D_dt = self.lensCosmo.D_dt
+        D_dt = self.lensCosmo.ddt
         npt.assert_almost_equal(D_dt, 4965.660384441859, decimal=8)
 
     def test_nfw_angle2physical(self):

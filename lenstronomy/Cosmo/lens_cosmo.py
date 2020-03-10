@@ -38,36 +38,36 @@ class LensCosmo(object):
         return self.background.cosmo.H(0).value / 100.
 
     @property
-    def D_d(self):
+    def dd(self):
         """
 
         :return: angular diameter distance to the deflector [Mpc]
         """
-        return self.background.D_xy(0, self.z_lens)
+        return self.background.d_xy(0, self.z_lens)
 
     @property
-    def D_s(self):
+    def ds(self):
         """
 
         :return: angular diameter distance to the source [Mpc]
         """
-        return self.background.D_xy(0, self.z_source)
+        return self.background.d_xy(0, self.z_source)
 
     @property
-    def D_ds(self):
+    def dds(self):
         """
 
         :return: angular diameter distance from deflector to source [Mpc]
         """
-        return self.background.D_xy(self.z_lens, self.z_source)
+        return self.background.d_xy(self.z_lens, self.z_source)
 
     @property
-    def D_dt(self):
+    def ddt(self):
         """
 
         :return: time delay distance [Mpc]
         """
-        return (1 + self.z_lens) * self.D_d * self.D_s / self.D_ds
+        return (1 + self.z_lens) * self.dd * self.ds / self.dds
 
     @property
     def epsilon_crit(self):
@@ -79,7 +79,7 @@ class LensCosmo(object):
             const_SI = const.c ** 2 / (4 * np.pi * const.G)  #c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
             factor = const_SI*conversion   #c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._Epsilon_Crit = self.D_s/(self.D_d*self.D_ds) * factor #[M_sun/Mpc^2]
+            self._Epsilon_Crit = self.ds / (self.dd * self.dds) * factor #[M_sun/Mpc^2]
         return self._Epsilon_Crit
 
     @property
@@ -92,7 +92,7 @@ class LensCosmo(object):
             const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
             factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._Epsilon_Crit_arcsec = self.D_s / (self.D_d * self.D_ds) * factor * (self.D_d * const.arcsec)**2  # [M_sun/arcsec^2]
+            self._Epsilon_Crit_arcsec = self.ds / (self.dd * self.dds) * factor * (self.dd * const.arcsec) ** 2  # [M_sun/arcsec^2]
         return self._Epsilon_Crit_arcsec
 
     def phys2arcsec_lens(self, phys):
@@ -101,7 +101,7 @@ class LensCosmo(object):
         :param phys: physical distance [Mpc]
         :return: angular diameter [arcsec]
         """
-        return phys / self.D_d / const.arcsec
+        return phys / self.dd / const.arcsec
 
     def arcsec2phys_lens(self, arcsec):
         """
@@ -109,7 +109,7 @@ class LensCosmo(object):
         :param arcsec: angular size at lens plane [arcsec]
         :return: physical size at lens plane [Mpc]
         """
-        return arcsec * const.arcsec * self.D_d
+        return arcsec * const.arcsec * self.dd
 
     def arcsec2phys_source(self, arcsec):
         """
@@ -117,7 +117,7 @@ class LensCosmo(object):
         :param arcsec: angular size at source plane [arcsec]
         :return: physical size at source plane [Mpc]
         """
-        return arcsec * const.arcsec * self.D_s
+        return arcsec * const.arcsec * self.ds
 
     def kappa2proj_mass(self, kappa):
         """
@@ -153,7 +153,7 @@ class LensCosmo(object):
         :param kappa_ext: unit-less external shear not accounted for in the Fermat potential
         :return: time delay in days
         """
-        D_dt = self.D_dt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
+        D_dt = self.ddt * (1. - kappa_ext) * const.Mpc  # eqn 7 in Suyu et al.
         return D_dt / const.c * fermat_pot / const.day_s * const.arcsec ** 2  # * self.arcsec2phys_lens(1.)**2
 
     def time_delay2fermat_pot(self, dt):
@@ -162,7 +162,7 @@ class LensCosmo(object):
         :param dt: time delay in units of days
         :return: Fermat potential in units arcsec**2 for a given cosmology
         """
-        D_dt = self.D_dt * const.Mpc
+        D_dt = self.ddt * const.Mpc
         return dt * const.c * const.day_s / D_dt / const.arcsec ** 2
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):
@@ -173,8 +173,8 @@ class LensCosmo(object):
         :param Rs: scale radius in units of arcsec
         :return: M200, r200, Rs_physical, c
         """
-        Rs = Rs_angle * const.arcsec * self.D_d
-        theta_scaled = alpha_Rs * self.epsilon_crit * self.D_d * const.arcsec
+        Rs = Rs_angle * const.arcsec * self.dd
+        theta_scaled = alpha_Rs * self.epsilon_crit * self.dd * const.arcsec
         rho0 = theta_scaled / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
         rho0_com = rho0 / self.h**2 * self.a_z(self.z_lens)**3
         c = self.nfw_param.c_rho0(rho0_com)
@@ -191,9 +191,9 @@ class LensCosmo(object):
         :return: alpha_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
-        Rs_angle = Rs / self.D_d / const.arcsec  # Rs in arcsec
+        Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
         alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return Rs_angle,  alpha_Rs / self.epsilon_crit / self.D_d / const.arcsec
+        return Rs_angle, alpha_Rs / self.epsilon_crit / self.dd / const.arcsec
 
     def nfwParam_physical(self, M, c):
         """
@@ -215,7 +215,7 @@ class LensCosmo(object):
         :return: angle (in arc seconds) of the virial radius
         """
         r200 = self.nfw_param.r200_M(M * self.h) / self.h * self.a_z(self.z_lens)  # physical radius r200
-        theta_r200 = r200 / self.D_d / const.arcsec
+        theta_r200 = r200 / self.dd / const.arcsec
         return theta_r200
 
     def sis_theta_E2sigma_v(self, theta_E):
@@ -224,7 +224,7 @@ class LensCosmo(object):
         :param theta_E: Einstein radius (in arcsec)
         :return: velocity dispersion in units (km/s)
         """
-        v_sigma_c2 = theta_E * const.arcsec / (4*np.pi) * self.D_s / self.D_ds
+        v_sigma_c2 = theta_E * const.arcsec / (4*np.pi) * self.ds / self.dds
         return np.sqrt(v_sigma_c2)*const.c / 1000
 
     def sis_sigma_v2theta_E(self, v_sigma):
@@ -233,5 +233,5 @@ class LensCosmo(object):
         :param v_sigma: velocity dispersion (km/s)
         :return: theta_E (arcsec)
         """
-        theta_E = 4 * np.pi * (v_sigma * 1000./const.c)**2 * self.D_ds / self.D_s / const.arcsec
+        theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E

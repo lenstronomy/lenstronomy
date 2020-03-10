@@ -87,7 +87,7 @@ class TDCosmography(KinematicsAPI):
                                            kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E,
                                            gamma=gamma, sampling_number=sampling_number)
         sigma_v *= 1000 # convert from [km/s] to  [m/s]
-        J = sigma_v ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
+        J = sigma_v ** 2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c ** 2
         return J
 
     def velocity_dispersion_map_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
@@ -113,7 +113,7 @@ class TDCosmography(KinematicsAPI):
                                                gamma=gamma, num_kin_sampling=num_kin_sampling,
                                                num_psf_sampling=num_psf_sampling)
         sigma_v_map *= 1000 # convert from [km/s] to  [m/s]
-        J_map = sigma_v_map ** 2 * self._lens_cosmo.D_ds / self._lens_cosmo.D_s / const.c ** 2
+        J_map = sigma_v_map ** 2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c ** 2
         return J_map
 
     @staticmethod

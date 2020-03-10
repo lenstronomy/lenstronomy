@@ -19,9 +19,9 @@ class Starlets(object):
 
     Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
-    param_names = ['coeffs', 'n_scales', 'n_pixels']
-    lower_limit_default = {'coeffs': [0], 'n_scales': 2, 'n_pixels': 10}
-    upper_limit_default = {'coeffs': [1e8], 'n_scales': 20, 'n_pixels': 1e10}
+    param_names = ['coeffs', 'n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']
+    lower_limit_default = {'coeffs': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
+    upper_limit_default = {'coeffs': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
 
     def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False):
         """

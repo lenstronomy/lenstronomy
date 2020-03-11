@@ -3,6 +3,7 @@ Tests for `galkin` module.
 """
 import pytest
 import numpy.testing as npt
+import numpy as np
 import unittest
 
 from lenstronomy.GalKin.anisotropy import Anisotropy
@@ -11,40 +12,39 @@ from lenstronomy.GalKin.anisotropy import Anisotropy
 class TestAnisotropy(object):
 
     def setup(self):
-        pass
+        self._r_array = np.array([2., 3.])
+        self._R_array = 1.
 
     def test_K(self):
-        r = 2.
-        R = 1.
 
         anisoClass = Anisotropy(anisotropy_type='const')
         kwargs = {'beta': 1.0}
-        k = anisoClass.K(r, R, **kwargs)
-        npt.assert_almost_equal(k, 0.61418484930437822, decimal=5)
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.61418484930437822, decimal=5)
 
         anisoClass = Anisotropy(anisotropy_type='Colin')
         kwargs = {'r_ani': 1}
-        k = anisoClass.K(r, R, **kwargs)
-        npt.assert_almost_equal(k, 0.91696135187291117, decimal=5)
-        k = anisoClass.K(r, R-0.001, **kwargs)
-        npt.assert_almost_equal(k, 0.91696135187291117, decimal=2)
-        k = anisoClass.K(r, R + 0.001, **kwargs)
-        npt.assert_almost_equal(k, 0.91696135187291117, decimal=2)
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.91696135187291117, decimal=5)
+        k = anisoClass.K(self._r_array, self._R_array-0.001, **kwargs)
+        npt.assert_almost_equal(k[0], 0.91696135187291117, decimal=2)
+        k = anisoClass.K(self._r_array, self._R_array + 0.001, **kwargs)
+        npt.assert_almost_equal(k[0], 0.91696135187291117, decimal=2)
 
         anisoClass = Anisotropy(anisotropy_type='radial')
         kwargs = {}
-        k = anisoClass.K(r, R, **kwargs)
-        npt.assert_almost_equal(k, 0.61418484930437856, decimal=5)
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.61418484930437856, decimal=5)
 
         anisoClass = Anisotropy(anisotropy_type='isotropic')
         kwargs = {}
-        k = anisoClass.K(r, R, **kwargs)
-        npt.assert_almost_equal(k, 0.8660254037844386, decimal=5)
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.8660254037844386, decimal=5)
 
         anisoClass = Anisotropy(anisotropy_type='OM')
         kwargs = {'r_ani': 1}
-        k = anisoClass.K(r, R, **kwargs)
-        npt.assert_almost_equal(k, 0.95827704196894481, decimal=5)
+        k = anisoClass.K(self._r_array, self._R_array, **kwargs)
+        npt.assert_almost_equal(k[0], 0.95827704196894481, decimal=5)
 
     def test_beta(self):
         r = 2.
@@ -110,7 +110,7 @@ class TestAnisotropy(object):
     def test_generalizedOM(self):
         # generalized OM model
         anisoClass = Anisotropy(anisotropy_type='GOM')
-        r = 5.
+        r = self._r_array
         R = 2
         anisoClassOM = Anisotropy(anisotropy_type='OM')
         kwargs_om = {'r_ani': 1.}
@@ -121,7 +121,7 @@ class TestAnisotropy(object):
 
         K_gom = anisoClass.K(r, R, **kwargs_gom)
         K_om = anisoClassOM.K(r, R, **kwargs_om)
-        npt.assert_almost_equal(K_gom, K_om, decimal=5)
+        npt.assert_almost_equal(K_gom, K_om, decimal=3)
 
 
 class TestRaise(unittest.TestCase):

@@ -43,23 +43,24 @@ class ImageSparseFit(ImageLinearFit):
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
         convolution_class = PixelKernelConvolution(self.PSF.kernel_point_source, convolution_type='fft_static')
 
-        source_model_list = self.SourceModel.profile_type_list
-        if 'STARLETS' not in source_model_list or len(source_model_list) != 1:
-            raise ValueError("'STARLETS' must be the only source model list for sparse fit")
-
-        if lens_light_model_class is not None:
+        no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
+        if no_lens_light:
+            source_model_list = self.SourceModel.profile_type_list
+            if 'STARLETS' not in source_model_list or len(source_model_list) > 1:
+                raise ValueError("'STARLETS' must be the only source model list for sparse fit")
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel,
+                                                   lens_light_model_class=None, psf_class=self.PSF, 
+                                                   convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
+                                                   **kwargs_sparse_solver)
+        else:
             lens_light_model_list = self.LensLightModel.profile_type_list
-            if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) != 1:
+            if 'STARLETS' not in lens_light_model_list or len(lens_light_model_list) > 1:
                 raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, 
                                                        lens_light_model_class=self.LensLightModel, psf_class=self.PSF, 
                                                        convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
                                                        **kwargs_sparse_solver)
-        else:
-            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel,
-                                                   lens_light_model_class=None, psf_class=self.PSF, 
-                                                   convolution_class=convolution_class, likelihood_mask=likelihood_mask, 
-                                                   **kwargs_sparse_solver)
+            
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
@@ -213,9 +214,13 @@ class ImageSparseFit(ImageLinearFit):
             n_pixels_source, pixel_scale_source = fixed_param[0], fixed_param[1]
             kwargs_source[0]['n_pixels'] = n_pixels_source
             kwargs_source[0]['scale'] = pixel_scale_source
+            kwargs_source[0]['center_x'] = 0
+            kwargs_source[0]['center_y'] = 0
         if kwargs_lens_light is not None and len(kwargs_lens_light) > 0:
             n_pixels_lens_light, pixel_scale_lens_light = fixed_param[2], fixed_param[3]
             kwargs_lens_light[0]['n_pixels'] = n_pixels_source
             kwargs_lens_light[0]['scale'] = pixel_scale_source
+            kwargs_lens_light[0]['center_x'] = 0
+            kwargs_lens_light[0]['center_y'] = 0
         return kwargs_source, kwargs_lens_light
         

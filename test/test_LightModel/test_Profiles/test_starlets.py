@@ -99,7 +99,7 @@ class TestStarlets(object):
         coeffs_fast = self.starlets_fast.decomposition_2d(self.test_image, self.n_scales)
         assert coeffs.shape == (self.n_scales, self.num_pix, self.num_pix)
         assert coeffs_fast.shape == (self.n_scales, self.num_pix, self.num_pix)
-        npt.assert_equal(coeffs, coeffs_fast)
+        npt.assert_almost_equal(coeffs, coeffs_fast, decimal=5)
 
         # test non-negativity of second generation starlet transform
         coeffs_2nd = self.starlets_2nd.decomposition_2d(self.test_image, self.n_scales)
@@ -116,7 +116,7 @@ class TestStarlets(object):
         coeffs_1d_fast = self.starlets_fast.decomposition(self.test_image, self.n_scales)
         assert coeffs_1d.shape == (self.n_scales*self.num_pix**2,)
         assert coeffs_1d_fast.shape == (self.n_scales*self.num_pix**2,)
-        npt.assert_equal(coeffs_1d, coeffs_1d_fast)
+        npt.assert_almost_equal(coeffs_1d, coeffs_1d_fast, decimal=5)
 
         # test non-negativity of second generation starlet transform
         coeffs_1d_2nd = self.starlets_2nd.decomposition(self.test_image, self.n_scales)

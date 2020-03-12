@@ -136,3 +136,7 @@ class Numerics(PointSourceRendering):
             return kernel_cut
         else:
             return kernel_super
+
+    @property
+    def convolution_class(self):
+        return self._conv

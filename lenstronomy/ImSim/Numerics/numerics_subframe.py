@@ -75,6 +75,10 @@ class NumericsSubFrame(PointSourceRendering):
         """
         return self._numerics_subframe.coordinates_evaluate
 
+    @property
+    def convolution_class(self):
+        return self._numerics_subframe.convolution_class
+
     def _complete_frame(self, image_sub_frame):
         """
         :param image_sub_frame: 2d numpy array of size of the sub-frame

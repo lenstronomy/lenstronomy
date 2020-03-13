@@ -77,6 +77,10 @@ class NumericsSubFrame(PointSourceRendering):
 
     @property
     def convolution_class(self):
+        """
+
+        :return: convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, ...)
+        """
         return self._numerics_subframe.convolution_class
 
     def _complete_frame(self, image_sub_frame):

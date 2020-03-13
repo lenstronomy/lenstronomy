@@ -38,11 +38,16 @@ class PixelKernelConvolution(object):
 
     @property
     def kernel(self):
+        """
+
+        :return: convolution kernel as an 2D image
+        """
         return self._kernel
 
     def copy_transpose(self):
         """
-        returns copy of the class with kernel set to the transpose of original one
+        
+        :return: copy of the class with kernel set to the transpose of original one
         """
         return PixelKernelConvolution(self._kernel.T, convolution_type=self._type)
 

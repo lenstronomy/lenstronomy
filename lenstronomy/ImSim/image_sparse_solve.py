@@ -46,20 +46,20 @@ class ImageSparseFit(ImageLinearFit):
         no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
         no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)
         if no_lens_light and no_point_sources:
-            if self.SourceModel.profile_type_list != ['STARLETS']:
-                raise ValueError("'STARLETS' must be the only source model list for sparse fit")
+            model_list = self.SourceModel.profile_type_list
+            if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
+                raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, self.ImageNumerics, 
                                                    likelihood_mask=likelihood_mask, 
                                                    **kwargs_sparse_solver)
         elif no_point_sources:
-            if self.LensLightModel.profile_type_list != ['STARLETS']:
-                raise ValueError("'STARLETS' must be the only lens light model list for sparse fit")
+            model_list = self.LensLightModel.profile_type_list
+            if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
+                raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, self.ImageNumerics, 
                                                        likelihood_mask=likelihood_mask, 
                                                        **kwargs_sparse_solver)
         elif no_lens_light:
-            if self.PointSource.point_source_type_list != ['LENSED_POSITION']:
-                raise ValueError("'LENSED_POSITION' must be the only lens light model list for sparse fit")
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
             self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.SourceModel, self.ImageNumerics, 

@@ -43,10 +43,13 @@ class ImageLikelihood(object):
         :param kwargs_ps:
         :return:
         """
-
-        logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                      kwargs_extinction=kwargs_extinction, kwargs_special=kwargs_special,
-                                                      source_marg=self._source_marg, linear_prior=self._linear_prior)
+        if self._model_type  == 'single-band-sparse':
+            logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                                                          kwargs_special=kwargs_special)
+        else:
+            logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
+                                                          kwargs_extinction=kwargs_extinction, kwargs_special=kwargs_special,
+                                                          source_marg=self._source_marg, linear_prior=self._linear_prior)
 
         if self._force_minimum_source_surface_brightness is True and len(kwargs_source) > 0:
             bool = self._check_minimum_source_flux(kwargs_lens, kwargs_source)

@@ -35,6 +35,13 @@ class TestPixelKernelConvolution(object):
         image_convolved_t = pixel_conv_t.convolution2d(self.model)
         npt.assert_equal(image_convolved, image_convolved_t)
 
+    def test_pixel_kernel(self):
+        kernel = np.zeros((5, 5))
+        kernel[1, 1] = 1
+        pixel_conv = PixelKernelConvolution(kernel=kernel)
+        npt.assert_equal(pixel_conv.pixel_kernel(), kernel)
+        npt.assert_equal(pixel_conv.pixel_kernel(num_pix=3), kernel[1:-1, 1:-1])
+
 
 class TestSubgridKernelConvolution(object):
 

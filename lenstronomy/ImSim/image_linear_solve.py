@@ -8,7 +8,7 @@ class ImageLinearFit(ImageFit):
     """
     linear inversion class, inherits ImageFit
     """
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
                  psf_error_map_bool_list=None):
         """

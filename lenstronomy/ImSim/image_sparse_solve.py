@@ -15,7 +15,7 @@ class ImageSparseFit(ImageFit):
     sparse inversion class, inherits ImageFit
     """
 
-    def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
+    def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics={}, likelihood_mask=None,
                  psf_error_map_bool_list=None, kwargs_sparse_solver={}):
         """
@@ -31,7 +31,7 @@ class ImageSparseFit(ImageFit):
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
         being applied to the point sources.
         """
-        super(ImageSparseFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
+        super(ImageSparseFit, self).__init__(data_class, psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
                                              point_source_class=point_source_class, extinction_class=extinction_class, 

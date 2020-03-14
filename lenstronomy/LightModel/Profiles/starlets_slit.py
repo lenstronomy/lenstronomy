@@ -5,8 +5,15 @@ import scipy.signal as scs
 import scipy.ndimage.filters as scf
 
 
-def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
+def transform(img, n_scales, convol2d=False, second_gen=False):
+    """
+    Performs starlet decomposition of an 2D array.
 
+    :param img: input image
+    :param n_scales: number of decomposition scales
+    :param convol2d: if True, performes 2D filtering, else uses filter separability to perform only 1D filtering
+    :param second_gen: if True, 'second generation' starlets are used
+    """
     mode = 'nearest'
     
     lvl = n_scales-1
@@ -16,18 +23,16 @@ def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
         wave = np.zeros([lvl+1, sh[1], sh[1], mn])
         for h in range(mn):
             if mn == sh[0]:
-                wave[:, :, :, h] = wave_transform(img[h,:,:], lvl+1, Filter=Filter)
+                wave[:, :, :, h] = transform(img[h,:,:], lvl+1, convol2d=convol2d, second_gen=second_gen)
             else:
-                wave[:, :, :, h] = wave_transform(img[:,:,h], lvl+1, Filter=Filter)
+                wave[:, :, :, h] = transform(img[:,:,h], lvl+1, convol2d=convol2d, second_gen=second_gen)
         return wave
 
     n1 = sh[1]
     n2 = sh[1]
     
-    if Filter == 'Bspline':
-        h = [1./16, 1./4, 3./8, 1./4, 1./16]
-    else:
-        h = [1./4, 1./2, 1./4]
+    # B-spline filter
+    h = [1./16, 1./4, 3./8, 1./4, 1./16]
     n = np.size(h)
     h = np.array(h)
     
@@ -48,7 +53,7 @@ def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
 
         ######Calculates c(j+1)
         ###### Line convolution
-        if convol2d == 1:
+        if convol2d is True:
             cnew = scs.convolve2d(c, H, mode='same', boundary='symm')
         else:
             cnew = scf.convolve1d(c, newh[0, :], axis=0, mode=mode)
@@ -60,7 +65,7 @@ def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
       
         if second_gen:
             ###### hoh for g; Column convolution
-            if convol2d == 1:
+            if convol2d is True:
                 hc = scs.convolve2d(cnew, H, mode='same', boundary='symm')
             else:
                 hc = scf.convolve1d(cnew, newh[0, :],axis=0, mode=mode)
@@ -83,7 +88,15 @@ def transform(img, n_scales, Filter='Bspline', convol2d=0, second_gen=False):
     return wave
 
 
-def inverse_transform(wave, convol2d=0, fast=True, second_gen=False):
+def inverse_transform(wave, convol2d=False, fast=True, second_gen=False):
+    """
+    Reconstructs an image fron its starlet decomposition coefficients
+
+    :param wave: input coefficients, with shape (n_scales, np.sqrt(n_pixel), np.sqrt(n_pixel))
+    :param convol2d: if True, performes 2D filtering, else uses filter separability to perform only 1D filtering
+    :param fast: if True, and only with second_gen is False, simply sums up all scales to reconstruct the image
+    :param second_gen: if True, 'second generation' starlets are used
+    """
     if fast and not second_gen:
         # simply sum all scales, including the coarsest one
         return np.sum(wave, axis=0)
@@ -104,7 +117,7 @@ def inverse_transform(wave, convol2d=0, fast=True, second_gen=False):
         H = np.dot(newh.T, newh)
 
         ###### Line convolution
-        if convol2d == 1:
+        if convol2d is True:
             cnew = scs.convolve2d(cJ, H, mode='same', boundary='symm')
         else:
             cnew = scf.convolve1d(cJ, newh[0, :], axis=0, mode=mode)

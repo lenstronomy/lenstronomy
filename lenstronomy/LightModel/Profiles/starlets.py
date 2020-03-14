@@ -69,7 +69,7 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (sqrt(n_pixels), sqrt(n_pixels))
         """
-        if self.use_pysap:
+        if self.use_pysap and not self._second_gen:
             return self._inverse_transform(coeffs, n_scales)
         else:
             return starlets_slit.inverse_transform(coeffs, fast=self._fast_inverse, 
@@ -93,7 +93,7 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 2D array of shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         """
-        if self.use_pysap:
+        if self.use_pysap and not self._second_gen:
             coeffs = self._transform(image, n_scales)
         else:
             coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)

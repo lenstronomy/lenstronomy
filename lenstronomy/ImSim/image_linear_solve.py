@@ -156,8 +156,8 @@ class ImageLinearFit(ImageFit):
         :return:
         """
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
-        source_light_response, n_source = self._source_linear_response_matrix(x_grid, y_grid, kwargs_lens,
-                                                                              kwargs_source)
+        source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
+                                                                               kwargs_source)
         extinction = self._extinction.extinction(x_grid, y_grid, kwargs_extinction=kwargs_extinction,
                                                  kwargs_special=kwargs_special)
         lens_light_response, n_lens_light = self.LensLightModel.functions_split(x_grid, y_grid, kwargs_lens_light)

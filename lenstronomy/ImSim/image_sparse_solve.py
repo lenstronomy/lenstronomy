@@ -40,7 +40,6 @@ class ImageSparseFit(ImageFit):
         
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
-        # convolution_class = PixelKernelConvolution(self.PSF.kernel_point_source, convolution_type='fft_static')
 
         no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
         no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)

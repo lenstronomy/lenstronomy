@@ -161,18 +161,12 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
         multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
     elif multi_band_type == 'single-band':
-        from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                         band_index=band_index)
-
+        from lenstronomy.ImSim.MultiBand.single_band_multi_linear_model import SingleBandMultiLinearModel
+        multiband = SingleBandMultiLinearModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+                                               band_index=band_index)
     elif multi_band_type == 'single-band-sparse':
-        is_pixel_source = ('STARLETS' in kwargs_model.get('source_light_model_list', []))
-        is_pixel_lens = ('STARLETS' in kwargs_model.get('lens_light_model_list', []))
-        if not is_pixel_source and not is_pixel_lens:
-            raise ValueError("Image type 'single-band-sparse' only supported with 'STARLETS' light model")
-
-        from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModelSparse
-        multiband = SingleBandMultiModelSparse(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+        from lenstronomy.ImSim.MultiBand.single_band_multi_sparse_model import SingleBandMultiSparseModel
+        multiband = SingleBandMultiSparseModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
                                                band_index=band_index, kwargs_sparse_solver=kwargs_sparse_solver)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)

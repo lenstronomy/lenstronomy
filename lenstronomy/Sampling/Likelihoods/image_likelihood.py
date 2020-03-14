@@ -43,7 +43,7 @@ class ImageLikelihood(object):
         :param kwargs_ps:
         :return:
         """
-        if self._model_type  == 'single-band-sparse':
+        if self._model_type  == 'single-band-multi-sparse-model':
             logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                           kwargs_special=kwargs_special)
         else:

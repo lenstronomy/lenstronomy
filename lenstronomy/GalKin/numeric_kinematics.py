@@ -49,7 +49,7 @@ class NumericKinematics(Anisotropy):
         """
         I_R_sigma2 = self._I_R_simga2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         I_R = self.lightProfile.light_2d(R, kwargs_light)
-        return I_R_sigma2 / I_R
+        return np.nan_to_num(I_R_sigma2 / I_R)
 
     def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

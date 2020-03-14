@@ -33,7 +33,7 @@ class Aperture(object):
         elif aperture_type == 'IFU_shells':
             self._aperture = IFUShells(**kwargs_aperture)
         else:
-            raise ValueError("aperture type %s not implemented!" % aperture_type)
+            raise ValueError("aperture type %s not implemented! Available are 'slit', 'shell', 'IFU_shells'. " % aperture_type)
 
     def aperture_select(self, ra, dec):
         """

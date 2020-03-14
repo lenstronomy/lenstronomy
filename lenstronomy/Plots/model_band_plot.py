@@ -3,7 +3,7 @@ import lenstronomy.Util.util as util
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
+from lenstronomy.ImSim.MultiBand.single_band_multi_linear_model import SingleBandMultiLinearModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Plots import plot_util
@@ -15,10 +15,14 @@ class ModelBandPlot(object):
 
     """
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
-                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
-
-        self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
-                                                  likelihood_mask_list=likelihood_mask_list, band_index=band_index)
+                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat",
+                 single_band_type='linear'):
+        if single_band_type == 'sparse':
+            #TODO
+            raise ValueError("ModelBandPlot does not SparseLinear models yet")
+        else:
+            self.bandmodel = SingleBandMultiLinearModel(multi_band_list, kwargs_model,
+                                                        likelihood_mask_list=likelihood_mask_list, band_index=band_index)
         self._kwargs_special_partial = kwargs_params.get('kwargs_special', None)
         kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, self._kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
         self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)

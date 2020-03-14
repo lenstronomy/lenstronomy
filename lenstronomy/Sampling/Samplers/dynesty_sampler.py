@@ -60,7 +60,6 @@ class DynestySampler(NestedSampler):
                                                          sample=sample)
         self._has_warned = False
 
-
     def prior(self, u):
         """
         compute the mapping between the unit cube and parameter cube
@@ -75,6 +74,8 @@ class DynestySampler(NestedSampler):
         elif self.prior_type == 'uniform':
             p = utils.cube2args_uniform(u, self.lowers, self.uppers, 
                                         self.n_dims, copy=True)
+        else:
+            raise ValueError('prior type %s not supported! Chose "gaussian" or "uniform".')
         return p
 
     def log_likelihood(self, x):
@@ -91,7 +92,6 @@ class DynestySampler(NestedSampler):
             logL = -1e15
             self._has_warned = True
         return float(logL)
-
 
     def run(self, kwargs_run):
         """

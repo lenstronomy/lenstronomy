@@ -43,7 +43,7 @@ class ImageLikelihood(object):
         :param kwargs_ps:
         :return:
         """
-        if self._model_type  == 'single-band-multi-sparse-model':
+        if self._model_type in ['single-band-multi-sparse-model']:
             logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                           kwargs_special=kwargs_special)
         else:
@@ -60,7 +60,7 @@ class ImageLikelihood(object):
         return logL
 
     def _check_minimum_source_flux(self, kwargs_lens, kwargs_source):
-        if self._model_type in ['single-band']:
+        if self._model_type in ['single-band-multi-linear-model']:
             flux = self.imSim.source_surface_brightness(kwargs_source, kwargs_lens=kwargs_lens, unconvolved=True)
             if np.min(flux) < self._flux_min:
                 return True

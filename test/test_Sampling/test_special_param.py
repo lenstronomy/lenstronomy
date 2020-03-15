@@ -57,6 +57,18 @@ class TestParam(object):
         print(kwargs_new)
         assert kwargs_new['delta_x_image'][0] == kwargs['delta_x_image'][0]
 
+    def test_source_grid_offsets(self):
+        param = SpecialParam(num_images=2, kwargs_fixed={},
+                             kwargs_lower={'delta_x_source_grid': [-1, -1], 'delta_y_source_grid': [-1, -1]},
+                             kwargs_upper={'delta_x_source_grid': [1, 1], 'delta_y_source_grid': [1, 1]},
+                             source_grid_offset=True)
+        kwargs = {'delta_x_source_grid': [0.1, 0.1], 'delta_y_source_grid': [0.1, 0.1]}
+        args = param.setParams(kwargs_special=kwargs)
+        kwargs_new, _ = param.getParams(args, i=0)
+        print(kwargs_new)
+        assert kwargs_new['delta_x_source_grid'][0] == kwargs['delta_x_source_grid'][0]
+        assert kwargs_new['delta_y_source_grid'][0] == kwargs['delta_y_source_grid'][0]
+
 
 if __name__ == '__main__':
     pytest.main()

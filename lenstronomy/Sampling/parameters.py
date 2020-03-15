@@ -138,9 +138,11 @@ class Param(object):
                                          num_images=self._num_images)
 
         # source_grid_offset only defined for pixelated source profiles
-        if source_grid_offset is True and self._source_light_model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
+        if (len(self._source_light_model_list) != 1 
+            or self._source_light_model_list[0] not in ['STARLETS', 'STARLETS_GEN2']):
             self._source_grid_offset = False
-        self._source_grid_offset = source_grid_offset
+        else:
+            self._source_grid_offset = source_grid_offset
 
         self._joint_extinction_with_lens_light = joint_extinction_with_lens_light
         # fix parameters joint within the same model types

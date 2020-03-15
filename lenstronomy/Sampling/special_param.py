@@ -22,6 +22,7 @@ class SpecialParam(object):
         :param num_images: number of point source images such that the point source offset parameters match their numbers
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood.
         :param num_tau0: integer, number of different optical depth re-normalization factors
+        :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates
         """
 
         self._D_dt_sampling = Ddt_sampling

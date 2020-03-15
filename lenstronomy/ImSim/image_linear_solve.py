@@ -73,11 +73,13 @@ class ImageLinearFit(ImageFit):
         """
         computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_source: extended source model keyword argument list
+        :param kwargs_lens_light: lens light model keyword argument list
+        :param kwargs_ps: point source model keyword argument list
+        :param kwargs_extinction: extinction model keyword argument list
+        :param kwargs_special: special keyword argument list
+        :return: linear response matrix
         """
         A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
         return A
@@ -187,3 +189,4 @@ class ImageLinearFit(ImageFit):
             A[n, :] = self.image2array_masked(image)
             n += 1
         return np.nan_to_num(A)
+        

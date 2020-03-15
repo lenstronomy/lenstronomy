@@ -1,10 +1,17 @@
 import numpy as np
 import scipy.special as special
+from lenstronomy.GalKin import velocity_util
+from scipy.interpolate import interp1d
 
 
 class Anisotropy(object):
     """
     class that handles the kinematic anisotropy
+    sources: Mamon & Lokas 2005
+    https://arxiv.org/pdf/astro-ph/0405491.pdf
+
+    Agnello et al. 2014
+    https://arxiv.org/pdf/1401.4462.pdf
     """
 
     def __init__(self, anisotropy_type):
@@ -19,8 +26,10 @@ class Anisotropy(object):
             self._model = Radial()
         elif self._type == 'isotropic':
             self._model = Isotropic()
-        elif self._type == 'OsipkovMerritt':
+        elif self._type == 'OM':
             self._model = OsipkovMerritt()
+        elif self._type == 'GOM':
+            self._model = GeneralizedOM()
         elif self._type == 'Colin':
             self._model = Colin()
         else:
@@ -45,6 +54,14 @@ class Anisotropy(object):
         :return: K(r, R)
         """
         return self._model.K(r, R, **kwargs)
+
+    def delete_anisotropy_cache(self):
+        """
+        deletes cached interpolations for a fixed anisotropy model
+        :return:
+        """
+        if hasattr(self._model, 'delete_cache'):
+            self._model.delete_cache()
 
 
 class Const(object):
@@ -180,6 +197,120 @@ class OsipkovMerritt(object):
         :return: beta
         """
         return r**2/(r_ani**2 + r**2)
+
+
+class GeneralizedOM(object):
+    """
+    generalized Osipkov&Merrit profile
+    see Agnello et al. 2014 https://arxiv.org/pdf/1401.4462.pdf
+    b(r) = beta_inf * r^2 / (r^2 + r_ani^2)
+    """
+    def __init__(self):
+        self._z_interp = -np.linspace(-100, 0, 100)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
+
+    @staticmethod
+    def beta_r(r, r_ani, beta_inf):
+        """
+        anisotropy as a function of radius
+
+        :param r: 3d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: beta
+        """
+        return beta_inf * r**2/(r_ani**2 + r**2)
+
+    def K(self, r, R, r_ani, beta_inf):
+        """
+        equation19 in Agnello et al. 2014 for k_beta(R, r) such that
+        K(R, r) = (sqrt(r^2 - R^2) + k_beta(R, r)) / r
+
+        :param r: 3d radius
+        :param R: projected 2d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: K(r, R)
+        """
+        return (np.sqrt(r**2 - R**2) + self._k_beta(r, R, r_ani, beta_inf)) / r
+
+    def delete_cache(self):
+        """
+        deletes the interpolation function of the hypergeometic function for a specific beta_inf
+
+        :return: deleted self variables
+        """
+        if hasattr(self, '_f_12_interp'):
+            del self._f_12_interp
+        if hasattr(self, '_f_32_interp'):
+            del self._f_32_interp
+
+    def _k_beta(self, r, R, r_ani, beta_inf):
+        """
+        equation19 in Agnello et al. 2014 for k_beta(R, r) such that
+        K(R, r) = (sqrt(r^2 - R^2) + k_beta(R, r)) / r
+
+        :param r: 3d radius
+        :param R: projected 2d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: k_beta(r, R)
+        """
+        z = (R**2 - r**2) / (r_ani**2 + R**2)
+        # ((r**2 + r_ani**2) / (R**2 + r_ani**2)) ** beta_inf
+        return - self.beta_r(R, r_ani, beta_inf) * self._j_beta(R, r, r_ani, beta_inf) *\
+               np.sqrt(r**2 - R**2) * (self._F_12(z, beta_inf) + 2. * (1 - r**2/R**2) / 3 * self._F_32(z, beta_inf))
+
+    def _F_12(self, z, beta_inf):
+        """
+
+        :param z: (R**2 - r**2) / (r_ani**2 + R**2)
+        :param beta_inf: anisotropy at infinity
+        :return: _F(1/2, z, beta_inf)
+        """
+        if not hasattr(self, '_f_12_interp'):
+            f_12_interp = self._F(1 / 2., self._z_interp, beta_inf)
+            self._f_12_interp = interp1d(self._z_interp, f_12_interp, kind='cubic')
+        return self._f_12_interp(z)
+
+    def _F_32(self, z, beta_inf):
+        """
+
+        :param z: (R**2 - r**2) / (r_ani**2 + R**2)
+        :param beta_inf: anisotropy at infinity
+        :return: _F(3/2, z, beta_inf)
+        """
+        if not hasattr(self, '_f_32_interp'):
+            f_32_interp = self._F(3 / 2., self._z_interp, beta_inf)
+            self._f_32_interp = interp1d(self._z_interp, f_32_interp, kind='cubic')
+        return self._f_32_interp(z)
+
+    def _j_beta(self, r, s, r_ani, beta_inf):
+        """
+        equation (12) in Agnello et al. 2014
+
+        :param r:
+        :param s:
+        :param r_ani:
+        :param beta_inf
+        :return:
+        """
+        return ((s**2 + r_ani**2) / (r**2 + r_ani**2)) ** beta_inf
+
+    def _F(self, a, z, beta_inf):
+        """
+        the hypergeometric function 2F1 (a, 1 +beta_inf, a + 1, z)
+
+        :param a:
+        :param z:
+        :return:
+        """
+        if isinstance(z, int) or isinstance(z, float):
+            return velocity_util.hyp_2F1(a=a, b=1+beta_inf, c=a+1, z=z)
+        else:
+            _F_array = []
+            for z_i in z:
+                _F_array.append(velocity_util.hyp_2F1(a=a, b=1+beta_inf, c=a+1, z=z_i))
+            return np.array(_F_array, dtype=float)
 
 
 class Colin(object):

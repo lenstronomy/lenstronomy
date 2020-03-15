@@ -38,7 +38,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
-        Anisotropy.__init__(self, anisotropy_type='OsipkovMerritt')
+        Anisotropy.__init__(self, anisotropy_type='OM')
 
     def dispersion(self, gamma, theta_E, r_eff, r_ani, sampling_number=1000):
         """
@@ -153,6 +153,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         # first term
         prefac1 = 4*np.pi * const.G * a**(-gamma) * rho0_r0_gamma / (3-gamma)
         prefac2 = r * (r + a)**3/(r**2 + r_ani**2)
+        #TODO check whether interpolation functions can speed this up
         hyp1 = vel_util.hyp_2F1(a=2+gamma, b=gamma, c=3+gamma, z=1./(1+r/a))
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)

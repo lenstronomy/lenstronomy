@@ -111,6 +111,20 @@ You can find simple examle notebooks for various cases. The latest versions of t
 * `Example of numerical ray-tracing and convolution options <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb>`_
 
 
+
+Contribution
+------------
+Check out the contributing page `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
+and become an author of lenstronomy! A big shutout to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
+
+
+
+Affiliated packages
+-------------------
+Multiple affiliated packages that make use of lenstronomy can be found `here <https://lenstronomy.readthedocs.io/en/latest/affiliatedpackages.html>`_
+(not complete) and further packages are under development by the community.
+
+
 Mailing list
 ------------
 
@@ -137,8 +151,8 @@ We provide some examples where a real galaxy has been lensed and then been recon
 
 Attribution
 -----------
-The design concept of ``lenstronomy`` are reported in
-`Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_. Please cite this paper whenever you publish
-results that made use of ``lenstronomy``. Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
+The design concept of ``lenstronomy`` are reported in `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.
+Please cite this paper when you use lenstronomy in a publication and link to `https://github.com/sibirrer/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
+Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
 when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction. Please make sure to cite also
 the relevant work that was implemented in ``lenstronomy``, as described in the release paper.

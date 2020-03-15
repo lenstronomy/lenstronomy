@@ -53,7 +53,7 @@ class TestImageLikelihood(object):
         time_delays_measured = t_days[1:] - t_days[0]
         time_delays_uncertainties = np.array([0.1, 0.1, 0.1])
         self.td_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties, lens_model_class=lensModel, point_source_class=pointSource)
-        kwargs_cosmo = {'D_dt': lensCosmo.D_dt}
+        kwargs_cosmo = {'D_dt': lensCosmo.ddt}
         logL = self.td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         npt.assert_almost_equal(logL, 0, decimal=8)
 
@@ -61,7 +61,7 @@ class TestImageLikelihood(object):
         time_delays_measured_new[0] += 0.1
         td_likelihood = TimeDelayLikelihood(time_delays_measured_new, time_delays_uncertainties,
                                                  lens_model_class=lensModel, point_source_class=pointSource)
-        kwargs_cosmo = {'D_dt': lensCosmo.D_dt}
+        kwargs_cosmo = {'D_dt': lensCosmo.ddt}
         logL = td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         npt.assert_almost_equal(logL, -0.5, decimal=8)
 

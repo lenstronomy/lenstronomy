@@ -136,10 +136,12 @@ class ImageFit(ImageModel):
         if self._psf_error_map is True:
             for k, bool in enumerate(self._psf_error_map_bool_list):
                 if bool is True:
-                    ra_pos, dec_pos, amp = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k)
+                    ra_pos, dec_pos, _ = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k,
+                                                                            with_amp=False)
                     if len(ra_pos) > 0:
                         ra_pos, dec_pos = self._displace_astrometry(ra_pos, dec_pos, kwargs_special=kwargs_special)
-                        error_map += self.ImageNumerics.psf_error_map(ra_pos, dec_pos, amp, self.Data.data)
+                        error_map += self.ImageNumerics.psf_error_map(ra_pos, dec_pos, None, self.Data.data,
+                                                                      fix_psf_error_map=False)
         return error_map
 
     def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):

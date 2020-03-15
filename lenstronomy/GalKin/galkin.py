@@ -58,8 +58,8 @@ class Galkin(GalkinObservation):
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
         if analytic_kinematics is True:
             anisotropy_model = kwargs_model.get('anisotropy_model')
-            if not anisotropy_model == 'OsipkovMerritt':
-                raise ValueError('analytic kinematics only available for OsipkovMerritt anisotropy model.')
+            if not anisotropy_model == 'OM':
+                raise ValueError('analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.')
             self.numerics = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                                kwargs_cosmo=kwargs_cosmo)
         else:

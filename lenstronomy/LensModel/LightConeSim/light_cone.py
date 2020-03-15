@@ -86,7 +86,7 @@ class MassSlice(object):
          potential
         """
         lens_cosmo = LensCosmo(z_lens=self._redshift, z_source=z_source, cosmo=cosmo)
-        mpc2arcsec = lens_cosmo.D_d * const.arcsec
+        mpc2arcsec = lens_cosmo.dd * const.arcsec
         grid_arcsec = self._grid_spacing / mpc2arcsec
         x_axes = self._x_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing
         y_axes = self._y_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing

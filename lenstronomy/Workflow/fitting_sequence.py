@@ -9,7 +9,6 @@ from lenstronomy.Sampling.Samplers.multinest_sampler import MultiNestSampler
 from lenstronomy.Sampling.Samplers.polychord_sampler import DyPolyChordSampler
 from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
-from copy import deepcopy
 import lenstronomy.Util.analysis_util as analysis_util
 
 
@@ -82,6 +81,11 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, chain, param])
 
+            elif fitting_type == 'SIMPLEX':
+                kwargs_result = self.simplex(**kwargs)
+                self._updateManager.update_param_state(**kwargs_result)
+                chain_list.append([fitting_type, kwargs_result])
+
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -97,7 +101,7 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list
 
@@ -163,6 +167,24 @@ class FittingSequence(object):
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood)
         return likelihoodModule
+
+    def simplex(self, n_iterations, method='Nelder-Mead'):
+        """
+        Downhill simplex optimization using the Nelder-Mead algorithm.
+
+        :param n_iterations: maximum number of iterations to perform
+        :param method: the optimization method used, see documentation in scipy.optimize.minimize
+        :return: result of the best fit
+        """
+
+        param_class = self.param_class
+        kwargs_temp = self._updateManager.parameter_state
+        init_pos = param_class.kwargs2args(**kwargs_temp)
+        sampler = Sampler(likelihoodModule=self.likelihoodModule)
+        result = sampler.simplex(init_pos, n_iterations, method)
+
+        kwargs_result = param_class.args2kwargs(result, bijective=True)
+        return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
              sampler_type='EMCEE', progress=True):

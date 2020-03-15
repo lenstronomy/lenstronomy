@@ -138,10 +138,11 @@ class NumericKinematics(Anisotropy):
 
     def delete_cache(self):
         """
-        delete interpolation function for a specific mass and light profile
+        delete interpolation function for a specific mass and light profile as well as for a specific anisotropy model
 
         :return:
         """
         if hasattr(self, '_log_mass_3d'):
             del self._log_mass_3d
         self.lightProfile.delete_cache()
+        self.delete_anisotropy_cache()

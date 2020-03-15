@@ -205,6 +205,7 @@ class LikelihoodModule(object):
         """
         penalty = 0.
         bound_hit = False
+        args = np.atleast_1d(args)
         for i in range(0, len(args)):
             if args[i] < lowerLimit[i] or args[i] > upperLimit[i]:
                 penalty = 10.**5
@@ -234,7 +235,7 @@ class LikelihoodModule(object):
     def param_limits(self):
         return self._lower_limit, self._upper_limit
 
-    def effectiv_num_data_points(self, **kwargs):
+    def effective_num_data_points(self, **kwargs):
         """
         returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value
         """
@@ -250,10 +251,11 @@ class LikelihoodModule(object):
     def likelihood(self, a):
         return self.logL(a)
 
-    def likelihood_derivative(self, a):
+    def negativelogL(self, a):
         """
+        for minimizer function, the negative value of the logl value is requested
 
-        :param a: array
-        :return: logL, derivative estimatoe (None)
+        :param a: array of parameters
+        :return: -logL
         """
-        return self.logL(a), None
+        return -self.logL(a)

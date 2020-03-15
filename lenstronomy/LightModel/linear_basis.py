@@ -148,11 +148,11 @@ class LinearBasis(LightModelBase):
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
-            elif model in ['STARLETS']:
+            elif model in ['STARLETS', 'STARLETS_GEN2']:
                 n_scales = kwargs_list[k]['n_scales']
                 n_pixels = kwargs_list[k]['n_pixels']
                 num_param = n_scales * n_pixels
-                kwargs_list[k]['coeffs'] = param[i:i+num_param]
+                kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
             else:
                 raise ValueError('model type %s not valid!' % model)
@@ -170,7 +170,4 @@ class LinearBasis(LightModelBase):
             if 'amp' in param_names:
                 if 'amp' not in kwargs_fixed:
                     kwargs_fixed['amp'] = 1
-            if 'coeffs' in param_names:
-                if not 'coeffs' in kwargs_fixed:
-                    kwargs_fixed['coeffs'] = 1
         return kwargs_fixed_list

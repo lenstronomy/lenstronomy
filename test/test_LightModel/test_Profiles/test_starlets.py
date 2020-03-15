@@ -76,15 +76,15 @@ class TestStarlets(object):
 
         coeffs_1d = self.test_coeffs.reshape(self.n_scales*self.num_pix**2)
         
-        image_1d = self.starlets.function(self.x, self.y, coeffs=coeffs_1d, 
+        image_1d = self.starlets.function(self.x, self.y, amp=coeffs_1d, 
                                           n_scales=self.n_scales, n_pixels=self.n_pixels)
-        image_1d_fast = self.starlets_fast.function(self.x, self.y, coeffs=coeffs_1d, 
+        image_1d_fast = self.starlets_fast.function(self.x, self.y, amp=coeffs_1d, 
                                                     n_scales=self.n_scales, n_pixels=self.n_pixels)
         assert image_1d.shape == (self.num_pix**2,)
         assert image_1d_fast.shape == (self.num_pix**2,)
         npt.assert_almost_equal(image_1d, image_1d_fast, decimal=7)
 
-        image_1d_2nd = self.starlets_2nd.function(self.x, self.y, coeffs=coeffs_1d, 
+        image_1d_2nd = self.starlets_2nd.function(self.x, self.y, amp=coeffs_1d, 
                                                   n_scales=self.n_scales, n_pixels=self.n_pixels)
         assert image_1d_2nd.shape == (self.num_pix**2,)
         assert np.all(image_1d_2nd >= 0)

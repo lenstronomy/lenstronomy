@@ -19,9 +19,9 @@ class Starlets(object):
 
     Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
-    param_names = ['coeffs', 'n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']
-    lower_limit_default = {'coeffs': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
-    upper_limit_default = {'coeffs': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
+    param_names = ['amp', 'n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']
+    lower_limit_default = {'amp': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
+    upper_limit_default = {'amp': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
 
     def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False):
         """
@@ -41,19 +41,21 @@ class Starlets(object):
         self._show_pysap_plots = show_pysap_plots
         self.interpol = Interpol()
 
-    def function(self, x, y, coeffs=None, n_scales=None, n_pixels=None, scale=1, center_x=0, center_y=0):
+    def function(self, x, y, amp=None, n_scales=None, n_pixels=None, scale=1, center_x=0, center_y=0):
         """
         1D inverse starlet transform from starlet coefficients stored in coeffs
         Follows lenstronomy conventions for light profiles.
 
-        :param coeffs: decomposition coefficients, 
-        ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
+        :param amp: decomposition coefficients ('amp' to follow conventions in other light profile)
+        This is an ndarray with shape (n_scales, sqrt(n_pixels), sqrt(n_pixels)) or (n_scales*n_pixels,)
         :param n_scales: number of decomposition scales
         :param n_pixels: number of pixels in a single scale
         :return: reconstructed signal as 1D array of shape (n_pixels,)
         """
-        if len(coeffs.shape) == 1:
-            coeffs = util_s.array2cube(coeffs, n_scales, n_pixels)
+        if len(amp.shape) == 1:
+            coeffs = util_s.array2cube(amp, n_scales, n_pixels)
+        else:
+            coeffs = amp
         image = self.function_2d(coeffs, n_scales)
         image = self.interpol.function(x, y, image=image, scale=scale,
                                        center_x=center_x, center_y=center_y,

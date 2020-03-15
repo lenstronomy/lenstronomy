@@ -130,6 +130,25 @@ def image2array(image):
     nx, ny = image.shape  # find the size of the array
     imgh = np.reshape(image, nx*ny)  # change the shape to be 1d
     return imgh
+
+
+def array2cube(array, n_1, n_23):
+    """
+    """
+    n = int(np.sqrt(n_23))
+    if n**2 != n_23:
+        raise ValueError("2nd and 3rd dims (%s) are not square of integer number!" % n_23)
+    n_2, n_3 = n, n
+    cube = array.reshape(n_1, n_2, n_3)
+    return cube
+
+
+def cube2array(cube):
+    """
+    """
+    n_1, n_2, n_3 = cube.shape
+    array = cube.reshape(n_1 * n_2 * n_3)
+    return array
     
 
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
@@ -541,3 +560,23 @@ def convert_bool_list(n, k=None):
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list
+
+
+def spectral_norm(num_pix, operator, inverse_operator, num_iter=20, tol=1e-10):
+    """compute spectral norm from operator and its inverse"""
+    random_array = np.random.rand(num_pix, num_pix)
+    norm = np.linalg.norm(random_array)
+    random_array /= norm
+
+    i = 0
+    err = abs(tol)
+    while i < num_iter and err >= tol:
+        # print(i, norm)
+        coeffs = operator(random_array)
+        random_array = inverse_operator(coeffs)
+        norm_new = np.linalg.norm(random_array)
+        random_array /= norm_new
+        err = abs(norm_new - norm)/norm_new
+        norm = norm_new
+        i += 1
+    return norm

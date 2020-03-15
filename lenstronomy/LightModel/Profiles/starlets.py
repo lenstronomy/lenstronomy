@@ -4,8 +4,7 @@ import numpy as np
 
 from lenstronomy.LightModel.Profiles import starlets_slit
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
-
-import slitronomy.Util.util as util_s 
+from lenstronomy.Util import util
 
 _force_no_pysap = False  # for debug only
 
@@ -53,7 +52,7 @@ class Starlets(object):
         :return: reconstructed signal as 1D array of shape (n_pixels,)
         """
         if len(amp.shape) == 1:
-            coeffs = util_s.array2cube(amp, n_scales, n_pixels)
+            coeffs = util.array2cube(amp, n_scales, n_pixels)
         else:
             coeffs = amp
         image = self.function_2d(coeffs, n_scales)
@@ -85,7 +84,7 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
-        return util_s.cube2array(self.decomposition_2d(image, n_scales))
+        return util.cube2array(self.decomposition_2d(image, n_scales))
 
     def decomposition_2d(self, image, n_scales):
         """
@@ -104,6 +103,12 @@ class Starlets(object):
     def spectral_norm(self, n_scales, n_pixels):
         """
         spectral norm associated to the starlet transform operator
+
+        Sometimes referred to as the Lipschitz constant, it is essentially the greatest singular value of a matrix/operator
+        (in this case the Starlet transform operator)
+        This is particularly important for determining the optimal amplitude of gradient descent step in a minimization problem.
+
+        See e.g. http://fourier.eng.hmc.edu/e161/lectures/algebra/node12.html
 
         :param num_pix: number of side pixels of a test image for computing the norm
         :param n_scales: number of decomposition scales
@@ -154,7 +159,7 @@ class Starlets(object):
         operator = lambda x: self.decomposition_2d(x, n_scales)
         inverse_operator = lambda c: self.function_2d(c, n_scales)
         num_pix = int(np.sqrt(n_pixels))
-        return util_s.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
+        return util.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
     def _pysap2coeffs(self, coeffs):
         """convert pySAP decomposition coefficients to numpy array"""

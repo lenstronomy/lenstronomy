@@ -1,6 +1,5 @@
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 
 
 def sqrt(inputArray, scale_min=None, scale_max=None):

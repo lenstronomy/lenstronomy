@@ -177,3 +177,44 @@ class ImageFit(ImageModel):
             for i in range(len(error_map)):
                 error_map[i] = basis_functions[:, i].T.dot(cov_param[:n_source, :n_source]).dot(basis_functions[:, i])
         return error_map
+
+    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        links linear parameters to kwargs arguments
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :return: updated list of kwargs with linear parameter values
+        """
+        i = 0
+        kwargs_source, i = self.SourceModel.update_linear(param, i, kwargs_list=kwargs_source)
+        kwargs_lens_light, i = self.LensLightModel.update_linear(param, i, kwargs_list=kwargs_lens_light)
+        kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+
+    def point_source_linear_response_set(self, kwargs_ps, kwargs_lens, kwargs_special, with_amp=True):
+        """
+
+        :param kwargs_ps: point source keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_special: special keyword argument list, may include 'delta_x_image' and 'delta_y_image'
+        :param with_amp: bool, if True, relative magnification between multiply imaged point sources are held fixed.
+        :return: list of positions and amplitudes split in different basis components with applied astrometric corrections
+        """
+
+        ra_pos, dec_pos, amp, n_points = self.PointSource.linear_response_set(kwargs_ps, kwargs_lens, with_amp=with_amp)
+
+        if kwargs_special is not None:
+            if 'delta_x_image' in kwargs_special:
+                delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
+                k = 0
+                n = len(delta_x)
+                for i in range(n_points):
+                    for j in range(len(ra_pos[i])):
+                        if k >= n:
+                            break
+                        ra_pos[i][j] = ra_pos[i][j] + delta_x[k]
+                        dec_pos[i][j] = dec_pos[i][j] + delta_y[k]
+                        k += 1
+        return ra_pos, dec_pos, amp, n_points
+        

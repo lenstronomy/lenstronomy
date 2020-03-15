@@ -166,35 +166,11 @@ class ImageSparseFit(ImageFit):
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         init_ps_model = self.point_source(kwargs_ps, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special)
-        model, param, fixed_param = self.sparseSolver.solve(kwargs_lens, kwargs_source,
-                                                            kwargs_lens_light=kwargs_lens_light,
-                                                            kwargs_ps=kwargs_ps,
-                                                            kwargs_special=kwargs_special,
-                                                            init_ps_model=init_ps_model)
-        cov_param = None
-        _, _ = self.update_fixed_kwargs(fixed_param, kwargs_source, kwargs_lens_light)
-        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        return model, model_error
-
-    def update_fixed_kwargs(self, fixed_param, kwargs_source, kwargs_lens_light):
-        """
-        :param param: some parameter vector corresponding for updating kwargs
-        :return: updated list of kwargs with linear parameter values
-        """
-        # TODO : write this method in the same spirit as super().update_linear_kwargs()
-        if kwargs_source is not None and len(kwargs_source) > 0:
-            n_pixels_source, pixel_scale_source = fixed_param[0], fixed_param[1]
-            kwargs_source[0]['n_pixels'] = n_pixels_source
-            kwargs_source[0]['scale'] = pixel_scale_source
-            kwargs_source[0]['center_x'] = 0
-            kwargs_source[0]['center_y'] = 0
-        if kwargs_lens_light is not None and len(kwargs_lens_light) > 0:
-            n_pixels_lens_light, pixel_scale_lens_light = fixed_param[2], fixed_param[3]
-            kwargs_lens_light[0]['n_pixels'] = n_pixels_lens_light
-            kwargs_lens_light[0]['scale'] = pixel_scale_lens_light
-            kwargs_lens_light[0]['center_x'] = 0
-            kwargs_lens_light[0]['center_y'] = 0
-        return kwargs_source, kwargs_lens_light
+        model, param = self.sparseSolver.solve(kwargs_lens, kwargs_source, kwargs_lens_light=kwargs_lens_light,
+                                               kwargs_ps=kwargs_ps, kwargs_special=kwargs_special,
+                                               init_ps_model=init_ps_model)
+        _, _, _, _ = self.update_sparse_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        return model, model_error, param
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_special=None):
@@ -228,8 +204,8 @@ class ImageSparseFit(ImageFit):
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        im_sim, model_error = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
-                                                       kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
+        im_sim, model_error, param = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
+                                                              kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
         if not np.isfinite(logL):
@@ -251,7 +227,7 @@ class ImageSparseFit(ImageFit):
         :param inv_bool: if True, invert the full linear solver Matrix Ax = y for the purpose of the covariance matrix.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        A = self._point_source_linear_response_matrix(kwargs_lens, kwargs_ps, kwargs_special)
+        A = self.point_source_linear_response_matrix(kwargs_lens, kwargs_ps, kwargs_special)
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         d = self.data_response - sparse_model  # subract source light + lens light model
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
@@ -259,7 +235,7 @@ class ImageSparseFit(ImageFit):
         model = self.array_masked2image(wls_model)
         return model, model_error, cov_param, param
 
-    def _point_source_linear_response_matrix(self, kwargs_lens, kwargs_ps, kwargs_special):
+    def point_source_linear_response_matrix(self, kwargs_lens, kwargs_ps, kwargs_special):
         """
 
         return linear response Matrix, with only point sources.
@@ -291,3 +267,29 @@ class ImageSparseFit(ImageFit):
         i = 0
         kwargs_ps, i = self.PointSource.update_linear(param, i, kwargs_ps, kwargs_lens)
         return kwargs_lens, kwargs_ps
+
+    def update_sparse_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        links linear parameters to kwargs arguments
+
+        :param param: linear parameter vector corresponding to the response matrix
+        :return: updated list of kwargs with linear parameter values
+        """
+        linear_param, updated_fixed_param = param[:-2], param[-2:]
+        super(ImageSparseFit, self).update_linear_kwargs(linear_param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        kwargs_source, kwargs_lens_light = self.update_fixed_param(updated_fixed_param, kwargs_source, kwargs_lens_light)
+        return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
+
+    def update_fixed_param(self, param, kwargs_source, kwargs_lens_light):
+        # in case the source plane grid size has changed, update the kwargs accordingly
+        kwargs_source[0]['n_pixels'] = param[0]
+        kwargs_source[0]['scale'] = param[1]
+        # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0)
+        kwargs_source[0]['center_x'] = 0
+        kwargs_source[0]['center_y'] = 0
+        if kwargs_lens_light is not None and len(kwargs_lens_light) > 0:
+            kwargs_lens_light[0]['scale'] = self.Data.pixel_width
+            kwargs_lens_light[0]['center_x'] = 0
+            kwargs_lens_light[0]['center_y'] = 0
+        return kwargs_source, kwargs_lens_light

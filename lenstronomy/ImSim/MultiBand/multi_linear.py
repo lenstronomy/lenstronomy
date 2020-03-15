@@ -1,5 +1,5 @@
 from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
-from lenstronomy.ImSim.MultiBand.single_band_multi_linear_model import SingleBandMultiLinearModel
+from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
 
 class MultiLinear(MultiDataBase):
@@ -13,8 +13,9 @@ class MultiLinear(MultiDataBase):
         self.type = 'multi-linear'
         imageModel_list = []
         for band_index in range(len(multi_band_list)):
-            imageModel = SingleBandMultiLinearModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                                    band_index=band_index)
+            multi_band_type = 'single-band'  #TODO: (aymgal) support 'single-band-sparse'
+            imageModel = SingleBandMultiModel(multi_band_list, multi_band_type, kwargs_model, likelihood_mask_list=likelihood_mask_list, 
+                                              band_index=band_index)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 

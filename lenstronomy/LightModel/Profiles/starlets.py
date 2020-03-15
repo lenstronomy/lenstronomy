@@ -100,25 +100,6 @@ class Starlets(object):
             coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
         return coeffs
 
-    def spectral_norm(self, n_scales, n_pixels):
-        """
-        spectral norm associated to the starlet transform operator
-
-        Sometimes referred to as the Lipschitz constant, it is essentially the greatest singular value of a matrix/operator
-        (in this case the Starlet transform operator)
-        This is particularly important for determining the optimal amplitude of gradient descent step in a minimization problem.
-
-        See e.g. http://fourier.eng.hmc.edu/e161/lectures/algebra/node12.html
-
-        :param num_pix: number of side pixels of a test image for computing the norm
-        :param n_scales: number of decomposition scales
-        :return: spectral norm
-        """
-        if not hasattr(self, '_spectral_norm') or n_scales != self._n_scales:
-            self._spectral_norm = self._compute_spectral_norm(n_scales, n_pixels, num_iter=20, tol=1e-10)
-            self._n_scales = n_scales
-        return self._spectral_norm
-
     def _inverse_transform(self, coeffs, n_scales):
         """reconstructs image from starlet coefficients"""
         self._check_transform_pysap(n_scales)
@@ -153,13 +134,6 @@ class Starlets(object):
             self._n_scales = n_scales
         # if getattr(self._transf, 'nb_band_per_scale', 0) is None:
         #     self._transf.nb_band_per_scale = [1]*self._n_scales  # dirty patch to PySAP bug
-
-    def _compute_spectral_norm(self, n_scales, n_pixels, num_iter=20, tol=1e-10):
-        """compute spectral norm of the starlet operator"""
-        operator = lambda x: self.decomposition_2d(x, n_scales)
-        inverse_operator = lambda c: self.function_2d(c, n_scales)
-        num_pix = int(np.sqrt(n_pixels))
-        return util.spectral_norm(num_pix, operator, inverse_operator, num_iter=num_iter, tol=tol)
 
     def _pysap2coeffs(self, coeffs):
         """convert pySAP decomposition coefficients to numpy array"""

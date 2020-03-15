@@ -365,22 +365,6 @@ def test_convert_bool_list():
     assert bool_list[0] is False
 
 
-def test_spectral_norm():
-    from lenstronomy.LightModel.Profiles.starlets import Starlets
-    num_pix = 100
-    operator = lambda X: X
-    inverse_operator = lambda X: X
-    npt.assert_almost_equal(1.0, util.spectral_norm(num_pix, operator, inverse_operator), decimal=8)
-    operator = lambda X: X**2
-    inverse_operator = lambda X: np.sqrt(X)
-    npt.assert_almost_equal(1.0, util.spectral_norm(num_pix, operator, inverse_operator), decimal=8)
-    starlets = Starlets()
-    operator = lambda X: starlets.decomposition_2d(X, 3)
-    inverse_operator = lambda X: starlets.function_2d(X, 3)
-    npt.assert_almost_equal(1.0, util.spectral_norm(num_pix, operator, inverse_operator), decimal=8)
-
-
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

@@ -196,7 +196,7 @@ class Radial(object):
         """
         return 1.
 
-    def anisotropy_solution(self, r, **kwargs):
+    def anisotropy_solution(self, r):
         """
         the solution to
         d ln(f)/ d ln(r) = 2 beta(r)
@@ -206,7 +206,7 @@ class Radial(object):
         :param kwargs: parameters of the specified anisotropy model
         :return: f(r)
         """
-        raise ValueError('routine not supported yet for constant anisotropy model!')
+        return r**2
 
 
 class OsipkovMerritt(object):

@@ -1,6 +1,7 @@
 import numpy as np
 
 from lenstronomy.ImSim.image_solve import ImageFit
+from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 import lenstronomy.ImSim.de_lens as de_lens
@@ -38,7 +39,13 @@ class ImageSparseFit(ImageFit):
                                              point_source_class=point_source_class, extinction_class=extinction_class, 
                                              kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
                                              psf_error_map_bool_list=psf_error_map_bool_list)
-        
+
+        # numerics for source plane has a different supersampling resolution
+        self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
+        kwargs_numerics_source = kwargs_numerics.copy()
+        kwargs_numerics_source['supersampling_factor'] = self._subgrid_res_source
+        self.ImageNumericsSource = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
 
@@ -65,16 +72,12 @@ class ImageSparseFit(ImageFit):
                                                      point_source_linear_solver=self._image_linear_solve_point_sources, #TODO: not fully satisfying
                                                      likelihood_mask=likelihood_mask, 
                                                      **kwargs_sparse_solver)
-            
-        self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None, re_sized=True, original_grid=True):
+                                  unconvolved=False, de_lensed=False, k=None, original_grid=True):
         """
         Overwrites ImageModel method.
         ImageModel.source_surface_brightness() may not work for some settings.
-
-        # TODO : make ImageModel.source_surface_brightness() to work without this overwriting.
 
         computes the source surface brightness distribution
 
@@ -84,44 +87,37 @@ class ImageSparseFit(ImageFit):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param re_sized: returns light distribution on grid with original resolution (if subgrid_res_source > 1)
         :param original_grid: returns light distribution on the original grid (like before reduction to minimal source plane by solver)
+        Defaults to True when unconvolved is False.
         :return: 1d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros((self.Data.num_pixel_axes))
 
-        # TODO : integrate source grid from the sparseSolver into ImageNumerics
-        # ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         ra_grid, dec_grid = self.sparseSolver.lensingOperator.sourcePlane.grid()
-
-        source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
-        source_light = util.array2image(source_light)
-
-        if de_lensed is True:
-            if not unconvolved:
-                # PSF kernel is defined at the original (lower) resolution so image needs to be re-sized
-                source_light = self.sparseSolver.project_on_original_grid_source(source_light)
-
-                #TODO: use ImageNumerics like in super class
-                source_light = image_util.re_size(source_light, self._subgrid_res_source)
-                source_light = self.sparseSolver.psf_convolution(source_light)
-            else:
-                if original_grid:
-                    source_light = self.sparseSolver.project_on_original_grid_source(source_light)
-                if re_sized:
-                    source_light = image_util.re_size(source_light, self._subgrid_res_source)
-        
-        else:
-            source_light = self.sparseSolver.lensingOperator.source2image_2d(source_light)
-            if not unconvolved:
-                #TODO: use ImageNumerics like in super class
-                source_light = self.sparseSolver.psf_convolution(source_light)
 
         # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
         # i.e. interpolate the image back to center coordinates
 
-        return source_light
+        source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
+
+        if not original_grid:
+            # returns the source as it has been optimized, in a (optionnaly) reduced grid
+            source_light_final = util.array2image(source_light)
+
+        else:
+            # project on the original grid aligned on data coordinates
+            source_light = self.sparseSolver.project_on_original_grid_source(source_light)
+
+            if de_lensed is True:
+                source_light = self.ImageNumericsSource.re_size_convolve(source_light, unconvolved=unconvolved)
+            else:
+                source_light = self.sparseSolver.lensingOperator.source2image(source_light)
+                source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
+            # re_size_convolve multiplied by self.Data.pixel_width**2
+            source_light_final = source_light / self.Data.pixel_width**2
+
+        return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """
@@ -132,15 +128,12 @@ class ImageSparseFit(ImageFit):
         This is because the sparse optimizer does not solve for the unconvolved lens light, in order to prevent deconvolutions
         that can otherwise reduce the quality of fit. Hence the deconvolution of the lens light should be performed in post-processing.
 
-        # TODO : make ImageModel.source_surface_brightness() to work without this overwriting.
-
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param unconvolved: not defined here. Here for keeping same method signatures as in super class.
         :return: 1d array of surface brightness pixels
         """
         if unconvolved is True:
             print("Warning : sparse solver for lens light does not perform deconvolution of lens light, returning convolved estimate instead")
-        # ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         ra_grid, dec_grid = self.sparseSolver.lensingOperator.imagePlane.grid()
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light = util.array2image(lens_light)
@@ -277,14 +270,14 @@ class ImageSparseFit(ImageFit):
         :return: updated list of kwargs with linear parameter values
         """
         linear_param, updated_fixed_param = param[:-2], param[-2:]
-        super(ImageSparseFit, self).update_linear_kwargs(linear_param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+        self.update_linear_kwargs(linear_param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         kwargs_source, kwargs_lens_light = self.update_fixed_param(updated_fixed_param, kwargs_source, kwargs_lens_light)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
     def update_fixed_param(self, param, kwargs_source, kwargs_lens_light):
         # in case the source plane grid size has changed, update the kwargs accordingly
-        kwargs_source[0]['n_pixels'] = param[0]
-        kwargs_source[0]['scale'] = param[1]
+        kwargs_source[0]['n_pixels'] = int(param[0])  # effective number of pixels in source plane
+        kwargs_source[0]['scale'] = param[1]     # effective pixel size of source plane grid
         # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0)
         kwargs_source[0]['center_x'] = 0
         kwargs_source[0]['center_y'] = 0

@@ -1,7 +1,6 @@
 __author__ = ['sibirrer', 'ajshajib', 'dgilman']
 
 import time
-import sys
 
 import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer

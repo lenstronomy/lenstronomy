@@ -32,7 +32,7 @@ def choose_pool(mpi=False, processes=1, **kwargs):
         Any additional kwargs are passed in to the pool class initializer
         selected by the arguments.
     """
-    if processes == 1:
+    if processes == 1 or mpi:
         pool = schwimmbad.choose_pool(mpi=mpi, processes=1, **kwargs)
         is_master = pool.is_master()
     else:

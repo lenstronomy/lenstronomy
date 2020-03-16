@@ -8,12 +8,12 @@ from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Sampling.sampler import Sampler, choose_pool
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
-class TestFittingSequence(object):
+class TestSampler(object):
     """
     test the fitting sequences
     """
@@ -104,6 +104,21 @@ class TestFittingSequence(object):
         samples, dist = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False)
         assert len(samples) == n_walkers * n_run
         assert len(dist) == len(samples)
+
+    def test_choose_pool(self):
+        import schwimmbad
+        pool, is_master = choose_pool(mpi=False, processes=1, use_dill=True)
+        assert is_master is True
+        assert isinstance(pool, schwimmbad.serial.SerialPool)
+
+        pool, is_master = choose_pool(mpi=False, processes=2, use_dill=True)
+        assert is_master is True
+        assert isinstance(pool, schwimmbad.multiprocessing.MultiPool)
+
+        #NOTE: MPI cannot be tested here (needs to be launched with mpirun)
+        # pool, is_master = choose_pool(mpi=True, processes=1, use_dill=True)
+        # assert is_master is True
+        # assert isinstance(pool, schwimmbad.mpi.MPIPool)
 
 
 if __name__ == '__main__':

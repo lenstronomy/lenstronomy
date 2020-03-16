@@ -38,8 +38,8 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     else:
         if 'use_dill' in kwargs:
             # schwimmbad MultiPool does not support dill so we remove this option from the kwargs
-            kwargs.pop('use_dill')
-        pool = choose_pool(mpi=mpi, processes=processes, **kwargs)
+            _ = kwargs.pop('use_dill')
+        pool = schwimmbad.choose_pool(mpi=False, processes=processes, **kwargs)
         # this MultiPool has no is_master() attribute like the SerialPool and MpiPool
         # all threads will then be 'master'.
         is_master = True

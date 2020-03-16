@@ -96,10 +96,19 @@ class Sampler(object):
 
     def pso(self, n_particles, n_iterations, lower_start=None, upper_start=None,
             threadCount=1, init_pos=None, mpi=False, print_key='PSO'):
-
         """
         Return the best fit for the lens model on catalogue basis with
         particle swarm optimizer.
+
+        :param n_particles: number of particles in the sampling process
+        :param n_iterations: number of iterations of the swarm
+        :param lower_start: numpy array, lower end parameter of the values of the starting particles
+        :param upper_start: numpy array, upper end parameter of the values of the starting particles
+        :param threadCount: number of threads in the computation (only applied if mpi=False)
+        :param init_pos: numpy array, position of the initial best guess model
+        :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
+        :param print_key: string, prints the process name in the progress bar (optional)
+        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of sampels)
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
@@ -144,30 +153,31 @@ class Sampler(object):
             time_end = time.time()
             print(time_end - time_start, 'time used for ', print_key)
             print('===================')
-        return result, [chi2_list, pos_list, vel_list, []]
+        return result, [chi2_list, pos_list, vel_list]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
         """
         Run MCMC with emcee.
+        For details, please have a look at the documentation of the emcee packager.
 
-        :param n_walkers:
-        :type n_walkers:
-        :param n_run:
-        :type n_run:
-        :param n_burn:
-        :type n_burn:
-        :param mean_start:
-        :type mean_start:
-        :param sigma_start:
-        :type sigma_start:
-        :param mpi:
-        :type mpi:
-        :param progress:
-        :type progress:
-        :param threadCount:
-        :type threadCount:
-        :return:
-        :rtype:
+        :param n_walkers: number of walkers in the emcee process
+        :type n_walkers: integer
+        :param n_run: number of sampling (after burn-in) of the emcee
+        :type n_run: integer
+        :param n_burn: number of burn-in iterations (those will not be saved in the output sample)
+        :type n_burn: integer
+        :param mean_start: mean of the parameter position of the initialising sample
+        :type mean_start: numpy array of length the number of parameters
+        :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
+        :type sigma_start: numpy array of length the number of parameters
+        :param mpi: if True, initializes an MPIPool to allow for MPI execution of the sampler
+        :type mpi: bool
+        :param progress: if True, prints the progress bar
+        :type progress: bool
+        :param threadCount: number of threats in multi-processing (not applicable for MPI)
+        :type threadCount: integer
+        :return: samples, ln likelihood value of samples
+        :rtype: numpy 2d array, numpy 1d array
         """
         num_param, _ = self.chain.param.num_param()
         p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)

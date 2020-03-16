@@ -37,7 +37,7 @@ class NestedSampler(object):
         self.prior_type = prior_type
         self._has_warned = False
 
-    def prior(self, u):
+    def prior(self, *args, **kwargs):
         """
         compute the mapping between the unit cube and parameter cube
 
@@ -46,7 +46,7 @@ class NestedSampler(object):
         """
         raise NotImplementedError("Method not be implemented in base class")
 
-    def log_likelihood(self, x):
+    def log_likelihood(self, *args, **kwargs):
         """
         compute the log-likelihood given list of parameters
 

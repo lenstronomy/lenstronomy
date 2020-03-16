@@ -1,14 +1,9 @@
 __author__ = 'aymgal'
 
-import os
-import shutil
 import numpy as np
 
 from lenstronomy.Sampling.Samplers.base_nested_sampler import NestedSampler
 import lenstronomy.Util.sampling_util as utils
-
-import dynesty
-import dynesty.utils as dyfunc
 
 
 class DynestySampler(NestedSampler):
@@ -34,6 +29,7 @@ class DynestySampler(NestedSampler):
         :param use_mpi: Use MPI computing if `True`
         :param use_pool: specific to Dynesty, see https://dynesty.readthedocs.io
         """
+        self._check_install()
         super(DynestySampler, self).__init__(likelihood_module, prior_type, 
                                              prior_means, prior_sigmas,
                                              width_scale, sigma_scale)
@@ -43,25 +39,24 @@ class DynestySampler(NestedSampler):
             from schwimmbad import MPIPool
             import sys
 
-            pool = MPIPool(use_dill=True)
+            pool = MPIPool(use_dill=True)  # use_dill=True not supported for some versions of schwimmbad
             if not pool.is_master():
                 pool.wait()
                 sys.exit(0)
 
-            self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
+            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood,
                                                          self.prior, self.n_dims,
                                                          bound=bound,
                                                          sample=sample,
                                                          pool=pool,
                                                          use_pool=use_pool)
         else:
-            self._sampler = dynesty.DynamicNestedSampler(self.log_likelihood,
+            self._sampler = self._dynesty.DynamicNestedSampler(self.log_likelihood,
                                                          self.prior,
                                                          self.n_dims,
                                                          bound=bound,
                                                          sample=sample)
         self._has_warned = False
-
 
     def prior(self, u):
         """
@@ -77,6 +72,8 @@ class DynestySampler(NestedSampler):
         elif self.prior_type == 'uniform':
             p = utils.cube2args_uniform(u, self.lowers, self.uppers, 
                                         self.n_dims, copy=True)
+        else:
+            raise ValueError('prior type %s not supported! Chose "gaussian" or "uniform".')
         return p
 
     def log_likelihood(self, x):
@@ -93,7 +90,6 @@ class DynestySampler(NestedSampler):
             logL = -1e15
             self._has_warned = True
         return float(logL)
-
 
     def run(self, kwargs_run):
         """
@@ -124,9 +120,22 @@ class DynestySampler(NestedSampler):
             # it is not *quite* the case (up to 6 decimals)
             weights = weights / np.sum(weights)
 
-        means, covs = dyfunc.mean_and_cov(samples_w, weights)
+        means, covs = self._dyfunc.mean_and_cov(samples_w, weights)
 
         # Resample weighted samples to get equally weighted (aka unweighted) samples
-        samples = dyfunc.resample_equal(samples_w, weights)
+        samples = self._dyfunc.resample_equal(samples_w, weights)
 
         return samples, means, logZ, logZ_err, logL, results
+
+    def _check_install(self):
+        try:
+            import dynesty
+            import dynesty.utils as dyfunc
+        except:
+            print("Warning : dynesty not properly installed (results might be unexpected). \
+                    You can get it with $pip install dynesty.")
+            self._dynesty_installed = False
+        else:
+            self._dynesty_installed = True
+            self._dynesty = dynesty
+            self._dyfunc = dyfunc

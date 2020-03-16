@@ -1,10 +1,11 @@
 from lenstronomy.GalKin.galkin import Galkin
 import numpy.testing as npt
+import numpy as np
 
 
 class TestGOM(object):
     def setup(self):
-        pass
+        np.random.seed(2)
 
     def test_OMvsGOM(self):
         """
@@ -35,7 +36,7 @@ class TestGOM(object):
 
         # anisotropy profile
         anisotropy_type = 'OM'
-        r_ani = 2.
+        r_ani = 0.2
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
         kwargs_model = {'mass_profile_list': mass_profile_list,
@@ -44,11 +45,11 @@ class TestGOM(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                         kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
-        sigma_v_om = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000)
+        sigma_v_om = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=5000)
 
         # anisotropy profile
         anisotropy_type = 'GOM'
-        r_ani = 2.
+
         kwargs_anisotropy = {'r_ani': r_ani, 'beta_inf': 1}  # anisotropy radius [arcsec]
 
         kwargs_model = {'mass_profile_list': mass_profile_list,
@@ -57,5 +58,7 @@ class TestGOM(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         galkin_gom = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                         kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics)
-        sigma_v_gom = galkin_gom.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000)
-        npt.assert_almost_equal(sigma_v_gom, sigma_v_om, decimal=-1)
+        sigma_v_gom = galkin_gom.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=5000)
+        # warning: this tests does not work to this precision for every random seed. To increase precision, increase
+        # sampling_number
+        npt.assert_almost_equal(sigma_v_gom, sigma_v_om, decimal=0)

@@ -45,7 +45,7 @@ class SingleBandMultiModel(ImageFit):
             self.type = 'single-band-multi-sparse-model'
             self.fit = ImageSparseFit(data_i, psf_i, lens_model_class, source_model_class,
                                       lens_light_model_class, point_source_class, extinction_class,
-                                      kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],
+                                      kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
                                       kwargs_sparse_solver=kwargs_sparse_solver)
         else:
             raise ValueError("multi_band_type '{}' is not a valid SingleBandMultiModel type.".format(multi_band_type))

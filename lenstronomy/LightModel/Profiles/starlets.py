@@ -53,8 +53,10 @@ class Starlets(object):
         """
         if len(amp.shape) == 1:
             coeffs = util.array2cube(amp, n_scales, n_pixels)
-        else:
+        elif len(amp.shape) == 3:
             coeffs = amp
+        else:
+            raise ValueError("Starlets 'amp' has not the right shape (1D or 3D arrays are supported)")
         image = self.function_2d(coeffs, n_scales)
         image = self.interpol.function(x, y, image=image, scale=scale,
                                        center_x=center_x, center_y=center_y,

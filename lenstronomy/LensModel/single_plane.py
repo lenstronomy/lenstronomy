@@ -120,6 +120,10 @@ class SinglePlane(ProfileListBase):
         """
         computes the mass within a 3d sphere of radius r
 
+        if you want to have physical units of kg, you need to multiply by this factor:
+        const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
+        grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output

@@ -5,6 +5,7 @@ import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.GalKin.observation import GalkinObservation
+from lenstronomy.LensModel.Profiles.spp import SPP
 import lenstronomy.Util.constants as const
 import math
 
@@ -37,6 +38,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         """
 
         self._cosmo = Cosmo(**kwargs_cosmo)
+        self._spp = SPP()
         GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         Anisotropy.__init__(self, anisotropy_type='OM')
 
@@ -74,7 +76,7 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
         :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
         :param r_ani: anisotropy radius
-        :return: projected velocity dispersion of a single drawn position in the potential [km/s]
+        :return: projected velocity dispersion of a single drawn position in the potential [m/s]
         """
         a = 0.551 * r_eff
         while True:
@@ -158,6 +160,41 @@ class AnalyticKinematics(GalkinObservation, Anisotropy):
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
         return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2
+
+    def check_df(self, r, theta_E, gamma, a_ani, r_eff):
+        """
+        checks whether the phase space distribution function of a given anisotropy model is positive.
+        Currently this is implemented by the relation provided by Ciotti and Morganti 2010 equation (10)
+        https://arxiv.org/pdf/1006.2344.pdf
+
+        :param r: 3d radius to check slope-anisotropy constraint
+        :param theta_E: Einstein radius in arc seconds
+        :param gamma: power-law slope
+        :param a_ani: scaled transition radius of the OM anisotropy distribution
+        :param r_eff: half-light radius in arc seconds
+        :return: equation (10) >= 0 for physical interpretation
+        """
+        dr = 0.01 # finite differential in radial direction
+        r_dr = r + dr
+        #TODO: check units in gravitational potential are consistent
+        a = 0.551 * r_eff
+        r_ani = r_eff * a_ani
+        rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
+        sigmar2 = self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
+        sigmar2_dr = self.sigma_r2(r_dr, a, gamma, rho0_r0_gamma, r_ani)
+
+        mass_dimless = self._spp.mass_3d_lens(r, theta_E, gamma)
+        mass_dim = mass_dimless * const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * \
+                   const.c ** 2 / (4 * np.pi * const.G)
+        grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
+
+        mass_dimless_dr = self._spp.mass_3d_lens(r_dr, theta_E, gamma)
+        mass_dim_dr = mass_dimless_dr * const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * \
+                   const.c ** 2 / (4 * np.pi * const.G)
+        grav_pot_dr = -const.G * mass_dim_dr / (r_dr * const.arcsec * self._cosmo.dd * const.Mpc)
+        print((grav_pot - grav_pot_dr) / dr, 'test d grav pot')
+        print((sigmar2_dr - sigmar2) / dr, 'test d sigmar')
+        return r * (sigmar2_dr - sigmar2 - grav_pot + grav_pot_dr) / dr
 
     def delete_cache(self):
         """

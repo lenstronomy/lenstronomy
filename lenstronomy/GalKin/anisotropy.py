@@ -55,6 +55,17 @@ class Anisotropy(object):
         """
         return self._model.K(r, R, **kwargs)
 
+    def anisotropy_solution(self, r, **kwargs):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+
+        :param r: 3d radius
+        :param kwargs: parameters of the specified anisotropy model
+        :return: f(r)
+        """
+        self._model.anisotropy_solution(self, r, **kwargs)
+
     def delete_anisotropy_cache(self):
         """
         deletes cached interpolations for a fixed anisotropy model
@@ -99,6 +110,17 @@ class Const(object):
         """
         return beta
 
+    def anisotropy_solution(self, r, **kwargs):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+
+        :param r: 3d radius
+        :param kwargs: parameters of the specified anisotropy model
+        :return: f(r)
+        """
+        raise ValueError('routine not supported yet for constant anisotropy model!')
+
 
 class Isotropic(object):
     """
@@ -131,6 +153,18 @@ class Isotropic(object):
         """
         return 0.
 
+    def anisotropy_solution(self, r, **kwargs):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+        See e.g. A3 in Mamon & Lokas
+
+        :param r: 3d radius
+        :param kwargs: parameters of the specified anisotropy model
+        :return: f(r)
+        """
+        return 1
+
 
 class Radial(object):
     """
@@ -161,6 +195,18 @@ class Radial(object):
         :return: beta
         """
         return 1.
+
+    def anisotropy_solution(self, r, **kwargs):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+        See e.g. A4 in Mamon & Lokas
+
+        :param r: 3d radius
+        :param kwargs: parameters of the specified anisotropy model
+        :return: f(r)
+        """
+        raise ValueError('routine not supported yet for constant anisotropy model!')
 
 
 class OsipkovMerritt(object):
@@ -197,6 +243,18 @@ class OsipkovMerritt(object):
         :return: beta
         """
         return r**2/(r_ani**2 + r**2)
+
+    def anisotropy_solution(self, r, r_ani):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+        See e.g. A5 in Mamon & Lokas
+
+        :param r: 3d radius
+        :param kwargs: parameters of the specified anisotropy model
+        :return: f(r)
+        """
+        return r**2 + r_ani**2
 
 
 class GeneralizedOM(object):

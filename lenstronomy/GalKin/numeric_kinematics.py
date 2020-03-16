@@ -51,6 +51,25 @@ class NumericKinematics(Anisotropy):
         I_R = self.lightProfile.light_2d(R, kwargs_light)
         return np.nan_to_num(I_R_sigma2 / I_R)
 
+    def sigma_r2(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        computes numerically the solution of the Jeans equation for a specific 3d radius
+        E.g. Equation (A1) of Mamon & Lokas https://arxiv.org/pdf/astro-ph/0405491.pdf
+        l(r) \sigma_r(r) ^ 2 =  1/f(r) \int_r^{\infty} f(s) l(s) G M(s) / s^2 ds
+        where l(r) is the 3d light profile
+        M(s) is the enclosed 3d mass
+        f is the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+
+        :param r: 3d radius
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: sigma_r**2
+        """
+        return 1/self._f_anisotropy(r, **kwargs_anisotropy) * self._interpol_integral_jeans(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
+
     def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)

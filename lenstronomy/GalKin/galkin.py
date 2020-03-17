@@ -87,25 +87,6 @@ class Galkin(GalkinObservation):
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
 
-    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
-        :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
-         falls in the aperture after displacing with the seeing
-        """
-        while True:
-            r, R, x, y = self.numerics.draw_light(kwargs_light)
-            x_, y_ = self.displace_psf(x, y)
-            bool, _ = self.aperture_select(x_, y_)
-            if bool is True:
-                break
-        sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        return sigma2_R
-
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
         """
         computes the velocity dispersion in each Integral Field Unit
@@ -141,3 +122,22 @@ class Galkin(GalkinObservation):
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+
+    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
+         falls in the aperture after displacing with the seeing
+        """
+        while True:
+            r, R, x, y = self.numerics.draw_light(kwargs_light)
+            x_, y_ = self.displace_psf(x, y)
+            bool, _ = self.aperture_select(x_, y_)
+            if bool is True:
+                break
+        sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        return sigma2_R

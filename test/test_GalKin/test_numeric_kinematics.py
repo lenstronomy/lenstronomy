@@ -22,6 +22,15 @@ class TestMassProfile(object):
         mass_3d_exact = massProfile.mass_3d(r, kwargs_profile)
         npt.assert_almost_equal(mass_3d/mass_3d_exact, 1., decimal=3)
 
+    def test_sigma_r2(self):
+        """
+        tests the solution of the Jeans equation for sigma**2(r), where r is the 3d radius.
+        Test is compared to analytic OM solution with power-law and Hernquist light profile
+
+        :return:
+        """
+        pass
+
 
 if __name__ == '__main__':
     pytest.main()

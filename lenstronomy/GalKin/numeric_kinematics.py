@@ -68,7 +68,8 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: sigma_r**2
         """
-        return 1/self._f_anisotropy(r, **kwargs_anisotropy) * self._interpol_integral_jeans(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        return 1 / self.anisotropy_solution(r, **kwargs_anisotropy) / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
 
     def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -111,6 +112,47 @@ class NumericKinematics(Anisotropy):
         l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
         m_r = self._mass_3d_interp(r, kwargs_mass)
         out = k_r * l_r * m_r / r
+        return out
+
+    def _jeans_solution_integral(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        interpolated solution of the integral \int_r^{\infty} f(s) l(s) G M(s) / s^2 ds
+
+        :param r:
+        :param kwargs_mass:
+        :param kwargs_light:
+        :param kwargs_anisotropy:
+        :return:
+        """
+        if not hasattr(self, '_interp_jeans_integral'):
+            min_log = np.log10(self._min_integrate)
+            max_log = np.log10(self._max_integrate)
+            r_array = np.logspace(min_log, max_log, self._interp_grid_num)
+            dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+            integrand_jeans = self._integrand_jeans_solution(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * dlog_r * r_array
+            #flip array from inf to finite
+            integral_jeans_r = np.cumsum(np.flip(integrand_jeans))
+            #flip array back
+            integral_jeans_r = np.flip(integral_jeans_r)
+            #call 1d interpolation function
+            self._interp_jeans_integral = f = interp1d(np.log(r_array), integral_jeans_r, fill_value="extrapolate")
+        return self._interp_jeans_integral(np.log(r))
+
+    def _integrand_jeans_solution(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        integrand of A1 (in log space) in Mamon&Lokas 2005 to calculate the Jeans equation numerically
+        f(s) l(s) G M(s) / s^2
+
+        :param r:
+        :param kwargs_mass:
+        :param kwargs_light:
+        :param kwargs_anisotropy:
+        :return:
+        """
+        f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
+        l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        m_r = self._mass_3d_interp(r, kwargs_mass)
+        out = f_r * l_r * m_r / r**2
         return out
 
     def _mass_3d_interp(self, r, kwargs, new_compute=False):
@@ -163,5 +205,7 @@ class NumericKinematics(Anisotropy):
         """
         if hasattr(self, '_log_mass_3d'):
             del self._log_mass_3d
+        if hasattr(self, '_interp_jeans_integral'):
+            del self._interp_jeans_integral
         self.lightProfile.delete_cache()
         self.delete_anisotropy_cache()

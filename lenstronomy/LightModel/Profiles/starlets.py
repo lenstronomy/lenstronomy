@@ -57,13 +57,13 @@ class Starlets(object):
             coeffs = amp
         else:
             raise ValueError("Starlets 'amp' has not the right shape (1D or 3D arrays are supported)")
-        image = self.function_2d(coeffs, n_scales)
+        image = self.function_2d(coeffs, n_scales, n_pixels)
         image = self.interpol.function(x, y, image=image, scale=scale,
                                        center_x=center_x, center_y=center_y,
                                        amp=1, phi_G=0)
         return image
 
-    def function_2d(self, coeffs, n_scales):
+    def function_2d(self, coeffs, n_scales, n_pixels):
         """
         2D inverse starlet transform from starlet coefficients stored in coeffs
 
@@ -73,12 +73,12 @@ class Starlets(object):
         :return: reconstructed signal as 2D array of shape (sqrt(n_pixels), sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
-            return self._inverse_transform(coeffs, n_scales)
+            return self._inverse_transform(coeffs, n_scales, n_pixels)
         else:
             return starlets_slit.inverse_transform(coeffs, fast=self._fast_inverse, 
                                                    second_gen=self._second_gen)
 
-    def decomposition(self, image, n_scales):
+    def decomposition(self, image, n_scales, n_pixels):
         """
         1D starlet transform from starlet coefficients stored in coeffs
 
@@ -86,9 +86,9 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
-        return util.cube2array(self.decomposition_2d(image, n_scales))
+        return util.cube2array(self.decomposition_2d(image, n_scales, n_pixels))
 
-    def decomposition_2d(self, image, n_scales):
+    def decomposition_2d(self, image, n_scales, n_pixels):
         """
         2D starlet transform from starlet coefficients stored in coeffs
 
@@ -97,14 +97,14 @@ class Starlets(object):
         :return: reconstructed signal as 2D array of shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
-            coeffs = self._transform(image, n_scales)
+            coeffs = self._transform(image, n_scales, n_pixels)
         else:
             coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
         return coeffs
 
-    def _inverse_transform(self, coeffs, n_scales):
+    def _inverse_transform(self, coeffs, n_scales, n_pixels):
         """reconstructs image from starlet coefficients"""
-        self._check_transform_pysap(n_scales)
+        self._check_transform_pysap(n_scales, n_pixels)
         if self._fast_inverse and not self._second_gen:
             # for 1st gen starlet the reconstruction can be performed by summing all scales 
             image = np.sum(coeffs, axis=0)
@@ -117,9 +117,9 @@ class Starlets(object):
             image = result.data
         return image
 
-    def _transform(self, image, n_scales):
+    def _transform(self, image, n_scales, n_pixels):
         """decomposes an image into starlets coefficients"""
-        self._check_transform_pysap(n_scales)
+        self._check_transform_pysap(n_scales, n_pixels)
         self._transf.data = image
         self._transf.analysis()
         if self._show_pysap_plots:
@@ -128,12 +128,13 @@ class Starlets(object):
         coeffs = self._pysap2coeffs(coeffs)
         return coeffs
 
-    def _check_transform_pysap(self, n_scales):
+    def _check_transform_pysap(self, n_scales, n_pixels):
         """if needed, update the loaded pySAP transform to correct number of scales"""
-        if not hasattr(self, '_transf') or n_scales != self._n_scales:
+        if not hasattr(self, '_transf') or n_scales != self._n_scales or n_pixels != self._n_pixels:
             self._transf = self._transf_class(nb_scale=n_scales, verbose=False, 
                                               nb_procs=self._thread_count)
             self._n_scales = n_scales
+            self._n_pixels = n_pixels
         # if getattr(self._transf, 'nb_band_per_scale', 0) is None:
         #     self._transf.nb_band_per_scale = [1]*self._n_scales  # dirty patch to PySAP bug
 

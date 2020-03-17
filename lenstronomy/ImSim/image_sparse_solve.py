@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 from lenstronomy.ImSim.image_solve import ImageFit
 from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
@@ -9,7 +10,7 @@ import lenstronomy.ImSim.de_lens as de_lens
 from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 from slitronomy.Optimization.solver_source_ps import SparseSolverSourcePS
-
+from slitronomy.Lensing.lensing_operator import LensingOperatorInterpol
 
 class ImageSparseFit(ImageFit):
     """
@@ -44,7 +45,7 @@ class ImageSparseFit(ImageFit):
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = self._subgrid_res_source
-        self.ImageNumericsSource = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        self.ImageNumerics_source = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
 
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
@@ -69,12 +70,14 @@ class ImageSparseFit(ImageFit):
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
             self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.SourceModel, self.ImageNumerics, 
-                                                     point_source_linear_solver=self._image_linear_solve_point_sources, #TODO: not fully satisfying
+                                                     self._image_linear_solve_point_sources, #TODO: not fully satisfying
                                                      likelihood_mask=likelihood_mask, 
                                                      **kwargs_sparse_solver)
+        # source <-> image pixelated mapping
+        self.lensingOperator = LensingOperatorInterpol(self.Data, self.LensModel, subgrid_res_source=self._subgrid_res_source)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None, original_grid=True):
+                                  unconvolved=False, de_lensed=False, k=None, update_lens_mapping=True):
         """
         Overwrites ImageModel method.
         ImageModel.source_surface_brightness() may not work for some settings.
@@ -87,41 +90,30 @@ class ImageSparseFit(ImageFit):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param original_grid: returns light distribution on the original grid (like before reduction to minimal source plane by solver)
-        Defaults to True when unconvolved is False.
+        :param update_lens_mapping: if False, prevent 
         :return: 1d array of surface brightness pixels
         """
-        if len(self.SourceModel.profile_type_list) == 0:
-            return np.zeros((self.Data.num_pixel_axes))
-
-        ra_grid, dec_grid = self.sparseSolver.lensingOperator.sourcePlane.grid()
+        # ra_grid, dec_grid = self.lensingOperator.sourcePlane.grid()
+        ra_grid, dec_grid = self.ImageNumerics_source.coordinates_evaluate
 
         # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
         # i.e. interpolate the image back to center coordinates
 
         source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
 
-        if not original_grid:
-            # returns the source as it has been optimized, in a (optionnaly) reduced grid
-            source_light_final = util.array2image(source_light)
-
+        if de_lensed is True:
+            source_light = self.ImageNumerics_source.re_size_convolve(source_light, unconvolved=unconvolved)
         else:
-            # project on the original grid aligned on data coordinates
-            source_light = self.sparseSolver.project_on_original_grid_source(source_light)
-
-            if de_lensed is True:
-                source_light = self.ImageNumericsSource.re_size_convolve(source_light, unconvolved=unconvolved)
-            else:
-                source_light = self.sparseSolver.lensingOperator.source2image(source_light)
-                source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
-            # re_size_convolve multiplied by self.Data.pixel_width**2
-            source_light_final = source_light / self.Data.pixel_width**2
-
+            source_light = self.lensingOperator.source2image(source_light, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special,
+                                                             update_lens=update_lens_mapping)
+            source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
+        
+        # re_size_convolve multiplied by self.Data.pixel_width**2, but flux normalization is handled in lensingOperator
+        source_light_final = source_light / self.Data.pixel_width**2
         return source_light_final
 
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
         """
-
         computes the lens surface brightness distribution
 
         If 'unconvolved' is True, a warning message will appear, and the convolved light is returned.
@@ -133,14 +125,27 @@ class ImageSparseFit(ImageFit):
         :return: 1d array of surface brightness pixels
         """
         if unconvolved is True:
-            print("Warning : sparse solver for lens light does not perform deconvolution of lens light, returning convolved estimate instead")
-        ra_grid, dec_grid = self.sparseSolver.lensingOperator.imagePlane.grid()
+            print("WARNING : sparse solver for lens light does not perform deconvolution of lens light, returning convolved estimate instead")
+        # ra_grid, dec_grid = self.sparseSolver.lensingOperator.imagePlane.grid()
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
-        lens_light = util.array2image(lens_light)
-        return lens_light
+        lens_light_final = util.array2image(lens_light)
+        return lens_light_final
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
+        """
+        computes the image (lens and source surface brightness with a given lens model)
+        using sparse optimization, on the data pixelated grid.
+
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to point sources
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
+        :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
+        """
         #TODO: add the 'inv_bool' parameters like in super.image_linear_solve for point source linear inversion ?
         return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light, 
                                         kwargs_ps, kwargs_extinction, kwargs_special)
@@ -154,7 +159,9 @@ class ImageSparseFit(ImageFit):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_ps: keyword arguments corresponding to point sources
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
@@ -168,15 +175,15 @@ class ImageSparseFit(ImageFit):
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_special=None):
         """
-
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :return: log likelihood (natural logarithm)
+        :param kwargs_ps: keyword arguments corresponding to point sources
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters        :return: log likelihood (natural logarithm)
         """
         return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                  kwargs_special)
@@ -191,9 +198,9 @@ class ImageSparseFit(ImageFit):
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
-        :param source_marg: bool, performs a marginalization over the linear parameters
-        :param linear_prior: linear prior width in eigenvalues
+        :param kwargs_ps: keyword arguments corresponding to point sources
+        :param kwargs_extinction: keyword arguments corresponding to dust extinction
+        :param kwargs_special: keyword arguments corresponding to "special" parameters        :param source_marg: bool, performs a marginalization over the linear parameters
         :return: log likelihood (natural logarithm)
         """
         # generate image
@@ -207,7 +214,6 @@ class ImageSparseFit(ImageFit):
 
     def _image_linear_solve_point_sources(self, sparse_model, kwargs_lens=None, kwargs_ps=None, kwargs_special=None, inv_bool=False):
         """
-
         linear solve, but only for point sources. The target image is the imaging data with sparse model subtracted (source and lens light)
 
         computes the image (point source amplitudes with a given lens model).
@@ -222,7 +228,7 @@ class ImageSparseFit(ImageFit):
         """
         A = self.point_source_linear_response_matrix(kwargs_lens, kwargs_ps, kwargs_special)
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        d = self.data_response - sparse_model  # subract source light + lens light model
+        d = self.data_response - self.image2array_masked(sparse_model)  # subract source light + lens light model
         param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
         _, _ = self.update_linear_kwargs_point_source(param, kwargs_lens, kwargs_ps)
         model = self.array_masked2image(wls_model)
@@ -269,19 +275,20 @@ class ImageSparseFit(ImageFit):
         :param param: linear parameter vector corresponding to the response matrix
         :return: updated list of kwargs with linear parameter values
         """
-        linear_param, updated_fixed_param = param[:-2], param[-2:]
-        self.update_linear_kwargs(linear_param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        kwargs_source, kwargs_lens_light = self.update_fixed_param(updated_fixed_param, kwargs_source, kwargs_lens_light)
+        kwargs_source, kwargs_lens_light = self.update_fixed_param(kwargs_source, kwargs_lens_light)
+        kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps
 
-    def update_fixed_param(self, param, kwargs_source, kwargs_lens_light):
+    def update_fixed_param(self, kwargs_source, kwargs_lens_light):
         # in case the source plane grid size has changed, update the kwargs accordingly
-        kwargs_source[0]['n_pixels'] = int(param[0])  # effective number of pixels in source plane
-        kwargs_source[0]['scale'] = param[1]     # effective pixel size of source plane grid
-        # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0)
+        kwargs_source[0]['n_pixels'] = int(self.Data.num_pixel * self._subgrid_res_source**2)  # effective number of pixels in source plane
+        kwargs_source[0]['scale'] = self.Data.pixel_width / self._subgrid_res_source        # effective pixel size of source plane grid
+        # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0), center of the image
         kwargs_source[0]['center_x'] = 0
         kwargs_source[0]['center_y'] = 0
+        # do the same if the lens light has been reconstructed
         if kwargs_lens_light is not None and len(kwargs_lens_light) > 0:
+            kwargs_lens_light[0]['n_pixels'] = self.Data.num_pixel
             kwargs_lens_light[0]['scale'] = self.Data.pixel_width
             kwargs_lens_light[0]['center_x'] = 0
             kwargs_lens_light[0]['center_y'] = 0

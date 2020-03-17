@@ -206,7 +206,8 @@ class GeneralizedOM(object):
     b(r) = beta_inf * r^2 / (r^2 + r_ani^2)
     """
     def __init__(self):
-        self._z_interp = -np.linspace(-100, 0, 100)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
+        self._z_interp = np.append(-np.flip(np.logspace(-1, 3, 200)**2), 0)
+        #self._z_interp = -np.linspace(-200, 0, 200)**2  # z = (R**2 - r**2) / (r_ani**2 + R**2)
 
     @staticmethod
     def beta_r(r, r_ani, beta_inf):
@@ -269,7 +270,7 @@ class GeneralizedOM(object):
         """
         if not hasattr(self, '_f_12_interp'):
             f_12_interp = self._F(1 / 2., self._z_interp, beta_inf)
-            self._f_12_interp = interp1d(self._z_interp, f_12_interp, kind='cubic')
+            self._f_12_interp = interp1d(self._z_interp, f_12_interp, kind='cubic', fill_value="extrapolate")
         return self._f_12_interp(z)
 
     def _F_32(self, z, beta_inf):
@@ -281,7 +282,7 @@ class GeneralizedOM(object):
         """
         if not hasattr(self, '_f_32_interp'):
             f_32_interp = self._F(3 / 2., self._z_interp, beta_inf)
-            self._f_32_interp = interp1d(self._z_interp, f_32_interp, kind='cubic')
+            self._f_32_interp = interp1d(self._z_interp, f_32_interp, kind='cubic', fill_value="extrapolate")
         return self._f_32_interp(z)
 
     def _j_beta(self, r, s, r_ani, beta_inf):

@@ -12,7 +12,7 @@ dynesty
 pymultinest
 pypolychord  # only compatible with python 2.7 ...
 nestcheck
--e git://github.com/adrn/schwimmbad.git@061eb739a21695762ee4b90cc4f6e1b26986fffb#egg=schwimmbad
+-e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8
 python-pySAP==0.0.3
 slitronomy

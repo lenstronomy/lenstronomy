@@ -6,7 +6,7 @@ from lenstronomy.LightModel.Profiles import starlets_slit
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.Util import util
 
-_force_no_pysap = False  # for debug only
+  # for debug only
 
 
 class Starlets(object):
@@ -22,7 +22,8 @@ class Starlets(object):
     lower_limit_default = {'amp': [0], 'n_scales': 2, 'n_pixels': 5, 'center_x': -1000, 'center_y': -1000, 'scale': 0.000000001}
     upper_limit_default = {'amp': [1e8], 'n_scales': 20, 'n_pixels': 1e10, 'center_x': 1000, 'center_y': 1000, 'scale': 10000000000}
 
-    def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False):
+    def __init__(self, thread_count=1, fast_inverse=True, second_gen=False, show_pysap_plots=False, 
+                 force_no_pysap=False):
         """
         Load pySAP package if found, and initialize the Starlet transform.
 
@@ -30,15 +31,16 @@ class Starlets(object):
         :param fast_inverse: if True, reconstruction is simply the sum of each scale (only for 1st generation starlet transform)
         :param second_gen: if True, uses the second generation of starlet transform 
         :param show_pysap_plots: if True, displays pySAP plots when calling the decomposition method
+        :param force_no_pysap: if True, does not load pySAP and computes starlet transforms in python.
         """        
-        self.use_pysap, pysap = self._load_pysap()
+        self.use_pysap, pysap = self._load_pysap(force_no_pysap)
         if self.use_pysap:
             self._transf_class = pysap.load_transform('BsplineWaveletTransformATrousAlgorithm')
-        self._thread_count = thread_count
         self._fast_inverse = fast_inverse
         self._second_gen = second_gen
         self._show_pysap_plots = show_pysap_plots
         self.interpol = Interpol()
+        self.thread_count = thread_count
 
     def function(self, x, y, amp=None, n_scales=None, n_pixels=None, scale=1, center_x=0, center_y=0):
         """
@@ -78,7 +80,7 @@ class Starlets(object):
             return starlets_slit.inverse_transform(coeffs, fast=self._fast_inverse, 
                                                    second_gen=self._second_gen)
 
-    def decomposition(self, image, n_scales, n_pixels):
+    def decomposition(self, image, n_scales):
         """
         1D starlet transform from starlet coefficients stored in coeffs
 
@@ -86,9 +88,9 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
-        return util.cube2array(self.decomposition_2d(image, n_scales, n_pixels))
+        return util.cube2array(self.decomposition_2d(image, n_scales))
 
-    def decomposition_2d(self, image, n_scales, n_pixels):
+    def decomposition_2d(self, image, n_scales):
         """
         2D starlet transform from starlet coefficients stored in coeffs
 
@@ -97,7 +99,7 @@ class Starlets(object):
         :return: reconstructed signal as 2D array of shape (n_scales, sqrt(n_pixels), sqrt(n_pixels))
         """
         if self.use_pysap and not self._second_gen:
-            coeffs = self._transform(image, n_scales, n_pixels)
+            coeffs = self._transform(image, n_scales)
         else:
             coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
         return coeffs
@@ -117,9 +119,9 @@ class Starlets(object):
             image = result.data
         return image
 
-    def _transform(self, image, n_scales, n_pixels):
+    def _transform(self, image, n_scales):
         """decomposes an image into starlets coefficients"""
-        self._check_transform_pysap(n_scales, n_pixels)
+        self._check_transform_pysap(n_scales, image.size)
         self._transf.data = image
         self._transf.analysis()
         if self._show_pysap_plots:
@@ -132,7 +134,7 @@ class Starlets(object):
         """if needed, update the loaded pySAP transform to correct number of scales"""
         if not hasattr(self, '_transf') or n_scales != self._n_scales or n_pixels != self._n_pixels:
             self._transf = self._transf_class(nb_scale=n_scales, verbose=False, 
-                                              nb_procs=self._thread_count)
+                                              nb_procs=self.thread_count)
             self._n_scales = n_scales
             self._n_pixels = n_pixels
         # if getattr(self._transf, 'nb_band_per_scale', 0) is None:
@@ -149,9 +151,9 @@ class Starlets(object):
             coeffs_list.append(coeffs[i, :, :])
         return coeffs_list
 
-    def _load_pysap(self):
+    def _load_pysap(self, force_no_pysap):
         """load pySAP module"""
-        if _force_no_pysap:
+        if force_no_pysap:
             return False, None
         try:
             import pysap

@@ -83,6 +83,22 @@ class TestMassProfile(object):
         #plt.show()
         npt.assert_almost_equal(sigma_r_num_array, sigma_r_analytic_array, decimal=-1)
 
+    def test_delete_cache(self):
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+        kwargs_numerics = {'interpol_grid_num': 500, 'log_integration': True,
+                           'max_integrate': 100}
+
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
+        kwargs_model = {'mass_profile_list': [],
+                        'light_profile_list': [],
+                        'anisotropy_model': 'const'}
+        numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
+        numeric_kin._interp_jeans_integral = 1
+        numeric_kin._log_mass_3d = 2
+        numeric_kin.delete_cache()
+        assert hasattr(numeric_kin, '_log_mass_3d') is False
+        assert hasattr(numeric_kin, '_interp_jeans_integral') is False
+
 
 if __name__ == '__main__':
     pytest.main()

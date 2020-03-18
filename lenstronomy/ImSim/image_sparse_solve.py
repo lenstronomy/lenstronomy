@@ -10,7 +10,7 @@ import lenstronomy.ImSim.de_lens as de_lens
 from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 from slitronomy.Optimization.solver_source_ps import SparseSolverSourcePS
-from slitronomy.Lensing.lensing_operator import LensingOperatorInterpol
+from slitronomy.Lensing.lensing_operator import LensingOperator
 
 class ImageSparseFit(ImageFit):
     """
@@ -56,25 +56,24 @@ class ImageSparseFit(ImageFit):
             model_list = self.SourceModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
-            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.SourceModel, self.ImageNumerics, 
-                                                   likelihood_mask=likelihood_mask, 
-                                                   **kwargs_sparse_solver)
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel,
+                                                   likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_point_sources:
             model_list = self.LensLightModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
-            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.SourceModel, self.LensLightModel, self.ImageNumerics, 
-                                                       likelihood_mask=likelihood_mask, 
-                                                       **kwargs_sparse_solver)
+            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel, self.LensLightModel, 
+                                                       likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_lens_light:
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
-            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.SourceModel, self.ImageNumerics, 
+            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel, 
                                                      self._image_linear_solve_point_sources, #TODO: not fully satisfying
-                                                     likelihood_mask=likelihood_mask, 
-                                                     **kwargs_sparse_solver)
+                                                     likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         # source <-> image pixelated mapping
-        self.lensingOperator = LensingOperatorInterpol(self.Data, self.LensModel, subgrid_res_source=self._subgrid_res_source)
+        self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=self._subgrid_res_source,
+                                               source_interpolation=kwargs_sparse_solver.get('source_interpolation', 'bilinear'),
+                                               minimal_source_plane=False)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
                                   unconvolved=False, de_lensed=False, k=None, update_lens_mapping=True):

@@ -6,8 +6,6 @@ from lenstronomy.LightModel.Profiles import starlets_slit
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.Util import util
 
-  # for debug only
-
 
 class Starlets(object):
     """

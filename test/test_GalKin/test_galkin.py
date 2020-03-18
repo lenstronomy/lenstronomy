@@ -50,8 +50,8 @@ class TestGalkin(object):
     def test_log_linear_integral(self):
         # light profile
         light_profile_list = ['HERNQUIST']
-        r_eff = .5
-        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        Rs = .5
+        kwargs_light = [{'Rs':  Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -95,8 +95,8 @@ class TestGalkin(object):
     def test_log_vs_linear_integral(self):
         # light profile
         light_profile_list = ['HERNQUIST']
-        r_eff = .5
-        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        Rs = .5
+        kwargs_light = [{'Rs':  Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -145,7 +145,7 @@ class TestGalkin(object):
         # light profile
         light_profile_list = ['HERNQUIST']
         r_eff = 1.5
-        kwargs_light = [{'Rs':  r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs':  0.551 * r_eff, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
         # 0.551 *
         # mass profile
         mass_profile_list = ['SPP']
@@ -183,7 +183,7 @@ class TestGalkin(object):
         sigma_v_lin = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000)
 
         los_disp = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf, kwargs_cosmo=kwargs_cosmo)
-        sigma_v2 = los_disp.dispersion(gamma, theta_E, r_eff / 0.551, r_ani=r_ani,
+        sigma_v2 = los_disp.dispersion(gamma, theta_E, r_eff, r_ani=r_ani,
                                        sampling_number=1000)
         print(sigma_v, sigma_v_lin, sigma_v2, 'sigma_v Galkin (log and linear), sigma_v los dispersion')
         npt.assert_almost_equal(sigma_v2/sigma_v, 1, decimal=2)
@@ -208,10 +208,10 @@ class TestGalkin(object):
         :return:
         """
         light_profile_list = ['HERNQUIST_ELLIPSE']
-        r_eff = 1.
+        Rs = 1.
         phi, q = 1, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-        kwargs_light = [{'Rs': r_eff, 'amp': 1.,'e1': e1, 'e2': e2}]  # effective half light radius (2d projected) in arcsec
+        kwargs_light = [{'Rs': Rs, 'amp': 1.,'e1': e1, 'e2': e2}]  # effective half light radius (2d projected) in arcsec
         lightProfile = LightProfile(light_profile_list)
         R = 2
         light2d = lightProfile.light_2d(R=R, kwargs_list=kwargs_light)

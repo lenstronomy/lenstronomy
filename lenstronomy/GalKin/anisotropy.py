@@ -64,7 +64,7 @@ class Anisotropy(object):
         :param kwargs: parameters of the specified anisotropy model
         :return: f(r)
         """
-        self._model.anisotropy_solution(self, r, **kwargs)
+        return self._model.anisotropy_solution(r, **kwargs)
 
     def delete_anisotropy_cache(self):
         """
@@ -251,7 +251,7 @@ class OsipkovMerritt(object):
         See e.g. A5 in Mamon & Lokas
 
         :param r: 3d radius
-        :param kwargs: parameters of the specified anisotropy model
+        :param r_ani: anisotropy radius
         :return: f(r)
         """
         return r**2 + r_ani**2

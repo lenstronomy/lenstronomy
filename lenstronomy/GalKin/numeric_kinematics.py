@@ -69,7 +69,8 @@ class NumericKinematics(Anisotropy):
         :return: sigma_r**2
         """
         l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
-        return 1 / self.anisotropy_solution(r, **kwargs_anisotropy) / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
+        return 1 / f_r / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
 
     def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -129,19 +130,19 @@ class NumericKinematics(Anisotropy):
             max_log = np.log10(self._max_integrate)
             r_array = np.logspace(min_log, max_log, self._interp_grid_num)
             dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
-            integrand_jeans = self._integrand_jeans_solution(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * dlog_r * r_array
+            integrand_jeans = self._integrand_jeans_solution(r_array, kwargs_mass, kwargs_light, kwargs_anisotropy) * dlog_r * r_array
             #flip array from inf to finite
             integral_jeans_r = np.cumsum(np.flip(integrand_jeans))
             #flip array back
             integral_jeans_r = np.flip(integral_jeans_r)
             #call 1d interpolation function
-            self._interp_jeans_integral = f = interp1d(np.log(r_array), integral_jeans_r, fill_value="extrapolate")
+            self._interp_jeans_integral = interp1d(np.log(r_array), integral_jeans_r, fill_value="extrapolate")
         return self._interp_jeans_integral(np.log(r))
 
     def _integrand_jeans_solution(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         integrand of A1 (in log space) in Mamon&Lokas 2005 to calculate the Jeans equation numerically
-        f(s) l(s) G M(s) / s^2
+        f(s) l(s) M(s) / s^2
 
         :param r:
         :param kwargs_mass:
@@ -169,8 +170,7 @@ class NumericKinematics(Anisotropy):
             mass_3d_array[mass_3d_array < 10. ** (-10)] = 10. ** (-10)
             #mass_dim_array = mass_3d_array * const.arcsec ** 2 * self.cosmo.dd * self.cosmo.ds \
             #                 / self.cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
-            f = interp1d(np.log(r_array), np.log(mass_3d_array/r_array), fill_value="extrapolate")
-            self._log_mass_3d = f
+            self._log_mass_3d = interp1d(np.log(r_array), np.log(mass_3d_array/r_array), fill_value="extrapolate")
         return np.exp(self._log_mass_3d(np.log(r))) * r
 
     def mass_3d(self, r, kwargs):

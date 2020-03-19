@@ -79,15 +79,17 @@ class TestAnisotropy(object):
         # radial
         r = 2.
         R = 1.
-        anisoClass = Anisotropy(anisotropy_type='radial')
-        kwargs = {}
-        beta = anisoClass.beta_r(r, **kwargs)
-        k = anisoClass.K(r, R, **kwargs)
-        anisoClassMamon = Anisotropy(anisotropy_type='const')
+        radial = Anisotropy(anisotropy_type='radial')
+        kwargs_rad = {}
+        beta = radial.beta_r(r, **kwargs_rad)
+        k = radial.K(r, R, **kwargs_rad)
+        f = radial.anisotropy_solution(r, **kwargs_rad)
+        assert f == r**2
+        const = Anisotropy(anisotropy_type='const')
         kwargs = {'beta': beta}
         print(beta, 'beta')
         #kwargs = {'beta': 1}
-        k_mamon = anisoClassMamon.K(r, R, **kwargs)
+        k_mamon = const.K(r, R, **kwargs)
         print(k, k_mamon)
         npt.assert_almost_equal(k, k_mamon, decimal=5)
 
@@ -96,32 +98,40 @@ class TestAnisotropy(object):
         # radial
         r = 2.
         R = 1.
-        anisoClass = Anisotropy(anisotropy_type='isotropic')
-        kwargs = {}
-        beta = anisoClass.beta_r(r, **kwargs)
-        k = anisoClass.K(r, R, **kwargs)
+        isotropic = Anisotropy(anisotropy_type='isotropic')
+        kwargs_iso = {}
+        beta = isotropic.beta_r(r, **kwargs_iso)
+        k = isotropic.K(r, R, **kwargs_iso)
+        f = isotropic.anisotropy_solution(r, **kwargs_iso)
+        assert f == 1
         print(beta, 'test')
-        anisoClassMamon = Anisotropy(anisotropy_type='const')
+        const = Anisotropy(anisotropy_type='const')
         kwargs = {'beta': beta}
-        k_mamon = anisoClassMamon.K(r, R, **kwargs)
-        print(k, k_mamon)
-        npt.assert_almost_equal(k, k_mamon, decimal=5)
+        k_const = const.K(r, R, **kwargs)
+        print(k, k_const)
+        npt.assert_almost_equal(k, k_const, decimal=5)
 
     def test_generalizedOM(self):
         # generalized OM model
-        anisoClass = Anisotropy(anisotropy_type='GOM')
+        gom = Anisotropy(anisotropy_type='GOM')
         r = self._r_array
         R = 2
-        anisoClassOM = Anisotropy(anisotropy_type='OM')
+        om = Anisotropy(anisotropy_type='OM')
         kwargs_om = {'r_ani': 1.}
         kwargs_gom = {'r_ani': 1., 'beta_inf': 1.}
-        beta_gom = anisoClass.beta_r(r, **kwargs_gom)
-        beta_om = anisoClassOM.beta_r(r, **kwargs_om)
+        beta_gom = gom.beta_r(r, **kwargs_gom)
+        beta_om = om.beta_r(r, **kwargs_om)
         npt.assert_almost_equal(beta_gom, beta_om, decimal=5)
 
-        K_gom = anisoClass.K(r, R, **kwargs_gom)
-        K_om = anisoClassOM.K(r, R, **kwargs_om)
+        K_gom = gom.K(r, R, **kwargs_gom)
+        K_om = om.K(r, R, **kwargs_om)
         npt.assert_almost_equal(K_gom, K_om, decimal=3)
+
+        from lenstronomy.GalKin.anisotropy import GeneralizedOM
+        gom_class = GeneralizedOM()
+        _F = gom_class._F(a=3/2., z=0.5, beta_inf=1)
+        _F_array = gom_class._F(a=3 / 2., z=np.array([0.5]), beta_inf=1)
+        npt.assert_almost_equal(_F_array[0], _F, decimal=5)
 
 
 class TestRaise(unittest.TestCase):
@@ -132,6 +142,15 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             ani = Anisotropy(anisotropy_type='Colin')
             ani.K(r=1, R=2, r_ani=1)
+
+        with self.assertRaises(ValueError):
+            ani = Anisotropy(anisotropy_type='const')
+            ani.anisotropy_solution(r=1)
+
+        with self.assertRaises(ValueError):
+            const = Anisotropy(anisotropy_type='const')
+            kwargs = {'beta': 1}
+            f_const = const.anisotropy_solution(r=1, **kwargs)
 
 
 if __name__ == '__main__':

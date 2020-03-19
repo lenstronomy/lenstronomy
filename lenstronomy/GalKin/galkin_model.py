@@ -81,4 +81,5 @@ class GalkinModel(object):
         sigmar2_dr = self.numerics.sigma_r2(r_dr, kwargs_mass, kwargs_light, kwargs_anisotropy)
         grav_pot = self.numerics.grav_potential(r, kwargs_mass)
         grav_pot_dr = self.numerics.grav_potential(r_dr, kwargs_mass)
+        self.numerics.delete_cache()
         return r * (sigmar2_dr - sigmar2 - grav_pot + grav_pot_dr) / dr

@@ -105,8 +105,8 @@ class KinematicsAPI(object):
         :param kappa_ext: external convergence (optional)
         :return: velocity dispersion [km/s]
         """
-        galkin, kwargs_profile, kwargs_light = self._galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
-                                                                     theta_E=theta_E, gamma=gamma)
+        galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
+                                                                    theta_E=theta_E, gamma=gamma)
         sigma_v = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy,
                                     sampling_number=self._sampling_number)
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
@@ -126,8 +126,8 @@ class KinematicsAPI(object):
         :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
         :return: velocity dispersion [km/s]
         """
-        galkin, kwargs_profile, kwargs_light = self._galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
-                                                                     theta_E=theta_E, gamma=gamma)
+        galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
+                                                                    theta_E=theta_E, gamma=gamma)
         sigma_v_map = galkin.dispersion_map(kwargs_profile, kwargs_light, kwargs_anisotropy,
                                         num_kin_sampling=self._num_kin_sampling, num_psf_sampling=self._num_psf_sampling)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
@@ -216,7 +216,7 @@ class KinematicsAPI(object):
         sigma_v = self.transform_kappa_ext(sigma_v, kappa_ext=kappa_ext)
         return sigma_v
 
-    def _galkin_settings(self, kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None):
+    def galkin_settings(self, kwargs_lens, kwargs_lens_light, r_eff=None, theta_E=None, gamma=None):
         """
 
         :param kwargs_lens:

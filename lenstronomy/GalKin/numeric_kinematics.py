@@ -186,6 +186,18 @@ class NumericKinematics(Anisotropy):
                    const.c ** 2 / (4 * np.pi * const.G)
         return mass_dim
 
+    def grav_potential(self, r, kwargs_mass):
+        """
+        Gravitational potential in SI units
+
+        :param r: radius (arc seconds)
+        :param kwargs_mass:
+        :return: gravitational potential
+        """
+        mass_dim = self.mass_3d(r, kwargs_mass)
+        grav_pot = -const.G * mass_dim / (r * const.arcsec * self.cosmo.dd * const.Mpc)
+        return grav_pot
+
     def draw_light(self, kwargs_light):
         """
 

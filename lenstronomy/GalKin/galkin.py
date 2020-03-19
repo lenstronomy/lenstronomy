@@ -1,11 +1,10 @@
 from lenstronomy.GalKin.observation import GalkinObservation
-from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
-from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
+from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
 
-class Galkin(GalkinObservation):
+class Galkin(GalkinModel, GalkinObservation):
     """
     Major class to compute velocity dispersion measurements given light and mass models
 
@@ -55,17 +54,9 @@ class Galkin(GalkinObservation):
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
+        GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,
+                             analytic_kinematics=analytic_kinematics)
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-        if analytic_kinematics is True:
-            anisotropy_model = kwargs_model.get('anisotropy_model')
-            if not anisotropy_model == 'OM':
-                raise ValueError('analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.')
-            self.numerics = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                                               kwargs_cosmo=kwargs_cosmo)
-        else:
-            self.numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-        self._analytic_kinematics = analytic_kinematics
 
     def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000):
         """

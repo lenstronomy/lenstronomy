@@ -47,30 +47,21 @@ class TestMassProfile(object):
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
-        # aperture as slit
-        aperture_type = 'slit'
-        length = 3.8
-        width = 0.9
-        kwargs_aperture = {'aperture_type': aperture_type, 'length': length, 'width': width, 'center_ra': 0,
-                           'center_dec': 0, 'angle': 0}
-
-        psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics = {'interpol_grid_num': 500, 'log_integration': True,
                                'max_integrate': 100}
 
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         kwargs_model = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_type}
-        analytic_kin = AnalyticKinematics(kwargs_aperture, kwargs_psf, kwargs_cosmo)
+        analytic_kin = AnalyticKinematics(kwargs_cosmo)
         numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
         rho0_r0_gamma = analytic_kin._rho0_r0_gamma(theta_E, gamma)
         r_array = np.logspace(-2, 0.5, 10)
         sigma_r_analytic_array = []
         sigma_r_num_array = []
         for r in r_array:
-            sigma_r2_analytic = analytic_kin.sigma_r2(r=r, a=Rs, gamma=gamma, r_ani=r_ani, rho0_r0_gamma=rho0_r0_gamma)
+            sigma_r2_analytic = analytic_kin._sigma_r2(r=r, a=Rs, gamma=gamma, r_ani=r_ani, rho0_r0_gamma=rho0_r0_gamma)
             sigma_r2_num = numeric_kin.sigma_r2(r, kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma_r_analytic = np.sqrt(sigma_r2_analytic) / 1000
             sigma_r_num = np.sqrt(sigma_r2_num) / 1000

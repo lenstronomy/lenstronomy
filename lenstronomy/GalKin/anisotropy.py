@@ -292,6 +292,19 @@ class GeneralizedOM(object):
         """
         return (np.sqrt(r**2 - R**2) + self._k_beta(r, R, r_ani, beta_inf)) / r
 
+    def anisotropy_solution(self, r, r_ani, beta_inf):
+        """
+        the solution to
+        d ln(f)/ d ln(r) = 2 beta(r)
+        See e.g. A5 in Mamon & Lokas with a scaling (nominator of Agnello et al. 2014 Equation (12)
+
+        :param r: 3d radius
+        :param r_ani: anisotropy radius
+        :param beta_inf: anisotropy at infinity
+        :return: f(r)
+        """
+        return (r**2 + r_ani**2) ** beta_inf
+
     def delete_cache(self):
         """
         deletes the interpolation function of the hypergeometic function for a specific beta_inf

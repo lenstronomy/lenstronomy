@@ -20,7 +20,7 @@ class TestLightProfile(object):
         kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=500000)
         bins = np.linspace(0., 1, 20)
-        hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
+        hist, bins_hist = np.histogram(r_list, bins=bins, density=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)
         light2d *= (bins_hist[1:] + bins_hist[:-1]) / 2.
         light2d /= np.sum(light2d)
@@ -36,7 +36,7 @@ class TestLightProfile(object):
         kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d_linear(kwargs_profile, n=100000)
         bins = np.linspace(0., 1, 20)
-        hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
+        hist, bins_hist = np.histogram(r_list, bins=bins, density=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)
         light2d_upper = lightProfile.light_2d(R=bins_hist[1:], kwargs_list=kwargs_profile) * bins_hist[1:]
         light2d_lower = lightProfile.light_2d(R=bins_hist[:-1], kwargs_list=kwargs_profile) * bins_hist[:-1]
@@ -55,7 +55,7 @@ class TestLightProfile(object):
         kwargs_profile = [{'amp': 1., 'Rs': 0.5, 'Ra': 0.2}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
         bins = np.linspace(0, 2, 10)
-        hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
+        hist, bins_hist = np.histogram(r_list, bins=bins, density=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)
         light2d *= (bins_hist[1:] + bins_hist[:-1]) / 2.
         light2d /= np.sum(light2d)
@@ -67,7 +67,7 @@ class TestLightProfile(object):
         kwargs_profile = [{'amp': 1., 'Rs': 0.04, 'Ra': 0.02}]
         r_list = lightProfile.draw_light_2d(kwargs_profile, n=100000)
         bins = np.linspace(0., 0.1, 10)
-        hist, bins_hist = np.histogram(r_list, bins=bins, normed=True)
+        hist, bins_hist = np.histogram(r_list, bins=bins, density=True)
         light2d = lightProfile.light_2d(R=(bins_hist[1:] + bins_hist[:-1])/2., kwargs_list=kwargs_profile)
         light2d *= (bins_hist[1:] + bins_hist[:-1]) / 2.
         light2d /= np.sum(light2d)

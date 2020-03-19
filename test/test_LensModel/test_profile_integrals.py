@@ -58,7 +58,7 @@ class TestNumerics(object):
             mass_2d = lensModel.mass_2d_lens(r, **kwargs)
             alpha_x, alpha_y = lensModel.derivatives(r, 0, **kwargs)
             alpha = np.sqrt(alpha_x**2 + alpha_y**2)
-            npt.assert_almost_equal(alpha, mass_2d/r / np.pi, decimal=5)
+            npt.assert_almost_equal(alpha, mass_2d/ r / np.pi, decimal=5)
 
     def test_PJaffe(self):
         kwargs = {'rho0': 1., 'Ra': 0.2, 'Rs': 2.}

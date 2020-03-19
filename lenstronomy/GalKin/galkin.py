@@ -1,11 +1,10 @@
 from lenstronomy.GalKin.observation import GalkinObservation
-from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
-from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
+from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
 
-class Galkin(GalkinObservation):
+class Galkin(GalkinModel, GalkinObservation):
     """
     Major class to compute velocity dispersion measurements given light and mass models
 
@@ -55,17 +54,9 @@ class Galkin(GalkinObservation):
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
+        GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,
+                             analytic_kinematics=analytic_kinematics)
         GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-        if analytic_kinematics is True:
-            anisotropy_model = kwargs_model.get('anisotropy_model')
-            if not anisotropy_model == 'OM':
-                raise ValueError('analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.')
-            self.numerics = AnalyticKinematics(kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                                               kwargs_cosmo=kwargs_cosmo)
-        else:
-            self.numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
-        GalkinObservation.__init__(self, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
-        self._analytic_kinematics = analytic_kinematics
 
     def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, sampling_number=1000):
         """
@@ -86,25 +77,6 @@ class Galkin(GalkinObservation):
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
-
-    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
-        """
-
-        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
-        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
-        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
-        :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
-         falls in the aperture after displacing with the seeing
-        """
-        while True:
-            r, R, x, y = self.numerics.draw_light(kwargs_light)
-            x_, y_ = self.displace_psf(x, y)
-            bool, _ = self.aperture_select(x_, y_)
-            if bool is True:
-                break
-        sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        return sigma2_R
 
     def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
         """
@@ -141,3 +113,22 @@ class Galkin(GalkinObservation):
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+
+    def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: integrated LOS velocity dispersion in angular units for a single draw of the light distribution that
+         falls in the aperture after displacing with the seeing
+        """
+        while True:
+            r, R, x, y = self.numerics.draw_light(kwargs_light)
+            x_, y_ = self.displace_psf(x, y)
+            bool, _ = self.aperture_select(x_, y_)
+            if bool is True:
+                break
+        sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        return sigma2_R

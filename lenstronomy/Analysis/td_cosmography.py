@@ -21,7 +21,7 @@ class TDCosmography(KinematicsAPI):
 
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                 light_model_kinematics_bool=None):
+                 light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None):
 
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
@@ -32,7 +32,9 @@ class TDCosmography(KinematicsAPI):
         self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
         super(TDCosmography, self).__init__(z_lens=z_lens, z_source=z_source, kwargs_model=kwargs_model,
                                             cosmo=cosmo_fiducial, lens_model_kinematics_bool=lens_model_kinematics_bool,
-                                            light_model_kinematics_bool=light_model_kinematics_bool)
+                                            light_model_kinematics_bool=light_model_kinematics_bool,
+                                            kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
+                                            anisotropy_model=anisotropy_model)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """

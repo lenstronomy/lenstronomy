@@ -12,11 +12,12 @@ class TestAnalyticKinematics(object):
                            'aperture_type': 'slit'}
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
-        kin = AnalyticKinematics(kwargs_aperture, kwargs_psf, kwargs_cosmo)
+        kin = AnalyticKinematics(kwargs_cosmo)
         kwargs_light = {'r_eff': 1}
         sigma_s2 = kin.sigma_s2(r=1, R=0.1, kwargs_mass={'theta_E': 1, 'gamma': 2}, kwargs_light=kwargs_light,
                                 kwargs_anisotropy={'r_ani': 1})
         assert 'a' in kwargs_light
+
 
 
 if __name__ == '__main__':

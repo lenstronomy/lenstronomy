@@ -18,12 +18,22 @@ class TestTDCosmography(object):
                         'point_source_model_list': ['LENSED_POSITION']}
         z_lens = 0.5
         z_source = 2.5
+
+        R_slit = 3.8
+        dR_slit = 1.
+        aperture_type = 'slit'
+        kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'width': dR_slit, 'length': R_slit,
+                           'angle': 0, 'center_dec': 0}
+        psf_fwhm = 0.7
+        kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+
         TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                      light_model_kinematics_bool=None)
+                      light_model_kinematics_bool=None, kwargs_aperture=kwargs_aperture, kwargs_seeing=kwargs_seeing)
         from astropy.cosmology import FlatLambdaCDM
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.td_cosmo = TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=cosmo, lens_model_kinematics_bool=None,
-                 light_model_kinematics_bool=None)
+                                      kwargs_aperture = kwargs_aperture, kwargs_seeing = kwargs_seeing,
+                                      light_model_kinematics_bool=None)
         self.lens = LensModel(lens_model_list=['SIE'], cosmo=cosmo, z_lens=z_lens, z_source=z_source)
         self.solver = LensEquationSolver(lensModel=self.lens)
 
@@ -69,15 +79,6 @@ class TestTDCosmography(object):
         r_eff = 0.5
         kwargs_lens_light = [{'Rs': r_eff * 0.551, 'center_x': 0, 'center_y': 0}]
         kwargs_anisotropy = {'r_ani': 1}
-
-        R_slit = 3.8
-        dR_slit = 1.
-        aperture_type = 'slit'
-        kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'width': dR_slit, 'length': R_slit,
-                           'angle': 0, 'center_dec': 0}
-        psf_fwhm = 0.7
-        kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
-        self.td_cosmo.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
 
         anisotropy_model = 'OM'
         kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,

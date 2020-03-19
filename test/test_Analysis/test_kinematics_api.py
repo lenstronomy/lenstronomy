@@ -49,7 +49,8 @@ class TestKinematicsAPI(object):
         kwargs_mge = {'n_comp': 20}
         r_eff = 0.211919902322
         kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_seeing=kwargs_psf,
-                                     lens_model_kinematics_bool=[True, False, False, False, False], anisotropy_model=anisotropy_model)
+                                     lens_model_kinematics_bool=[True, False, False, False, False], anisotropy_model=anisotropy_model,
+                                     kwargs_mge_light={'comp'}, kwargs_mge_mass={'comp'})
 
         kinematicAPI._sampling_number = 1000
         v_sigma = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,

@@ -34,7 +34,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
 
 def plot_chain(chain, param_list):
-    X2_list, pos_list, vel_list, _ = chain
+    X2_list, pos_list, vel_list = chain
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6))
     ax = axes[0]

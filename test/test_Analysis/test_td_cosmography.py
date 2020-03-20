@@ -27,8 +27,7 @@ class TestTDCosmography(object):
         psf_fwhm = 0.7
         kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
 
-        TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                      light_model_kinematics_bool=None, kwargs_aperture=kwargs_aperture, kwargs_seeing=kwargs_seeing)
+        TDCosmography(z_lens, z_source, kwargs_model)
         from astropy.cosmology import FlatLambdaCDM
         cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
         self.td_cosmo = TDCosmography(z_lens, z_source, kwargs_model, cosmo_fiducial=cosmo, lens_model_kinematics_bool=None,

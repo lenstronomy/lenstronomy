@@ -394,6 +394,7 @@ def points_on_circle(radius, num_points):
 
 def neighborSelect(a, x, y):
     """
+    #TODO replace by from scipy.signal import argrelextrema for speed up
     finds (local) minima in a 2d grid
 
     :param a: 1d array of displacements from the source positions

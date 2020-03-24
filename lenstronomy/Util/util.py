@@ -404,7 +404,7 @@ def neighborSelect(a, x, y):
     ...               [5, 3, 4, 4]])
     ...
     >>> argrelextrema(y, np.less, axis=1)
-(array([0, 2]), array([2, 1]))
+    (array([0, 2]), array([2, 1]))
 
 
     finds (local) minima in a 2d grid

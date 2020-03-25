@@ -169,7 +169,6 @@ class ImageSparseFit(ImageFit):
                                                kwargs_ps=kwargs_ps, kwargs_special=kwargs_special,
                                                init_ps_model=init_ps_model)
         if model is None:
-            #TODO: temporary
             return None, None, None
         _, _, _, _ = self.update_sparse_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return model, model_error, param
@@ -208,8 +207,7 @@ class ImageSparseFit(ImageFit):
         # generate image
         model, model_error, param = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
                                                              kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
-        if model is None:
-            #TODO: temporary, penalty when sparse solver had an issue with lens model  
+        if model is None: 
             return -1e20
         # compute X^2
         logL = self.Data.log_likelihood(model, self.likelihood_mask, model_error)

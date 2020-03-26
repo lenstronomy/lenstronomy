@@ -159,3 +159,6 @@ class Starlets(object):
             return False, None
         else:
             return True, pysap
+
+    def delete_cache(self):
+        self.interpol.delete_cache()

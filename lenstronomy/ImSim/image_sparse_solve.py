@@ -132,7 +132,7 @@ class ImageSparseFit(ImageFit):
         return lens_light_final
 
     def image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None,
-                           kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
+                           kwargs_ps=None, kwargs_extinction=None, kwargs_special=None, init_lens_light_model=None):
         """
         computes the image (lens and source surface brightness with a given lens model)
         using sparse optimization, on the data pixelated grid.
@@ -147,10 +147,10 @@ class ImageSparseFit(ImageFit):
         """
         #TODO: add the 'inv_bool' parameters like in super.image_linear_solve for point source linear inversion ?
         return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light, 
-                                        kwargs_ps, kwargs_extinction, kwargs_special)
+                                        kwargs_ps, kwargs_extinction, kwargs_special, init_lens_light_model)
 
     def _image_sparse_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
-                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None):
+                            kwargs_ps=None, kwargs_extinction=None, kwargs_special=None, init_lens_light_model=None):
         """
         computes the image (lens and source surface brightness with a given lens model)
         using sparse optimization, on the data pixelated grid.
@@ -161,13 +161,14 @@ class ImageSparseFit(ImageFit):
         :param kwargs_ps: keyword arguments corresponding to point sources
         :param kwargs_extinction: keyword arguments corresponding to dust extinction
         :param kwargs_special: keyword arguments corresponding to "special" parameters
+        :param init_lens_light_model: optional initial guess for the lens surface brightness
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         init_ps_model = self.point_source(kwargs_ps, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special)
         model, param = self.sparseSolver.solve(kwargs_lens, kwargs_source, kwargs_lens_light=kwargs_lens_light,
                                                kwargs_ps=kwargs_ps, kwargs_special=kwargs_special,
-                                               init_ps_model=init_ps_model)
+                                               init_lens_light_model=init_lens_light_model, init_ps_model=init_ps_model)
         if model is None:
             return None, None, None
         _, _, _, _ = self.update_sparse_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

@@ -134,6 +134,8 @@ def image2array(image):
 
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     """
+    creates pixel grid (in 1d arrays of x- and y- positions)
+    default coordinate frame is such that (0,0) is in the center of the coordinate grid
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel size

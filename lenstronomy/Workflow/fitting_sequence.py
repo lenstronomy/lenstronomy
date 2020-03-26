@@ -27,8 +27,9 @@ class FittingSequence(object):
         :param kwargs_constraints:
         :param kwargs_likelihood:
         :param kwargs_params:
-        :param mpi:
-        :param verbose: bool, if True
+        :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
+        possible
+        :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])

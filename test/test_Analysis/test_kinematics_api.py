@@ -71,14 +71,14 @@ class TestKinematicsAPI(object):
                                      anisotropy_model=anisotropy_model,
                                      kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge, sampling_number=1000,
                                      MGE_light=False, MGE_mass=False, Hernquist_approx=True)
-        v_sigma_hernquist = kinematicAPI.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E)
+        v_sigma_hernquist = kinematicAPI.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                             r_eff=r_eff, theta_E=theta_E)
         #v_sigma_hernquist = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
         #                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
         #                                                          MGE_light=False, MGE_mass=False,
         #                                                          r_eff=r_eff, Hernquist_approx=True)
 
-        vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
-                                                                    kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf)
+        vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)

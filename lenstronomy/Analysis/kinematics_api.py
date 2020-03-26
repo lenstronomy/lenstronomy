@@ -133,7 +133,7 @@ class KinematicsAPI(object):
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
         return sigma_v_map
 
-    def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, kwargs_aperture, kwargs_psf, r_ani, kappa_ext=0):
+    def velocity_dispersion_analytical(self, theta_E, gamma, r_eff, r_ani, kappa_ext=0):
         """
         computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
         The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
@@ -145,13 +145,11 @@ class KinematicsAPI(object):
         :param gamma: power-low slope of the mass profile (=2 corresponds to isothermal)
         :param r_ani: anisotropy radius in units of angles
         :param r_eff: projected half-light radius
-        :param kwargs_aperture: aperture parameters (see Galkin module)
-        :param sampling_number: number of spectral rendering of the light distribution that end up on the slit
         :param kappa_ext: external convergence not accounted in the lens models
         :return: velocity dispersion in units [km/s]
         """
-        galkin = Galkin(kwargs_model={'anisotropy_model': 'OM'}, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                        kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics={},
+        galkin = Galkin(kwargs_model={'anisotropy_model': 'OM'}, kwargs_aperture=self._kwargs_aperture_kin,
+                        kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics={},
                         analytic_kinematics=True)
         kwargs_profile = {'theta_E': theta_E, 'gamma': gamma}
         kwargs_light = {'r_eff': r_eff}

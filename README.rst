@@ -71,8 +71,8 @@ Modelling Features
 * API to conveniently simulate mock lenses
 * Extended source reconstruction with basis sets (shapelets)
 * numerical options for sub-grid ray-tracing and sub-pixel convolution
-* Particle swarm optimization for parameter fitting
-* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)
+* Particle swarm optimization for parameter fitting with MPI and multi-threading support
+* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
 * Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy
 * Cosmographic inference tools
 * ...and much more

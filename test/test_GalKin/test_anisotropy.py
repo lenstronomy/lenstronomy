@@ -123,6 +123,10 @@ class TestAnisotropy(object):
         beta_om = om.beta_r(r, **kwargs_om)
         npt.assert_almost_equal(beta_gom, beta_om, decimal=5)
 
+        f_om = om.anisotropy_solution(r, **kwargs_om)
+        f_gom = gom.anisotropy_solution(r, **kwargs_gom)
+        npt.assert_almost_equal(f_gom, f_om, decimal=5)
+
         K_gom = gom.K(r, R, **kwargs_gom)
         K_om = om.K(r, R, **kwargs_om)
         npt.assert_almost_equal(K_gom, K_om, decimal=3)

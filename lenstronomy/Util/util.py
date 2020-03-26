@@ -134,6 +134,8 @@ def image2array(image):
 
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     """
+    creates pixel grid (in 1d arrays of x- and y- positions)
+    default coordinate frame is such that (0,0) is in the center of the coordinate grid
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel size
@@ -394,6 +396,19 @@ def points_on_circle(radius, num_points):
 
 def neighborSelect(a, x, y):
     """
+    #TODO replace by from scipy.signal import argrelextrema for speed up
+    >>> from scipy.signal import argrelextrema
+    >>> x = np.array([2, 1, 2, 3, 2, 0, 1, 0])
+    >>> argrelextrema(x, np.greater)
+    (array([3, 6]),)
+    >>> y = np.array([[1, 2, 1, 2],
+    ...               [2, 2, 0, 0],
+    ...               [5, 3, 4, 4]])
+    ...
+    >>> argrelextrema(y, np.less, axis=1)
+    (array([0, 2]), array([2, 1]))
+
+
     finds (local) minima in a 2d grid
 
     :param a: 1d array of displacements from the source positions

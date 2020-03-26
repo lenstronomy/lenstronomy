@@ -47,7 +47,7 @@ class TestChainPlots(object):
         pos_list = [[1, 0], [2, 0], [3, 0]]
         vel_list = [[-1, 0], [0, 0], [1, 0]]
         param_list = ['test1', 'test2']
-        chain = X2_list, pos_list, vel_list, None
+        chain = X2_list, pos_list, vel_list
         chain_plot.plot_chain(chain=chain, param_list=param_list)
         plt.close()
 
@@ -65,7 +65,7 @@ class TestChainPlots(object):
         X2_list = [1, 1, 2]
         pos_list = [[1, 0], [2, 0], [3, 0]]
         vel_list = [[-1, 0], [0, 0], [1, 0]]
-        chain = X2_list, pos_list, vel_list, None
+        chain = X2_list, pos_list, vel_list
 
         samples_mcmc = np.random.random((10, 1000))
         dist_mcmc = np.random.random(1000)

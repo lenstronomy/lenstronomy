@@ -68,8 +68,9 @@
 <span class="sd">        :param kwargs_constraints:</span>
 <span class="sd">        :param kwargs_likelihood:</span>
 <span class="sd">        :param kwargs_params:</span>
-<span class="sd">        :param mpi:</span>
-<span class="sd">        :param verbose: bool, if True</span>
+<span class="sd">        :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where</span>
+<span class="sd">        possible</span>
+<span class="sd">        :param verbose: bool, if True prints temporary results and indicators of the fitting process</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_data_joint</span> <span class="o">=</span> <span class="n">kwargs_data_joint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_band_list</span> <span class="o">=</span> <span class="n">kwargs_data_joint</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;multi_band_list&#39;</span><span class="p">,</span> <span class="p">[])</span>
@@ -94,8 +95,6 @@
 <span class="sd">        :return: fitting results</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="c1">#param_list = []</span>
-        <span class="c1">#samples_mcmc, param_mcmc, dist_mcmc = [], [], []</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">fitting</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">fitting_list</span><span class="p">):</span>
             <span class="n">fitting_type</span> <span class="o">=</span> <span class="n">fitting</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">fitting</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -105,6 +104,9 @@
 
             <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;update_settings&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_settings</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;set_param_value&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;fix_not_computed&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">fix_not_computed</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -119,6 +121,11 @@
                 <span class="n">kwargs_result</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pso</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_result</span><span class="p">)</span>
                 <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">fitting_type</span><span class="p">,</span> <span class="n">chain</span><span class="p">,</span> <span class="n">param</span><span class="p">])</span>
+
+            <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;SIMPLEX&#39;</span><span class="p">:</span>
+                <span class="n">kwargs_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simplex</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_state</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_result</span><span class="p">)</span>
+                <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">fitting_type</span><span class="p">,</span> <span class="n">kwargs_result</span><span class="p">])</span>
 
             <span class="k">elif</span> <span class="n">fitting_type</span> <span class="o">==</span> <span class="s1">&#39;MCMC&#39;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;init_samples&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -135,7 +142,7 @@
                 <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns_output</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fitting_sequence </span><span class="si">%s</span><span class="s2"> is not supported. Please use: &#39;PSO&#39;, &#39;MCMC&#39;, &#39;psf_iteration&#39;, &quot;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fitting_sequence </span><span class="si">%s</span><span class="s2"> is not supported. Please use: &#39;PSO&#39;, &#39;SIMPLEX&#39;, &#39;MCMC&#39;, &#39;psf_iteration&#39;, &quot;</span>
                                  <span class="s2">&quot;&#39;restart&#39;, &#39;update_settings&#39; or &quot;&quot;&#39;align_images&#39;&quot;</span> <span class="o">%</span> <span class="n">fitting_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">chain_list</span></div>
 
@@ -201,6 +208,24 @@
         <span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_likelihood</span>
         <span class="n">likelihoodModule</span> <span class="o">=</span> <span class="n">LikelihoodModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs_data_joint</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_likelihood</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">likelihoodModule</span>
+
+<div class="viewcode-block" id="FittingSequence.simplex"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.simplex">[docs]</a>    <span class="k">def</span> <span class="nf">simplex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Downhill simplex optimization using the Nelder-Mead algorithm.</span>
+
+<span class="sd">        :param n_iterations: maximum number of iterations to perform</span>
+<span class="sd">        :param method: the optimization method used, see documentation in scipy.optimize.minimize</span>
+<span class="sd">        :return: result of the best fit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">param_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span>
+        <span class="n">kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span>
+        <span class="n">init_pos</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_temp</span><span class="p">)</span>
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">Sampler</span><span class="p">(</span><span class="n">likelihoodModule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihoodModule</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">simplex</span><span class="p">(</span><span class="n">init_pos</span><span class="p">,</span> <span class="n">n_iterations</span><span class="p">,</span> <span class="n">method</span><span class="p">)</span>
+
+        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_result</span></div>
 
 <div class="viewcode-block" id="FittingSequence.mcmc"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">walkerRatio</span><span class="p">,</span> <span class="n">sigma_scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">init_samples</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">re_use_samples</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
              <span class="n">sampler_type</span><span class="o">=</span><span class="s1">&#39;EMCEE&#39;</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -464,6 +489,22 @@
                                          <span class="n">lens_light_remove_fixed</span><span class="p">,</span> <span class="n">ps_remove_fixed</span><span class="p">,</span> <span class="n">cosmo_remove_fixed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_limits</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="FittingSequence.set_param_value"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a parameter to a specific value. `kwargs` are below.</span>
+<span class="sd">        :param lens: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
+<span class="sd">        :type lens:</span>
+<span class="sd">        :param source: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
+<span class="sd">        :type source:</span>
+<span class="sd">        :param lens_light: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
+<span class="sd">        :type lens_light:</span>
+<span class="sd">        :param ps: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
+<span class="sd">        :type ps:</span>
+<span class="sd">        :return: 0, the value of the param is overwritten</span>
+<span class="sd">        :rtype:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_param_value</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="FittingSequence.fix_not_computed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.fix_not_computed">[docs]</a>    <span class="k">def</span> <span class="nf">fix_not_computed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">free_bands</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

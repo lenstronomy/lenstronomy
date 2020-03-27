@@ -114,9 +114,23 @@
     <span class="k">return</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span></div>
 
 
-<div class="viewcode-block" id="transform_e1e2"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.transform_e1e2">[docs]</a><span class="k">def</span> <span class="nf">transform_e1e2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="ellipticity2phi_q"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.ellipticity2phi_q">[docs]</a><span class="k">def</span> <span class="nf">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordianate system</span>
+<span class="sd">    :param e1: eccentricity in x-direction</span>
+<span class="sd">    :param e2: eccentricity in xy-direction</span>
+<span class="sd">    :return: angle in radian, axis ratio (minor/major)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">e2</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">e1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">e2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">0.9999</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">q</span></div>
+
+
+<div class="viewcode-block" id="transform_e1e2_product_average"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.transform_e1e2_product_average">[docs]</a><span class="k">def</span> <span class="nf">transform_e1e2_product_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system</span>
+<span class="sd">    such that R = sqrt(R_major * R_minor)</span>
 
 <span class="sd">    :param x: x-coordinate</span>
 <span class="sd">    :param y: y-coordinate</span>
@@ -138,17 +152,28 @@
     <span class="k">return</span> <span class="n">xt1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="p">),</span> <span class="n">xt2</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ellipticity2phi_q"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.ellipticity2phi_q">[docs]</a><span class="k">def</span> <span class="nf">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+<div class="viewcode-block" id="transform_e1e2_square_average"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.transform_e1e2_square_average">[docs]</a><span class="k">def</span> <span class="nf">transform_e1e2_square_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    :param e1:</span>
-<span class="sd">    :param e2:</span>
-<span class="sd">    :return:</span>
+<span class="sd">    maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system</span>
+<span class="sd">    such that R = sqrt(R_major**2 + R_minor**2)</span>
+
+<span class="sd">    :param x: x-coordinate</span>
+<span class="sd">    :param y: y-coordinate</span>
+<span class="sd">    :param e1: eccentricity</span>
+<span class="sd">    :param e2: eccentricity</span>
+<span class="sd">    :param center_x: center of distortion</span>
+<span class="sd">    :param center_y: center of distortion</span>
+<span class="sd">    :return: distorted coordinates x&#39;, y&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">e2</span><span class="p">,</span> <span class="n">e1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">e1</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">e2</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mf">0.9999</span><span class="p">)</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">c</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">phi</span><span class="p">,</span> <span class="n">q</span></div>
+    <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+    <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+    <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+    <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+    <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span>
+    <span class="n">x_</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos_phi</span> <span class="o">*</span> <span class="n">x_shift</span> <span class="o">+</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">y_shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
+    <span class="n">y_</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">sin_phi</span> <span class="o">*</span> <span class="n">x_shift</span> <span class="o">+</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="n">y_shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span></div>
 </pre></div>
 
           </div>

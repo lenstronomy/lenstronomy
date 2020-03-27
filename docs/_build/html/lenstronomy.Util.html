@@ -1403,12 +1403,12 @@ iterative approach</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>e1</strong> – </li>
-<li><strong>e2</strong> – </li>
+<li><strong>e1</strong> – eccentricity in x-direction</li>
+<li><strong>e2</strong> – eccentricity in xy-direction</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">angle in radian, axis ratio (minor/major)</p>
 </td>
 </tr>
 </tbody>
@@ -1500,9 +1500,36 @@ iterative approach</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Util.param_util.transform_e1e2">
-<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">transform_e1e2</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#transform_e1e2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.transform_e1e2" title="Permalink to this definition">¶</a></dt>
-<dd><p>maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordianate system</p>
+<dt id="lenstronomy.Util.param_util.transform_e1e2_product_average">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">transform_e1e2_product_average</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#transform_e1e2_product_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.transform_e1e2_product_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
+such that R = sqrt(R_major * R_minor)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>e1</strong> – eccentricity</li>
+<li><strong>e2</strong> – eccentricity</li>
+<li><strong>center_x</strong> – center of distortion</li>
+<li><strong>center_y</strong> – center of distortion</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">distorted coordinates x’, y’</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.param_util.transform_e1e2_square_average">
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">transform_e1e2_square_average</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#transform_e1e2_square_average"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.transform_e1e2_square_average" title="Permalink to this definition">¶</a></dt>
+<dd><p>maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
+such that R = sqrt(R_major**2 + R_minor**2)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1698,6 +1725,26 @@ to uniform distribution on parameter space</p>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">hypercube mapped to parameters space</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.sampling_util.sample_ball">
+<code class="descclassname">lenstronomy.Util.sampling_util.</code><code class="descname">sample_ball</code><span class="sig-paren">(</span><em>p0</em>, <em>std</em>, <em>size=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/sampling_util.html#sample_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.sampling_util.sample_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce a ball of walkers around an initial parameter value.
+this routine is from the emcee package as it became deprecated there</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>p0</strong> – The initial parameter value.</li>
+<li><strong>std</strong> – The axis-aligned standard deviation.</li>
+<li><strong>size</strong> – The number of samples to produce.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -2007,7 +2054,9 @@ if k is a boolean list, checks for size to match the numbers of models and retur
 <dl class="function">
 <dt id="lenstronomy.Util.util.make_grid">
 <code class="descclassname">lenstronomy.Util.util.</code><code class="descname">make_grid</code><span class="sig-paren">(</span><em>numPix</em>, <em>deltapix</em>, <em>subgrid_res=1</em>, <em>left_lower=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#make_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.make_grid" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>creates pixel grid (in 1d arrays of x- and y- positions)
+default coordinate frame is such that (0,0) is in the center of the coordinate grid</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
@@ -2104,7 +2153,18 @@ precedence goes to key value pairs in latter dicts.</p>
 <dl class="function">
 <dt id="lenstronomy.Util.util.neighborSelect">
 <code class="descclassname">lenstronomy.Util.util.</code><code class="descname">neighborSelect</code><span class="sig-paren">(</span><em>a</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#neighborSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.neighborSelect" title="Permalink to this definition">¶</a></dt>
-<dd><p>finds (local) minima in a 2d grid</p>
+<dd><p>#TODO replace by from scipy.signal import argrelextrema for speed up
+&gt;&gt;&gt; from scipy.signal import argrelextrema
+&gt;&gt;&gt; x = np.array([2, 1, 2, 3, 2, 0, 1, 0])
+&gt;&gt;&gt; argrelextrema(x, np.greater)
+(array([3, 6]),)
+&gt;&gt;&gt; y = np.array([[1, 2, 1, 2],
+…               [2, 2, 0, 0],
+…               [5, 3, 4, 4]])
+…
+&gt;&gt;&gt; argrelextrema(y, np.less, axis=1)
+(array([0, 2]), array([2, 1]))</p>
+<p>finds (local) minima in a 2d grid</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

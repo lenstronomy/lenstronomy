@@ -40,13 +40,16 @@
             
   <h1>Source code for lenstronomy.LightModel.Profiles.nie</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.profile_base</span> <span class="k">import</span> <span class="n">LightProfileBase</span>
 
 
-<div class="viewcode-block" id="NIE"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.nie.NIE">[docs]</a><span class="k">class</span> <span class="nc">NIE</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="NIE"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.nie.NIE">[docs]</a><span class="k">class</span> <span class="nc">NIE</span><span class="p">(</span><span class="n">LightProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    non-divergent isothermal ellipse (projected)</span>
+<span class="sd">    This is effectively the convergence profile of the NIE lens model with an amplitude &#39;amp&#39; rather than an Einstein</span>
+<span class="sd">    radius &#39;theta_E&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;s_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;s_scale&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
@@ -55,38 +58,25 @@
 <div class="viewcode-block" id="NIE.function"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.nie.NIE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :param s_scale:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param amp: surface brightness normalization</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale (square averaged of minor and major axis)</span>
+<span class="sd">        :param center_x: center of profile</span>
+<span class="sd">        :param center_y: center of profile</span>
+<span class="sd">        :return: surface brightness of NIE profile</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="c1"># shift</span>
+
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
         <span class="c1"># rotate</span>
         <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">)</span>
-        <span class="c1"># evaluate</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nie_simple_function</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-        <span class="c1"># rotate back</span>
-        <span class="k">return</span> <span class="n">f_</span></div>
-
-    <span class="k">def</span> <span class="nf">_nie_simple_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param amp:</span>
-<span class="sd">        :param s_cale:</span>
-<span class="sd">        :param q:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">amp</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s_scale</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">amp</span><span class="o">/</span><span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x__</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y__</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_</span></div></div>
 </pre></div>
 
           </div>

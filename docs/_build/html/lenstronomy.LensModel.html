@@ -622,13 +622,15 @@ different positions but must not be used with different lens model parameters!</
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>compute_window</strong> – </li>
-<li><strong>tiling_scale</strong> – </li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>compute_window</strong> – total window in the image plane where to search for critical curves</li>
+<li><strong>start_scale</strong> – float, angular scale on which to start the tiling from (if there are two distinct curves in
+a region, it might only find one.</li>
+<li><strong>max_order</strong> – int, maximum order in the tiling to compute critical curve triangles</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of positions representing coordinates of the critical curve (in RA and DEC)</p>
 </td>
 </tr>
 </tbody>
@@ -1238,10 +1240,11 @@ the first deflector afterwards and the last deflector before the end of the ray-
 - projected enclosed densities</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.profile_integrals.ProfileIntegrals.density_2d">
-<code class="descname">density_2d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/profile_integrals.html#ProfileIntegrals.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.profile_integrals.ProfileIntegrals.density_2d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>lens_param=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/profile_integrals.html#ProfileIntegrals.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.profile_integrals.ProfileIntegrals.density_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the projected density along the line-of-sight
 :param r: radius (arcsec)
 :param kwargs_profile: keyword argument list with lens model parameters
+:param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention and the return is the convergence
 :return: 2d projected density at projected radius r</p>
 </dd></dl>
 
@@ -1311,7 +1314,7 @@ plane lensing</p>
 <dt id="lenstronomy.LensModel.single_plane.SinglePlane">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.single_plane.</code><code class="descname">SinglePlane</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>numerical_alpha_class=None</em>, <em>lens_redshift_list=None</em>, <em>z_source_convention=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.profile_list_base.ProfileListBase" title="lenstronomy.LensModel.profile_list_base.ProfileListBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.profile_list_base.ProfileListBase</span></code></a></p>
-<p>class to handle an arbitrary list of lens models</p>
+<p>class to handle an arbitrary list of lens models in a single lensing plane</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.single_plane.SinglePlane.alpha">
 <code class="descname">alpha</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane.alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane.alpha" title="Permalink to this definition">¶</a></dt>
@@ -1323,6 +1326,29 @@ plane lensing</p>
 :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
 :param k: only evaluate the k-th lens model
 :return: deflection angles in units of arcsec</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.single_plane.SinglePlane.density">
+<code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs</em>, <em>bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>3d mass density at radius r
+The integral in the LOS projection of this quantity results in the convergence quantity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (in angular units)</li>
+<li><strong>kwargs</strong> – list of keyword arguments of lens model parameters matching the lens model classes</li>
+<li><strong>bool_list</strong> – list of bools that are part of the output</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass density at radius r (in angular units, modulo epsilon_crit)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1388,6 +1414,9 @@ plane lensing</p>
 <dt id="lenstronomy.LensModel.single_plane.SinglePlane.mass_3d">
 <code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs</em>, <em>bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/single_plane.html#SinglePlane.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.single_plane.SinglePlane.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the mass within a 3d sphere of radius r</p>
+<p>if you want to have physical units of kg, you need to multiply by this factor:
+const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
+grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

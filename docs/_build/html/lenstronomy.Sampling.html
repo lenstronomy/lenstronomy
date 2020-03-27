@@ -95,8 +95,8 @@ ImageModel(), Multiband(), MultiExposure()
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points">
-<code class="descname">effectiv_num_data_points</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.effectiv_num_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.effectiv_num_data_points" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.effective_num_data_points">
+<code class="descname">effective_num_data_points</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.effective_num_data_points"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.effective_num_data_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the effective number of data points considered in the X2 estimation to compute the reduced X2 value</p>
 </dd></dl>
 
@@ -104,21 +104,6 @@ ImageModel(), Multiband(), MultiExposure()
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood">
 <code class="descname">likelihood</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative">
-<code class="descname">likelihood_derivative</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.likelihood_derivative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.likelihood_derivative" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – array</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">logL, derivative estimatoe (None)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.logL">
@@ -130,6 +115,22 @@ ImageModel(), Multiband(), MultiExposure()
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood">
 <code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>kwargs_return</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.log_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.negativelogL">
+<code class="descname">negativelogL</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/likelihood.html#LikelihoodModule.negativelogL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.likelihood.LikelihoodModule.negativelogL" title="Permalink to this definition">¶</a></dt>
+<dd><p>for minimizer function, the negative value of the logl value is requested</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – array of parameters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">-logL</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.Sampling.likelihood.LikelihoodModule.num_data">
@@ -360,14 +361,104 @@ Feel free to sample with your convenient sampler!</p>
 <dl class="method">
 <dt id="lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">
 <code class="descname">mcmc_emcee</code><span class="sig-paren">(</span><em>n_walkers</em>, <em>n_run</em>, <em>n_burn</em>, <em>mean_start</em>, <em>sigma_start</em>, <em>mpi=False</em>, <em>progress=False</em>, <em>threadCount=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.mcmc_emcee"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run MCMC with emcee.
+For details, please have a look at the documentation of the emcee packager.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_walkers</strong> (<em>integer</em>) – number of walkers in the emcee process</li>
+<li><strong>n_run</strong> (<em>integer</em>) – number of sampling (after burn-in) of the emcee</li>
+<li><strong>n_burn</strong> (<em>integer</em>) – number of burn-in iterations (those will not be saved in the output sample)</li>
+<li><strong>mean_start</strong> (<em>numpy array of length the number of parameters</em>) – mean of the parameter position of the initialising sample</li>
+<li><strong>sigma_start</strong> (<em>numpy array of length the number of parameters</em>) – spread of the parameter values (uncorrelated in each dimension) of the initialising sample</li>
+<li><strong>mpi</strong> (<em>bool</em>) – if True, initializes an MPIPool to allow for MPI execution of the sampler</li>
+<li><strong>progress</strong> (<em>bool</em>) – if True, prints the progress bar</li>
+<li><strong>threadCount</strong> (<em>integer</em>) – number of threats in multi-processing (not applicable for MPI)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">samples, ln likelihood value of samples</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy 2d array, numpy 1d array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.sampler.Sampler.pso">
 <code class="descname">pso</code><span class="sig-paren">(</span><em>n_particles</em>, <em>n_iterations</em>, <em>lower_start=None</em>, <em>upper_start=None</em>, <em>threadCount=1</em>, <em>init_pos=None</em>, <em>mpi=False</em>, <em>print_key='PSO'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.pso" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the best fit for the lense model on catalogue basis with particle swarm optimizer</p>
+<dd><p>Return the best fit for the lens model on catalogue basis with
+particle swarm optimizer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>n_particles</strong> – number of particles in the sampling process</li>
+<li><strong>n_iterations</strong> – number of iterations of the swarm</li>
+<li><strong>lower_start</strong> – numpy array, lower end parameter of the values of the starting particles</li>
+<li><strong>upper_start</strong> – numpy array, upper end parameter of the values of the starting particles</li>
+<li><strong>threadCount</strong> – number of threads in the computation (only applied if mpi=False)</li>
+<li><strong>init_pos</strong> – numpy array, position of the initial best guess model</li>
+<li><strong>mpi</strong> – bool, if True, makes instance of MPIPool to allow for MPI execution</li>
+<li><strong>print_key</strong> – string, prints the process name in the progress bar (optional)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of sampels)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.Sampling.sampler.Sampler.simplex">
+<code class="descname">simplex</code><span class="sig-paren">(</span><em>init_pos</em>, <em>n_iterations</em>, <em>method</em>, <em>print_key='SIMPLEX'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#Sampler.simplex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.Sampler.simplex" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>init_pos</strong> – starting point for the optimization</li>
+<li><strong>n_iterations</strong> – maximum number of iterations</li>
+<li><strong>method</strong> – the optimization method, default is ‘Nelder-Mead’</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the best fit for the lens model using the optimization routine specified by method</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Sampling.sampler.choose_pool">
+<code class="descclassname">lenstronomy.Sampling.sampler.</code><code class="descname">choose_pool</code><span class="sig-paren">(</span><em>mpi=False</em>, <em>processes=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/sampler.html#choose_pool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.sampler.choose_pool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends the capabilities of the schwimmbad.choose_pool method.</p>
+<p>It handles the <cite>use_dill</cite> parameters in kwargs, that would otherwise raise an error when processes &gt; 1.
+Any thread in the returned multiprocessing pool (e.g. processes &gt; 1) also default</p>
+<p>Docstring from schwimmbad:</p>
+<dl class="docutils">
+<dt>mpi <span class="classifier-delimiter">:</span> <span class="classifier">bool, optional</span></dt>
+<dd>Use the MPI processing pool, <code class="xref py py-class docutils literal notranslate"><span class="pre">MPIPool</span></code>. By
+default, <code class="docutils literal notranslate"><span class="pre">False</span></code>, will use the <code class="xref py py-class docutils literal notranslate"><span class="pre">SerialPool</span></code>.</dd>
+<dt>processes <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
+<dd>Use the multiprocessing pool,
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPool</span></code>, with this number of
+processes. By default, <code class="docutils literal notranslate"><span class="pre">processes=1</span></code>, will use the
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SerialPool</span></code>.</dd>
+<dt><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs</dt>
+<dd>Any additional kwargs are passed in to the pool class initializer selected by the arguments.</dd>
+</dl>
 </dd></dl>
 
 </div>

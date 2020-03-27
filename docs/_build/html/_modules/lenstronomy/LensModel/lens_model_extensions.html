@@ -141,10 +141,12 @@
 <div class="viewcode-block" id="LensModelExtensions.critical_curve_tiling"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_tiling">[docs]</a>    <span class="k">def</span> <span class="nf">critical_curve_tiling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">compute_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">start_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_order</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs_lens:</span>
-<span class="sd">        :param compute_window:</span>
-<span class="sd">        :param tiling_scale:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param compute_window: total window in the image plane where to search for critical curves</span>
+<span class="sd">        :param start_scale: float, angular scale on which to start the tiling from (if there are two distinct curves in</span>
+<span class="sd">         a region, it might only find one.</span>
+<span class="sd">        :param max_order: int, maximum order in the tiling to compute critical curve triangles</span>
+<span class="sd">        :return: list of positions representing coordinates of the critical curve (in RA and DEC)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">compute_window</span> <span class="o">/</span> <span class="n">start_scale</span><span class="p">)</span>
         <span class="n">x_grid_init</span><span class="p">,</span> <span class="n">y_grid_init</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">start_scale</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -179,6 +181,7 @@
 <span class="sd">        :param edge2: [ra_coord, dec_coord, magnification]</span>
 <span class="sd">        :param edge_90: [ra_coord, dec_coord, magnification]</span>
 <span class="sd">        :param max_order: maximal order to fold triangle</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ra_1</span><span class="p">,</span> <span class="n">dec_1</span><span class="p">,</span> <span class="n">mag_1</span> <span class="o">=</span> <span class="n">edge1</span>

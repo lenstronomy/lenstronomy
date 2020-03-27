@@ -150,7 +150,7 @@ class SPEMD_SMOOTH(LensProfileBase):
         :param s_scale: smoothing scale in the center of the profile
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
-        :return: x_, y_, q_fastell, gam, s2, q, phi_G
+        :return: x-rotated, y-rotated, q_fastell, gam, s2, q, phi_G
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         x = np.array(x)

@@ -43,6 +43,7 @@
             
   <div class="section" id="lenstronomy-gravitational-lensing-software-package">
 <h1>lenstronomy - gravitational lensing software package<a class="headerlink" href="#lenstronomy-gravitational-lensing-software-package" title="Permalink to this headline">¶</a></h1>
+<img alt="docs/figures/readme_fig.png" src="docs/figures/readme_fig.png" />
 <a class="reference external image-reference" href="http://badge.fury.io/py/lenstronomy"><img alt="https://badge.fury.io/py/lenstronomy.png" src="https://badge.fury.io/py/lenstronomy.png" /></a>
 <a class="reference external image-reference" href="https://travis-ci.org/sibirrer/lenstronomy"><img alt="https://travis-ci.org/sibirrer/lenstronomy.png?branch=master" src="https://travis-ci.org/sibirrer/lenstronomy.png?branch=master" /></a>
 <a class="reference external image-reference" href="http://lenstronomy.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/lenstronomy/badge/?version=latest" /></a>
@@ -85,8 +86,8 @@ $ python setup.py install --user
 <li>API to conveniently simulate mock lenses</li>
 <li>Extended source reconstruction with basis sets (shapelets)</li>
 <li>numerical options for sub-grid ray-tracing and sub-pixel convolution</li>
-<li>Particle swarm optimization for parameter fitting</li>
-<li>MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)</li>
+<li>Particle swarm optimization for parameter fitting with MPI and multi-threading support</li>
+<li>MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support</li>
 <li>Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy</li>
 <li>Cosmographic inference tools</li>
 <li>…and much more</li>
@@ -104,7 +105,8 @@ user to directly access a lot of tools and each module can also be used as stand
 You can find simple examle notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.</p>
 <ul class="simple">
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb">Units, coordiante system and parameter definitions in lenstronomy</a></li>
-<li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb">FITS handling and extracting needed information from the data prior to modeling</a></li>
+<li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/fits_handling.ipynb">FITS handling and extracting needed information from the data prior to modeling</a></li>
+<li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/simple_ring.ipynb">Modeling a simple Einstein ring</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quad_model.ipynb">Quadrupoly lensed quasar modelling</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/double_model.ipynb">Double lensed quasar modelling</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/time-delay%20cosmography.ipynb">Time-delay cosmography</a></li>
@@ -119,6 +121,16 @@ You can find simple examle notebooks for various cases. The latest versions of t
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/catalogue%20modelling.ipynb">Catalogue data modeling of image positions, flux ratios and time delays</a></li>
 <li><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb">Example of numerical ray-tracing and convolution options</a></li>
 </ul>
+</div>
+<div class="section" id="contribution">
+<h2>Contribution<a class="headerlink" href="#contribution" title="Permalink to this headline">¶</a></h2>
+<p>Check out the contributing page <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/contributing.html">contributing page</a>
+and become an author of lenstronomy! A big shutout to the current <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/authors.html">list of contributors and developers</a>!</p>
+</div>
+<div class="section" id="affiliated-packages">
+<h2>Affiliated packages<a class="headerlink" href="#affiliated-packages" title="Permalink to this headline">¶</a></h2>
+<p>Multiple affiliated packages that make use of lenstronomy can be found <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/affiliatedpackages.html">here</a>
+(not complete) and further packages are under development by the community.</p>
 </div>
 <div class="section" id="mailing-list">
 <h2>Mailing list<a class="headerlink" href="#mailing-list" title="Permalink to this headline">¶</a></h2>
@@ -139,9 +151,9 @@ and suggest new features. New releases will be announced via this mailing list.<
 </div>
 <div class="section" id="attribution">
 <h2>Attribution<a class="headerlink" href="#attribution" title="Permalink to this headline">¶</a></h2>
-<p>The design concept of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> are reported in
-<a class="reference external" href="https://arxiv.org/abs/1803.09746v1">Birrer &amp; Amara 2018</a>. Please cite this paper whenever you publish
-results that made use of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>. Please also cite <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>
+<p>The design concept of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> are reported in <a class="reference external" href="https://arxiv.org/abs/1803.09746v1">Birrer &amp; Amara 2018</a>.
+Please cite this paper when you use lenstronomy in a publication and link to <a class="reference external" href="https://github.com/sibirrer/lenstronomy">https://github.com/sibirrer/lenstronomy</a>.
+Please also cite <a class="reference external" href="http://adsabs.harvard.edu/abs/2015ApJ...813..102B">Birrer et al 2015</a>
 when you make use of the <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> work-flow or the Shapelet source reconstruction. Please make sure to cite also
 the relevant work that was implemented in <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>, as described in the release paper.</p>
 <div class="section" id="contents">
@@ -168,6 +180,7 @@ the relevant work that was implemented in <code class="docutils literal notransl
 <li class="toctree-l1"><a class="reference internal" href="mailinglist.html">Mailing list</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="authors.html#development-lead">Development Lead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authors.html#key-contributors">Key contributors</a></li>
 <li class="toctree-l2"><a class="reference internal" href="authors.html#contributors-alphabetic">Contributors (alphabetic)</a></li>
 </ul>
 </li>
@@ -181,7 +194,7 @@ the relevant work that was implemented in <code class="docutils literal notransl
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="affiliatedpackages.html">Affiliated packages</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="affiliatedpackages.html#lenstruction">lenstruction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="affiliatedpackages.html#guidelines-for-affiliated-packages">guidelines for affiliated packages</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a><ul>
@@ -213,6 +226,7 @@ the relevant work that was implemented in <code class="docutils literal notransl
 <li class="toctree-l2"><a class="reference internal" href="history.html#id26">1.2.0 (2019-11-17)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id27">1.2.4 (2020-01-02)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id28">1.3.0 (2020-01-10)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id29">1.4.0 (2020-03-26)</a></li>
 </ul>
 </li>
 </ul>
@@ -241,6 +255,8 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
 <li><a class="reference internal" href="#modelling-features">Modelling Features</a></li>
 <li><a class="reference internal" href="#getting-started">Getting started</a></li>
 <li><a class="reference internal" href="#example-notebooks">Example notebooks</a></li>
+<li><a class="reference internal" href="#contribution">Contribution</a></li>
+<li><a class="reference internal" href="#affiliated-packages">Affiliated packages</a></li>
 <li><a class="reference internal" href="#mailing-list">Mailing list</a></li>
 <li><a class="reference internal" href="#shapelet-reconstruction-demonstration-movies">Shapelet reconstruction demonstration movies</a></li>
 <li><a class="reference internal" href="#attribution">Attribution</a><ul>

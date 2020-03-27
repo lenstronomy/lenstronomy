@@ -54,14 +54,37 @@
 <div class="section" id="module-lenstronomy.Analysis.kinematics_api">
 <span id="lenstronomy-analysis-kinematics-api-module"></span><h2>lenstronomy.Analysis.kinematics_api module<a class="headerlink" href="#module-lenstronomy.Analysis.kinematics_api" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI">
-<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.kinematics_api.</code><code class="descname">KinematicAPI</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI">
+<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.kinematics_api.</code><code class="descname">KinematicsAPI</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>kwargs_aperture</em>, <em>kwargs_seeing</em>, <em>anisotropy_model</em>, <em>cosmo=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>kwargs_numerics_galkin=None</em>, <em>analytic_kinematics=False</em>, <em>Hernquist_approx=False</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em>, <em>kwargs_mge_light=None</em>, <em>kwargs_mge_mass=None</em>, <em>sampling_number=1000</em>, <em>num_kin_sampling=1000</em>, <em>num_psf_sampling=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class contains routines to compute time delays, magnification ratios, line of sight velocity dispersions etc
 for a given lens model</p>
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_lens_profiles">
-<code class="descname">kinematic_lens_profiles</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>MGE_fit=False</em>, <em>model_kinematics_bool=None</em>, <em>theta_E=None</em>, <em>kwargs_mge=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.kinematic_lens_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_lens_profiles" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.galkin_settings">
+<code class="descname">galkin_settings</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.galkin_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.galkin_settings" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>kwargs_lens_light</strong> – deflector light keyword argument list</li>
+<li><strong>r_eff</strong> – half-light radius (optional)</li>
+<li><strong>theta_E</strong> – Einstein radius (optional)</li>
+<li><strong>gamma</strong> – local power-law slope at the Einstein radius (optional)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Galkin() instance and mass and light profiles configured for the Galkin module</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematic_lens_profiles">
+<code class="descname">kinematic_lens_profiles</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>MGE_fit=False</em>, <em>model_kinematics_bool=None</em>, <em>theta_E=None</em>, <em>gamma=None</em>, <em>kwargs_mge=None</em>, <em>analytic_kinematics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.kinematic_lens_profiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematic_lens_profiles" title="Permalink to this definition">¶</a></dt>
 <dd><p>translates the lenstronomy lens and mass profiles into a (sub) set of profiles that are compatible with the
 GalKin module to compute the kinematics thereof.
 The requirement is that the
@@ -91,8 +114,8 @@ quantity in this routine numerically</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_light_profile">
-<code class="descname">kinematic_light_profile</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>r_eff=None</em>, <em>MGE_fit=False</em>, <em>model_kinematics_bool=None</em>, <em>Hernquist_approx=False</em>, <em>kwargs_mge=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.kinematic_light_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_light_profile" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematic_light_profile">
+<code class="descname">kinematic_light_profile</code><span class="sig-paren">(</span><em>kwargs_lens_light</em>, <em>r_eff=None</em>, <em>MGE_fit=False</em>, <em>model_kinematics_bool=None</em>, <em>Hernquist_approx=False</em>, <em>kwargs_mge=None</em>, <em>analytic_kinematics=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.kinematic_light_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematic_light_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>setting up of the light profile to compute the kinematics in the GalKin module. The requirement is that the
 profiles are centered at (0, 0) and that for all profile types there exists a 3d de-projected analytical
 representation.</p>
@@ -122,28 +145,8 @@ matched half-light radius.</li>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_observation_settings">
-<code class="descname">kinematic_observation_settings</code><span class="sig-paren">(</span><em>kwargs_aperture</em>, <em>kwargs_seeing</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.kinematic_observation_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematic_observation_settings" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_aperture</strong> – spectroscopic aperture keyword arguments, see lenstronomy.Galkin.aperture for options</li>
-<li><strong>kwargs_seeing</strong> – seeing condition of spectroscopic observation, corresponds to kwargs_psf in the GalKin module specified in lenstronomy.GalKin.psf</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematics_modeling_settings">
-<code class="descname">kinematics_modeling_settings</code><span class="sig-paren">(</span><em>anisotropy_model</em>, <em>kwargs_numerics_galkin</em>, <em>analytic_kinematics=False</em>, <em>Hernquist_approx=False</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.kinematics_modeling_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.kinematics_modeling_settings" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematics_modeling_settings">
+<code class="descname">kinematics_modeling_settings</code><span class="sig-paren">(</span><em>anisotropy_model</em>, <em>kwargs_numerics_galkin</em>, <em>analytic_kinematics=False</em>, <em>Hernquist_approx=False</em>, <em>MGE_light=False</em>, <em>MGE_mass=False</em>, <em>kwargs_mge_light=None</em>, <em>kwargs_mge_mass=None</em>, <em>sampling_number=1000</em>, <em>num_kin_sampling=1000</em>, <em>num_psf_sampling=100</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.kinematics_modeling_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.kinematics_modeling_settings" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -156,6 +159,11 @@ ATTENTION: This may not be accurate for your specific problem!</li>
 <li><strong>MGE_light</strong> – bool, if true performs the MGE for the light distribution</li>
 <li><strong>MGE_mass</strong> – bool, if true performs the MGE for the mass distribution</li>
 <li><strong>kwargs_numerics_galkin</strong> – numerical settings for the integrated line-of-sight velocity dispersion</li>
+<li><strong>kwargs_mge_mass</strong> – keyword arguments that go into the MGE decomposition routine</li>
+<li><strong>kwargs_mge_light</strong> – keyword arguments that go into the MGE decomposition routine</li>
+<li><strong>sampling_number</strong> – number of spectral rendering on a single slit</li>
+<li><strong>num_kin_sampling</strong> – number of kinematic renderings on a total IFU</li>
+<li><strong>num_psf_sampling</strong> – number of PSF displacements for each kinematic rendering on the IFU</li>
 </ul>
 </td>
 </tr>
@@ -166,9 +174,29 @@ ATTENTION: This may not be accurate for your specific problem!</li>
 </table>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.transform_kappa_ext">
+<em class="property">static </em><code class="descname">transform_kappa_ext</code><span class="sig-paren">(</span><em>sigma_v</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.transform_kappa_ext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.transform_kappa_ext" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sigma_v</strong> – velocity dispersion estimate of the lensing deflector without considering external convergence</li>
+<li><strong>kappa_ext</strong> – external convergence to be used in the mass-sheet degeneracy</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">transformed velocity dispersion</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.model_velocity_dispersion">
-<code class="descname">model_velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.model_velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.model_velocity_dispersion" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion">
+<code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
 <dd><p>API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -180,6 +208,9 @@ ATTENTION: This may not be accurate for your specific problem!</li>
 <li><strong>kwargs_anisotropy</strong> – stellar anisotropy keyword arguments</li>
 <li><strong>r_eff</strong> – projected half-light radius of the stellar light associated with the deflector galaxy, optional,
 if set to None will be computed in this function with default settings that may not be accurate.</li>
+<li><strong>theta_E</strong> – Einstein radius (optional)</li>
+<li><strong>gamma</strong> – power-law slope (optional)</li>
+<li><strong>kappa_ext</strong> – external convergence (optional)</li>
 </ul>
 </td>
 </tr>
@@ -191,10 +222,11 @@ if set to None will be computed in this function with default settings that may 
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.velocity_dispersion_analytical">
-<code class="descname">velocity_dispersion_analytical</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>r_eff</em>, <em>kwargs_aperture</em>, <em>kwargs_psf</em>, <em>r_ani</em>, <em>num_evaluate=1000</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.velocity_dispersion_analytical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.velocity_dispersion_analytical" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion_analytical">
+<code class="descname">velocity_dispersion_analytical</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>r_eff</em>, <em>r_ani</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.velocity_dispersion_analytical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion_analytical" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the LOS velocity dispersion of the lens within a slit of size R_slit x dR_slit and seeing psf_fwhm.
-The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position.</p>
+The assumptions are a Hernquist light profile and the spherical power-law lens model at the first position and
+an Osipkov and Merritt (‘OM’) stellar anisotropy distribution.</p>
 <p>Further information can be found in the AnalyticKinematics() class.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -205,8 +237,6 @@ The assumptions are a Hernquist light profile and the spherical power-law lens m
 <li><strong>gamma</strong> – power-low slope of the mass profile (=2 corresponds to isothermal)</li>
 <li><strong>r_ani</strong> – anisotropy radius in units of angles</li>
 <li><strong>r_eff</strong> – projected half-light radius</li>
-<li><strong>kwargs_aperture</strong> – aperture parameters (see Galkin module)</li>
-<li><strong>num_evaluate</strong> – number of spectral rendering of the light distribution that end up on the slit</li>
 <li><strong>kappa_ext</strong> – external convergence not accounted in the lens models</li>
 </ul>
 </td>
@@ -219,37 +249,25 @@ The assumptions are a Hernquist light profile and the spherical power-law lens m
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.Analysis.kinematics_api.KinematicAPI.velocity_dispersion_numerical">
-<code class="descname">velocity_dispersion_numerical</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>kwargs_aperture</em>, <em>kwargs_psf</em>, <em>anisotropy_model</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>kwargs_numerics={}</em>, <em>MGE_light=False</em>, <em>kwargs_mge_light=None</em>, <em>MGE_mass=False</em>, <em>kwargs_mge_mass=None</em>, <em>Hernquist_approx=False</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicAPI.velocity_dispersion_numerical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI.velocity_dispersion_numerical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the LOS velocity dispersion of the deflector galaxy with arbitrary combinations of light and mass models.
-For a detailed description, visit the description of the Galkin() class.
-Additionally to executing the GalKin routine, it has an optional Multi-Gaussian-Expansion decomposition of lens
-and light models that do not have a three-dimensional distribution built in, such as Sersic profiles etc.</p>
-<p>The center of all the lens and lens light models that are part of the kinematic estimate must be centered on the
-same point.</p>
+<dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion_map">
+<code class="descname">velocity_dispersion_map</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.velocity_dispersion_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>API for both, analytic and numerical JAM to compute the velocity dispersion map with IFU data [km/s]</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – lens model parameters</li>
-<li><strong>kwargs_lens_light</strong> – lens light parameters</li>
-<li><strong>kwargs_anisotropy</strong> – anisotropy parameters (see Galkin module)</li>
-<li><strong>kwargs_aperture</strong> – aperture parameters (see Galkin module)</li>
-<li><strong>kwargs_psf</strong> – seeing conditions and model (see GalKin module)</li>
-<li><strong>anisotropy_model</strong> – stellar anisotropy model (see Galkin module)</li>
-<li><strong>r_eff</strong> – a rough estimate of the half light radius of the lens light in case of computing the MGE of the
-light profile</li>
-<li><strong>theta_E</strong> – a rough estimate of the Einstein radius when performing the MGE of the deflector</li>
-<li><strong>kwargs_numerics</strong> – keyword arguments that contain numerical options (see Galkin module)</li>
-<li><strong>MGE_light</strong> – bool, if true performs the MGE for the light distribution</li>
-<li><strong>MGE_mass</strong> – bool, if true performs the MGE for the mass distribution</li>
-<li><strong>Hernquist_approx</strong> – bool, if True, uses a Hernquist light profile matched to the half light radius of the deflector light profile to compute the kinematics</li>
-<li><strong>kappa_ext</strong> – external convergence not accounted in the lens models</li>
+<li><strong>kwargs_lens</strong> – lens model keyword arguments</li>
+<li><strong>kwargs_lens_light</strong> – lens light model keyword arguments</li>
+<li><strong>kwargs_anisotropy</strong> – stellar anisotropy keyword arguments</li>
+<li><strong>r_eff</strong> – projected half-light radius of the stellar light associated with the deflector galaxy, optional,
+if set to None will be computed in this function with default settings that may not be accurate.</li>
+<li><strong>num_kin_sampling</strong> – int, number of draws from a kinematic prediction of a LOS</li>
+<li><strong>num_psf_sampling</strong> – int, number of displacements/render from a spectra to be displaced on the IFU</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">LOS velocity dispersion [km/s]</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">velocity dispersion [km/s]</p>
 </td>
 </tr>
 </tbody>
@@ -617,16 +635,16 @@ Attention: numerical grid settings for ellipticity estimate and radial MGE may n
 <span id="lenstronomy-analysis-td-cosmography-module"></span><h2>lenstronomy.Analysis.td_cosmography module<a class="headerlink" href="#module-lenstronomy.Analysis.td_cosmography" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Analysis.td_cosmography.TDCosmography">
-<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.td_cosmography.</code><code class="descname">TDCosmography</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo_fiducial=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Analysis.kinematics_api.KinematicAPI" title="lenstronomy.Analysis.kinematics_api.KinematicAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Analysis.kinematics_api.KinematicAPI</span></code></a></p>
+<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.td_cosmography.</code><code class="descname">TDCosmography</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo_fiducial=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>kwargs_seeing={}</em>, <em>kwargs_aperture={}</em>, <em>anisotropy_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI" title="lenstronomy.Analysis.kinematics_api.KinematicsAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Analysis.kinematics_api.KinematicsAPI</span></code></a></p>
 <p>class equipped to perform a cosmographic analysis from a lens model with added measurements of time delays and
 kinematics.
 This class does not require any cosmological knowledge and can return angular diameter distance estimates
 self-consistently integrating the kinematics routines and time delay estimates in the lens modeling.
 This description follows Birrer et al. 2016, 2019.</p>
 <dl class="method">
-<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.Ddt_Dd_from_time_delay_and_kinematics">
-<code class="descname">Ddt_Dd_from_time_delay_and_kinematics</code><span class="sig-paren">(</span><em>d_fermat_model</em>, <em>dt_measured</em>, <em>sigma_v_measured</em>, <em>J</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em>, <em>kappa_d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.Ddt_Dd_from_time_delay_and_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.Ddt_Dd_from_time_delay_and_kinematics" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.ddt_dd_from_time_delay_and_kinematics">
+<code class="descname">ddt_dd_from_time_delay_and_kinematics</code><span class="sig-paren">(</span><em>d_fermat_model</em>, <em>dt_measured</em>, <em>sigma_v_measured</em>, <em>J</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em>, <em>kappa_d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.ddt_dd_from_time_delay_and_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.ddt_dd_from_time_delay_and_kinematics" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -649,9 +667,9 @@ This description follows Birrer et al. 2016, 2019.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.Ddt_from_time_delay">
-<code class="descname">Ddt_from_time_delay</code><span class="sig-paren">(</span><em>d_fermat_model</em>, <em>dt_measured</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em>, <em>kappa_d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.Ddt_from_time_delay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.Ddt_from_time_delay" title="Permalink to this definition">¶</a></dt>
+<dl class="staticmethod">
+<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.ddt_from_time_delay">
+<em class="property">static </em><code class="descname">ddt_from_time_delay</code><span class="sig-paren">(</span><em>d_fermat_model</em>, <em>dt_measured</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em>, <em>kappa_d=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.ddt_from_time_delay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.ddt_from_time_delay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time-delay distance in units of Mpc from the modeled Fermat potential and measured time delay from an image pair.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -670,9 +688,9 @@ This description follows Birrer et al. 2016, 2019.</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.Ds_Dds_from_kinematics">
-<code class="descname">Ds_Dds_from_kinematics</code><span class="sig-paren">(</span><em>sigma_v</em>, <em>J</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.Ds_Dds_from_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.Ds_Dds_from_kinematics" title="Permalink to this definition">¶</a></dt>
+<dl class="staticmethod">
+<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.ds_dds_from_kinematics">
+<em class="property">static </em><code class="descname">ds_dds_from_kinematics</code><span class="sig-paren">(</span><em>sigma_v</em>, <em>J</em>, <em>kappa_s=0</em>, <em>kappa_ds=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.ds_dds_from_kinematics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.ds_dds_from_kinematics" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the estimate of the ratio of angular diameter distances Ds/Dds from the kinematic estimate of the lens
 and the measured dispersion.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -741,6 +759,34 @@ and the measured dispersion.</p>
 (Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
 cosmological independent quantity only depending on angular units. This function returns J given the lens
 and light parameters and the anisotropy choice without an external mass sheet correction.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – lens model keyword arguments</li>
+<li><strong>kwargs_lens_light</strong> – lens light model keyword arguments</li>
+<li><strong>kwargs_anisotropy</strong> – stellar anisotropy keyword arguments</li>
+<li><strong>r_eff</strong> – projected half-light radius of the stellar light associated with the deflector galaxy, optional,
+if set to None will be computed in this function with default settings that may not be accurate.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.velocity_dispersion_map_dimension_less">
+<code class="descname">velocity_dispersion_map_dimension_less</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.velocity_dispersion_map_dimension_less"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.velocity_dispersion_map_dimension_less" title="Permalink to this definition">¶</a></dt>
+<dd><p>sigma**2 = Dd/Dds * c**2 * J(kwargs_lens, kwargs_light, anisotropy)
+(Equation 4.11 in Birrer et al. 2016 or Equation 6 in Birrer et al. 2019) J() is a dimensionless and
+cosmological independent quantity only depending on angular units. This function returns J given the lens
+and light parameters and the anisotropy choice without an external mass sheet correction.
+This routine computes the IFU map of the kinematic quantities.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

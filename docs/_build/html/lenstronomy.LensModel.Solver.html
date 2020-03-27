@@ -61,26 +61,36 @@
 <p>class to solve for image positions given lens model and source position</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">
-<code class="descname">findBrightImage</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>numImages=4</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=10</em>, <em>arrival_time_sort=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.findBrightImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage" title="Permalink to this definition">¶</a></dt>
+<code class="descname">findBrightImage</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>numImages=4</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=10</em>, <em>arrival_time_sort=True</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>num_random=0</em>, <em>non_linear=False</em>, <em>magnification_limit=None</em>, <em>initial_guess_cut=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.findBrightImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sourcePos_x</strong> – </li>
-<li><strong>sourcePos_y</strong> – </li>
-<li><strong>deltapix</strong> – </li>
-<li><strong>numPix</strong> – </li>
-<li><strong>magThresh</strong> – magnification threshold for images to be selected</li>
-<li><strong>numImage</strong> – number of selected images (will select the highest magnified ones)</li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>ray_shooting_function</strong> – a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</li>
-<li><strong>hessian_function</strong> – same as ray_shooting_function, but for computing the hessian matrix</li>
-<li><strong>magnification_function</strong> – same as ray_shooting_function, but for computing magnifications</li>
+<li><strong>sourcePos_x</strong> – source position in units of angle</li>
+<li><strong>sourcePos_y</strong> – source position in units of angle</li>
+<li><strong>kwargs_lens</strong> – lens model parameters as keyword arguments</li>
+<li><strong>min_distance</strong> – minimum separation to consider for two images in units of angle</li>
+<li><strong>search_window</strong> – window size to be considered by the solver. Will not find image position outside this window</li>
+<li><strong>precision_limit</strong> – required precision in the lens equation solver (in units of angle in the source plane).</li>
+<li><strong>num_iter_max</strong> – maximum iteration of lens-source mapping conducted by solver to match the required precision</li>
+<li><strong>arrival_time_sort</strong> – bool, if True, sorts image position in arrival time (first arrival photon first listed)</li>
+<li><strong>initial_guess_cut</strong> – bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position</li>
+<li><strong>verbose</strong> – bool, if True, prints some useful information for the user</li>
+<li><strong>x_center</strong> – float, center of the window to search for point sources</li>
+<li><strong>y_center</strong> – float, center of the window to search for point sources</li>
+<li><strong>num_random</strong> – int, number of random positions within the search window to be added to be starting
+positions for the gradient decent solver</li>
+<li><strong>non_linear</strong> – bool, if True applies a non-linear solver not dependent on Hessian computation</li>
+<li><strong>magnification_limit</strong> – None or float, if set will only return image positions that have an
+abs(magnification) larger than this number</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</p>
 </td>
 </tr>
 </tbody>
@@ -108,7 +118,11 @@
 <li><strong>verbose</strong> – bool, if True, prints some useful information for the user</li>
 <li><strong>x_center</strong> – float, center of the window to search for point sources</li>
 <li><strong>y_center</strong> – float, center of the window to search for point sources</li>
+<li><strong>num_random</strong> – int, number of random positions within the search window to be added to be starting
+positions for the gradient decent solver</li>
 <li><strong>non_linear</strong> – bool, if True applies a non-linear solver not dependent on Hessian computation</li>
+<li><strong>magnification_limit</strong> – None or float, if set will only return image positions that have an
+abs(magnification) larger than this number</li>
 </ul>
 </td>
 </tr>
@@ -142,7 +156,6 @@ Credits to Giulia Pagano</p>
 <li><strong>x_center</strong> – center of search window</li>
 <li><strong>y_center</strong> – center of search window</li>
 <li><strong>num_random</strong> – number of random starting points of the non-linear solver in the search window</li>
-<li><strong>verbose</strong> – bool, if True, prints performance information</li>
 </ul>
 </td>
 </tr>

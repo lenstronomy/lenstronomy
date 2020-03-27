@@ -189,6 +189,20 @@
         <span class="n">pot</span> <span class="o">=</span> <span class="n">mass_3d</span><span class="o">/</span><span class="n">r</span>
         <span class="k">return</span> <span class="n">pot</span></div>
 
+<div class="viewcode-block" id="SIE.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sie.SIE.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
+<span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
+
+<span class="sd">        :param r: radius in angles</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :return: density</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">theta2rho</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="SIE.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sie.SIE.density">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

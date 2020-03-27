@@ -70,6 +70,19 @@
         <span class="n">rho</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">Rs</span><span class="p">))</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">rho</span></div>
 
+<div class="viewcode-block" id="Hernquist.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Density as a function of 3d radius in lensing parameters</span>
+<span class="sd">        This function converts the lensing definition sigma0 into the 3d density</span>
+
+<span class="sd">        :param r: 3d radius</span>
+<span class="sd">        :param sigma0: rho0 * Rs (units of projected density)</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: enclosed mass in 3d</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Hernquist.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        projected density along the line of sight at coordinate (x, y)</span>
@@ -284,7 +297,7 @@
 
 <div class="viewcode-block" id="Hernquist.grav_pot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist.Hernquist.grav_pot">[docs]</a>    <span class="k">def</span> <span class="nf">grav_pot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        #TODO desid whether these functions are needed or not</span>
+<span class="sd">        #TODO decide whether these functions are needed or not</span>
 
 <span class="sd">        gravitational potential (modulo 4 pi G and rho0 in appropriate units)</span>
 <span class="sd">        :param x: x-coordinate position (units of angle)</span>

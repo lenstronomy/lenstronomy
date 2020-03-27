@@ -786,6 +786,12 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.delete_cache">
+<code class="descname">delete_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.delete_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.delete_cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete the cached interpolated image</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.interpolation.Interpol.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>image=None</em>, <em>amp=1</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>phi_G=0</em>, <em>scale=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/interpolation.html#Interpol.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.interpolation.Interpol.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -881,8 +887,10 @@ times pixel area</p>
 <dl class="class">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.nie.</code><code class="descname">NIE</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>non-divergent isothermal ellipse (projected)</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LightModel.Profiles.profile_base.LightProfileBase</span></code></p>
+<p>non-divergent isothermal ellipse (projected)
+This is effectively the convergence profile of the NIE lens model with an amplitude ‘amp’ rather than an Einstein
+radius ‘theta_E’</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.function" title="Permalink to this definition">¶</a></dt>
@@ -891,18 +899,18 @@ times pixel area</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
-<li><strong>theta_E</strong> – </li>
-<li><strong>e1</strong> – </li>
-<li><strong>e2</strong> – </li>
-<li><strong>s_scale</strong> – </li>
-<li><strong>center_x</strong> – </li>
-<li><strong>center_y</strong> – </li>
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>amp</strong> – surface brightness normalization</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>s_scale</strong> – smoothing scale (square averaged of minor and major axis)</li>
+<li><strong>center_x</strong> – center of profile</li>
+<li><strong>center_y</strong> – center of profile</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">surface brightness of NIE profile</p>
 </td>
 </tr>
 </tbody>
@@ -1152,8 +1160,33 @@ times pixel area</p>
 <p>this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Core-Sersic function</p>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>amp</strong> – surface brightness/amplitude value at the half light radius</li>
+<li><strong>R_sersic</strong> – semi-major axis half light radius</li>
+<li><strong>Re</strong> – “break” core radius</li>
+<li><strong>n_sersic</strong> – Sersic index</li>
+<li><strong>gamma</strong> – inner power-law exponent</li>
+<li><strong>e1</strong> – eccentricity parameter</li>
+<li><strong>e2</strong> – eccentricity parameter</li>
+<li><strong>center_x</strong> – center in x-coordinate</li>
+<li><strong>center_y</strong> – center in y-coordinate</li>
+<li><strong>alpha</strong> – sharpness of the transition between the cusp and the outer Sersic profile (float)</li>
+<li><strong>max_R_frac</strong> – maximum window outside of which the mass is zeroed, in units of R_sersic (float)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Cored Sersic profile value at (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -1180,7 +1213,7 @@ times pixel area</p>
 <p>this class contains functions to evaluate an spherical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1193,6 +1226,7 @@ times pixel area</p>
 <li><strong>n_sersic</strong> – Sersic index</li>
 <li><strong>center_x</strong> – center in x-coordinate</li>
 <li><strong>center_y</strong> – center in y-coordinate</li>
+<li><strong>max_R_frac</strong> – maximum window outside of which the mass is zeroed, in units of R_sersic (float)</li>
 </ul>
 </td>
 </tr>
@@ -1227,7 +1261,7 @@ times pixel area</p>
 <p>this class contains functions to evaluate an elliptical Sersic function</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.SersicElliptic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#SersicElliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.SersicElliptic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#SersicElliptic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.SersicElliptic.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1242,6 +1276,7 @@ times pixel area</p>
 <li><strong>e2</strong> – eccentricity parameter</li>
 <li><strong>center_x</strong> – center in x-coordinate</li>
 <li><strong>center_y</strong> – center in y-coordinate</li>
+<li><strong>max_R_frac</strong> – maximum window outside of which the mass is zeroed, in units of R_sersic (float)</li>
 </ul>
 </td>
 </tr>

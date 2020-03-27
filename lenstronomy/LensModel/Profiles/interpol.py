@@ -76,9 +76,8 @@ class Interpol(LensProfileBase):
         :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and grid_interp_y
         :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and grid_interp_y
         :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
-        :return f_x, f_y at interpolated positions (x, y)
+        :return: f_x, f_y at interpolated positions (x, y)
         """
-        #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         n = len(np.atleast_1d(x))
         if n <= 1 and np.shape(x) == ():
         #if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) <= 1:
@@ -114,9 +113,8 @@ class Interpol(LensProfileBase):
         :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and grid_interp_y
         :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and grid_interp_y
         :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
-        :return f_xx, f_yy, f_xy at interpolated positions (x, y)
+        :return: f_xx, f_yy, f_xy at interpolated positions (x, y)
         """
-        #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         n = len(np.atleast_1d(x))
         if n <= 1 and np.shape(x) == ():
         #if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) <= 1:

@@ -43,10 +43,9 @@
 
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">MpiParticleSwarmOptimizer</span>
-<span class="kn">from</span> <span class="nn">cosmoHammer</span> <span class="k">import</span> <span class="n">ParticleSwarmOptimizer</span>
-<span class="kn">from</span> <span class="nn">cosmoHammer.util</span> <span class="k">import</span> <span class="n">MpiUtil</span>
+<span class="kn">from</span> <span class="nn">schwimmbad</span> <span class="k">import</span> <span class="n">choose_pool</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.ImSim.MultiBand.single_band_multi_model</span> <span class="k">import</span> <span class="n">SingleBandMultiModel</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Samplers.pso</span> <span class="k">import</span> <span class="n">ParticleSwarmOptimizer</span>
 
 
 <div class="viewcode-block" id="AlignmentFitting"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentFitting">[docs]</a><span class="k">class</span> <span class="nc">AlignmentFitting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -67,41 +66,29 @@
         <span class="n">num_param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">num_param</span>
         <span class="n">lowerLimit</span> <span class="o">=</span> <span class="p">[</span><span class="n">lowerLimit</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_param</span>
         <span class="n">upperLimit</span> <span class="o">=</span> <span class="p">[</span><span class="n">upperLimit</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_param</span>
-        <span class="k">if</span> <span class="n">mpi</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">pso</span> <span class="o">=</span> <span class="n">MpiParticleSwarmOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">pso</span> <span class="o">=</span> <span class="n">ParticleSwarmOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span> <span class="n">n_particles</span><span class="p">,</span> <span class="n">threads</span><span class="o">=</span><span class="n">threadCount</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">init_pos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">init_pos</span>
-            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">velocity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
-            <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">fitness</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">init_pos</span><span class="p">)</span>
-        <span class="n">X2_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">vel_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">pos_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
+
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">choose_pool</span><span class="p">(</span><span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">use_dill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">pso</span> <span class="o">=</span> <span class="n">ParticleSwarmOptimizer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="p">,</span> <span class="n">upperLimit</span><span class="p">,</span>
+                                     <span class="n">n_particles</span><span class="p">,</span> <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">init_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pso</span><span class="o">.</span><span class="n">set_global_best</span><span class="p">(</span><span class="n">init_pos</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">init_pos</span><span class="p">),</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">likelihood</span><span class="p">(</span><span class="n">init_pos</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the </span><span class="si">%s</span><span class="s1"> ...&#39;</span> <span class="o">%</span> <span class="n">print_key</span><span class="p">)</span>
-        <span class="n">num_iter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">swarm</span> <span class="ow">in</span> <span class="n">pso</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">):</span>
-            <span class="n">X2_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">fitness</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">vel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
-            <span class="n">pos_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
-            <span class="n">num_iter</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="k">if</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">num_iter</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="n">num_iter</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">mpi</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">MpiUtil</span><span class="o">.</span><span class="n">mpiBCast</span><span class="p">(</span><span class="n">pso</span><span class="o">.</span><span class="n">gbest</span><span class="o">.</span><span class="n">position</span><span class="p">)</span>
+
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="n">chi2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">]</span> <span class="o">=</span> <span class="n">pso</span><span class="o">.</span><span class="n">optimize</span><span class="p">(</span><span class="n">n_iterations</span><span class="p">)</span>
+
         <span class="n">kwargs_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">update_data</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">mpi</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pso</span><span class="o">.</span><span class="n">isMaster</span><span class="p">():</span>
-            <span class="k">pass</span>
-        <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
             <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Shifts found: &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time used for &#39;</span><span class="p">,</span> <span class="n">print_key</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="p">[</span><span class="n">X2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">,</span> <span class="p">[]]</span></div></div>
+        <span class="k">return</span> <span class="n">kwargs_data</span><span class="p">,</span> <span class="p">[</span><span class="n">chi2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">,</span> <span class="p">[]]</span></div></div>
 
 
 <div class="viewcode-block" id="AlignmentLikelihood"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood">[docs]</a><span class="k">class</span> <span class="nc">AlignmentLikelihood</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -130,7 +117,7 @@
         <span class="n">image_model</span> <span class="o">=</span> <span class="n">SingleBandMultiModel</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_model</span><span class="p">,</span>
                                            <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood_mask_list</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_band_index</span><span class="p">)</span>
         <span class="n">logL</span> <span class="o">=</span> <span class="n">image_model</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="n">source_marg</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_source_marg</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">logL</span><span class="p">,</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">logL</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_likelihood</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>

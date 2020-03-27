@@ -121,16 +121,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_optical_depth_model_list</span> <span class="o">=</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;optical_depth_model_list&#39;</span><span class="p">,</span> <span class="p">[])</span>
 
         <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">class_creator</span><span class="o">.</span><span class="n">create_class_instances</span><span class="p">(</span><span class="n">all_models</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
-        <span class="c1">#source_model_class = LightModel(light_model_list=kwargs_model.get(&#39;source_light_model_list&#39;, []),</span>
-        <span class="c1">#                                deflection_scaling_list=kwargs_model.get(&#39;source_deflection_scaling_list&#39;, None),</span>
-        <span class="c1">#                                source_redshift_list=kwargs_model.get(&#39;source_redshift_list&#39;, None))</span>
-        <span class="c1">#lens_model_class = LensModel(lens_model_list=kwargs_model.get(&#39;lens_model_list&#39;, []),</span>
-        <span class="c1">#                             z_lens=kwargs_model.get(&#39;z_lens&#39;, None),</span>
-        <span class="c1">#                             z_source=kwargs_model.get(&#39;z_source&#39;, None),</span>
-        <span class="c1">#                         lens_redshift_list=kwargs_model.get(&#39;lens_redshift_list&#39;, None),</span>
-        <span class="c1">#                         multi_plane=kwargs_model.get(&#39;multi_plane&#39;, False),</span>
-        <span class="c1">#                             cosmo=kwargs_model.get(&#39;cosmo&#39;, None),</span>
-        <span class="c1">#                         observed_convention_index=kwargs_model.get(&#39;observed_convention_index&#39;, None))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image2SourceMapping</span> <span class="o">=</span> <span class="n">Image2SourceMapping</span><span class="p">(</span><span class="n">lensModel</span><span class="o">=</span><span class="n">lens_model_class</span><span class="p">,</span> <span class="n">sourceModel</span><span class="o">=</span><span class="n">source_model_class</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">kwargs_fixed_lens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -241,6 +231,7 @@
 <span class="sd">        :return: keyword arguments sorted in lenstronomy conventions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">souceParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
         <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span><span class="o">.</span><span class="n">getParams</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
@@ -261,7 +252,6 @@
         <span class="c1"># update point source constraint solver</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
-            <span class="c1">#x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)</span>
             <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_module</span><span class="o">.</span><span class="n">update_solver</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">)</span>
         <span class="c1"># update source joint with point source</span>
         <span class="n">kwargs_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_source_joint_with_point_source</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">,</span>

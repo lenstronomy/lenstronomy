@@ -223,8 +223,8 @@ This routine requires the ‘ra_image_list’ and ‘dec_image_list’ being dec
 
 <dl class="method">
 <dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood">
-<code class="descname">source_position_likelihood</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model..
+<code class="descname">source_position_likelihood</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>sigma</em>, <em>hard_bound_rms=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model.
 The likelihood level is computed in respect of a displacement in the image plane and transposed through the
 Hessian into the source plane.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -234,36 +234,13 @@ Hessian into the source plane.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
 <li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+<li><strong>sigma</strong> – 1-sigma Gaussian uncertainty in the image plane</li>
+<li><strong>hard_bound_rms</strong> – hard bound deviation between the mapping of the images back to the source plane (in source frame)</li>
+<li><strong>verbose</strong> – bool, if True provides print statements with useful information.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the model reproducing the correct image positions given an image position uncertainty</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_scatter">
-<code class="descname">source_position_scatter</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>hard_bound_rms</em>, <em>source_position_sigma=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_scatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_scatter" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>computes the deviation of the predicted source positions from the image position ray-traced back to the source</dt>
-<dd>plane.</dd>
-</dl>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
-<li><strong>kwargs_ps</strong> – point source model keyword argument list</li>
-<li><strong>hard_bound_rms</strong> – float, hard bound rms value of the source position scatter. If the scatter is larger, the model is penalized.</li>
-<li><strong>source_position_sigma</strong> – r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model precision in matching the source position</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">add penalty when solver does not find a solution</p>
 </td>
 </tr>
 </tbody>

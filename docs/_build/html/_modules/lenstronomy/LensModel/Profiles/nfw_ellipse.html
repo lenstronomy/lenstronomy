@@ -165,7 +165,19 @@
 <span class="sd">        :param e2:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NFW_ELLIPSE.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
+<span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
+
+<span class="sd">        :param r: 3d radios</span>
+<span class="sd">        :param Rs: turn-over radius of NFW profile</span>
+<span class="sd">        :param alpha_Rs: deflection at Rs</span>
+<span class="sd">        :return: density rho(r)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw</span><span class="o">.</span><span class="n">density_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

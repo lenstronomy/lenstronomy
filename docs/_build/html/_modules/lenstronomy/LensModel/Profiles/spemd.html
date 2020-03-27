@@ -121,7 +121,21 @@
 <span class="sd">        :param e2: eccentricity component (not used)</span>
 <span class="sd">        :return: mass enclosed a 3D radius r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spp</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spp</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SPEMD.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.spemd.SPEMD.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
+<span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
+
+<span class="sd">        :param r: radius within the mass is computed</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param gamma: power-law slope</span>
+<span class="sd">        :param e1: eccentricity component (not used)</span>
+<span class="sd">        :param e2: eccentricity component (not used)</span>
+<span class="sd">        :return: mass enclosed a 3D radius r</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spp</span><span class="o">.</span><span class="n">density_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

@@ -9,7 +9,7 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 class NIE(LensProfileBase):
     """
     Non-singular isothermal ellipsoid
-    kappa = theta_E/2 [s2IE + r2(1 − e *cos(2*phi)]−1/2
+    kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
@@ -171,9 +171,9 @@ class NIE(LensProfileBase):
 
 class NIEMajorAxis(LensProfileBase):
     """
-    this class contains the function and the derivatives of the non-singular isothermal ellipse
+    This class contains the function and the derivatives of the non-singular isothermal ellipse.
     See Keeton&Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
-    kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
+    kappa =  b *(q2(s2 + x2) + y2􏰉)−1/2
     """
     param_names = ['b', 's', 'q', 'center_x', 'center_y']
 

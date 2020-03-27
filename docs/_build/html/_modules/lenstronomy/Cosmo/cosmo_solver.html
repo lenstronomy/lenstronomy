@@ -49,35 +49,50 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.lens_cosmo</span> <span class="k">import</span> <span class="n">LensCosmo</span>
 
 
-<div class="viewcode-block" id="SolverUtil"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverUtil">[docs]</a><span class="k">class</span> <span class="nc">SolverUtil</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="cosmo2angular_diameter_distances"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.cosmo2angular_diameter_distances">[docs]</a><span class="k">def</span> <span class="nf">cosmo2angular_diameter_distances</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    util functions</span>
+
+<span class="sd">    :param H_0: Hubble constant [km/s/Mpc]</span>
+<span class="sd">    :param omega_m: dimensionless matter density at z=0</span>
+<span class="sd">    :param z_lens: deflector redshift</span>
+<span class="sd">    :param z_source: source redshift</span>
+<span class="sd">    :return: angular diameter distances Dd and Ds/Dds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">omega_m</span><span class="p">,</span> <span class="n">Ob0</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+    <span class="n">Dd</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">dd</span>
+    <span class="n">Ds</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">ds</span>
+    <span class="n">Dds</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">dds</span>
+    <span class="k">return</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds</span><span class="o">/</span><span class="n">Dds</span></div>
+
+
+<div class="viewcode-block" id="ddt2h0"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.ddt2h0">[docs]</a><span class="k">def</span> <span class="nf">ddt2h0</span><span class="p">(</span><span class="n">ddt</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    converts time-delay distance to H0 for a given expansion history</span>
+
+<span class="sd">    :param ddt: time-delay distance in Mpc</span>
+<span class="sd">    :param z_lens: deflector redshift</span>
+<span class="sd">    :param z_source: source redshift</span>
+<span class="sd">    :param cosmo: astropy.cosmology class instance</span>
+<span class="sd">    :return: h0 value which matches the cosmology class effectively replacing the h0 value used in the creation of this class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">h0_fiducial</span> <span class="o">=</span> <span class="n">cosmo</span><span class="o">.</span><span class="n">H0</span><span class="o">.</span><span class="n">value</span>
+    <span class="n">lens_cosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
+    <span class="n">ddt_fiducial</span> <span class="o">=</span> <span class="n">lens_cosmo</span><span class="o">.</span><span class="n">ddt</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">h0_fiducial</span> <span class="o">*</span> <span class="n">ddt_fiducial</span> <span class="o">/</span> <span class="n">ddt</span>
+    <span class="k">return</span> <span class="n">h0</span></div>
+
+
+<div class="viewcode-block" id="SolverFlatLCDM"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatLCDM">[docs]</a><span class="k">class</span> <span class="nc">SolverFlatLCDM</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class to solve multidimensional non-linear equations to determine the cosmological parameters H0 and omega_m given</span>
+<span class="sd">    the angular diameter distance relations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span> <span class="o">=</span> <span class="n">z_d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span> <span class="o">=</span> <span class="n">z_s</span>
 
-<div class="viewcode-block" id="SolverUtil.cosmo2Dd_Ds_Dds"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverUtil.cosmo2Dd_Ds_Dds">[docs]</a>    <span class="k">def</span> <span class="nf">cosmo2Dd_Ds_Dds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H_0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param H_0: Hubble constant</span>
-<span class="sd">        :param omega_m: matter density</span>
-<span class="sd">        :return: angular diameter distances Dd and Ds/Dds</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cosmo</span> <span class="o">=</span> <span class="n">FlatLambdaCDM</span><span class="p">(</span><span class="n">H0</span><span class="o">=</span><span class="n">H_0</span><span class="p">,</span> <span class="n">Om0</span><span class="o">=</span><span class="n">omega_m</span><span class="p">,</span> <span class="n">Ob0</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
-        <span class="n">lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_d</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">z_s</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
-        <span class="n">Dd</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_d</span>
-        <span class="n">Ds</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_s</span>
-        <span class="n">Dds</span> <span class="o">=</span> <span class="n">lensCosmo</span><span class="o">.</span><span class="n">D_ds</span>
-        <span class="k">return</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds</span><span class="o">/</span><span class="n">Dds</span></div></div>
-
-
-<div class="viewcode-block" id="SolverFlatCosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo">[docs]</a><span class="k">class</span> <span class="nc">SolverFlatCosmo</span><span class="p">(</span><span class="n">SolverUtil</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    class to solve multidimensional non-linear equations to determine the cosmological parameters H0 and omega_m given</span>
-<span class="sd">    the angular diameter distance relations</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="SolverFlatCosmo.F"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.F">[docs]</a>    <span class="k">def</span> <span class="nf">F</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">):</span>
+<div class="viewcode-block" id="SolverFlatLCDM.F"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatLCDM.F">[docs]</a>    <span class="k">def</span> <span class="nf">F</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x: array of parameters (H_0, omega_m)</span>
@@ -85,27 +100,28 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="p">[</span><span class="n">H_0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">omega_m</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">omega_m</span><span class="p">)</span><span class="o">%</span><span class="mi">1</span>
-        <span class="n">Dd_new</span><span class="p">,</span> <span class="n">Ds_Dds_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo2Dd_Ds_Dds</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">)</span>
+        <span class="n">Dd_new</span><span class="p">,</span> <span class="n">Ds_Dds_new</span> <span class="o">=</span> <span class="n">cosmo2angular_diameter_distances</span><span class="p">(</span><span class="n">H_0</span><span class="p">,</span> <span class="n">omega_m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Dd</span> <span class="o">-</span> <span class="n">Dd_new</span>
         <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ds_Dds</span> <span class="o">-</span> <span class="n">Ds_Dds_new</span>
         <span class="k">return</span> <span class="n">y</span></div>
 
-<div class="viewcode-block" id="SolverFlatCosmo.solve"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatCosmo.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">):</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">),</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-08</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<div class="viewcode-block" id="SolverFlatLCDM.solve"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.SolverFlatLCDM.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="n">ds_dds</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">optimize</span><span class="o">.</span><span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">,</span> <span class="n">init</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">dd</span><span class="p">,</span> <span class="n">ds_dds</span><span class="p">),</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-08</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="mi">1</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dd</span><span class="p">,</span> <span class="n">ds_dds</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="mf">0.1</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mf">0.1</span><span class="p">:</span>
             <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="InvertCosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.InvertCosmo">[docs]</a><span class="k">class</span> <span class="nc">InvertCosmo</span><span class="p">(</span><span class="n">SolverUtil</span><span class="p">):</span>
+<div class="viewcode-block" id="InvertCosmo"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.cosmo_solver.InvertCosmo">[docs]</a><span class="k">class</span> <span class="nc">InvertCosmo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="p">,</span> <span class="n">H0_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">),</span> <span class="n">omega_m_range</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">95</span><span class="p">)):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">InvertCosmo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">z_d</span><span class="o">=</span><span class="n">z_d</span><span class="p">,</span> <span class="n">z_s</span><span class="o">=</span><span class="n">z_s</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span> <span class="o">=</span> <span class="n">z_d</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span> <span class="o">=</span> <span class="n">z_s</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_H0_range</span> <span class="o">=</span> <span class="n">H0_range</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_omega_m_range</span> <span class="o">=</span> <span class="n">omega_m_range</span>
 
@@ -120,7 +136,7 @@
         <span class="n">Dd_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">)</span>
         <span class="n">Ds_Dds_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">)):</span>
-            <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo2Dd_Ds_Dds</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">omega_m_grid</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span> <span class="o">=</span> <span class="n">cosmo2angular_diameter_distances</span><span class="p">(</span><span class="n">H0_grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">omega_m_grid</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span><span class="p">)</span>
             <span class="n">Dd_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Dd</span>
             <span class="n">Ds_Dds_grid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Ds_Dds</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_H0</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">interp2d</span><span class="p">(</span><span class="n">Dd_grid</span><span class="p">,</span> <span class="n">Ds_Dds_grid</span><span class="p">,</span> <span class="n">H0_grid</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
@@ -140,7 +156,7 @@
         <span class="n">H0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_H0</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">H0</span><span class="p">,</span> <span class="s1">&#39;H0&#39;</span><span class="p">)</span>
         <span class="n">omega_m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_omega_m</span><span class="p">(</span><span class="n">Dd</span><span class="p">,</span> <span class="n">Ds_Dds</span><span class="p">)</span>
-        <span class="n">Dd_new</span><span class="p">,</span> <span class="n">Ds_Dds_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cosmo2Dd_Ds_Dds</span><span class="p">(</span><span class="n">H0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_m</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">Dd_new</span><span class="p">,</span> <span class="n">Ds_Dds_new</span> <span class="o">=</span> <span class="n">cosmo2angular_diameter_distances</span><span class="p">(</span><span class="n">H0</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">omega_m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_s</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Dd</span> <span class="o">-</span> <span class="n">Dd_new</span><span class="p">)</span><span class="o">/</span><span class="n">Dd</span> <span class="o">&gt;</span> <span class="mf">0.01</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">Ds_Dds</span> <span class="o">-</span> <span class="n">Ds_Dds_new</span><span class="p">)</span><span class="o">/</span><span class="n">Ds_Dds</span> <span class="o">&gt;</span> <span class="mf">0.01</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>

@@ -44,13 +44,13 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.GalKin.velocity_util</span> <span class="k">as</span> <span class="nn">vel_util</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.GalKin.cosmo</span> <span class="k">import</span> <span class="n">Cosmo</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.GalKin.psf</span> <span class="k">import</span> <span class="n">psf_select</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.GalKin.aperture</span> <span class="k">import</span> <span class="n">aperture_select</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.GalKin.anisotropy</span> <span class="k">import</span> <span class="n">Anisotropy</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spp</span> <span class="k">import</span> <span class="n">SPP</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
 <span class="kn">import</span> <span class="nn">math</span>
 
 
-<div class="viewcode-block" id="AnalyticKinematics"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics">[docs]</a><span class="k">class</span> <span class="nc">AnalyticKinematics</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalyticKinematics"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics">[docs]</a><span class="k">class</span> <span class="nc">AnalyticKinematics</span><span class="p">(</span><span class="n">Anisotropy</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the</span>
 <span class="sd">    light profile distribution and displacing them with a Gaussian seeing convolution</span>
@@ -69,129 +69,134 @@
 <span class="sd">    distances</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">D_d</span><span class="p">,</span> <span class="n">D_s</span><span class="p">,</span> <span class="n">D_ds</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_cosmo</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param D_d: angular diameter to the deflector [MPC]</span>
-<span class="sd">        :param D_s: angular diameter to the source [MPC]</span>
-<span class="sd">        :param D_ds: angular diameter from the deflector to the source [MPC]</span>
-<span class="sd">        :param psf_type: string, point spread functino type, current support for &#39;GAUSSIAN&#39; and &#39;MOFFAT&#39;</span>
-<span class="sd">        :param fwhm: full width at half maximum seeing condition</span>
-<span class="sd">        :param moffat_beta: float, beta parameter of Moffat profile</span>
+<span class="sd">        :param kwargs_cosmo:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">D_ds</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">D_s</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">D_d</span> <span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input angular diameter distances Dd: </span><span class="si">%s</span><span class="s1">, Ds: </span><span class="si">%s</span><span class="s1">, Dds: </span><span class="si">%s</span><span class="s1"> are not suppored for a lens model!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">D_d</span><span class="p">,</span> <span class="n">D_s</span><span class="p">,</span> <span class="n">D_ds</span><span class="p">)</span> <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="n">D_d</span><span class="o">=</span><span class="n">D_d</span><span class="p">,</span> <span class="n">D_s</span><span class="o">=</span><span class="n">D_s</span><span class="p">,</span> <span class="n">D_ds</span><span class="o">=</span><span class="n">D_ds</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span> <span class="o">=</span> <span class="n">psf_select</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span> <span class="o">=</span> <span class="n">aperture_select</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_aperture</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AnalyticKinematics.vel_disp"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.vel_disp">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">,</span> <span class="n">rendering_number</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes the averaged LOS velocity dispersion in the slit (convolved)</span>
-
-<span class="sd">        :param gamma: power-law slope of the mass profile (isothermal = 2)</span>
-<span class="sd">        :param theta_E: Einstein radius of the lens (in arcseconds)</span>
-<span class="sd">        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile</span>
-<span class="sd">        :param r_ani: anisotropy radius</span>
-<span class="sd">        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral</span>
-<span class="sd">        :param rendering_number: number of spectral renderings drawn from the light distribution that go through the</span>
-<span class="sd">            slit of the observations</span>
-
-<span class="sd">        :return: LOS integrated velocity dispersion in units [km/s]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sigma_s2_sum</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">rho0_r0_gamma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_r0_gamma</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">rendering_number</span><span class="p">):</span>
-            <span class="n">sigma_s2_draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vel_disp_one</span><span class="p">(</span><span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">)</span>
-            <span class="n">sigma_s2_sum</span> <span class="o">+=</span> <span class="n">sigma_s2_draw</span>
-        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma_s2_sum</span> <span class="o">/</span> <span class="n">rendering_number</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_s2_average</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span> <span class="o">=</span> <span class="n">Cosmo</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_cosmo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_spp</span> <span class="o">=</span> <span class="n">SPP</span><span class="p">()</span>
+        <span class="c1">#GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)</span>
+        <span class="n">Anisotropy</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anisotropy_type</span><span class="o">=</span><span class="s1">&#39;OM&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_rho0_r0_gamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
         <span class="c1"># equation (14) in Suyu+ 2010</span>
         <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="n">gamma</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">gamma</span><span class="p">((</span><span class="n">gamma</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">))</span> <span class="o">*</span> <span class="n">theta_E</span> <span class="o">**</span> <span class="n">gamma</span> <span class="o">/</span> \
                <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">epsilon_crit</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">**</span> <span class="mi">3</span>
 
-<div class="viewcode-block" id="AnalyticKinematics.vel_disp_one"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.vel_disp_one">[docs]</a>    <span class="k">def</span> <span class="nf">vel_disp_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        computes one realisation of the velocity dispersion realized in the slit</span>
-
-<span class="sd">        :param gamma: power-law slope of the mass profile (isothermal = 2)</span>
-<span class="sd">        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010</span>
-<span class="sd">        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile</span>
-<span class="sd">        :param r_ani: anisotropy radius</span>
-<span class="sd">        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral</span>
-<span class="sd">        :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian</span>
-<span class="sd">        :return: projected velocity dispersion of a single drawn position in the potential [km/s]</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="mf">0.551</span> <span class="o">*</span> <span class="n">r_eff</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">P_r</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>  <span class="c1"># draw r</span>
-            <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_r</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>  <span class="c1"># draw projected R</span>
-            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf</span><span class="o">.</span><span class="n">displace_psf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="k">break</span>
-        <span class="n">sigma_s2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sigma_s2</span></div>
-
-<div class="viewcode-block" id="AnalyticKinematics.P_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.P_r">[docs]</a>    <span class="k">def</span> <span class="nf">P_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalyticKinematics.draw_light"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.draw_light">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">draw_light</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param a: 0.551*r_eff</span>
-<span class="sd">        :return: realisation of radius of Hernquist luminosity weighting in 3d</span>
+<span class="sd">        :param kwargs_light: keyword argument (list) of the light model</span>
+<span class="sd">        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">P</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">()</span>  <span class="c1"># draws uniform between [0,1)</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">P</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">P</span><span class="p">)</span>  <span class="c1"># solves analytically to r from P(r)</span>
-        <span class="k">return</span> <span class="n">r</span></div>
+        <span class="k">if</span> <span class="s1">&#39;a&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_light</span><span class="p">:</span>
+            <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.551</span> <span class="o">*</span> <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">draw_hernquist</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">project2d_random</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
 
-<div class="viewcode-block" id="AnalyticKinematics.R_r"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.R_r">[docs]</a>    <span class="k">def</span> <span class="nf">R_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        draws a random projection from radius r in 2d and 1d</span>
-<span class="sd">        :param r: 3d radius</span>
-<span class="sd">        :return: R, x, y</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-        <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
-
-<div class="viewcode-block" id="AnalyticKinematics.sigma_s2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.sigma_s2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_s2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sigma_s2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        projected velocity dispersion</span>
-<span class="sd">        :param r:</span>
-<span class="sd">        :param R:</span>
-<span class="sd">        :param r_ani:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param gamma:</span>
-<span class="sd">        :param phi_E:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param r: 3d radius of the light tracer particle</span>
+<span class="sd">        :param R: 2d projected radius of the light tracer particle</span>
+<span class="sd">        :param r_ani: anisotropy radius</span>
+<span class="sd">        :param a: scale of the Hernquist light profile</span>
+<span class="sd">        :param gamma: power-law slope of the mass profile</span>
+<span class="sd">        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010</span>
+<span class="sd">        :return: projected velocity dispersion</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta_ani</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">)</span></div>
+        <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;r_ani&#39;</span><span class="p">:</span> <span class="n">r_ani</span><span class="p">})</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AnalyticKinematics.sigma_r2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.sigma_r2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_r2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalyticKinematics.sigma_s2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.sigma_s2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_s2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns unweighted los velocity dispersion for a specified projected radius</span>
+
+<span class="sd">        :param r: 3d radius (not needed for this calculation)</span>
+<span class="sd">        :param R: 2d projected radius (in angular units of arcsec)</span>
+<span class="sd">        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)</span>
+<span class="sd">        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)</span>
+<span class="sd">        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.</span>
+<span class="sd">            We refer to the Anisotropy() class for details on the parameters.</span>
+<span class="sd">        :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_out_params</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AnalyticKinematics.sigma_r2"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.sigma_r2">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_r2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        equation (19) in Suyu+ 2010</span>
+
+<span class="sd">        :param r: 3d radius</span>
+<span class="sd">        :param kwargs_mass: mass profile keyword arguments</span>
+<span class="sd">        :param kwargs_light: light profile keyword arguments</span>
+<span class="sd">        :param kwargs_anisotropy: anisotropy keyword arguments</span>
+<span class="sd">        :return: velocity dispersion in [m/s]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_out_params</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_read_out_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        reads the relevant parameters out of the keyword arguments and transforms them to the conventions used in this</span>
+<span class="sd">        class</span>
+
+<span class="sd">        :param kwargs_mass: mass profile keyword arguments</span>
+<span class="sd">        :param kwargs_light: light profile keyword arguments</span>
+<span class="sd">        :param kwargs_anisotropy: anisotropy keyword arguments</span>
+<span class="sd">        :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma, r_ani</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="s1">&#39;a&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_light</span><span class="p">:</span>
+            <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.551</span> <span class="o">*</span> <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;r_eff&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;rho0_r0_gamma&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_mass</span><span class="p">:</span>
+            <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;rho0_r0_gamma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho0_r0_gamma</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">],</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">])</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_light</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+        <span class="n">rho0_r0_gamma</span> <span class="o">=</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;rho0_r0_gamma&#39;</span><span class="p">]</span>
+        <span class="n">r_ani</span> <span class="o">=</span> <span class="n">kwargs_anisotropy</span><span class="p">[</span><span class="s1">&#39;r_ani&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span>
+
+    <span class="k">def</span> <span class="nf">_sigma_r2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">rho0_r0_gamma</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        equation (19) in Suyu+ 2010</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># first term</span>
         <span class="n">prefac1</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">a</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="n">rho0_r0_gamma</span> <span class="o">/</span> <span class="p">(</span><span class="mi">3</span><span class="o">-</span><span class="n">gamma</span><span class="p">)</span>
         <span class="n">prefac2</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">r_ani</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1">#TODO check whether interpolation functions can speed this up</span>
         <span class="n">hyp1</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">hyp_2F1</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">3</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">r</span><span class="o">/</span><span class="n">a</span><span class="p">))</span>
         <span class="n">hyp2</span> <span class="o">=</span> <span class="n">vel_util</span><span class="o">.</span><span class="n">hyp_2F1</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="o">+</span><span class="n">gamma</span><span class="p">,</span> <span class="n">z</span><span class="o">=-</span><span class="n">a</span><span class="o">/</span><span class="n">r</span><span class="p">)</span>
         <span class="n">fac</span> <span class="o">=</span> <span class="n">r_ani</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="n">a</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hyp1</span> <span class="o">/</span> <span class="p">((</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">gamma</span><span class="p">))</span> <span class="o">+</span> <span class="n">hyp2</span> <span class="o">/</span> <span class="p">(</span><span class="n">gamma</span><span class="o">*</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="n">gamma</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">prefac1</span> <span class="o">*</span> <span class="n">prefac2</span> <span class="o">*</span> <span class="n">fac</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="mi">1000</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span></div>
+        <span class="k">return</span> <span class="n">prefac1</span> <span class="o">*</span> <span class="n">prefac2</span> <span class="o">*</span> <span class="n">fac</span> <span class="o">*</span> <span class="p">(</span><span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
 
-    <span class="k">def</span> <span class="nf">_beta_ani</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">r_ani</span><span class="p">):</span>
+<div class="viewcode-block" id="AnalyticKinematics.grav_potential"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.grav_potential">[docs]</a>    <span class="k">def</span> <span class="nf">grav_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        anisotropy parameter beta</span>
-<span class="sd">        :param r: radius</span>
-<span class="sd">        :param r_ani: anisotropy radius</span>
-<span class="sd">        :return: beta(r) in the OM parameterization</span>
+<span class="sd">        Gravitational potential in SI units</span>
+
+<span class="sd">        :param r: radius (arc seconds)</span>
+<span class="sd">        :param kwargs_mass:</span>
+<span class="sd">        :return: gravitational potential</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">r_ani</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+        <span class="n">theta_E</span> <span class="o">=</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">]</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">kwargs_mass</span><span class="p">[</span><span class="s1">&#39;gamma&#39;</span><span class="p">]</span>
+        <span class="n">mass_dimless</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spp</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+        <span class="n">mass_dim</span> <span class="o">=</span> <span class="n">mass_dimless</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">dds</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">*</span> \
+                   <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>
+        <span class="n">grav_pot</span> <span class="o">=</span> <span class="o">-</span><span class="n">const</span><span class="o">.</span><span class="n">G</span> <span class="o">*</span> <span class="n">mass_dim</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grav_pot</span></div>
+
+<div class="viewcode-block" id="AnalyticKinematics.delete_cache"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.analytic_kinematics.AnalyticKinematics.delete_cache">[docs]</a>    <span class="k">def</span> <span class="nf">delete_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deletes temporary cache tight to a specific model</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
 </pre></div>
 
           </div>

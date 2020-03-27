@@ -29,8 +29,7 @@ def choose_pool(mpi=False, processes=1, **kwargs):
         processes. By default, ``processes=1``, will use the
         :class:`~schwimmbad.serial.SerialPool`.
     **kwargs
-        Any additional kwargs are passed in to the pool class initializer
-        selected by the arguments.
+            Any additional kwargs are passed in to the pool class initializer selected by the arguments.
     """
     if processes == 1 or mpi:
         pool = schwimmbad.choose_pool(mpi=mpi, processes=1, **kwargs)
@@ -68,7 +67,7 @@ class Sampler(object):
         :param init_pos: starting point for the optimization
         :param n_iterations: maximum number of iterations
         :param method: the optimization method, default is 'Nelder-Mead'
-        returns the best fit for the lens model using the optimization routine specified by method
+        :return: the best fit for the lens model using the optimization routine specified by method
         """
         print('Performing the optimization using algorithm:', method)
         time_start = time.time()

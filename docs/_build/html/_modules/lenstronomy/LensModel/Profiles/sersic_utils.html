@@ -70,12 +70,32 @@
 <div class="viewcode-block" id="SersicUtil.b_n"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.b_n">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">b_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        b(n) computation</span>
-<span class="sd">        :param n:</span>
+<span class="sd">        b(n) computation. This is the approximation of the exact solution to the relation, 2*incomplete_gamma_function(2n; b_n) = Gamma_function(2*n).</span>
+<span class="sd">        :param n: the sersic index</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bn</span> <span class="o">=</span> <span class="mf">1.9992</span> <span class="o">*</span> <span class="n">n</span> <span class="o">-</span> <span class="mf">0.3271</span>
+        <span class="n">bn</span> <span class="o">=</span> <span class="mf">1.9992</span><span class="o">*</span><span class="n">n</span> <span class="o">-</span> <span class="mf">0.3271</span>
         <span class="k">return</span> <span class="n">bn</span></div>
+
+<div class="viewcode-block" id="SersicUtil.get_distance_from_center"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance_from_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the distance from the center of Sersic, accounting for orientation and axis ratio</span>
+<span class="sd">        :param x:</span>
+<span class="sd">        :param y:</span>
+<span class="sd">        :param phi_G: orientation angle in rad</span>
+<span class="sd">        :param q: axis ratio</span>
+<span class="sd">        :param center_x: center x of sersic</span>
+<span class="sd">        :param center_y: center y of sersic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+        <span class="n">xt1</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
+        <span class="n">xt2</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
+        <span class="n">xt2difq2</span> <span class="o">=</span> <span class="n">xt2</span><span class="o">/</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xt1</span><span class="o">*</span><span class="n">xt1</span><span class="o">+</span><span class="n">xt2</span><span class="o">*</span><span class="n">xt2difq2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">R</span></div>
 
     <span class="k">def</span> <span class="nf">_x_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -188,41 +208,37 @@
 
     <span class="k">def</span> <span class="nf">_R_stable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">        Floor R_ at self._smoothing for numerical stability</span>
 <span class="sd">        :param R: radius</span>
 <span class="sd">        :return: smoothed and stabilized radius</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">R</span><span class="p">[</span><span class="n">R</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span>
-        <span class="k">return</span> <span class="n">R</span>
-
-    <span class="k">def</span> <span class="nf">_r_sersic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_r_sersic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">max_R_frac</span><span class="o">=</span><span class="mf">100.0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">R_break</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param R: radius (array or float)</span>
 <span class="sd">        :param R_sersic: Sersic radius (half-light radius)</span>
 <span class="sd">        :param n_sersic: Sersic index (float)</span>
-<span class="sd">        :return: Sersic surface brightness at R</span>
+<span class="sd">        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)</span>
+<span class="sd">        :return: kernel of the Sersic surface brightness at R</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">R_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_stable</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
-        <span class="n">k</span><span class="p">,</span> <span class="n">bn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_bn</span><span class="p">(</span><span class="n">n_sersic</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">)</span>
+        <span class="n">bn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_n</span><span class="p">(</span><span class="n">n_sersic</span><span class="p">)</span>
         <span class="n">R_frac</span> <span class="o">=</span> <span class="n">R_</span> <span class="o">/</span> <span class="n">R_sersic</span>
         <span class="c1">#R_frac = R_frac.astype(np.float32)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R_</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R_</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">R_frac</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">R_frac</span> <span class="o">&gt;</span> <span class="n">max_R_frac</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span><span class="n">bn</span> <span class="o">*</span> <span class="p">(</span><span class="n">R_frac</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">n_sersic</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">R_frac_real</span> <span class="o">=</span> <span class="n">R_frac</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">]</span>
+            <span class="n">R_frac_real</span> <span class="o">=</span> <span class="n">R_frac</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="n">max_R_frac</span><span class="p">]</span>
             <span class="n">exponent</span> <span class="o">=</span> <span class="o">-</span><span class="n">bn</span> <span class="o">*</span> <span class="p">(</span><span class="n">R_frac_real</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">n_sersic</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">R_</span><span class="p">)</span>
-            <span class="n">result</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
+            <span class="n">result</span><span class="p">[</span><span class="n">R_frac</span> <span class="o">&lt;=</span> <span class="n">max_R_frac</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">exponent</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 </pre></div>
 

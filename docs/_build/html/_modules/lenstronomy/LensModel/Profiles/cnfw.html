@@ -39,20 +39,23 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.LensModel.Profiles.cnfw</h1><div class="highlight"><pre>
-<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;dgilman&#39;</span>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;dgilman&#39;</span><span class="p">,</span> <span class="s1">&#39;sibirrer&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.integrate</span> <span class="k">import</span> <span class="n">quad</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw</span> <span class="k">import</span> <span class="n">NFW</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
-<span class="kn">import</span> <span class="nn">warnings</span>
 
 
 <div class="viewcode-block" id="CNFW"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW">[docs]</a><span class="k">class</span> <span class="nc">CNFW</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    this class computes the lensing quantities of a cored NFW profile:</span>
 <span class="sd">    rho = rho0 * (r + r_core)^-1 * (r + rs)^-2</span>
+<span class="sd">    alpha_Rs is the normalization equivalent to the deflection angle at rs in the absence of a core</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="s1">&#39;CNFW&#39;</span>
+    <span class="n">_s</span> <span class="o">=</span> <span class="mf">0.001</span>  <span class="c1"># numerical limit for minimal radius</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
@@ -71,18 +74,229 @@
 <span class="sd">        :param x: angular position</span>
 <span class="sd">        :param y: angular position</span>
 <span class="sd">        :param Rs: angular turn over point</span>
-<span class="sd">        :param alpha_Rs: deflection at Rs</span>
+<span class="sd">        :param alpha_Rs: deflection at Rs (in the absence of a core</span>
+<span class="sd">        :param r_core: core radius</span>
 <span class="sd">        :param center_x: center of halo</span>
 <span class="sd">        :param center_y: center of halo</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Potential for cored NFW potential not yet implemented. &#39;</span>
-                      <span class="s1">&#39;Using the expression for the NFW &#39;</span>
-                      <span class="s1">&#39;potential instead. THIS IS NOT ACCURATE!!!&#39;</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_integral_potential</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#TODO: currently the numerical integral is done one by one. More efficient is sorting the radial list and</span>
+            <span class="c1"># then perform one numerical integral reading out to the radial points</span>
+            <span class="n">f_</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">)):</span>
+                <span class="n">f_</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_integral_potential</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">f_</span><span class="p">)</span></div>
 
-        <span class="n">pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_num_integral_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 
-        <span class="k">return</span> <span class="n">pot</span></div>
+<span class="sd">        :param r:</span>
+<span class="sd">        :param r_core:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_integrand</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_r</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">_integrand</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">f_</span>
+
+<div class="viewcode-block" id="CNFW.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
+            <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0000001</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
+        <span class="n">f_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_r</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="n">f_r</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">/</span> <span class="n">R</span>
+        <span class="n">f_y</span> <span class="o">=</span> <span class="n">f_r</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">/</span> <span class="n">R</span>
+        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
+
+<div class="viewcode-block" id="CNFW.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+
+        <span class="c1">#raise Exception(&#39;Hessian for truncated nfw profile not yet implemented.&#39;)</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0001</span><span class="p">:</span>
+            <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0001</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
+        <span class="n">gamma1</span><span class="p">,</span> <span class="n">gamma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfwGamma</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">gamma1</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">-</span> <span class="n">gamma1</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
+
+<div class="viewcode-block" id="CNFW.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        three dimensional truncated NFW profile</span>
+
+<span class="sd">        :param R: radius of interest</span>
+<span class="sd">        :type R: float/numpy array</span>
+<span class="sd">        :param Rs: scale radius</span>
+<span class="sd">        :type Rs: float</span>
+<span class="sd">        :param rho0: density normalization (central core density)</span>
+<span class="sd">        :type rho0: float</span>
+<span class="sd">        :return: rho(R) density</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">M0</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">3</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">M0</span><span class="o">/</span><span class="mi">4</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">r_core</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="n">Rs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="CNFW.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
+<span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CNFW.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        projected two dimenstional NFW profile (kappa*Sigma_crit)</span>
+
+<span class="sd">        :param R: radius of interest</span>
+<span class="sd">        :type R: float/numpy array</span>
+<span class="sd">        :param Rs: scale radius</span>
+<span class="sd">        :type Rs: float</span>
+<span class="sd">        :param rho0: density normalization (characteristic density)</span>
+<span class="sd">        :type rho0: float</span>
+<span class="sd">        :param r200: radius of (sub)halo</span>
+<span class="sd">        :type r200: float&gt;0</span>
+<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">Fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">Fx</span></div>
+
+<div class="viewcode-block" id="CNFW.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r</span>
+
+<span class="sd">        :param r:</span>
+<span class="sd">        :param Ra:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">M_0</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">Rs</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho0</span>
+
+        <span class="k">return</span> <span class="n">M_0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span>
+                      <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">b</span> <span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="CNFW.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CNFW.alpha_r"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.alpha_r">[docs]</a>    <span class="k">def</span> <span class="nf">alpha_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        deflection angel of NFW profile along the radial direction</span>
+
+<span class="sd">        :param R: radius of interest</span>
+<span class="sd">        :type R: float/numpy array</span>
+<span class="sd">        :param Rs: scale radius</span>
+<span class="sd">        :type Rs: float</span>
+<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#R = np.maximum(R, self._s)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="n">Rs</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="c1">#b = max(b, 0.000001)</span>
+        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">/</span><span class="n">x</span>
+        <span class="k">return</span> <span class="n">a</span></div>
+
+<div class="viewcode-block" id="CNFW.cnfwGamma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwGamma">[docs]</a>    <span class="k">def</span> <span class="nf">cnfwGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate &#39;axis&#39;</span>
+
+<span class="sd">        :param R: radius of interest</span>
+<span class="sd">        :type R: float/numpy array</span>
+<span class="sd">        :param Rs: scale radius</span>
+<span class="sd">        :type Rs: float</span>
+<span class="sd">        :param rho0: density normalization (characteristic density)</span>
+<span class="sd">        :type rho0: float</span>
+<span class="sd">        :param r200: radius of (sub)halo</span>
+<span class="sd">        :type r200: float&gt;0</span>
+<span class="sd">        :param axis: projection to either x- or y-axis</span>
+<span class="sd">        :type axis: same as R</span>
+<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mf">0.000001</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">R</span><span class="p">[</span><span class="n">R</span> <span class="o">&lt;=</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">Fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">/</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">Fx</span><span class="p">)</span>  <span class="c1"># /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x</span>
+        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">ax_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">ax_x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ax_x</span> <span class="o">*</span> <span class="n">ax_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span></div>
+
+<div class="viewcode-block" id="CNFW.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        analytic solution of the projection integral</span>
+<span class="sd">        (convergence)</span>
+
+<span class="sd">        :param x: R/Rs</span>
+<span class="sd">        :type x: float &gt;0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="n">Rs</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">/</span> <span class="n">Rs</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">)</span>
+        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+        <span class="n">m_2d</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">m_2d</span></div>
+
+    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">rho0</span>
+
+    <span class="k">def</span> <span class="nf">_rho2alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">*</span><span class="n">rho0</span>
+        <span class="k">return</span> <span class="n">alpha</span>
 
     <span class="k">def</span> <span class="nf">_nfw_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -91,10 +305,10 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">0.000001</span>
+        <span class="c1">#c = 0.000000001</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">x</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span><span class="o">&lt;</span><span class="n">c</span><span class="p">)]</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="c1">#x[np.where(x&lt;c)] = c</span>
             <span class="n">nfwvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="n">inds1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">inds2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
@@ -105,7 +319,7 @@
             <span class="k">return</span> <span class="n">nfwvals</span>
 
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+            <span class="c1">#x = max(x, c)</span>
             <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mi">1</span>
             <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -156,7 +370,7 @@
 
         <span class="k">return</span> <span class="n">output</span>
 
-    <span class="k">def</span> <span class="nf">_G</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.00000001</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_G</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">0.000001</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        analytic solution of integral for NFW profile to compute deflection angel and gamma</span>
@@ -197,189 +411,7 @@
                 <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span><span class="o">*</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 
-            <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">output</span>
-
-<div class="viewcode-block" id="CNFW.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-
-        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0000001</span><span class="p">:</span>
-            <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0000001</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfwAlpha</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0_input</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
-
-<div class="viewcode-block" id="CNFW.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-
-        <span class="c1">#raise Exception(&#39;Hessian for truncated nfw profile not yet implemented.&#39;)</span>
-
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">rho0_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_alpha2rho0</span><span class="p">(</span><span class="n">alpha_Rs</span><span class="o">=</span><span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="o">=</span><span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="o">=</span><span class="n">r_core</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">Rs</span> <span class="o">&lt;</span> <span class="mf">0.0001</span><span class="p">:</span>
-            <span class="n">Rs</span> <span class="o">=</span> <span class="mf">0.0001</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-
-        <span class="n">kappa</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0_input</span><span class="p">,</span> <span class="n">r_core</span><span class="p">)</span>
-        <span class="n">gamma1</span><span class="p">,</span> <span class="n">gamma2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cnfwGamma</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0_input</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">gamma1</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">-</span> <span class="n">gamma1</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
-
-<div class="viewcode-block" id="CNFW.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        three dimenstional truncated NFW profile</span>
-
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
-<span class="sd">        :param Rs: scale radius</span>
-<span class="sd">        :type Rs: float</span>
-<span class="sd">        :param rho0: density normalization (central core density)</span>
-<span class="sd">        :type rho0: float</span>
-<span class="sd">        :return: rho(R) density</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">M0</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">3</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">M0</span><span class="o">/</span><span class="mi">4</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="p">((</span><span class="n">r_core</span> <span class="o">+</span> <span class="n">R</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">R</span> <span class="o">+</span> <span class="n">Rs</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span></div>
-
-<div class="viewcode-block" id="CNFW.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        projected two dimenstional NFW profile (kappa*Sigma_crit)</span>
-
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
-<span class="sd">        :param Rs: scale radius</span>
-<span class="sd">        :type Rs: float</span>
-<span class="sd">        :param rho0: density normalization (characteristic density)</span>
-<span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
-<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">Fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="n">Fx</span></div>
-
-<div class="viewcode-block" id="CNFW.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_3d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        mass enclosed a 3d sphere or radius r</span>
-
-<span class="sd">        :param r:</span>
-<span class="sd">        :param Ra:</span>
-<span class="sd">        :param Rs:</span>
-<span class="sd">        :return:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-
-        <span class="n">M_0</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">Rs</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="n">rho0</span>
-
-        <span class="k">return</span> <span class="n">M_0</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">2</span> <span class="o">*</span>
-                      <span class="p">((</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="p">))</span> <span class="o">+</span> <span class="n">b</span> <span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">b</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span></div>
-
-<div class="viewcode-block" id="CNFW.cnfwAlpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwAlpha">[docs]</a>    <span class="k">def</span> <span class="nf">cnfwAlpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        deflection angel of NFW profile along the projection to coordinate axis</span>
-
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
-<span class="sd">        :param Rs: scale radius</span>
-<span class="sd">        :type Rs: float</span>
-<span class="sd">        :param rho0: density normalization (characteristic density)</span>
-<span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
-<span class="sd">        :param axis: projection to either x- or y-axis</span>
-<span class="sd">        :type axis: same as R</span>
-<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">R</span><span class="p">[</span><span class="n">R</span> <span class="o">&lt;=</span> <span class="mf">0.00001</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.00001</span>
-
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="n">Rs</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">)</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-        <span class="n">a</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">gx</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">a</span> <span class="o">*</span> <span class="n">ax_y</span></div>
-
-<div class="viewcode-block" id="CNFW.cnfwGamma"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.cnfwGamma">[docs]</a>    <span class="k">def</span> <span class="nf">cnfwGamma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">,</span> <span class="n">ax_x</span><span class="p">,</span> <span class="n">ax_y</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        shear gamma of NFW profile (times Sigma_crit) along the projection to coordinate &#39;axis&#39;</span>
-
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
-<span class="sd">        :param Rs: scale radius</span>
-<span class="sd">        :type Rs: float</span>
-<span class="sd">        :param rho0: density normalization (characteristic density)</span>
-<span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
-<span class="sd">        :param axis: projection to either x- or y-axis</span>
-<span class="sd">        :type axis: same as R</span>
-<span class="sd">        :return: Epsilon(R) projected density at radius R</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="mf">0.000001</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
-            <span class="n">R</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">R</span><span class="p">[</span><span class="n">R</span> <span class="o">&lt;=</span> <span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="n">Fx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_F</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="n">a</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span> <span class="o">/</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">Fx</span><span class="p">)</span>  <span class="c1"># /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x</span>
-        <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">ax_y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">ax_x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="n">a</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ax_x</span> <span class="o">*</span> <span class="n">ax_y</span><span class="p">)</span> <span class="o">/</span> <span class="n">R</span> <span class="o">**</span> <span class="mi">2</span></div>
-
-<div class="viewcode-block" id="CNFW.mass_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cnfw.CNFW.mass_2d">[docs]</a>    <span class="k">def</span> <span class="nf">mass_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
-
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        analytic solution of the projection integral</span>
-<span class="sd">        (convergence)</span>
-
-<span class="sd">        :param x: R/Rs</span>
-<span class="sd">        :type x: float &gt;0</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="n">Rs</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">/</span> <span class="n">Rs</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mf">0.000001</span><span class="p">)</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-
-        <span class="c1">#m_2d = 4 * np.pi* rho0 * Rs**3 * gx</span>
-
-        <span class="n">m_2d</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">rho0</span><span class="o">*</span><span class="n">Rs</span><span class="o">*</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">/</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span>
-
-        <span class="k">return</span> <span class="n">m_2d</span></div>
-
-    <span class="k">def</span> <span class="nf">_alpha2rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_Rs</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
-
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="n">rho0</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">gx</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="k">return</span> <span class="n">rho0</span>
-
-    <span class="k">def</span> <span class="nf">_rho2alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r_core</span><span class="p">):</span>
-
-        <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="n">gx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_G</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
-        <span class="n">alpha</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span><span class="o">*</span><span class="n">gx</span><span class="o">*</span><span class="n">rho0</span>
-        <span class="k">return</span> <span class="n">alpha</span></div>
+            <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">output</span></div>
 </pre></div>
 
           </div>

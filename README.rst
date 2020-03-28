@@ -69,8 +69,7 @@ Modelling Features
 * various lensing computation tools (lens equation solver, ray-tracing etc)
 * API to conveniently simulating mock lenses
 * Extended source reconstruction with basis sets (shapelets)
-* Model fitting and statistical inference tools with MPI and multi-threading support
-(Particle swarm optimization, emcee, MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
+* Model fitting and statistical inference tools with MPI and multi-threading support (Particle swarm optimization, emcee, MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
 * integrated support for multi-lens plane and multi-source plane modelling
 * Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy
 * Cosmographic inference tools

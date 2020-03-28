@@ -58,7 +58,7 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
     $ python setup.py install --user
 
 
-Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``, ``CosmoHammer``
+Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``
 
 
 
@@ -67,12 +67,11 @@ Modelling Features
 
 * a variety of analytic lens model profiles
 * various lensing computation tools (lens equation solver, ray-tracing etc)
-* integrated support for multi-lens plane and multi-source plane modelling
-* API to conveniently simulate mock lenses
+* API to conveniently simulating mock lenses
 * Extended source reconstruction with basis sets (shapelets)
-* numerical options for sub-grid ray-tracing and sub-pixel convolution
-* Particle swarm optimization for parameter fitting with MPI and multi-threading support
-* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
+* Model fitting and statistical inference tools with MPI and multi-threading support
+(Particle swarm optimization, emcee, MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
+* integrated support for multi-lens plane and multi-source plane modelling
 * Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy
 * Cosmographic inference tools
 * ...and much more

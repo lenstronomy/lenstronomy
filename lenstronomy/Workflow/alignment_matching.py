@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import time
 import copy
-from lenstronomy.Sampling.pool import choose_pool
+from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 

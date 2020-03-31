@@ -5,7 +5,7 @@ import time
 import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
-from lenstronomy.Sampling.pool import choose_pool
+from lenstronomy.Sampling.Pool.pool import choose_pool
 import emcee
 from scipy.optimize import minimize
 

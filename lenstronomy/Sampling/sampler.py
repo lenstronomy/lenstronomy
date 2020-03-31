@@ -119,7 +119,8 @@ class Sampler(object):
             print('===================')
         return result, [chi2_list, pos_list, vel_list]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
+                   initpos=None):
         """
         Run MCMC with emcee.
         For details, please have a look at the documentation of the emcee packager.
@@ -140,11 +141,15 @@ class Sampler(object):
         :type progress: bool
         :param threadCount: number of threats in multi-processing (not applicable for MPI)
         :type threadCount: integer
+        :param initpos: inital walker position to start sampling (optional)
+        :type initpos: numpy array of size num param x num walkser
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
         num_param, _ = self.chain.param.num_param()
-        p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
+        if initpos is None:
+            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
+
         time_start = time.time()
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
@@ -152,7 +157,7 @@ class Sampler(object):
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
                                         pool=pool)
 
-        sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
+        sampler.run_mcmc(initpos, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
         if pool.is_master():

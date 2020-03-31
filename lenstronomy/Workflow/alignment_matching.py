@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import time
 import copy
-from schwimmbad import choose_pool
+from lenstronomy.Sampling.sampler import choose_pool
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 
@@ -26,7 +26,7 @@ class AlignmentFitting(object):
         lowerLimit = [lowerLimit] * num_param
         upperLimit = [upperLimit] * num_param
 
-        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool, is_master = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         pso = ParticleSwarmOptimizer(self.chain, lowerLimit, upperLimit,
                                      n_particles, pool=pool)
@@ -34,7 +34,7 @@ class AlignmentFitting(object):
             pso.set_global_best(init_pos, [0]*len(init_pos),
                                 self.chain.likelihood(init_pos))
 
-        if pool.is_master():
+        if is_master:
             print('Computing the %s ...' % print_key)
 
         time_start = time.time()
@@ -43,11 +43,11 @@ class AlignmentFitting(object):
 
         kwargs_data = self.chain.update_data(result)
 
-        if pool.is_master():
+        if is_master:
             time_end = time.time()
             print("Shifts found: ", result)
             print(time_end - time_start, 'time used for ', print_key)
-        return kwargs_data, [chi2_list, pos_list, vel_list, []]
+        return kwargs_data, [chi2_list, pos_list, vel_list]
 
 
 class AlignmentLikelihood(object):

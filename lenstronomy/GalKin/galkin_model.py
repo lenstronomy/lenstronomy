@@ -47,17 +47,18 @@ class GalkinModel(object):
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
+        if kwargs_numerics is None:
+            kwargs_numerics = {'interpol_grid_num': 200,  # numerical interpolation, should converge -> infinity
+                               'log_integration': True,
+                               # log or linear interpolation of surface brightness and mass models
+                               'max_integrate': 100,
+                               'min_integrate': 0.001}  # lower/upper bound of numerical integrals
         if analytic_kinematics is True:
             anisotropy_model = kwargs_model.get('anisotropy_model')
             if not anisotropy_model == 'OM':
                 raise ValueError('analytic kinematics only available for OsipkovMerritt ("OM") anisotropy model.')
-            self.numerics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo)
+            self.numerics = AnalyticKinematics(kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         else:
-            if kwargs_numerics is None:
-                kwargs_numerics = {'interpol_grid_num': 1000,  # numerical interpolation, should converge -> infinity
-                                   'log_integration': True,  # log or linear interpolation of surface brightness and mass models
-                                   'max_integrate': 100,
-                                   'min_integrate': 0.001}  # lower/upper bound of numerical integrals
             self.numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
         self._analytic_kinematics = analytic_kinematics
 

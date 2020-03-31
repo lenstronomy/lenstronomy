@@ -184,8 +184,9 @@ class SersicUtil(object):
         """
 
         R_ = self._R_stable(R)
+        R_sersic_ = self._R_stable(R_sersic)
         bn = self.b_n(n_sersic)
-        R_frac = R_ / R_sersic
+        R_frac = R_ / R_sersic_
         #R_frac = R_frac.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):
             if R_frac > max_R_frac:

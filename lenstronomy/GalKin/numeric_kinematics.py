@@ -11,7 +11,7 @@ import lenstronomy.GalKin.velocity_util as util
 
 class NumericKinematics(Anisotropy):
 
-    def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=500, log_integration=False, max_integrate=10,
+    def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=100, log_integration=False, max_integrate=100,
                  min_integrate=0.001):
         """
 
@@ -47,7 +47,7 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R
         """
-        I_R_sigma2 = self._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2 = self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         I_R = self.lightProfile.light_2d(R, kwargs_light)
         return np.nan_to_num(I_R_sigma2 / I_R)
 
@@ -71,6 +71,57 @@ class NumericKinematics(Anisotropy):
         l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
         f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
         return 1 / f_r / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
+
+    def mass_3d(self, r, kwargs):
+        """
+        mass enclosed a 3d radius
+
+        :param r: in arc seconds
+        :param kwargs: lens model parameters in arc seconds
+        :return: mass enclosed physical radius in kg
+        """
+        mass_dimless = self._mass_profile.mass_3d(r, kwargs)
+        mass_dim = mass_dimless * const.arcsec ** 2 * self.cosmo.dd * self.cosmo.ds / self.cosmo.dds * const.Mpc * \
+                   const.c ** 2 / (4 * np.pi * const.G)
+        return mass_dim
+
+    def grav_potential(self, r, kwargs_mass):
+        """
+        Gravitational potential in SI units
+
+        :param r: radius (arc seconds)
+        :param kwargs_mass:
+        :return: gravitational potential
+        """
+        mass_dim = self.mass_3d(r, kwargs_mass)
+        grav_pot = -const.G * mass_dim / (r * const.arcsec * self.cosmo.dd * const.Mpc)
+        return grav_pot
+
+    def draw_light(self, kwargs_light):
+        """
+
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
+        """
+        R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]
+        x, y = util.draw_xy(R)
+        r = None
+        return r, R, x, y
+
+    def delete_cache(self):
+        """
+        delete interpolation function for a specific mass and light profile as well as for a specific anisotropy model
+
+        :return:
+        """
+        if hasattr(self, '_log_mass_3d'):
+            del self._log_mass_3d
+        if hasattr(self, '_interp_jeans_integral'):
+            del self._interp_jeans_integral
+        if hasattr(self, '_interp_I_R_sigma2'):
+            del self._interp_I_R_sigma2
+        self.lightProfile.delete_cache()
+        self.delete_anisotropy_cache()
 
     def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -96,6 +147,26 @@ class NumericKinematics(Anisotropy):
             IR_sigma2_dr = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy) * dr
         IR_sigma2 = np.sum(IR_sigma2_dr) # integral from angle to physical scales
         return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
+
+    def _I_R_sigma2_interp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        quation A15 in Mamon&Lokas 2005 as interpolation in log space
+
+        :param R: projected radius
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :return:
+        """
+        if not hasattr(self, '_interp_I_R_sigma2'):
+            min_log = np.log10(self._min_integrate)
+            max_log = np.log10(self._max_integrate)
+            R_array = np.logspace(min_log, max_log, self._interp_grid_num)
+            I_R_sigma2_array = []
+            for R_i in R_array:
+                I_R_sigma2_array.append(self._I_R_sigma2(R_i, kwargs_mass, kwargs_light, kwargs_anisotropy))
+            self._interp_I_R_sigma2 = interp1d(np.log(R_array), np.array(I_R_sigma2_array), fill_value="extrapolate")
+        return self._interp_I_R_sigma2(np.log(R))
 
     def _integrand_A15(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -172,52 +243,3 @@ class NumericKinematics(Anisotropy):
             #                 / self.cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
             self._log_mass_3d = interp1d(np.log(r_array), np.log(mass_3d_array/r_array), fill_value="extrapolate")
         return np.exp(self._log_mass_3d(np.log(r))) * r
-
-    def mass_3d(self, r, kwargs):
-        """
-        mass enclosed a 3d radius
-
-        :param r: in arc seconds
-        :param kwargs: lens model parameters in arc seconds
-        :return: mass enclosed physical radius in kg
-        """
-        mass_dimless = self._mass_profile.mass_3d(r, kwargs)
-        mass_dim = mass_dimless * const.arcsec ** 2 * self.cosmo.dd * self.cosmo.ds / self.cosmo.dds * const.Mpc * \
-                   const.c ** 2 / (4 * np.pi * const.G)
-        return mass_dim
-
-    def grav_potential(self, r, kwargs_mass):
-        """
-        Gravitational potential in SI units
-
-        :param r: radius (arc seconds)
-        :param kwargs_mass:
-        :return: gravitational potential
-        """
-        mass_dim = self.mass_3d(r, kwargs_mass)
-        grav_pot = -const.G * mass_dim / (r * const.arcsec * self.cosmo.dd * const.Mpc)
-        return grav_pot
-
-    def draw_light(self, kwargs_light):
-        """
-
-        :param kwargs_light: keyword argument (list) of the light model
-        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
-        """
-        R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]
-        x, y = util.draw_xy(R)
-        r = None
-        return r, R, x, y
-
-    def delete_cache(self):
-        """
-        delete interpolation function for a specific mass and light profile as well as for a specific anisotropy model
-
-        :return:
-        """
-        if hasattr(self, '_log_mass_3d'):
-            del self._log_mass_3d
-        if hasattr(self, '_interp_jeans_integral'):
-            del self._interp_jeans_integral
-        self.lightProfile.delete_cache()
-        self.delete_anisotropy_cache()

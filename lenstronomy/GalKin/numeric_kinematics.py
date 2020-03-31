@@ -47,7 +47,7 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R
         """
-        I_R_sigma2 = self._I_R_simga2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2 = self._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         I_R = self.lightProfile.light_2d(R, kwargs_light)
         return np.nan_to_num(I_R_sigma2 / I_R)
 
@@ -72,7 +72,7 @@ class NumericKinematics(Anisotropy):
         f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
         return 1 / f_r / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
 
-    def _I_R_simga2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)
 

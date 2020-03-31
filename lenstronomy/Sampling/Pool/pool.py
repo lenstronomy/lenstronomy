@@ -50,14 +50,8 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     **kwargs
             Any additional kwargs are passed in to the pool class initializer selected by the arguments.
     """
-    if processes == 1 or mpi:
-        pool = choose_pool_schwimmbad(mpi=mpi, processes=1, **kwargs)
-        is_master = pool.is_master()
-    else:
-        pool = choose_pool_schwimmbad(mpi=False, processes=processes, **kwargs)
-        # this MultiPool has no is_master() attribute like the SerialPool and MpiPool
-        # all threads will then be 'master'.
-        is_master = True
+    pool = choose_pool_schwimmbad(mpi=mpi, processes=processes, **kwargs)
+    is_master = pool.is_master()
     return pool, is_master
 
 

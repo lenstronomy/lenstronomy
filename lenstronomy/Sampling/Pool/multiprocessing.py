@@ -1,4 +1,14 @@
+"""
+this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an explicit fork by Aymeric Galan
+to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
+not supporting dill (only pickle) which is required.
+
+The class also extends with a is_master() definition
+"""
+
+
 # Standard library
+
 from __future__ import division, print_function, absolute_import, unicode_literals
 import signal
 import functools

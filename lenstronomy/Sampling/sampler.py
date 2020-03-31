@@ -81,9 +81,9 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        pool, is_master = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
         
-        if mpi is True and is_master:
+        if mpi is True and pool.is_master():
             print('MPI option chosen for PSO.')
 
         pso = ParticleSwarmOptimizer(self.chain.logL,
@@ -96,14 +96,14 @@ class Sampler(object):
         pso.set_global_best(init_pos, [0]*len(init_pos),
                             self.chain.logL(init_pos))
 
-        if is_master:
+        if pool.is_master():
             print('Computing the %s ...' % print_key)
 
         time_start = time.time()
 
         result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
-        if is_master:
+        if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
             print(pso.global_best.fitness * 2 / (max(
                 self.chain.effective_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
@@ -147,7 +147,7 @@ class Sampler(object):
         p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
         time_start = time.time()
 
-        pool, is_master = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
                                         pool=pool)
@@ -155,7 +155,7 @@ class Sampler(object):
         sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
-        if is_master:
+        if pool.is_master():
             print('Computing the MCMC...')
             print('Number of walkers = ', n_walkers)
             print('Burn-in iterations: ', n_burn)

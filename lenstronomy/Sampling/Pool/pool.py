@@ -1,9 +1,16 @@
 # coding: utf-8
 """
+this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an explicit fork by Aymeric Galan
+to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
+not supporting dill (only pickle) which is required.
+
+
 Contributions by:
 - Peter K. G. Williams
 - Júlio Hoffimann Mendes
 - Dan Foreman-Mackey
+- Aymeric Galan
+- Simon Birrer
 
 Implementations of four different types of processing pools:
 
@@ -36,27 +43,6 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     It handles the `use_dill` parameters in kwargs, that would otherwise raise an error when processes > 1.
     Any thread in the returned multiprocessing pool (e.g. processes > 1) also default
 
-
-    Docstring from schwimmbad:
-
-    mpi : bool, optional
-        Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
-        default, ``False``, will use the :class:`~schwimmbad.serial.SerialPool`.
-    processes : int, optional
-        Use the multiprocessing pool,
-        :class:`~schwimmbad.multiprocessing.MultiPool`, with this number of
-        processes. By default, ``processes=1``, will use the
-        :class:`~schwimmbad.serial.SerialPool`.
-    **kwargs
-            Any additional kwargs are passed in to the pool class initializer selected by the arguments.
-    """
-    pool = choose_pool_schwimmbad(mpi=mpi, processes=processes, **kwargs)
-    is_master = pool.is_master()
-    return pool, is_master
-
-
-def choose_pool_schwimmbad(mpi=False, processes=1, **kwargs):
-    """
     Choose between the different pools given options from, e.g., argparse.
 
     Parameters

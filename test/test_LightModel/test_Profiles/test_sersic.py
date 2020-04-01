@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LightModel.Profiles.sersic import Sersic, SersicElliptic, CoreSersic
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
 import numpy as np
 import pytest
 import numpy.testing as npt
@@ -121,11 +122,23 @@ class TestSersic(object):
         npt.assert_almost_equal(values[2], 0.0032541063777438853, decimal=6)
 
     def test_total_flux(self):
-        r_eff = 0.2
+        deltapix = 0.1
+        x_grid, y_grid = util.make_grid(numPix=400, deltapix=deltapix)
+        r_eff = 1
         I_eff = 1.
-        n_sersic = 4
-        flux = self.sersic._total_flux(r_eff, I_eff, n_sersic)
-        npt.assert_almost_equal(flux, 0.9065917451904356, decimal=5)
+        n_sersic = 2
+        flux_analytic = self.sersic.total_flux(amp=I_eff, R_sersic=r_eff, n_sersic=n_sersic, e1=0, e2=0)
+        flux_grid = self.sersic.function(x_grid, y_grid, R_sersic=r_eff, n_sersic=n_sersic, amp=I_eff)
+        flux_numeric = np.sum(flux_grid) * deltapix**2
+        npt.assert_almost_equal(flux_numeric/flux_analytic, 1, decimal=2)
+
+        # and here we check with ellipticity
+        e1, e2 = 0.1, 0
+        flux_analytic_ell = self.sersic.total_flux(amp=I_eff, R_sersic=r_eff, n_sersic=n_sersic, e1=e1, e2=e2)
+        flux_grid = self.sersic_elliptic.function(x_grid, y_grid, R_sersic=r_eff, n_sersic=n_sersic, amp=I_eff, e1=e1, e2=e2)
+        flux_numeric_ell = np.sum(flux_grid) * deltapix ** 2
+        print(flux_analytic, flux_analytic_ell, flux_numeric_ell)
+        npt.assert_almost_equal(flux_numeric_ell / flux_analytic_ell, 1, decimal=2)
 
 
 if __name__ == '__main__':

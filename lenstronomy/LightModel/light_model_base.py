@@ -10,7 +10,7 @@ class LightModelBase(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, light_model_list, smoothing=0.001):
         """
 
         :param light_model_list: list of light models

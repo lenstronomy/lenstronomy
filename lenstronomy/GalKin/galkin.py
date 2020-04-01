@@ -43,7 +43,7 @@ class Galkin(GalkinModel, GalkinObservation):
     conservative to impact too much the computational cost. Reasonable values might depend on the specific problem.
 
     """
-    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics={},
+    def __init__(self, kwargs_model, kwargs_aperture, kwargs_psf, kwargs_cosmo, kwargs_numerics=None,
                  analytic_kinematics=False):
         """
 

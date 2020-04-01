@@ -20,7 +20,7 @@ class GalkinMultiObservation(GalkinModel):
         :param kwargs_aperture_list: list of keyword arguments describing the spectroscopic aperture, see Aperture() class
         :param kwargs_psf_list: list of keyword argument specifying the PSF of the observation
         :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
-        :param kwargs_numerics: numerics keyword arguments
+        :param kwargs_numerics: numerics keyword arguments - see GalkinModel
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
         GalkinModel.__init__(self, kwargs_model, kwargs_cosmo, kwargs_numerics=kwargs_numerics,

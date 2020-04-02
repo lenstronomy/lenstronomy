@@ -42,8 +42,8 @@ class TestGalkinMultiObservation(object):
         galkin_multiobs = GalkinMultiObservation(kwargs_model, kwargs_aperture_list, kwargs_psf_list, kwargs_cosmo,
                                kwargs_numerics=kwargs_numerics, analytic_kinematics=False)
 
-        sigma_v_list = galkin_multiobs.dispersion(kwargs_mass=kwargs_mass, kwargs_light=kwargs_light,
-                                   kwargs_anisotropy=kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100)
+        sigma_v_list = galkin_multiobs.dispersion_map(kwargs_mass=kwargs_mass, kwargs_light=kwargs_light,
+                                                      kwargs_anisotropy=kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100)
         assert len(sigma_v_list) == 2
         assert sigma_v_list[0] > sigma_v_list[1]
 

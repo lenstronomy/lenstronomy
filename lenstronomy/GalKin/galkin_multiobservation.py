@@ -30,7 +30,7 @@ class GalkinMultiObservation(GalkinModel):
         for i in range(self._num_observations):
             self._observation_list.append(GalkinObservation(kwargs_aperture=kwargs_aperture_list[i], kwargs_psf=kwargs_psf_list[i]))
 
-    def dispersion(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
+    def dispersion_map(self, kwargs_mass, kwargs_light, kwargs_anisotropy, num_kin_sampling=1000, num_psf_sampling=100):
         """
         computes the velocity dispersion in each Integral Field Unit
 

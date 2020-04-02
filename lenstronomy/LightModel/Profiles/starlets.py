@@ -86,7 +86,13 @@ class Starlets(object):
         :param n_scales: number of decomposition scales
         :return: reconstructed signal as 1D array of shape (n_scales*n_pixels,)
         """
-        return util.cube2array(self.decomposition_2d(image, n_scales))
+        if len(image.shape) == 1:
+            image_2d = util.array2image(image)
+        elif len(image.shape) == 2:
+            image_2d = image
+        else:
+            raise ValueError("image has not the right shape (1D or 2D arrays are supported for starlets decomposition)")
+        return util.cube2array(self.decomposition_2d(image_2d, n_scales))
 
     def decomposition_2d(self, image, n_scales):
         """

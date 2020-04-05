@@ -104,10 +104,10 @@ class ProfileListBase(object):
         elif lens_type == 'SPEP':
             from lenstronomy.LensModel.Profiles.spep import SPEP
             return SPEP()
-        elif lens_type == 'SPEMD':
+        elif lens_type == 'PEMD':
             from lenstronomy.LensModel.Profiles.pemd import PEMD
             return PEMD()
-        elif lens_type == 'SPEMD_SMOOTH':
+        elif lens_type == 'SPEMD':
             from lenstronomy.LensModel.Profiles.spemd import SPEMD
             return SPEMD()
         elif lens_type == 'NFW':

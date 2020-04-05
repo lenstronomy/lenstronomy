@@ -90,7 +90,6 @@ class FittingSequence(object):
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
-                print(self._mcmc_init_samples, 'test init samples')
                 mcmc_output = self.mcmc(**kwargs)
                 kwargs_result = self._result_from_mcmc(mcmc_output)
                 self._updateManager.update_param_state(**kwargs_result)

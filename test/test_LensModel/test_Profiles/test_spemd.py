@@ -19,9 +19,9 @@ class TestSPEMD(object):
     tests the Gaussian methods
     """
     def setup(self):
-        from lenstronomy.LensModel.Profiles.spemd import SPEMD
+        from lenstronomy.LensModel.Profiles.pemd import PEMD
         from lenstronomy.LensModel.Profiles.spep import SPEP
-        self.SPEMD = SPEMD()
+        self.SPEMD = PEMD()
         self.SPEP = SPEP()
 
     def test_function(self):
@@ -202,8 +202,8 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_x[0], f_x_spep[0], decimal=4)
 
     def test_bounds(self):
-        from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
-        profile = SPEMD_SMOOTH()
+        from lenstronomy.LensModel.Profiles.spemd import SPEMD
+        profile = SPEMD()
         compute_bool = profile._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)
         assert compute_bool is False
 

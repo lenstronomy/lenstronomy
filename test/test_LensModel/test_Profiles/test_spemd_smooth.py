@@ -19,8 +19,8 @@ class TestSPEMD(object):
     tests the Gaussian methods
     """
     def setup(self):
-        from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
-        self.SPEMD_SMOOT = SPEMD_SMOOTH()
+        from lenstronomy.LensModel.Profiles.spemd import SPEMD
+        self.SPEMD_SMOOT = SPEMD()
         from lenstronomy.LensModel.Profiles.nie import NIE
         self.NIE = NIE()
 

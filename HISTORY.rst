@@ -181,3 +181,10 @@ History
 * added cored-Sersic profile
 * dependency for PSO to CosmoHammer removed
 * MPI and multi-threading for PSO and MCMC improved and compatible with python3
+
+
+1.5.0 (2020-04-05)
+++++++++++++++++++
+* Re-naming SPEMD to PEMD, SPEMD_SMOOTH to SPEMD
+* adaptive numerics improvement
+* multi-processing improvements

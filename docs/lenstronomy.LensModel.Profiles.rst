@@ -76,6 +76,22 @@ lenstronomy.LensModel.Profiles.cored\_density module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.cored\_density\_2 module
+-------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.cored_density_2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.cored\_density\_mst module
+---------------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.cored_density_mst
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.curved\_arc module
 -------------------------------------------------
 
@@ -252,6 +268,14 @@ lenstronomy.LensModel.Profiles.p\_jaffe\_ellipse module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.pemd module
+------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.pemd
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.point\_mass module
 -------------------------------------------------
 
@@ -344,14 +368,6 @@ lenstronomy.LensModel.Profiles.spemd module
 -------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.spemd
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy.LensModel.Profiles.spemd\_smooth module
----------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.spemd_smooth
     :members:
     :undoc-members:
     :show-inheritance:

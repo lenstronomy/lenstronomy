@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
 
     lenstronomy.Sampling.Likelihoods
+    lenstronomy.Sampling.Pool
     lenstronomy.Sampling.Samplers
 
 Submodules
@@ -28,18 +29,18 @@ lenstronomy.Sampling.parameters module
     :undoc-members:
     :show-inheritance:
 
-lenstronomy.Sampling.reinitialize module
-----------------------------------------
-
-.. automodule:: lenstronomy.Sampling.reinitialize
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 lenstronomy.Sampling.sampler module
 -----------------------------------
 
 .. automodule:: lenstronomy.Sampling.sampler
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.Sampling.special\_param module
+------------------------------------------
+
+.. automodule:: lenstronomy.Sampling.special_param
     :members:
     :undoc-members:
     :show-inheritance:

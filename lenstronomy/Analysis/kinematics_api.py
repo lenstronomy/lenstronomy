@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import copy
-from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
+from lenstronomy.GalKin.galkin_multiobservation import GalkinMultiObservation
 from lenstronomy.GalKin.galkin import Galkin
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import class_creator
@@ -18,7 +18,7 @@ class KinematicsAPI(object):
     """
 
     def __init__(self, z_lens, z_source, kwargs_model, kwargs_aperture, kwargs_seeing, anisotropy_model, cosmo=None,
-                 lens_model_kinematics_bool=None, light_model_kinematics_bool=None,
+                 lens_model_kinematics_bool=None, light_model_kinematics_bool=None, multi_observations=False,
                  kwargs_numerics_galkin=None, analytic_kinematics=False, Hernquist_approx=False, MGE_light=False,
                  MGE_mass=False, kwargs_mge_light=None, kwargs_mge_mass=None, sampling_number=1000,
                  num_kin_sampling=1000, num_psf_sampling=100):
@@ -36,6 +36,9 @@ class KinematicsAPI(object):
         :param light_model_kinematics_bool: bool list of length of the light model. Only takes a subset of all the models
             as part of the kinematics computation (can be used to ignore light components that do not describe the main
             deflector
+        :param multi_observations: bool, if True uses multi-observation to predict a set of different observations with
+            the GalkinMultiObservation() class. kwargs_aperture and kwargs_seeing require to be lists of the individual
+            observations.
         :param anisotropy_model: type of stellar anisotropy model. See details in MamonLokasAnisotropy() class of lenstronomy.GalKin.anisotropy
         :param analytic_kinematics: boolean, if True, used the analytic JAM modeling for a power-law profile on top of a Hernquist light profile
          ATTENTION: This may not be accurate for your specific problem!
@@ -89,6 +92,7 @@ class KinematicsAPI(object):
         self._Hernquist_approx = Hernquist_approx
         self._MGE_light = MGE_light
         self._MGE_mass = MGE_mass
+        self._multi_observations = multi_observations
 
     def velocity_dispersion(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
                             gamma=None, kappa_ext=0):
@@ -196,10 +200,15 @@ class KinematicsAPI(object):
                                                                         analytic_kinematics=self._analytic_kinematics)
         kwargs_model = {'mass_profile_list': mass_profile_list, 'light_profile_list': light_profile_list,
                         'anisotropy_model': self._anisotropy_model}
-        galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
-                        kwargs_psf=self._kwargs_psf_kin,
-                        kwargs_cosmo=self._kwargs_cosmo, kwargs_numerics=self._kwargs_numerics_kin,
-                        analytic_kinematics=self._analytic_kinematics)
+        if self._multi_observations is True:
+            galkin = GalkinMultiObservation(kwargs_model=kwargs_model, kwargs_aperture_list=self._kwargs_aperture_kin,
+                                            kwargs_psf_list=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
+                                            kwargs_numerics=self._kwargs_numerics_kin,
+                                            analytic_kinematics=self._analytic_kinematics)
+        else:
+            galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
+                            kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
+                            kwargs_numerics=self._kwargs_numerics_kin, analytic_kinematics=self._analytic_kinematics)
         return galkin, kwargs_profile, kwargs_light
 
     def kinematic_lens_profiles(self, kwargs_lens, MGE_fit=False, model_kinematics_bool=None, theta_E=None, gamma=None,

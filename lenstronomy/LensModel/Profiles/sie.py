@@ -10,14 +10,19 @@ class SIE(LensProfileBase):
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'theta_E': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, NIE=True):
+    def __init__(self, NIE=True, suppress_fastell=False):
+        """
+
+        :param NIE: bool, if True, is using the NIE analytic model. Otherwise it uses PEMD with gamma=2 from fastell4py
+        :param suppress_fastell: bool, if True, does not raise if fastell4py is not installed
+        """
         self._nie = NIE
         if NIE:
             from lenstronomy.LensModel.Profiles.nie import NIE
             self.profile = NIE()
         else:
-            from lenstronomy.LensModel.Profiles.spemd import SPEMD
-            self.profile = SPEMD()
+            from lenstronomy.LensModel.Profiles.pemd import PEMD
+            self.profile = PEMD(suppress_fastell=suppress_fastell)
         self._s_scale = 0.0000000001
         self._gamma = 2
         super(SIE, self).__init__()

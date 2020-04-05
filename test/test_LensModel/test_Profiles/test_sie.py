@@ -18,11 +18,11 @@ class TestSIE(object):
         """
         def setup(self):
             from lenstronomy.LensModel.Profiles.sie import SIE
-            from lenstronomy.LensModel.Profiles.spemd import SPEMD
+            from lenstronomy.LensModel.Profiles.pemd import PEMD
             from lenstronomy.LensModel.Profiles.nie import NIE
-            self.sie = SIE(NIE=False)
+            self.sie = SIE(NIE=False, suppress_fastell=True)
             self.sie_nie = SIE(NIE=True)
-            self.spemd = SPEMD()
+            self.spemd = PEMD(suppress_fastell=True)
             self.nie = NIE()
 
         def test_function(self):

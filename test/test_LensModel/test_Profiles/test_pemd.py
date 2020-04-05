@@ -203,7 +203,7 @@ class TestSPEMD(object):
 
     def test_bounds(self):
         from lenstronomy.LensModel.Profiles.spemd import SPEMD
-        profile = SPEMD()
+        profile = SPEMD(suppress_fastell=True)
         compute_bool = profile._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)
         assert compute_bool is False
 

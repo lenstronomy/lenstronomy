@@ -25,7 +25,7 @@ class TestNIE(object):
     def setup(self):
 
         self.nie = NIE()
-        self.spemd = SPEMD()
+        self.spemd = SPEMD(suppress_fastell=True)
         self.sis = SIS()
 
     def test_function(self):

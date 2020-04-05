@@ -38,6 +38,8 @@ class Numerics(PointSourceRendering):
         :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of point_source_kernel
         :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
         """
+        if compute_mode not in ['regular', 'adaptive']:
+            raise ValueError('compute_mode specified as %s not valid. Options are "adaptive", "regular"')
         # if no super sampling, turn the supersampling convolution off
         self._psf_type = psf.psf_type
         if not isinstance(supersampling_factor, int):
@@ -99,7 +101,6 @@ class Numerics(PointSourceRendering):
             self._high_res_return = True
         else:
             self._high_res_return = False
-
 
     def re_size_convolve(self, flux_array, unconvolved=False):
         """

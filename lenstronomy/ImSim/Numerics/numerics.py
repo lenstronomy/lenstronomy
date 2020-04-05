@@ -127,13 +127,14 @@ class Numerics(PointSourceRendering):
         """
         return self._grid.coordinates_evaluate
 
-    def _supersampling_cut_kernel(self, kernel_super, convolution_kernel_size, supersampling_factor):
+    @staticmethod
+    def _supersampling_cut_kernel(kernel_super, convolution_kernel_size, supersampling_factor):
         """
 
-        :param kernel_super: supersampled kernel
+        :param kernel_super: super-sampled kernel
         :param convolution_kernel_size: size of convolution kernel in units of regular pixels (odd)
         :param supersampling_factor: super-sampling factor of convolution kernel
-        :return: cut out kernel in supersampling size
+        :return: cut out kernel in super-sampling size
         """
         if convolution_kernel_size is not None:
             size = convolution_kernel_size * supersampling_factor

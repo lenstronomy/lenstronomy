@@ -68,7 +68,7 @@ class TestImageModel(object):
         self.kwargs_ps = [{'ra_source': 0.01, 'dec_source': 0.0,
                        'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         point_source_class = PointSource(point_source_type_list=['SOURCE_POSITION'], fixed_magnification_list=[True])
-        kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': False, 'compute_mode': 'gaussian'}
+        kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': False}
         imageModel = ImageModel(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class, point_source_class, kwargs_numerics=kwargs_numerics)
         image_sim = sim_util.simulate_simple(imageModel, self.kwargs_lens, self.kwargs_source,
                                        self.kwargs_lens_light, self.kwargs_ps)

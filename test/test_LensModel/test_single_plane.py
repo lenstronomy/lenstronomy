@@ -5,6 +5,13 @@ import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.Profiles.sis import SIS
+import unittest
+
+try:
+    import fastell4py
+    bool_test = True
+except:
+    bool_test = False
 
 
 class TestLensModel(object):
@@ -60,10 +67,27 @@ class TestLensModel(object):
         npt.assert_almost_equal(alphay_1_1 + alphay_1_2, alphay_full, decimal=5)
 
     def test_init(self):
-        lens_model_list = ['TNFW', 'PEMD', 'SPEMD', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC', 'NFW_MC',
+        lens_model_list = ['TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC', 'NFW_MC',
                            'ARC_PERT']
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == 'Rs'
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        """
+        check whether raises occurs if fastell4py is not installed
+
+        :return:
+        """
+        if bool_test is False:
+            with self.assertRaises(ImportError):
+                SinglePlane(lens_model_list=['PEMD'])
+            with self.assertRaises(ImportError):
+                SinglePlane(lens_model_list=['SPEMD'])
+        else:
+            SinglePlane(lens_model_list=['PEMD', 'SPEMD'])
 
 
 if __name__ == '__main__':

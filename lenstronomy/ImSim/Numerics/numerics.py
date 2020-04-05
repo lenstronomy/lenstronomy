@@ -95,6 +95,11 @@ class Numerics(PointSourceRendering):
             raise ValueError('psf_type %s not valid! Chose either NONE, GAUSSIAN or PIXEL.' % self._psf_type)
         super(Numerics, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_supersampling_factor,
                                        psf=psf)
+        if supersampling_convolution is True:
+            self._high_res_return = True
+        else:
+            self._high_res_return = False
+
 
     def re_size_convolve(self, flux_array, unconvolved=False):
         """
@@ -104,7 +109,8 @@ class Numerics(PointSourceRendering):
         :return: convolved image on regular pixel grid, 2d array
         """
         # add supersampled region to lower resolution on
-        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array)
+        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array,
+                                                                                     high_res_return=self._high_res_return)
         if unconvolved is True or self._psf_type == 'NONE':
             image_conv = image_low_res
         else:

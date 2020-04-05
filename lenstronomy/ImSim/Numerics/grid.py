@@ -49,16 +49,21 @@ class AdaptiveGrid(Coordinates1D):
         dec_joint = np.append(dec_low, dec_high)
         return ra_joint, dec_joint
 
-    def flux_array2image_low_high(self, flux_array):
+    def flux_array2image_low_high(self, flux_array, high_res_return=True):
         """
 
         :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order
+        :param high_res_return: bool, if True also returns the high resolution image
+         (needs more computation and is only needed when convolution is performed on the supersampling level)
         :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)
         """
         low_res_values = flux_array[0:self._num_low_res]
         high_res_values = flux_array[self._num_low_res:]
         image_low_res = self._merge_low_high_res(low_res_values, high_res_values)
-        image_high_res_partial = self._high_res_image(high_res_values)
+        if high_res_return is True:
+            image_high_res_partial = self._high_res_image(high_res_values)
+        else:
+            image_high_res_partial = None
         return image_low_res, image_high_res_partial
 
     @property
@@ -187,7 +192,7 @@ class RegularGrid(Coordinates1D):
         """
         return self._ra_subgrid, self._dec_subgrid
 
-    def flux_array2image_low_high(self, flux_array):
+    def flux_array2image_low_high(self, flux_array, **kwargs):
         """
 
         :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order

@@ -40,12 +40,9 @@ class ImageSparseFit(ImageFit):
                                              point_source_class=point_source_class, extinction_class=extinction_class, 
                                              kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
                                              psf_error_map_bool_list=psf_error_map_bool_list)
-
-        # numerics for source plane has a different supersampling resolution
+        
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
-        kwargs_numerics_source = kwargs_numerics.copy()
-        kwargs_numerics_source['supersampling_factor'] = self._subgrid_res_source
-        self.ImageNumerics_source = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        self.ImageNumerics_source = self._setup_source_numerics(kwargs_numerics, self._subgrid_res_source)
 
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
@@ -56,30 +53,30 @@ class ImageSparseFit(ImageFit):
             model_list = self.SourceModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
-            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel,
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source,
+                                                   self.SourceModel, 
                                                    likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_point_sources:
             model_list = self.LensLightModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
-            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel, self.LensLightModel, 
+            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source, 
+                                                       self.SourceModel, self.LensLightModel, 
                                                        likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_lens_light:
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
-            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceModel, 
+            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source, 
+                                                     self.SourceModel, 
                                                      self._image_linear_solve_point_sources, #TODO: not fully satisfying
                                                      likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         # source <-> image pixelated mapping
-        self.lensingOperator = LensingOperator(self.Data, self.LensModel, subgrid_res_source=self._subgrid_res_source,
-                                               source_interpolation=kwargs_sparse_solver.get('source_interpolation', 'bilinear'),
-                                               minimal_source_plane=False)
+        self.lensingOperator = self.sparseSolver.lensingOperator
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None, update_lens_mapping=True):
+                                  unconvolved=False, de_lensed=False, k=None):
         """
         Overwrites ImageModel method.
-        ImageModel.source_surface_brightness() may not work for some settings.
 
         computes the source surface brightness distribution
 
@@ -89,7 +86,7 @@ class ImageSparseFit(ImageFit):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param update_lens_mapping: if False, prevent 
+        :param update_lens_mapping: if False, prevent the pixelated lensing mapping to be updated (save computation time). 
         :return: 1d array of surface brightness pixels
         """
         # ra_grid, dec_grid = self.lensingOperator.sourcePlane.grid()
@@ -104,10 +101,11 @@ class ImageSparseFit(ImageFit):
             source_light = self.ImageNumerics_source.re_size_convolve(source_light, unconvolved=unconvolved)
         else:
             source_light = self.lensingOperator.source2image(source_light, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special,
-                                                             update_lens=update_lens_mapping)
+                                                             update_mapping=True, original_source_grid=True)
             source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         
         # re_size_convolve multiplied by self.Data.pixel_width**2, but flux normalization is handled in lensingOperator
+        #TODO: introduce a parameter in re_size_convolve() to avoid multiplying by this factor
         source_light_final = source_light / self.Data.pixel_width**2
         return source_light_final
 
@@ -297,3 +295,10 @@ class ImageSparseFit(ImageFit):
             kwargs_lens_light[0]['center_x'] = 0
             kwargs_lens_light[0]['center_y'] = 0
         return kwargs_source, kwargs_lens_light
+
+    def _setup_source_numerics(self, kwargs_numerics, subgrid_res_source):
+        # numerics for source plane has a different supersampling resolution
+        kwargs_numerics_source = kwargs_numerics.copy()
+        kwargs_numerics_source['supersampling_factor'] = subgrid_res_source
+        kwargs_numerics_source['compute_mode'] = 'regular'
+        return NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)

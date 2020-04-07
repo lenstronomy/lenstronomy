@@ -140,3 +140,7 @@ class Numerics(PointSourceRendering):
     @property
     def convolution_class(self):
         return self._conv
+
+    @property
+    def grid_class(self):
+        return self._grid

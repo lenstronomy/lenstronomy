@@ -83,6 +83,14 @@ class NumericsSubFrame(PointSourceRendering):
         """
         return self._numerics_subframe.convolution_class
 
+    @property
+    def grid_class(self):
+        """
+
+        :return: grid class (can be RegularGrid, AdaptiveGrid)
+        """
+        return self._numerics_subframe.grid_class
+
     def _complete_frame(self, image_sub_frame):
         """
         :param image_sub_frame: 2d numpy array of size of the sub-frame

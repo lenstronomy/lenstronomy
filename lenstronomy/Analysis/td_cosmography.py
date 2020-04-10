@@ -21,7 +21,24 @@ class TDCosmography(KinematicsAPI):
 
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                 light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None):
+                 light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None,
+                 multi_observations=False):
+        """
+
+        :param z_lens: redshift of deflector
+        :param z_source: redshift of source
+        :param kwargs_model: model configurations (according to FittingSequence)
+        :param cosmo_fiducial: fiducial cosmology used to compute angular diameter distances where required
+        :param lens_model_kinematics_bool: (optional) bool list, corresponding to lens models being included into the
+         kinematics modeling
+        :param light_model_kinematics_bool: (optional) bool list, corresponding to lens light models being included
+         into the kinematics modeling
+        :param kwargs_seeing: seeing conditions (see observation class in Galkin)
+        :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)
+        :param anisotropy_model: string, anisotropy model type
+        :param multi_observations: bool, if True, interprets kwargs_aperture and kwargs_seeing as lists of multiple
+         observations
+        """
 
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
@@ -34,7 +51,7 @@ class TDCosmography(KinematicsAPI):
                                             cosmo=cosmo_fiducial, lens_model_kinematics_bool=lens_model_kinematics_bool,
                                             light_model_kinematics_bool=light_model_kinematics_bool,
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
-                                            anisotropy_model=anisotropy_model)
+                                            anisotropy_model=anisotropy_model, multi_observations=multi_observations)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """

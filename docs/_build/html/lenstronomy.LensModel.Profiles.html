@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.3.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.5.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -1864,6 +1864,420 @@ For this profile those are identical.</p>
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.cored_density.CoredDensity.upper_limit_default">
 <code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'r_core': 100, 'sigma0': 10}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density.CoredDensity.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.cored_density_2">
+<span id="lenstronomy-lensmodel-profiles-cored-density-2-module"></span><h2>lenstronomy.LensModel.Profiles.cored_density_2 module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.cored_density_2" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.cored_density_2.</code><code class="descname">CoredDensity2</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
+<p>class for a uniform cored density dropping steep in the outskirts
+credits for suggesting this profile goes to Kfir Blum
+3d rho(r) = 2/pi * Sigma_crit R_c**2 * (R_c**2 + r**2)**(-3/2)
+This profile drops as rho(r) <a href="#id1"><span class="problematic" id="id2">**</span></a>(-3) like an NFW profile</p>
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.alpha_r">
+<em class="property">static </em><code class="descname">alpha_r</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.alpha_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.alpha_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>radial deflection angle of the cored density profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angle</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.d_alpha_dr">
+<em class="property">static </em><code class="descname">d_alpha_dr</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.d_alpha_dr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.d_alpha_dr" title="Permalink to this definition">¶</a></dt>
+<dd><p>radial derivatives of the radial deflection angle</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dalpha/dr</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density">
+<em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">density at radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density_2d">
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>projected density at projected radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate in angular units</li>
+<li><strong>y</strong> – y-coordinate in angular units</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+<li><strong>center_x</strong> – center of the profile</li>
+<li><strong>center_y</strong> – center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">projected density</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the density at 3d radius r given lens model parameterization.
+The integral in the LOS projection of this quantity results in the convergence quantity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">density at radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>deflection angle of cored density profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate in angular units</li>
+<li><strong>y</strong> – y-coordinate in angular units</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+<li><strong>center_x</strong> – center of the profile</li>
+<li><strong>center_y</strong> – center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">alpha_x, alpha_y  at (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>potential of cored density profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate in angular units</li>
+<li><strong>y</strong> – y-coordinate in angular units</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+<li><strong>center_x</strong> – center of the profile</li>
+<li><strong>center_y</strong> – center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential at (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>sigma0</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate in angular units</li>
+<li><strong>y</strong> – y-coordinate in angular units</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+<li><strong>center_x</strong> – center of the profile</li>
+<li><strong>center_y</strong> – center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Hessian df/dxdx, df/dydy, df/dxdy at position (x, y)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.kappa_r">
+<em class="property">static </em><code class="descname">kappa_r</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.kappa_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.kappa_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>convergence of the cored density profile. This routine is also for testing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">convergence at r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'r_core': 0, 'sigma0': -1}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_2d">
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed in cylinder of radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed in cylinder of radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_3d">
+<em class="property">static </em><code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed 3d radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 3d radius</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
+For this profile those are identical.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (angular scale)</li>
+<li><strong>sigma0</strong> – convergence in the core</li>
+<li><strong>r_core</strong> – core radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 3d radius</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.model_name">
+<code class="descname">model_name</code><em class="property"> = 'CORED_DENSITY_2'</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.model_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.param_names">
+<code class="descname">param_names</code><em class="property"> = ['sigma0', 'r_core', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'r_core': 100, 'sigma0': 10}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.cored_density_mst">
+<span id="lenstronomy-lensmodel-profiles-cored-density-mst-module"></span><h2>lenstronomy.LensModel.Profiles.cored_density_mst module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.cored_density_mst" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.cored_density_mst.</code><code class="descname">CoredDensityMST</code><span class="sig-paren">(</span><em>profile_type='CORED_DENSITY'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_mst.html#CoredDensityMST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
+<p>approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
+subtracts a mass=sheet that approximates the cored profile in it’s center to counter-act (in approximation) this
+model. This allows for better sampling of the mass-sheet transformed quantities that do not have strong covariances.
+Attention!!! The interpretation of the result is that the mass sheet as ‘CONVERGENCE’ that is present needs to be
+subtracted in post-processing.</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>lambda_approx</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_mst.html#CoredDensityMST.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>deflection angles of approximate mass-sheet correction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>lambda_approx</strong> – approximate mass sheet transform</li>
+<li><strong>r_core</strong> – core radius of the cored density profile</li>
+<li><strong>center_x</strong> – x-center of the profile</li>
+<li><strong>center_y</strong> – y-center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">alpha_x, alpha_y</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>lambda_approx</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_mst.html#CoredDensityMST.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>lensing potential of approximate mass-sheet correction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>lambda_approx</strong> – approximate mass sheet transform</li>
+<li><strong>r_core</strong> – core radius of the cored density profile</li>
+<li><strong>center_x</strong> – x-center of the profile</li>
+<li><strong>center_y</strong> – y-center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential correction</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>lambda_approx</em>, <em>r_core</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_mst.html#CoredDensityMST.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hessian terms of approximate mass-sheet correction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate</li>
+<li><strong>y</strong> – y-coordinate</li>
+<li><strong>lambda_approx</strong> – approximate mass sheet transform</li>
+<li><strong>r_core</strong> – core radius of the cored density profile</li>
+<li><strong>center_x</strong> – x-center of the profile</li>
+<li><strong>center_y</strong> – y-center of the profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">df/dxx, df/dyy, df/dxy</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'lambda_approx': -1, 'r_core': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.param_names">
+<code class="descname">param_names</code><em class="property"> = ['lambda_approx', 'r_core', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'lambda_approx': 10, 'r_core': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -5453,7 +5867,7 @@ kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2</p>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>This class contains the function and the derivatives of the non-singular isothermal ellipse.
 See Keeton&amp;Kochanek 1998, <a class="reference external" href="https://arxiv.org/pdf/astro-ph/9705194.pdf">https://arxiv.org/pdf/astro-ph/9705194.pdf</a>
-kappa =  b <a href="#id1"><span class="problematic" id="id2">*</span></a>(q2(s2 + x2) + y2􏰉)−1/2</p>
+kappa =  b <a href="#id3"><span class="problematic" id="id4">*</span></a>(q2(s2 + x2) + y2􏰉)−1/2</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>s</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIEMajorAxis.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -5857,6 +6271,150 @@ based on Eliasdottir (2013)</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-lenstronomy.LensModel.Profiles.pemd">
+<span id="lenstronomy-lensmodel-profiles-pemd-module"></span><h2>lenstronomy.LensModel.Profiles.pemd module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.pemd" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD">
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.pemd.</code><code class="descname">PEMD</code><span class="sig-paren">(</span><em>suppress_fastell=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
+<p>class for power law ellipse mass density profile.
+This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
+to perform the numerical integral using the FASTELL code by Renan Barkana.</p>
+<p>The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
+(theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1=None</em>, <em>e2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the density at 3d radius r given lens model parameterization.
+The integral in the LOS projection of this quantity results in the convergence quantity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius within the mass is computed</li>
+<li><strong>theta_E</strong> – Einstein radius</li>
+<li><strong>gamma</strong> – power-law slope</li>
+<li><strong>e1</strong> – eccentricity component (not used)</li>
+<li><strong>e2</strong> – eccentricity component (not used)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed a 3D radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.derivatives" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate (angle)</li>
+<li><strong>y</strong> – y-coordinate (angle)</li>
+<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
+<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>center_x</strong> – x-position of lens center</li>
+<li><strong>center_y</strong> – y-position of lens center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angles alpha_x, alpha_y</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.function" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate (angle)</li>
+<li><strong>y</strong> – y-coordinate (angle)</li>
+<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
+<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>center_x</strong> – x-position of lens center</li>
+<li><strong>center_y</strong> – y-position of lens center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.hessian" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-coordinate (angle)</li>
+<li><strong>y</strong> – y-coordinate (angle)</li>
+<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
+<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>center_x</strong> – x-position of lens center</li>
+<li><strong>center_y</strong> – y-position of lens center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Hessian components f_xx, f_yy, f_xy</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1.5, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1=None</em>, <em>e2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the spherical power-law mass enclosed (with SPP routine)
+:param r: radius within the mass is computed
+:param theta_E: Einstein radius
+:param gamma: power-law slope
+:param e1: eccentricity component (not used)
+:param e2: eccentricity component (not used)
+:return: mass enclosed a 3D radius r</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.param_names">
+<code class="descname">param_names</code><em class="property"> = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 2.5, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-lenstronomy.LensModel.Profiles.point_mass">
 <span id="lenstronomy-lensmodel-profiles-point-mass-module"></span><h2>lenstronomy.LensModel.Profiles.point_mass module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.point_mass" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -5949,7 +6507,7 @@ based on Eliasdottir (2013)</p>
 <span id="lenstronomy-lensmodel-profiles-sersic-module"></span><h2>lenstronomy.LensModel.Profiles.sersic module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.sersic.Sersic">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a>, <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>this class contains functions to evaluate a Sersic mass profile: <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0311559.pdf">https://arxiv.org/pdf/astro-ph/0311559.pdf</a></p>
 <dl class="method">
@@ -6136,7 +6694,7 @@ with the ellipticity introduced in the convergence (not the potential).</p>
 <span id="lenstronomy-lensmodel-profiles-sersic-utils-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_utils module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_utils.</code><code class="descname">SersicUtil</code><span class="sig-paren">(</span><em>smoothing=1e-06</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_utils.</code><code class="descname">SersicUtil</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.alpha_abs">
@@ -6229,26 +6787,26 @@ Prugniel &amp; Simien (1997)
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux">
-<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>Re=None</em>, <em>gamma=None</em>, <em>e1=None</em>, <em>e2=None</em>, <em>center_x=None</em>, <em>center_y=None</em>, <em>alpha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1=0</em>, <em>e2=0</em>, <em>Re=None</em>, <em>gamma=None</em>, <em>center_x=None</em>, <em>center_y=None</em>, <em>alpha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>amp</strong> – </li>
-<li><strong>R_sersic</strong> – </li>
-<li><strong>Re</strong> – </li>
-<li><strong>n_sersic</strong> – </li>
-<li><strong>gamma</strong> – </li>
-<li><strong>e1</strong> – </li>
-<li><strong>e2</strong> – </li>
-<li><strong>center_x</strong> – </li>
-<li><strong>center_y</strong> – </li>
-<li><strong>alpha</strong> – </li>
+<li><strong>amp</strong> – amplitude parameter in Sersic function (surface brightness at R_sersic</li>
+<li><strong>R_sersic</strong> – half-light radius in semi-major axis</li>
+<li><strong>Re</strong> – Cored Sersic function parameter (optional)</li>
+<li><strong>n_sersic</strong> – Sersic index</li>
+<li><strong>gamma</strong> – Cored Sersic function parameter (optional)</li>
+<li><strong>e1</strong> – eccentricity</li>
+<li><strong>e2</strong> – eccentricity</li>
+<li><strong>center_x</strong> – profile center (ignored)</li>
+<li><strong>center_y</strong> – profile center (ignored)</li>
+<li><strong>alpha</strong> – Cored Sersic function parameter (optional)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Analytic integral of the total flux of the Sersic profile</p>
 </td>
 </tr>
 </tbody>
@@ -6625,7 +7183,7 @@ Prugniel &amp; Simien (1997)
 <span id="lenstronomy-lensmodel-profiles-sie-module"></span><h2>lenstronomy.LensModel.Profiles.sie module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sie" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.sie.SIE">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sie.</code><code class="descname">SIE</code><span class="sig-paren">(</span><em>NIE=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sie.html#SIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sie.SIE" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sie.</code><code class="descname">SIE</code><span class="sig-paren">(</span><em>NIE=True</em>, <em>suppress_fastell=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sie.html#SIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sie.SIE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class for singular isothermal ellipsoid (SIS with ellipticity)</p>
 <dl class="staticmethod">
@@ -7106,151 +7664,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <span id="lenstronomy-lensmodel-profiles-spemd-module"></span><h2>lenstronomy.LensModel.Profiles.spemd module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.spemd" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.spemd.</code><code class="descname">SPEMD</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
-<p>class for power law ellipse mass density profile.
-This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
-to perform the numerical integral using the FASTELL code by Renan Barkana.</p>
-<p>The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
-(theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.density_lens">
-<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1=None</em>, <em>e2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.density_lens" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the density at 3d radius r given lens model parameterization.
-The integral in the LOS projection of this quantity results in the convergence quantity.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – radius within the mass is computed</li>
-<li><strong>theta_E</strong> – Einstein radius</li>
-<li><strong>gamma</strong> – power-law slope</li>
-<li><strong>e1</strong> – eccentricity component (not used)</li>
-<li><strong>e2</strong> – eccentricity component (not used)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed a 3D radius r</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – x-coordinate (angle)</li>
-<li><strong>y</strong> – y-coordinate (angle)</li>
-<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
-<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
-<li><strong>e1</strong> – eccentricity component</li>
-<li><strong>e2</strong> – eccentricity component</li>
-<li><strong>center_x</strong> – x-position of lens center</li>
-<li><strong>center_y</strong> – y-position of lens center</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angles alpha_x, alpha_y</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.function" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – x-coordinate (angle)</li>
-<li><strong>y</strong> – y-coordinate (angle)</li>
-<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
-<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
-<li><strong>e1</strong> – eccentricity component</li>
-<li><strong>e2</strong> – eccentricity component</li>
-<li><strong>center_x</strong> – x-position of lens center</li>
-<li><strong>center_y</strong> – y-position of lens center</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – x-coordinate (angle)</li>
-<li><strong>y</strong> – y-coordinate (angle)</li>
-<li><strong>theta_E</strong> – Einstein radius (angle), pay attention to specific definition!</li>
-<li><strong>gamma</strong> – logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal</li>
-<li><strong>e1</strong> – eccentricity component</li>
-<li><strong>e2</strong> – eccentricity component</li>
-<li><strong>center_x</strong> – x-position of lens center</li>
-<li><strong>center_y</strong> – y-position of lens center</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Hessian components f_xx, f_yy, f_xy</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1.5, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.lower_limit_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.mass_3d_lens">
-<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1=None</em>, <em>e2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the spherical power-law mass enclosed (with SPP routine)
-:param r: radius within the mass is computed
-:param theta_E: Einstein radius
-:param gamma: power-law slope
-:param e1: eccentricity component (not used)
-:param e2: eccentricity component (not used)
-:return: mass enclosed a 3D radius r</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.param_names">
-<code class="descname">param_names</code><em class="property"> = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.param_names" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 2.5, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.upper_limit_default" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-lenstronomy.LensModel.Profiles.spemd_smooth">
-<span id="lenstronomy-lensmodel-profiles-spemd-smooth-module"></span><h2>lenstronomy.LensModel.Profiles.spemd_smooth module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.spemd_smooth" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.spemd_smooth.</code><code class="descname">SPEMD_SMOOTH</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.spemd.</code><code class="descname">SPEMD</code><span class="sig-paren">(</span><em>suppress_fastell=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class for smooth power law ellipse mass density profile. This class effectively performs the FASTELL calculations
 by Renan Barkana. The parameters are changed and represent a spherically averaged Einstein radius an a logarithmic
@@ -7263,11 +7677,10 @@ The parameters are position (x1,x2), overall factor
 squared (s2), and the output potential (phi).
 The projected mass density distribution, in units of the
 critical density, is kappa(x1,x2)=q [u2+s2]^(-gam), where
-u2=[x1^2+x2^2/(arat^2)].
-#TODO test smoothing with NIE profile</p>
+u2=[x1^2+x2^2/(arat^2)].</p>
 <dl class="staticmethod">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.convert_params">
-<em class="property">static </em><code class="descname">convert_params</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>q</em>, <em>s_scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.convert_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.convert_params" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.convert_params">
+<em class="property">static </em><code class="descname">convert_params</code><span class="sig-paren">(</span><em>theta_E</em>, <em>gamma</em>, <em>q</em>, <em>s_scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.convert_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.convert_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>converts parameter defintions into quantities used by the FASTELL fortran library</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -7289,8 +7702,8 @@ u2=[x1^2+x2^2/(arat^2)].
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.derivatives" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.derivatives">
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7316,8 +7729,8 @@ u2=[x1^2+x2^2/(arat^2)].
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.function" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.function">
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7343,8 +7756,8 @@ u2=[x1^2+x2^2/(arat^2)].
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.hessian" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.hessian">
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -7370,26 +7783,26 @@ u2=[x1^2+x2^2/(arat^2)].
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.is_not_empty">
-<em class="property">static </em><code class="descname">is_not_empty</code><span class="sig-paren">(</span><em>x1</em>, <em>x2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.is_not_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.is_not_empty" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.is_not_empty">
+<em class="property">static </em><code class="descname">is_not_empty</code><span class="sig-paren">(</span><em>x1</em>, <em>x2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.is_not_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.is_not_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if float or not an empty array
 :return: True if x1 and x2 are either floats/ints or an non-empty array, False if e.g. objects are []
 :rtype: bool</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 's_scale': 0, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.lower_limit_default">
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 's_scale': 0, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.param_names">
-<code class="descname">param_names</code><em class="property"> = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.param_names" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.param_names">
+<code class="descname">param_names</code><em class="property"> = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.param_transform">
-<code class="descname">param_transform</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd_smooth.html#SPEMD_SMOOTH.param_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.param_transform" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.param_transform">
+<code class="descname">param_transform</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/spemd.html#SPEMD.param_transform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.param_transform" title="Permalink to this definition">¶</a></dt>
 <dd><p>transforms parameters in the format of fastell4py</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -7416,8 +7829,8 @@ u2=[x1^2+x2^2/(arat^2)].
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 100, 's_scale': 100, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd_smooth.SPEMD_SMOOTH.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Profiles.spemd.SPEMD.upper_limit_default">
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 100, 's_scale': 100, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.spemd.SPEMD.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -8045,6 +8458,8 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.convergence">lenstronomy.LensModel.Profiles.convergence module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.coreBurkert">lenstronomy.LensModel.Profiles.coreBurkert module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.cored_density">lenstronomy.LensModel.Profiles.cored_density module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.cored_density_2">lenstronomy.LensModel.Profiles.cored_density_2 module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.cored_density_mst">lenstronomy.LensModel.Profiles.cored_density_mst module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.curved_arc">lenstronomy.LensModel.Profiles.curved_arc module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.dipole">lenstronomy.LensModel.Profiles.dipole module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.flexion">lenstronomy.LensModel.Profiles.flexion module</a></li>
@@ -8067,6 +8482,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.numerical_deflections">lenstronomy.LensModel.Profiles.numerical_deflections module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.p_jaffe">lenstronomy.LensModel.Profiles.p_jaffe module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.p_jaffe_ellipse">lenstronomy.LensModel.Profiles.p_jaffe_ellipse module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.pemd">lenstronomy.LensModel.Profiles.pemd module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.point_mass">lenstronomy.LensModel.Profiles.point_mass module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic">lenstronomy.LensModel.Profiles.sersic module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sersic_ellipse_kappa">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa module</a></li>
@@ -8079,7 +8495,6 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sis">lenstronomy.LensModel.Profiles.sis module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.sis_truncate">lenstronomy.LensModel.Profiles.sis_truncate module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.spemd">lenstronomy.LensModel.Profiles.spemd module</a></li>
-<li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.spemd_smooth">lenstronomy.LensModel.Profiles.spemd_smooth module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.spep">lenstronomy.LensModel.Profiles.spep module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.spp">lenstronomy.LensModel.Profiles.spp module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.LensModel.Profiles.tnfw">lenstronomy.LensModel.Profiles.tnfw module</a></li>
@@ -8132,7 +8547,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

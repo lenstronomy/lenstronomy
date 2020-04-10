@@ -4,6 +4,9 @@ this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an e
 to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
 not supporting dill (only pickle) which is required.
 
+Tests show that the MPI mode works with Python 3.7.2 but not with Python 3.7.0 on a specific system due to mpi4py
+dependencies and configurations.
+
 
 Contributions by:
 - Peter K. G. Williams

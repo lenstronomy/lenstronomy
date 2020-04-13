@@ -21,7 +21,7 @@ class FittingSequence(object):
                  verbose=True):
         """
 
-        :param kwargs_data_joint:
+        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
         :param kwargs_model:
         :param kwargs_constraints:
         :param kwargs_likelihood:

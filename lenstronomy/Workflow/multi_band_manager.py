@@ -7,7 +7,7 @@ import copy
 class MultiBandUpdateManager(UpdateManager):
     """
     specific Manager to deal with multiple images with disjoint lens model parameterization. The class inherits the
-    FittingSequence() class and adds functionalities to hold and relieve fixed all lens model parameters of a specific
+    UpdateManager() class and adds functionalities to hold and relieve fixed all lens model parameters of a specific
     frame/image for more convenient use of the FittingSequence.
     """
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, num_bands=0):

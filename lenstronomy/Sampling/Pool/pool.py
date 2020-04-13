@@ -46,6 +46,10 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     It handles the `use_dill` parameters in kwargs, that would otherwise raise an error when processes > 1.
     Any thread in the returned multiprocessing pool (e.g. processes > 1) also default
 
+    The requirement of schwimmbad relies on the master branch (as specified in requirements.txt).
+    The 'use_dill' functionality can raise if not following the requirement specified.
+
+
     Choose between the different pools given options from, e.g., argparse.
 
     Parameters
@@ -66,8 +70,13 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     if mpi:
         if not MPIPool.enabled():
             raise SystemError("Tried to run with MPI but MPIPool not enabled.")
-
-        pool = MPIPool(**kwargs)
+        try:
+            pool = MPIPool(**kwargs)
+        except:
+            raise ImportError('MPIPool of schwimmbad can not be generated. lenstronomy uses a specific branch of '
+                              'schwimmbad specified in the requirements.txt. Make sure you are using the correct '
+                              'version of schwimmbad. In particular the "use_dill" argument is not supported in the '
+                              'pypi version 0.3.0.')
         if not pool.is_master():
             pool.wait()
             sys.exit(0)

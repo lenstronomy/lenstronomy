@@ -2,7 +2,6 @@ import numpy as np
 import copy
 
 from lenstronomy.ImSim.image_solve import ImageFit
-from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
 from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 import lenstronomy.ImSim.de_lens as de_lens
@@ -10,7 +9,7 @@ import lenstronomy.ImSim.de_lens as de_lens
 from slitronomy.Optimization.solver_source import SparseSolverSource
 from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
 from slitronomy.Optimization.solver_source_ps import SparseSolverSourcePS
-from slitronomy.Lensing.lensing_operator import LensingOperator
+
 
 class ImageSparseFit(ImageFit):
     """
@@ -42,7 +41,8 @@ class ImageSparseFit(ImageFit):
                                              psf_error_map_bool_list=psf_error_map_bool_list)
         
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
-        self.ImageNumerics_source = self._setup_source_numerics(kwargs_numerics, self._subgrid_res_source)
+        self.SourceNumerics = self._setup_source_numerics_V1(kwargs_numerics, self._subgrid_res_source)
+        # self.SourceNumerics = self._setup_source_numerics_V2(kwargs_numerics, self._subgrid_res_source)
 
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
@@ -53,20 +53,20 @@ class ImageSparseFit(ImageFit):
             model_list = self.SourceModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
-            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source,
+            self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics,
                                                    self.SourceModel, 
                                                    likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_point_sources:
             model_list = self.LensLightModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
-            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source, 
+            self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
                                                        self.SourceModel, self.LensLightModel, 
                                                        likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif no_lens_light:
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
-            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.ImageNumerics_source, 
+            self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
                                                      self.SourceModel, 
                                                      self._image_linear_solve_point_sources, #TODO: not fully satisfying
                                                      likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
@@ -74,7 +74,7 @@ class ImageSparseFit(ImageFit):
         self.lensingOperator = self.sparseSolver.lensingOperator
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None):
+                                  unconvolved=False, de_lensed=False, k=None, update_mapping=True):
         """
         Overwrites ImageModel method.
 
@@ -86,11 +86,11 @@ class ImageSparseFit(ImageFit):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param update_lens_mapping: if False, prevent the pixelated lensing mapping to be updated (save computation time). 
+        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (save computation time). 
         :return: 1d array of surface brightness pixels
         """
         # ra_grid, dec_grid = self.lensingOperator.sourcePlane.grid()
-        ra_grid, dec_grid = self.ImageNumerics_source.coordinates_evaluate
+        ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
 
         # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
         # i.e. interpolate the image back to center coordinates
@@ -98,10 +98,10 @@ class ImageSparseFit(ImageFit):
         source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
 
         if de_lensed is True:
-            source_light = self.ImageNumerics_source.re_size_convolve(source_light, unconvolved=unconvolved)
+            source_light = self.SourceNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         else:
             source_light = self.lensingOperator.source2image(source_light, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special,
-                                                             update_mapping=True, original_source_grid=True)
+                                                             update_mapping=update_mapping, original_source_grid=True)
             source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         
         # re_size_convolve multiplied by self.Data.pixel_width**2, but flux normalization is handled in lensingOperator
@@ -296,9 +296,32 @@ class ImageSparseFit(ImageFit):
             kwargs_lens_light[0]['center_y'] = 0
         return kwargs_source, kwargs_lens_light
 
-    def _setup_source_numerics(self, kwargs_numerics, subgrid_res_source):
+    def _setup_source_numerics_V1(self, kwargs_numerics, subgrid_res_source):
+        """define a new numerics class specifically for source plane, that may have a different resolution"""
+        from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
         # numerics for source plane has a different supersampling resolution
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = subgrid_res_source
         kwargs_numerics_source['compute_mode'] = 'regular'
         return NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+
+    def _setup_source_numerics_V2(self, kwargs_numerics, subgrid_res_source):
+        """define a new numerics class specifically for source plane, that may have a different resolution"""
+        from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
+        from lenstronomy.Data.pixel_grid import PixelGrid
+        from lenstronomy.Data.psf import PSF
+        # get the axis orientation
+        nx, ny = self.Data.num_pixel_axes
+        nx_source, ny_source = int(nx * subgrid_res_source), int(ny * subgrid_res_source)
+        delta_pix_source = self.Data.pixel_width / float(subgrid_res_source)
+        inverse = True if self.Data.transform_pix2angle[0, 0] < 0 else False
+        left_lower = False  # ?? how to make sure it's consistent with data ?
+        _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ \
+            = util.make_grid_with_coordtransform(nx_source, delta_pix_source, subgrid_res=1,
+                                                 left_lower=left_lower, inverse=inverse)
+        pixel_grid_source = PixelGrid(nx_source, ny_source, Mpix2coord, ra_at_xy_0, dec_at_xy_0)
+        psf = self.PSF  #PSF(psf_type='NONE')
+        kwargs_numerics_source = kwargs_numerics.copy()
+        kwargs_numerics_source['supersampling_factor'] = 1
+        kwargs_numerics_source['compute_mode'] = 'regular'
+        return NumericsSubFrame(pixel_grid=pixel_grid_source, psf=psf, **kwargs_numerics_source)

@@ -103,7 +103,7 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword argument list
         :param compute_window: total window in the image plane where to search for critical curves
         :param start_scale: float, angular scale on which to start the tiling from (if there are two distinct curves in
-        a region, it might only find one.
+         a region, it might only find one.
         :param max_order: int, maximum order in the tiling to compute critical curve triangles
         :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """

@@ -5,45 +5,9 @@ import time
 import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
+from lenstronomy.Sampling.Pool.pool import choose_pool
 import emcee
-import schwimmbad
 from scipy.optimize import minimize
-
-
-def choose_pool(mpi=False, processes=1, **kwargs):
-    """
-    Extends the capabilities of the schwimmbad.choose_pool method.
-    
-    It handles the `use_dill` parameters in kwargs, that would otherwise raise an error when processes > 1.
-    Any thread in the returned multiprocessing pool (e.g. processes > 1) also default
-    
-
-    Docstring from schwimmbad:
-
-    mpi : bool, optional
-        Use the MPI processing pool, :class:`~schwimmbad.mpi.MPIPool`. By
-        default, ``False``, will use the :class:`~schwimmbad.serial.SerialPool`.
-    processes : int, optional
-        Use the multiprocessing pool,
-        :class:`~schwimmbad.multiprocessing.MultiPool`, with this number of
-        processes. By default, ``processes=1``, will use the
-        :class:`~schwimmbad.serial.SerialPool`.
-    **kwargs
-        Any additional kwargs are passed in to the pool class initializer
-        selected by the arguments.
-    """
-    if processes == 1 or mpi:
-        pool = schwimmbad.choose_pool(mpi=mpi, processes=1, **kwargs)
-        is_master = pool.is_master()
-    else:
-        if 'use_dill' in kwargs:
-            # schwimmbad MultiPool does not support dill so we remove this option from the kwargs
-            _ = kwargs.pop('use_dill')
-        pool = schwimmbad.choose_pool(mpi=False, processes=processes, **kwargs)
-        # this MultiPool has no is_master() attribute like the SerialPool and MpiPool
-        # all threads will then be 'master'.
-        is_master = True
-    return pool, is_master
 
 
 class Sampler(object):
@@ -68,7 +32,7 @@ class Sampler(object):
         :param init_pos: starting point for the optimization
         :param n_iterations: maximum number of iterations
         :param method: the optimization method, default is 'Nelder-Mead'
-        returns the best fit for the lens model using the optimization routine specified by method
+        :return: the best fit for the lens model using the optimization routine specified by method
         """
         print('Performing the optimization using algorithm:', method)
         time_start = time.time()
@@ -117,9 +81,9 @@ class Sampler(object):
             lower_start = np.maximum(lower_start, self.lower_limit)
             upper_start = np.minimum(upper_start, self.upper_limit)
 
-        pool, is_master = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
         
-        if mpi is True and is_master:
+        if mpi is True and pool.is_master():
             print('MPI option chosen for PSO.')
 
         pso = ParticleSwarmOptimizer(self.chain.logL,
@@ -132,14 +96,14 @@ class Sampler(object):
         pso.set_global_best(init_pos, [0]*len(init_pos),
                             self.chain.logL(init_pos))
 
-        if is_master:
+        if pool.is_master():
             print('Computing the %s ...' % print_key)
 
         time_start = time.time()
 
         result, [chi2_list, pos_list, vel_list] = pso.optimize(n_iterations)
 
-        if is_master:
+        if pool.is_master():
             kwargs_return = self.chain.param.args2kwargs(result)
             print(pso.global_best.fitness * 2 / (max(
                 self.chain.effective_num_data_points(**kwargs_return), 1)), 'reduced X^2 of best position')
@@ -155,7 +119,8 @@ class Sampler(object):
             print('===================')
         return result, [chi2_list, pos_list, vel_list]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1):
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
+                   initpos=None):
         """
         Run MCMC with emcee.
         For details, please have a look at the documentation of the emcee packager.
@@ -176,22 +141,26 @@ class Sampler(object):
         :type progress: bool
         :param threadCount: number of threats in multi-processing (not applicable for MPI)
         :type threadCount: integer
+        :param initpos: inital walker position to start sampling (optional)
+        :type initpos: numpy array of size num param x num walkser
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
         num_param, _ = self.chain.param.num_param()
-        p0 = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
+        if initpos is None:
+            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
+
         time_start = time.time()
 
-        pool, is_master = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
                                         pool=pool)
 
-        sampler.run_mcmc(p0, n_burn + n_run, progress=progress)
+        sampler.run_mcmc(initpos, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
-        if is_master:
+        if pool.is_master():
             print('Computing the MCMC...')
             print('Number of walkers = ', n_walkers)
             print('Burn-in iterations: ', n_burn)

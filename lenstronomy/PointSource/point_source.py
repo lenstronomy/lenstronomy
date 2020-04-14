@@ -162,8 +162,8 @@ class PointSource(object):
         :param kwargs_lens: lens model keyword argument list
         :param k: None, int or list of int's to select a subset of the point source models in the return
         :param with_amp: bool, if False, ignores the amplitude parameters in the return and instead provides ones for
-        each point source image
-        :return:
+         each point source image
+        :return: a_array, dec_array, amp_array
         """
         self._set_save_cache(True)
         # we make sure we do not re-compute the image positions twice when evaluating image position and their amplitudes

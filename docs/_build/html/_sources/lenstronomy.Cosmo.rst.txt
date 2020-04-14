@@ -1,13 +1,6 @@
 lenstronomy.Cosmo package
 =========================
 
-Subpackages
------------
-
-.. toctree::
-
-    lenstronomy.Cosmo.Sampling
-
 Submodules
 ----------
 

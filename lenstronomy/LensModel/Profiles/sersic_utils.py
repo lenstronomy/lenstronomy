@@ -1,11 +1,12 @@
 import scipy.special as special
 import numpy as np
 import scipy
+from lenstronomy.Util import param_util
 
 
 class SersicUtil(object):
 
-    _s = 0.000001
+    _s = 0.00001
 
     def __init__(self, smoothing=_s):
         self._smoothing = smoothing
@@ -137,7 +138,7 @@ class SersicUtil(object):
 
     def _total_flux(self, r_eff, I_eff, n_sersic):
         """
-        computes total flux of a Sersic profile
+        computes total flux of a round Sersic profile
 
         :param r_eff: projected half light radius
         :param I_eff: surface brightness at r_eff (in same units as r_eff)
@@ -147,23 +148,26 @@ class SersicUtil(object):
         bn = self.b_n(n_sersic)
         return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)
 
-    def total_flux(self, amp, R_sersic, n_sersic, Re=None, gamma=None, e1=None, e2=None, center_x=None, center_y=None,
+    def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, Re=None, gamma=None, center_x=None, center_y=None,
                    alpha=None):
         """
 
-        :param amp:
-        :param R_sersic:
-        :param Re:
-        :param n_sersic:
-        :param gamma:
-        :param e1:
-        :param e2:
-        :param center_x:
-        :param center_y:
-        :param alpha:
-        :return:
+        :param amp: amplitude parameter in Sersic function (surface brightness at R_sersic
+        :param R_sersic: half-light radius in semi-major axis
+        :param Re: Cored Sersic function parameter (optional)
+        :param n_sersic: Sersic index
+        :param gamma: Cored Sersic function parameter (optional)
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: profile center (ignored)
+        :param center_y: profile center (ignored)
+        :param alpha: Cored Sersic function parameter (optional)
+        :return: Analytic integral of the total flux of the Sersic profile
         """
-        return self._total_flux(r_eff=R_sersic, I_eff=amp, n_sersic=n_sersic)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # compute product average half-light radius
+        r_eff = R_sersic * np.sqrt(q)
+        return self._total_flux(r_eff=r_eff, I_eff=amp, n_sersic=n_sersic)
 
     def _R_stable(self, R):
         """
@@ -184,8 +188,9 @@ class SersicUtil(object):
         """
 
         R_ = self._R_stable(R)
+        R_sersic_ = self._R_stable(R_sersic)
         bn = self.b_n(n_sersic)
-        R_frac = R_ / R_sersic
+        R_frac = R_ / R_sersic_
         #R_frac = R_frac.astype(np.float32)
         if isinstance(R_, int) or isinstance(R_, float):
             if R_frac > max_R_frac:

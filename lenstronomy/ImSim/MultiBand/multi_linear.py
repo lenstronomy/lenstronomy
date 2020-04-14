@@ -7,9 +7,28 @@ class MultiLinear(MultiDataBase):
     class to simulate/reconstruct images in multi-band option.
     This class calls functions of image_model.py with different bands with
     joint non-linear parameters and decoupled linear parameters.
+
+    the class supports keyword arguments 'index_lens_model_list', 'index_source_light_model_list',
+    'index_lens_light_model_list', 'index_point_source_model_list', 'index_optical_depth_model_list' in kwargs_model
+    These arguments should be lists of length the number of imaging bands available and each entry in the list
+    is a list of integers specifying the model components being evaluated for the specific band.
+
+    E.g. there are two bands and you want to different light profiles being modeled.
+    - you define two different light profiles lens_light_model_list = ['SERSIC', 'SERSIC']
+    - set index_lens_light_model_list = [[0], [1]]
+    - (optional) for now all the parameters between the two light profiles are independent in the model. You have
+    the possibility to join a subset of model parameters (e.g. joint centroid). See the Param() class for documentation.
+
     """
 
     def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None):
+        """
+
+        :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
+        :param kwargs_model: model option keyword arguments
+        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
+        :param compute_bool: (optinal), bool list to indicate which band to be included in the modeling
+        """
         self.type = 'multi-linear'
         imageModel_list = []
         for band_index in range(len(multi_band_list)):

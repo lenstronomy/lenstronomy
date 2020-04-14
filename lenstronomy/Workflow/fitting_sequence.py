@@ -1,5 +1,4 @@
 from lenstronomy.Workflow.psf_fitting import PsfFitting
-from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
@@ -22,13 +21,14 @@ class FittingSequence(object):
                  verbose=True):
         """
 
-        :param kwargs_data_joint:
+        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
         :param kwargs_model:
         :param kwargs_constraints:
         :param kwargs_likelihood:
         :param kwargs_params:
-        :param mpi:
-        :param verbose: bool, if True
+        :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
+        possible
+        :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
@@ -214,20 +214,20 @@ class FittingSequence(object):
         # run MCMC
         if not init_samples is None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
-            print(num_samples, num_param_prev, num_param, 'shape of init_sample')
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
-                initpos = ReusePositionGenerator(init_samples)
+                n_walkers = num_param * walkerRatio
+                idxs = np.random.choice(len(init_samples), n_walkers)
+                initpos = init_samples[idxs]
             else:
-                print("Can not re-use previous MCMC samples due to change in option")
-                initpos = None
+                raise ValueError("Can not re-use previous MCMC samples as number of parameters have changed!")
         else:
             initpos = None
 
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress)
+                                                  threadCount=threadCount, progress=progress, initpos=initpos)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

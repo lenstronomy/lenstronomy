@@ -36,7 +36,7 @@ class TestVelocityUtil(object):
             r = velocity_util.draw_moffat_r(FWHM, beta)
             r_list.append(r)
         x_array = np.linspace(0, 4 * FWHM, num=100)
-        r_hist, bins = np.histogram(r_list, bins=x_array, normed=True)
+        r_hist, bins = np.histogram(r_list, bins=x_array, density=True)
         alpha = velocity_util.moffat_fwhm_alpha(FWHM, beta)
 
         x_ = x_array[1:] - x_array[1] + x_array[0]

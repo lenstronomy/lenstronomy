@@ -55,7 +55,7 @@ class UpdateManager(object):
 
         self._kwargs_temp = self.init_kwargs
 
-    #TODO check compatibility with number of point sources provided as well as other parameter labelings
+    # TODO: check compatibility with number of point sources provided as well as other parameter labelings
 
     @property
     def init_kwargs(self):

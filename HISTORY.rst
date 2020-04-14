@@ -170,3 +170,21 @@ History
 1.3.0 (2020-01-10)
 ++++++++++++++++++
 * image position likelihood description improved
+
+
+1.4.0 (2020-03-26)
+++++++++++++++++++
+* Major re-design of GalKin module, added new anisotropy modeling and IFU aperture type
+* Updated design of the Analysis.kinematicsAPI sub-module
+* Convention and redundancy in the Cosmo module changed
+* NIE, SIE and SPEMD model consistent with their ellipticity and Einstein radius definition
+* added cored-Sersic profile
+* dependency for PSO to CosmoHammer removed
+* MPI and multi-threading for PSO and MCMC improved and compatible with python3
+
+
+1.5.0 (2020-04-05)
+++++++++++++++++++
+* Re-naming SPEMD to PEMD, SPEMD_SMOOTH to SPEMD
+* adaptive numerics improvement
+* multi-processing improvements

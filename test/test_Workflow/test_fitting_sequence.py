@@ -280,11 +280,10 @@ class TestFittingSequence(object):
         fitting_list.append(['SIMPLEX', kwargs_simplex])
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2}
+        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2, 'sampler_type': 'EMCEE'}
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
-        fitting_list.append(['MCMC', kwargs_mcmc])
-        kwargs_mcmc['sampler_type'] = 'EMCEE'
+        kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])
         fitting_list.append(['MCMC', kwargs_mcmc])
 
         def custom_likelihood(kwargs_lens, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,

@@ -58,7 +58,7 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
     $ python setup.py install --user
 
 
-Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``, ``CosmoHammer``
+Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``
 
 
 
@@ -67,12 +67,10 @@ Modelling Features
 
 * a variety of analytic lens model profiles
 * various lensing computation tools (lens equation solver, ray-tracing etc)
-* integrated support for multi-lens plane and multi-source plane modelling
-* API to conveniently simulate mock lenses
+* API to conveniently simulating mock lenses
 * Extended source reconstruction with basis sets (shapelets)
-* numerical options for sub-grid ray-tracing and sub-pixel convolution
-* Particle swarm optimization for parameter fitting
-* MCMC (emcee) and nested sampling (MultiNest, DyPolyChord, or Dynesty)
+* Model fitting and statistical inference tools with MPI and multi-threading support (Particle swarm optimization, emcee, MultiNest, DyPolyChord, or Dynesty) with MPI and multi-threading support
+* integrated support for multi-lens plane and multi-source plane modelling
 * Kinematic modelling (Jeans anisotropy models) of lens deflector galaxy
 * Cosmographic inference tools
 * ...and much more
@@ -125,8 +123,8 @@ Multiple affiliated packages that make use of lenstronomy can be found `here <ht
 (not complete) and further packages are under development by the community.
 
 
-Mailing list
-------------
+Mailing list and Slack channel
+------------------------------
 
 You can join the **lenstronomy** mailing list by signing up on the
 `google groups page <https://groups.google.com/forum/#!forum/lenstronomy>`_.
@@ -134,6 +132,10 @@ You can join the **lenstronomy** mailing list by signing up on the
 
 The email list is meant to provide a communication platform between users and developers. You can ask questions,
 and suggest new features. New releases will be announced via this mailing list.
+
+We also have a `Slack channel <https://lenstronomers.slack.com>`_ for the community.
+Please send me an `email <sibirrer@gmail.com>`_ such that I can add you to the channel.
+
 
 If you encounter errors or problems with **lenstronomy**, please let us know!
 

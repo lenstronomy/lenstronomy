@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.nie &#8212; lenstronomy 1.3.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.nie &#8212; lenstronomy 1.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,47 +49,56 @@
 
 <div class="viewcode-block" id="NIE"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE">[docs]</a><span class="k">class</span> <span class="nc">NIE</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="sd">    Non-singular isothermal ellipsoid</span>
+<span class="sd">    kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;s_scale&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;theta_E&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;s_scale&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;theta_E&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;s_scale&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nie_simple</span> <span class="o">=</span> <span class="n">NIESimple</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nie_major_axis</span> <span class="o">=</span> <span class="n">NIEMajorAxis</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NIE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="NIE.param_conv"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.param_conv">[docs]</a>    <span class="k">def</span> <span class="nf">param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+<div class="viewcode-block" id="NIE.param_conv"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.param_conv">[docs]</a>    <span class="k">def</span> <span class="nf">param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta_E_conv_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_static</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        convert parameters</span>
+<span class="sd">        convert parameters from 2*kappa = bIE [s2IE + r2(1 − e *cos(2*phi)]−1/2 to</span>
+<span class="sd">        2*kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2</span>
+<span class="sd">        see expressions after Equation 8 in Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf</span>
 
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale</span>
+<span class="sd">        :return: critical radius b, smoothing scale s, axis ratio q, orientation angle phi_G</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="n">theta_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta_E_q_convert</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span>
+        <span class="n">theta_E_conv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta_E_q_convert</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">theta_E_conv</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s_scale</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span>
 
 <div class="viewcode-block" id="NIE.set_static"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :param s_scale:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate in image plane</span>
+<span class="sd">        :param y: y-coordinate in image plane</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale</span>
+<span class="sd">        :param center_x: profile center</span>
+<span class="sd">        :param center_y: profile center</span>
+<span class="sd">        :return: self variables set</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_theta_E_conv_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_b_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="NIE.set_dynamic"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.set_dynamic">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -97,8 +106,10 @@
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_theta_E_conv_static&#39;</span><span class="p">):</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_theta_E_conv_static</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_b_static&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_static</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_s_static&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s_static</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_phi_G_static&#39;</span><span class="p">):</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_q_static&#39;</span><span class="p">):</span>
@@ -107,48 +118,48 @@
 <div class="viewcode-block" id="NIE.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :param s_scale:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate in image plane</span>
+<span class="sd">        :param y: y-coordinate in image plane</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale</span>
+<span class="sd">        :param center_x: profile center</span>
+<span class="sd">        :param center_y: profile center</span>
+<span class="sd">        :return: lensing potential</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">theta_E</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">)</span>
         <span class="c1"># shift</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="c1"># rotate</span>
         <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">)</span>
         <span class="c1"># evaluate</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_simple</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_major_axis</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
         <span class="c1"># rotate back</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
 <div class="viewcode-block" id="NIE.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :param s_scale:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate in image plane</span>
+<span class="sd">        :param y: y-coordinate in image plane</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale</span>
+<span class="sd">        :param center_x: profile center</span>
+<span class="sd">        :param center_y: profile center</span>
+<span class="sd">        :return: alpha_x, alpha_y</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">theta_E</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">)</span>
         <span class="c1"># shift</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="c1"># rotate</span>
         <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">)</span>
         <span class="c1"># evaluate</span>
-        <span class="n">f__x</span><span class="p">,</span> <span class="n">f__y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_simple</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">f__x</span><span class="p">,</span> <span class="n">f__y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_major_axis</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
         <span class="c1"># rotate back</span>
         <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">f__x</span><span class="p">,</span> <span class="n">f__y</span><span class="p">,</span> <span class="o">-</span><span class="n">phi_G</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
@@ -156,24 +167,24 @@
 <div class="viewcode-block" id="NIE.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIE.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param e1:</span>
-<span class="sd">        :param e2:</span>
-<span class="sd">        :param s_scale:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: x-coordinate in image plane</span>
+<span class="sd">        :param y: y-coordinate in image plane</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale</span>
+<span class="sd">        :param center_x: profile center</span>
+<span class="sd">        :param center_y: profile center</span>
+<span class="sd">        :return: f_xx, f_yy, f_xy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">theta_E</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">phi_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">)</span>
         <span class="c1"># shift</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="c1"># rotate</span>
         <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">)</span>
         <span class="c1"># evaluate</span>
-        <span class="n">f__xx</span><span class="p">,</span> <span class="n">f__yy</span><span class="p">,</span> <span class="n">f__xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_simple</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">f__xx</span><span class="p">,</span> <span class="n">f__yy</span><span class="p">,</span> <span class="n">f__xy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nie_major_axis</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x__</span><span class="p">,</span> <span class="n">y__</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
         <span class="c1"># rotate back</span>
         <span class="n">kappa</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f__xx</span> <span class="o">+</span> <span class="n">f__yy</span><span class="p">)</span>
         <span class="n">gamma1__</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">f__xx</span> <span class="o">-</span> <span class="n">f__yy</span><span class="p">)</span>
@@ -191,50 +202,51 @@
 <span class="sd">        This then follows the convention of the SPEMD profile in lenstronomy.</span>
 <span class="sd">        (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]</span>
 
-<span class="sd">        :param theta_E:</span>
-<span class="sd">        :param q:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param theta_E: Einstein radius in lenstronomy conventions</span>
+<span class="sd">        :param q: axis ratio minor/major</span>
+<span class="sd">        :return: theta_E in convention of kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">theta_E_new</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">1.</span><span class="o">+</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">q</span><span class="p">)))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span>
+        <span class="n">theta_E_new</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mf">1.</span><span class="o">+</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">q</span><span class="p">)))</span> <span class="c1">#/ (1+(1-q)/2.)</span>
         <span class="k">return</span> <span class="n">theta_E_new</span></div>
 
 
-<div class="viewcode-block" id="NIESimple"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIESimple">[docs]</a><span class="k">class</span> <span class="nc">NIESimple</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
+<div class="viewcode-block" id="NIEMajorAxis"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis">[docs]</a><span class="k">class</span> <span class="nc">NIEMajorAxis</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    this class contains the function and the derivatives of the non-singular isothermal ellipse</span>
-<span class="sd">    See Keeton&amp;Kochanek 1998</span>
+<span class="sd">    This class contains the function and the derivatives of the non-singular isothermal ellipse.</span>
+<span class="sd">    See Keeton&amp;Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf</span>
+<span class="sd">    kappa =  b *(q2(s2 + x2) + y2􏰉)−1/2</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;theta_E&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="mf">0.0000000001</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_diff</span> <span class="o">=</span> <span class="n">diff</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">NIESimple</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">NIEMajorAxis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
-<div class="viewcode-block" id="NIESimple.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIESimple.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="NIEMajorAxis.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="n">psi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psi</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-        <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">x</span><span class="o">*</span><span class="n">alpha_x</span> <span class="o">+</span> <span class="n">y</span><span class="o">*</span><span class="n">alpha_y</span> <span class="o">-</span> <span class="n">theta_E</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">psi</span><span class="o">+</span><span class="n">s</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">alpha_x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">alpha_y</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">s</span> <span class="o">*</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">psi</span> <span class="o">+</span> <span class="n">s</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
-<div class="viewcode-block" id="NIESimple.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIESimple.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="NIEMajorAxis.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns df/dx and df/dy of the function</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">q</span> <span class="o">=</span> <span class="mf">0.99999999</span>
         <span class="n">psi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psi</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
-        <span class="n">f_x</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="n">psi</span><span class="o">+</span><span class="n">s</span><span class="p">))</span>
-        <span class="n">f_y</span> <span class="o">=</span> <span class="n">theta_E</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">psi</span> <span class="o">+</span> <span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">s</span><span class="p">))</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="n">b</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="p">(</span><span class="n">psi</span> <span class="o">+</span> <span class="n">s</span><span class="p">))</span>
+        <span class="n">f_y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">arctanh</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span> <span class="o">/</span> <span class="p">(</span><span class="n">psi</span> <span class="o">+</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">s</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
-<div class="viewcode-block" id="NIESimple.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIESimple.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+<div class="viewcode-block" id="NIEMajorAxis.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
         <span class="n">diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_diff</span>
-        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
-        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
 
         <span class="n">f_xx</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
         <span class="n">f_xy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
@@ -242,16 +254,31 @@
         <span class="n">f_yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_yy</span><span class="p">,</span> <span class="n">f_xy</span></div>
 
+<div class="viewcode-block" id="NIEMajorAxis.kappa"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.kappa">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">kappa</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convergence</span>
+
+<span class="sd">        :param x: major axis coordinate</span>
+<span class="sd">        :param y: minor axis coordinate</span>
+<span class="sd">        :param b: normalization</span>
+<span class="sd">        :param s: smoothing scale</span>
+<span class="sd">        :param q: axis ratio</span>
+<span class="sd">        :return: convergence</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">b</span><span class="o">/</span><span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kappa</span></div>
+
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_psi</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        expression after equation (8) in Keeton&amp;Kochanek 1998</span>
 
-<span class="sd">        :param x:</span>
-<span class="sd">        :param y:</span>
-<span class="sd">        :param q:</span>
-<span class="sd">        :param s:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param x: semi-major axis coordinate</span>
+<span class="sd">        :param y: semi-minor axis coordinate</span>
+<span class="sd">        :param q: axis ratio minor/major</span>
+<span class="sd">        :param s: smoothing scale in major axis direction</span>
+<span class="sd">        :return: phi</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 </pre></div>
@@ -286,7 +313,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

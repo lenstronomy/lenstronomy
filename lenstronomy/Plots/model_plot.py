@@ -7,15 +7,28 @@ from lenstronomy.Plots.model_band_plot import ModelBandPlot
 class ModelPlot(object):
     """
     class that manages the summary plots of a lens model
+    The class uses the same conventions as being used in the FittingSequence and interfaces with the ImSim module.
+    The linear inversion is re-done given the likelihood settings in the init of this class (make sure this is the same
+    as you perform the FittingSequence) to make sure the linear amplitude parameters are computed as they are not part
+    of the output of the FittingSequence results.
+
     """
-    def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat", likelihood_mask_list=None,
-                 bands_compute=None, multi_band_type='multi-linear', band_index=0, source_marg=False, linear_prior=None):
+    def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
+                 likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear', band_index=0,
+                 source_marg=False, linear_prior=None):
         """
 
-        :param kwargs_options:
-        :param kwargs_data:
+        :param multi_band_list:
+        :param kwargs_model:
+        :param kwargs_params:
         :param arrow_size:
         :param cmap_string:
+        :param likelihood_mask_list:
+        :param bands_compute:
+        :param multi_band_type:
+        :param band_index:
+        :param source_marg:
+        :param linear_prior:
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
@@ -224,7 +237,6 @@ class ModelPlot(object):
         plot a set of 'main' modelling diagnostics
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -235,7 +247,6 @@ class ModelPlot(object):
         plot a set of 'main' modelling diagnostics
 
         :param band_index: index of band
-        :param kwargs: arguments of plotting
         :return: plot instance
         """
         plot_band = self._select_band(band_index)
@@ -254,9 +265,8 @@ class ModelPlot(object):
     def source(self, band_index=0, **kwargs):
         """
 
-        :param numPix: number of grid points per axis
-        :param deltaPix: width of grid points
         :param band_index: index of band
+        :param kwargs: keyword arguments accessible in model_band_plot.source()
         :return: 2d array of source surface brightness
         """
         plot_band = self._select_band(band_index)

@@ -2,7 +2,7 @@ __author__ = 'sibirrer'
 
 import time
 import copy
-from schwimmbad import choose_pool
+from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 
@@ -47,7 +47,7 @@ class AlignmentFitting(object):
             time_end = time.time()
             print("Shifts found: ", result)
             print(time_end - time_start, 'time used for ', print_key)
-        return kwargs_data, [chi2_list, pos_list, vel_list, []]
+        return kwargs_data, [chi2_list, pos_list, vel_list]
 
 
 class AlignmentLikelihood(object):

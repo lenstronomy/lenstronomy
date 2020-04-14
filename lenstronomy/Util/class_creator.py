@@ -15,7 +15,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=[], index_optical_depth_model_list=None,
-                           band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None):
+                           band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
+                           surface_brightness_smoothing=0.001):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -45,6 +46,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
     :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
+    :param surface_brightness_smoothing: float, smoothing scale of light profile (minimal distance to the center of a profile)
+     this can help to avoid inaccuracies in the very center of a cuspy light profile
     :return:
     """
     if index_lens_model_list is None or all_models is True:
@@ -87,13 +90,13 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
             source_redshift_list_i = [source_redshift_list[k] for k in index_source_light_model_list[band_index]]
     source_model_class = LightModel(light_model_list=source_light_model_list_i,
                                     deflection_scaling_list=source_deflection_scaling_list_i,
-                                    source_redshift_list=source_redshift_list_i)
+                                    source_redshift_list=source_redshift_list_i, smoothing=surface_brightness_smoothing)
 
     if index_lens_light_model_list is None or all_models is True:
         lens_light_model_list_i = lens_light_model_list
     else:
         lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
-    lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i)
+    lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i, smoothing=surface_brightness_smoothing)
 
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list

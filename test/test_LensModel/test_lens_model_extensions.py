@@ -53,7 +53,7 @@ class TestLensModelExtensions(object):
 
     def test_elliptical_ray_trace(self):
 
-        lens_model_list = ['SPEMD','SHEAR']
+        lens_model_list = ['SPEP','SHEAR']
 
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
                        {'gamma1':0.01, 'gamma2':0.03}]
@@ -70,13 +70,13 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
     def test_zoom_source(self):
-        lens_model_list = ['SPEMD', 'SHEAR']
+        lens_model_list = ['SIE', 'SHEAR']
         lensModel = LensModel(lens_model_list=lens_model_list)
         lensModelExtensions = LensModelExtensions(lensModel=lensModel)
         lensEquationSolver = LensEquationSolver(lensModel=lensModel)
 
         x_source, y_source = 0.02, 0.01
-        kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': 0.1, 'gamma': 2, 'center_x': 0, 'center_y': 0},
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': 0.1, 'center_x': 0, 'center_y': 0},
                        {'gamma1': 0.05, 'gamma2': -0.03}]
 
         x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,

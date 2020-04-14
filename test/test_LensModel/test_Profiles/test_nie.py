@@ -7,7 +7,7 @@ import pytest
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nie import NIE, NIEMajorAxis
-from lenstronomy.LensModel.Profiles.spemd_smooth import SPEMD_SMOOTH
+from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.sis import SIS
 
 try:
@@ -25,7 +25,7 @@ class TestNIE(object):
     def setup(self):
 
         self.nie = NIE()
-        self.spemd = SPEMD_SMOOTH()
+        self.spemd = SPEMD(suppress_fastell=True)
         self.sis = SIS()
 
     def test_function(self):

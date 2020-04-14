@@ -31,8 +31,8 @@ class TestGOM(object):
 
         psf_fwhm = 1.  # Gaussian FWHM psf
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
-        kwargs_numerics = {'interpol_grid_num': 500, 'log_integration': True,
-                           'max_integrate': 100}
+        kwargs_numerics = {'interpol_grid_num': 100, 'log_integration': True,
+                           'max_integrate': 100, 'min_integrate': 0.001}
 
         # anisotropy profile
         anisotropy_type = 'OM'

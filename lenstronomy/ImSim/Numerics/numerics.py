@@ -38,6 +38,8 @@ class Numerics(PointSourceRendering):
         :param convolution_kernel_size: int, odd number, size of convolution kernel. If None, takes size of point_source_kernel
         :param convolution_type: string, 'fft', 'grid', 'fft_static' mode of 2d convolution
         """
+        if compute_mode not in ['regular', 'adaptive']:
+            raise ValueError('compute_mode specified as %s not valid. Options are "adaptive", "regular"')
         # if no super sampling, turn the supersampling convolution off
         self._psf_type = psf.psf_type
         if not isinstance(supersampling_factor, int):
@@ -95,6 +97,10 @@ class Numerics(PointSourceRendering):
             raise ValueError('psf_type %s not valid! Chose either NONE, GAUSSIAN or PIXEL.' % self._psf_type)
         super(Numerics, self).__init__(pixel_grid=pixel_grid, supersampling_factor=point_source_supersampling_factor,
                                        psf=psf)
+        if supersampling_convolution is True:
+            self._high_res_return = True
+        else:
+            self._high_res_return = False
 
     def re_size_convolve(self, flux_array, unconvolved=False):
         """
@@ -104,7 +110,8 @@ class Numerics(PointSourceRendering):
         :return: convolved image on regular pixel grid, 2d array
         """
         # add supersampled region to lower resolution on
-        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array)
+        image_low_res, image_high_res_partial = self._grid.flux_array2image_low_high(flux_array,
+                                                                                     high_res_return=self._high_res_return)
         if unconvolved is True or self._psf_type == 'NONE':
             image_conv = image_low_res
         else:
@@ -120,13 +127,14 @@ class Numerics(PointSourceRendering):
         """
         return self._grid.coordinates_evaluate
 
-    def _supersampling_cut_kernel(self, kernel_super, convolution_kernel_size, supersampling_factor):
+    @staticmethod
+    def _supersampling_cut_kernel(kernel_super, convolution_kernel_size, supersampling_factor):
         """
 
-        :param kernel_super: supersampled kernel
+        :param kernel_super: super-sampled kernel
         :param convolution_kernel_size: size of convolution kernel in units of regular pixels (odd)
         :param supersampling_factor: super-sampling factor of convolution kernel
-        :return: cut out kernel in supersampling size
+        :return: cut out kernel in super-sampling size
         """
         if convolution_kernel_size is not None:
             size = convolution_kernel_size * supersampling_factor

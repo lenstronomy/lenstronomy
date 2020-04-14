@@ -69,7 +69,7 @@ class TestPositionLikelihood(object):
 
         kwargs_ps = [{'ra_image': self._x_pos + 0.01, 'dec_image': self._y_pos}]
         logL = self.likelihood.source_position_likelihood(self._kwargs_lens, kwargs_ps, hard_bound_rms=0.001, sigma=0.0001, verbose=False)
-        npt.assert_almost_equal(logL, -126453.36820694887, decimal=0)
+        npt.assert_almost_equal(logL, -126467.04331894651, decimal=0)
         #assert logL == -np.inf
 
     def test_logL(self):

@@ -8,12 +8,12 @@ from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Sampling.sampler import Sampler
+from lenstronomy.Sampling.sampler import Sampler, choose_pool
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
 
-class TestFittingSequence(object):
+class TestSampler(object):
     """
     test the fitting sequences
     """

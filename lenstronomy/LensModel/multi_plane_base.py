@@ -58,7 +58,7 @@ class MultiPlaneBase(ProfileListBase):
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
-            factor = self._cosmo_bkg.D_xy(0, z_source_convention) / self._cosmo_bkg.D_xy(z_lens, z_source_convention)
+            factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_lens, z_source_convention)
             self._reduced2physical_factor.append(factor)
             z_before = z_lens
 
@@ -339,7 +339,7 @@ class MultiPlaneBase(ProfileListBase):
         :param z_source: redshift of source for the definition of the lensing quantities
         :return: gravitational time-delay in units of days
         """
-        D_dt = self._cosmo_bkg.D_dt(z_lens, z_source)
+        D_dt = self._cosmo_bkg.ddt(z_lens, z_source)
         delay_days = const.delay_arcsec2days(potential, D_dt)
         return delay_days
 

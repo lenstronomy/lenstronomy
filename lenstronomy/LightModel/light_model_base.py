@@ -10,7 +10,7 @@ class LightModelBase(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, light_model_list, smoothing=0.001):
         """
 
         :param light_model_list: list of light models
@@ -159,6 +159,12 @@ class LightModelBase(object):
                     # 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON', 'DOUBLE_CHAMELEON' ,
                 # 'TRIPLE_CHAMELEON', 'UNIFORM'
         return norm_flux_list
+
+    def delete_interpol_caches(self):
+        """Call the delete_cache method of INTERPOL profiles"""
+        for i, model in enumerate(self.profile_type_list):
+            if model == 'INTERPOL':
+                self.func_list[i].delete_cache()
 
     def _transform_kwargs(self, kwargs_list):
         """

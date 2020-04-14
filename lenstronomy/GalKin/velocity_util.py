@@ -88,7 +88,7 @@ def draw_cdf_Y(beta):
     return (1-x) ** (1./(1-beta))
 
 
-def R_r(r):
+def project2d_random(r):
     """
     draws a random projection from radius r in 2d and 1d
     :param r: 3d radius
@@ -112,3 +112,14 @@ def draw_xy(R):
     x = R * np.cos(phi)
     y = R * np.sin(phi)
     return x, y
+
+
+def draw_hernquist(a):
+    """
+
+    :param a: 0.551*r_eff
+    :return: realisation of radius of Hernquist luminosity weighting in 3d
+    """
+    P = np.random.uniform()  # draws uniform between [0,1)
+    r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
+    return r

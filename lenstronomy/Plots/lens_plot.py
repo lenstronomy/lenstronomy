@@ -13,7 +13,8 @@ import scipy.ndimage as ndimage
 #TODO define coordinate grid beforehand, e.g. kwargs_data
 
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                    point_source=False, with_caustics=False):
+                    point_source=False, with_caustics=False, coord_center_ra=0, coord_center_dec=0,
+                    coord_inverse=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -23,7 +24,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param deltaPix:
     :return:
     """
-    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, center_ra=coord_center_ra, center_dec=coord_center_dec, 
+                                                 inverse=coord_inverse)
     data = ImageData(**kwargs_data)
     _coords = data
     _frame_size = numPix * deltaPix

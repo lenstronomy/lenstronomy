@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 1.3.0 documentation</title>
+    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 1.5.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -77,7 +77,6 @@
 <span class="sd">        :param x_center: center of search window</span>
 <span class="sd">        :param y_center: center of search window</span>
 <span class="sd">        :param num_random: number of random starting points of the non-linear solver in the search window</span>
-<span class="sd">        :param verbose: bool, if True, prints performance information</span>
 <span class="sd">        :return: x_image, y_image</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
@@ -130,7 +129,11 @@
 <span class="sd">        :param verbose: bool, if True, prints some useful information for the user</span>
 <span class="sd">        :param x_center: float, center of the window to search for point sources</span>
 <span class="sd">        :param y_center: float, center of the window to search for point sources</span>
+<span class="sd">        :param num_random: int, number of random positions within the search window to be added to be starting</span>
+<span class="sd">         positions for the gradient decent solver</span>
 <span class="sd">        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation</span>
+<span class="sd">        :param magnification_limit: None or float, if set will only return image positions that have an</span>
+<span class="sd">         abs(magnification) larger than this number</span>
 <span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
 <span class="sd">        :raises: AttributeError, KeyError</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -164,9 +167,9 @@
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_mins</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="n">search_window</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_center</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">search_window</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_center</span><span class="p">,</span>
                                              <span class="n">size</span><span class="o">=</span><span class="n">num_random</span><span class="p">))</span>
         <span class="c1"># iterative solving of the lens equation for the selected grid points</span>
-        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">solver_precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_findIterative</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
-                                                               <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
-                                                               <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
+        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">solver_precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_gradient_decent</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                      <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                                                      <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
         <span class="c1"># only select iterative results that match the precision limit</span>
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">x_mins</span><span class="p">[</span><span class="n">solver_precision</span> <span class="o">&lt;=</span> <span class="n">precision_limit</span><span class="p">]</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">solver_precision</span> <span class="o">&lt;=</span> <span class="n">precision_limit</span><span class="p">]</span>
@@ -181,8 +184,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
 
-    <span class="k">def</span> <span class="nf">_findIterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
-                       <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_find_gradient_decent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
+                              <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        given a &#39;good guess&#39; of a solution of the lens equation (expected image position given a fixed source position)</span>
+<span class="sd">        this routine iteratively performs a ray-tracing with second order correction (effectively gradient decent) to find</span>
+<span class="sd">        a precise solution to the lens equation.</span>
+
+<span class="sd">        :param x_min: np.array, list of &#39;good guess&#39; solutions of the lens equation</span>
+<span class="sd">        :param y_min: np.array, list of &#39;good guess&#39; solutions of the lens equation</span>
+<span class="sd">        :param sourcePos_x: source position for which to solve the lens equation</span>
+<span class="sd">        :param sourcePos_y: source position for which to solve the lens equation</span>
+<span class="sd">        :param kwargs_lens: keyword argument list of the lens model</span>
+<span class="sd">        :param precision_limit: float, required match in the solution in the source plane</span>
+<span class="sd">        :param num_iter_max: int, maximum number of iterations before the algorithm stops</span>
+<span class="sd">        :param verbose: bool, if True inserts print statements about the behavior of the solver</span>
+<span class="sd">        :param min_distance: maximum correction applied per step (to avoid over-shooting in instable regions)</span>
+<span class="sd">        :param non_linear: bool, if True, uses scipy.miminize instead of the directly implemented gradient decent approach.</span>
+<span class="sd">        :return: x_position array, y_position array, error in the source plane array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_candidates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_min</span><span class="p">)</span>
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_candidates</span><span class="p">)</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_candidates</span><span class="p">)</span>
@@ -190,7 +210,7 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_min</span><span class="p">)):</span>
             <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_single_proposal</span><span class="p">(</span><span class="n">x_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span>
                                                                   <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span>
-                                                                     <span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
+                                                                     <span class="n">max_step</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution found for region </span><span class="si">%s</span><span class="s2"> with required precision at iteration </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
             <span class="n">x_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_guess</span>
@@ -200,9 +220,22 @@
 
     <span class="k">def</span> <span class="nf">_solve_single_proposal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span>
                                <span class="n">max_step</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gradient decent solution of a single proposed starting point (close to a true solution)</span>
+
+<span class="sd">        :param x_guess: starting guess position in the image plane</span>
+<span class="sd">        :param y_guess: starting guess position in the image plane</span>
+<span class="sd">        :param source_x: source position to solve for in the image plane</span>
+<span class="sd">        :param source_y: source position to solve for in the image plane</span>
+<span class="sd">        :param kwargs_lens: keyword argument list of the lens model</span>
+<span class="sd">        :param precision_limit: float, required match in the solution in the source plane</span>
+<span class="sd">        :param num_iter_max: int, maximum number of iterations before the algorithm stops</span>
+<span class="sd">        :param max_step: maximum correction applied per step (to avoid over-shooting in instable regions)</span>
+<span class="sd">        :param non_linear: bool, if True, uses scipy.miminize instead of the directly implemented gradient decent approach.</span>
+<span class="sd">        :return: x_position, y_position, error in the source plane, steps required (for gradient decent)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="n">non_linear</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="c1">#if self.lensModel.multi_plane is True:</span>
             <span class="n">xinitial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">])</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span> <span class="n">xinitial</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="n">precision_limit</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
                               <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">)</span>
@@ -224,12 +257,27 @@
                 <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">dist</span> <span class="o">&gt;</span> <span class="n">max_step</span><span class="p">:</span>
                     <span class="n">image_plane_vector</span> <span class="o">*=</span> <span class="n">max_step</span><span class="o">/</span><span class="n">dist</span>
-                <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_step</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span>
-                                                                  <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
+                <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradient_step</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span>
+                                                                 <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">l</span>
 
-    <span class="k">def</span> <span class="nf">_do_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta_init</span><span class="p">,</span> <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">iter_num</span><span class="p">,</span>
-                 <span class="n">num_iter_max</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_gradient_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta_init</span><span class="p">,</span> <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                       <span class="n">iter_num</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x_guess: float, current best fit solution in the image plane</span>
+<span class="sd">        :param y_guess: float, current best fit solution in the image plane</span>
+<span class="sd">        :param source_x: float, source position to be matched</span>
+<span class="sd">        :param source_y: float, source position ot be matched</span>
+<span class="sd">        :param delta_init: current precision in the source plane of the mapped solution</span>
+<span class="sd">        :param image_plane_vector: correction vector in the image plane based on the Hessian operator and the deviation</span>
+<span class="sd">         in the source plane</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param iter_num: int, current iteration number</span>
+<span class="sd">        :param num_iter_max: int, maximum iteration number before aborting the process</span>
+<span class="sd">        :return: updated image position in x, updated image position in y, updated precision in the source plane,</span>
+<span class="sd">        total iterations done after this call</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_new</span> <span class="o">=</span> <span class="n">x_guess</span> <span class="o">-</span> <span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">y_new</span> <span class="o">=</span> <span class="n">y_guess</span> <span class="o">-</span> <span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
@@ -239,34 +287,47 @@
             <span class="k">if</span> <span class="n">num_iter_max</span> <span class="o">&lt;</span> <span class="n">iter_num</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta_init</span><span class="p">,</span> <span class="n">iter_num</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="c1">#</span>
-                <span class="c1">#image_plane_vector /= 10</span>
+                <span class="c1"># if the new proposal is worse than the previous one, it randomly draws a new proposal in a different</span>
+                <span class="c1"># direction and tries again</span>
                 <span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
                 <span class="n">image_plane_vector</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_do_step</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta_init</span><span class="p">,</span> <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gradient_step</span><span class="p">(</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">delta_init</span><span class="p">,</span> <span class="n">image_plane_vector</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">iter_num</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_new</span><span class="p">,</span> <span class="n">y_new</span><span class="p">,</span> <span class="n">delta_new</span><span class="p">,</span> <span class="n">iter_num</span>
 
 <div class="viewcode-block" id="LensEquationSolver.findBrightImage"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">[docs]</a>    <span class="k">def</span> <span class="nf">findBrightImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">numImages</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                        <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                        <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                        <span class="n">num_random</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">initial_guess_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param sourcePos_x:</span>
-<span class="sd">        :param sourcePos_y:</span>
-<span class="sd">        :param deltapix:</span>
-<span class="sd">        :param numPix:</span>
-<span class="sd">        :param magThresh: magnification threshold for images to be selected</span>
-<span class="sd">        :param numImage: number of selected images (will select the highest magnified ones)</span>
-<span class="sd">        :param kwargs_lens:</span>
-<span class="sd">        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting</span>
-<span class="sd">        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix</span>
-<span class="sd">        :param magnification_function: same as ray_shooting_function, but for computing magnifications</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param sourcePos_x: source position in units of angle</span>
+<span class="sd">        :param sourcePos_y: source position in units of angle</span>
+<span class="sd">        :param kwargs_lens: lens model parameters as keyword arguments</span>
+<span class="sd">        :param min_distance: minimum separation to consider for two images in units of angle</span>
+<span class="sd">        :param search_window: window size to be considered by the solver. Will not find image position outside this window</span>
+<span class="sd">        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).</span>
+<span class="sd">        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision</span>
+<span class="sd">        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)</span>
+<span class="sd">        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position</span>
+<span class="sd">        :param verbose: bool, if True, prints some useful information for the user</span>
+<span class="sd">        :param x_center: float, center of the window to search for point sources</span>
+<span class="sd">        :param y_center: float, center of the window to search for point sources</span>
+<span class="sd">        :param num_random: int, number of random positions within the search window to be added to be starting</span>
+<span class="sd">         positions for the gradient decent solver</span>
+<span class="sd">        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation</span>
+<span class="sd">        :param magnification_limit: None or float, if set will only return image positions that have an</span>
+<span class="sd">         abs(magnification) larger than this number</span>
+<span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
+<span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">,</span>
-                                                         <span class="n">search_window</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span>
-                                                         <span class="n">arrival_time_sort</span><span class="o">=</span><span class="n">arrival_time_sort</span><span class="p">)</span>
+        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                         <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="n">search_window</span><span class="p">,</span>
+                                                         <span class="n">precision_limit</span><span class="o">=</span><span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="n">num_iter_max</span><span class="p">,</span>
+                                                         <span class="n">arrival_time_sort</span><span class="o">=</span><span class="n">arrival_time_sort</span><span class="p">,</span>
+                                                         <span class="n">initial_guess_cut</span><span class="o">=</span><span class="n">initial_guess_cut</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                                         <span class="n">x_center</span><span class="o">=</span><span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="n">y_center</span><span class="p">,</span> <span class="n">num_random</span><span class="o">=</span><span class="n">num_random</span><span class="p">,</span>
+                                                         <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="n">magnification_limit</span><span class="p">)</span>
         <span class="n">mag_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)):</span>
             <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_mins</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">)</span>
@@ -293,7 +354,6 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span>
-        <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -335,7 +395,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.3.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

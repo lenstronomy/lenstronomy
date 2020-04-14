@@ -67,7 +67,6 @@ class PositionLikelihood(object):
                 print('Astrometric likelihood = %s' % logL_astrometry)
         if self._check_matched_source_position is True:
             logL_source_scatter = self.source_position_likelihood(kwargs_lens, kwargs_ps, self._source_position_sigma, hard_bound_rms=self._bound_source_position_scatter, verbose=verbose)
-            #logL_source_scatter = self.source_position_scatter(kwargs_lens, kwargs_ps, self._bound_source_position_scatter, self._source_position_sigma, verbose=verbose)
             logL += logL_source_scatter
             if verbose is True:
                 print('Source scatter punishing likelihood = %s' % logL_source_scatter)

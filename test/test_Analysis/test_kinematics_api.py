@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 import unittest
 
-from lenstronomy.Analysis.kinematics_api import KinematicAPI
+from lenstronomy.Analysis.kinematics_api import KinematicsAPI
 import lenstronomy.Util.param_util as param_util
 
 
@@ -17,9 +17,9 @@ class TestKinematicsAPI(object):
     def test_velocity_dispersion(self):
         z_lens = 0.5
         z_source = 1.5
-        kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
+        kwargs_model = {'lens_model_list': ['SPEP', 'SHEAR', 'SIS', 'SIS', 'SIS'],
                           'lens_light_model_list': ['SERSIC_ELLIPSE', 'SERSIC']}
-        kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options, lens_model_kinematics_bool= [True, False, False, False, False])
+
         theta_E = 1.5
         gamma = 1.8
         kwargs_lens = [{'theta_E': theta_E, 'e1': 0, 'center_x': -0.044798916793300093, 'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': gamma},
@@ -45,25 +45,40 @@ class TestKinematicsAPI(object):
 
         psf_fwhm = 0.7
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
-        anisotropy_model = 'OsipkovMerritt'
+        anisotropy_model = 'OM'
         kwargs_mge = {'n_comp': 20}
         r_eff = 0.211919902322
+        kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_seeing=kwargs_psf,
+                                     lens_model_kinematics_bool=[True, False, False, False, False], anisotropy_model=anisotropy_model,
+                                     kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge, sampling_number=1000,
+                                     MGE_light=True)
 
-        v_sigma = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                         kwargs_aperture, kwargs_psf, anisotropy_model,
-                                                         MGE_light=True, r_eff=r_eff,  kwargs_mge_light=kwargs_mge,
-                                                         )
-        v_sigma_mge_lens = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
-                                                                  kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True, theta_E=theta_E,
-                                                                  kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge,
-                                                                  r_eff=r_eff)
-        v_sigma_hernquist = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                                  kwargs_aperture, kwargs_psf, anisotropy_model,
-                                                                  MGE_light=False, MGE_mass=False,
-                                                                  r_eff=r_eff, Hernquist_approx=True)
-        vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff,
-                                                                    kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
-                                                                    num_evaluate=5000)
+        v_sigma = kinematicAPI.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff)
+
+        kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture=kwargs_aperture,
+                                     kwargs_seeing=kwargs_psf, lens_model_kinematics_bool=[True, False, False, False, False],
+                                     anisotropy_model=anisotropy_model,
+                                     kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge, sampling_number=1000,
+                                     MGE_light=True, MGE_mass=True)
+        v_sigma_mge_lens = kinematicAPI.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E)
+        #v_sigma_mge_lens = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, kwargs_aperture,
+        #                                                          kwargs_psf, anisotropy_model, MGE_light=True, MGE_mass=True, theta_E=theta_E,
+        #                                                          kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge,
+        #                                                          r_eff=r_eff)
+        kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture=kwargs_aperture,
+                                     kwargs_seeing=kwargs_psf,
+                                     lens_model_kinematics_bool=[True, False, False, False, False],
+                                     anisotropy_model=anisotropy_model,
+                                     kwargs_mge_light=kwargs_mge, kwargs_mge_mass=kwargs_mge, sampling_number=1000,
+                                     MGE_light=False, MGE_mass=False, Hernquist_approx=True)
+        v_sigma_hernquist = kinematicAPI.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                             r_eff=r_eff, theta_E=theta_E)
+        #v_sigma_hernquist = kinematicAPI.velocity_dispersion_numerical(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+        #                                                          kwargs_aperture, kwargs_psf, anisotropy_model,
+        #                                                          MGE_light=False, MGE_mass=False,
+        #                                                          r_eff=r_eff, Hernquist_approx=True)
+
+        vel_disp_temp = kinematicAPI.velocity_dispersion_analytical(theta_E, gamma, r_ani=r_ani, r_eff=r_eff)
         print(v_sigma, vel_disp_temp)
         #assert 1 == 0
         npt.assert_almost_equal(v_sigma / vel_disp_temp, 1, decimal=1)
@@ -75,7 +90,7 @@ class TestKinematicsAPI(object):
         z_source = 1.5
         kwargs_options = {'lens_light_model_list': ['HERNQUIST_ELLIPSE', 'SERSIC']}
         kwargs_mge = {'n_comp': 20}
-        kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+        kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_options, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
         r_eff = 0.2
         kwargs_lens_light = [{'amp': 1, 'Rs': r_eff * 0.551, 'e1': 0., 'e2': 0, 'center_x': 0, 'center_y': 0},
                              {'amp': 1, 'R_sersic': 1, 'n_sersic': 2, 'center_x': -10, 'center_y': -10}]
@@ -99,7 +114,7 @@ class TestKinematicsAPI(object):
         z_lens = 0.5
         z_source = 1.5
         kwargs_options = {'lens_model_list': ['SPEP', 'SHEAR']}
-        kin_api = KinematicAPI(z_lens, z_source, kwargs_options)
+        kin_api = KinematicsAPI(z_lens, z_source, kwargs_options, kwargs_aperture={}, kwargs_seeing={}, anisotropy_model='OM')
         kwargs_lens = [{'theta_E': 1.4272358196260446, 'e1': 0, 'center_x': -0.044798916793300093,
                         'center_y': 0.0054408937891703788, 'e2': 0, 'gamma': 1.8},
                        {'e1': -0.050871696555354479, 'e2': -0.0061601733920590464}
@@ -119,11 +134,10 @@ class TestKinematicsAPI(object):
         np.random.seed(42)
         z_lens = 0.5
         z_source = 1.5
-        kwargs_options = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['HERNQUIST']}
+        kwargs_model = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['HERNQUIST']}
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_lens_light = [{'amp': 1, 'Rs': 1, 'center_x': 0, 'center_y': 0}]
         kwargs_anisotropy = {'r_ani': 1}
-        kin_api = KinematicAPI(z_lens, z_source, kwargs_options)
         # settings
 
         R_slit = 3.8
@@ -133,27 +147,107 @@ class TestKinematicsAPI(object):
                            'angle': 0, 'center_dec': 0}
         psf_fwhm = 0.7
         kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
-        kin_api.kinematic_observation_settings(kwargs_aperture, kwargs_seeing)
+        anisotropy_model = 'OM'
+        kin_api = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture, kwargs_seeing,
+                                anisotropy_model=anisotropy_model)
 
-        anisotropy_model = 'OsipkovMerritt'
-        kwargs_numerics_galkin = {'sampling_number': 1000, 'interpol_grid_num': 500, 'log_integration': True,
+        kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,
                                   'max_integrate': 10, 'min_integrate': 0.001}
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
                                      Hernquist_approx=False, MGE_light=False, MGE_mass=False)
-        vel_disp_analytic = kin_api.model_velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                  theta_E=None, gamma=None)
+        vel_disp_analytic = kin_api.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
+                                                        theta_E=None, gamma=None)
 
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
                                              Hernquist_approx=False, MGE_light=False, MGE_mass=False)
-        vel_disp_numerical = kin_api.model_velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                              r_eff=None,theta_E=None, gamma=None)
-        npt.assert_almost_equal(vel_disp_numerical/ vel_disp_analytic, 1, decimal=2)
+        vel_disp_numerical = kin_api.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                         r_eff=None, theta_E=None, gamma=None)
+        npt.assert_almost_equal(vel_disp_numerical / vel_disp_analytic, 1, decimal=2)
 
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
                                              Hernquist_approx=False, MGE_light=False, MGE_mass=False,
                                              kwargs_mge_light={'n_comp': 10}, kwargs_mge_mass={'n_comp': 5})
         assert kin_api._kwargs_mge_mass['n_comp'] == 5
         assert kin_api._kwargs_mge_light['n_comp'] == 10
+
+    def test_velocity_dispersion_map(self):
+        np.random.seed(42)
+        z_lens = 0.5
+        z_source = 1.5
+        kwargs_options = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['HERNQUIST']}
+        r_eff = 1.
+        theta_E = 1
+        kwargs_lens = [{'theta_E': theta_E, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens_light = [{'amp': 1, 'Rs': r_eff * 0.551, 'center_x': 0, 'center_y': 0}]
+        kwargs_anisotropy = {'r_ani': 1}
+
+        r_bins = np.array([0, 0.5, 1])
+        aperture_type = 'IFU_shells'
+        kwargs_aperture = {'aperture_type': aperture_type, 'center_ra': 0, 'r_bins': r_bins, 'center_dec': 0}
+        psf_fwhm = 0.7
+        kwargs_seeing = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        anisotropy_model = 'OM'
+        kin_api = KinematicsAPI(z_lens, z_source, kwargs_options, kwargs_aperture=kwargs_aperture,
+                                kwargs_seeing=kwargs_seeing, anisotropy_model=anisotropy_model)
+
+        kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,
+                                  'max_integrate': 10, 'min_integrate': 0.001}
+        kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
+                                             Hernquist_approx=False, MGE_light=False, MGE_mass=False,
+                                             num_kin_sampling=1000, num_psf_sampling=100)
+        vel_disp_analytic = kin_api.velocity_dispersion_map(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                            r_eff=r_eff, theta_E=theta_E, gamma=2)
+
+        kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
+                                             Hernquist_approx=False, MGE_light=False, MGE_mass=False,
+                                             num_kin_sampling=1000, num_psf_sampling=100)
+        vel_disp_numerical = kin_api.velocity_dispersion_map(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
+                                                             r_eff=r_eff, theta_E=theta_E, gamma=2)
+        print(vel_disp_numerical, vel_disp_analytic)
+        npt.assert_almost_equal(vel_disp_numerical, vel_disp_analytic, decimal=-1)
+
+    def test_interpolated_sersic(self):
+        from lenstronomy.Analysis.light2mass import light2mass_interpol
+        kwargs_light = [{'n_sersic': 2, 'R_sersic': 0.5, 'amp': 1, 'center_x': 0.01, 'center_y': 0.01}]
+        kwargs_lens = [{'n_sersic': 2, 'R_sersic': 0.5, 'k_eff': 1, 'center_x': 0.01, 'center_y': 0.01}]
+        deltaPix = 0.1
+        numPix = 100
+
+        kwargs_interp = light2mass_interpol(['SERSIC'], kwargs_lens_light=kwargs_light, numPix=numPix,
+                                                            deltaPix=deltaPix, subgrid_res=5)
+        kwargs_lens_interp = [kwargs_interp]
+        from lenstronomy.Analysis.kinematics_api import KinematicsAPI
+        z_lens = 0.5
+        z_source = 1.5
+        r_ani = 0.62
+        kwargs_anisotropy = {'r_ani': r_ani}
+        R_slit = 3.8
+        dR_slit = 1.
+        aperture_type = 'slit'
+        kwargs_aperture = {'center_ra': 0, 'width': dR_slit, 'length': R_slit, 'angle': 0, 'center_dec': 0, 'aperture_type': aperture_type}
+        psf_fwhm = 0.7
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        anisotropy_model = 'OM'
+        r_eff = 0.5
+        kwargs_model = {'lens_model_list': ['SERSIC'],
+                          'lens_light_model_list': ['SERSIC']}
+        kwargs_mge = {'n_comp': 20}
+        kinematic_api = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture, kwargs_seeing=kwargs_psf,
+                                      anisotropy_model=anisotropy_model, MGE_light=True, MGE_mass=True,
+                                      kwargs_mge_mass=kwargs_mge, kwargs_mge_light=kwargs_mge)
+
+        v_sigma = kinematic_api.velocity_dispersion(kwargs_lens, kwargs_light, kwargs_anisotropy, r_eff=r_eff, theta_E=1)
+        kwargs_model_interp = {'lens_model_list': ['INTERPOL'],
+                                 'lens_light_model_list': ['SERSIC']}
+        kinematic_api_interp = KinematicsAPI(z_lens, z_source, kwargs_model_interp, kwargs_aperture, kwargs_seeing=kwargs_psf,
+                                      anisotropy_model=anisotropy_model, MGE_light=True, MGE_mass=True,
+                                                                            kwargs_mge_mass=kwargs_mge,
+                                                                            kwargs_mge_light=kwargs_mge)
+        v_sigma_interp = kinematic_api_interp.velocity_dispersion(kwargs_lens_interp, kwargs_light, kwargs_anisotropy,
+                                                        theta_E=1., r_eff=r_eff)
+        npt.assert_almost_equal(v_sigma / v_sigma_interp, 1, 1)
+        # use as kinematic constraints
+        # compare with MGE Sersic kinematic estimate
 
 
 class TestRaise(unittest.TestCase):
@@ -162,33 +256,47 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5
-            kwargs_options = {'lens_light_model_list': ['HERNQUIST']}
-            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST']}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
             kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
             kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
                                                  Hernquist_approx=True, r_eff=None, model_kinematics_bool=[True])
-            raise ValueError()
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5
-            kwargs_options = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
-            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST']}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
+            kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
+            kinematicAPI.kinematic_light_profile(kwargs_light, MGE_fit=False,
+                                                 Hernquist_approx=False, r_eff=None, analytic_kinematics=True)
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
             kwargs_light = [{'Rs': 1, 'amp': 1, 'center_x': 0, 'center_y': 0}]
             kinematicAPI.kinematic_lens_profiles(kwargs_light, MGE_fit=True, model_kinematics_bool=[True])
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5
-            kwargs_options = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
-            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
+            kinematicAPI.kinematic_lens_profiles(kwargs_lens=None, analytic_kinematics=True)
+
+        with self.assertRaises(ValueError):
+            z_lens = 0.5
+            z_source = 1.5
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': []}
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
             kwargs_lens_light = [{'Rs': 1, 'center_x': 0, 'center_y': 0}]
             kinematicAPI.kinematic_light_profile(kwargs_lens_light, r_eff=None, MGE_fit=True, model_kinematics_bool=None,
                                     Hernquist_approx=False, kwargs_mge=None)
         with self.assertRaises(ValueError):
             z_lens = 0.5
             z_source = 1.5
-            kwargs_options = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': ['SIS']}
+            kwargs_model = {'lens_light_model_list': ['HERNQUIST'], 'lens_model_list': ['SIS']}
             kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-            kinematicAPI = KinematicAPI(z_lens, z_source, kwargs_options)
+            kinematicAPI = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model='OM')
             kinematicAPI.kinematic_lens_profiles(kwargs_lens, MGE_fit=True, model_kinematics_bool=None, theta_E=None,
                                 kwargs_mge={})
 

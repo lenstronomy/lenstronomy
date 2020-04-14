@@ -1,15 +1,16 @@
 __author__ = 'sibirrer'
 
 import numpy as np
+from scipy.interpolate import interp1d
 import lenstronomy.GalKin.velocity_util as vel_util
 from lenstronomy.GalKin.cosmo import Cosmo
-from lenstronomy.GalKin.psf import psf_select
-from lenstronomy.GalKin.aperture import aperture_select
+from lenstronomy.GalKin.anisotropy import Anisotropy
+from lenstronomy.LensModel.Profiles.spp import SPP
 import lenstronomy.Util.constants as const
 import math
 
 
-class AnalyticKinematics(object):
+class AnalyticKinematics(Anisotropy):
     """
     class to compute eqn 20 in Suyu+2010 with a Monte-Carlo from rendering from the
     light profile distribution and displacing them with a Gaussian seeing convolution
@@ -28,126 +29,160 @@ class AnalyticKinematics(object):
     distances
 
     """
-    def __init__(self, D_d, D_s, D_ds, kwargs_aperture, kwargs_psf):
+    def __init__(self, kwargs_cosmo, interpol_grid_num=100, log_integration=False, max_integrate=100,
+                 min_integrate=0.001):
         """
 
-        :param D_d: angular diameter to the deflector [MPC]
-        :param D_s: angular diameter to the source [MPC]
-        :param D_ds: angular diameter from the deflector to the source [MPC]
-        :param psf_type: string, point spread functino type, current support for 'GAUSSIAN' and 'MOFFAT'
-        :param fwhm: full width at half maximum seeing condition
-        :param moffat_beta: float, beta parameter of Moffat profile
+        :param kwargs_cosmo: keyword argument with angular diameter distances
         """
-        if D_ds <= 0 or D_s <= 0 or D_d <=0:
-            raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens model!' % (D_d, D_s, D_ds) )
-        self._cosmo = Cosmo(D_d=D_d, D_s=D_s, D_ds=D_ds)
-        self._psf = psf_select(**kwargs_psf)
-        self.aperture = aperture_select(**kwargs_aperture)
 
-    def vel_disp(self, gamma, theta_E, r_eff, r_ani, rendering_number=1000):
-        """
-        computes the averaged LOS velocity dispersion in the slit (convolved)
+        self._interp_grid_num = interpol_grid_num
+        self._log_int = log_integration
+        self._max_integrate = max_integrate  # maximal integration (and interpolation) in units of arcsecs
+        self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
+        self._max_interpolate = max_integrate  # we chose to set the interpolation range to the integration range
+        self._min_interpolate = min_integrate  # we chose to set the interpolation range to the integration range
 
-        :param gamma: power-law slope of the mass profile (isothermal = 2)
-        :param theta_E: Einstein radius of the lens (in arcseconds)
-        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
-        :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
-        :param rendering_number: number of spectral renderings drawn from the light distribution that go through the
-            slit of the observations
-
-        :return: LOS integrated velocity dispersion in units [km/s]
-        """
-        sigma_s2_sum = 0
-        rho0_r0_gamma = self._rho0_r0_gamma(theta_E, gamma)
-        for i in range(0, rendering_number):
-            sigma_s2_draw = self.vel_disp_one(gamma, rho0_r0_gamma, r_eff, r_ani)
-            sigma_s2_sum += sigma_s2_draw
-        sigma_s2_average = sigma_s2_sum / rendering_number
-        return np.sqrt(sigma_s2_average)
+        self._cosmo = Cosmo(**kwargs_cosmo)
+        self._spp = SPP()
+        #GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
+        Anisotropy.__init__(self, anisotropy_type='OM')
 
     def _rho0_r0_gamma(self, theta_E, gamma):
         # equation (14) in Suyu+ 2010
         return -1 * math.gamma(gamma/2) / (np.sqrt(np.pi)*math.gamma((gamma-3)/2.)) * theta_E ** gamma / \
                self._cosmo.arcsec2phys_lens(theta_E) * self._cosmo.epsilon_crit * const.M_sun / const.Mpc ** 3
 
-    def vel_disp_one(self, gamma, rho0_r0_gamma, r_eff, r_ani):
-        """
-        computes one realisation of the velocity dispersion realized in the slit
-
-        :param gamma: power-law slope of the mass profile (isothermal = 2)
-        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
-        :param r_eff: half light radius of the Hernquist profile (or as an approximation of any other profile to be described as a Hernquist profile
-        :param r_ani: anisotropy radius
-        :param kwargs_aperture: keyword arguments describing the aperture of the collected spectral
-        :param FWHM: full width at half maximum of the seeing conditions, described as a Gaussian
-        :return: projected velocity dispersion of a single drawn position in the potential [km/s]
-        """
-        a = 0.551 * r_eff
-        while True:
-            r = self.P_r(a)  # draw r
-            R, x, y = self.R_r(r)  # draw projected R
-            x_, y_ = self._psf.displace_psf(x, y)
-            bool = self.aperture.aperture_select(x_, y_)
-            if bool is True:
-                break
-        sigma_s2 = self.sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
-        return np.array(sigma_s2, dtype=float)
-
-    def P_r(self, a):
+    @staticmethod
+    def draw_light(kwargs_light):
         """
 
-        :param a: 0.551*r_eff
-        :return: realisation of radius of Hernquist luminosity weighting in 3d
+        :param kwargs_light: keyword argument (list) of the light model
+        :return: 3d radius (if possible), 2d projected radius, x-projected coordinate, y-projected coordinate
         """
-        P = np.random.uniform()  # draws uniform between [0,1)
-        r = a*np.sqrt(P)*(np.sqrt(P)+1)/(1-P)  # solves analytically to r from P(r)
-        return r
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
+        a = kwargs_light['a']
+        r = vel_util.draw_hernquist(a)
+        R, x, y = vel_util.project2d_random(r)
+        return r, R, x, y
 
-    def R_r(self, r):
-        """
-        draws a random projection from radius r in 2d and 1d
-        :param r: 3d radius
-        :return: R, x, y
-        """
-        phi = np.random.uniform(0, 2*np.pi)
-        theta = np.random.uniform(0, np.pi)
-        x = r * np.sin(theta) * np.cos(phi)
-        y = r * np.sin(theta) * np.sin(phi)
-        R = np.sqrt(x**2 + y**2)
-        return R, x, y
-
-    def sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
+    def _sigma_s2(self, r, R, r_ani, a, gamma, rho0_r0_gamma):
         """
         projected velocity dispersion
-        :param r:
-        :param R:
-        :param r_ani:
-        :param a:
-        :param gamma:
-        :param phi_E:
-        :return:
+        :param r: 3d radius of the light tracer particle
+        :param R: 2d projected radius of the light tracer particle
+        :param r_ani: anisotropy radius
+        :param a: scale of the Hernquist light profile
+        :param gamma: power-law slope of the mass profile
+        :param rho0_r0_gamma: combination of Einstein radius and power-law slope as equation (14) in Suyu+ 2010
+        :return: projected velocity dispersion
         """
-        beta = self._beta_ani(r, r_ani)
-        return (1 - beta * R**2/r**2) * self.sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
+        beta = self.beta_r(r, **{'r_ani': r_ani})
+        return (1 - beta * R**2/r**2) * self._sigma_r2_interp(r, a, gamma, rho0_r0_gamma, r_ani)
 
-    def sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
+    def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        returns unweighted los velocity dispersion for a specified projected radius
+
+        :param r: 3d radius (not needed for this calculation)
+        :param R: 2d projected radius (in angular units of arcsec)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
+        """
+        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass, kwargs_light, kwargs_anisotropy)
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
+
+    def sigma_r2(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        equation (19) in Suyu+ 2010
+
+        :param r: 3d radius
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light profile keyword arguments
+        :param kwargs_anisotropy: anisotropy keyword arguments
+        :return: velocity dispersion in [m/s]
+        """
+        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass, kwargs_light, kwargs_anisotropy)
+        return self._sigma_r2(r, a, gamma, rho0_r0_gamma, r_ani)
+
+    def _read_out_params(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        reads the relevant parameters out of the keyword arguments and transforms them to the conventions used in this
+        class
+
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light profile keyword arguments
+        :param kwargs_anisotropy: anisotropy keyword arguments
+        :return: a (Rs of Hernquist profile), gamma, rho0_r0_gamma, r_ani
+        """
+        if 'a' not in kwargs_light:
+            kwargs_light['a'] = 0.551 * kwargs_light['r_eff']
+        if 'rho0_r0_gamma' not in kwargs_mass:
+            kwargs_mass['rho0_r0_gamma'] = self._rho0_r0_gamma(kwargs_mass['theta_E'], kwargs_mass['gamma'])
+        a = kwargs_light['a']
+        gamma = kwargs_mass['gamma']
+        rho0_r0_gamma = kwargs_mass['rho0_r0_gamma']
+        r_ani = kwargs_anisotropy['r_ani']
+        return a, gamma, rho0_r0_gamma, r_ani
+
+    def _sigma_r2(self, r, a, gamma, rho0_r0_gamma, r_ani):
         """
         equation (19) in Suyu+ 2010
         """
         # first term
         prefac1 = 4*np.pi * const.G * a**(-gamma) * rho0_r0_gamma / (3-gamma)
         prefac2 = r * (r + a)**3/(r**2 + r_ani**2)
+        #TODO check whether interpolation functions can speed this up
         hyp1 = vel_util.hyp_2F1(a=2+gamma, b=gamma, c=3+gamma, z=1./(1+r/a))
         hyp2 = vel_util.hyp_2F1(a=3, b=gamma, c=1+gamma, z=-a/r)
         fac = r_ani**2/a**2 * hyp1 / ((2+gamma) * (r/a + 1)**(2+gamma)) + hyp2 / (gamma*(r/a)**gamma)
-        return prefac1 * prefac2 * fac * (self._cosmo.arcsec2phys_lens(1.) * const.Mpc / 1000) ** 2
+        return prefac1 * prefac2 * fac * (const.arcsec * self._cosmo.dd * const.Mpc) ** 2
 
-    def _beta_ani(self, r, r_ani):
+    def _sigma_r2_interp(self, r, a, gamma, rho0_r0_gamma, r_ani):
         """
-        anisotropy parameter beta
-        :param r: radius
-        :param r_ani: anisotropy radius
-        :return: beta(r) in the OM parameterization
+
+        :param r:
+        :param a:
+        :param gamma:
+        :param rho0_r0_gamma:
+        :param r_ani:
+        :return:
         """
-        return r**2/(r_ani**2 + r**2)
+        if not hasattr(self, '_interp_sigma_r2'):
+            min_log = np.log10(self._min_integrate)
+            max_log = np.log10(self._max_integrate)
+            r_array = np.logspace(min_log, max_log, self._interp_grid_num)
+            I_R_sigma2_array = []
+            for r_i in r_array:
+                I_R_sigma2_array.append(self._sigma_r2(r_i, a, gamma, rho0_r0_gamma, r_ani))
+            self._interp_sigma_r2 = interp1d(np.log(r_array), np.array(I_R_sigma2_array), fill_value="extrapolate")
+        return self._interp_sigma_r2(np.log(r))
+
+    def grav_potential(self, r, kwargs_mass):
+        """
+        Gravitational potential in SI units
+
+        :param r: radius (arc seconds)
+        :param kwargs_mass:
+        :return: gravitational potential
+        """
+        theta_E = kwargs_mass['theta_E']
+        gamma = kwargs_mass['gamma']
+        mass_dimless = self._spp.mass_3d_lens(r, theta_E, gamma)
+        mass_dim = mass_dimless * const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * \
+                   const.c ** 2 / (4 * np.pi * const.G)
+        grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
+        return grav_pot
+
+    def delete_cache(self):
+        """
+        deletes temporary cache tight to a specific model
+
+        :return:
+        """
+        if hasattr(self, '_interp_sigma_r2'):
+            del self._interp_sigma_r2

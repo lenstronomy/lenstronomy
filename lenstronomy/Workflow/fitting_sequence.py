@@ -1,5 +1,4 @@
 from lenstronomy.Workflow.psf_fitting import PsfFitting
-from lenstronomy.Sampling.reinitialize import ReusePositionGenerator
 from lenstronomy.Workflow.alignment_matching import AlignmentFitting
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Workflow.multi_band_manager import MultiBandUpdateManager
@@ -22,13 +21,14 @@ class FittingSequence(object):
                  verbose=True):
         """
 
-        :param kwargs_data_joint:
+        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
         :param kwargs_model:
         :param kwargs_constraints:
         :param kwargs_likelihood:
         :param kwargs_params:
-        :param mpi:
-        :param verbose: bool, if True
+        :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
+        possible
+        :param verbose: bool, if True prints temporary results and indicators of the fitting process
         """
         self.kwargs_data_joint = kwargs_data_joint
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
@@ -63,6 +63,9 @@ class FittingSequence(object):
             elif fitting_type == 'update_settings':
                 self.update_settings(**kwargs)
 
+            elif fitting_type == 'set_param_value':
+                self.set_param_value(**kwargs)
+
             elif fitting_type == 'fix_not_computed':
                 self.fix_not_computed(**kwargs)
 
@@ -76,6 +79,11 @@ class FittingSequence(object):
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append([fitting_type, chain, param])
+
+            elif fitting_type == 'SIMPLEX':
+                kwargs_result = self.simplex(**kwargs)
+                self._updateManager.update_param_state(**kwargs_result)
+                chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
                 if not 'init_samples' in kwargs:
@@ -92,7 +100,7 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'MCMC', 'psf_iteration', "
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'psf_iteration', "
                                  "'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list
 
@@ -159,6 +167,24 @@ class FittingSequence(object):
         likelihoodModule = LikelihoodModule(self.kwargs_data_joint, kwargs_model, self.param_class, **kwargs_likelihood)
         return likelihoodModule
 
+    def simplex(self, n_iterations, method='Nelder-Mead'):
+        """
+        Downhill simplex optimization using the Nelder-Mead algorithm.
+
+        :param n_iterations: maximum number of iterations to perform
+        :param method: the optimization method used, see documentation in scipy.optimize.minimize
+        :return: result of the best fit
+        """
+
+        param_class = self.param_class
+        kwargs_temp = self._updateManager.parameter_state
+        init_pos = param_class.kwargs2args(**kwargs_temp)
+        sampler = Sampler(likelihoodModule=self.likelihoodModule)
+        result = sampler.simplex(init_pos, n_iterations, method)
+
+        kwargs_result = param_class.args2kwargs(result, bijective=True)
+        return kwargs_result
+
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
              sampler_type='EMCEE', progress=True):
         """
@@ -187,20 +213,20 @@ class FittingSequence(object):
         # run MCMC
         if not init_samples is None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
-            print(num_samples, num_param_prev, num_param, 'shape of init_sample')
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
-                initpos = ReusePositionGenerator(init_samples)
+                n_walkers = num_param * walkerRatio
+                idxs = np.random.choice(len(init_samples), n_walkers)
+                initpos = init_samples[idxs]
             else:
-                print("Can not re-use previous MCMC samples due to change in option")
-                initpos = None
+                raise ValueError("Can not re-use previous MCMC samples as number of parameters have changed!")
         else:
             initpos = None
 
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress)
+                                                  threadCount=threadCount, progress=progress, initpos=initpos)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -421,6 +447,22 @@ class FittingSequence(object):
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
         return 0
+
+    def set_param_value(self, **kwargs):
+        """
+        Set a parameter to a specific value. `kwargs` are below.
+        :param lens: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens:
+        :param source: [[i_model, ['param1', 'param2',...], [...]]
+        :type source:
+        :param lens_light: [[i_model, ['param1', 'param2',...], [...]]
+        :type lens_light:
+        :param ps: [[i_model, ['param1', 'param2',...], [...]]
+        :type ps:
+        :return: 0, the value of the param is overwritten
+        :rtype:
+        """
+        self._updateManager.update_param_value(**kwargs)
 
     def fix_not_computed(self, free_bands):
         """

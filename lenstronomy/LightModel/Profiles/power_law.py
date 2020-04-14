@@ -28,7 +28,7 @@ class PowerLaw(object):
         :param center_y: center
         :return: projected flux
         """
-        x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         P2 = x_ ** 2 + y_ ** 2
         if isinstance(P2, int) or isinstance(P2, float):
             a = max(0.00000001, P2)

@@ -1,4 +1,3 @@
-import numpy as np
 import lenstronomy.Util.param_util as param_util
 
 
@@ -66,10 +65,7 @@ class HernquistEllipse(object):
         :param center_y:
         :return:
         """
-        #TODO check ellipticity consistency with the mass profile kappa definition
-        #x_, y_ = param_util.transform_e1e2(x, y, e1, e2, center_x, center_y)
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_ , y_ = self._coord_transf(x, y, q, phi_G, center_x, center_y)
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         return self.spherical.function(x_, y_, amp, Rs)
 
     def light_3d(self, r, amp, Rs, e1=0, e2=0):
@@ -84,23 +80,3 @@ class HernquistEllipse(object):
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
         return self.lens.density(r, rho0, Rs)
-
-    def _coord_transf(self, x, y, q, phi_G, center_x, center_y):
-        """
-
-        :param x:
-        :param y:
-        :param q:
-        :param phi_G:
-        :param center_x:
-        :param center_y:
-        :return:
-        """
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
-        x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
-        y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
-        return x_, y_

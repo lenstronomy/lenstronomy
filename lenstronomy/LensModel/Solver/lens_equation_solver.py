@@ -36,7 +36,6 @@ class LensEquationSolver(object):
         :param x_center: center of search window
         :param y_center: center of search window
         :param num_random: number of random starting points of the non-linear solver in the search window
-        :param verbose: bool, if True, prints performance information
         :return: x_image, y_image
         """
         kwargs_lens = self.lensModel.set_static(kwargs_lens)
@@ -89,7 +88,11 @@ class LensEquationSolver(object):
         :param verbose: bool, if True, prints some useful information for the user
         :param x_center: float, center of the window to search for point sources
         :param y_center: float, center of the window to search for point sources
+        :param num_random: int, number of random positions within the search window to be added to be starting
+         positions for the gradient decent solver
         :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
+        :param magnification_limit: None or float, if set will only return image positions that have an
+         abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -123,9 +126,9 @@ class LensEquationSolver(object):
         y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
                                              size=num_random))
         # iterative solving of the lens equation for the selected grid points
-        x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
-                                                               precision_limit, num_iter_max, verbose=verbose,
-                                                               min_distance=min_distance, non_linear=non_linear)
+        x_mins, y_mins, solver_precision = self._find_gradient_decent(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                      precision_limit, num_iter_max, verbose=verbose,
+                                                                      min_distance=min_distance, non_linear=non_linear)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -140,8 +143,25 @@ class LensEquationSolver(object):
         self.lensModel.set_dynamic()
         return x_mins, y_mins
 
-    def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
-                       num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):
+    def _find_gradient_decent(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
+                              num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):
+        """
+        given a 'good guess' of a solution of the lens equation (expected image position given a fixed source position)
+        this routine iteratively performs a ray-tracing with second order correction (effectively gradient decent) to find
+        a precise solution to the lens equation.
+
+        :param x_min: np.array, list of 'good guess' solutions of the lens equation
+        :param y_min: np.array, list of 'good guess' solutions of the lens equation
+        :param sourcePos_x: source position for which to solve the lens equation
+        :param sourcePos_y: source position for which to solve the lens equation
+        :param kwargs_lens: keyword argument list of the lens model
+        :param precision_limit: float, required match in the solution in the source plane
+        :param num_iter_max: int, maximum number of iterations before the algorithm stops
+        :param verbose: bool, if True inserts print statements about the behavior of the solver
+        :param min_distance: maximum correction applied per step (to avoid over-shooting in instable regions)
+        :param non_linear: bool, if True, uses scipy.miminize instead of the directly implemented gradient decent approach.
+        :return: x_position array, y_position array, error in the source plane array
+        """
         num_candidates = len(x_min)
         x_mins = np.zeros(num_candidates)
         y_mins = np.zeros(num_candidates)
@@ -149,7 +169,7 @@ class LensEquationSolver(object):
         for i in range(len(x_min)):
             x_guess, y_guess, delta, l = self._solve_single_proposal(x_min[i], y_min[i], sourcePos_x, sourcePos_y,
                                                                   kwargs_lens, precision_limit, num_iter_max,
-                                                                     min_distance, non_linear=non_linear)
+                                                                     max_step=min_distance, non_linear=non_linear)
             if verbose is True:
                 print("Solution found for region %s with required precision at iteration %s" % (i, l))
             x_mins[i] = x_guess
@@ -159,9 +179,22 @@ class LensEquationSolver(object):
 
     def _solve_single_proposal(self, x_guess, y_guess, source_x, source_y, kwargs_lens, precision_limit, num_iter_max,
                                max_step, non_linear=False):
+        """
+        gradient decent solution of a single proposed starting point (close to a true solution)
+
+        :param x_guess: starting guess position in the image plane
+        :param y_guess: starting guess position in the image plane
+        :param source_x: source position to solve for in the image plane
+        :param source_y: source position to solve for in the image plane
+        :param kwargs_lens: keyword argument list of the lens model
+        :param precision_limit: float, required match in the solution in the source plane
+        :param num_iter_max: int, maximum number of iterations before the algorithm stops
+        :param max_step: maximum correction applied per step (to avoid over-shooting in instable regions)
+        :param non_linear: bool, if True, uses scipy.miminize instead of the directly implemented gradient decent approach.
+        :return: x_position, y_position, error in the source plane, steps required (for gradient decent)
+        """
         l = 0
         if non_linear is True:
-        #if self.lensModel.multi_plane is True:
             xinitial = np.array([x_guess, y_guess])
             result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2,
                               method='Nelder-Mead')
@@ -183,12 +216,27 @@ class LensEquationSolver(object):
                 dist = np.sqrt(image_plane_vector[0]**2 + image_plane_vector[1]**2)
                 if dist > max_step:
                     image_plane_vector *= max_step/dist
-                x_guess, y_guess, delta, l = self._do_step(x_guess, y_guess, source_x, source_y, delta,
-                                                                  image_plane_vector, kwargs_lens, l, num_iter_max)
+                x_guess, y_guess, delta, l = self._gradient_step(x_guess, y_guess, source_x, source_y, delta,
+                                                                 image_plane_vector, kwargs_lens, l, num_iter_max)
         return x_guess, y_guess, delta, l
 
-    def _do_step(self, x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num,
-                 num_iter_max):
+    def _gradient_step(self, x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens,
+                       iter_num, num_iter_max):
+        """
+
+        :param x_guess: float, current best fit solution in the image plane
+        :param y_guess: float, current best fit solution in the image plane
+        :param source_x: float, source position to be matched
+        :param source_y: float, source position ot be matched
+        :param delta_init: current precision in the source plane of the mapped solution
+        :param image_plane_vector: correction vector in the image plane based on the Hessian operator and the deviation
+         in the source plane
+        :param kwargs_lens: lens model keyword argument list
+        :param iter_num: int, current iteration number
+        :param num_iter_max: int, maximum iteration number before aborting the process
+        :return: updated image position in x, updated image position in y, updated precision in the source plane,
+        total iterations done after this call
+        """
         x_new = x_guess - image_plane_vector[0]
         y_new = y_guess - image_plane_vector[1]
         x_mapped, y_mapped = self.lensModel.ray_shooting(x_new, y_new, kwargs_lens)
@@ -198,34 +246,47 @@ class LensEquationSolver(object):
             if num_iter_max < iter_num:
                 return x_guess, y_guess, delta_init, iter_num
             else:
-                #
-                #image_plane_vector /= 10
+                # if the new proposal is worse than the previous one, it randomly draws a new proposal in a different
+                # direction and tries again
                 image_plane_vector[0] *= np.random.normal(loc=0, scale=0.5)
                 image_plane_vector[1] *= np.random.normal(loc=0, scale=0.5)
-                return self._do_step(x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num, num_iter_max)
+                return self._gradient_step(x_guess, y_guess, source_x, source_y, delta_init, image_plane_vector, kwargs_lens, iter_num, num_iter_max)
         else:
             return x_new, y_new, delta_new, iter_num
 
     def findBrightImage(self, sourcePos_x, sourcePos_y, kwargs_lens, numImages=4, min_distance=0.01, search_window=5,
-                        precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True):
+                        precision_limit=10**(-10), num_iter_max=10, arrival_time_sort=True, x_center=0, y_center=0,
+                        num_random=0, non_linear=False, magnification_limit=None, initial_guess_cut=True, verbose=False):
         """
 
-        :param sourcePos_x:
-        :param sourcePos_y:
-        :param deltapix:
-        :param numPix:
-        :param magThresh: magnification threshold for images to be selected
-        :param numImage: number of selected images (will select the highest magnified ones)
-        :param kwargs_lens:
-        :param ray_shooting_function: a special function for performing ray shooting; defaults to self.lensModel.ray_shooting
-        :param hessian_function: same as ray_shooting_function, but for computing the hessian matrix
-        :param magnification_function: same as ray_shooting_function, but for computing magnifications
-        :return:
+        :param sourcePos_x: source position in units of angle
+        :param sourcePos_y: source position in units of angle
+        :param kwargs_lens: lens model parameters as keyword arguments
+        :param min_distance: minimum separation to consider for two images in units of angle
+        :param search_window: window size to be considered by the solver. Will not find image position outside this window
+        :param precision_limit: required precision in the lens equation solver (in units of angle in the source plane).
+        :param num_iter_max: maximum iteration of lens-source mapping conducted by solver to match the required precision
+        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
+        :param initial_guess_cut: bool, if True, cuts initial local minima selected by the grid search based on distance criteria from the source position
+        :param verbose: bool, if True, prints some useful information for the user
+        :param x_center: float, center of the window to search for point sources
+        :param y_center: float, center of the window to search for point sources
+        :param num_random: int, number of random positions within the search window to be added to be starting
+         positions for the gradient decent solver
+        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
+        :param magnification_limit: None or float, if set will only return image positions that have an
+         abs(magnification) larger than this number
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
 
-        x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens, min_distance,
-                                                         search_window, precision_limit, num_iter_max,
-                                                         arrival_time_sort=arrival_time_sort)
+        x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                         min_distance=min_distance, search_window=search_window,
+                                                         precision_limit=precision_limit, num_iter_max=num_iter_max,
+                                                         arrival_time_sort=arrival_time_sort,
+                                                         initial_guess_cut=initial_guess_cut, verbose=verbose,
+                                                         x_center=x_center, y_center=y_center, num_random=num_random,
+                                                         non_linear=non_linear, magnification_limit=magnification_limit)
         mag_list = []
         for i in range(len(x_mins)):
             mag = self.lensModel.magnification(x_mins[i], y_mins[i], kwargs_lens)
@@ -252,7 +313,6 @@ class LensEquationSolver(object):
 
         if len(x_mins) <= 1:
             return x_mins, y_mins
-        x_source, y_source = self.lensModel.ray_shooting(x_mins, y_mins, kwargs_lens)
         if self.lensModel.multi_plane is True:
             arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:

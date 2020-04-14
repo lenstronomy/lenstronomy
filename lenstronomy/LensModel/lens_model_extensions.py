@@ -100,10 +100,12 @@ class LensModelExtensions(object):
     def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
         """
 
-        :param kwargs_lens:
-        :param compute_window:
-        :param tiling_scale:
-        :return:
+        :param kwargs_lens: lens model keyword argument list
+        :param compute_window: total window in the image plane where to search for critical curves
+        :param start_scale: float, angular scale on which to start the tiling from (if there are two distinct curves in
+         a region, it might only find one.
+        :param max_order: int, maximum order in the tiling to compute critical curve triangles
+        :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """
         numPix = int(compute_window / start_scale)
         x_grid_init, y_grid_init = util.make_grid(numPix, deltapix=start_scale, subgrid_res=1)
@@ -138,6 +140,7 @@ class LensModelExtensions(object):
         :param edge2: [ra_coord, dec_coord, magnification]
         :param edge_90: [ra_coord, dec_coord, magnification]
         :param max_order: maximal order to fold triangle
+        :param kwargs_lens: lens model keyword argument list
         :return:
         """
         ra_1, dec_1, mag_1 = edge1

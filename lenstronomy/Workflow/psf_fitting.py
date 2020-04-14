@@ -87,9 +87,9 @@ class PsfFitting(object):
         logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
 
-    def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10,
-                         no_break=True, stacking_method='median', block_center_neighbour=0, keep_psf_error_map=True,
-                 psf_symmetry=1, psf_iter_factor=0.2, verbose=True):
+    def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, no_break=True, stacking_method='median',
+                         block_center_neighbour=0, keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=0.2,
+                         verbose=True):
         """
 
         :param kwargs_data:

@@ -41,8 +41,8 @@ class ImageSparseFit(ImageFit):
                                              psf_error_map_bool_list=psf_error_map_bool_list)
         
         self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
-        self.SourceNumerics = self._setup_source_numerics_V1(kwargs_numerics, self._subgrid_res_source)
-        # self.SourceNumerics = self._setup_source_numerics_V2(kwargs_numerics, self._subgrid_res_source)
+        self.SourceNumerics = self._setup_source_numerics(kwargs_numerics, self._subgrid_res_source)
+        # self.SourceNumerics = self._setup_source_numerics_alt(kwargs_numerics, self._subgrid_res_source)
 
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
@@ -296,7 +296,7 @@ class ImageSparseFit(ImageFit):
             kwargs_lens_light[0]['center_y'] = 0
         return kwargs_source, kwargs_lens_light
 
-    def _setup_source_numerics_V1(self, kwargs_numerics, subgrid_res_source):
+    def _setup_source_numerics(self, kwargs_numerics, subgrid_res_source):
         """define a new numerics class specifically for source plane, that may have a different resolution"""
         from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
         # numerics for source plane has a different supersampling resolution
@@ -305,23 +305,23 @@ class ImageSparseFit(ImageFit):
         kwargs_numerics_source['compute_mode'] = 'regular'
         return NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
 
-    def _setup_source_numerics_V2(self, kwargs_numerics, subgrid_res_source):
-        """define a new numerics class specifically for source plane, that may have a different resolution"""
-        from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
-        from lenstronomy.Data.pixel_grid import PixelGrid
-        from lenstronomy.Data.psf import PSF
-        # get the axis orientation
-        nx, ny = self.Data.num_pixel_axes
-        nx_source, ny_source = int(nx * subgrid_res_source), int(ny * subgrid_res_source)
-        delta_pix_source = self.Data.pixel_width / float(subgrid_res_source)
-        inverse = True if self.Data.transform_pix2angle[0, 0] < 0 else False
-        left_lower = False  # ?? how to make sure it's consistent with data ?
-        _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ \
-            = util.make_grid_with_coordtransform(nx_source, delta_pix_source, subgrid_res=1,
-                                                 left_lower=left_lower, inverse=inverse)
-        pixel_grid_source = PixelGrid(nx_source, ny_source, Mpix2coord, ra_at_xy_0, dec_at_xy_0)
-        psf = self.PSF  #PSF(psf_type='NONE')
-        kwargs_numerics_source = kwargs_numerics.copy()
-        kwargs_numerics_source['supersampling_factor'] = 1
-        kwargs_numerics_source['compute_mode'] = 'regular'
-        return NumericsSubFrame(pixel_grid=pixel_grid_source, psf=psf, **kwargs_numerics_source)
+    # def _setup_source_numerics_alt(self, kwargs_numerics, subgrid_res_source):
+    #     """define a new numerics class specifically for source plane, that may have a different resolution"""
+    #     from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
+    #     from lenstronomy.Data.pixel_grid import PixelGrid
+    #     from lenstronomy.Data.psf import PSF
+    #     # get the axis orientation
+    #     nx, ny = self.Data.num_pixel_axes
+    #     nx_source, ny_source = int(nx * subgrid_res_source), int(ny * subgrid_res_source)
+    #     delta_pix_source = self.Data.pixel_width / float(subgrid_res_source)
+    #     inverse = True if self.Data.transform_pix2angle[0, 0] < 0 else False
+    #     left_lower = False  # ?? how to make sure it's consistent with data ?
+    #     _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ \
+    #         = util.make_grid_with_coordtransform(nx_source, delta_pix_source, subgrid_res=1,
+    #                                              left_lower=left_lower, inverse=inverse)
+    #     pixel_grid_source = PixelGrid(nx_source, ny_source, Mpix2coord, ra_at_xy_0, dec_at_xy_0)
+    #     psf = self.PSF  #PSF(psf_type='NONE')
+    #     kwargs_numerics_source = kwargs_numerics.copy()
+    #     kwargs_numerics_source['supersampling_factor'] = 1
+    #     kwargs_numerics_source['compute_mode'] = 'regular'
+    #     return NumericsSubFrame(pixel_grid=pixel_grid_source, psf=psf, **kwargs_numerics_source)

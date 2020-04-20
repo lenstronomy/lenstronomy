@@ -4,7 +4,7 @@ __author__ = 'sibirrer'
 Tests for `prob_density` module.
 """
 
-from lenstronomy.Util.prob_density import SkewGaussian, Approx, KDE1D
+from lenstronomy.Util.prob_density import SkewGaussian, KDE1D
 import lenstronomy.Util.prob_density as prob_density
 
 import pytest
@@ -37,50 +37,6 @@ class TestSkewGaussian(object):
         assert y == 0.39834240320473779
 
 
-class TestProbDensity(object):
-
-    def setup(self):
-        np.random.seed(seed=42)
-
-    def gauss(self, x, simga):
-        return np.exp(-(x/(simga))**2/2)
-
-    def test_approx_cdf_1d(self):
-        x_array = np.linspace(-5, 5, 500)
-        sigma = 1.
-        pdf_array = self.gauss(x_array, simga=sigma)
-        pdf_array /= np.sum(pdf_array)
-
-        cdf_array, cdf_func, cdf_inv_func = prob_density.approx_cdf_1d(x_array, pdf_array)
-        npt.assert_almost_equal(cdf_array[-1], 1, decimal=8)
-        npt.assert_almost_equal(cdf_func(0), 0.5, decimal=2)
-        npt.assert_almost_equal(cdf_inv_func(0.5), 0., decimal=2)
-
-    def test_compute_lower_upper_errors(self):
-        x_array = np.linspace(-5, 5, 1000)
-        sigma = 1.
-        pdf_array = self.gauss(x_array, simga=sigma)
-        approx = Approx(x_array, pdf_array)
-        np.random.seed(42)
-        sample = approx.draw(n=20000)
-        mean_0, _ = prob_density.compute_lower_upper_errors(
-            sample, num_sigma=0)
-        mean, [[lower_sigma1, upper_sigma1]] = prob_density.compute_lower_upper_errors(
-            sample, num_sigma=1)
-        npt.assert_almost_equal(mean, mean_0, decimal=8)
-        mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2]] = prob_density.compute_lower_upper_errors(sample, num_sigma=2)
-        mean, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2], [lower_sigma3, upper_sigma3]] = prob_density.compute_lower_upper_errors(sample, num_sigma=3)
-        npt.assert_almost_equal(mean, 0, decimal=2)
-        print(lower_sigma1, lower_sigma2, lower_sigma3)
-        print(upper_sigma1, upper_sigma2, upper_sigma3)
-        npt.assert_almost_equal(lower_sigma1, sigma, decimal=2)
-        npt.assert_almost_equal(lower_sigma2, 2*sigma, decimal=1)
-        npt.assert_almost_equal(lower_sigma3, 3 * sigma, decimal=1)
-
-        draw = approx.draw_one
-        assert len(draw) == 1
-
-
 class TestKDE1D(object):
 
     def setup(self):
@@ -93,9 +49,7 @@ class TestKDE1D(object):
         x_array = np.linspace(0.5, 1.5, 3000)
         sigma = .1
         mean = 1.
-        pdf_array = self.gauss(x_array, mean=mean, simga=sigma)
-        approx = Approx(x_array, pdf_array)
-        sample = approx.draw(n=50000)
+        sample = np.random.normal(loc=mean, scale=sigma, size=50000)
         kde = KDE1D(values=sample)
 
         x = -10
@@ -106,10 +60,6 @@ class TestKDE1D(object):
         x = np.linspace(0.5, 1.5, 15)
         likelihood = kde.likelihood(x)
         likelihood_true = self.gauss(x, mean=mean, simga=sigma)
-        #import matplotlib.pyplot as plt
-        #plt.plot(x, likelihood)
-        #plt.plot(x, likelihood_true)
-        #plt.show()
         npt.assert_almost_equal(likelihood, likelihood_true, decimal=1)
 
 

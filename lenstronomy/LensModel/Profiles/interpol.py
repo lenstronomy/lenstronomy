@@ -13,6 +13,9 @@ class Interpol(LensProfileBase):
 
     See also the tests in lenstronomy.test.test_LensModel.test_Profiles.test_interpol.py for example use cases
     as checks against known analytic models.
+
+    The deflection angle is in the same convention as the one in the LensModel module, meaning that:
+    source position = image position - deflection angle
     """
     param_names = ['grid_interp_x', 'grid_interp_y', 'f_', 'f_x', 'f_y', 'f_xx', 'f_yy', 'f_xy']
     lower_limit_default = {}

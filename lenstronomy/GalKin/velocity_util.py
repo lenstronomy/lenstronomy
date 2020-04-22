@@ -32,10 +32,10 @@ def moffat_r(r, alpha, beta):
 
     :param r: radial coordinate
     :param alpha:
-    :param beta:
+    :param beta: exponent
     :return:
     """
-    return 2. * (beta -1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
+    return 2. * (beta - 1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
 
 
 def moffat_fwhm_alpha(FWHM, beta):

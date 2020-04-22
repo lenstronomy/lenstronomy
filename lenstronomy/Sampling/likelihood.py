@@ -25,7 +25,7 @@ class LikelihoodModule(object):
                  source_position_likelihood=False, image_position_uncertainty=0.004, check_positive_flux=False,
                  source_position_tolerance=0.001, source_position_sigma=0.001, force_no_add_image=False,
                  source_marg=False, linear_prior=None, restrict_image_number=False,
-                 max_num_images=None, bands_compute=None, time_delay_likelihood=False,
+                 max_num_images=None, bands_compute=None, time_delay_likelihood=False, sort_images_by_dec=False,
                  force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
                  prior_extinction=[], prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[],
@@ -88,7 +88,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class)
+                                                             lens_model_class, point_source_class, sort_images_by_dec=sort_images_by_dec)
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:

@@ -104,7 +104,7 @@ class SingleBandMultiModel(ImageFit):
                                                                              kwargs_extinction_i, kwargs_special, 
                                                                              inv_bool=inv_bool)
         elif self.type == 'single-band-multi-sparse-model':
-            model, error_map, param = self.fit.image_sparse_solve(kwargs_lens_i, kwargs_source_i, 
+            model, error_map, param, logL_penalty = self.fit.image_sparse_solve(kwargs_lens_i, kwargs_source_i, 
                                                                   kwargs_lens_light_i, kwargs_special)
             cov_param = None
         return model, error_map, cov_param, param

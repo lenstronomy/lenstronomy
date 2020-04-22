@@ -164,13 +164,13 @@ class ImageSparseFit(ImageFit):
         """
         C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
         init_ps_model = self.point_source(kwargs_ps, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special)
-        model, param = self.sparseSolver.solve(kwargs_lens, kwargs_source, kwargs_lens_light=kwargs_lens_light,
+        model, param, logL_penalty = self.sparseSolver.solve(kwargs_lens, kwargs_source, kwargs_lens_light=kwargs_lens_light,
                                                kwargs_ps=kwargs_ps, kwargs_special=kwargs_special,
                                                init_lens_light_model=init_lens_light_model, init_ps_model=init_ps_model)
         if model is None:
             return None, None, None
         _, _, _, _ = self.update_sparse_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        return model, model_error, param
+        return model, model_error, param, logL_penalty
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_special=None):
@@ -204,7 +204,7 @@ class ImageSparseFit(ImageFit):
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        model, model_error, param = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
+        model, model_error, param, logL_penalty = self._image_sparse_solve(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, 
                                                              kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
         if model is None: 
             return -1e20
@@ -212,7 +212,7 @@ class ImageSparseFit(ImageFit):
         logL = self.Data.log_likelihood(model, self.likelihood_mask, model_error)
         if not np.isfinite(logL):
             return -1e20  # penalty
-        return logL
+        return logL - logL_penalty
 
     def _image_linear_solve_point_sources(self, sparse_model, kwargs_lens=None, kwargs_ps=None, kwargs_special=None, inv_bool=False):
         """

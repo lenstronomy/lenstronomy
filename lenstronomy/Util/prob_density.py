@@ -1,6 +1,5 @@
 __author__ = 'sibirrer'
 
-from scipy.interpolate import interp1d
 from scipy import stats
 import numpy as np
 
@@ -93,30 +92,6 @@ class SkewGaussian(object):
         return e, w, a
 
 
-class Approx(object):
-    """
-    class for approximations with a given pdf sample
-    """
-    def __init__(self, x_array, pdf_array):
-        self._cdf_array, self._cdf_func, self._cdf_inv_func = approx_cdf_1d(x_array, pdf_array)
-
-    def draw(self, n=1):
-        """
-
-        :return:
-        """
-        p = np.random.uniform(0, 1, n)
-        return self._cdf_inv_func(p)
-
-    @property
-    def draw_one(self):
-        """
-
-        :return:
-        """
-        return self.draw(n=1)
-
-
 class KDE1D(object):
     """
     class that allows to compute likelihoods based on a 1-d posterior sample
@@ -140,27 +115,12 @@ class KDE1D(object):
         return dens
 
 
-def approx_cdf_1d(x_array, pdf_array):
-    """
-
-    :param x_array: x-values of pdf
-    :param pdf_array: pdf array of given x-values
-    """
-    norm_pdf = pdf_array/np.sum(pdf_array)
-    cdf_array = np.zeros_like(norm_pdf)
-    cdf_array[0] = norm_pdf[0]
-    for i in range(1, len(norm_pdf)):
-        cdf_array[i] = cdf_array[i-1] + norm_pdf[i]
-    cdf_func = interp1d(x_array, cdf_array)
-    cdf_inv_func = interp1d(cdf_array, x_array)
-    return cdf_array, cdf_func, cdf_inv_func
-
-
 def compute_lower_upper_errors(sample, num_sigma=1):
     """
     computes the upper and lower sigma from the median value.
     This functions gives good error estimates for skewed pdf's
     :param sample: 1-D sample
+    :param num_sigma: integer, number of sigmas to be returned
     :return: median, lower_sigma, upper_sigma
     """
     if num_sigma > 3:

@@ -70,9 +70,9 @@ class LensCosmo(object):
         return (1 + self.z_lens) * self.dd * self.ds / self.dds
 
     @property
-    def epsilon_crit(self):
+    def sigma_crit(self):
         """
-        returns the critical projected mass density in units of M_sun/Mpc^2 (physical units)
+        returns the critical projected mass density in units of M_sun/rad^2
         :return: critical projected mass density
         """
         if not hasattr(self, '_Epsilon_Crit'):
@@ -83,9 +83,10 @@ class LensCosmo(object):
         return self._Epsilon_Crit
 
     @property
-    def epsilon_crit_angle(self):
+    def sigma_crit_angle(self):
         """
-        returns the critical projected mass density in units of M_sun/arcsec^2 (in physical solar mass units)
+        returns the critical surface density in units of M_sun/arcsec^2 (in physical solar mass units)
+        when provided a physical mass per physical Mpc^2
         :return: critical projected mass density
         """
         if not hasattr(self, '_Epsilon_Crit_arcsec'):
@@ -125,7 +126,7 @@ class LensCosmo(object):
         :param kappa: lensing convergence
         :return: projected mass [M_sun/Mpc^2]
         """
-        return kappa * self.epsilon_crit
+        return kappa * self.sigma_crit
 
     def mass_in_theta_E(self, theta_E):
         """
@@ -133,7 +134,7 @@ class LensCosmo(object):
         :param theta_E: Einstein radius [arcsec]
         :return: mass within Einstein radius [M_sun]
         """
-        mass = self.arcsec2phys_lens(theta_E) ** 2 * np.pi * self.epsilon_crit
+        mass = self.arcsec2phys_lens(theta_E) ** 2 * np.pi * self.sigma_crit
         return mass
 
     def mass_in_coin(self, theta_E):
@@ -174,7 +175,7 @@ class LensCosmo(object):
         :return: M200, r200, Rs_physical, c
         """
         Rs = Rs_angle * const.arcsec * self.dd
-        theta_scaled = alpha_Rs * self.epsilon_crit * self.dd * const.arcsec
+        theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
         rho0 = theta_scaled / (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
         rho0_com = rho0 / self.h**2 * self.a_z(self.z_lens)**3
         c = self.nfw_param.c_rho0(rho0_com)
@@ -193,7 +194,7 @@ class LensCosmo(object):
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec  # Rs in arcsec
         alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return Rs_angle, alpha_Rs / self.epsilon_crit / self.dd / const.arcsec
+        return Rs_angle, alpha_Rs / self.sigma_crit / self.dd / const.arcsec
 
     def nfwParam_physical(self, M, c):
         """

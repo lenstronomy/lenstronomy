@@ -141,14 +141,14 @@ class Sampler(object):
         :type progress: bool
         :param threadCount: number of threats in multi-processing (not applicable for MPI)
         :type threadCount: integer
-        :param initpos: inital walker position to start sampling (optional)
+        :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
         num_param, _ = self.chain.param.num_param()
         if initpos is None:
-            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers)
+            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers, dist='normal')
 
         time_start = time.time()
 

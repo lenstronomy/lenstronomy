@@ -10,13 +10,27 @@ class SingleBandMultiModel(ImageLinearFit):
     This class calls functions of image_model.py with different bands with
     decoupled linear parameters and the option to pass/select different light models for the different bands
 
-    the class instance needs to have a forth row in the multi_band_list with keyword arguments 'source_light_model_index' and
-    'lens_light_model_index' as bool arrays of the size of the total source model types and lens light model types,
-    specifying which model is evaluated for which band.
+    the class supports keyword arguments 'index_lens_model_list', 'index_source_light_model_list',
+    'index_lens_light_model_list', 'index_point_source_model_list', 'index_optical_depth_model_list' in kwargs_model
+    These arguments should be lists of length the number of imaging bands available and each entry in the list
+    is a list of integers specifying the model components being evaluated for the specific band.
+
+    E.g. there are two bands and you want to different light profiles being modeled.
+    - you define two different light profiles lens_light_model_list = ['SERSIC', 'SERSIC']
+    - set index_lens_light_model_list = [[0], [1]]
+    - (optional) for now all the parameters between the two light profiles are independent in the model. You have
+    the possibility to join a subset of model parameters (e.g. joint centroid). See the Param() class for documentation.
 
     """
 
     def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0):
+        """
+
+        :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
+        :param kwargs_model: model option keyword arguments
+        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
+        :param band_index: integer, index of the imaging band to model
+        """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
             likelihood_mask_list = [None for i in range(len(multi_band_list))]

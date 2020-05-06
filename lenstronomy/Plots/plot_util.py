@@ -1,5 +1,6 @@
 import numpy as np
 import math
+from corner.corner import quantile
 
 
 def sqrt(inputArray, scale_min=None, scale_max=None):
@@ -128,3 +129,24 @@ def source_position_plot(ax, coords, ra_pos, dec_pos):
             x_source, y_source = coords.map_coord2pix(ra, dec)
             ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
     return ax
+
+
+def result_string(x, weights=None, title_fmt=".2f", label=None):
+    """
+
+    :param x: marginalized 1-d posterior
+    :param weights: weights of posteriors (optional)
+    :param title_fmt: format to what digit the results are presented
+    :param label: string of parameter label (optional)
+    :return: string with mean \pm quartile
+    """
+    q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)
+    q_m, q_p = q_50 - q_16, q_84 - q_50
+
+    # Format the quantile display.
+    fmt = "{{0:{0}}}".format(title_fmt).format
+    title = r"${{{0}}}_{{-{1}}}^{{+{2}}}$"
+    title = title.format(fmt(q_50), fmt(q_m), fmt(q_p))
+    if label is not None:
+        title = "{0} = {1}".format(label, title)
+    return title

@@ -30,6 +30,7 @@ class ImageSparseFit(ImageFit):
         :param kwargs_numerics: keyword arguments passed to the Numerics module
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
+        being applied to the point sources.
         :param kwargs_sparse_solver: keyword arguments passed to `SparseSolverSource`/`SparseSolverSourceLens`/`SparseSolverSourcePS` module of SLITronomy
         being applied to the point sources.
         """

@@ -115,7 +115,7 @@ class TestSampler(object):
         # 2) run a chain starting from the backup of previous run
         samples_2, dist_2 = self.sampler.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False,
                                                     backup_filename=backup_filename, start_from_backup=True)
-        assert len(samples_2) == len(samples_1) + n_walkers * (n_burn + n_run)
+        assert len(samples_2) == len(samples_1) + n_walkers * n_run
         assert len(dist_2) == len(samples_2)
         
         os.remove(backup_filename)  # just remove the backup file created above

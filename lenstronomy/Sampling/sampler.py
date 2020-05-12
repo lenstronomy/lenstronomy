@@ -159,28 +159,32 @@ class Sampler(object):
 
         if backup_filename is not None:
             backend = emcee.backends.HDFBackend(backup_filename, name="lenstronomy_mcmc_emcee")
-            if not start_from_backup:
+            if pool.is_master():
+                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backup_filename))
+            if start_from_backup:
+                n_run_eff = n_run
+            else:
+                n_run_eff = n_burn + n_run
                 backend.reset(n_walkers, num_param)
                 if pool.is_master():
                     print("Warning: backup file '{}' has been reset!".format(backup_filename))
-            if pool.is_master():
-                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backup_filename))
         else:
             backend = None
+            n_run_eff = n_burn + n_run
 
         time_start = time.time()
 
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
                                         pool=pool, backend=backend)
 
-        sampler.run_mcmc(initpos, n_burn + n_run, progress=progress)
+        sampler.run_mcmc(initpos, n_run_eff, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)
         dist = sampler.get_log_prob(flat=True, discard=n_burn, thin=1)
         if pool.is_master():
             print('Computing the MCMC...')
             print('Number of walkers = ', n_walkers)
             print('Burn-in iterations: ', n_burn)
-            print('Sampling iterations:', n_run)
+            print('Sampling iterations (in current run):', n_run_eff)
             time_end = time.time()
             print(time_end - time_start, 'time taken for MCMC sampling')
         return flat_samples, dist

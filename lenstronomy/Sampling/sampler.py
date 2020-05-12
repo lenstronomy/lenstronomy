@@ -162,7 +162,9 @@ class Sampler(object):
             if not start_from_backup:
                 backend.reset(n_walkers, num_param)
                 if pool.is_master():
-                    print("Warning: all samples (including burn-in) are saved in backup file '{}' (i.e. might be used as a future initial state)".format(backup_filename))
+                    print("Warning: backup file '{}' has been reset!".format(backup_filename))
+            if pool.is_master():
+                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backup_filename))
         else:
             backend = None
 

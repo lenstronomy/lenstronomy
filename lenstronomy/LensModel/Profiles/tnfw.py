@@ -68,12 +68,12 @@ class TNFW(LensProfileBase):
         x = np.maximum(x, self._s)
         if isinstance(x, np.ndarray):
             nfwvals = np.zeros_like(x)
-            inds1 = np.where((x < 1) & (x > 0))
+            inds1 = np.where(x < 1)
             inds2 = np.where(x > 1)
-            inds3 = np.where(x == 0)
+            inds3 = np.where(x == 1)
             nfwvals[inds1] = (1 - x[inds1] ** 2) ** -.5 * np.arctanh((1 - x[inds1] ** 2) ** .5)
             nfwvals[inds2] = (x[inds2] ** 2 - 1) ** -.5 * np.arctan((x[inds2] ** 2 - 1) ** .5)
-            #nfwvals[inds3] = 0
+            nfwvals[inds3] = 1
             return nfwvals
 
         elif isinstance(x, float) or isinstance(x, int):

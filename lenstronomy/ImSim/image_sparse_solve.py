@@ -48,23 +48,24 @@ class ImageSparseFit(ImageFit):
         # TODO : implement support for numba convolution
         # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
 
-        no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
-        no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)
-        if no_lens_light and no_point_sources:
+        self._no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
+        self._no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)
+
+        if self._no_lens_light and self._no_point_sources:
             model_list = self.SourceModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics,
                                                    self.SourceModel, 
                                                    likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
-        elif no_point_sources:
+        elif self._no_point_sources:
             model_list = self.LensLightModel.profile_type_list
             if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
                 raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
                                                        self.SourceModel, self.LensLightModel, 
                                                        likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
-        elif no_lens_light:
+        elif self._no_lens_light:
             if not np.all(self.PSF.psf_error_map == 0):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
             self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
@@ -214,6 +215,24 @@ class ImageSparseFit(ImageFit):
         if not np.isfinite(logL):
             return -1e20  # penalty
         return logL - logL_penalty
+
+    def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+
+        :return: number of linear coefficients to be solved for in the linear inversion
+        """
+        return self._num_param_linear_reduced(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+
+    def _num_param_linear_reduced(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+        Here we do not include the "linear" parameters (pixel intensities) of source and lens light profiles
+        as they are not reconstructed through standard linear inversion.
+        Hence the remaining linear parameters are only point source amplitudes, if any.
+
+        :return: number of linear coefficients to be solved for in the linear inversion
+        """
+        num = self.PointSource.num_basis(kwargs_ps, kwargs_lens)
+        return num
 
     def _image_linear_solve_point_sources(self, sparse_model, kwargs_lens=None, kwargs_ps=None, kwargs_special=None, inv_bool=False):
         """

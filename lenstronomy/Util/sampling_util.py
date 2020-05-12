@@ -98,16 +98,23 @@ def scale_limits(lowers, uppers, scale):
     return lowers_scaled, uppers_scaled
 
 
-def sample_ball(p0, std, size=1):
+def sample_ball(p0, std, size=1, dist='uniform'):
     """
     Produce a ball of walkers around an initial parameter value.
     this routine is from the emcee package as it became deprecated there
 
-    :param p0: The initial parameter value.
-    :param std: The axis-aligned standard deviation.
+    :param p0: The initial parameter values (array).
+    :param std: The axis-aligned standard deviation (array).
     :param size: The number of samples to produce.
+    :param dist: string, specifies the distribution being sampled, supports 'uniform' and 'normal'
 
     """
     assert(len(p0) == len(std))
-    return np.vstack([p0 + std * np.random.uniform(low=-1, high=1, size=len(p0))
-                      for i in range(size)])
+    if dist == 'uniform':
+        return np.vstack([p0 + std * np.random.uniform(low=-1, high=1, size=len(p0))
+                         for i in range(size)])
+    elif dist == 'normal':
+        return np.vstack([p0 + std * np.random.normal(loc=0, scale=1, size=len(p0))
+                          for i in range(size)])
+    else:
+        raise ValueError('distribution %s not supported. Chose among "uniform" or "normal".' % dist)

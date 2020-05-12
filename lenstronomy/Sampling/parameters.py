@@ -70,7 +70,45 @@ class Param(object):
                  source_size=False, num_tau0=0, source_grid_offset=False):
         """
 
-        :return:
+        :param kwargs_model:
+        :param kwargs_fixed_lens:
+        :param kwargs_fixed_source:
+        :param kwargs_fixed_lens_light:
+        :param kwargs_fixed_ps:
+        :param kwargs_fixed_special:
+        :param kwargs_fixed_extinction:
+        :param kwargs_lower_lens:
+        :param kwargs_lower_source:
+        :param kwargs_lower_lens_light:
+        :param kwargs_lower_ps:
+        :param kwargs_lower_special:
+        :param kwargs_lower_extinction:
+        :param kwargs_upper_lens:
+        :param kwargs_upper_source:
+        :param kwargs_upper_lens_light:
+        :param kwargs_upper_ps:
+        :param kwargs_upper_special:
+        :param kwargs_upper_extinction:
+        :param kwargs_lens_init:
+        :param linear_solver:
+        :param joint_lens_with_lens:
+        :param joint_lens_light_with_lens_light:
+        :param joint_source_with_source:
+        :param joint_lens_with_light:
+        :param joint_source_with_point_source:
+        :param joint_lens_light_with_point_source:
+        :param joint_extinction_with_lens_light:
+        :param joint_lens_with_source_light:
+        :param mass_scaling_list:
+        :param point_source_offset:
+        :param num_point_source_list:
+        :param image_plane_source_list: optional, list of booleans for the source_light components.
+         If a component is set =True it will parameterized the positions in the image plane and ray-trace the
+         parameters back to the source position on the fly during the fitting.
+        :param solver_type:
+        :param Ddt_sampling:
+        :param source_size:
+        :param num_tau0:
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -194,6 +232,10 @@ class Param(object):
         """
 
         :param args: tuple of parameter values (float, strings, ...)
+        :param bijective: boolean, if True (default) returns the parameters in the form as they are sampled
+         (e.g. if image_plane_source_list is set =True it returns the position in the image plane coordinates),
+         if False, returns the parameters in the form to render a model (e.g. image_plane_source_list positions are
+         ray-traced back to the source plane).
         :return: keyword arguments sorted in lenstronomy conventions
         """
         i = 0

@@ -24,7 +24,7 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(self.lensCosmo.dds, 892.0038749095863, decimal=8)
 
     def test_epsilon_crit(self):
-        npt.assert_almost_equal(self.lensCosmo.epsilon_crit/1.9121e+15, 1, decimal=3)
+        npt.assert_almost_equal(self.lensCosmo.sigma_crit / 1.9121e+15, 1, decimal=3)
 
     def test_arcsec2phys(self):
         arcsec = np.array([1, 2]) # pixel coordinate from center
@@ -50,7 +50,7 @@ class TestLensCosmo(object):
     def test_kappa2proj_mass(self):
         kappa = 0.5
         mass = self.lensCosmo.kappa2proj_mass(kappa)
-        npt.assert_almost_equal(mass, kappa * self.lensCosmo.epsilon_crit, decimal=3)
+        npt.assert_almost_equal(mass, kappa * self.lensCosmo.sigma_crit, decimal=3)
 
     def test_mass_in_coin(self):
         theta_E = 1.

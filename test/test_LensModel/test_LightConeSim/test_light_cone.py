@@ -42,7 +42,7 @@ class TestLightCone(object):
             kwargs_lens.append(kwargs_nfw)
             kappa_map = single_plane.kappa(x_grid, y_grid, [kwargs_nfw])  # convergence map of a single NFW profile
             kappa_map = util.array2image(kappa_map)
-            mass_map = lens_cosmo.epsilon_crit_angle * kappa_map * grid_spacing ** 2  # projected mass per pixel on the gird
+            mass_map = lens_cosmo.sigma_crit_angle * kappa_map * grid_spacing ** 2  # projected mass per pixel on the gird
             mass_map_list.append(mass_map)
             npt.assert_almost_equal(np.log10(np.sum(mass_map)), logM_200_list[i], decimal=0)  # check whether the sum of mass roughtly correspoonds the mass definition
             grid_spacing_mpc = lens_cosmo.arcsec2phys_lens(grid_spacing)  # turn grid spacing from arcseconds into Mpc

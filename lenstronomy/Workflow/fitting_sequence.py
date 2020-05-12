@@ -187,7 +187,7 @@ class FittingSequence(object):
         return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE', progress=True):
+             sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
         """
         MCMC routine
 
@@ -198,7 +198,7 @@ class FittingSequence(object):
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'COSMOHAMMER, and 'EMCEE'
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
         :param progress: boolean, if True shows progress bar in EMCEE
         :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
         """
@@ -227,7 +227,8 @@ class FittingSequence(object):
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress, initpos=initpos)
+                                                  threadCount=threadCount, progress=progress, initpos=initpos,
+                                                  backup_filename=backup_filename, start_from_backup=start_from_backup)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

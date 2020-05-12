@@ -12,6 +12,8 @@ dynesty
 pymultinest
 pypolychord  # only compatible with python 2.7 ...
 nestcheck
+corner
+h5py
 #schwimmbad==0.3.0
 -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8

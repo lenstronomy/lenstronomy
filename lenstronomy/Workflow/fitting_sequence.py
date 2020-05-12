@@ -186,7 +186,7 @@ class FittingSequence(object):
         return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE', progress=True):
+             sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
         """
         MCMC routine
 
@@ -226,7 +226,8 @@ class FittingSequence(object):
         if sampler_type is 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
-                                                  threadCount=threadCount, progress=progress, initpos=initpos)
+                                                  threadCount=threadCount, progress=progress, initpos=initpos,
+                                                  backup_filename=backup_filename, start_from_backup=start_from_backup)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

@@ -120,7 +120,7 @@ class Sampler(object):
         return result, [chi2_list, pos_list, vel_list]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
-                   initpos=None):
+                   initpos=None, backup_filename=None, start_from_backup=False):
         """
         Run MCMC with emcee.
         For details, please have a look at the documentation of the emcee packager.
@@ -143,6 +143,11 @@ class Sampler(object):
         :type threadCount: integer
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
+        :param backup_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :type backup_filename: string
+        :param start_from_backup: if True, start from the state saved in `backup_filename`.
+        Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :type start_from_backup: bool
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
@@ -150,12 +155,21 @@ class Sampler(object):
         if initpos is None:
             initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers, dist='normal')
 
-        time_start = time.time()
-
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
+        if backup_filename is not None:
+            backend = emcee.backends.HDFBackend(backup_filename, name="lenstronomy_mcmc_emcee")
+            if not start_from_backup:
+                backend.reset(n_walkers, num_param)
+                if pool.is_master():
+                    print("Warning: all samples (including burn-in) are saved in backup file '{}' (i.e. might be used as a future initial state)".format(backup_filename))
+        else:
+            backend = None
+
+        time_start = time.time()
+
         sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
-                                        pool=pool)
+                                        pool=pool, backend=backend)
 
         sampler.run_mcmc(initpos, n_burn + n_run, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)

@@ -88,6 +88,18 @@ class TNFW(LensProfileBase):
 
     def derivatives(self, x, y, Rs=None, alpha_Rs=None, r_trunc=None, center_x=0, center_y=0):
 
+        """
+        returns df/dx and df/dy of the function (integral of TNFW), which are the deflection angles
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param r_trunc: truncation radius (angular units)
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: deflection angle in x, deflection angle in y
+        """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         #if Rs < 0.0000001:
         #    Rs = 0.0000001
@@ -100,11 +112,19 @@ class TNFW(LensProfileBase):
 
     def hessian(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
 
-        #raise Exception('Hessian for truncated nfw profile not yet implemented.')
+        """
+        returns d^2f/dx^2, d^2f/dy^2, d^2f/dxdy of the TNFW potential f
 
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param Rs: turn over point in the slope of the NFW profile in angular unit
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :param r_trunc: truncation radius (angular units)
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        """
+
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         #if Rs < 0.0001:
         #    Rs = 0.0001

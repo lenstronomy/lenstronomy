@@ -135,10 +135,10 @@ class TestMultiPlaneOptimizer(object):
 
     def test_fixed_routines(self):
 
-        sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+        sie = FixedPowerLaw_Shear(['PEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
                                   constrain_params={'shear':[0.06, 0.01]})
 
-        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+        powerlaw = VariablePowerLaw_Shear(['PEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
                                           constrain_params={'shear': [0.06, 0.01]})
 
         models = [sie, powerlaw]

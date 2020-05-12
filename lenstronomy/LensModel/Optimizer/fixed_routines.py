@@ -9,7 +9,7 @@ class FixedShearPowerLaw(object):
 
     def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
 
-        assert lens_model_list[0] in ['SPEMD','SPEP']
+        assert lens_model_list[0] in ['PEMD', 'SPEP']
         assert lens_model_list[1] == 'SHEAR'
         assert constrain_params is not None
         assert 'shear' in constrain_params.keys()
@@ -95,7 +95,7 @@ class FixedPowerLaw_Shear(object):
 
     def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
 
-        assert lens_model_list[0] in ['SPEMD','SPEP']
+        assert lens_model_list[0] in ['PEMD','SPEP']
         assert lens_model_list[1] == 'SHEAR'
         self._Ntovary = 2
         self._k_start = 2
@@ -212,7 +212,7 @@ class VariablePowerLaw_Shear(object):
 
     def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
 
-        assert lens_model_list[0] in ['SPEMD','SPEP']
+        assert lens_model_list[0] in ['PEMD','SPEP']
         assert lens_model_list[1] == 'SHEAR'
         self._Ntovary = 2
         self._k_start = 2

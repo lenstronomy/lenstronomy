@@ -162,6 +162,7 @@ class Sampler(object):
             if pool.is_master():
                 print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backup_filename))
             if start_from_backup:
+                initpos = None
                 n_run_eff = n_run
             else:
                 n_run_eff = n_burn + n_run

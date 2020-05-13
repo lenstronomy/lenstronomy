@@ -36,6 +36,9 @@ Measuring the Hubble constant
 * STRIDES: A 3.9 per cent measurement of the Hubble constant from the strongly lensed system DES J0408-5354; `Shajib et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv191006306S/abstract>`_
     *most precise single lensing constraint on the Hubble constant. This analysis includes two source planes and three lensing planes*
 
+* TDCOSMO. I. An exploration of systematic uncertainties in the inference of H0 from time-delay cosmography `Millon et al. 2020 <https://ui.adsabs.harvard.edu/abs/2019arXiv191208027M/abstract>`_
+    *mock lenses to test accuracy on the recovered H0 value*
+
 
 Dark Matter substructure
 ------------------------
@@ -60,6 +63,9 @@ Dark Matter substructure
 
 * Circumventing Lens Modeling to Detect Dark Matter Substructure in Strong Lens Images with Convolutional Neural Networks; `Diaz Rivero & Dvorkin <https://ui.adsabs.harvard.edu/abs/2019arXiv191000015D>`_
     * *
+
+* Dark Matter Subhalos, Strong Lensing and Machine Learning; `Varma, Fairbairn, Figueroa <https://arxiv.org/abs/2005.05353>`_
+
 
 
 Automatized Lens Modeling

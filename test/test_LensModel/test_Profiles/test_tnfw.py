@@ -136,6 +136,14 @@ class TestTNFW(object):
         for (approx,true) in zip(numerical,actual):
             npt.assert_almost_equal(approx,true)
 
+    def test_F_function_at_one(self):
+
+        f_tnfw = self.tnfw.F(1.)
+        npt.assert_(f_tnfw == 1)
+        f_tnfw = self.tnfw.F(np.ones((2, 2)))
+        f_tnfw = f_tnfw.ravel()
+        for value in f_tnfw:
+            npt.assert_(value == 1)
 
 if __name__ == '__main__':
     pytest.main()

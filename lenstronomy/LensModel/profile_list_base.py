@@ -110,6 +110,12 @@ class ProfileListBase(object):
         elif lens_type == 'SPEMD':
             from lenstronomy.LensModel.Profiles.spemd import SPEMD
             return SPEMD()
+        elif lens_type == 'EPL':
+            from lenstronomy.LensModel.Profiles.epl import EPL
+            return EPL()
+        elif lens_type == 'EPL_SIMPLE':
+            from lenstronomy.LensModel.Profiles.epl import EPLMajorAxis
+            return EPLMajorAxis()
         elif lens_type == 'NFW':
             from lenstronomy.LensModel.Profiles.nfw import NFW
             return NFW()

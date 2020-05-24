@@ -6,7 +6,9 @@ import warnings
 
 class PSF(object):
     """
-    Point Spread Function convolution
+    Point Spread Function class.
+    This class describes and manages products used to perform the PSF modeling (convolution for extended surface
+    brightness and painting of PSF's for point sources).
     """
 
     def __init__(self, psf_type='NONE', fwhm=None, truncation=5, pixel_size=None, kernel_point_source=None,
@@ -74,7 +76,7 @@ class PSF(object):
         """
         returns the convolution kernel for a uniform surface brightness on a pixel size
 
-        :return:
+        :return: 2d numpy array
         """
         if not hasattr(self, '_kernel_pixel'):
             self._kernel_pixel = kernel_util.pixel_kernel(self.kernel_point_source, subgrid_res=1)
@@ -82,8 +84,12 @@ class PSF(object):
 
     def kernel_point_source_supersampled(self, supersampling_factor, updata_cache=True):
         """
+        generates (if not already available) a supersampled PSF with ood numbers of pixels centered
 
-        :return:
+        :param supersampling_factor: int >=1, supersampling factor relative to pixel resolution
+        :param updata_cache: boolean, if True, updates the cached supersampling PSF if generated.
+        Attention, this will overwrite a previously used supersampled PSF if the resulution is changing.
+        :return: super-sampled PSF as 2d numpy array
         """
         if hasattr(self, '_kernel_point_source_supersampled') and self._point_source_supersampling_factor == supersampling_factor:
             kernel_point_source_supersampled = self._kernel_point_source_supersampled
@@ -122,8 +128,8 @@ class PSF(object):
         """
         update pixel size
 
-        :param deltaPix:
-        :return:
+        :param deltaPix: pixel size in angular units (arc seconds)
+        :return: None
         """
         self._pixel_size = deltaPix
         if self.psf_type == 'GAUSSIAN':

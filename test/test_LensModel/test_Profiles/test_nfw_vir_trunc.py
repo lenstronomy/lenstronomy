@@ -64,7 +64,7 @@ class TestNFW(object):
         f = self.nfw._f(c)
         print(f, 'f')
         kappa_int = np.sum(kappa)
-        mass = kappa_int * self.lensCosmo.epsilon_crit_angle
+        mass = kappa_int * self.lensCosmo.sigma_crit_angle
         npt.assert_almost_equal(mass/M, 1, decimal=2)
 
     def test_radial_profile(self):

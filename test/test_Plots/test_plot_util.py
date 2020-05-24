@@ -44,6 +44,12 @@ class TestPlotUtil(object):
         plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         plt.close()
 
+    def test_result_string(self):
+        x = np.random.normal(loc=1, scale=0.1, size=10000)
+        string =plot_util.result_string(x, weights=None, title_fmt=".2f", label='test')
+        print(string)
+        assert string == str('test = ${1.00}_{-0.10}^{+0.10}$')
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -45,7 +45,7 @@ class NFWVirTrunc(LensProfileBase):
         #print(r_vir, 'r_vir')
         x = c * theta / theta_vir
         f = self._f(c)
-        return M / self._lens_cosmo.epsilon_crit_angle * c**2 * f / (2 * np.pi * theta_vir**2) * self._G(x, c)
+        return M / self._lens_cosmo.sigma_crit_angle * c ** 2 * f / (2 * np.pi * theta_vir ** 2) * self._G(x, c)
 
     def _G(self, x, c):
         """

@@ -4,7 +4,6 @@ import os
 import sys
 from setuptools.command.test import test as TestCommand
 from setuptools import find_packages
-from setuptools.command.build_ext import build_ext as _build_ext
 
 try:
     from setuptools import setup

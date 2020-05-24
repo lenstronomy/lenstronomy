@@ -69,7 +69,7 @@ class LikelihoodModule(object):
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
         and returns a logL (punishing) value.
         """
-        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
+        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, abcd_ordering_i = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
 
@@ -88,7 +88,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class, sort_images_by_dec=sort_images_by_dec)
+                                                             lens_model_class, point_source_class, sort_images_by_dec=sort_images_by_dec, abcd_ordering_i=abcd_ordering_i)
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:
@@ -117,8 +117,8 @@ class LikelihoodModule(object):
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
 
-    def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
-                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[]):
+    def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None, 
+                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[], abcd_ordering_i=None):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
@@ -129,7 +129,7 @@ class LikelihoodModule(object):
         :param flux_ratio_errors: error in flux ratio measurement
         :return:
         """
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, abcd_ordering_i
 
     def _reset_point_source_cache(self, bool=True):
         self.PointSource.delete_lens_model_cache()

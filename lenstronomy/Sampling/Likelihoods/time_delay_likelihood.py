@@ -6,7 +6,7 @@ class TimeDelayLikelihood(object):
     """
     class to compute the likelihood of a model given a measurement of time delays
     """
-    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class, sort_images_by_dec=False):
+    def __init__(self, time_delays_measured, time_delays_uncertainties, lens_model_class, point_source_class, sort_images_by_dec=False, abcd_ordering_i=None):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
@@ -22,6 +22,10 @@ class TimeDelayLikelihood(object):
             raise ValueError("time_delay_uncertainties need to be specified to evaluate the time-delay likelihood.")
         self._delays_measured = np.array(time_delays_measured)
         self._delays_errors = np.array(time_delays_uncertainties)
+        if abcd_ordering_i is None:
+            self._abcd_ordering_i = np.arange(len(self._delays_measured) + 1)
+        else:
+            self._abcd_ordering_i = abcd_ordering_i
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
         self.sort_images_by_dec = sort_images_by_dec
@@ -40,8 +44,8 @@ class TimeDelayLikelihood(object):
             return -np.inf
         if self.sort_images_by_dec:
             increasing_dec_i = np.argsort(y_pos)
-            x_pos = x_pos[increasing_dec_i]
-            y_pos = y_pos[increasing_dec_i]
+            x_pos = x_pos[increasing_dec_i][self._abcd_ordering_i]
+            y_pos = y_pos[increasing_dec_i][self._abcd_ordering_i]
         delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']
         delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)

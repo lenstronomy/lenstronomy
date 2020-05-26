@@ -27,7 +27,6 @@ class ProfileListBase(object):
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
-
             # those models require a new instance per profile as certain pre-computations are relevant per individual profile
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
@@ -247,6 +246,8 @@ class ProfileListBase(object):
 
     def set_dynamic(self):
         """
+        frees cache set by static model (if exists) and re-computes all lensing quantities each time a definition is
+        called assuming different parameters are executed. This is the default mode if not specified as set_static()
 
         :return: None
         """

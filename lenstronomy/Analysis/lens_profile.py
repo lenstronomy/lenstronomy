@@ -22,8 +22,15 @@ class LensProfileAnalysis(object):
         computes the radius with mean convergence=1
 
         :param kwargs_lens: list of lens model keyword arguments
-        :param spacing: number of annular bins to compute the convergence (resolution of the Einstein radius estimate)
+        :param center_x: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
+        :param center_y: position of the center (if not set, is attempting to find it from the parameters kwargs_lens)
+        :param model_bool_list: list of booleans indicating the addition (=True) of a model component in computing the
+         Einstein radius
+        :param grid_num: integer, number of grid points to numerically evaluate the convergence and estimate the
+         Einstein radius
+        :param grid_spacing: spacing in angular units of the grid
         :param get_precision: If `True`, return the precision of estimated Einstein radius
+        :param verbose: boolean, if True prints warning if indication of insufficient result
         :return: estimate of the Einstein radius
         """
         center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)

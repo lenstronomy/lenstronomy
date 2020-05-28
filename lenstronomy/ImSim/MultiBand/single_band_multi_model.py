@@ -131,7 +131,7 @@ class SingleBandMultiModel(ImageLinearFit):
                                          kwargs_extinction_i, kwargs_special)
         return A
 
-    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param, model_index_select=True):
         """
         variance of the linear source reconstruction in the source plane coordinates,
         computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
@@ -141,9 +141,11 @@ class SingleBandMultiModel(ImageLinearFit):
         :param x_grid: x-axis of positions to compute error map
         :param y_grid: y-axis of positions to compute error map
         :param cov_param: covariance matrix of liner inversion parameters
+        :param model_index_select: boolean, if True, selects the model components of this band (default). If False,
+         assumes input kwargs_source is already selected list.
         :return: diagonal covariance errors at the positions (x_grid, y_grid)
         """
-        if self._index_source is None:
+        if self._index_source is None or model_index_select is False:
             kwargs_source_i = kwargs_source
         else:
             kwargs_source_i = [kwargs_source[k] for k in self._index_source]

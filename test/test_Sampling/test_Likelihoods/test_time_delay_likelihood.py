@@ -65,6 +65,21 @@ class TestImageLikelihood(object):
         logL = td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         npt.assert_almost_equal(logL, -0.5, decimal=8)
 
+        # test when using additional_images_list
+        additional_images_list = [True]
+        pointSource = PointSource(point_source_type_list=point_source_list,
+                                  additional_images_list=additional_images_list,
+                                  lensModel=lensModel)
+        td_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties, lens_model_class=lensModel, point_source_class=pointSource)
+        kwargs_cosmo = {'D_dt': lensCosmo.ddt}
+        logL = td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
+        npt.assert_almost_equal(logL, 0, decimal=8)
+        # with plain wrong mass model, the number of predicted images should not match number of measured delays
+        # and a likelihood penalty (-1e15) should be returned
+        kwargs_lens_wrong = [{'theta_E': 1, 'e1': 0, 'e2': 0, 'gamma': 2, 'center_x': 1, 'center_y': 0},
+                             {'gamma1': 0.05, 'gamma2': -0.01}]
+        logL = td_likelihood.logL(kwargs_lens=kwargs_lens_wrong, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
+        npt.assert_almost_equal(logL, -1e15, decimal=8)
 
 if __name__ == '__main__':
     pytest.main()

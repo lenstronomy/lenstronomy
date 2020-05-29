@@ -43,6 +43,7 @@ class PointSource(object):
         self._fixed_magnification_list = fixed_magnification_list
         if additional_images_list is None:
             additional_images_list = [False] * len(point_source_type_list)
+        self.additional_images_list = additional_images_list
         for i, model in enumerate(point_source_type_list):
             if model == 'UNLENSED':
                 from lenstronomy.PointSource.point_source_types import Unlensed

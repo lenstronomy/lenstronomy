@@ -24,6 +24,7 @@ class TimeDelayLikelihood(object):
         self._delays_errors = np.array(time_delays_uncertainties)
         self._lensModel = lens_model_class
         self._pointSource = point_source_class
+        self._ps_model_index = 0   # index of ps model to consider in the point_source_model_list
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_cosmo):
         """
@@ -34,7 +35,7 @@ class TimeDelayLikelihood(object):
         :return: log likelihood of the model given the time delay data
         """
         x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
-        x_pos, y_pos = x_pos[0], y_pos[0]
+        x_pos, y_pos = x_pos[self._ps_model_index], y_pos[self._ps_model_index]
         delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
         D_dt_model = kwargs_cosmo['D_dt']
         delay_days = const.delay_arcsec2days(delay_arcsec, D_dt_model)
@@ -51,6 +52,10 @@ class TimeDelayLikelihood(object):
         :return: log likelihood of data given model
         """
         delta_t_model = np.array(delays_model[1:]) - delays_model[0]
+        additional_image = self._pointSource.additional_images_list[self._ps_model_index]
+        if additional_image is True and len(delta_t_model) < len(delays_measured):
+            # for poor lens model, the lens equation (additional_image=True) may predict less delays than measured delays
+            return -1e15  # penalty
         logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
         return logL
 

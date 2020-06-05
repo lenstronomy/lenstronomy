@@ -39,6 +39,10 @@ Measuring the Hubble constant
 * TDCOSMO. I. An exploration of systematic uncertainties in the inference of H0 from time-delay cosmography `Millon et al. 2020 <https://ui.adsabs.harvard.edu/abs/2019arXiv191208027M/abstract>`_
     *mock lenses to test accuracy on the recovered H0 value*
 
+* Lens modelling of the strongly lensed Type Ia supernova iPTF16geu `Moertsell et al. 2020 <https://ui.adsabs.harvard.edu/abs/2019arXiv190706609M/abstract>`_
+    *Modeling of a lensed supernova to measure the Hubble constant*
+
+
 
 Dark Matter substructure
 ------------------------

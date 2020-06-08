@@ -1,3 +1,5 @@
+__author__ = 'aymgal'
+
 import numpy as np
 import copy
 

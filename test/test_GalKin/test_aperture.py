@@ -28,6 +28,14 @@ class TestAperture(object):
         assert bool is False
         assert shell.num_segments == 1
 
+        kwargs_boxhole = {'width_outer': 1, 'width_inner': 0.5, 'center_ra': 0, 'center_dec': 0}
+        frame = Aperture(aperture_type='frame', **kwargs_boxhole)
+        bool, i = frame.aperture_select(ra=0.4, dec=0)
+        assert bool is True
+        bool, i = frame.aperture_select(ra=0.2, dec=0)
+        assert bool is False
+        assert frame.num_segments == 1
+
 
 class TestRaise(unittest.TestCase):
 

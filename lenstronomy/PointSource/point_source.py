@@ -132,20 +132,26 @@ class PointSource(object):
             y_source_list.append(y_source)
         return x_source_list, y_source_list
 
-    def image_position(self, kwargs_ps, kwargs_lens, k=None):
+    def image_position(self, kwargs_ps, kwargs_lens, k=None, original_position=False):
         """
 
-        :param kwargs_ps:
-        :param kwargs_lens:
-        :param recompute:
-        :return:
+        :param kwargs_ps: point source parameter keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :param k: None, int or boolean list; only returns a subset of the model predictions
+        :param original_position: boolean (only applies to 'LENSED_POSITION' models), returns the image positions in
+         the model parameters and does not re-compute images (which might be differently ordered) in case of the lens
+         equation solver
+        :return: list of: list of image positions per point source model component
         """
         x_image_list = []
         y_image_list = []
         for i, model in enumerate(self._point_source_list):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
-                x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
+                if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
+                    x_image, y_image = kwargs['ra_image'], kwargs['dec_image']
+                else:
+                    x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
                                                         search_window=self._search_window,
                                                         precision_limit=self._precision_limit,
                                                         num_iter_max=self._num_iter_max, x_center=self._x_center,

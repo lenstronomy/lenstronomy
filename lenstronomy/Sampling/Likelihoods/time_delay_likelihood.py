@@ -38,7 +38,7 @@ class TimeDelayLikelihood(object):
         :param kwargs_cosmo: cosmology and other kwargs
         :return: log likelihood of the model given the time delay data
         """
-        x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+        x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True)
         x_pos, y_pos = x_pos[0], y_pos[0]
         if len(self._delays_measured) != (len(y_pos) - 1):
             return -np.inf

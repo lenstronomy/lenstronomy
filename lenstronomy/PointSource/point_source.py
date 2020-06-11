@@ -60,7 +60,7 @@ class PointSource(object):
                 raise ValueError("Point-source model %s not available" % model)
         self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center, self._magnification_limit = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center, magnification_limit
         self._save_cache = save_cache
-
+        
     def update_search_window(self, search_window, x_center, y_center, min_distance=None):
         """
         update the search area for the lens equation solver

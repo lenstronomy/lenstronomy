@@ -22,7 +22,7 @@ class TDCosmography(KinematicsAPI):
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
                  light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None,
-                 multi_observations=False):
+                 multi_observations=False, kwargs_lens_eq_solver={}):
         """
 
         :param z_lens: redshift of deflector
@@ -46,12 +46,12 @@ class TDCosmography(KinematicsAPI):
         self._z_source = z_source
         self._cosmo_fiducial = cosmo_fiducial
         self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=self._cosmo_fiducial)
-        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model)
+        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model, **kwargs_lens_eq_solver)
         super(TDCosmography, self).__init__(z_lens=z_lens, z_source=z_source, kwargs_model=kwargs_model,
                                             cosmo=cosmo_fiducial, lens_model_kinematics_bool=lens_model_kinematics_bool,
                                             light_model_kinematics_bool=light_model_kinematics_bool,
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
-                                            anisotropy_model=anisotropy_model, multi_observations=multi_observations)
+                                            anisotropy_model=anisotropy_model, multi_observations=multi_observations, kwargs_lens_eq_solver=kwargs_lens_eq_solver)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
         """
@@ -62,16 +62,16 @@ class TDCosmography(KinematicsAPI):
         :param kappa_ext: external convergence (optional)
         :return: time delays at image positions for the fixed cosmology
         """
-        fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps)
+        fermat_pot, ra_pos, dec_pos = self.fermat_potential(kwargs_lens, kwargs_ps)
         time_delay = self._lens_cosmo.time_delay_units(fermat_pot, kappa_ext)
-        return time_delay
+        return time_delay, ra_pos, dec_pos
 
     def fermat_potential(self, kwargs_lens, kwargs_ps):
         """
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
-        :return: Fermat potential of all the image positions in the first point source list entry
+        :return: tuple of Fermat potential of all the image positions in the first point source list entry and ra/dec of the image positions used (Ji Won's modification)
         """
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
         ra_pos = ra_pos[0]
@@ -85,7 +85,7 @@ class TDCosmography(KinematicsAPI):
         ra_source = np.mean(ra_source)
         dec_source = np.mean(dec_source)
         fermat_pot = self.LensModel.fermat_potential(ra_pos, dec_pos, kwargs_lens, ra_source, dec_source)
-        return fermat_pot
+        return fermat_pot, ra_pos, dec_pos
 
     def velocity_dispersion_dimension_less(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
                                            theta_E=None, gamma=None):

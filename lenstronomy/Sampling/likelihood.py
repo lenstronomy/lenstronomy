@@ -32,7 +32,7 @@ class LikelihoodModule(object):
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
                  prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
                  prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[], custom_logL_addition=None):
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_lens_eq_solver={}):
         """
         initializing class
 
@@ -75,7 +75,7 @@ class LikelihoodModule(object):
 
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model, **kwargs_lens_eq_solver)
         self.PointSource = point_source_class
 
         self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,

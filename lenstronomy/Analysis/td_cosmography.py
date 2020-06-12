@@ -53,7 +53,7 @@ class TDCosmography(KinematicsAPI):
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
                                             anisotropy_model=anisotropy_model, multi_observations=multi_observations)
 
-    def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
+    def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """
         predicts the time delays of the image positions given the fiducial cosmology
 
@@ -62,18 +62,18 @@ class TDCosmography(KinematicsAPI):
         :param kappa_ext: external convergence (optional)
         :return: time delays at image positions for the fixed cosmology
         """
-        fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps)
+        fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps, original_ps_position=original_ps_position)
         time_delay = self._lens_cosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
+    def fermat_potential(self, kwargs_lens, kwargs_ps, original_ps_position=False):
         """
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :return: Fermat potential of all the image positions in the first point source list entry
         """
-        ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
+        ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)
         ra_pos = ra_pos[0]
         dec_pos = dec_pos[0]
         ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)

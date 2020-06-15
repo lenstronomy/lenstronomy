@@ -60,6 +60,9 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
         :param kappa_ext: external convergence (optional)
+        :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
+         uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
+         in case of the lens equation solver
         :return: time delays at image positions for the fixed cosmology
         """
         fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps, original_ps_position=original_ps_position)
@@ -71,6 +74,9 @@ class TDCosmography(KinematicsAPI):
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
+        :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
+         uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
+         in case of the lens equation solver
         :return: Fermat potential of all the image positions in the first point source list entry
         """
         ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)

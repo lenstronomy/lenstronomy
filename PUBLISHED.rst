@@ -42,6 +42,10 @@ Measuring the Hubble constant
 * Lens modelling of the strongly lensed Type Ia supernova iPTF16geu `Moertsell et al. 2020 <https://ui.adsabs.harvard.edu/abs/2019arXiv190706609M/abstract>`_
     *Modeling of a lensed supernova to measure the Hubble constant*
 
+* The impact of line-of-sight structures on measuring H0 with strong lensing time-delays `Li, Becker and Dye 2020 <https://arxiv.org/abs/2006.08540v1>`_
+    *Point source position and time-delay modeling of quads*
+
+
 
 
 Dark Matter substructure

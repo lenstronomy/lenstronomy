@@ -69,7 +69,11 @@ Dark Matter substructure
     * *
 
 * Dark Matter Subhalos, Strong Lensing and Machine Learning; `Varma, Fairbairn, Figueroa <https://arxiv.org/abs/2005.05353>`_
+    * *
 
+
+* Quantifying the Line-of-Sight Halo Contribution to the Dark Matter Convergence Power Spectrum from Strong Gravitational Lenses; `Sengul et a. 2020 <https://arxiv.org/abs/2006.07383>`_
+    * *
 
 
 Automatized Lens Modeling
@@ -84,6 +88,9 @@ Quasar-host galaxy decomposition
 
 * The mass relations between supermassive black holes and their host galaxies at 1<z<2 with HST-WFC3; `Ding et al. 2019 <https://arxiv.org/abs/1910.11875>`_
     *Quasar host galaxy decomposition at high redshift on HST imaging and marginalization over PSF uncertainties.*
+
+* Testing the Evolution of the Correlations between Supermassive Black Holes and their Host Galaxies using Eight Strongly Lensed Quasars; `Ding et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200513550D/abstract>`_
+    *Quasar host galaxy decomposition with lensed quasars.*
 
 
 

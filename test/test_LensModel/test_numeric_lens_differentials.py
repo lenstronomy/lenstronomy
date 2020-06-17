@@ -164,7 +164,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_point_mass(self):
-        kwargs = {'theta_E': 1.}
+        kwargs = {'theta_E': 2.}
         lens_model = ['POINT_MASS']
         self.assert_differentials(lens_model, kwargs)
 

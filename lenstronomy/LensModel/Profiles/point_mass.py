@@ -68,7 +68,7 @@ class PointMass(LensProfileBase):
         """
         x_ = x - center_x
         y_ = y - center_y
-        C = theta_E
+        C = theta_E**2
         a = x_**2 + y_**2
         if isinstance(a, int) or isinstance(a, float):
             r2 = max(self.r_min**2, a)

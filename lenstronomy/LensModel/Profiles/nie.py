@@ -175,6 +175,7 @@ class NIEMajorAxis(LensProfileBase):
     See Keeton&Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
     kappa =  b *(q2(s2 + x2) + y2􏰉)−1/2
     """
+
     param_names = ['b', 's', 'q', 'center_x', 'center_y']
 
     def __init__(self, diff=0.0000000001):

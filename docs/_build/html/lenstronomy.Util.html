@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -1557,39 +1557,6 @@ such that R = sqrt(R_major**2 + R_minor**2)</p>
 <div class="section" id="module-lenstronomy.Util.prob_density">
 <span id="lenstronomy-util-prob-density-module"></span><h2>lenstronomy.Util.prob_density module<a class="headerlink" href="#module-lenstronomy.Util.prob_density" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="lenstronomy.Util.prob_density.Approx">
-<em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">Approx</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for approximations with a given pdf sample</p>
-<dl class="method">
-<dt id="lenstronomy.Util.prob_density.Approx.draw">
-<code class="descname">draw</code><span class="sig-paren">(</span><em>n=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#Approx.draw"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.Util.prob_density.Approx.draw_one">
-<code class="descname">draw_one</code><a class="headerlink" href="#lenstronomy.Util.prob_density.Approx.draw_one" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="lenstronomy.Util.prob_density.KDE1D">
 <em class="property">class </em><code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">KDE1D</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#KDE1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.KDE1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -1652,28 +1619,12 @@ see: <a class="reference external" href="https://en.wikipedia.org/wiki/Skew_norm
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Util.prob_density.approx_cdf_1d">
-<code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">approx_cdf_1d</code><span class="sig-paren">(</span><em>x_array</em>, <em>pdf_array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#approx_cdf_1d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.approx_cdf_1d" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>x_array</strong> – x-values of pdf</li>
-<li><strong>pdf_array</strong> – pdf array of given x-values</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="lenstronomy.Util.prob_density.compute_lower_upper_errors">
 <code class="descclassname">lenstronomy.Util.prob_density.</code><code class="descname">compute_lower_upper_errors</code><span class="sig-paren">(</span><em>sample</em>, <em>num_sigma=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/prob_density.html#compute_lower_upper_errors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.prob_density.compute_lower_upper_errors" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the upper and lower sigma from the median value.
 This functions gives good error estimates for skewed pdf’s
 :param sample: 1-D sample
+:param num_sigma: integer, number of sigmas to be returned
 :return: median, lower_sigma, upper_sigma</p>
 </dd></dl>
 
@@ -1735,7 +1686,7 @@ to uniform distribution on parameter space</p>
 
 <dl class="function">
 <dt id="lenstronomy.Util.sampling_util.sample_ball">
-<code class="descclassname">lenstronomy.Util.sampling_util.</code><code class="descname">sample_ball</code><span class="sig-paren">(</span><em>p0</em>, <em>std</em>, <em>size=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/sampling_util.html#sample_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.sampling_util.sample_ball" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.sampling_util.</code><code class="descname">sample_ball</code><span class="sig-paren">(</span><em>p0</em>, <em>std</em>, <em>size=1</em>, <em>dist='uniform'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/sampling_util.html#sample_ball"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.sampling_util.sample_ball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Produce a ball of walkers around an initial parameter value.
 this routine is from the emcee package as it became deprecated there</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -1743,9 +1694,10 @@ this routine is from the emcee package as it became deprecated there</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p0</strong> – The initial parameter value.</li>
-<li><strong>std</strong> – The axis-aligned standard deviation.</li>
+<li><strong>p0</strong> – The initial parameter values (array).</li>
+<li><strong>std</strong> – The axis-aligned standard deviation (array).</li>
 <li><strong>size</strong> – The number of samples to produce.</li>
+<li><strong>dist</strong> – string, specifies the distribution being sampled, supports ‘uniform’ and ‘normal’</li>
 </ul>
 </td>
 </tr>
@@ -2373,7 +2325,7 @@ precedence goes to key value pairs in latter dicts.</p>
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.html" title="lenstronomy.SimulationAPI package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

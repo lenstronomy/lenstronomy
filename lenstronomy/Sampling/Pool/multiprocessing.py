@@ -47,16 +47,16 @@ class MultiPool(Pool):
     Parameters
     ----------
     processes : int, optional
-        The number of worker processes to use; defaults to the number of CPUs.
+     The number of worker processes to use; defaults to the number of CPUs.
     initializer : callable, optional
-        If specified, a callable that will be invoked by each worker process
-        when it starts.
+     If specified, a callable that will be invoked by each worker process
+     when it starts.
     initargs : iterable, optional
-        Arguments for ``initializer``; it will be called as
-        ``initializer(*initargs)``.
+     Arguments for ``initializer``; it will be called as
+     ``initializer(*initargs)``.
     kwargs:
-        Extra arguments passed to the :class:`multiprocessing.pool.Pool`
-        superclass.
+     Extra arguments passed to the :class:`multiprocessing.pool.Pool`
+     superclass.
     """
     wait_timeout = 3600
 

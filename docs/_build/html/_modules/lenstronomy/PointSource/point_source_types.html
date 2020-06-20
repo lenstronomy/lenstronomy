@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource.point_source_types &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.PointSource.point_source_types &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -93,8 +93,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_magnification</span> <span class="o">=</span> <span class="n">fixed_magnification</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_additional_image</span> <span class="o">=</span> <span class="n">additional_image</span>
         <span class="k">if</span> <span class="n">fixed_magnification</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">additional_image</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;The combination of fixed_magnification=True and additional_image=True is not optimal for the current computation.&#39;</span>
-                    <span class="s1">&#39;If you see this warning, please approach the developers.&#39;</span><span class="p">)</span>
+            <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;The combination of fixed_magnification=True and additional_image=True is not optimal for the &#39;</span>
+                    <span class="s1">&#39;current computation. If you see this warning, please approach the developers.&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="LensedPositions.image_position"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.LensedPositions.image_position">[docs]</a>    <span class="k">def</span> <span class="nf">image_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span>
                        <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -258,7 +258,6 @@
 <span class="sd">        :param point_amp:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_x_image&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_y_image&#39;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_x_image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span>
                                                                       <span class="n">search_window</span><span class="o">=</span><span class="n">search_window</span><span class="p">,</span>
@@ -332,7 +331,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

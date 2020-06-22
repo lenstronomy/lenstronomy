@@ -72,7 +72,7 @@ class LensEquationSolver(object):
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
-                                   non_linear=False, magnification_limit=None):
+                                   non_linear=False, magnification_limit=None, candidate_solutions=False):
         """
         finds image position source position and lens model
 
@@ -93,6 +93,7 @@ class LensEquationSolver(object):
         :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
         :param magnification_limit: None or float, if set will only return image positions that have an
          abs(magnification) larger than this number
+        :param candidate_solutions: bool, if True, minima in the grid points are returned with no cuts and without applying numerical solvers
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
@@ -108,40 +109,49 @@ class LensEquationSolver(object):
         # select minima in the grid points and select grid points that do not deviate more than the
         # width of the grid point to a solution of the lens equation
         x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
-        if verbose is True:
-            print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
-        #mag = np.abs(mag)
-        #print(x_mins, y_mins, 'before requirement of min_distance')
-        if len(x_mins) < 1:
-            return x_mins, y_mins
-        if initial_guess_cut is True:
-            mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
-            mag[mag < 1] = 1
-            x_mins = x_mins[delta_map <= min_distance*mag*5]
-            y_mins = y_mins[delta_map <= min_distance*mag*5]
+        
+        if candidate_solutions: 
+            
+            # pixels width
+            pixel_width = x_grid[1]-x_grid[0] 
+            
+            return x_mins, y_mins, delta_map, pixel_width
+            
+        else:
             if verbose is True:
-                print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
-        x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
-                                                     size=num_random))
-        y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
-                                             size=num_random))
-        # iterative solving of the lens equation for the selected grid points
-        x_mins, y_mins, solver_precision = self._find_gradient_decent(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
-                                                                      precision_limit, num_iter_max, verbose=verbose,
-                                                                      min_distance=min_distance, non_linear=non_linear)
-        # only select iterative results that match the precision limit
-        x_mins = x_mins[solver_precision <= precision_limit]
-        y_mins = y_mins[solver_precision <= precision_limit]
-        # find redundant solutions within the min_distance criterion
-        x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
-        if arrival_time_sort is True:
-            x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
-        if magnification_limit is not None:
-            mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
-            x_mins = x_mins[mag >= magnification_limit]
-            y_mins = y_mins[mag >= magnification_limit]
-        self.lensModel.set_dynamic()
-        return x_mins, y_mins
+                print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
+            #mag = np.abs(mag)
+            #print(x_mins, y_mins, 'before requirement of min_distance')
+            if len(x_mins) < 1:
+                return x_mins, y_mins
+            if initial_guess_cut is True:
+                mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+                mag[mag < 1] = 1
+                x_mins = x_mins[delta_map <= min_distance*mag*5]
+                y_mins = y_mins[delta_map <= min_distance*mag*5]
+                if verbose is True:
+                    print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
+            x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
+                                                         size=num_random))
+            y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
+                                                 size=num_random))
+            # iterative solving of the lens equation for the selected grid points
+            x_mins, y_mins, solver_precision = self._find_gradient_decent(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                          precision_limit, num_iter_max, verbose=verbose,
+                                                                          min_distance=min_distance, non_linear=non_linear)
+            # only select iterative results that match the precision limit
+            x_mins = x_mins[solver_precision <= precision_limit]
+            y_mins = y_mins[solver_precision <= precision_limit]
+            # find redundant solutions within the min_distance criterion
+            x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
+            if arrival_time_sort is True:
+                x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+            if magnification_limit is not None:
+                mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+                x_mins = x_mins[mag >= magnification_limit]
+                y_mins = y_mins[mag >= magnification_limit]
+            self.lensModel.set_dynamic()
+            return x_mins, y_mins
 
     def _find_gradient_decent(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
                               num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):

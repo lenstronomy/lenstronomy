@@ -55,6 +55,12 @@ class ProfileListBase(object):
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
             return Shift()
+        elif lens_type == 'ELLIPTICAL':
+            from lensinggw.examples.potentials.elliptical_profile import Elliptical
+            return Elliptical()
+        elif lens_type == 'DIEGO_GALAXY':
+            from lensinggw.examples.potentials.diego_et_al_profile import DiegoGalaxy
+            return DiegoGalaxy()
         elif lens_type == 'SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             return Shear()

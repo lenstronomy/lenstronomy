@@ -1,3 +1,5 @@
+__author__ = 'gipagano'
+
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 

@@ -130,7 +130,7 @@ class LensEquationSolver(object):
         :raises: AttributeError, KeyError
         """
         # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and pixel width
-        x_mins, y_mins, delta_map, pixel_width = candidate_solutions(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
+        x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
 
         if verbose is True:
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))

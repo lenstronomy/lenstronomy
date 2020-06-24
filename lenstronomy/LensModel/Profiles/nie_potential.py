@@ -3,16 +3,17 @@ __author__ = 'gipagano'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class Elliptical(LensProfileBase):
+class NIE_POTENTIAL(LensProfileBase):
     """
-    this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_
+    this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_ 
+    and Eq. (1) of `Blandford & Kochanek 1987 <http://adsabs.harvard.edu/full/1987ApJ...321..658B>`_,
     mapped to Eq. (8) of `Barnaka1998 <https://iopscience.iop.org/article/10.1086/305950/fulltext/37798.text.html>`_
     to find the ellipticity bounds
     """
     
     param_names = ['center_x', 'center_y', 'theta_E', 'theta_c', 'eps']
-    lower_limit_default = {'center_x': -100, 'center_y': -100, 'eps': 0}
-    upper_limit_default = {'center_x': 100, 'center_y': 100, 'eps': 0.2}
+    lower_limit_default = {'center_x': -100, 'center_y': -100, 'theta_E': 0, 'theta_c': 0, 'eps': 0}
+    upper_limit_default = {'center_x': 100, 'center_y': 100, 'theta_E': 10, 'theta_c': 10, 'eps': 0.2}
     
     def function(self, x, y, theta_E, theta_c, eps, center_x=0, center_y=0):
       

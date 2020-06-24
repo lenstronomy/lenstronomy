@@ -3,15 +3,15 @@ __author__ = 'gipagano'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-class DiegoGalaxy(LensProfileBase):
+class ConstMag(LensProfileBase):
     """
     this class implements the macromodel potential of `Diego et al. <https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf>`_
     Convergence and shear are computed according to `Diego2018 <arXiv:1706.10281v2>`_
     """
     
     param_names = ['center_x', 'center_y','mu_r', 'mu_t', 'parity']
-    lower_limit_default = {'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'center_x': -100, 'center_y': -100, 'mu_r':1, 'mu_t': 1000, 'parity': -1}
+    upper_limit_default = {'center_x': 100, 'center_y': 100, 'mu_r':1, 'mu_t': 1000, 'parity': 1}
     
     def function(self, x, y, mu_r, mu_t, parity, center_x=0, center_y=0):
         """
@@ -35,7 +35,7 @@ class DiegoGalaxy(LensProfileBase):
             gamma1 = (1./mu_t+1./mu_r)*0.5
             kappa  = 1 -gamma1+1./mu_r
         else:
-            raise ValueError('%f is not a valid value for the parity of the macromodel. Chose either +1 or -1.' % parity)
+            raise ValueError('%f is not a valid value for the parity of the macromodel. Choose either +1 or -1.' % parity)
         x_shift = x - center_x
         y_shift = y - center_y
         f_      = 1./2. * kappa * (x_shift*x_shift + y_shift*y_shift) + 1./2. * gamma1 * (x_shift*x_shift - y_shift*y_shift)-gamma2*x_shift*y_shift
@@ -64,7 +64,7 @@ class DiegoGalaxy(LensProfileBase):
             gamma1 = (1./mu_t+1./mu_r)*0.5
             kappa  = 1 -gamma1+1./mu_r
         else:
-            raise ValueError('%f is not a valid value for the parity of the macromodel. Chose either +1 or -1.' % parity)
+            raise ValueError('%f is not a valid value for the parity of the macromodel. Choose either +1 or -1.' % parity)
         x_shift = x - center_x
         y_shift = y - center_y
         f_x = (kappa+gamma1)*x_shift - gamma2*y_shift
@@ -94,7 +94,7 @@ class DiegoGalaxy(LensProfileBase):
             gamma1 = (1./mu_t+1./mu_r)*0.5
             kappa  = 1 -gamma1+1./mu_r
         else:
-            raise ValueError('%f is not a valid value for the parity of the macromodel. Chose either +1 or -1.' % parity)
+            raise ValueError('%f is not a valid value for the parity of the macromodel. Choose either +1 or -1.' % parity)
         kappa = 1 -gamma1 -1./mu_r
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1

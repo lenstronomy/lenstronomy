@@ -276,8 +276,13 @@ class TestNumericsProfile(object):
         lens_model = ['CORED_DENSITY_2_MST']
         self.assert_differentials(lens_model, kwargs)
         
-    def test_const_mag(self):
+    def test_const_mag_positive(self):
         kwargs = {'mu_r': 1, 'mu_t': 10, 'parity': 1}
+        lens_model = ['CONST_MAG']
+        self.assert_differentials(lens_model, kwargs)
+        
+    def test_const_mag_negative(self):
+        kwargs = {'mu_r': 1, 'mu_t': 10, 'parity': -1}
         lens_model = ['CONST_MAG']
         self.assert_differentials(lens_model, kwargs)
         

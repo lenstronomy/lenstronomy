@@ -95,7 +95,7 @@ class ConstMag(LensProfileBase):
             kappa  = 1 -gamma1+1./mu_r
         else:
             raise ValueError('%f is not a valid value for the parity of the macromodel. Choose either +1 or -1.' % parity)
-        kappa = 1 -gamma1 -1./mu_r
+        
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = -gamma2

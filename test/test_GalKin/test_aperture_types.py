@@ -33,6 +33,22 @@ class TestApertureTypes(object):
         assert bool_select is True
         assert i == 1
 
+    def test_frame(self):
+        center_ra, center_dec = 0, 0
+        width_outer = 1.2
+        width_inner = 0.6
+        ra, dec = 0, 0
+        bool_select = aperture_types.frame_select(ra, dec, width_inner=width_inner, width_outer=width_outer, center_ra=center_ra, center_dec=center_dec, angle=0)
+        assert bool_select is False
+        ra, dec = 0.5, 0
+        bool_select = aperture_types.frame_select(ra, dec, width_inner=width_inner, width_outer=width_outer,
+                                                  center_ra=center_ra, center_dec=center_dec, angle=0)
+        assert bool_select is True
+        ra, dec = 5, 5
+        bool_select = aperture_types.frame_select(ra, dec, width_inner=width_inner, width_outer=width_outer,
+                                                  center_ra=center_ra, center_dec=center_dec, angle=0)
+        assert bool_select is False
+
 
 
 if __name__ == '__main__':

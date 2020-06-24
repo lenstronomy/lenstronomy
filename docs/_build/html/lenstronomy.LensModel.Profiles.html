@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -1926,7 +1926,7 @@ This profile drops as rho(r) <a href="#id1"><span class="problematic" id="id2">*
 <dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density">
 <em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>r_core</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_2.html#CoredDensity2.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_2.CoredDensity2.density" title="Permalink to this definition">¶</a></dt>
-<dd><p>rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)</p>
+<dd><p>rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-3/2)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -4533,6 +4533,8 @@ Same as mass_2d but with input normalization in units of projected density
 <p>class which uses an interpolation of a lens model and its first and second order derivatives</p>
 <p>See also the tests in lenstronomy.test.test_LensModel.test_Profiles.test_interpol.py for example use cases
 as checks against known analytic models.</p>
+<p>The deflection angle is in the same convention as the one in the LensModel module, meaning that:
+source position = image position - deflection angle</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.interpol.Interpol.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>grid_interp_x=None</em>, <em>grid_interp_y=None</em>, <em>f_=None</em>, <em>f_x=None</em>, <em>f_y=None</em>, <em>f_xx=None</em>, <em>f_yy=None</em>, <em>f_xy=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/interpol.html#Interpol.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.interpol.Interpol.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -8260,19 +8262,23 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs=None</em>, <em>alpha_Rs=None</em>, <em>r_trunc=None</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>deflection angles</p>
+<dd><p>returns df/dx and df/dy of the function (integral of TNFW), which are the deflection angles</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – x-coordinate</li>
-<li><strong>y</strong> – y-coordinate</li>
-<li><strong>kwargs</strong> – keywords of the profile</li>
+<li><strong>x</strong> – angular position (normally in units of arc seconds)</li>
+<li><strong>y</strong> – angular position (normally in units of arc seconds)</li>
+<li><strong>Rs</strong> – turn over point in the slope of the NFW profile in angular unit</li>
+<li><strong>alpha_Rs</strong> – deflection (angular units) at projected Rs</li>
+<li><strong>r_trunc</strong> – truncation radius (angular units)</li>
+<li><strong>center_x</strong> – center of halo (in angular units)</li>
+<li><strong>center_y</strong> – center of halo (in angular units)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">raise as definition is not defined</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angle in x, deflection angle in y</p>
 </td>
 </tr>
 </tbody>
@@ -8306,7 +8312,27 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.hessian">
 <code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>alpha_Rs</em>, <em>r_trunc</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+<dd><p>returns d^2f/dx^2, d^2f/dy^2, d^2f/dxdy of the TNFW potential f</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – angular position (normally in units of arc seconds)</li>
+<li><strong>y</strong> – angular position (normally in units of arc seconds)</li>
+<li><strong>Rs</strong> – turn over point in the slope of the NFW profile in angular unit</li>
+<li><strong>alpha_Rs</strong> – deflection (angular units) at projected Rs</li>
+<li><strong>r_trunc</strong> – truncation radius (angular units)</li>
+<li><strong>center_x</strong> – center of halo (in angular units)</li>
+<li><strong>center_y</strong> – center of halo (in angular units)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -8547,7 +8573,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
         <li class="right" >
           <a href="lenstronomy.LensModel.Optimizer.html" title="lenstronomy.LensModel.Optimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

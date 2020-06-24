@@ -27,9 +27,11 @@ Contributors (alphabetic)
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
 * Brian Nord `bnord <https://github.com/bnord/>`_
+* Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
+* Nicolas Tessore `ntessore <https://github.com/ntessore/>`_
 * Lyne Van de Vyvere `LyneVdV <https://github.com/LyneVdV/>`_
 * Cyril Welschen
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_

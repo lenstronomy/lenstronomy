@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.sampler &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.Sampling.sampler &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -161,7 +161,7 @@
         <span class="k">return</span> <span class="n">result</span><span class="p">,</span> <span class="p">[</span><span class="n">chi2_list</span><span class="p">,</span> <span class="n">pos_list</span><span class="p">,</span> <span class="n">vel_list</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Sampler.mcmc_emcee"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.sampler.Sampler.mcmc_emcee">[docs]</a>    <span class="k">def</span> <span class="nf">mcmc_emcee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">,</span> <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                   <span class="n">initpos</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                   <span class="n">initpos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">backup_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_from_backup</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Run MCMC with emcee.</span>
 <span class="sd">        For details, please have a look at the documentation of the emcee packager.</span>
@@ -182,30 +182,51 @@
 <span class="sd">        :type progress: bool</span>
 <span class="sd">        :param threadCount: number of threats in multi-processing (not applicable for MPI)</span>
 <span class="sd">        :type threadCount: integer</span>
-<span class="sd">        :param initpos: inital walker position to start sampling (optional)</span>
+<span class="sd">        :param initpos: initial walker position to start sampling (optional)</span>
 <span class="sd">        :type initpos: numpy array of size num param x num walkser</span>
+<span class="sd">        :param backup_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)</span>
+<span class="sd">        :type backup_filename: string</span>
+<span class="sd">        :param start_from_backup: if True, start from the state saved in `backup_filename`.</span>
+<span class="sd">         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).</span>
+<span class="sd">        :type start_from_backup: bool</span>
 <span class="sd">        :return: samples, ln likelihood value of samples</span>
 <span class="sd">        :rtype: numpy 2d array, numpy 1d array</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_param</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">initpos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">initpos</span> <span class="o">=</span> <span class="n">sampling_util</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">)</span>
-
-        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+            <span class="n">initpos</span> <span class="o">=</span> <span class="n">sampling_util</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
 
         <span class="n">pool</span> <span class="o">=</span> <span class="n">choose_pool</span><span class="p">(</span><span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">use_dill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-        <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">num_param</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">logL</span><span class="p">,</span>
-                                        <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">backup_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">backend</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">HDFBackend</span><span class="p">(</span><span class="n">backup_filename</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;lenstronomy_mcmc_emcee&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: All samples (including burn-in) will be saved in backup file &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backup_filename</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">start_from_backup</span><span class="p">:</span>
+                <span class="n">initpos</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">n_run_eff</span> <span class="o">=</span> <span class="n">n_run</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">n_run_eff</span> <span class="o">=</span> <span class="n">n_burn</span> <span class="o">+</span> <span class="n">n_run</span>
+                <span class="n">backend</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">num_param</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: backup file &#39;</span><span class="si">{}</span><span class="s2">&#39; has been reset!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backup_filename</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">backend</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">n_run_eff</span> <span class="o">=</span> <span class="n">n_burn</span> <span class="o">+</span> <span class="n">n_run</span>
 
-        <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">initpos</span><span class="p">,</span> <span class="n">n_burn</span> <span class="o">+</span> <span class="n">n_run</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
+        <span class="n">time_start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="n">sampler</span> <span class="o">=</span> <span class="n">emcee</span><span class="o">.</span><span class="n">EnsembleSampler</span><span class="p">(</span><span class="n">n_walkers</span><span class="p">,</span> <span class="n">num_param</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">logL</span><span class="p">,</span>
+                                        <span class="n">pool</span><span class="o">=</span><span class="n">pool</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+
+        <span class="n">sampler</span><span class="o">.</span><span class="n">run_mcmc</span><span class="p">(</span><span class="n">initpos</span><span class="p">,</span> <span class="n">n_run_eff</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="n">progress</span><span class="p">)</span>
         <span class="n">flat_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_chain</span><span class="p">(</span><span class="n">discard</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">dist</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">get_log_prob</span><span class="p">(</span><span class="n">flat</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discard</span><span class="o">=</span><span class="n">n_burn</span><span class="p">,</span> <span class="n">thin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">pool</span><span class="o">.</span><span class="n">is_master</span><span class="p">():</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Computing the MCMC...&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of walkers = &#39;</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Burn-in iterations: &#39;</span><span class="p">,</span> <span class="n">n_burn</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sampling iterations:&#39;</span><span class="p">,</span> <span class="n">n_run</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Sampling iterations (in current run):&#39;</span><span class="p">,</span> <span class="n">n_run_eff</span><span class="p">)</span>
             <span class="n">time_end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">time_end</span> <span class="o">-</span> <span class="n">time_start</span><span class="p">,</span> <span class="s1">&#39;time taken for MCMC sampling&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">flat_samples</span><span class="p">,</span> <span class="n">dist</span></div></div>
@@ -241,7 +262,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

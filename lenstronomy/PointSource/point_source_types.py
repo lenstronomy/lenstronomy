@@ -52,8 +52,8 @@ class LensedPositions(object):
         self._fixed_magnification = fixed_magnification
         self._additional_image = additional_image
         if fixed_magnification is True and additional_image is True:
-            Warning('The combination of fixed_magnification=True and additional_image=True is not optimal for the current computation.'
-                    'If you see this warning, please approach the developers.')
+            Warning('The combination of fixed_magnification=True and additional_image=True is not optimal for the '
+                    'current computation. If you see this warning, please approach the developers.')
 
     def image_position(self, kwargs_ps, kwargs_lens, min_distance=0.01, search_window=5, precision_limit=10**(-10),
                        num_iter_max=100, x_center=0, y_center=0, magnification_limit=None):
@@ -217,7 +217,6 @@ class PointSourceCached(object):
         :param point_amp:
         :return:
         """
-
         if not self._save_cache or not hasattr(self, '_x_image') or not hasattr(self, '_y_image'):
             self._x_image, self._y_image = self._model.image_position(kwargs_ps, kwargs_lens, min_distance=min_distance,
                                                                       search_window=search_window,

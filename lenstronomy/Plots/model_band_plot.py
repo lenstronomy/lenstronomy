@@ -333,8 +333,23 @@ class ModelBandPlot(object):
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
-    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None,
-                              v_max=None, with_caustics=False, font_size=15, point_source_position=True):
+    def error_map_source_plot(self, ax, numPix, deltaPix_source, v_min=None, v_max=None, with_caustics=False,
+                              font_size=15, point_source_position=True):
+        """
+        plots the uncertainty in the surface brightness in the source from the linear inversion by taking the diagonal
+        elements of the covariance matrix of the inversion of the basis set to be propagated to the source plane.
+        #TODO illustration of the uncertainties in real space with the full covariance matrix is subtle. The best way is probably to draw realizations from the covariance matrix.
+
+        :param ax: matplotlib axis instance
+        :param numPix: number of pixels in plot per axis
+        :param deltaPix_source: pixel spacing in the source resolution illustrated in plot
+        :param v_min: minimum plotting scale of the map
+        :param v_max: maximum plotting scale of the map
+        :param with_caustics: plot the caustics on top of the source reconstruction (may take some time)
+        :param font_size: font size of labels
+        :param point_source_position: boolean, if True, plots a point at the position of the point source
+        :return: plot of source surface brightness errors in the reconstruction on the axis instance
+        """
         x_grid_source, y_grid_source = util.make_grid_transformed(numPix,
                                                                   self._coords.transform_pix2angle * deltaPix_source / self._deltaPix)
         x_center = self._kwargs_source_partial[0]['center_x']
@@ -343,7 +358,8 @@ class ModelBandPlot(object):
         y_grid_source += y_center
         coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
-        error_map_source = self.bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source, self._cov_param)
+        error_map_source = self.bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
+                                                           self._cov_param, model_index_select=False)
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
         im = ax.matshow(error_map_source, origin='lower', extent=[0, d_s, 0, d_s],

@@ -138,10 +138,10 @@ class TestMultiPlaneOptimizer(object):
         sie = FixedPowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
                                   constrain_params={'shear':[0.06, 0.01]})
 
-        powerlaw = VariablePowerLaw_Shear(['SPEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
-                                          constrain_params={'shear': [0.06, 0.01]})
+        powerlaw = VariablePowerLaw_Shear(['PEMD','SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
+                                            constrain_params={'shear': [0.06, 0.01]})
 
-        models = [sie, powerlaw]
+        models = [powerlaw, sie]
 
         for model in models:
 
@@ -157,7 +157,7 @@ class TestMultiPlaneOptimizer(object):
         spep = FixedPowerLaw_Shear(['SPEP', 'SHEAR'],self.kwargs_lens_simple,self.x_pos_simple,self.y_pos_simple,
                                    constrain_params={'shear': [0.06, 0.01]})
         assert np.absolute(spep._theta_E_start - 0.7) < 0.2
-        for i, group in enumerate(sie.param_names):
+        for i, group in enumerate(spep.param_names):
             for name in group:
                 assert name in self.kwargs_lens_simple[i]
 
@@ -290,10 +290,10 @@ class TestMultiPlaneOptimizer(object):
                                         redshift_list=redshift_list_reoptimize,
                                         lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full, multiplane=True,
                                         verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo, tol_simplex_func=1e+9,
-                                        pso_convergence_mean=1e+9, optimizer_routine=rout, re_optimize=True, particle_swarm=val, simplex_n_iterations=2,
+                                        pso_convergence_mean=1e+9, optimizer_routine=rout, re_optimize=True, particle_swarm=val, simplex_n_iterations=1,
                                         optimizer_kwargs={'re_optimize_scale': scale[i], 'save_background_path': val}, constrain_params=constrainparams[ri])
 
-                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=2, n_iterations=2, restart=2)
+                kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=1, n_iterations=1, restart=1)
 
                 _ = reoptimizer._lensModel.magnification(x_image, y_image, kwargs_lens)
 
@@ -302,16 +302,16 @@ class TestMultiPlaneOptimizer(object):
                                 magnification_target=self.magnification_simple,
                                 redshift_list=redshift_list_reoptimize,
                                 lens_model_list=lens_model_list_reoptimize, kwargs_lens=self.kwargs_lens_full,
-                                multiplane=True, simplex_n_iterations=2, tol_simplex_func=1e+9,
+                                multiplane=True, simplex_n_iterations=1, tol_simplex_func=1e+9,
                                 verbose=True, z_source=1.5, z_main=0.5, astropy_instance=self.cosmo,
                                 optimizer_routine='fixed_powerlaw_shear', re_optimize=True, particle_swarm=False,
                                 optimizer_kwargs=optimized_kwargs, compute_mags_postpso=True, tol_mag=None)
 
-        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=2,n_iterations=2, restart=2)
+        kwargs_lens, source, [x_image, y_image] = reoptimizer.optimize(n_particles=1,n_iterations=1, restart=1)
 
     def test_multi_plane_subs(self,tol=0.004):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=2, n_iterations=2, restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=1, n_iterations=1, restart=2)
         # this should just finish with no errors raised
 
     def test_convention(self):

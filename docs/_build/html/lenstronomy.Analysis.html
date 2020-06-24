@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -315,8 +315,15 @@ if set to None will be computed in this function with default settings that may 
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kwargs_lens</strong> – list of lens model keyword arguments</li>
-<li><strong>spacing</strong> – number of annular bins to compute the convergence (resolution of the Einstein radius estimate)</li>
+<li><strong>center_x</strong> – position of the center (if not set, is attempting to find it from the parameters kwargs_lens)</li>
+<li><strong>center_y</strong> – position of the center (if not set, is attempting to find it from the parameters kwargs_lens)</li>
+<li><strong>model_bool_list</strong> – list of booleans indicating the addition (=True) of a model component in computing the
+Einstein radius</li>
+<li><strong>grid_num</strong> – integer, number of grid points to numerically evaluate the convergence and estimate the
+Einstein radius</li>
+<li><strong>grid_spacing</strong> – spacing in angular units of the grid</li>
 <li><strong>get_precision</strong> – If <cite>True</cite>, return the precision of estimated Einstein radius</li>
+<li><strong>verbose</strong> – boolean, if True prints warning if indication of insufficient result</li>
 </ul>
 </td>
 </tr>
@@ -635,7 +642,7 @@ Attention: numerical grid settings for ellipticity estimate and radial MGE may n
 <span id="lenstronomy-analysis-td-cosmography-module"></span><h2>lenstronomy.Analysis.td_cosmography module<a class="headerlink" href="#module-lenstronomy.Analysis.td_cosmography" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Analysis.td_cosmography.TDCosmography">
-<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.td_cosmography.</code><code class="descname">TDCosmography</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo_fiducial=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>kwargs_seeing={}</em>, <em>kwargs_aperture={}</em>, <em>anisotropy_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Analysis.td_cosmography.</code><code class="descname">TDCosmography</code><span class="sig-paren">(</span><em>z_lens</em>, <em>z_source</em>, <em>kwargs_model</em>, <em>cosmo_fiducial=None</em>, <em>lens_model_kinematics_bool=None</em>, <em>light_model_kinematics_bool=None</em>, <em>kwargs_seeing={}</em>, <em>kwargs_aperture={}</em>, <em>anisotropy_model=None</em>, <em>multi_observations=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI" title="lenstronomy.Analysis.kinematics_api.KinematicsAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Analysis.kinematics_api.KinematicsAPI</span></code></a></p>
 <p>class equipped to perform a cosmographic analysis from a lens model with added measurements of time delays and
 kinematics.
@@ -712,7 +719,7 @@ and the measured dispersion.</p>
 
 <dl class="method">
 <dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.fermat_potential">
-<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.fermat_potential" title="Permalink to this definition">¶</a></dt>
+<code class="descname">fermat_potential</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>original_ps_position=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.fermat_potential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.fermat_potential" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -720,6 +727,9 @@ and the measured dispersion.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
 <li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+<li><strong>original_ps_position</strong> – boolean (only applies when first point source model is of type ‘LENSED_POSITION’),
+uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
+in case of the lens equation solver</li>
 </ul>
 </td>
 </tr>
@@ -732,7 +742,7 @@ and the measured dispersion.</p>
 
 <dl class="method">
 <dt id="lenstronomy.Analysis.td_cosmography.TDCosmography.time_delays">
-<code class="descname">time_delays</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.time_delays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.time_delays" title="Permalink to this definition">¶</a></dt>
+<code class="descname">time_delays</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_ps</em>, <em>kappa_ext=0</em>, <em>original_ps_position=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography.time_delays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography.time_delays" title="Permalink to this definition">¶</a></dt>
 <dd><p>predicts the time delays of the image positions given the fiducial cosmology</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -742,6 +752,9 @@ and the measured dispersion.</p>
 <li><strong>kwargs_lens</strong> – lens model parameters</li>
 <li><strong>kwargs_ps</strong> – point source parameters</li>
 <li><strong>kappa_ext</strong> – external convergence (optional)</li>
+<li><strong>original_ps_position</strong> – boolean (only applies when first point source model is of type ‘LENSED_POSITION’),
+uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
+in case of the lens equation solver</li>
 </ul>
 </td>
 </tr>
@@ -879,7 +892,7 @@ if set to None will be computed in this function with default settings that may 
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

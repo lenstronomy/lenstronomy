@@ -164,7 +164,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_point_mass(self):
-        kwargs = {'theta_E': 1.}
+        kwargs = {'theta_E': 2.}
         lens_model = ['POINT_MASS']
         self.assert_differentials(lens_model, kwargs)
 
@@ -232,6 +232,11 @@ class TestNumericsProfile(object):
     def test_NIE_simple(self):
         kwargs = {'b': 2., 'q': 0.3, 's': 0.04}
         lens_model = ['NIE_SIMPLE']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_EPL(self):
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 't': 1.23}
+        lens_model = ['EPL']
         self.assert_differentials(lens_model, kwargs)
 
     def test_coreBurk(self):

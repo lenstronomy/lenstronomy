@@ -97,6 +97,12 @@ Quasar-host galaxy decomposition
     *Quasar host galaxy decomposition with lensed quasars.*
 
 
+Lensing of Gravitational Waves
+------------------------------
+* lensingGW: a Python package for lensing of gravitational waves; `Pagano et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200612879P/abstract>`_
+    *A Python package designed to handle both strong and microlensing of compact binaries and the related gravitational-wave signals.*
+
+
 
 Theory papers
 -------------

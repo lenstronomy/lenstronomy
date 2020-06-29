@@ -55,6 +55,12 @@ class ProfileListBase(object):
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
             return Shift()
+        elif lens_type == 'NIE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.nie_potential import NIE_POTENTIAL
+            return NIE_POTENTIAL()
+        elif lens_type == 'CONST_MAG':
+            from lenstronomy.LensModel.Profiles.const_mag import ConstMag
+            return ConstMag()
         elif lens_type == 'SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             return Shear()

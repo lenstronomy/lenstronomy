@@ -46,6 +46,7 @@ class Numerics(PointSourceRendering):
             raise TypeError('supersampling_factor needs to be an integer! Current type is %s' % type(supersampling_factor))
         if supersampling_factor == 1:
             supersampling_convolution = False
+        self._supersampling_factor = supersampling_factor
         self._pixel_width = pixel_grid.pixel_width
         nx, ny = pixel_grid.num_pixel_axes
         transform_pix2angle = pixel_grid.transform_pix2angle
@@ -118,6 +119,14 @@ class Numerics(PointSourceRendering):
             # convolve low res grid and high res grid
             image_conv = self._conv.re_size_convolve(image_low_res, image_high_res_partial)
         return image_conv * self._pixel_width ** 2
+
+    @property
+    def supersampling_factor(self):
+        """
+
+        :return: supersampling factor set for higher resolution sub-pixel sampling of surface brightness
+        """
+        return self._supersampling_factor
 
     @property
     def coordinates_evaluate(self):

@@ -107,6 +107,7 @@ def test_transform_e1e2():
     x_new = (1-e1) * x - e2 * y
     y_new = -e2 * x + (1 + e1) * y
     det = np.sqrt((1 - e1) * (1 + e1) + e2 ** 2)
+    print(det)
     npt.assert_almost_equal(x_, x_new / det, decimal=5)
     npt.assert_almost_equal(y_, y_new / det, decimal=5)
 

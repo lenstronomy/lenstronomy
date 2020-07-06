@@ -68,8 +68,10 @@ def phi_q2_ellipticity(phi, q):
     :param q: axis ratio minor axis / major axis
     :return: eccentricities e1 and e2
     """
-    e1 = (1.-q)/(1.+q)*np.cos(2*phi)
-    e2 = (1.-q)/(1.+q)*np.sin(2*phi)
+    #e1 = (1.-q)/(1.+q)*np.cos(2*phi)
+    #e2 = (1.-q)/(1.+q)*np.sin(2*phi)
+    e1 = (1. - q) / (1. + q) * np.cos(2 * phi)
+    e2 = (1. - q) / (1. + q) * np.sin(2 * phi)
     return e1, e2
 
 

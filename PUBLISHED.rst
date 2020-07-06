@@ -45,6 +45,10 @@ Measuring the Hubble constant
 * The impact of line-of-sight structures on measuring H0 with strong lensing time-delays `Li, Becker and Dye 2020 <https://arxiv.org/abs/2006.08540v1>`_
     *Point source position and time-delay modeling of quads*
 
+* TDCOSMO III: Dark matter substructure meets dark energy -- the effects of (sub)halos on strong-lensing measurements of H0
+  `Gilman, Birrer and Treu 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200701308G/abstract>`_
+    *Full line-of-sight halo rendering and time-delay analysis on mock images*
+
 
 
 

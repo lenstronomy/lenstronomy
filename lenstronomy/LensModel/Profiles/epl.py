@@ -14,7 +14,7 @@ class EPL(LensProfileBase):
     """
     param_names = ['theta_E', 'e1', 'e2', 't', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 't': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': -0.5, 't': 2, 'center_x': 100, 'center_y': 100}
+    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': 0.5, 't': 2, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()

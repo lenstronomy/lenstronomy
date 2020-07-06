@@ -32,6 +32,7 @@ Contributors (alphabetic)
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
 * Nicolas Tessore `ntessore <https://github.com/ntessore/>`_
+* Madison Ueland `mueland <https://github.com/mueland/>`_
 * Lyne Van de Vyvere `LyneVdV <https://github.com/LyneVdV/>`_
 * Cyril Welschen
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_

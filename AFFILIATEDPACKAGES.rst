@@ -7,6 +7,7 @@ applications:
 
 - `baobab <https://github.com/jiwoncpark/baobab>`_: Training data generator for hierarchically modeling of strong lenses with Bayesian neural networks.
 - `dolphin <https://github.com/ajshajib/dolphin>`_: Automated pipeline for lens modeling based on lenstronomy.
+- `hierArc <https://github.com/sibirrer/hierarc>`_: Hierarchical Bayesian time-delay cosmography to infer the Hubble constant and galaxy density profiles in conjunction with lenstronomy.
 - `lenstruction <https://github.com/ylilan/lenstruction>`_: Versatile tool for cluster source reconstruction and local perturbative lens modeling.
 - `SLITronomy <https://github.com/aymgal/SLITronomy>`_: Updated and improved version of the Sparse Lens Inversion Technique (SLIT), developed within the framework of lenstronomy.
 - `LSSTDESC SLSprinkler <https://github.com/LSSTDESC/SLSprinkler>`_: The DESC SL (Strong Lensing) Sprinkler adds strongly lensed AGN and SNe to simulated catalogs and generates postage stamps for these systems.
@@ -14,7 +15,7 @@ applications:
 
 
 More to come soon...
-h0rton, pyhalo, hierArc, deeplenstronomy
+h0rton, pyhalo, deeplenstronomy
 
 
 

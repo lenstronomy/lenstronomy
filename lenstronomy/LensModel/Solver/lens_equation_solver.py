@@ -131,7 +131,6 @@ class LensEquationSolver(object):
         """
         # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and pixel width
         x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
-
         if verbose is True:
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
         #mag = np.abs(mag)
@@ -168,7 +167,7 @@ class LensEquationSolver(object):
         return x_mins, y_mins
 
     def _find_gradient_decent(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
-                              num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):
+                              num_iter_max=200, verbose=False, min_distance=0.01, non_linear=False):
         """
         given a 'good guess' of a solution of the lens equation (expected image position given a fixed source position)
         this routine iteratively performs a ray-tracing with second order correction (effectively gradient decent) to find

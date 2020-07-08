@@ -49,6 +49,9 @@ Measuring the Hubble constant
   `Gilman, Birrer and Treu 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200701308G/abstract>`_
     *Full line-of-sight halo rendering and time-delay analysis on mock images*
 
+* TDCOSMO IV: Hierarchical time-delay cosmography -- joint inference of the Hubble constant and galaxy density profiles `Birrer et al. 2020 <https://arxiv.org/abs/2007.02941>`_
+    *lenstronomy.Galkin for kinematics calculation that folds in the hierarchical analysis*
+
 
 
 

@@ -66,7 +66,7 @@ def phi_q2_ellipticity(phi, q):
 
     :param phi: angle of orientation (in radian)
     :param q: axis ratio minor axis / major axis
-    :return: eccentricities e1 and e2
+    :return: eccentricities e1 and e2 in complex ellipticity moduli
     """
     #e1 = (1.-q)/(1.+q)*np.cos(2*phi)
     #e2 = (1.-q)/(1.+q)*np.sin(2*phi)

@@ -10,6 +10,7 @@ from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
+                           flux_from_point_source_list=None,
                            additional_images_list=None, min_distance=0.01, search_window=5, precision_limit=10**(-10),
                            num_iter_max=100, source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
@@ -29,6 +30,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param lens_light_model_list:
     :param point_source_model_list:
     :param fixed_magnification_list:
+    :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
+         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
     :param additional_images_list:
     :param min_distance:
     :param search_window:
@@ -110,6 +113,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
             additional_images_list_i = [additional_images_list[k] for k in index_point_source_model_list[band_index]]
     point_source_class = PointSource(point_source_type_list=point_source_model_list_i, lensModel=lens_model_class,
                                      fixed_magnification_list=fixed_magnification_list_i,
+                                     flux_from_point_source_list=flux_from_point_source_list,
                                      additional_images_list=additional_images_list_i, min_distance=min_distance,
                                      search_window=search_window, precision_limit=precision_limit,
                                      num_iter_max=num_iter_max, magnification_limit=point_source_magnification_limit)

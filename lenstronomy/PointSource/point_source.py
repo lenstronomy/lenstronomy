@@ -6,7 +6,7 @@ from lenstronomy.PointSource.point_source_types import PointSourceCached
 class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
-                 additional_images_list=None, magnification_limit=None,
+                 additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
                  save_cache=False, min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
                  x_center=0, y_center=0):
         """
@@ -17,6 +17,8 @@ class PointSource(object):
         ratio of point sources is fixed to the one given by the lens model
         :param additional_images_list: list of bools (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
+        :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
+         (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
         images will be computed that exceed the lensing magnification (absolute value) limit
         :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
@@ -43,6 +45,9 @@ class PointSource(object):
         self._fixed_magnification_list = fixed_magnification_list
         if additional_images_list is None:
             additional_images_list = [False] * len(point_source_type_list)
+        if flux_from_point_source_list is None:
+            flux_from_point_source_list = [True] * len(point_source_type_list)
+        self._flux_from_point_source_list = flux_from_point_source_list
         for i, model in enumerate(point_source_type_list):
             if model == 'UNLENSED':
                 from lenstronomy.PointSource.point_source_types import Unlensed
@@ -195,10 +200,11 @@ class PointSource(object):
         n = 0
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self.point_source_type_list):
-            if self._fixed_magnification_list[i]:
-                n += 1
-            else:
-                n += len(ra_pos_list[i])
+            if self._flux_from_point_source_list[i]:
+                if self._fixed_magnification_list[i]:
+                    n += 1
+                else:
+                    n += len(ra_pos_list[i])
         return n
 
     def image_amplitude(self, kwargs_ps, kwargs_lens, k=None):
@@ -211,7 +217,7 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            if k is None or k == i:
+            if (k is None or k == i) and self._flux_from_point_source_list[i]:
                 amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
                                                         search_window=self._search_window,
                                                         precision_limit=self._precision_limit,
@@ -229,15 +235,16 @@ class PointSource(object):
         """
         amp_list = []
         for i, model in enumerate(self._point_source_list):
-            amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
+            if self._flux_from_point_source_list[i]:
+                amp_list.append(model.source_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens))
         return amp_list
 
     def linear_response_set(self, kwargs_ps, kwargs_lens=None, with_amp=False):
         """
 
-        :param kwargs_ps:
-        :param kwargs_lens:
-        :return:
+        :param kwargs_ps: point source keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :return: ra_pos, dec_pos, amp, n
         """
         ra_pos = []
         dec_pos = []
@@ -245,26 +252,27 @@ class PointSource(object):
         self._set_save_cache(True)
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
         for i, model in enumerate(self._point_source_list):
-            x_pos = x_image_list[i]
-            y_pos = y_image_list[i]
-            if self._fixed_magnification_list[i]:
-                ra_pos.append(list(x_pos))
-                dec_pos.append(list(y_pos))
-                if with_amp:
-                    mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
+            if self._flux_from_point_source_list[i]:
+                x_pos = x_image_list[i]
+                y_pos = y_image_list[i]
+                if self._fixed_magnification_list[i]:
+                    ra_pos.append(list(x_pos))
+                    dec_pos.append(list(y_pos))
+                    if with_amp:
+                        mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
+                    else:
+                        mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
+                        mag = np.abs(mag)
+                    amp.append(list(mag))
                 else:
-                    mag = self._lensModel.magnification(x_pos, y_pos, kwargs_lens)
-                    mag = np.abs(mag)
-                amp.append(list(mag))
-            else:
-                if with_amp:
-                    mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
-                else:
-                    mag = np.ones_like(x_pos)
-                for j in range(len(x_pos)):
-                    ra_pos.append([x_pos[j]])
-                    dec_pos.append([y_pos[j]])
-                    amp.append([mag[j]])
+                    if with_amp:
+                        mag = self.image_amplitude(kwargs_ps, kwargs_lens, k=i)[0]
+                    else:
+                        mag = np.ones_like(x_pos)
+                    for j in range(len(x_pos)):
+                        ra_pos.append([x_pos[j]])
+                        dec_pos.append([y_pos[j]])
+                        amp.append([mag[j]])
         n = len(ra_pos)
         if self._save_cache is False:
             self.delete_lens_model_cache()
@@ -282,16 +290,15 @@ class PointSource(object):
         """
         ra_pos_list, dec_pos_list = self.image_position(kwargs_ps, kwargs_lens)
         for k, model in enumerate(self._point_source_list):
-            kwargs = kwargs_ps[k]
-            if self._fixed_magnification_list[k]:
-                kwargs['source_amp'] = param[i]
-                #mag = self._lensModel.magnification(ra_pos_list[k], dec_pos_list[k], kwargs_lens)
-                #kwargs['point_amp'] = np.abs(mag) * param[i]
-                i += 1
-            else:
-                n_points = len(ra_pos_list[k])
-                kwargs['point_amp'] = param[i:i + n_points]
-                i += n_points
+            if self._flux_from_point_source_list[k]:
+                kwargs = kwargs_ps[k]
+                if self._fixed_magnification_list[k]:
+                    kwargs['source_amp'] = param[i]
+                    i += 1
+                else:
+                    n_points = len(ra_pos_list[k])
+                    kwargs['point_amp'] = param[i:i + n_points]
+                    i += n_points
         return kwargs_ps, i
 
     def check_image_positions(self, kwargs_ps, kwargs_lens, tolerance=0.001):
@@ -324,12 +331,13 @@ class PointSource(object):
         """
         kwargs_list = copy.deepcopy(kwargs_ps)
         for i, model in enumerate(self.point_source_type_list):
-            amp = amp_list[i]
-            if model == 'UNLENSED':
-                kwargs_list[i]['point_amp'] = amp
-            elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if self._fixed_magnification_list[i] is True:
-                    kwargs_list[i]['source_amp'] = amp
-                else:
+            if self._flux_from_point_source_list[i]:
+                amp = amp_list[i]
+                if model == 'UNLENSED':
                     kwargs_list[i]['point_amp'] = amp
+                elif model in ['LENSED_POSITION', 'SOURCE_POSITION']:
+                    if self._fixed_magnification_list[i] is True:
+                        kwargs_list[i]['source_amp'] = amp
+                    else:
+                        kwargs_list[i]['point_amp'] = amp
         return kwargs_list

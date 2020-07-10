@@ -63,13 +63,12 @@ def shear_cartesian2polar(gamma1, gamma2):
 
 def phi_q2_ellipticity(phi, q):
     """
+    transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2
 
     :param phi: angle of orientation (in radian)
     :param q: axis ratio minor axis / major axis
     :return: eccentricities e1 and e2 in complex ellipticity moduli
     """
-    #e1 = (1.-q)/(1.+q)*np.cos(2*phi)
-    #e2 = (1.-q)/(1.+q)*np.sin(2*phi)
     e1 = (1. - q) / (1. + q) * np.cos(2 * phi)
     e2 = (1. - q) / (1. + q) * np.sin(2 * phi)
     return e1, e2
@@ -77,6 +76,8 @@ def phi_q2_ellipticity(phi, q):
 
 def ellipticity2phi_q(e1, e2):
     """
+    transforms complex ellipticity moduli in orientation angle and axis ratio
+
     :param e1: eccentricity in x-direction
     :param e2: eccentricity in xy-direction
     :return: angle in radian, axis ratio (minor/major)

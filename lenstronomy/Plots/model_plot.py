@@ -15,7 +15,7 @@ class ModelPlot(object):
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
                  likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear', band_index=0,
-                 source_marg=False, linear_prior=None):
+                 source_marg=False, linear_prior=None, kwargs_sparse_solver={}):
         """
 
         :param multi_band_list:
@@ -34,10 +34,13 @@ class ModelPlot(object):
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == 'single-band':
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
+        elif multi_band_type == 'single-band-sparse':
+            multi_band_type = 'multi-sparse'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                        bands_compute=bands_compute,
                                                        likelihood_mask_list=likelihood_mask_list,
-                                                       band_index=band_index)
+                                                       band_index=band_index,
+                                                       kwargs_sparse_solver=kwargs_sparse_solver)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
         logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)

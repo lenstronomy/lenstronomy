@@ -6,6 +6,7 @@ from scipy import interpolate
 from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
+from skimage import filters
 
 
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
@@ -299,3 +300,13 @@ def radial_profile(data, center=[0, 0]):
     nr = np.bincount(r.ravel())
     radialprofile = tbin / nr
     return radialprofile
+
+
+def gradient_map(image):
+    """
+    computes gradients of images with the sobel transform
+
+    :param image: 2d numpy array
+    :return: array of same size as input, with gradients between neighboring pixels
+    """
+    return filters.sobel(image)

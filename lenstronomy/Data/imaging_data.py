@@ -35,7 +35,7 @@ class ImageData(PixelGrid, ImageNoise):
 
 
     """
-    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
+    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
                  ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0):
         """
 
@@ -44,6 +44,8 @@ class ImageData(PixelGrid, ImageNoise):
         (common for all pixels or individually for each individual pixel)
         :param background_rms: root-mean-square value of Gaussian background noise in units counts per second
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
+        :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
+         gradient^2 * gradient_boost_factor
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
@@ -56,7 +58,7 @@ class ImageData(PixelGrid, ImageNoise):
             transform_pix2angle = np.array([[1, 0], [0, 1]])
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
-                            noise_map=noise_map, verbose=False)
+                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
 
     def update_data(self, image_data):
         """

@@ -1,4 +1,3 @@
-from lenstronomy.SimulationAPI.observation_api import SingleBand
 import lenstronomy.Util.util as util
 
 

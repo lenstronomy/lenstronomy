@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to compute the Navaro-Frenk-White profile
+# this file contains a class to compute the Navaro-Frenk-White profile
 import numpy as np
 import scipy.interpolate as interp
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase

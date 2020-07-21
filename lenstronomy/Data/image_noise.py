@@ -116,7 +116,6 @@ def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=
     """
     if gradient_boost_factor is not None:
         gradient_map = image_util.gradient_map(data) * gradient_boost_factor
-        print(gradient_map, 'test gradient map')
     else:
         gradient_map = 0
     d_pos = np.zeros_like(data)

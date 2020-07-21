@@ -26,5 +26,10 @@ def test_magnitude2cps():
     npt.assert_almost_equal(cps, cps_new, decimal=9)
 
 
+def test_flux_noise():
+    noise = data_util.flux_noise(cps_pixel=10, exposure_time=100)
+    npt.assert_almost_equal(noise, 1, decimal=5)
+
+
 if __name__ == '__main__':
     pytest.main()

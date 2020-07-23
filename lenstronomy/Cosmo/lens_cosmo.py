@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to convert units
+# this file contains a class to convert lensing and physical units
 
 import numpy as np
 import lenstronomy.Util.constants as const
@@ -72,15 +72,15 @@ class LensCosmo(object):
     @property
     def sigma_crit(self):
         """
-        returns the critical projected mass density in units of M_sun/rad^2
-        :return: critical projected mass density
+        returns the critical projected lensing mass density in units of M_sun/Mpc^2
+        :return: critical projected lensing mass density
         """
-        if not hasattr(self, '_Epsilon_Crit'):
-            const_SI = const.c ** 2 / (4 * np.pi * const.G)  #c^2/(4*pi*G) in units of [kg/m]
+        if not hasattr(self, '_sigma_crit_mpc'):
+            const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
-            factor = const_SI*conversion   #c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._Epsilon_Crit = self.ds / (self.dd * self.dds) * factor #[M_sun/Mpc^2]
-        return self._Epsilon_Crit
+            factor = const_SI*conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
+            self._sigma_crit_mpc = self.ds / (self.dd * self.dds) * factor  # [M_sun/Mpc^2]
+        return self._sigma_crit_mpc
 
     @property
     def sigma_crit_angle(self):
@@ -89,12 +89,12 @@ class LensCosmo(object):
         when provided a physical mass per physical Mpc^2
         :return: critical projected mass density
         """
-        if not hasattr(self, '_Epsilon_Crit_arcsec'):
+        if not hasattr(self, '_sigma_crit_arcsec'):
             const_SI = const.c ** 2 / (4 * np.pi * const.G)  # c^2/(4*pi*G) in units of [kg/m]
             conversion = const.Mpc / const.M_sun  # converts [kg/m] to [M_sun/Mpc]
             factor = const_SI * conversion  # c^2/(4*pi*G) in units of [M_sun/Mpc]
-            self._Epsilon_Crit_arcsec = self.ds / (self.dd * self.dds) * factor * (self.dd * const.arcsec) ** 2  # [M_sun/arcsec^2]
-        return self._Epsilon_Crit_arcsec
+            self._sigma_crit_arcsec = self.ds / (self.dd * self.dds) * factor * (self.dd * const.arcsec) ** 2  # [M_sun/arcsec^2]
+        return self._sigma_crit_arcsec
 
     def phys2arcsec_lens(self, phys):
         """

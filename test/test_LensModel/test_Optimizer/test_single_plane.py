@@ -41,6 +41,9 @@ class TestSinglePlaneOptimizer(object):
 
         mags = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
+        kwargs_lens, source, [x_image, y_image] = self.optimizer_simple.optimize(n_particles=5, n_iterations=1,
+                                                                                 restart=1)
+
     def test_single_plane_subs(self, tol=0.003, n_restart=2):
 
         kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=n_restart)

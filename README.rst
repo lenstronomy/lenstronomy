@@ -23,17 +23,23 @@ lenstronomy - gravitational lensing software package
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746
 
+.. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+        :target: http://www.astropy.org
+        :alt: Powered by Astropy Badge
+
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
 ``lenstronomy`` finds application in e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_,
-`Birrer et al 2018 <http://adsabs.harvard.edu/abs/2018arXiv180901274B>`_ and `Shajib et al 2019 <https://arxiv.org/abs/1910.06306>`_ for time-delay cosmography and measuring
-the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ and `Gilman et al. 2019 <https://ui.adsabs.harvard.edu/abs/2019arXiv190806983G/abstract>`_ for
+`Birrer et al 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.4726B/abstract>`_, `Shajib et al 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.6072S/abstract>`_ and
+`Birrer et al 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200702941B/abstract>`_ for time-delay cosmography and measuring
+the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ and `Gilman et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6077G/abstract>`_ for
 quantifying lensing substructure to infer dark matter properties.
 
 
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
 The documentation of ``lenstronomy`` is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
 the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
+``lenstronomy`` is an `astropy affiliated package <https://www.astropy.org/affiliated/>`_.
 
 
 

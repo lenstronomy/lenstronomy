@@ -7,10 +7,10 @@ class PJaffe(LensProfileBase):
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
 
-    Module name: 'PJaffe'
+    Module name: 'PJAFFE'
     An alternative name is dPIED.
 
-    The #D density distribution is
+    The 3D density distribution is
 
     .. math::
 

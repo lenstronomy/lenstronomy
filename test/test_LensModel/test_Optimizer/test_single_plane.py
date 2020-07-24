@@ -1,5 +1,5 @@
 from lenstronomy.LensModel.Optimizer.optimizer import Optimizer
-import numpy.testing as npt
+import unittest
 import numpy as np
 import pytest
 
@@ -41,14 +41,20 @@ class TestSinglePlaneOptimizer(object):
 
         mags = self.optimizer_simple._lensModel.magnification(x_image, y_image, kwargs_lens)
 
-    def test_single_plane_subs(self,tol=0.003):
+    def test_single_plane_subs(self, tol=0.003, n_restart=2):
 
-        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=2)
+        kwargs_lens, source, [x_image,y_image] = self.optimizer_subs.optimize(n_particles=30, n_iterations=30,restart=n_restart)
         mags = self.optimizer_subs._lensModel.magnification(x_image, y_image, kwargs_lens)
 
     def test_image_plane_chi2(self):
         kwargs_lens, source, [x_image, y_image] = self.optimizer_image_plane.optimize(n_particles=20, n_iterations=150, restart=1)
 
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        test_class = TestSinglePlaneOptimizer()
+        with self.assertRaises(ValueError):
+            out = test_class.test_single_plane_subs(n_restart=0)
 
 if __name__ == '__main__':
     pytest.main()

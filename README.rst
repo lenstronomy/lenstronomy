@@ -39,7 +39,7 @@ quantifying lensing substructure to infer dark matter properties.
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
 The documentation of ``lenstronomy`` is available at `readthedocs.org <http://lenstronomy.readthedocs.org/>`_ and
 the package is distributed over `PyPI <https://pypi.python.org/pypi/lenstronomy>`_.
-``lenstronomy`` is an `astropy affiliated package <https://www.astropy.org/affiliated/>`_.
+``lenstronomy`` is an `affiliated package <https://www.astropy.org/affiliated/>`_ of `astropy <https://www.astropy.org/>`_.
 
 
 

@@ -84,6 +84,38 @@ class TestPointSource(object):
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
 
+    def test_update_search_window(self):
+        search_window = 5
+        x_center, y_center = 1, 1
+        min_distance = 0.01
+
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver={})
+
+        point_source.update_search_window(search_window, x_center, y_center, min_distance=min_distance, only_from_unspecified=False)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
+
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver={})
+
+        point_source.update_search_window(search_window, x_center, y_center, min_distance=min_distance,
+                                          only_from_unspecified=True)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
+
+        kwargs_lens_eqn_solver = {'search_window': search_window,
+                                  'min_distance': min_distance, 'x_center': x_center, 'y_center': y_center}
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+        point_source.update_search_window(search_window=-10, x_center=-10, y_center=-10,
+                                          min_distance=10, only_from_unspecified = True)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
+
 
 class TestPointSourceFixedMag(object):
 

@@ -7,10 +7,10 @@ class PointSource(object):
 
     def __init__(self, point_source_type_list, lensModel=None, fixed_magnification_list=None,
                  additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
-                 save_cache=False, min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
-                 x_center=0, y_center=0):
+                 save_cache=False, kwargs_lens_eqn_solver=None):
         """
-
+        min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
+                 x_center=0, y_center=0):
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
         :param fixed_magnification_list: list of bools (same length as point_source_type_list). If True, magnification
@@ -20,18 +20,12 @@ class PointSource(object):
         :param flux_from_point_source_list: list of bools (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
-        images will be computed that exceed the lensing magnification (absolute value) limit
+         images will be computed that exceed the lensing magnification (absolute value) limit
         :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens
-        equation is conducted with the lens model parameters provided. This can increase the speed as multiple times the
-        image positions are requested for the same lens model. Attention in usage!
-        :param min_distance: float, minimum initial search grid for image positions when solving the lens equation.
-        Image separations below this scale will not be found.
-        :param search_window: window size of the image position search with the lens equation solver.
-        Please adopt when dealing with wider separation image positions!
-        :param precision_limit: see LensEquationSolver() instance
-        :param num_iter_max: see LensEquationSolver() instance
-        :param x_center: center of search window
-        :param y_center: center of search window
+         equation is conducted with the lens model parameters provided. This can increase the speed as multiple times the
+         image positions are requested for the same lens model. Attention in usage!
+        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
+         see LensEquationSolver() class for details
 
         for the parameters: min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
         have a look at the lensEquationSolver class
@@ -63,10 +57,13 @@ class PointSource(object):
                                                                  save_cache=save_cache))
             else:
                 raise ValueError("Point-source model %s not available" % model)
-        self._min_distance, self._search_window, self._precision_limit, self._num_iter_max, self._x_center, self._y_center, self._magnification_limit = min_distance, search_window, precision_limit, num_iter_max, x_center, y_center, magnification_limit
+        if kwargs_lens_eqn_solver is None:
+            kwargs_lens_eqn_solver = {}
+        self._kwargs_lens_eqn_solver = kwargs_lens_eqn_solver
+        self._magnification_limit = magnification_limit
         self._save_cache = save_cache
 
-    def update_search_window(self, search_window, x_center, y_center, min_distance=None):
+    def update_search_window(self, search_window, x_center, y_center, min_distance=None, only_from_unspecified=False):
         """
         update the search area for the lens equation solver
 
@@ -74,11 +71,19 @@ class PointSource(object):
         :param x_center: center of search window
         :param y_center: center of search window
         :param min_distance: minimum search distance
+        :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set
         :return: updated self instances
         """
-        if min_distance is not None:
-            self._min_distance = min_distance
-        self._search_window, self._x_center, self._y_center = search_window, x_center, y_center
+        if min_distance is not None and not (hasattr(self._kwargs_lens_eqn_solver, 'min_distance') and only_from_unspecified):
+            self._kwargs_lens_eqn_solver['min_distance'] = min_distance
+        if only_from_unspecified:
+            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window', search_window)
+            self._kwargs_lens_eqn_solver['x_center'] = self._kwargs_lens_eqn_solver.get('x_center', x_center)
+            self._kwargs_lens_eqn_solver['y_center'] = self._kwargs_lens_eqn_solver.get('y_center', y_center)
+        else:
+            self._kwargs_lens_eqn_solver['search_window'] = search_window
+            self._kwargs_lens_eqn_solver['x_center'] = x_center
+            self._kwargs_lens_eqn_solver['y_center'] = y_center
 
     def update_lens_model(self, lens_model_class):
         """
@@ -156,11 +161,9 @@ class PointSource(object):
                 if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
                     x_image, y_image = kwargs['ra_image'], kwargs['dec_image']
                 else:
-                    x_image, y_image = model.image_position(kwargs, kwargs_lens, min_distance=self._min_distance,
-                                                        search_window=self._search_window,
-                                                        precision_limit=self._precision_limit,
-                                                        num_iter_max=self._num_iter_max, x_center=self._x_center,
-                                                        y_center=self._y_center, magnification_limit=self._magnification_limit)
+                    x_image, y_image = model.image_position(kwargs, kwargs_lens,
+                                                            magnification_limit=self._magnification_limit,
+                                                            kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
@@ -218,11 +221,8 @@ class PointSource(object):
         amp_list = []
         for i, model in enumerate(self._point_source_list):
             if (k is None or k == i) and self._flux_from_point_source_list[i]:
-                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens, min_distance=self._min_distance,
-                                                        search_window=self._search_window,
-                                                        precision_limit=self._precision_limit,
-                                                        num_iter_max=self._num_iter_max, x_center=self._x_center,
-                                                        y_center=self._y_center))
+                amp_list.append(model.image_amplitude(kwargs_ps=kwargs_ps[i], kwargs_lens=kwargs_lens,
+                                                      kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver))
         return amp_list
 
     def source_amplitude(self, kwargs_ps, kwargs_lens):
@@ -244,6 +244,8 @@ class PointSource(object):
 
         :param kwargs_ps: point source keyword argument list
         :param kwargs_lens: lens model keyword argument list
+        :param with_amp: bool, if True returns the image amplitude derived from kwargs_ps,
+         otherwise the magnification of the lens model
         :return: ra_pos, dec_pos, amp, n
         """
         ra_pos = []

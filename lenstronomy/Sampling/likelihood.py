@@ -117,7 +117,8 @@ class LikelihoodModule(object):
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
 
-    def _unpack_data(self, multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
+    @staticmethod
+    def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[]):
         """
 
@@ -179,7 +180,6 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
                                                                             kwargs_lens=kwargs_lens)
-            #x_pos, y_pos = self.param.real_image_positions(ra_image_list[0], dec_image_list[0], kwargs_special)
             x_pos, y_pos = ra_image_list[0], dec_image_list[0]
             logL_flux_ratios = self.flux_ratio_likelihood.logL(x_pos, y_pos, kwargs_lens, kwargs_special)
             logL += logL_flux_ratios

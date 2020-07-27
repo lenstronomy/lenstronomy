@@ -24,8 +24,9 @@ class ImageLikelihood(object):
         :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         """
 
-        self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=bands_compute,
-                                   likelihood_mask_list=likelihood_mask_list, band_index=0)
+        self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
+                                                 bands_compute=bands_compute, likelihood_mask_list=likelihood_mask_list,
+                                                 band_index=0)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior

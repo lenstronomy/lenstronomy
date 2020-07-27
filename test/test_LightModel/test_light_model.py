@@ -126,6 +126,17 @@ class TestLightModel(object):
         for func in lightModel.func_list:
             assert not hasattr(func, '_image_interp')
 
+    def test_check_positive_flux_profile(self):
+        ligthModel = LightModel(light_model_list=['GAUSSIAN'])
+        kwargs_list = [{'amp': 0, 'sigma': 1}]
+        bool = ligthModel.check_positive_flux_profile(kwargs_list)
+        assert bool
+
+        kwargs_list = [{'amp': -1, 'sigma': 1}]
+        bool = ligthModel.check_positive_flux_profile(kwargs_list)
+        assert not bool
+
+
 
 class TestRaise(unittest.TestCase):
 

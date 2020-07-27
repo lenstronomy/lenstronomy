@@ -37,25 +37,26 @@ class LikelihoodModule(object):
         initializing class
 
 
-        :param param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
-        conventions of the imSim_class
+        :param param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled
+         into the conventions of the imSim_class
         :param image_likelihood: bool, option to compute the imaging likelihood
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
         relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
-        :param check_matched_source_position: bool, option to check whether point source position solver finds a solution to match all
-         the image positions in the same source plane coordinate
+        :param check_matched_source_position: bool, option to check whether point source position solver finds a
+         solution to match all the image positions in the same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
         :param flaot, image_position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
-        (only used if point_source_likelihood=True)
+         (only used if point_source_likelihood=True)
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
-        :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted further
-        away than this number
-        :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
+        :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted
+         further away than this number
+        :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be
+         evaluated in the likelihood
         :param force_no_add_image: bool, if True: computes ALL image positions of the point source. If there are more
         images predicted than modelled, a punishment occures
-        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
-        linear coefficients
+        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred
+         linear coefficients
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
         linear amplitude priors when computing the marginalization term.
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
@@ -66,8 +67,8 @@ class LikelihoodModule(object):
         :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
         and evaluates if all positions have positive flux
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
-        :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_special, kwargs_extinction)
-        and returns a logL (punishing) value.
+        :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
+         kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         """
         multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -142,12 +143,11 @@ class LikelihoodModule(object):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chain
         """
-        #extract parameters
+        # extract parameters
         kwargs_return = self.param.args2kwargs(args)
         if self._check_bounds is True:
             penalty, bound_hit = self.check_bounds(args, self._lower_limit, self._upper_limit, verbose=verbose)
             if bound_hit is True:
-                #print(-penalty, 'test penalty')
                 return -np.inf
         return self.log_likelihood(kwargs_return, verbose=verbose)
 
@@ -157,7 +157,7 @@ class LikelihoodModule(object):
                                                                                    kwargs_return['kwargs_lens_light'], \
                                                                                    kwargs_return['kwargs_ps'], \
                                                                                    kwargs_return['kwargs_special']
-        #generate image and computes likelihood
+        # generate image and computes likelihood
         self._reset_point_source_cache(bool=True)
         logL = 0
 

@@ -16,24 +16,27 @@ class TestLSST(unittest.TestCase):
         self.r_band = SingleBand(**kwargs_r_band)
         self.i_band = SingleBand(**kwargs_i_band)
 
+        # dictionaries mapping LSST kwargs to SingleBand kwargs
+        self.camera_settings = {'read_noise': '_read_noise',
+               'pixel_scale': 'pixel_scale',
+               'ccd_gain': 'ccd_gain'}
+        self.obs_settings = {'exposure_time': '_exposure_time',
+               'sky_brightness': '_sky_brightness_',
+               'magnitude_zero_point': '_magnitude_zero_point',
+               'num_exposures': '_num_exposures',
+               'seeing': '_seeing',
+               'psf_type': '_psf_type' }
+
     def test_camera(self):
-        assert self.instrument.ccd_gain == LSST.camera['ccd_gain']
-        assert self.instrument.pixel_scale == LSST.camera['pixel_scale']
-        assert self.instrument._read_noise == LSST.camera['read_noise']
+        for config, setting in self.camera_settings.items():
+            self.assertEqual(LSST.camera[config], getattr(self.instrument, setting), msg=f"{config} did not match")
 
-    def test_g_band(self):
-        assert self.g_band.ccd_gain == LSST.camera['ccd_gain']
-        assert self.g_band.pixel_scale == LSST.camera['pixel_scale']
-        assert self.g_band._read_noise == LSST.camera['read_noise']
+    def test_bands(self):
+        for config, setting in self.obs_settings.items():
+            self.assertEqual(LSST.g_band_obs[config], getattr(self.g_band, setting), msg=f"{config} did not match")
+            self.assertEqual(LSST.r_band_obs[config], getattr(self.r_band, setting), msg=f"{config} did not match")
+            self.assertEqual(LSST.i_band_obs[config], getattr(self.i_band, setting), msg=f"{config} did not match")
 
-        assert self.g_band._exposure_time == LSST.g_band_obs['exposure_time']
-        assert self.g_band._sky_brightness_ == LSST.g_band_obs['sky_brightness']
-        assert self.g_band._num_exposures == LSST.g_band_obs['num_exposures']
-        assert self.g_band._seeing == LSST.g_band_obs['seeing']
-        assert self.g_band._psf_type == LSST.g_band_obs['psf_type']
-        assert self.g_band._magnitude_zero_point == LSST.g_band_obs['magnitude_zero_point']
-
-    # add r and i band tests?
     # test SimApi?
 
 if __name__ == '__main__':

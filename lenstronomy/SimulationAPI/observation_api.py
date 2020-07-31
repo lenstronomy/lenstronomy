@@ -145,7 +145,7 @@ class SingleBand(Instrument, Observation):
                              psf_type=psf_type, kernel_point_source=kernel_point_source, 
                              truncation=truncation)
         if data_count_unit not in ['e-', 'ADU']:
-            raise ValueError("count_unit type %s not supported! Please chose e- or ADU." % data_count_unit)
+            raise ValueError("count_unit type %s not supported! Please choose e- or ADU." % data_count_unit)
         self._data_count_unit = data_count_unit
         self._background_noise = background_noise
         self._magnitude_zero_point = magnitude_zero_point

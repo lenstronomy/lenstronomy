@@ -44,7 +44,7 @@ class TestLSST(unittest.TestCase):
             bad_psf = LSST(psf_type='blah')
 
         with self.assertRaises(ValueError):
-            bad_coadd_years = LSST(psf_type=100)
+            bad_coadd_years = LSST(coadd_years=100)
 
     def test_LSST_camera(self):
         # comparing camera settings in LSST instance with those in Instrument instance

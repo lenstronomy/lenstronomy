@@ -2,8 +2,7 @@
 See Optics and Observation Conditions spreadsheet at
 https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZg4Y/edit?usp=sharing for list of
 sources. """
-from lenstronomy.SimulationAPI.observation_api import Instrument, Observation
-
+import lenstronomy.Util.util as util
 
 g_band_obs = {'exposure_time': 15.,
                    'sky_brightness': 22.26,
@@ -36,7 +35,7 @@ i_band_obs = {'exposure_time': 15.,
 :keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
 """
 
-class LSST(Instrument, Observation):
+class LSST(object):
     """
     class contains LSST instrument and observation configurations
     """
@@ -44,7 +43,7 @@ class LSST(Instrument, Observation):
         """
 
         :param band: string, 'g', 'r', or 'i' supported. Determines obs dictionary.
-        :param psf_type: string, type of PSF ('GAUSSIAN' supported). TODO: Add 'PIXEL' support.
+        :param psf_type: string, type of PSF ('GAUSSIAN' supported).
         :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 10.
         """
         if band == 'g':
@@ -73,4 +72,10 @@ class LSST(Instrument, Observation):
         :keyword ccd_gain: electrons/ADU (analog-to-digital unit).
         """
 
-    # TODO: add method that creates SingleBand object?
+    def kwargs_single_band(self):
+        """
+
+        :return: merged kwargs from camera and obs dicts
+        """
+        kwargs = util.merge_dicts(self.camera, self.obs)
+        return kwargs

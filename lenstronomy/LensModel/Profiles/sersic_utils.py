@@ -151,6 +151,7 @@ class SersicUtil(object):
     def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, Re=None, gamma=None, center_x=None, center_y=None,
                    alpha=None):
         """
+        computes analytical integral to compute total flux of the Sersic profile
 
         :param amp: amplitude parameter in Sersic function (surface brightness at R_sersic
         :param R_sersic: half-light radius in semi-major axis

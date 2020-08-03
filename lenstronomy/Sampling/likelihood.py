@@ -97,7 +97,7 @@ class LikelihoodModule(object):
                                                     likelihood_mask_list=image_likelihood_mask_list,
                                                     source_marg=source_marg, linear_prior=linear_prior,
                                                     force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
-                                                    flux_min=flux_min)
+                                                    flux_min=flux_min, check_positive_flux=check_positive_flux)
         self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
                                                        image_position_likelihood=image_position_likelihood,
                                                        source_position_likelihood=source_position_likelihood,

@@ -95,7 +95,7 @@ class ModelPlot(object):
         i = 0
         for band_index in self._index_list:
             if band_index >= 0:
-                axes[i, 0].set_title('image ' +str(band_index))
+                axes[i, 0].set_title('image ' + str(band_index))
                 self.data_plot(ax=axes[i, 0], band_index=band_index)
                 self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index)
                 self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index)
@@ -281,8 +281,6 @@ def check_solver_error(image):
     :param image: numpy array of modelled image from linear inversion
     :return: bool, True if solver could not find a unique solution, False if solver works
     """
-    #if len(param) < 1:
-    #    return False
     result = np.all(image == 0)
     if result is True:
         Warning('Linear inversion of surface brightness components did not result in a unique solution.'

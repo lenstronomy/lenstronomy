@@ -7,7 +7,7 @@ import numpy as np
 class PointSourceVariability(object):
     """
     This class enables to plug in a variable point source in the source plane to be added on top of a fixed lens and
-    extended surface brightness model. The class inherites SimAPI and additionally requires the lens and light model
+    extended surface brightness model. The class inherits SimAPI and additionally requires the lens and light model
     parameters as well as a position in the source plane.
 
     The intrinsic source variability can be defined by the user and additional uncorrelated variability in the image

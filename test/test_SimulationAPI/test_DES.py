@@ -25,7 +25,7 @@ class TestDES(unittest.TestCase):
         self.z_band = SingleBand(**kwargs_z_band)
         self.Y_band = SingleBand(**kwargs_Y_band)
 
-        # dictionaries mapping LSST kwargs to SingleBand kwargs
+        # dictionaries mapping DES kwargs to SingleBand kwargs
         self.camera_settings = {'read_noise': '_read_noise',
                                 'pixel_scale': 'pixel_scale',
                                 'ccd_gain': 'ccd_gain'}

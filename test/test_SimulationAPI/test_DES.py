@@ -50,6 +50,8 @@ class TestDES(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_psf = DES(psf_type='blah')
 
+        single_year = DES(coadd_years=1)
+        self.assertEqual(single_year.obs["num_exposures"], 3)
         with self.assertRaises(ValueError):
             bad_coadd_years = DES(coadd_years=10)
 

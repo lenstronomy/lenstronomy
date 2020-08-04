@@ -6,35 +6,35 @@ import lenstronomy.Util.util as util
 
 g_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 22.01,
-                   'magnitude_zero_point': 30,
+                   'magnitude_zero_point': 25.40,
                    'num_exposures': 10,
                    'seeing': 1.12,
                    'psf_type': 'GAUSSIAN'}
 
 r_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 21.15,
-                   'magnitude_zero_point': 30,
+                   'magnitude_zero_point': 25.50,
                    'num_exposures': 10,
                    'seeing': 0.96,
                    'psf_type': 'GAUSSIAN'}
 
 i_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 19.89,
-                   'magnitude_zero_point': 30,
+                   'magnitude_zero_point': 25.39,
                    'num_exposures': 10,
                    'seeing': 0.88,
                    'psf_type': 'GAUSSIAN'}
 
 z_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 18.72,
-                   'magnitude_zero_point': 30,
+                   'magnitude_zero_point': 25.06,
                    'num_exposures': 10,
                    'seeing': 0.84,
                    'psf_type': 'GAUSSIAN'}
 
 Y_band_obs = {'exposure_time': 45.,
                    'sky_brightness': 17.96,
-                   'magnitude_zero_point': 30,
+                   'magnitude_zero_point': 23.98,
                    'num_exposures': 10,
                    'seeing': 0.9,
                    'psf_type': 'GAUSSIAN'}
@@ -47,8 +47,6 @@ Y_band_obs = {'exposure_time': 45.,
 :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
 :keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported) 
 """
-# TODO: adjust coadd_years settings; make sure z, Y bands supported, etc
-# TODO: update tests so tests Observation Config not just LSST
 
 class DES(object):
     """
@@ -69,7 +67,7 @@ class DES(object):
             self.obs = i_band_obs
         elif band == 'z':
             self.obs = z_band_obs
-        elif band == 'y':
+        elif band == 'Y':
             self.obs = Y_band_obs
         else:
             raise ValueError("band %s not supported! Choose 'g', 'r', 'i', 'z', or 'Y'." % band)
@@ -77,9 +75,10 @@ class DES(object):
         if psf_type != 'GAUSSIAN':
             raise ValueError("psf_type %s not supported!" % psf_type)
 
-        if coadd_years != 3:
-            raise ValueError(" %s coadd_years not supported! "
-                             "You may manually adjust num_exposures in obs dict if required." % coadd_years)
+        if coadd_years > 6 or coadd_years < 1:
+            raise ValueError(" %s coadd_years not supported! Choose an integer between 1 and 6." % coadd_years)
+        elif coadd_years != 3:
+            self.obs['num_exposures'] = (coadd_years * 10) // 3
 
         self.camera = {'read_noise': 7,
                'pixel_scale': 0.263,

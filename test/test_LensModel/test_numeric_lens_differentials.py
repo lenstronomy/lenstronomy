@@ -164,7 +164,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_point_mass(self):
-        kwargs = {'theta_E': 1.}
+        kwargs = {'theta_E': 2.}
         lens_model = ['POINT_MASS']
         self.assert_differentials(lens_model, kwargs)
 
@@ -274,6 +274,21 @@ class TestNumericsProfile(object):
     def test_cored_density_2_mst(self):
         kwargs = {'lambda_approx': 1.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY_2_MST']
+        self.assert_differentials(lens_model, kwargs)
+        
+    def test_const_mag_positive(self):
+        kwargs = {'mu_r': 1, 'mu_t': 10, 'parity': 1, 'phi_G': 0.1}
+        lens_model = ['CONST_MAG']
+        self.assert_differentials(lens_model, kwargs)
+        
+    def test_const_mag_negative(self):
+        kwargs = {'mu_r': 1, 'mu_t': 10, 'parity': -1, 'phi_G': 0.1}
+        lens_model = ['CONST_MAG']
+        self.assert_differentials(lens_model, kwargs)
+        
+    def test_nie_potential(self):
+        kwargs = {'theta_E':2. , 'theta_c':1. , 'e1': 0.1, 'e2': 0.1}
+        lens_model = ['NIE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
 
 

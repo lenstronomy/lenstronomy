@@ -15,7 +15,7 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     :param center_x: center of the grid
     :param center_y: center of the grid
     :param subgrid_res: subgrid for the numerical integrals
-    :return:
+    :return: keyword arguments for 'INTERPOL' lens model
     """
     # make super-sampled grid
     x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix * 5, deltapix=deltaPix, subgrid_res=subgrid_res)

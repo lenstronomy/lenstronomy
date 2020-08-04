@@ -146,7 +146,7 @@ class Sampler(object):
         :param backup_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backup_filename: string
         :param start_from_backup: if True, start from the state saved in `backup_filename`.
-        Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
         :type start_from_backup: bool
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array

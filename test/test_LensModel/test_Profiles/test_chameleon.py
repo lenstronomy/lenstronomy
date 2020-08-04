@@ -256,7 +256,7 @@ class TestDoubleChameleonPointMass(object):
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
         f_xx, f_yy, f_xy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
         npt.assert_almost_equal(f_xx, 0.0633838122066912, decimal=4)
-        npt.assert_almost_equal(f_xy, -0.4924032840628945, decimal=4)
+        npt.assert_almost_equal(f_xy, -0.3986532840628945, decimal=4)
         npt.assert_almost_equal(f_yy, 0.04802318253385707, decimal=4)
 
 

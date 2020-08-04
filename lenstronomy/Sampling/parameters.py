@@ -486,19 +486,6 @@ class Param(object):
         else:
             return False
 
-    #def real_image_positions(self, x, y, kwargs_special):
-    #    """
-
-     #   :param kwargs_ps: point source kwargs
-     #   :param kwargs_special: special kwargs (or other kwargs)
-     #   :return: position where time delays are evaluated and solver is solved for
-     #   """
-     #   if self._point_source_offset is True:
-     #       delta_x, delta_y = kwargs_special['delta_x_image'], kwargs_special['delta_y_image']
-     #       return x + delta_x, y + delta_y
-     #   else:
-     #       return x, y
-
     def print_setting(self):
         """
         prints the setting of the parameter class

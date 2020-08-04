@@ -63,6 +63,24 @@ class TestKDE1D(object):
         npt.assert_almost_equal(likelihood, likelihood_true, decimal=1)
 
 
+def test_compute_lower_upper_errors():
+    sample = np.random.normal(loc=0, scale=1, size=100000)
+    median, _ = prob_density.compute_lower_upper_errors(sample, num_sigma=0)
+    npt.assert_almost_equal(median, 0, decimal=2)
+
+    median, [[lower_sigma1, upper_sigma1]] = prob_density.compute_lower_upper_errors(sample, num_sigma=1)
+    npt.assert_almost_equal(lower_sigma1, 1, decimal=2)
+    npt.assert_almost_equal(upper_sigma1, 1, decimal=2)
+
+    median, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2],
+             [lower_sigma3, upper_sigma3]] = prob_density.compute_lower_upper_errors(sample, num_sigma=3)
+    npt.assert_almost_equal(lower_sigma2, 2, decimal=2)
+    npt.assert_almost_equal(upper_sigma2, 2, decimal=2)
+
+    npt.assert_almost_equal(lower_sigma3, 3, decimal=1)
+    npt.assert_almost_equal(upper_sigma3, 3, decimal=1)
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

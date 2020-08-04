@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to compute the Navaro-Frank-White function
+# this file contains a class to compute the Navaro-Frenk-White profile
 import numpy as np
 import scipy.interpolate as interp
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
@@ -15,6 +15,14 @@ class NFW(LensProfileBase):
     angle at 'Rs' - 'alpha_Rs'. To convert a physical mass and concentration definition into those lensing quantities
     for a specific redshift configuration and cosmological model, you can find routines in lenstronomy.Cosmo.lens_cosmo.py
 
+    Examples for converting angular to physical mass units
+    ------------------------------------------------------
+    >>> from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+    >>> from astropy.cosmology import FlatLambdaCDM
+    >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+    >>> lens_cosmo = LensCosmo(z_lens=0.5, z_source=1.5, cosmo=cosmo)
+    >>> Rs_angle, alpha_Rs = lens_cosmo.nfw_physical2angle(M=10**13, c=6)
+    >>> rho0, Rs, c, r200, M200 = lens_cosmo.nfw_angle2physical(Rs_angle=Rs_angle, alpha_Rs=alpha_Rs)
 
     """
     param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y']

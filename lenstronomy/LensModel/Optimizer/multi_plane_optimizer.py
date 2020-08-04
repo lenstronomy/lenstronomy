@@ -3,13 +3,14 @@ import numpy as np
 
 
 class MultiPlaneLensing(object):
+    # TODO documentation of role of this class
 
     _no_potential = True
 
     def __init__(self, full_lensmodel, x_pos, y_pos, lensmodel_params, z_source,
                  z_macro, astropy_instance, macro_indicies, optimizer_kwargs, numerical_alpha_class,
                  observed_convention_index=None):
-
+        # TODO documentation
         """
         This class performs (fast) lensing computations for multi-plane lensing scenarios
         :param full_lensmodel:
@@ -32,6 +33,7 @@ class MultiPlaneLensing(object):
 
         self._full_lensmodel, self._lensmodel_params = full_lensmodel, lensmodel_params
 
+        # TODO this function uses a private object of another class
         self._T_z_source = full_lensmodel.lens_model._T_z_source
 
         self._observed_convention_index = observed_convention_index
@@ -53,13 +55,6 @@ class MultiPlaneLensing(object):
         self.multi_plane = False
         # this flag needs to be set as False to be compatible with the latest LensEquationSolver feature to make the
         # computation faster
-
-    def set_static(self, kwargs):
-        kwargs = self._full_lensmodel.set_static(kwargs)
-        return kwargs
-
-    def set_dynamic(self):
-        self._full_lensmodel.set_dynamic()
 
     def ray_shooting(self, x, y, kwargs_lens, check_convention=True):
 
@@ -104,9 +99,9 @@ class MultiPlaneLensing(object):
 
         return f_xx, f_xy, f_yx, f_yy
 
-    def magnification(self,x,y,kwargs_lens):
+    def magnification(self, x, y, kwargs_lens):
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x,y,kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs_lens)
 
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
 
@@ -134,7 +129,7 @@ class MultiPlaneLensing(object):
 
     def _magnification_fast(self, macromodel_args):
 
-        fxx,fxy,fyx,fyy = self._hessian_fast(macromodel_args)
+        fxx, fxy, fyx, fyy = self._hessian_fast(macromodel_args)
 
         det_J = (1-fxx)*(1-fyy)-fyx*fxy
 
@@ -149,6 +144,7 @@ class MultiPlaneLensing(object):
         alpha_ra_dy, alpha_dec_dy = self._alpha_fast(self._x_pos, self._y_pos + diff, macromodel_args,
                                                      offset_index=2)
 
+        # TODO the lines below are duplicates of another routine, so maybe separate what part is the 'fast' routine
         dalpha_rara = (alpha_ra_dx - alpha_ra) * diff ** -1
         dalpha_radec = (alpha_ra_dy - alpha_ra) * diff ** -1
         dalpha_decra = (alpha_dec_dx - alpha_dec) * diff ** -1
@@ -162,6 +158,7 @@ class MultiPlaneLensing(object):
         return f_xx, f_xy, f_yx, f_yy
 
     def _alpha_fast(self, x_pos, y_pos, macromodel_args, offset_index = 0):
+        # TODO documentation
 
         if offset_index == 0 and hasattr(self,'_beta_x_last'):
             return np.array(x_pos - self._beta_x_last), np.array(y_pos - self._beta_y_last)
@@ -175,8 +172,9 @@ class MultiPlaneLensing(object):
         return alpha_x, alpha_y
 
     def _alpha(self, x_pos, y_pos, kwargs_lens, check_convention=True):
+        # TODO documentation
 
-        beta_x,beta_y = self.ray_shooting(x_pos, y_pos, kwargs_lens, check_convention)
+        beta_x, beta_y = self.ray_shooting(x_pos, y_pos, kwargs_lens, check_convention)
 
         alpha_x = np.array(x_pos - beta_x)
         alpha_y = np.array(y_pos - beta_y)
@@ -246,14 +244,15 @@ class MultiPlaneLensing(object):
 
 
 class Foreground(object):
+    # TODO describe role of class
 
     def __init__(self, foreground_lensmodel, macromodel_lensmodel, z_to_vary, x_pos, y_pos, precompupted_rays = None):
-
+        # TODO documentation
         self._halos_lensmodel = foreground_lensmodel
         self._macromodel_lensmodel = macromodel_lensmodel
         self._z_to_vary = z_to_vary
         self._x_pos, self._y_pos = x_pos, y_pos
-
+        # TODO this function uses a private object of another class
         dis = self._halos_lensmodel.lens_model._multi_plane_base._cosmo_bkg.T_xy
         if precompupted_rays is None:
             self._rays = [None] * 3
@@ -261,6 +260,7 @@ class Foreground(object):
             self._rays = precompupted_rays
 
         self._Txy_main = dis(0, z_to_vary)
+        # TODO this function uses a private object of another class
         z_source = self._halos_lensmodel.lens_model._z_source
         self._factor = dis(0, z_source) / dis(z_to_vary, z_source)
 

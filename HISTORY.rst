@@ -188,3 +188,10 @@ History
 * Re-naming SPEMD to PEMD, SPEMD_SMOOTH to SPEMD
 * adaptive numerics improvement
 * multi-processing improvements
+
+
+1.5.1 (2020-06-20)
+++++++++++++++++++
+* bug fix in Hession of POINT_SOURCE model
+* EPL model from Tessore et al. 2015 implemented
+* multi-observation mode for kinematics calculation

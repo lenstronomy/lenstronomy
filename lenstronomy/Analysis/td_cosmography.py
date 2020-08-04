@@ -53,27 +53,30 @@ class TDCosmography(KinematicsAPI):
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
                                             anisotropy_model=anisotropy_model, multi_observations=multi_observations, kwargs_lens_eq_solver=kwargs_lens_eq_solver)
 
-    def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0):
+    def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """
         predicts the time delays of the image positions given the fiducial cosmology
 
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
         :param kappa_ext: external convergence (optional)
+        :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
+         uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
+         in case of the lens equation solver
         :return: time delays at image positions for the fixed cosmology
         """
         fermat_pot, ra_pos, dec_pos = self.fermat_potential(kwargs_lens, kwargs_ps)
         time_delay = self._lens_cosmo.time_delay_units(fermat_pot, kappa_ext)
         return time_delay, ra_pos, dec_pos
 
-    def fermat_potential(self, kwargs_lens, kwargs_ps):
+    def fermat_potential(self, kwargs_lens, kwargs_ps, original_ps_position=False):
         """
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :return: tuple of Fermat potential of all the image positions in the first point source list entry and ra/dec of the image positions used (Ji Won's modification)
         """
-        ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens)
+        ra_pos, dec_pos = self.PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)
         ra_pos = ra_pos[0]
         dec_pos = dec_pos[0]
         ra_source, dec_source = self.LensModel.ray_shooting(ra_pos, dec_pos, kwargs_lens)

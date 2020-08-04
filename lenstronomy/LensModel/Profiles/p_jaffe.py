@@ -5,7 +5,30 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 class PJaffe(LensProfileBase):
     """
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
-    based on Eliasdottir (2013)
+    based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
+
+    Module name: 'PJAFFE'
+    An alternative name is dPIED.
+
+    The 3D density distribution is
+
+    .. math::
+
+        \rho(r) = \frac{\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
+
+    with :math:`Rs > Ra`.
+    The projected density is
+    .. math::
+
+        \Sigma(R) = \Sigma_0 \frac{Ra Rs}{Rs-Ra}\left(\frac{1}{\sqrt{Ra^2+R^2}} - \frac{1}{\sqrt{Rs^2+R^2}} \right)
+
+    with
+    .. math::
+
+        \Sigma_0 = \pi \rpho_0 \frac{Ra Rs}{Rs + Ra}
+
+    In the lensing parameterization, math:`sigma0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}`
+
     """
     _s = 0.0001
     param_names = ['sigma0', 'Ra', 'Rs', 'center_x', 'center_y']
@@ -15,12 +38,11 @@ class PJaffe(LensProfileBase):
     def density(self, r, rho0, Ra, Rs):
         """
         computes the density
-        :param x:
-        :param y:
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param r: radial distance from the center (in 3D)
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: density at r
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         rho = rho0 / ((1 + (r / Ra) ** 2) * (1 + (r / Rs) ** 2))
@@ -29,14 +51,14 @@ class PJaffe(LensProfileBase):
     def density_2d(self, x, y, rho0, Ra, Rs, center_x=0, center_y=0):
         """
         projected density
-        :param x:
-        :param y:
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: projected coordinate on the sky
+        :param y: projected coordinate on the sky
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :param center_x: center of profile
+        :param center_y: center of profile
+        :return: projected density
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         x_ = x - center_x
@@ -49,22 +71,24 @@ class PJaffe(LensProfileBase):
     def mass_3d(self, r, rho0, Ra, Rs):
         """
         mass enclosed a 3d sphere or radius r
-        :param r:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param r: radial distance from the center (in 3D)
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: M(<r)
         """
         m_3d = 4 * np.pi * rho0 * Ra ** 2 * Rs ** 2 / (Rs ** 2 - Ra ** 2) * (Rs * np.arctan(r / Rs) - Ra * np.arctan(r / Ra))
         return m_3d
 
     def mass_3d_lens(self, r, sigma0, Ra, Rs):
         """
+        mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
 
-        :param r:
-        :param sigma0:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param r: radial distance from the center (in 3D)
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: M(<r) in angular units (modulo critical mass density)
         """
         rho0 = self.sigma2rho(sigma0, Ra, Rs)
         return self.mass_3d(r, rho0, Ra, Rs)
@@ -72,11 +96,11 @@ class PJaffe(LensProfileBase):
     def mass_2d(self, r, rho0, Ra, Rs):
         """
         mass enclosed projected 2d sphere of radius r
-        :param r:
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param r: radial distance from the center in projection
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: Sigma(<r)
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         sigma0 = self.rho2sigma(rho0, Ra, Rs)
@@ -86,47 +110,42 @@ class PJaffe(LensProfileBase):
     def mass_tot(self, rho0, Ra, Rs):
         """
         total mass within the profile
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: total mass
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         sigma0 = self.rho2sigma(rho0, Ra, Rs)
         m_tot = 2 * np.pi * sigma0 * Ra * Rs
         return m_tot
 
-    def grav_pot(self, x, y, rho0, Ra, Rs, center_x=0, center_y=0):
+    def grav_pot(self, r, rho0, Ra, Rs):
         """
         gravitational potential (modulo 4 pi G and rho0 in appropriate units)
-        :param x:
-        :param y:
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param r: radial distance from the center (in 3D)
+        :param rho0: density normalization (see class documentation above)
+        :param Ra: core radius
+        :param Rs: transition radius from logarithmic slope -2 to -4
+        :return: gravitational potential (modulo 4 pi G and rho0 in appropriate units)
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
-        x_ = x - center_x
-        y_ = y - center_y
-        r = np.sqrt(x_**2 + y_**2)
         pot = 4 * np.pi * rho0 * Ra ** 2 * Rs ** 2 / (Rs ** 2 - Ra ** 2) * (Rs / r * np.arctan(r / Rs) - Ra / r * np.arctan(r / Ra)
                                                                             + 1. / 2 * np.log((Rs ** 2 + r ** 2) / (Ra ** 2 + r ** 2)))
         return pot
 
     def function(self, x, y, sigma0, Ra, Rs, center_x=0, center_y=0):
         """
+        lensing potential
 
-        :param x:
-        :param y:
-        :param sigma0: sigma0/sigma_crit
-        :param Ra:
-        :param Rs:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: projected coordinate on the sky
+        :param y: projected coordinate on the sky
+        :param sigma0: sigma0/sigma_crit (see class documentation above)
+        :param Ra: core radius (see class documentation above)
+        :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
+        :param center_x: center of profile
+        :param center_y: center of profile
+        :return: lensing potential
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         x_ = x - center_x
@@ -137,15 +156,16 @@ class PJaffe(LensProfileBase):
 
     def derivatives(self, x, y, sigma0, Ra, Rs, center_x=0, center_y=0):
         """
+        deflection angles
 
-        :param x:
-        :param y:
-        :param sigma0: sigma0/sigma_crit
-        :param Ra:
-        :param Rs:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: projected coordinate on the sky
+        :param y: projected coordinate on the sky
+        :param sigma0: sigma0/sigma_crit (see class documentation above)
+        :param Ra: core radius (see class documentation above)
+        :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
+        :param center_x: center of profile
+        :param center_y: center of profile
+        :return: f_x, f_y
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         x_ = x - center_x
@@ -162,15 +182,16 @@ class PJaffe(LensProfileBase):
 
     def hessian(self, x, y, sigma0, Ra, Rs, center_x=0, center_y=0):
         """
+        Hessian of lensing potential
 
-        :param x:
-        :param y:
-        :param sigma0: sigma0/sigma_crit
-        :param Ra:
-        :param Rs:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: projected coordinate on the sky
+        :param y: projected coordinate on the sky
+        :param sigma0: sigma0/sigma_crit (see class documentation above)
+        :param Ra: core radius (see class documentation above)
+        :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
+        :param center_x: center of profile
+        :param center_y: center of profile
+        :return: f_xx, f_yy, f_xy
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         x_ = x - center_x
@@ -195,34 +216,42 @@ class PJaffe(LensProfileBase):
 
     def _f_A20(self, r_a, r_s):
         """
-        equation A20 in Eliasdottir (2013)
+        equation A20 in Eliasdottir (2007)
         :param r_a: r/Ra
         :param r_s: r/Rs
-        :return:
+        :return: f(R/a, R/s)
         """
         return r_a/(1+np.sqrt(1 + r_a**2)) - r_s/(1+np.sqrt(1 + r_s**2))
 
     def rho2sigma(self, rho0, Ra, Rs):
         """
-        converts 3d density into 2d projected density parameter
-        :param rho0:
-        :param Ra:
-        :param Rs:
-        :return:
+        converts 3d density into 2d projected density parameter, Equation A4 in Eliasdottir (2007)
+        :param rho0: density normalization
+        :param Ra: core radius (see class documentation above)
+        :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
+        :return: projected density normalization
         """
         return np.pi * rho0 * Ra * Rs / (Rs + Ra)
 
     def sigma2rho(self, sigma0, Ra, Rs):
         """
+        inverse of rho2sigma()
 
-        :param sigma0:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param sigma0: projected density normalization
+        :param Ra: core radius (see class documentation above)
+        :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
+        :return: 3D density normalization
         """
         return (Rs + Ra) / Ra / Rs / np.pi * sigma0
 
     def _sort_ra_rs(self, Ra, Rs):
+        """
+        sorts Ra and Rs to make sure Rs > Ra
+
+        :param Ra:
+        :param Rs:
+        :return: Ra, Rs in conventions used
+        """
         if Ra >= Rs:
             Ra, Rs = Rs, Ra
         if Ra < 0.0001:

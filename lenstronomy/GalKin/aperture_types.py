@@ -117,7 +117,6 @@ def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, a
     x = np.cos(angle) * ra_ + np.sin(angle) * dec_
     y = - np.sin(angle) * ra_ + np.cos(angle) * dec_
     if abs(x) < width_outer / 2. and abs(y) < width_outer / 2.:
-        print('test')
         if abs(x) < width_inner / 2. and abs(y) < width_inner / 2.:
             return False
         else:

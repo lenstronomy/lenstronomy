@@ -1,10 +1,12 @@
 
 import pytest
+import numpy as np
 import numpy.testing as npt
+from lenstronomy.Util import util
 from lenstronomy.LightModel.Profiles.gaussian import MultiGaussian, MultiGaussianEllipse, GaussianEllipse, Gaussian
 
 
-class TestGaussian(object):
+class TestMultiGaussian(object):
     """
     class to test the Gaussian profile
     """
@@ -20,6 +22,24 @@ class TestGaussian(object):
         output = profile.function_split(x=1., y=1., amp=[1., 2], sigma=[1, 2], center_x=0, center_y=0)
         npt.assert_almost_equal(output[0], 0.058549831524319168, decimal=8)
         npt.assert_almost_equal(output[1], 0.061974997154826489, decimal=8)
+
+
+class TestGaussian(object):
+
+    def setup(self):
+        pass
+
+    def test_total_flux(self):
+        gauss = Gaussian()
+        deltapix = 0.1
+        amp = 1
+        x_grid, y_gird = util.make_grid(100, deltapix=deltapix)
+        flux = gauss.function(x_grid, y_gird, amp=amp, sigma=1)
+        flux_integral = np.sum(flux) * deltapix**2
+        npt.assert_almost_equal(flux_integral, amp, decimal=3)
+        # make grid
+        # sum grid
+        # evaluate total flux
 
 
 class TestGaussianEllipse(object):

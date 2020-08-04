@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 1.5.0 documentation</title>
+    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 1.5.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -111,9 +111,9 @@
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">epsilon_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns the critical projected mass density in units of M_sun/Mpc^2 (physical units)</span>
+<span class="sd">        returns the critical projected mass density in units of M_sun/rad^2</span>
 <span class="sd">        :return: critical projected mass density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Epsilon_Crit&#39;</span><span class="p">):</span>
@@ -124,9 +124,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">epsilon_crit_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sigma_crit_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns the critical projected mass density in units of M_sun/arcsec^2 (in physical solar mass units)</span>
+<span class="sd">        returns the critical surface density in units of M_sun/arcsec^2 (in physical solar mass units)</span>
+<span class="sd">        when provided a physical mass per physical Mpc^2</span>
 <span class="sd">        :return: critical projected mass density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Epsilon_Crit_arcsec&#39;</span><span class="p">):</span>
@@ -166,7 +167,7 @@
 <span class="sd">        :param kappa: lensing convergence</span>
 <span class="sd">        :return: projected mass [M_sun/Mpc^2]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span></div>
+        <span class="k">return</span> <span class="n">kappa</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_crit</span></div>
 
 <div class="viewcode-block" id="LensCosmo.mass_in_theta_E"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_theta_E">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_theta_E</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -174,7 +175,7 @@
 <span class="sd">        :param theta_E: Einstein radius [arcsec]</span>
 <span class="sd">        :return: mass within Einstein radius [M_sun]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span>
+        <span class="n">mass</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arcsec2phys_lens</span><span class="p">(</span><span class="n">theta_E</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_crit</span>
         <span class="k">return</span> <span class="n">mass</span></div>
 
 <div class="viewcode-block" id="LensCosmo.mass_in_coin"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.mass_in_coin">[docs]</a>    <span class="k">def</span> <span class="nf">mass_in_coin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">):</span>
@@ -215,7 +216,7 @@
 <span class="sd">        :return: M200, r200, Rs_physical, c</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Rs</span> <span class="o">=</span> <span class="n">Rs_angle</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span>
-        <span class="n">theta_scaled</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span>
+        <span class="n">theta_scaled</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_crit</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span>
         <span class="n">rho0</span> <span class="o">=</span> <span class="n">theta_scaled</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)))</span>
         <span class="n">rho0_com</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">h</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">a_z</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z_lens</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
         <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfw_param</span><span class="o">.</span><span class="n">c_rho0</span><span class="p">(</span><span class="n">rho0_com</span><span class="p">)</span>
@@ -234,7 +235,7 @@
         <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">r200</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nfwParam_physical</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
         <span class="n">Rs_angle</span> <span class="o">=</span> <span class="n">Rs</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span>  <span class="c1"># Rs in arcsec</span>
         <span class="n">alpha_Rs</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">*</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)))</span>
-        <span class="k">return</span> <span class="n">Rs_angle</span><span class="p">,</span> <span class="n">alpha_Rs</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsilon_crit</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span></div>
+        <span class="k">return</span> <span class="n">Rs_angle</span><span class="p">,</span> <span class="n">alpha_Rs</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_crit</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span></div>
 
 <div class="viewcode-block" id="LensCosmo.nfwParam_physical"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.nfwParam_physical">[docs]</a>    <span class="k">def</span> <span class="nf">nfwParam_physical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -308,7 +309,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

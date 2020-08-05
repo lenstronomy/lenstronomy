@@ -90,8 +90,9 @@ class TestP_JAFFW(object):
         x = 1
         y = 2
         rho0 = 1.
+        r = np.sqrt(x**2 + y**2)
         Ra, Rs = 0.5, 0.8
-        grav_pot = self.profile.grav_pot(x, y, rho0, Ra, Rs, center_x=0, center_y=0)
+        grav_pot = self.profile.grav_pot(r, rho0, Ra, Rs)
         npt.assert_almost_equal(grav_pot, 0.89106542283974155, decimal=10)
 
 

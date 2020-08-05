@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
+import numpy as np
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.param_util as param_util
@@ -8,6 +9,7 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Plots.model_plot import ModelPlot
+from lenstronomy.Plots.model_plot import check_solver_error
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
@@ -193,6 +195,14 @@ class TestOutputPlots(object):
         assert len(axes) == 2
         assert len(axes[0]) == 3
         plt.close()
+
+    def test_check_solver_error(self):
+
+        bool = check_solver_error(image=np.array([0, 0]))
+        assert bool
+
+        bool = check_solver_error(image=np.array([0, 0.1]))
+        assert bool == 0
 
 
 class TestRaise(unittest.TestCase):

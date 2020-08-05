@@ -2,6 +2,7 @@ import copy
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
+from lenstronomy.Analysis.image_reconstruction import check_solver_error
 
 
 class ModelPlot(object):
@@ -26,7 +27,6 @@ class ModelPlot(object):
         :param likelihood_mask_list:
         :param bands_compute:
         :param multi_band_type:
-        :param band_index:
         :param source_marg:
         :param linear_prior:
         """
@@ -43,6 +43,7 @@ class ModelPlot(object):
                                                        kwargs_sparse_solver=kwargs_sparse_solver)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+        check_solver_error(param)
         logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
@@ -96,10 +97,10 @@ class ModelPlot(object):
         i = 0
         for band_index in self._index_list:
             if band_index >= 0:
-                axes[i, 0].set_title('image ' +str(band_index))
-                self.data_plot(ax=axes[i, 0], band_index=band_index)
-                self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index)
-                self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index)
+                axes[i, 0].set_title('image ' + str(band_index))
+                self.data_plot(ax=axes[i, 0], band_index=band_index, **kwargs)
+                self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index, **kwargs)
+                self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index, **kwargs)
                 i += 1
         return f, axes
 

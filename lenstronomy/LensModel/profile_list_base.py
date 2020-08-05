@@ -27,7 +27,6 @@ class ProfileListBase(object):
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
-
             # those models require a new instance per profile as certain pre-computations are relevant per individual profile
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
@@ -56,6 +55,12 @@ class ProfileListBase(object):
         if lens_type == 'SHIFT':
             from lenstronomy.LensModel.Profiles.alpha_shift import Shift
             return Shift()
+        elif lens_type == 'NIE_POTENTIAL':
+            from lenstronomy.LensModel.Profiles.nie_potential import NIE_POTENTIAL
+            return NIE_POTENTIAL()
+        elif lens_type == 'CONST_MAG':
+            from lenstronomy.LensModel.Profiles.const_mag import ConstMag
+            return ConstMag()
         elif lens_type == 'SHEAR':
             from lenstronomy.LensModel.Profiles.shear import Shear
             return Shear()
@@ -110,6 +115,9 @@ class ProfileListBase(object):
         elif lens_type == 'SPEMD':
             from lenstronomy.LensModel.Profiles.spemd import SPEMD
             return SPEMD()
+        elif lens_type == 'EPL':
+            from lenstronomy.LensModel.Profiles.epl import EPL
+            return EPL()
         elif lens_type == 'NFW':
             from lenstronomy.LensModel.Profiles.nfw import NFW
             return NFW()
@@ -244,6 +252,8 @@ class ProfileListBase(object):
 
     def set_dynamic(self):
         """
+        frees cache set by static model (if exists) and re-computes all lensing quantities each time a definition is
+        called assuming different parameters are executed. This is the default mode if not specified as set_static()
 
         :return: None
         """

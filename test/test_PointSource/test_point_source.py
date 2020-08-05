@@ -19,7 +19,8 @@ class TestPointSource(object):
         self.x_pos, self.y_pos = solver.image_position_from_source(sourcePos_x=self.sourcePos_x,
                                                                    sourcePos_y=self.sourcePos_y, kwargs_lens=self.kwargs_lens)
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
-                                       lensModel=lensModel, fixed_magnification_list=[False]*3, additional_images_list=[False]*4)
+                                       lensModel=lensModel, fixed_magnification_list=[False]*3,
+                                       additional_images_list=[False]*4, flux_from_point_source_list=[True, True, True])
         self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos)},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
                           {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'point_amp': np.ones_like(self.x_pos)}, {}]
@@ -82,6 +83,38 @@ class TestPointSource(object):
         assert kwargs_out[0]['point_amp'][0] == 10* self.kwargs_ps[0]['point_amp'][0]
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
+
+    def test_update_search_window(self):
+        search_window = 5
+        x_center, y_center = 1, 1
+        min_distance = 0.01
+
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver={})
+
+        point_source.update_search_window(search_window, x_center, y_center, min_distance=min_distance, only_from_unspecified=False)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
+
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver={})
+
+        point_source.update_search_window(search_window, x_center, y_center, min_distance=min_distance,
+                                          only_from_unspecified=True)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
+
+        kwargs_lens_eqn_solver = {'search_window': search_window,
+                                  'min_distance': min_distance, 'x_center': x_center, 'y_center': y_center}
+        point_source = PointSource(point_source_type_list=['LENSED_POSITION'],
+                                   lensModel=None, kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
+        point_source.update_search_window(search_window=-10, x_center=-10, y_center=-10,
+                                          min_distance=10, only_from_unspecified = True)
+        assert point_source._kwargs_lens_eqn_solver['search_window'] == search_window
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
+        assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
 
 
 class TestPointSourceFixedMag(object):

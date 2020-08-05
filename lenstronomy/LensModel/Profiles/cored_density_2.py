@@ -141,7 +141,7 @@ class CoredDensity2(LensProfileBase):
     @staticmethod
     def density(r, sigma0, r_core):
         """
-        rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-2)
+        rho(r) =  2/pi * Sigma_crit R_c**3 * (R_c**2 + r**2)**(-3/2)
 
         :param r: radius (angular scale)
         :param sigma0: convergence in the core

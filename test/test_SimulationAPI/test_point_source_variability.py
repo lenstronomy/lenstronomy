@@ -33,7 +33,7 @@ class TestPointSourceVariability(object):
         kwargs_single_band = constructor.observation_constructor(instrument_name=instrument_name,
                                                                  observation_name=observation_name)
 
-
+        kwargs_single_band['data_count_unit'] = 'e-'
         kwargs_numerics = {}
         numpix = 20
         # source position

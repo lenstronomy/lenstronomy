@@ -211,6 +211,27 @@ def test_cut_edges():
     assert ny == numPix
     assert resized[10][10] == 1
 
+    image = np.zeros((5, 5))
+    image[2, 2] = 1
+    numPix = 3
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image_cut[1, 1] == 1
+
+    image = np.zeros((6, 6))
+    image[3, 2] = 1
+    numPix = 4
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image_cut[2, 1] == 1
+
+    image = np.zeros((6, 8))
+    image[3, 2] = 1
+    numPix = 4
+    image_cut = image_util.cut_edges(image, numPix)
+    assert len(image_cut) == numPix
+    assert image_cut[2, 0] == 1
+
 
 def test_re_size():
     grid = np.zeros((200, 100))
@@ -280,27 +301,16 @@ def test_radial_profile():
     npt.assert_almost_equal(profile_r, profile_r_true, decimal=3)
 
 
-def cut_edges():
-    image = np.zeros((5, 5))
-    image[2, 2] = 1
-    numPix = 3
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
-    assert image_cut[1, 1] == 1
-
-    image = np.zeros((6, 6))
-    image[3, 2] = 1
-    numPix = 4
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
-    assert image[2, 1] == 1
-
+def test_gradient_map():
     image = np.zeros((6, 8))
-    image[3, 2] = 1
-    numPix = 4
-    image_cut = image_util.cut_edges(image, numPix)
-    assert len(image_cut) == numPix
-    assert image[2, 0] == 1
+    grad = image_util.gradient_map(image)
+    npt.assert_almost_equal(grad, image, decimal=6)
+
+    image_ones = np.ones((6, 8))
+    grad = image_util.gradient_map(image_ones)
+    npt.assert_almost_equal(grad, image, decimal=6)
+
+    assert np.shape(grad) == np.shape(image)
 
 
 class TestRaise(unittest.TestCase):

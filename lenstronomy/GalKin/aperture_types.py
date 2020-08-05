@@ -63,6 +63,67 @@ def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
         return False
 
 
+class Frame(object):
+    """
+    rectangular box with a hole in the middle (also rectangular), effectively a frame
+    """
+
+    def __init__(self, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
+        """
+
+        :param width_outer: width of box to the outer parts
+        :param width_inner: width of inner removed box
+        :param center_ra: center of slit
+        :param center_dec: center of slit
+        :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
+        """
+        self._width_outer = width_outer
+        self._width_inner = width_inner
+        self._center_ra, self._center_dec = center_ra, center_dec
+        self._angle = angle
+
+    def aperture_select(self, ra, dec):
+        """
+
+        :param ra: angular coordinate of photon/ray
+        :param dec: angular coordinate of photon/ray
+        :return: bool, True if photon/ray is within the slit, False otherwise
+        """
+        return frame_select(ra, dec, self._width_outer, self._width_inner, self._center_ra, self._center_dec, self._angle), 0
+
+    @property
+    def num_segments(self):
+        """
+        number of segments with separate measurements of the velocity dispersion
+        :return: int
+        """
+        return 1
+
+
+def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
+    """
+
+    :param ra: angular coordinate of photon/ray
+    :param dec: angular coordinate of photon/ray
+    :param width_outer: width of box to the outer parts
+    :param width_inner: width of inner removed box
+    :param center_ra: center of slit
+    :param center_dec: center of slit
+    :param angle: orientation angle of slit, angle=0 corresponds length in RA direction
+    :return: bool, True if photon/ray is within the box with a hole, False otherwise
+    """
+    ra_ = ra - center_ra
+    dec_ = dec - center_dec
+    x = np.cos(angle) * ra_ + np.sin(angle) * dec_
+    y = - np.sin(angle) * ra_ + np.cos(angle) * dec_
+    if abs(x) < width_outer / 2. and abs(y) < width_outer / 2.:
+        if abs(x) < width_inner / 2. and abs(y) < width_inner / 2.:
+            return False
+        else:
+            return True
+    return False
+
+
 class Shell(object):
     """
     Shell aperture

@@ -3,6 +3,7 @@ import numpy as np
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
+from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstruction
 
 
 class ModelPlot(object):
@@ -15,7 +16,7 @@ class ModelPlot(object):
 
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
-                 likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear', band_index=0,
+                 likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear',
                  source_marg=False, linear_prior=None):
         """
 
@@ -27,7 +28,6 @@ class ModelPlot(object):
         :param likelihood_mask_list:
         :param bands_compute:
         :param multi_band_type:
-        :param band_index:
         :param source_marg:
         :param linear_prior:
         """
@@ -37,8 +37,7 @@ class ModelPlot(object):
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                        bands_compute=bands_compute,
-                                                       likelihood_mask_list=likelihood_mask_list,
-                                                       band_index=band_index)
+                                                       likelihood_mask_list=likelihood_mask_list)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
         check_solver_error(param)
@@ -96,9 +95,9 @@ class ModelPlot(object):
         for band_index in self._index_list:
             if band_index >= 0:
                 axes[i, 0].set_title('image ' + str(band_index))
-                self.data_plot(ax=axes[i, 0], band_index=band_index)
-                self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index)
-                self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index)
+                self.data_plot(ax=axes[i, 0], band_index=band_index, **kwargs)
+                self.model_plot(ax=axes[i, 1], image_names=True, band_index=band_index, **kwargs)
+                self.normalized_residual_plot(ax=axes[i, 2], v_min=-6, v_max=6, band_index=band_index, **kwargs)
                 i += 1
         return f, axes
 

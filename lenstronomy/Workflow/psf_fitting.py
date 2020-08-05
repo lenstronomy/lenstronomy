@@ -46,21 +46,28 @@ class PsfFitting(object):
                  psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
         """
 
-        :param kwargs_data:
-        :param kwargs_psf:
-        :param kwargs_options:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_psf: keyword arguments to construct the PSF() class
+        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
+        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+         The choices are:
+         'mean': mean of pixel values as the estimator (not robust to outliers)
+         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
+         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
+         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
+         limited constraints/number of point sources in the image.
+        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
+        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
+         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
+         contaminate the estimate.
+        :return: kwargs_psf_new, logL_after, error_map
         """
+
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
-        #kwargs_numerics_psf['psf_error_map'] = False
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
         if 'psf_error_map' in kwargs_psf_copy:
@@ -92,14 +99,16 @@ class PsfFitting(object):
                          verbose=True):
         """
 
-        :param kwargs_data:
         :param kwargs_psf:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :param factor:
+        :param kwargs_params:
         :param num_iter:
+        :param no_break:
+        :param stacking_method:
+        :param block_center_neighbour:
+        :param keep_psf_error_map:
+        :param psf_symmetry:
+        :param psf_iter_factor:
+        :param verbose:
         :return:
         """
         self._image_model_class.PointSource.set_save_cache(True)
@@ -149,10 +158,7 @@ class PsfFitting(object):
         """
         return model without including the point source contributions as a list (for each point source individually)
         :param image_model_class: ImageModel class instance
-        :param kwargs_lens: lens model kwargs list
-        :param kwargs_source: source model kwargs list
-        :param kwargs_lens_light: lens light model kwargs list
-        :param kwargs_ps: point source model kwargs list
+        :param kwargs_params: keyword arguments of model component keyword argument lists
         :return: list of images with point source isolated
         """
         # reconstructed model with given psf
@@ -170,7 +176,8 @@ class PsfFitting(object):
             model_single_source_list.append(model_single_source)
         return model_single_source_list
 
-    def _point_sources_list(self, image_model_class, kwargs_ps, kwargs_lens, k=None):
+    @staticmethod
+    def _point_sources_list(image_model_class, kwargs_ps, kwargs_lens, k=None):
         """
 
         :param kwargs_ps:
@@ -206,7 +213,8 @@ class PsfFitting(object):
             kernel_list.append(kernel_deshifted)
         return kernel_list
 
-    def cutout_psf_single(self, x, y, image, mask, kernelsize, kernel_init):
+    @staticmethod
+    def cutout_psf_single(x, y, image, mask, kernelsize, kernel_init):
         """
 
         :param x: x-coordinate of point soure

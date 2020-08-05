@@ -1,9 +1,8 @@
 import copy
-import numpy as np
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
-from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstruction
+from lenstronomy.Analysis.image_reconstruction import check_solver_error
 
 
 class ModelPlot(object):
@@ -272,18 +271,3 @@ class ModelPlot(object):
         """
         plot_band = self._select_band(band_index)
         return plot_band.source(**kwargs)
-
-
-def check_solver_error(image):
-    """
-
-    :param image: numpy array of modelled image from linear inversion
-    :return: bool, True if solver could not find a unique solution, False if solver works
-    """
-    result = np.all(image == 0)
-    if result is True:
-        Warning('Linear inversion of surface brightness components did not result in a unique solution.'
-                'All linear amplitude parameters are set =0 instead. Please check whether '
-                'a) there are too many basis functions in the model, '
-                'or b) some linear basis sets are outside of the image/likelihood mask.')
-    return result

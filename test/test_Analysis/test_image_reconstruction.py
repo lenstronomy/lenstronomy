@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
 import lenstronomy.Util.simulation_util as sim_util
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.Util.param_util as param_util
@@ -32,9 +33,7 @@ class TestMultiBandImageReconstruction(object):
 
         self.kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
         data_class = ImageData(**self.kwargs_data)
-        kwargs_psf_gaussian = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
-        psf_gaussian = PSF(**kwargs_psf_gaussian)
-        self.kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': psf_gaussian.kernel_point_source}
+        self.kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
         psf_class = PSF(**self.kwargs_psf)
 
         # 'EXERNAL_SHEAR': external shear
@@ -90,6 +89,9 @@ class TestMultiBandImageReconstruction(object):
         multi_band = MultiBandImageReconstruction(multi_band_list, self.kwargs_model, self.kwargs_params,
                                                   multi_band_type='single-band')
 
+        multi_band = MultiBandImageReconstruction(multi_band_list, self.kwargs_model, self.kwargs_params,
+                                                  multi_band_type='joint-linear')
+
         image_model, kwargs_params = multi_band.band_setup(band_index=0)
         model = image_model.image(**kwargs_params)
         npt.assert_almost_equal(model, self.kwargs_data['image_data'], decimal=5)
@@ -101,6 +103,31 @@ class TestMultiBandImageReconstruction(object):
 
         bool = check_solver_error(image=np.array([0, 0.1]))
         assert bool == 0
+
+
+class TestRaises(unittest.TestCase):
+
+    def test_no_band(self):
+        """
+        test raise statements if band is not evaluated
+
+        """
+        sigma_bkg = 0.05  # background noise per pixel
+        exp_time = 100  # exposure time (arbitrary units, flux per pixel is in units #photons/exp_time unit)
+        numPix = 10  # cutout pixel size
+        deltaPix = 0.5  # pixel size in arcsec (area per pixel = deltaPix**2)
+        fwhm = 0.5  # full width half max of PSF
+
+        kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, exp_time, sigma_bkg)
+        kwargs_data['image_data'] = np.ones((numPix, numPix))
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'truncation': 5, 'pixel_size': deltaPix}
+        kwargs_numerics = {}
+        multi_band_list = [[kwargs_data, kwargs_psf, kwargs_numerics]]
+        multi_band = MultiBandImageReconstruction(multi_band_list, {}, {},
+                                                  multi_band_type='single-band', kwargs_likelihood={'bands_compute': [False]})
+        with self.assertRaises(ValueError):
+            multi_band.band_setup(band_index=0)
+
 
 
 if __name__ == '__main__':

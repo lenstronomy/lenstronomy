@@ -4,6 +4,7 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+# F160W filter configs
 WFC3_F160W_band_obs = {'exposure_time': 5400.,
               'sky_brightness': 22.3,
               'magnitude_zero_point': 25.96,
@@ -11,6 +12,7 @@ WFC3_F160W_band_obs = {'exposure_time': 5400.,
               'seeing': 0.15,
               'psf_type': 'PIXEL'}
 
+# configs meant to simulate images close to those provided as part of the Time Delay Lens Modeling Challenge
 TDLMC_F160W_band_obs = {'exposure_time': 5400.,
               'sky_brightness': 22.0,
               'magnitude_zero_point': 25.9463,

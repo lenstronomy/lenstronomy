@@ -56,6 +56,8 @@ class TDCosmography(KinematicsAPI):
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """
         predicts the time delays of the image positions given the fiducial cosmology
+        The ordering of the time delays are in the same order as provided in the function call
+        PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)
 
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
@@ -71,6 +73,9 @@ class TDCosmography(KinematicsAPI):
 
     def fermat_potential(self, kwargs_lens, kwargs_ps, original_ps_position=False):
         """
+        Fermat potential of all the image positions in the first point source list entry
+        The ordering of the Fermat potential are in the same order as provided in the function call
+        PointSource.image_position(kwargs_ps, kwargs_lens, original_position=original_ps_position)
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list

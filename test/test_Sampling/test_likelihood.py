@@ -39,7 +39,6 @@ class TestLikelihoodModule(object):
         data_class = ImageData(**kwargs_band)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
-        print(np.shape(psf_class.kernel_point_source), 'test kernel shape -')
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         self.kwargs_lens = [kwargs_spemd]
@@ -97,10 +96,10 @@ class TestLikelihoodModule(object):
                              'image_position_likelihood': True
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
-                            'time_delays_measured': np.ones(4),
-                            'time_delays_uncertainties': np.ones(4),
-                            'flux_ratios': np.ones(4),
-                            'flux_ratio_errors': np.ones(4),
+                            'time_delays_measured': np.ones(len(ra_pos) - 1),
+                            'time_delays_uncertainties': np.ones(len(ra_pos) - 1),
+                            'flux_ratios': np.ones(len(ra_pos) - 1),
+                            'flux_ratio_errors': np.ones(len(ra_pos) - 1),
                             'ra_image_list': ra_pos,
                             'dec_image_list': dec_pos
                             }
@@ -126,26 +125,7 @@ class TestLikelihoodModule(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL = likelihood.logL(args, verbose=True)
-        npt.assert_almost_equal(logL, -3080.29, decimal=-1)
-
-    #def test_solver(self):
-        # make simulation with point source positions in image plane
-    #    x_pos, y_pos = self.imageModel.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
-    #    kwargs_ps = [{'ra_image': x_pos[0], 'dec_image': y_pos[0]}]
-
-    #    kwargs_likelihood = {
-    #                         'source_marg': True,
-    #                         'astrometric_likelihood': True,
-    #                         'position_uncertainty': 0.004,
-    #                         'check_solver': True,
-    #                         'solver_tolerance': 0.001,
-    #                         'check_positive_flux': True,
-    #                         'solver': True
-    #                         }
-
-        #imageModel = ImageModel(self.data_class, self.psf_class, self.lens_model_class, self.source_model_class,
-        #                        self.lens_light_model_class,
-        #                        point_source_class, kwargs_numerics=kwargs_numerics)
+        npt.assert_almost_equal(logL, -1277.11, decimal=-1)
 
     def test_force_positive_source_surface_brightness(self):
         kwargs_likelihood = {'force_minimum_source_surface_brightness': True}

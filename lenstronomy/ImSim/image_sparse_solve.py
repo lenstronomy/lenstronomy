@@ -36,10 +36,6 @@ class ImageSparseFit(ImageFit):
         :param kwargs_sparse_solver: keyword arguments passed to `SparseSolverSource`/`SparseSolverSourceLens`/`SparseSolverSourcePS` module of SLITronomy
         being applied to the point sources.
         """
-        if kwargs_numerics.get('supersampling_factor', 1) > 1 and kwargs_sparse_solver.get('source_interpolation', 'bilinear') == 'bilinear':
-            print("WARNING: sparse solver not yet compatible with supersampling of image plane (with bilinear interpolation in source plane). Set to 1 instead!")
-            kwargs_numerics['supersampling_factor'] = 1
-
         super(ImageSparseFit, self).__init__(data_class, psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,

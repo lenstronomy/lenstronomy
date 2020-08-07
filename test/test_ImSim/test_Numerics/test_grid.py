@@ -73,8 +73,23 @@ class TestAdaptiveGrid(object):
 class TestRegularGrid(object):
 
     def setup(self):
-        pass
+        self._deltaPix = 1.
+        transform_pix2angle = np.array([[1, 0], [0, 1]]) * self._deltaPix
+        ra_at_xy_0, dec_at_xy_0 = -5, -5
+        nx, ny = 11, 11
+        self._supersampling_factor = 4
+        self.nx, self.ny = nx, ny
+        self._regular_grid = RegularGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, 
+                                         supersampling_factor=self._supersampling_factor)
 
+    def test_effective_pixel_width(self):
+        deltaPix = self._regular_grid.effective_pixel_width
+        assert deltaPix == self._deltaPix / self._supersampling_factor
+
+    def test_effective_num_pixel_axes(self):
+        nx, ny = self._regular_grid.effective_num_pixel_axes
+        assert nx == self.nx * self._supersampling_factor
+        assert ny == self.ny * self._supersampling_factor
 
 if __name__ == '__main__':
     pytest.main()

@@ -13,7 +13,7 @@ class ImageLikelihood(object):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
-        ImageModel(), Multiband(), MulitExposure()
+        ImageModel(), Multiband(), MultiExposure()
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
@@ -27,8 +27,7 @@ class ImageLikelihood(object):
         """
 
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                 bands_compute=bands_compute, likelihood_mask_list=likelihood_mask_list,
-                                                 band_index=0)
+                                                 bands_compute=bands_compute, likelihood_mask_list=likelihood_mask_list)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior
@@ -40,11 +39,13 @@ class ImageLikelihood(object):
              kwargs_extinction=None):
         """
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_lens: lens model keyword argument list according to LensModel module
+        :param kwargs_source: source light keyword argument list according to LightModel module
+        :param kwargs_lens_light: deflector light (not lensed) keyword argument list according to LightModel module
+        :param kwargs_ps: point source keyword argument list according to PointSource module
+        :param kwargs_special: special keyword argument list as part of the Param module
+        :param kwargs_extinction: extinction parameter keyword argument list according to LightModel module
+        :return: log likelihood of the data given the model
         """
 
         logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,

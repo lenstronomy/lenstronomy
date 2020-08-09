@@ -477,15 +477,6 @@ class Param(object):
         else:
             return 0
 
-    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
-        pos_bool_ps = self.pointSourceParams.check_positive_flux(kwargs_ps)
-        pos_bool_source = self.souceParams.check_positive_flux_profile(kwargs_source)
-        pos_bool_lens_light = self.lensLightParams.check_positive_flux_profile(kwargs_lens_light)
-        if pos_bool_ps is True and pos_bool_source is True and pos_bool_lens_light is True:
-            return True
-        else:
-            return False
-
     def print_setting(self):
         """
         prints the setting of the parameter class

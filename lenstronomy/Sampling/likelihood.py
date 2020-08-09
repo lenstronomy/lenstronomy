@@ -25,7 +25,7 @@ class LikelihoodModule(object):
                  source_position_tolerance=0.001, source_position_sigma=0.001, force_no_add_image=False,
                  source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
-                 force_minimum_source_surface_brightness=False, flux_min=0, image_likelihood_mask_list=None,
+                 image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
                  prior_extinction=[], prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[],
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
@@ -63,8 +63,6 @@ class LikelihoodModule(object):
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
-        :param force_minimum_source_surface_brightness: bool, if True, evaluates the source surface brightness on a grid
-        and evaluates if all positions have positive flux
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
@@ -95,8 +93,7 @@ class LikelihoodModule(object):
             self.image_likelihood = ImageLikelihood(multi_band_list, image_type, kwargs_model, bands_compute=bands_compute,
                                                     likelihood_mask_list=image_likelihood_mask_list,
                                                     source_marg=source_marg, linear_prior=linear_prior,
-                                                    force_minimum_source_surface_brightness=force_minimum_source_surface_brightness,
-                                                    flux_min=flux_min, check_positive_flux=check_positive_flux)
+                                                    check_positive_flux=check_positive_flux)
         self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
                                                        image_position_likelihood=image_position_likelihood,
                                                        source_position_likelihood=source_position_likelihood,
@@ -119,7 +116,8 @@ class LikelihoodModule(object):
 
     @staticmethod
     def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
-                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[], dec_image_list=[]):
+                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[],
+                     dec_image_list=[]):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]

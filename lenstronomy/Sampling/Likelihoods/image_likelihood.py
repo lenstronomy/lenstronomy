@@ -8,8 +8,7 @@ class ImageLikelihood(object):
     """
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
-                 source_marg=False, linear_prior=None, force_minimum_source_surface_brightness=False, flux_min=0,
-                 check_positive_flux=False):
+                 source_marg=False, linear_prior=None, check_positive_flux=False):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
@@ -31,8 +30,6 @@ class ImageLikelihood(object):
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior
-        self._force_minimum_source_surface_brightness = force_minimum_source_surface_brightness
-        self._flux_min = flux_min
         self._check_positive_flux = check_positive_flux
 
     def logL(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None, kwargs_special=None,
@@ -53,23 +50,9 @@ class ImageLikelihood(object):
                                                       source_marg=self._source_marg, linear_prior=self._linear_prior,
                                                       check_positive_flux=self._check_positive_flux)
 
-        if self._force_minimum_source_surface_brightness is True and len(kwargs_source) > 0:
-            bool = self._check_minimum_source_flux(kwargs_lens, kwargs_source)
-            if bool is True:
-                logL -= 10 ** 10
         if np.isnan(logL) is True:
             return -10 ** 15
         return logL
-
-    def _check_minimum_source_flux(self, kwargs_lens, kwargs_source):
-        # TODO make this accessible to multi-band or remove it
-        if self._model_type in ['single-band']:
-            flux = self.imSim.source_surface_brightness(kwargs_source, kwargs_lens=kwargs_lens, unconvolved=True)
-            if np.min(flux) < self._flux_min:
-                return True
-        else:
-            raise ValueError("check_mimimum source flux not supported for modelling type %s." % self._model_type)
-        return False
 
     @property
     def num_data(self):

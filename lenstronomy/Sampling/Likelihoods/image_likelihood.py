@@ -16,7 +16,7 @@ class ImageLikelihood(object):
         ImageModel(), Multiband(), MultiExposure()
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
-        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the infered
+        :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred
         linear coefficients
         :param linear_prior: float or list of floats (when multi-linear setting is chosen) indicating the range of
         linear amplitude priors when computing the marginalization term.
@@ -50,7 +50,8 @@ class ImageLikelihood(object):
 
         logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                       kwargs_extinction=kwargs_extinction, kwargs_special=kwargs_special,
-                                                      source_marg=self._source_marg, linear_prior=self._linear_prior)
+                                                      source_marg=self._source_marg, linear_prior=self._linear_prior,
+                                                      check_positive_flux=self._check_positive_flux)
 
         if self._force_minimum_source_surface_brightness is True and len(kwargs_source) > 0:
             bool = self._check_minimum_source_flux(kwargs_lens, kwargs_source)
@@ -61,6 +62,7 @@ class ImageLikelihood(object):
         return logL
 
     def _check_minimum_source_flux(self, kwargs_lens, kwargs_source):
+        # TODO make this accessible to multi-band or remove it
         if self._model_type in ['single-band']:
             flux = self.imSim.source_surface_brightness(kwargs_source, kwargs_lens=kwargs_lens, unconvolved=True)
             if np.min(flux) < self._flux_min:

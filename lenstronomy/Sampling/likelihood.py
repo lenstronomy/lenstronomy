@@ -110,7 +110,6 @@ class LikelihoodModule(object):
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, flux_ratios, flux_ratio_errors,
                                                              **self._kwargs_flux_compute)
-        self._check_positive_flux = check_positive_flux
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
 
@@ -168,12 +167,6 @@ class LikelihoodModule(object):
             logL += logL_time_delay
             if verbose is True:
                 print('time-delay logL = %s' % logL_time_delay)
-        if self._check_positive_flux is True:
-            bool = self.param.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-            if bool is False:
-                logL -= 10**5
-                if verbose is True:
-                    print('non-positive surface brightness parameters detected!')
         if self._flux_ratio_likelihood is True:
             ra_image_list, dec_image_list = self.PointSource.image_position(kwargs_ps=kwargs_ps,
                                                                             kwargs_lens=kwargs_lens)

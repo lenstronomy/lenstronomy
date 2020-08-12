@@ -21,7 +21,7 @@ class KinematicsAPI(object):
                  lens_model_kinematics_bool=None, light_model_kinematics_bool=None, multi_observations=False,
                  kwargs_numerics_galkin=None, analytic_kinematics=False, Hernquist_approx=False, MGE_light=False,
                  MGE_mass=False, kwargs_mge_light=None, kwargs_mge_mass=None, sampling_number=1000,
-                 num_kin_sampling=1000, num_psf_sampling=100, kwargs_lens_eq_solver={}):
+                 num_kin_sampling=1000, num_psf_sampling=100, kwargs_lens_eqn_solver={}):
         """
 
         :param z_lens: redshift of lens
@@ -58,7 +58,7 @@ class KinematicsAPI(object):
         self._kwargs_aperture_kin = kwargs_aperture
         self._kwargs_psf_kin = kwargs_seeing
         self.lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
-        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model, **kwargs_lens_eq_solver)
+        self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource, extinction_class = class_creator.create_class_instances(all_models=True, **kwargs_model,kwargs_lens_eqn_solver=kwargs_lens_eqn_solver)
         self._lensLightProfile = LightProfileAnalysis(light_model=self.LensLightModel)
         self._lensMassProfile = LensProfileAnalysis(lens_model=self.LensModel)
         self._lens_light_model_list = self.LensLightModel.profile_type_list

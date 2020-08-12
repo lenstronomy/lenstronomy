@@ -468,7 +468,7 @@ class Param(object):
         test whether the image positions map back to the same source position
         :param kwargs_lens:
         :param kwargs_ps:
-        :return: Euclidean distance between the rayshooting of the image positions
+        :return: Euclidean distance between the ray-shooting of the image positions
         """
         if self._solver is True:
             image_x, image_y = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']

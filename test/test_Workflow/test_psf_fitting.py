@@ -102,7 +102,7 @@ class TestImageModel(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        kwargs_psf_iter = {'stacking_method': 'median'}
+        kwargs_psf_iter = {'stacking_method': 'median', 'symmetry_error': True}
         #mag = np.ones_like(x_pos)
 
         kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_params, **kwargs_psf_iter)
@@ -141,7 +141,7 @@ class TestImageModel(object):
         assert diff_new < 0.01
 
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, kwargs_params, num_iter=3,
-                                                           no_break=True)
+                                                           no_break=True, keep_psf_error_map=True)
         kernel_new = kwargs_psf_new['kernel_point_source']
         kernel_true = self.kwargs_psf['kernel_point_source']
         kernel_old = kwargs_psf['kernel_point_source']

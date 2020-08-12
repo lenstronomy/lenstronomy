@@ -54,7 +54,7 @@ y_band_obs = {'exposure_time': 15.,
 :keyword num_exposures: number of exposures that are combined (depends on coadd_years)
     when coadd_years = 10: num_exposures is baseline num of visits over 10 years (x2 since 2x15s exposures per visit)
 :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+:keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
 """
 
 

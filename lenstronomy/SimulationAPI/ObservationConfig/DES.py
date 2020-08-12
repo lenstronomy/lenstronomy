@@ -45,7 +45,7 @@ Y_band_obs = {'exposure_time': 45.,
 :keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
 :keyword num_exposures: number of exposures that are combined (depends on coadd_years)  
 :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported) 
+:keyword psf_type: string, type of PSF ('GAUSSIAN' supported) 
 """
 
 class DES(object):
@@ -57,7 +57,7 @@ class DES(object):
 
         :param band: string, 'g', 'r', 'i', 'z', or 'Y' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 3.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 1-6.
         """
         if band == 'g':
             self.obs = g_band_obs

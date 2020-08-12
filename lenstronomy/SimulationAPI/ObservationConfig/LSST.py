@@ -4,6 +4,13 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+u_band_obs = {'exposure_time': 15.,
+              'sky_brightness': 22.99,
+              'magnitude_zero_point': 26.5,
+              'num_exposures': 140,
+              'seeing': 0.81,
+              'psf_type': 'GAUSSIAN'}
+
 g_band_obs = {'exposure_time': 15.,
               'sky_brightness': 22.26,
               'magnitude_zero_point': 28.30,
@@ -25,6 +32,21 @@ i_band_obs = {'exposure_time': 15.,
               'seeing': 0.71,
               'psf_type': 'GAUSSIAN'}
 
+z_band_obs = {'exposure_time': 15.,
+              'sky_brightness': 19.6,
+              'magnitude_zero_point': 27.40,
+              'num_exposures': 400,
+              'seeing': 0.69,
+              'psf_type': 'GAUSSIAN'}
+
+y_band_obs = {'exposure_time': 15.,
+              'sky_brightness': 18.61,
+              'magnitude_zero_point': 26.58,
+              'num_exposures': 400,
+              'seeing': 0.68,
+              'psf_type': 'GAUSSIAN'}
+
+
 """
 :keyword exposure_time: exposure time per image (in seconds)
 :keyword sky_brightness: sky brightness (in magnitude per square arcseconds in units of electrons)
@@ -32,7 +54,7 @@ i_band_obs = {'exposure_time': 15.,
 :keyword num_exposures: number of exposures that are combined (depends on coadd_years)
     when coadd_years = 10: num_exposures is baseline num of visits over 10 years (x2 since 2x15s exposures per visit)
 :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported)
+:keyword psf_type: string, type of PSF ('GAUSSIAN' supported)
 """
 
 
@@ -44,18 +66,26 @@ class LSST(object):
     def __init__(self, band='g', psf_type='GAUSSIAN', coadd_years=10):
         """
 
-        :param band: string, 'g', 'r', or 'i' supported. Determines obs dictionary.
+        :param band: string, 'u', 'g', 'r', 'i', 'z' or 'y' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
         :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 10.
         """
+        if band.isalpha():
+            band = band.lower()
         if band == 'g':
             self.obs = g_band_obs
         elif band == 'r':
             self.obs = r_band_obs
         elif band == 'i':
             self.obs = i_band_obs
+        elif band == 'u':
+            self.obs = u_band_obs
+        elif band == 'z':
+            self.obs = z_band_obs
+        elif band == 'y':
+            self.obs = y_band_obs
         else:
-            raise ValueError("band %s not supported! Choose 'g', 'r', or 'i'." % band)
+            raise ValueError("band %s not supported! Choose 'u', 'g', 'r', 'i', 'z' or 'y'." % band)
 
         if psf_type != 'GAUSSIAN':
             raise ValueError("psf_type %s not supported!" % psf_type)

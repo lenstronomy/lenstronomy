@@ -91,5 +91,9 @@ class TestRegularGrid(object):
         assert nx == self.nx * self._supersampling_factor
         assert ny == self.ny * self._supersampling_factor
 
+    def test_supersampling_factor(self):
+        ssf = self._regular_grid.supersampling_factor
+        assert ssf == self._supersampling_factor
+
 if __name__ == '__main__':
     pytest.main()

@@ -68,12 +68,12 @@ class NumericsSubFrame(PointSourceRendering):
         return self._complete_frame(image_sub_frame)
 
     @property
-    def supersampling_factor(self):
+    def grid_supersampling_factor(self):
         """
 
         :return: supersampling factor set for higher resolution sub-pixel sampling of surface brightness
         """
-        return self._numerics_subframe.supersampling_factor
+        return self._numerics_subframe.grid_supersampling_factor
 
     @property
     def coordinates_evaluate(self):

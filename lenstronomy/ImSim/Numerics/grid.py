@@ -208,6 +208,13 @@ class RegularGrid(Coordinates1D):
         """
         return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
 
+    @property
+    def supersampling_factor(self):
+        """
+        :return: factor (per axis) of super-sampling
+        """
+        return self._supersampling_factor
+
     def flux_array2image_low_high(self, flux_array, **kwargs):
         """
 

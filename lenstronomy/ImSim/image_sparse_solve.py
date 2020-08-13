@@ -42,14 +42,10 @@ class ImageSparseFit(ImageFit):
                                              point_source_class=point_source_class, extinction_class=extinction_class, 
                                              kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
                                              psf_error_map_bool_list=psf_error_map_bool_list)
+
+        self._setup_source_numerics(kwargs_numerics, kwargs_sparse_solver)
+        #self._setup_source_numerics_alt(kwargs_numerics, self._supersampling_factor_source)
         
-        self._subgrid_res_source = kwargs_sparse_solver.get('subgrid_res_source', 1)
-        self.SourceNumerics = self._setup_source_numerics(kwargs_numerics, self._subgrid_res_source)
-        # self.SourceNumerics = self._setup_source_numerics_alt(kwargs_numerics, self._subgrid_res_source)
-
-        # TODO : implement support for numba convolution
-        # current implementation of lenstronomy does not allow access to the convolution_class through self.ImageNumerics
-
         self._no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
         self._no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)
 
@@ -305,8 +301,8 @@ class ImageSparseFit(ImageFit):
 
     def update_fixed_param(self, kwargs_source, kwargs_lens_light):
         # in case the source plane grid size has changed, update the kwargs accordingly
-        kwargs_source[0]['n_pixels'] = int(self.Data.num_pixel * self._subgrid_res_source**2)  # effective number of pixels in source plane
-        kwargs_source[0]['scale'] = self.Data.pixel_width / self._subgrid_res_source        # effective pixel size of source plane grid
+        kwargs_source[0]['n_pixels'] = int(self.Data.num_pixel * self._supersampling_factor_source**2)  # effective number of pixels in source plane
+        kwargs_source[0]['scale'] = self.Data.pixel_width / self._supersampling_factor_source        # effective pixel size of source plane grid
         # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0), center of the image
         kwargs_source[0]['center_x'] = 0
         kwargs_source[0]['center_y'] = 0
@@ -318,14 +314,16 @@ class ImageSparseFit(ImageFit):
             kwargs_lens_light[0]['center_y'] = 0
         return kwargs_source, kwargs_lens_light
 
-    def _setup_source_numerics(self, kwargs_numerics, subgrid_res_source):
+    def _setup_source_numerics(self, kwargs_numerics, kwargs_sparse_solver):
         """define a new numerics class specifically for source plane, that may have a different resolution"""
         from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
-        # numerics for source plane has a different supersampling resolution
+        supersampling_factor_source = kwargs_sparse_solver.pop('supersampling_factor_source', 1)
+        # numerics for source plane may have a different supersampling resolution
         kwargs_numerics_source = kwargs_numerics.copy()
-        kwargs_numerics_source['supersampling_factor'] = subgrid_res_source
+        kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source
         kwargs_numerics_source['compute_mode'] = 'regular'
-        return NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        self.SourceNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        self._supersampling_factor_source = supersampling_factor_source
 
     # def _setup_source_numerics_alt(self, kwargs_numerics, subgrid_res_source):
     #     """define a new numerics class specifically for source plane, that may have a different resolution"""

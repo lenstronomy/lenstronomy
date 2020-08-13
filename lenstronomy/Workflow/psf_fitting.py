@@ -43,24 +43,33 @@ class PsfFitting(object):
         self._image_model_class = image_model_class
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median',
-                 psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
+                 psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0, symmetry_error=False):
         """
 
-        :param kwargs_data:
-        :param kwargs_psf:
-        :param kwargs_options:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_psf: keyword arguments to construct the PSF() class
+        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
+        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+         The choices are:
+         'mean': mean of pixel values as the estimator (not robust to outliers)
+         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
+         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
+         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
+         limited constraints/number of point sources in the image.
+        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
+        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
+         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
+         contaminate the estimate.
+        :param symmetry_error: boolean, if True, applies an additional variance term from the rotational symmetry
+         differences of the stacking
+        :return: kwargs_psf_new, logL_after, error_map
         """
+
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
-        #kwargs_numerics_psf['psf_error_map'] = False
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
         if 'psf_error_map' in kwargs_psf_copy:
@@ -75,8 +84,9 @@ class PsfFitting(object):
         point_source_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list, kernel_size, kernel_old, block_center_neighbour=block_center_neighbour)
 
         kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
-                                                 sigma_bkg=self._image_model_class.Data.background_rms, factor=psf_iter_factor,
-                                                 stacking_option=stacking_method, symmetry=psf_symmetry)
+                                                 sigma_bkg=self._image_model_class.Data.background_rms,
+                                                 factor=psf_iter_factor, stacking_option=stacking_method,
+                                                 symmetry=psf_symmetry, symmetry_error=symmetry_error)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
@@ -88,18 +98,31 @@ class PsfFitting(object):
         return kwargs_psf_new, logL_after, error_map
 
     def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, no_break=True, stacking_method='median',
-                         block_center_neighbour=0, keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=0.2,
-                         verbose=True):
+                         block_center_neighbour=0, keep_psf_error_map=True, psf_symmetry=1, symmetry_error=False,
+                         psf_iter_factor=0.2, verbose=True):
         """
 
-        :param kwargs_data:
-        :param kwargs_psf:
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :param factor:
-        :param num_iter:
+        :param kwargs_psf: keyword arguments to construct the PSF() class
+        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
+        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+         The choices are:
+         'mean': mean of pixel values as the estimator (not robust to outliers)
+         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+        :param num_iter: number of iterations in the PSF fitting and image fitting process
+        :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
+         reads out the overall best fit
+        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
+         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
+         contaminate the estimate.
+        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
+        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
+         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
+         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
+         limited constraints/number of point sources in the image.
+        :param symmetry_error: boolean, if True, applies an additional variance term from the rotational symmetry
+         differences of the stacking
+        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
+        :param verbose:
         :return:
         """
         self._image_model_class.PointSource.set_save_cache(True)
@@ -124,7 +147,8 @@ class PsfFitting(object):
                                                                     stacking_method=stacking_method,
                                                                     psf_symmetry=psf_symmetry,
                                                                     psf_iter_factor=psf_iter_factor,
-                                                                    block_center_neighbour=block_center_neighbour)
+                                                                    block_center_neighbour=block_center_neighbour,
+                                                                    symmetry_error=symmetry_error)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -149,10 +173,7 @@ class PsfFitting(object):
         """
         return model without including the point source contributions as a list (for each point source individually)
         :param image_model_class: ImageModel class instance
-        :param kwargs_lens: lens model kwargs list
-        :param kwargs_source: source model kwargs list
-        :param kwargs_lens_light: lens light model kwargs list
-        :param kwargs_ps: point source model kwargs list
+        :param kwargs_params: keyword arguments of model component keyword argument lists
         :return: list of images with point source isolated
         """
         # reconstructed model with given psf
@@ -170,7 +191,8 @@ class PsfFitting(object):
             model_single_source_list.append(model_single_source)
         return model_single_source_list
 
-    def _point_sources_list(self, image_model_class, kwargs_ps, kwargs_lens, k=None):
+    @staticmethod
+    def _point_sources_list(image_model_class, kwargs_ps, kwargs_lens, k=None):
         """
 
         :param kwargs_ps:
@@ -206,7 +228,8 @@ class PsfFitting(object):
             kernel_list.append(kernel_deshifted)
         return kernel_list
 
-    def cutout_psf_single(self, x, y, image, mask, kernelsize, kernel_init):
+    @staticmethod
+    def cutout_psf_single(x, y, image, mask, kernelsize, kernel_init):
         """
 
         :param x: x-coordinate of point soure
@@ -247,7 +270,8 @@ class PsfFitting(object):
         return kernel_deshifted
 
     @staticmethod
-    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1., stacking_option='median', symmetry=1):
+    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1., stacking_option='median', symmetry=1,
+                    symmetry_error=False):
         """
         updates psf estimate based on old kernel and several new estimates
         :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image
@@ -257,6 +281,8 @@ class PsfFitting(object):
         factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
         :param symmetry: imposed symmetry of PSF estimate
+        :param symmetry_error: boolean, if True, applies an additional variance term from the rotational symmetry
+         differences of the stacking
         :return: updated PSF estimate and error_map associated with it
         """
 
@@ -264,23 +290,25 @@ class PsfFitting(object):
         angle = 360. / symmetry
         kernelsize = len(kernel_old)
         kernel_list = np.zeros((n, kernelsize, kernelsize))
+        kernel_list_sym_stack = np.zeros((symmetry, kernelsize, kernelsize))
         i = 0
         for kernel_new in kernel_list_new:
             for k in range(symmetry):
                 kernel_rotated = image_util.rotateImage(kernel_new, angle * k)
                 kernel_norm = kernel_util.kernel_norm(kernel_rotated)
                 kernel_list[i, :, :] = kernel_norm
+                kernel_list_sym_stack[k, :, :] += kernel_norm
                 i += 1
 
         kernel_old_rotated = np.zeros((symmetry, kernelsize, kernelsize))
         for i in range(symmetry):
             kernel_old_rotated[i, :, :] = kernel_old
 
-        kernel_list_new = np.append(kernel_list, kernel_old_rotated, axis=0)
+        kernel_list_new_extended = np.append(kernel_list, kernel_old_rotated, axis=0)
         if stacking_option == 'median':
-            kernel_new = np.median(kernel_list_new, axis=0)
+            kernel_new = np.median(kernel_list_new_extended, axis=0)
         elif stacking_option == 'mean':
-            kernel_new = np.mean(kernel_list_new, axis=0)
+            kernel_new = np.mean(kernel_list_new_extended, axis=0)
         else:
             raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
         kernel_new[kernel_new < 0] = 0
@@ -289,7 +317,10 @@ class PsfFitting(object):
 
         kernel_bkg = copy.deepcopy(kernel_return)
         kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
-        error_map = np.var(kernel_list_new, axis=0) / kernel_bkg**2 / 2.
+        error_map = np.var(kernel_list_new_extended, axis=0) / kernel_bkg**2 / 2.
+        if symmetry_error is True:
+            error_map_sym = np.var(kernel_list_sym_stack, axis=0) / kernel_bkg**2 / 2.
+            error_map += error_map_sym
         return kernel_return, error_map
 
     @staticmethod

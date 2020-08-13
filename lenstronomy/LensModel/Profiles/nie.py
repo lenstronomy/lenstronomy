@@ -13,7 +13,7 @@ class NIE(LensProfileBase):
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': -0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
+    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': 0.5, 's_scale': 100, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.nie_major_axis = NIEMajorAxis()

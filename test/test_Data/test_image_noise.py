@@ -50,6 +50,16 @@ class TestData(object):
         exp_map = noise.exposure_map
         assert exp_map > 0
 
+    def test_gradient_boost(self):
+        kwargs_noise = {'image_data': np.zeros((self.numPix, self.numPix)), 'exposure_time': 1000000000000, 'background_rms': 1,
+                        'noise_map': None, 'gradient_boost_factor': 1., 'verbose': True}
+        noise = ImageNoise(**kwargs_noise)
+        model = np.zeros((self.numPix, self.numPix))
+        CD_zero = noise.C_D_model(model)
+
+        model = np.ones((self.numPix, self.numPix))
+        CD_one = noise.C_D_model(model)
+        npt.assert_almost_equal(CD_zero, CD_one)
 
 class TestRaise(unittest.TestCase):
 

@@ -15,9 +15,11 @@ class TestPositionLikelihood(object):
         lensModel = LensModel(lens_model_list=['SIE'])
         solver = LensEquationSolver(lensModel=lensModel)
         self._kwargs_lens = [{'theta_E': 1, 'e1': 0.1, 'e2': -0.03, 'center_x': 0, 'center_y': 0}]
-        x_pos, y_pos = solver.image_position_from_source(sourcePos_x=0.01, sourcePos_y=-0.01, kwargs_lens=self._kwargs_lens)
+        self.kwargs_lens_eqn_solver = {'min_distance': 0.1, 'search_window': 10}
+        x_pos, y_pos = solver.image_position_from_source(sourcePos_x=0.01, sourcePos_y=-0.01, kwargs_lens=self._kwargs_lens, **self.kwargs_lens_eqn_solver)
 
-        point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], lensModel=lensModel)
+        point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], lensModel=lensModel,
+                                         kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver)
         self.likelihood = PositionLikelihood(point_source_class, image_position_uncertainty=0.005, astrometric_likelihood=True,
                                              image_position_likelihood=True, ra_image_list=[x_pos], dec_image_list=[y_pos],
                                              source_position_likelihood=True, check_matched_source_position=False, source_position_tolerance=0.001, force_no_add_image=False,
@@ -51,13 +53,13 @@ class TestPositionLikelihood(object):
 
     def test_check_additional_images(self):
         point_source_class = PointSource(point_source_type_list=['LENSED_POSITION'], additional_images_list=[True],
-                                         lensModel=LensModel(lens_model_list=['SIE']))
+                                         lensModel=LensModel(lens_model_list=['SIE']),
+                                         kwargs_lens_eqn_solver=self.kwargs_lens_eqn_solver)
         likelihood = PositionLikelihood(point_source_class)
 
         kwargs_ps = [{'ra_image': self._x_pos, 'dec_image': self._y_pos}]
         bool = likelihood.check_additional_images(kwargs_ps, self._kwargs_lens)
         assert bool is False
-
         kwargs_ps = [{'ra_image': self._x_pos[1:], 'dec_image': self._y_pos[1:]}]
         bool = likelihood.check_additional_images(kwargs_ps, self._kwargs_lens)
         assert bool is True

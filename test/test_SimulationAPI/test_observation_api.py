@@ -97,12 +97,6 @@ class TestRaise(unittest.TestCase):
             band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
                               sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
                               data_count_unit='ADU', background_noise=None)
-            out = band.read_noise
-
-        with self.assertRaises(ValueError):
-            band = SingleBand(pixel_scale=1, exposure_time=1, magnitude_zero_point=1, read_noise=None, ccd_gain=None,
-                              sky_brightness=None, seeing=None, num_exposures=1, psf_type='GAUSSIAN', kernel_point_source=None,
-                              data_count_unit='ADU', background_noise=None)
             out = band.background_noise
 
 
@@ -126,17 +120,11 @@ class TestData(object):
         self.data_adu = SingleBand(data_count_unit='ADU', **self.kwargs_data)
         self.data_e_ = SingleBand(data_count_unit='e-', **self.kwargs_data)
 
-    def test_read_noise(self):
-        read_noise_adu = self.data_adu.read_noise
-        read_noise_e = self.data_e_.read_noise
-        assert read_noise_e == self.read_noise
-        assert read_noise_adu == read_noise_e / self.ccd_gain
-
     def test_sky_brightness(self):
         sky_adu = self.data_adu.sky_brightness
         sky_e_ = self.data_e_.sky_brightness
         assert sky_e_ == sky_adu * self.ccd_gain
-        npt.assert_almost_equal(sky_adu, 2.51188643150958, decimal=6)
+        npt.assert_almost_equal(sky_adu, 0.627971607877395, decimal=6)
 
     def test_background_noise(self):
         bkg_adu = self.data_adu.background_noise
@@ -174,29 +162,26 @@ class TestData(object):
 
     def test_magnitude2cps(self):
         mag_0 = self.data_adu.magnitude2cps(magnitude=self.magnitude_zero_point)
-        npt.assert_almost_equal(mag_0, 1, decimal=10)
+        npt.assert_almost_equal(mag_0, 1./self.ccd_gain, decimal=10)
         mag_0_e_ = self.data_e_.magnitude2cps(magnitude=self.magnitude_zero_point)
-        npt.assert_almost_equal(mag_0_e_, self.ccd_gain, decimal=10)
+        npt.assert_almost_equal(mag_0_e_, 1, decimal=10)
 
         mag_0 = self.data_adu.magnitude2cps(magnitude=self.magnitude_zero_point+1)
-        npt.assert_almost_equal(mag_0, 0.3981071705534972, decimal=10)
+        npt.assert_almost_equal(mag_0, 0.0995267926383743, decimal=10)
 
         mag_0 = self.data_adu.magnitude2cps(magnitude=self.magnitude_zero_point - 1)
-        npt.assert_almost_equal(mag_0, 2.51188643150958, decimal=10)
+        npt.assert_almost_equal(mag_0, 0.627971607877395, decimal=10)
 
-    def test_scaled_exposure_time(self):
-        exp_time_adu = self.data_adu.scaled_exposure_time
-        exp_time_e_ = self.data_e_.scaled_exposure_time
+    def test_flux_iid(self):
+        flux_iid_adu = self.data_adu.flux_iid(flux_per_second=1)
+        flux_iid_e = self.data_e_.flux_iid(flux_per_second=1)
+        npt.assert_almost_equal(flux_iid_e, flux_iid_adu / self.ccd_gain, decimal=6)
 
         flux_adu = 10
         flux_e_ = flux_adu * self.ccd_gain
         noise_e_ = self.data_e_.flux_noise(flux_e_)
-        noise_e_new = np.sqrt(flux_e_ / exp_time_e_)
-        npt.assert_almost_equal(noise_e_new, noise_e_, decimal=8)
-
-        noise = self.data_adu.flux_noise(flux_adu)
-        noise_new = np.sqrt(flux_adu / exp_time_adu)
-        npt.assert_almost_equal(noise_new, noise, decimal=8)
+        noise_adu = self.data_adu.flux_noise(flux_adu)
+        npt.assert_almost_equal(noise_e_/self.ccd_gain, noise_adu, decimal=8)
 
     def test_psf_type(self):
         assert self.data_adu._psf_type == 'GAUSSIAN'

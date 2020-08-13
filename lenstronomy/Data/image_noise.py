@@ -1,4 +1,5 @@
 import numpy as np
+from lenstronomy.Util import image_util
 
 
 class ImageNoise(object):
@@ -6,7 +7,8 @@ class ImageNoise(object):
     class that deals with noise properties of imaging data
     """
 
-    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, verbose=True):
+    def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
+                 gradient_boost_factor=None, verbose=True):
         """
 
         :param image_data: numpy array, pixel data values
@@ -15,6 +17,8 @@ class ImageNoise(object):
         :param background_rms: root-mean-square value of Gaussian background noise
         :param noise_map: int or array of size the data; joint noise sqrt(variance) of each individual pixel.
         Overwrites meaning of background_rms and exposure_time.
+        :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
+         gradient^2 * gradient_boost_factor
         """
         if exposure_time is not None:
             # make sure no negative exposure values are present no dividing by zero
@@ -35,6 +39,7 @@ class ImageNoise(object):
                           " error function for a Poisson distribution with mean < 1." % (
                         background_rms * np.max(exposure_time)))
         self._data = image_data
+        self._gradient_boost_factor = gradient_boost_factor
 
     @property
     def background_rms(self):
@@ -74,7 +79,7 @@ class ImageNoise(object):
             if self._noise_map is not None:
                 self._C_D = self._noise_map ** 2
             else:
-                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map)
+                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map, self._gradient_boost_factor)
         return self._C_D
 
     def C_D_model(self, model):
@@ -86,10 +91,10 @@ class ImageNoise(object):
         if self._noise_map is not None:
             return self._noise_map ** 2
         else:
-            return covariance_matrix(model, self._background_rms, self._exp_map)
+            return covariance_matrix(model, self._background_rms, self._exp_map, self._gradient_boost_factor)
 
 
-def covariance_matrix(data, background_rms, exposure_map):
+def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=None):
     """
     returns a diagonal matrix for the covariance estimation which describes the error
 
@@ -105,9 +110,15 @@ def covariance_matrix(data, background_rms, exposure_map):
     :param data: data array, eg in units of photons/second
     :param background_rms: background noise rms, eg. in units (photons/second)^2
     :param exposure_map: exposure time per pixel, e.g. in units of seconds
+    :param gradient_boost_factor: None or float, variance terms added in quadrature scaling with
+         gradient^2 * gradient_boost_factor
     :return: len(d) x len(d) matrix that give the error of background and Poisson components; (photons/second)^2
     """
+    if gradient_boost_factor is not None:
+        gradient_map = image_util.gradient_map(data) * gradient_boost_factor
+    else:
+        gradient_map = 0
     d_pos = np.zeros_like(data)
     d_pos[data >= 0] = data[data >= 0]
-    sigma = d_pos / exposure_map + background_rms ** 2
+    sigma = d_pos / exposure_map + background_rms ** 2 + gradient_map ** 2
     return sigma

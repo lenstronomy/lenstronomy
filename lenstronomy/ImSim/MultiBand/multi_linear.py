@@ -66,7 +66,8 @@ class MultiLinear(MultiDataBase):
         return wls_list, error_map_list, cov_param_list, param_list
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
+                                    check_positive_flux=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -74,6 +75,8 @@ class MultiLinear(MultiDataBase):
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
+        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
+         components and applies a punishment in the likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         # generate image
@@ -86,5 +89,6 @@ class MultiLinear(MultiDataBase):
                                                                              kwargs_lens_light, kwargs_ps,
                                                                              kwargs_extinction, kwargs_special,
                                                                              source_marg=source_marg,
-                                                                             linear_prior=linear_prior[i])
+                                                                             linear_prior=linear_prior[i],
+                                                                             check_positive_flux=check_positive_flux)
         return logL

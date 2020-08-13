@@ -3,40 +3,44 @@ import lenstronomy.Util.util as util
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Plots import plot_util
+from lenstronomy.Analysis.image_reconstruction import ModelBand
 
 
-class ModelBandPlot(object):
+class ModelBandPlot(ModelBand):
     """
     class to plot a single band given the modeling results
 
     """
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                  likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+        """
 
-        self.bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model,
-                                                  likelihood_mask_list=likelihood_mask_list, band_index=band_index)
-        self._kwargs_special_partial = kwargs_params.get('kwargs_special', None)
-        kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, self._kwargs_extinction_partial = self.bandmodel.select_kwargs(**kwargs_params)
-        self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial, self._kwargs_ps_partial = self.bandmodel.update_linear_kwargs(param, kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial)
-        self._norm_residuals = self.bandmodel.reduced_residuals(model, error_map=error_map)
-        self._reduced_x2 = self.bandmodel.reduced_chi2(model, error_map=error_map)
-        print("reduced chi^2 of data ", band_index, "= ", self._reduced_x2)
+        :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
+        :param kwargs_model: model keyword argument list for the full multi-band modeling
+        :param model: 2d numpy array of modeled image for the specified band
+        :param error_map: 2d numpy array of size of the image, additional error in the pixels coming from PSF uncertainties
+        :param cov_param: covariance matrix of the linear inversion
+        :param param: 1d numpy array of the linear coefficients of this imaging band
+        :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
+         the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
+        :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
+        :param band_index: integer of the band to be considered in this class
+        :param arrow_size: size of the scale and orientation arrow
+        :param cmap_string: string of color map (or cmap matplotlib object)
+        """
+        ModelBand.__init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+                           image_likelihood_mask_list=likelihood_mask_list, band_index=band_index)
 
-        self._model = model
-        self._cov_param = cov_param
-        self._param = param
-
-        self._lensModel = self.bandmodel.LensModel
+        self._lensModel = self._bandmodel.LensModel
         self._lensModelExt = LensModelExtensions(self._lensModel)
         log_model = np.log10(model)
         log_model[np.isnan(log_model)] = -5
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
-        self._coords = self.bandmodel.Data
+        self._coords = self._bandmodel.Data
         self._data = self._coords.data
         self._deltaPix = self._coords.pixel_width
         self._frame_size = np.max(self._coords.width)
@@ -135,7 +139,7 @@ class ModelBandPlot(object):
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
-            ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
             plot_util.image_position_plot(ax, self._coords, ra_image, dec_image)
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
@@ -265,7 +269,7 @@ class ModelBandPlot(object):
                                     ra_at_xy_0=ra_at_xy_0 + center_x,
                                     dec_at_xy_0=dec_at_xy_0 + center_y)
 
-        source = self.bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
+        source = self._bandmodel.SourceModel.surface_brightness(x_grid_source, y_grid_source,
                                                                self._kwargs_source_partial)
         source = util.array2image(source) * deltaPix ** 2
         return source, coords_source
@@ -329,7 +333,7 @@ class ModelBandPlot(object):
             plot_util.text_description(ax, d_s, text=text, color="w", backgroundcolor='k',
                          flipped=False, font_size=font_size)
         if point_source_position is True:
-            ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
@@ -358,7 +362,7 @@ class ModelBandPlot(object):
         y_grid_source += y_center
         coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
-        error_map_source = self.bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
+        error_map_source = self._bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
                                                            self._cov_param, model_index_select=False)
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
@@ -380,7 +384,7 @@ class ModelBandPlot(object):
         plot_util.text_description(ax, d_s, text="Error map in source", color="w",
                          backgroundcolor='k', flipped=False, font_size=font_size)
         if point_source_position is True:
-            ra_source, dec_source = self.bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+            ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
         return ax
 
@@ -417,7 +421,7 @@ class ModelBandPlot(object):
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
         cb.set_label(colorbar_label, fontsize=font_size)
-        ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+        ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, color='k', image_name_list=image_name_list)
         return ax
 
@@ -458,7 +462,7 @@ class ModelBandPlot(object):
             ra_caustic_list, dec_caustic_list = self._caustics()
             plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
             plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
-        ra_image, dec_image = self.bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
+        ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         return ax
 
@@ -479,7 +483,7 @@ class ModelBandPlot(object):
         :param kwargs: kwargs to send matplotlib.pyplot.matshow()
         :return:
         """
-        model = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
                                           self._kwargs_ps_partial, unconvolved=unconvolved, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
@@ -508,7 +512,7 @@ class ModelBandPlot(object):
                                 source_add=False, lens_light_add=False,
                                 font_size=15
                                 ):
-        model = self.bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
+        model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
                                           self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
                                           lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
@@ -597,7 +601,7 @@ class ModelBandPlot(object):
         :param v_max:
         :return:
         """
-        model = self.bandmodel.extinction_map(self._kwargs_extinction_partial, self._kwargs_special_partial)
+        model = self._bandmodel.extinction_map(self._kwargs_extinction_partial, self._kwargs_special_partial)
         if v_min is None:
             v_min = 0
         if v_max is None:

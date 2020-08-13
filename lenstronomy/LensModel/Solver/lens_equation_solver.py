@@ -68,6 +68,39 @@ class LensEquationSolver(object):
         x_, y_ = x
         beta_x, beta_y = self.lensModel.ray_shooting(x_, y_, kwargs_lens)
         return (beta_x - source_x)**2 + (beta_y - source_y)**2
+        
+    def candidate_solutions(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
+                            verbose=False, x_center=0, y_center=0):
+        """
+        finds pixels in the image plane possibly hosting a solution of the lens equation, for the given source position and lens model
+
+        :param sourcePos_x: source position in units of angle
+        :param sourcePos_y: source position in units of angle
+        :param kwargs_lens: lens model parameters as keyword arguments
+        :param min_distance: minimum separation to consider for two images in units of angle
+        :param search_window: window size to be considered by the solver. Will not find image position outside this window
+        :param verbose: bool, if True, prints some useful information for the user
+        :param x_center: float, center of the window to search for point sources
+        :param y_center: float, center of the window to search for point sources
+        :returns: (approximate) angular position of (multiple) images ra_pos, dec_pos in units of angles, related ray-traced source displacements and pixel width
+        :raises: AttributeError, KeyError
+        """
+        kwargs_lens = self.lensModel.set_static(kwargs_lens)
+        # compute number of pixels to cover the search window with the required min_distance
+        numPix = int(round(search_window / min_distance) + 0.5)
+        x_grid, y_grid = util.make_grid(numPix, min_distance)
+        x_grid += x_center
+        y_grid += y_center
+        # ray-shoot to find the relative distance to the required source position for each grid point
+        x_mapped, y_mapped = self.lensModel.ray_shooting(x_grid, y_grid, kwargs_lens)
+        absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
+        # select minima in the grid points and select grid points that do not deviate more than the
+        # width of the grid point to a solution of the lens equation
+        x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
+        # pixel width
+        pixel_width = x_grid[1]-x_grid[0] 
+            
+        return x_mins, y_mins, delta_map, pixel_width
 
     def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
@@ -96,18 +129,8 @@ class LensEquationSolver(object):
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
-        kwargs_lens = self.lensModel.set_static(kwargs_lens)
-        # compute number of pixels to cover the search window with the required min_distance
-        numPix = int(round(search_window / min_distance) + 0.5)
-        x_grid, y_grid = util.make_grid(numPix, min_distance)
-        x_grid += x_center
-        y_grid += y_center
-        # ray-shoot to find the relative distance to the required source position for each grid point
-        x_mapped, y_mapped = self.lensModel.ray_shooting(x_grid, y_grid, kwargs_lens)
-        absmapped = util.displaceAbs(x_mapped, y_mapped, sourcePos_x, sourcePos_y)
-        # select minima in the grid points and select grid points that do not deviate more than the
-        # width of the grid point to a solution of the lens equation
-        x_mins, y_mins, delta_map = util.neighborSelect(absmapped, x_grid, y_grid)
+        # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and pixel width
+        x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
         if verbose is True:
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
         #mag = np.abs(mag)
@@ -144,7 +167,7 @@ class LensEquationSolver(object):
         return x_mins, y_mins
 
     def _find_gradient_decent(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
-                              num_iter_max=100, verbose=False, min_distance=0.01, non_linear=False):
+                              num_iter_max=200, verbose=False, min_distance=0.01, non_linear=False):
         """
         given a 'good guess' of a solution of the lens equation (expected image position given a fixed source position)
         this routine iteratively performs a ray-tracing with second order correction (effectively gradient decent) to find

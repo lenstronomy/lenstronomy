@@ -184,18 +184,11 @@ class Optimizer(object):
 
         # if we have a good enough solution, no point in recomputing the image positions since this can be quite slow
         # and will give the same answer
-        if src_pen_best[best_index] < self._tol_src_penalty:
-            x_image, y_image = self.x_pos, self.y_pos
-        else:
-            # Here, the solver has the instance of "lensing_class" or "LensModel" for multiplane/singleplane respectively.
-            print('Warning: possibly a bad fit.')
-            x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final, arrival_time_sort=False)
-            #if len(x_image) != len(self.x_pos) or len(y_image) != len(self.y_pos):
-            #    x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,
-            #                                                   arrival_time_sort=False,
-            #                                                   precision_limit=10**(-11), num_iter_max=15)
+        x_image, y_image = self.x_pos, self.y_pos
 
-            #x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)
+        if src_pen_best[best_index] > self._tol_src_penalty:
+            print('Warning: possibly a bad fit.')
+
         if self._verbose:
             print('optimization done.')
             print('Recovered source position: ', (srcx, srcy))

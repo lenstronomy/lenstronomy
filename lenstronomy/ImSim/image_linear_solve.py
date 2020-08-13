@@ -121,7 +121,8 @@ class ImageLinearFit(ImageModel):
         return C_D_response, psf_model_error
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
+                                    check_positive_flux=False):
         """
 
         computes the likelihood of the data given a model
@@ -131,13 +132,21 @@ class ImageLinearFit(ImageModel):
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param kwargs_extinction:
+        :param kwargs_special:
+        :param source_marg: bool, performs a marginalization over the linear parameters
+        :param linear_prior: linear prior width in eigenvalues
+        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
+         components and applies a punishment in the likelihood if so.
         :return: log likelihood (natural logarithm)
         """
         return self._likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
-                                                 kwargs_extinction, kwargs_special, source_marg, linear_prior=linear_prior)
+                                                 kwargs_extinction, kwargs_special, source_marg,
+                                                 linear_prior=linear_prior, check_positive_flux=check_positive_flux)
 
     def _likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
+                                     check_positive_flux=False):
         """
 
         computes the likelihood of the data given a model
@@ -149,6 +158,8 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
         :param source_marg: bool, performs a marginalization over the linear parameters
         :param linear_prior: linear prior width in eigenvalues
+        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
+         components and applies a punishment in the likelihood if so.
         :return: log likelihood (natural logarithm)
         """
         # generate image
@@ -160,6 +171,10 @@ class ImageLinearFit(ImageModel):
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
+        if check_positive_flux is True:
+            bool = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool is False:
+                logL -= 10**5
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -380,3 +395,20 @@ class ImageLinearFit(ImageModel):
                         dec_pos[i][j] = dec_pos[i][j] + delta_y[k]
                         k += 1
         return ra_pos, dec_pos, amp, n_points
+
+    def check_positive_flux(self, kwargs_source, kwargs_lens_light, kwargs_ps):
+        """
+        checks whether the surface brightness profiles contain positive fluxes and returns bool if True
+
+        :param kwargs_source: source surface brightness keyword argument list
+        :param kwargs_lens_light: lens surface brightness keyword argument list
+        :param kwargs_ps: point source keyword argument list
+        :return: boolean
+        """
+        pos_bool_ps = self.PointSource.check_positive_flux(kwargs_ps)
+        pos_bool_source = self.SourceModel.check_positive_flux_profile(kwargs_source)
+        pos_bool_lens_light = self.LensLightModel.check_positive_flux_profile(kwargs_lens_light)
+        if pos_bool_ps is True and pos_bool_source is True and pos_bool_lens_light is True:
+            return True
+        else:
+            return False

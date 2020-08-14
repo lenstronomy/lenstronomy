@@ -343,7 +343,8 @@ class FittingSequence(object):
         return output
 
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
-                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True, compute_bands=None):
+                      keep_psf_error_map=True, psf_symmetry=1, symmetry_error=False, psf_iter_factor=1, verbose=True,
+                      compute_bands=None):
         """
         iterative PSF reconstruction
 
@@ -354,6 +355,8 @@ class FittingSequence(object):
         :param keep_psf_error_map: bool, whether or not to keep the previous psf_error_map
         :param psf_symmetry: int, number of invariant rotations in the reconstructed PSF
         :param psf_iter_factor: factor of new estimated PSF relative to the old one PSF_updated = (1-psf_iter_factor) * PSF_old + psf_iter_factor*PSF_new
+        :param symmetry_error: boolean, if True, applies an additional variance term from the rotational symmetry
+         differences of the stacking
         :param verbose: bool, print statements
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
         :return: 0, updated PSF is stored in self.mult_iband_list
@@ -375,8 +378,8 @@ class FittingSequence(object):
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, kwargs_params=kwargs_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
-                                                       keep_psf_error_map=keep_psf_error_map,
-                 psf_symmetry=psf_symmetry, psf_iter_factor=psf_iter_factor, verbose=verbose)
+                                                       keep_psf_error_map=keep_psf_error_map, psf_symmetry=psf_symmetry,
+                                                       psf_iter_factor=psf_iter_factor, symmetry_error=symmetry_error, verbose=verbose)
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 

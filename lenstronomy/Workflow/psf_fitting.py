@@ -297,7 +297,7 @@ class PsfFitting(object):
                 kernel_rotated = image_util.rotateImage(kernel_new, angle * k)
                 kernel_norm = kernel_util.kernel_norm(kernel_rotated)
                 kernel_list[i, :, :] = kernel_norm
-                kernel_list_sym_stack[k, :, :] += kernel_norm
+                kernel_list_sym_stack[k, :, :] += kernel_norm/symmetry  # adding only a fraction to sum up to one PSF
                 i += 1
 
         kernel_old_rotated = np.zeros((symmetry, kernelsize, kernelsize))

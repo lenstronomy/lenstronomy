@@ -57,6 +57,8 @@ class TestLSST(unittest.TestCase):
         with self.assertRaises(ValueError):
             bad_psf = LSST(psf_type='blah')
 
+        single_year = LSST(coadd_years=1)
+        self.assertEqual(single_year.obs["num_exposures"], 20)
         with self.assertRaises(ValueError):
             bad_coadd_years = LSST(coadd_years=100)
 

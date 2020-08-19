@@ -52,6 +52,8 @@ Measuring the Hubble constant
 * TDCOSMO IV: Hierarchical time-delay cosmography -- joint inference of the Hubble constant and galaxy density profiles `Birrer et al. 2020 <https://arxiv.org/abs/2007.02941>`_
     *lenstronomy.Galkin for kinematics calculation that folds in the hierarchical analysis*
 
+* TDCOSMO V: strategies for precise and accurate measurements of the Hubble constant with strong lensing `Birrer & Treu 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200806157B/abstract>`_
+    *lenstronomy.Galkin for kinematics calculation that folds in the hierarchical analysis for a forecast for future Hubble constant constraints*
 
 
 
@@ -82,7 +84,6 @@ Dark Matter substructure
 * Dark Matter Subhalos, Strong Lensing and Machine Learning; `Varma, Fairbairn, Figueroa <https://arxiv.org/abs/2005.05353>`_
     * *
 
-
 * Quantifying the Line-of-Sight Halo Contribution to the Dark Matter Convergence Power Spectrum from Strong Gravitational Lenses; `Sengul et a. 2020 <https://arxiv.org/abs/2006.07383>`_
     * *
 
@@ -109,6 +110,8 @@ Lensing of Gravitational Waves
 * lensingGW: a Python package for lensing of gravitational waves; `Pagano et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200612879P/abstract>`_
     *A Python package designed to handle both strong and microlensing of compact binaries and the related gravitational-wave signals.*
 
+* Localizing merging black holes with sub-arcsecond precision using gravitational-wave lensing; `Hannuksela et al. 2020 <https://arxiv.org/abs/2004.13811v3>`_
+    *solving the lens equation with lenstronomy*
 
 
 Theory papers

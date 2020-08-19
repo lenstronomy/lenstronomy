@@ -343,7 +343,7 @@ class FittingSequence(object):
         return output
 
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
-                      keep_psf_error_map=True, psf_symmetry=1, symmetry_error=False, psf_iter_factor=1, verbose=True,
+                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True,
                       compute_bands=None):
         """
         iterative PSF reconstruction
@@ -355,8 +355,6 @@ class FittingSequence(object):
         :param keep_psf_error_map: bool, whether or not to keep the previous psf_error_map
         :param psf_symmetry: int, number of invariant rotations in the reconstructed PSF
         :param psf_iter_factor: factor of new estimated PSF relative to the old one PSF_updated = (1-psf_iter_factor) * PSF_old + psf_iter_factor*PSF_new
-        :param symmetry_error: boolean, if True, applies an additional variance term from the rotational symmetry
-         differences of the stacking
         :param verbose: bool, print statements
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
         :return: 0, updated PSF is stored in self.mult_iband_list
@@ -364,7 +362,6 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        #param_class = self.param_class
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
@@ -379,7 +376,7 @@ class FittingSequence(object):
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map, psf_symmetry=psf_symmetry,
-                                                       psf_iter_factor=psf_iter_factor, symmetry_error=symmetry_error, verbose=verbose)
+                                                       psf_iter_factor=psf_iter_factor, verbose=verbose)
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 
@@ -400,10 +397,6 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
-        #param_class = self.param_class
-        #lens_temp, source_temp, lens_light_temp, ps_temp, cosmo_temp = self._updateManager.parameter_state
-        #lens_updated = param_class.update_lens_scaling(cosmo_temp, lens_temp)
-        #source_updated = param_class.image2source_plane(source_temp, lens_updated)
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)

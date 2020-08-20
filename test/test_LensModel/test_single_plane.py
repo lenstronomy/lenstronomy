@@ -68,7 +68,7 @@ class TestLensModel(object):
 
     def test_init(self):
         lens_model_list = ['TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC', 'NFW_MC',
-                           'ARC_PERT']
+                           'ARC_PERT','MULTIPOLE']
         lensModel = SinglePlane(lens_model_list=lens_model_list)
         assert lensModel.func_list[0].param_names[0] == 'Rs'
 

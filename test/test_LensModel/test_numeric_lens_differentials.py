@@ -290,6 +290,16 @@ class TestNumericsProfile(object):
         kwargs = {'theta_E':2. , 'theta_c':1. , 'e1': 0.1, 'e2': 0.1}
         lens_model = ['NIE_POTENTIAL']
         self.assert_differentials(lens_model, kwargs)
+    def test_multipole(self):
+        kwargs = {'m':4, 'a_m':0.05, 'phi_m':0.1, 'center_x':0., 'center_y':0.}
+        lens_model = ['MULTIPOLE']
+        self.assert_differentials(lens_model,kwargs,potential=True)
+        kwargs = {'m': 2, 'a_m': 0.1, 'phi_m': 0.05, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['MULTIPOLE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+        kwargs = {'m': 3, 'a_m': 0.07, 'phi_m': 0., 'center_x': -0.01, 'center_y': -0.5}
+        lens_model = ['MULTIPOLE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
 
 if __name__ == '__main__':

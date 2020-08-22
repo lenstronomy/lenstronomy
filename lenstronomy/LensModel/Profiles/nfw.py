@@ -29,20 +29,14 @@ class NFW(LensProfileBase):
     lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'Rs': 100, 'alpha_Rs': 10, 'center_x': 100, 'center_y': 100}
 
-    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10, lookup=False):
+    def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
         """
 
         :param interpol: bool, if True, interpolates the functions F(), g() and h()
+        :param num_interp_X: int (only considered if interpol=True), number of interpolation elements in units of r/r_s
+        :param max_interp_X: float (only considered if interpol=True), maximum r/r_s value to be interpolated (returning zeros outside)
         """
         self._interpol = interpol
-        self._lookup = lookup
-        if lookup and interpol:
-            from lenstronomy.LensModel.Profiles.nfw_lookup import nfw_f, nfw_g, nfw_h, nfw_x
-            self._f_lookup = nfw_f
-            self._h_lookup = nfw_h
-            self._g_lookup = nfw_g
-            self._x_lookup = nfw_x
-
         self._max_interp_X = max_interp_X
         self._num_interp_X = num_interp_X
         super(NFW, self).__init__()
@@ -233,10 +227,11 @@ class NFW(LensProfileBase):
         :type axis: same as R
         :return: Epsilon(R) projected density at radius R
         """
-        if isinstance(R, int) or isinstance(R, float):
-            R = max(R, 0.00000001)
-        else:
-            R[R <= 0.00000001] = 0.00000001
+        R = np.maximum(R, 0.00000001)
+        #if isinstance(R, int) or isinstance(R, float):
+        #    R = max(R, 0.00000001)
+        #else:
+        #    R[R <= 0.00000001] = 0.00000001
         x = R/Rs
         gx = self.g_(x)
         a = 4*rho0*Rs*R*gx/x**2/R
@@ -260,10 +255,11 @@ class NFW(LensProfileBase):
         :return: Epsilon(R) projected density at radius R
         """
         c = 0.000001
-        if isinstance(R, int) or isinstance(R, float):
-            R = max(R, c)
-        else:
-            R[R <= c] = c
+        R = np.maximum(R, c)
+        #if isinstance(R, int) or isinstance(R, float):
+        #    R = max(R, c)
+        #else:
+        #    R[R <= c] = c
         x = R/Rs
         gx = self.g_(x)
         Fx = self.F_(x)
@@ -279,13 +275,8 @@ class NFW(LensProfileBase):
         """
         if self._interpol:
             if not hasattr(self, '_F_interp'):
-
-                if self._lookup:
-                    x = self._x_lookup
-                    F_x = self._f_lookup
-                else:
-                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                    F_x = self._F(x)
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                F_x = self._F(x)
                 self._F_interp = interp.interp1d(x, F_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._F_interp(X)
@@ -334,13 +325,8 @@ class NFW(LensProfileBase):
         """
         if self._interpol:
             if not hasattr(self, '_g_interp'):
-
-                if self._lookup:
-                    x = self._x_lookup
-                    g_x = self._g_lookup
-                else:
-                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                    g_x = self._g(x)
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                g_x = self._g(x)
                 self._g_interp = interp.interp1d(x, g_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._g_interp(X)
@@ -385,13 +371,8 @@ class NFW(LensProfileBase):
         """
         if self._interpol:
             if not hasattr(self, '_h_interp'):
-
-                if self._lookup:
-                    x = self._x_lookup
-                    h_x = self._h_lookup
-                else:
-                    x = np.linspace(0, self._max_interp_X, self._num_interp_X)
-                    h_x = self._h(x)
+                x = np.linspace(0, self._max_interp_X, self._num_interp_X)
+                h_x = self._h(x)
                 self._h_interp = interp.interp1d(x, h_x, kind='linear', axis=-1, copy=False, bounds_error=False,
                                                  fill_value=0, assume_sorted=True)
             return self._h_interp(X)

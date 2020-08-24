@@ -4,22 +4,22 @@ import pytest
 import unittest
 
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-from lenstronomy.LightModel.Profiles.starlets import Starlets
+from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 from lenstronomy.Util import util
 
 
 _force_no_pysap = True  # if issues on Travis-CI to install pysap
 
 
-class TestStarlets(object):
+class TestSLITStarlets(object):
     """
-    class to test Starlets light profile
+    class to test SLIT_Starlets light profile
     """
     def setup(self):
         # different versions of Starlet transforms
-        self.starlets = Starlets(fast_inverse=False, second_gen=False, force_no_pysap=_force_no_pysap)
-        self.starlets_fast = Starlets(fast_inverse=True, second_gen=False, force_no_pysap=_force_no_pysap)
-        self.starlets_2nd = Starlets(second_gen=True, force_no_pysap=_force_no_pysap)
+        self.starlets = SLIT_Starlets(fast_inverse=False, second_gen=False, force_no_pysap=_force_no_pysap)
+        self.starlets_fast = SLIT_Starlets(fast_inverse=True, second_gen=False, force_no_pysap=_force_no_pysap)
+        self.starlets_2nd = SLIT_Starlets(second_gen=True, force_no_pysap=_force_no_pysap)
 
         # define a test image with gaussian components
         self.num_pix = 50
@@ -125,14 +125,6 @@ class TestStarlets(object):
         coeffs = self.starlets_2nd.decomposition_2d(self.test_image, self.n_scales)
         test_image_recon = self.starlets_2nd.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=5)
-
-
-class TestRaise(unittest.TestCase):
-
-    def test_raise(self):
-        with self.assertRaises(ValueError):
-            array = np.ones(5)
-            util.array2image(array)
 
 
 if __name__ == '__main__':

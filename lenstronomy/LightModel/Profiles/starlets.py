@@ -2,12 +2,12 @@ __author__ = 'aymgal'
 
 import numpy as np
 
-from lenstronomy.LightModel.Profiles import starlets_slit
+from lenstronomy.LightModel.Profiles import starlets_util
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.Util import util
 
 
-class Starlets(object):
+class SLIT_Starlets(object):
     """
     Implementation of the Isotropic Undecimated Walevet Transform (aka "starlet", or "B-spline") 
     using the 'a trous' algorithm.
@@ -75,7 +75,7 @@ class Starlets(object):
         if self.use_pysap and not self._second_gen:
             return self._inverse_transform(coeffs, n_scales, n_pixels)
         else:
-            return starlets_slit.inverse_transform(coeffs, fast=self._fast_inverse, 
+            return starlets_util.inverse_transform(coeffs, fast=self._fast_inverse, 
                                                    second_gen=self._second_gen)
 
     def decomposition(self, image, n_scales):
@@ -105,7 +105,7 @@ class Starlets(object):
         if self.use_pysap and not self._second_gen:
             coeffs = self._transform(image, n_scales)
         else:
-            coeffs = starlets_slit.transform(image, n_scales, second_gen=self._second_gen)
+            coeffs = starlets_util.transform(image, n_scales, second_gen=self._second_gen)
         return coeffs
 
     def _inverse_transform(self, coeffs, n_scales, n_pixels):

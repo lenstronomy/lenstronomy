@@ -11,13 +11,9 @@ import numpy as np
 
 class LikelihoodModule(object):
     """
-    this class contains the routines to run a MCMC process
-    the key components are:
-    - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as
-    ImageModel(), Multiband(), MultiExposure()
-    - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the conventions of the imSim_class
+    this class contains the routines to run a posterior inference for different combinations of data sets and
+    customizable priors.
 
-    Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
     def __init__(self, kwargs_data_joint, kwargs_model, param_class, image_likelihood=True, check_bounds=True,
                  check_matched_source_position=False, astrometric_likelihood=False, image_position_likelihood=False,
@@ -26,6 +22,7 @@ class LikelihoodModule(object):
                  source_marg=False, linear_prior=None, restrict_image_number=False,
                  max_num_images=None, bands_compute=None, time_delay_likelihood=False,
                  image_likelihood_mask_list=None,
+                 ra_td_position_proxy=None, dec_td_position_proxy=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
                  prior_extinction=[], prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[],
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
@@ -63,6 +60,12 @@ class LikelihoodModule(object):
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
+        :param ra_td_position_proxy: relative RA coordinates of proxy positions of the time delays measured to match as
+         good as possible the predicted and measured time delays (optional, if not set, uses the PointSource() module
+         ordering to compare with the measurements
+        :param dec_td_position_proxy: relative DEC coordinates of proxy positions of the time delays measured to match as
+         good as possible the predicted and measured time delays (optional, if not set, uses the PointSource() module
+         ordering to compare with the measurements
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
@@ -86,7 +89,9 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         if self._time_delay_likelihood is True:
             self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class)
+                                                             lens_model_class, point_source_class,
+                                                             ra_td_position_proxy=ra_td_position_proxy,
+                                                             dec_td_position_proxy=dec_td_position_proxy)
 
         self._image_likelihood = image_likelihood
         if self._image_likelihood is True:

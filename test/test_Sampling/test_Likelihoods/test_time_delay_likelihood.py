@@ -1,4 +1,5 @@
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
+from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import order_image_positions_to_proxy
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
@@ -8,6 +9,7 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 import copy
+import unittest
 
 
 class TestImageLikelihood(object):
@@ -64,6 +66,20 @@ class TestImageLikelihood(object):
         kwargs_cosmo = {'D_dt': lensCosmo.ddt}
         logL = td_likelihood.logL(kwargs_lens=kwargs_lens, kwargs_ps=kwargs_ps, kwargs_cosmo=kwargs_cosmo)
         npt.assert_almost_equal(logL, -0.5, decimal=8)
+
+
+class TestImageOrdering(unittest.TestCase):
+
+    def test_order_image_positions_to_proxy(self):
+        ra_image, dec_image = np.array([1, 3, 2]), np.array([2, 1, 0])
+        ra_proxy, dec_proxy = np.array([1, 2, 3]), np.array([2, 0, 1])
+
+        ra_sort, dec_sort = order_image_positions_to_proxy(ra_image, dec_image, ra_proxy=ra_proxy, dec_proxy=dec_proxy)
+        npt.assert_almost_equal(ra_sort, ra_proxy, decimal=6)
+        npt.assert_almost_equal(dec_sort, dec_proxy, decimal=6)
+
+        with self.assertRaises(ValueError):
+            order_image_positions_to_proxy(ra_image[1:], dec_image[1:], ra_proxy=ra_proxy, dec_proxy=dec_proxy)
 
 
 if __name__ == '__main__':

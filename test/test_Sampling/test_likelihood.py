@@ -39,7 +39,6 @@ class TestLikelihoodModule(object):
         data_class = ImageData(**kwargs_band)
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
-        print(np.shape(psf_class.kernel_point_source), 'test kernel shape -')
         kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
         self.kwargs_lens = [kwargs_spemd]
@@ -97,10 +96,10 @@ class TestLikelihoodModule(object):
                              'image_position_likelihood': True
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
-                            'time_delays_measured': np.ones(4),
-                            'time_delays_uncertainties': np.ones(4),
-                            'flux_ratios': np.ones(4),
-                            'flux_ratio_errors': np.ones(4),
+                            'time_delays_measured': np.ones(len(ra_pos) - 1),
+                            'time_delays_uncertainties': np.ones(len(ra_pos) - 1),
+                            'flux_ratios': np.ones(len(ra_pos) - 1),
+                            'flux_ratio_errors': np.ones(len(ra_pos) - 1),
                             'ra_image_list': ra_pos,
                             'dec_image_list': dec_pos
                             }
@@ -126,7 +125,7 @@ class TestLikelihoodModule(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL = likelihood.logL(args, verbose=True)
-        npt.assert_almost_equal(logL, -3080.29, decimal=-1)
+        npt.assert_almost_equal(logL, -1277.11, decimal=-1)
 
 
 if __name__ == '__main__':

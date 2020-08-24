@@ -90,13 +90,13 @@ class TestEPL(object):
         x, y = 1., 1.
         phi_G, q = 0.3, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        kwargs_lens = {'theta_E': 1., 't': 1.5, 'e1': e1, 'e2': e2}
+        kwargs_lens = {'theta_E': 1., 'gamma': 1.5, 'e1': e1, 'e2': e2}
         f_ = self.EPL.function(x, y, **kwargs_lens)
         self.EPL.set_static(**kwargs_lens)
         f_static = self.EPL.function(x, y, **kwargs_lens)
         npt.assert_almost_equal(f_, f_static, decimal=8)
         self.EPL.set_dynamic()
-        kwargs_lens = {'theta_E': 2., 't': 0.5, 'e1': e1, 'e2': e2}
+        kwargs_lens = {'theta_E': 2., 'gamma': 0.5, 'e1': e1, 'e2': e2}
         f_dyn = self.EPL.function(x, y, **kwargs_lens)
         assert f_dyn != f_static
 

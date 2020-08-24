@@ -62,7 +62,7 @@ class ModelPlot(object):
                     param_i = param[index]
                     cov_param_i = cov_param[index]
 
-                bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
+                bandplot = ModelBandPlot(multi_band_list, multi_band_type, kwargs_model, model[index], error_map[index], cov_param_i,
                                          param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
                                          cmap_string=cmap_string)

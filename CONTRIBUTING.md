@@ -63,7 +63,7 @@ When you feel that work on your new feature is complete, you should create a *Pu
   1. Go to [lenstronomy Pull Requests](https://github.com/sibirrer/lenstronomy/pulls)
   2. Click the green **New pull request** button
   3. Click **compare across forks**
-  4. Confirm that the base fork is `sibirrer/lenstronomu` and the base branch is `master`
+  4. Confirm that the base fork is `sibirrer/lenstronomy` and the base branch is `master`
   5. Confirm the head fork is `<your-account>/lenstronomy` and the compare branch is `<your-branch-name>`
   6. Give your pull request a title and fill out the the template for the description
   7. Click the green **Create pull request** button
@@ -77,12 +77,12 @@ As you work on your feature, new commits might be made to the `sibirrer/lenstron
   - *merge* the `lenstronomyproject` master branch from the command line:
     ```bash
     git fetch lenstronomyproject
-    git merge lenstronomuproject/master
+    git merge lenstronomyproject/master
     ```
   - *rebase* your feature branch onto the `lenstronomy` master branch from the command line:
     ```bash
     git fetch lenstronomyproject
-    git rebase lenstronomy/master
+    git rebase lenstronomyproject/master
     ```
 
 **Warning**: It is bad practice to *rebase* commits that have already been pushed to a remote such as your fork. Rebasing creates new copies of your commits that can cause the local and remote branches to diverge. `git push --force` will **overwrite** the remote branch with your newly rebased local branch. This is strongly discouraged, particularly when working on a shared branch where you could erase a collaborators commits.

@@ -72,8 +72,8 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num_param
-                elif model in ['STARLETS']:
-                    raise ValueError("'STARLETS' model does not support function split")
+                elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                    raise ValueError("'{}' model does not support function split".format(model))
                 else:
                     raise ValueError('model type %s not valid!' % model)
         return response, n
@@ -113,7 +113,7 @@ class LinearBasis(LightModelBase):
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 n_list += [num_param]
-            elif model in ['STARLETS']:
+            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
                 n_scales = kwargs_list[i]['n_scales']
                 n_pixels = kwargs_list[i]['n_pixels']
                 num_param = int(n_scales * n_pixels)
@@ -148,7 +148,7 @@ class LinearBasis(LightModelBase):
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
-            elif model in ['STARLETS', 'STARLETS_GEN2']:
+            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
                 n_scales = kwargs_list[k]['n_scales']
                 n_pixels = kwargs_list[k]['n_pixels']
                 num_param = int(n_scales * n_pixels)

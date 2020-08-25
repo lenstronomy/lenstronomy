@@ -51,15 +51,15 @@ class ImageSparseFit(ImageFit):
 
         if self._no_lens_light and self._no_point_sources:
             model_list = self.SourceModel.profile_type_list
-            if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
-                raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only source model list for sparse fit")
+            if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only source model list for sparse fit")
             self.sparseSolver = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics,
                                                    self.SourceModel, 
                                                    likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         elif self._no_point_sources:
             model_list = self.LensLightModel.profile_type_list
-            if len(model_list) != 1 or model_list[0] not in ['STARLETS', 'STARLETS_GEN2']:
-                raise ValueError("'STARLETS' or 'STARLETS_GEN2' must be the only lens light model list for sparse fit")
+            if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only lens light model list for sparse fit")
             self.sparseSolver = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
                                                        self.SourceModel, self.LensLightModel, 
                                                        likelihood_mask=likelihood_mask, **kwargs_sparse_solver)

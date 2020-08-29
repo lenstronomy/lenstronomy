@@ -6,8 +6,9 @@ class SpecialParam(object):
     These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
-    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed={}, kwargs_lower=None,
-                 kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0):
+    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
+                 kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
+                 lens_redshift_sampling_indexes=None):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -17,10 +18,13 @@ class SpecialParam(object):
         :param kwargs_lower: keyword arguments, lower bound of parameters being sampled
         :param kwargs_upper: keyword arguments, upper bound of parameters being sampled
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
-        time-delay and lens equation solver
+         time-delay and lens equation solver
         :param num_images: number of point source images such that the point source offset parameters match their numbers
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood.
         :param num_tau0: integer, number of different optical depth re-normalization factors
+        :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
+         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
+         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes and
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -29,6 +33,8 @@ class SpecialParam(object):
         self._point_source_offset = point_source_offset
         self._num_images = num_images
         self._num_tau0 = num_tau0
+        if kwargs_fixed is None:
+            kwargs_fixed = {}
         self._kwargs_fixed = kwargs_fixed
         self._source_size = source_size
         if kwargs_lower is None:

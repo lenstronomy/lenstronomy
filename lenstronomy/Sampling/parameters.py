@@ -117,7 +117,8 @@ class Param(object):
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
 
-        lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
+        lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True,
+                                                                                             **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
         if kwargs_fixed_lens is None:
@@ -237,7 +238,7 @@ class Param(object):
         kwargs_source, i = self.souceParams.getParams(args, i)
         kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
-        kwargs_special, i = self.specialParams.getParams(args, i)
+        kwargs_special, i = self.specialParams.get_params(args, i)
         kwargs_extinction, i = self.extinctionParams.getParams(args, i)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
@@ -274,6 +275,10 @@ class Param(object):
         inverse of getParam function
         :param kwargs_lens: keyword arguments depending on model options
         :param kwargs_source: keyword arguments depending on model options
+        :param kwargs_lens_light: lens light model keyword argument list
+        :param kwargs_ps: point source model keyword argument list
+        :param kwargs_special: special keyword arguments
+        :param kwargs_extinction: extinction model keyword argument list
         :return: tuple of parameters
         """
 
@@ -281,7 +286,7 @@ class Param(object):
         args += self.souceParams.setParams(kwargs_source)
         args += self.lensLightParams.setParams(kwargs_lens_light)
         args += self.pointSourceParams.setParams(kwargs_ps)
-        args += self.specialParams.setParams(kwargs_special)
+        args += self.specialParams.set_params(kwargs_special)
         args += self.extinctionParams.setParams(kwargs_extinction)
         return args
 
@@ -309,23 +314,23 @@ class Param(object):
 
         :return: number of parameters involved (int)
         """
-        num, list = self.lensParams.num_param()
+        num, name_list = self.lensParams.num_param()
         _num, _list = self.souceParams.num_param()
         num += _num
-        list += _list
+        name_list += _list
         _num, _list = self.lensLightParams.num_param()
         num += _num
-        list += _list
+        name_list += _list
         _num, _list = self.pointSourceParams.num_param()
         num += _num
-        list += _list
+        name_list += _list
         _num, _list = self.specialParams.num_param()
         num += _num
-        list += _list
+        name_list += _list
         _num, _list = self.extinctionParams.num_param()
         num += _num
-        list += _list
-        return num, list
+        name_list += _list
+        return num, name_list
 
     def num_param_linear(self):
         """
@@ -342,9 +347,10 @@ class Param(object):
         """
         maps the image plane position definition of the source plane
 
-        :param kwargs_source:
-        :param kwargs_lens:
-        :return:
+        :param kwargs_source: source light model keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :param image_plane: boolean, if True, does not up map image plane parameters to source plane
+        :return: source light model keyword arguments with mapped position arguments from image to source plane
         """
         kwargs_source_copy = copy.deepcopy(kwargs_source)
         for i, kwargs in enumerate(kwargs_source_copy):
@@ -366,7 +372,7 @@ class Param(object):
                 y_mapped = kwargs_ps[i_point_source]['dec_source']
             else:
                 x_pos, y_pos = kwargs_ps[i_point_source]['ra_image'], kwargs_ps[i_point_source]['dec_image']
-                #x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
+                # x_pos, y_pos = self.real_image_positions(x_pos, y_pos, kwargs_special)
                 x_mapped, y_mapped = self._image2SourceMapping.image2source(x_pos, y_pos, kwargs_lens_list,
                                                                             index_source=k_source)
             for param_name in param_list:
@@ -401,7 +407,7 @@ class Param(object):
         :param kwargs_list_1: list of keyword arguments
         :param kwargs_list_2: list of keyword arguments
         :param joint_setting_list: [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
-        :return: udated kwargs_list_2 with arguments from kwargs_list_1 as defined in joint_setting_list
+        :return: updated kwargs_list_2 with arguments from kwargs_list_1 as defined in joint_setting_list
         """
         for setting in joint_setting_list:
             i_1, k_2, param_list = setting
@@ -428,11 +434,10 @@ class Param(object):
         """
         multiplies the scaling parameters of the profiles
 
-        :param args:
-        :param kwargs_lens:
-        :param i:
-        :param inverse:
-        :return:
+        :param kwargs_special: keyword arguments of the 'special' arguments
+        :param kwargs_lens: lens model keyword argument list
+        :param inverse: bool, if True, performs the inverse lens scaling for bijective transforms
+        :return: updated lens model keyword argument list
         """
         kwargs_lens_updated = copy.deepcopy(kwargs_lens)
         if self._mass_scaling is False:
@@ -466,8 +471,8 @@ class Param(object):
     def check_solver(self, kwargs_lens, kwargs_ps):
         """
         test whether the image positions map back to the same source position
-        :param kwargs_lens:
-        :param kwargs_ps:
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_ps: point source model keyword argument list
         :return: Euclidean distance between the ray-shooting of the image positions
         """
         if self._solver is True:

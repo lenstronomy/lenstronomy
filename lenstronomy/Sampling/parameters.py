@@ -67,7 +67,8 @@ class Param(object):
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
-                 source_size=False, num_tau0=0):
+                 source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
+                 source_redshift_sampling_indexes=None):
         """
 
         :param kwargs_model:
@@ -109,17 +110,35 @@ class Param(object):
         :param Ddt_sampling:
         :param source_size:
         :param num_tau0:
+        :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
+         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
+         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes
+        :param source_redshift_sampling_indexes: list of integers corresponding to the source model components whose redshifts
+         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
+         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes. These indexes are
+         the sample as for the lens
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
+        self._lens_redshift_list = kwargs_model.get('lens_redshift_list', None)
         self._source_light_model_list = kwargs_model.get('source_light_model_list', [])
+        self._source_redshift_list = kwargs_model.get('source_redshift_list', None)
         self._lens_light_model_list = kwargs_model.get('lens_light_model_list', [])
         self._point_source_model_list = kwargs_model.get('point_source_model_list', [])
         self._optical_depth_model_list = kwargs_model.get('optical_depth_model_list', [])
+        self._kwargs_model = kwargs_model
 
-        lens_model_class, source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True,
-                                                                                             **kwargs_model)
-        self._image2SourceMapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
+        # check how many redshifts need to be sampled
+        num_z_sampling = 0
+        if lens_redshift_sampling_indexes is not None:
+            num_z_sampling = int(np.max(lens_redshift_sampling_indexes) + 1)
+        if source_redshift_sampling_indexes is not None:
+            num_z_sampling = np.max(num_z_sampling, np.max(source_redshift_sampling_indexes) + 1)
+        self._num_z_sampling, self._lens_redshift_sampling_indexes, self._source_redshift_sampling_indexes = num_z_sampling, lens_redshift_sampling_indexes, source_redshift_sampling_indexes
+
+        self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
+        self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
+                                                        sourceModel=self._source_model_class)
 
         if kwargs_fixed_lens is None:
             kwargs_fixed_lens = [{} for i in range(len(self._lens_model_list))]
@@ -173,7 +192,7 @@ class Param(object):
             self._solver = False
         else:
             self._solver = True
-            self._solver_module = Solver(solver_type=self._solver_type, lensModel=lens_model_class,
+            self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lens_model_class,
                                          num_images=self._num_images)
 
         self._joint_extinction_with_lens_light = joint_extinction_with_lens_light
@@ -210,13 +229,12 @@ class Param(object):
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size, num_tau0=num_tau0)
+                                          source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling)
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:
                 raise ValueError("linking a source light model with a lens model AND simultaneously parameterizing the"
                                  " source position in the image plane is not valid!")
-
 
     @property
     def num_point_source_images(self):
@@ -240,14 +258,17 @@ class Param(object):
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_special, i = self.specialParams.get_params(args, i)
         kwargs_extinction, i = self.extinctionParams.getParams(args, i)
+        self._update_lens_model(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
-        kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light, self._joint_lens_light_with_lens_light)
+        kwargs_lens_light = self._update_joint_param(kwargs_lens_light, kwargs_lens_light,
+                                                     self._joint_lens_light_with_lens_light)
         # update lens_light joint with lens model parameters
         kwargs_lens = self._update_joint_param(kwargs_lens_light, kwargs_lens, self._joint_lens_with_light)
         kwargs_lens = self._update_joint_param(kwargs_source, kwargs_lens, self._joint_lens_with_source_light)
         # update extinction model with lens light model
-        kwargs_extinction = self._update_joint_param(kwargs_lens_light, kwargs_extinction, self._joint_extinction_with_lens_light)
+        kwargs_extinction = self._update_joint_param(kwargs_lens_light, kwargs_extinction,
+                                                     self._joint_extinction_with_lens_light)
         # update lens model joint parameters (including scaling)
         kwargs_lens = self._update_joint_param(kwargs_lens, kwargs_lens, self._joint_lens_with_lens)
         kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens)
@@ -256,12 +277,11 @@ class Param(object):
             x_pos, y_pos = kwargs_ps[0]['ra_image'], kwargs_ps[0]['dec_image']
             kwargs_lens = self._solver_module.update_solver(kwargs_lens, x_pos, y_pos)
         # update source joint with point source
-        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps, kwargs_special,
-                                                                        image_plane=bijective)
+        kwargs_source = self._update_source_joint_with_point_source(kwargs_lens, kwargs_source, kwargs_ps,
+                                                                    kwargs_special, image_plane=bijective)
         # update source joint with source
         kwargs_source = self._update_joint_param(kwargs_source, kwargs_source, self._joint_source_with_source)
         # optional revert lens_scaling for bijective
-
         if bijective is True:
             kwargs_lens = self.update_lens_scaling(kwargs_special, kwargs_lens, inverse=True)
         kwargs_return = {'kwargs_lens': kwargs_lens, 'kwargs_source': kwargs_source,
@@ -467,6 +487,53 @@ class Param(object):
                 raise ValueError("kwargs_lens_init must be specified when the point source solver is enabled!")
             kwargs_fixed_update = self._solver_module.add_fixed_lens(kwargs_fixed_update, kwargs_init)
         return kwargs_fixed_update
+
+    def update_kwargs_model(self, kwargs_special):
+        """
+        updates model keyword arguments with redshifts being sampled
+
+        :param kwargs_special: keyword arguments from SpecialParam() class return of sampling arguments
+        :return: kwargs_model, bool (True if kwargs_model has changed, else False)
+        """
+        if self._num_z_sampling == 0:
+            return self._kwargs_model, False
+        z_samples = kwargs_special.get('z_sampling')
+        lens_redshift_list = copy.deepcopy(self._lens_redshift_list)
+        if not(self._lens_redshift_list is None or self._lens_redshift_sampling_indexes is None):
+            # iterate through index lists
+            for i, index in enumerate(self._lens_redshift_sampling_indexes):
+                # update redshifts of lens and source redshift list in new form
+                if index > -1:
+                    lens_redshift_list[i] = z_samples[index]
+        source_redshift_list = copy.deepcopy(self._source_redshift_list)
+        if not (self._source_redshift_list is None or self._source_redshift_sampling_indexes is None):
+            # iterate through index lists
+            for i, index in enumerate(self._source_redshift_sampling_indexes):
+                # update redshifts of lens and source redshift list in new form
+                if index > -1:
+                    source_redshift_list[i] = z_samples[index]
+        # update lens model and source model classes
+        kwargs_model = copy.deepcopy(self._kwargs_model)
+        kwargs_model['lens_redshift_list'] = lens_redshift_list
+        kwargs_model['source_redshift_list'] = source_redshift_list
+        return kwargs_model, True
+
+    def _update_lens_model(self, kwargs_special):
+        """
+        updates lens model instance of this class (and all class instances related to it) when an update to the
+        modeled redshifts of the deflector and/or source planes are made
+
+        :param kwargs_special: keyword arguments from SpecialParam() class return of sampling arguments
+        :return: None, internal calls instance updated
+        """
+        kwargs_model, update_bool = self.update_kwargs_model(kwargs_special)
+        if update_bool is True:
+            # TODO: this class instances are effectively duplicated in the likelihood module and may cause a lot of overhead
+            # in the calculation as the instances are re-generated every step, and even so doing it twice!
+            self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(
+                all_models=True, **kwargs_model)
+            self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
+                                                            sourceModel=self._source_model_class)
 
     def check_solver(self, kwargs_lens, kwargs_ps):
         """

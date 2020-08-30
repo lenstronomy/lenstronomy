@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import pytest
 import numpy.testing as npt
+import numpy as np
 from lenstronomy.Sampling.special_param import SpecialParam
 
 
@@ -10,8 +11,9 @@ class TestParam(object):
     def setup(self):
         kwargs_fixed = {}
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2,
-                                  source_size=True, num_tau0=2)
-        self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1, 'tau0_list': [0, 1]}
+                                  source_size=True, num_tau0=2, num_z_sampling=3)
+        self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
+                       'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2])}
 
     def test_get_setParams(self):
         args = self.param.set_params(self.kwargs)
@@ -27,7 +29,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 8
+        assert num == 11
 
     def test_mass_scaling(self):
         kwargs_fixed = {}

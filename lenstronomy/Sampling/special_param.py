@@ -9,9 +9,7 @@ class SpecialParam(object):
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_lens=0,
-                 lens_redshift_sampling_indexes=None, lens_redshift_list=None,
-                 source_redshift_sampling_indexes=None, source_redshift_list=None):
+                 num_z_sampling=0):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -25,13 +23,7 @@ class SpecialParam(object):
         :param num_images: number of point source images such that the point source offset parameters match their numbers
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood.
         :param num_tau0: integer, number of different optical depth re-normalization factors
-        :param num_z_lens: integer, number of different lens redshifts to be sampled
-        :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
-         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
-         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes
-        :param source_redshift_sampling_indexes: list of integers corresponding to the source model components whose redshifts
-         are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
-         in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes
+        :param num_z_sampling: integer, number of different lens redshifts to be sampled
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -40,11 +32,11 @@ class SpecialParam(object):
         self._point_source_offset = point_source_offset
         self._num_images = num_images
         self._num_tau0 = num_tau0
-        self._num_z_lens = num_z_lens
-        if num_z_lens > 0:
-            self._z_lens_sampling = True
+        self._num_z_sampling = num_z_sampling
+        if num_z_sampling > 0:
+            self._z_sampling = True
         else:
-            self._z_lens_sampling = False
+            self._z_sampling = False
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
@@ -63,8 +55,8 @@ class SpecialParam(object):
                 kwargs_lower['source_size'] = 0
             if self._num_tau0 > 0:
                 kwargs_lower['tau0_list'] = [0] * self._num_tau0
-            if self._z_lens_sampling is True:
-                kwargs_lower['z_lens_sampling'] = [0] * self._num_z_lens
+            if self._z_sampling is True:
+                kwargs_lower['z_sampling'] = [0] * self._num_z_sampling
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._D_dt_sampling is True:
@@ -78,8 +70,8 @@ class SpecialParam(object):
                 kwargs_upper[source_size] = 1
             if self._num_tau0 > 0:
                 kwargs_upper['tau0_list'] = [1000] * self._num_tau0
-            if self._z_lens_sampling is True:
-                kwargs_upper['z_lens_sampling'] = [20] * self._num_z_lens
+            if self._z_sampling is True:
+                kwargs_upper['z_sampling'] = [20] * self._num_z_sampling
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -126,12 +118,12 @@ class SpecialParam(object):
                 i += self._num_tau0
             else:
                 kwargs_special['tau0_list'] = self._kwargs_fixed['tau0_list']
-        if self._z_lens_sampling is True:
-            if 'z_lens_sampling' not in self._kwargs_fixed:
-                kwargs_special['z_lens_sampling'] = args[i:i + self._num_z_lens]
-                i += self._num_z_lens
+        if self._z_sampling is True:
+            if 'z_sampling' not in self._kwargs_fixed:
+                kwargs_special['z_sampling'] = args[i:i + self._num_z_sampling]
+                i += self._num_z_sampling
             else:
-                kwargs_special['z_lens_sampling'] = self._kwargs_fixed['z_lens_sampling']
+                kwargs_special['z_sampling'] = self._kwargs_fixed['z_sampling']
         return kwargs_special, i
 
     def set_params(self, kwargs_special):
@@ -162,10 +154,10 @@ class SpecialParam(object):
             if 'tau0_list' not in self._kwargs_fixed:
                 for i in range(self._num_tau0):
                     args.append(kwargs_special['tau0_list'][i])
-        if self._z_lens_sampling is True:
-            if 'z_lens_sampling' not in self._kwargs_fixed:
-                for i in range(self._num_z_lens):
-                    args.append(kwargs_special['z_lens_sampling'][i])
+        if self._z_sampling is True:
+            if 'z_sampling' not in self._kwargs_fixed:
+                for i in range(self._num_z_sampling):
+                    args.append(kwargs_special['z_sampling'][i])
         return args
 
     def num_param(self):
@@ -202,9 +194,9 @@ class SpecialParam(object):
                 num += self._num_tau0
                 for i in range(self._num_tau0):
                     string_list.append('tau0')
-        if self._z_lens_sampling is True:
-            if 'z_lens_sampling' not in self._kwargs_fixed:
-                num += self._num_z_lens
-                for i in range(self._num_z_lens):
-                    string_list.append('z_lens')
+        if self._z_sampling is True:
+            if 'z_sampling' not in self._kwargs_fixed:
+                num += self._num_z_sampling
+                for i in range(self._num_z_sampling):
+                    string_list.append('z')
         return num, string_list

@@ -128,6 +128,11 @@ class TestLikelihoodModule(object):
         logL = likelihood.logL(args, verbose=True)
         npt.assert_almost_equal(logL, -3080.29, decimal=-1)
 
+    def test_check_bounds(self):
+        penalty, bound_hit = self.Likelihood.check_bounds(args=[0, 1], lowerLimit=[1, 0], upperLimit=[2, 2],
+                                                          verbose=True)
+        assert bound_hit
+
 
 if __name__ == '__main__':
     pytest.main()

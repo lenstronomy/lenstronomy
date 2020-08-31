@@ -10,7 +10,8 @@ from scipy.special import hyp2f1
 class EPL(LensProfileBase):
     """
     Elliptical Power Law
-    kappa = (2-gamma)/2*(b/r)^gamma
+    kappa = (2-t)/2*(b/r)^t
+    where t = gamma - 1
     """
     param_names = ['theta_E', 'e1', 'e2', 'gamma', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'center_x': -100, 'center_y': -100}
@@ -86,14 +87,15 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: lensing potential
         """
-        b, gamma, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        t = gamma - 1
+        b, gamma, q, phi_G = self.param_conv(theta_E, e1, e2, t)
         # shift
         x_ = x - center_x
         y_ = y - center_y
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
         # evaluate
-        f_ = self.epl_major_axis.function(x__, y__, b, gamma, q)
+        f_ = self.epl_major_axis.function(x__, y__, b, t, q)
         # rotate back
         return f_
 
@@ -110,14 +112,15 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        t = gamma - 1
+        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, t)
         # shift
         x_ = x - center_x
         y_ = y - center_y
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
         # evaluate
-        f__x, f__y = self.epl_major_axis.derivatives(x__, y__, b, gamma, q)
+        f__x, f__y = self.epl_major_axis.derivatives(x__, y__, b, t, q)
         # rotate back
         f_x, f_y = util.rotate(f__x, f__y, -phi_G)
         return f_x, f_y
@@ -135,14 +138,15 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: f_xx, f_yy, f_xy
         """
-        b, gamma, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        t = gamma - 1
+        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, t)
         # shift
         x_ = x - center_x
         y_ = y - center_y
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
         # evaluate
-        f__xx, f__yy, f__xy = self.epl_major_axis.hessian(x__, y__, b, gamma, q)
+        f__xx, f__yy, f__xy = self.epl_major_axis.hessian(x__, y__, b, t, q)
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
         gamma1__ = 1./2 * (f__xx - f__yy)
@@ -173,29 +177,28 @@ class EPLMajorAxis(LensProfileBase):
     This class contains the function and the derivatives of the
     elliptical power law.
 
-    kappa = (2-t)/2 * [b/sqrt(q^2 x^2 + y^2)]^gamma
-
-    where t = gamma
+    kappa = (2-t)/2 * [b/sqrt(q^2 x^2 + y^2)]^t
+    where t = gamma - 1 (from EPL class)
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819
     """
-    param_names = ['b', 'gamma', 'q', 'center_x', 'center_y']
+    param_names = ['b', 't', 'q', 'center_x', 'center_y']
 
     def __init__(self):
         super(EPLMajorAxis, self).__init__()
 
-    def function(self, x, y, b, gamma, q):
+    def function(self, x, y, b, t, q):
         """
         returns the lensing potential
         """
         # deflection from method
-        alpha_x, alpha_y = self.derivatives(x, y, b, gamma, q)
+        alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # deflection potential, eq. (15)
-        psi = (x*alpha_x + y*alpha_y)/(2 - gamma)
+        psi = (x*alpha_x + y*alpha_y)/(2 - t)
 
         return psi
 
-    def derivatives(self, x, y, b, gamma, q):
+    def derivatives(self, x, y, b, t, q):
         """
         returns the deflection
         """
@@ -206,15 +209,15 @@ class EPLMajorAxis(LensProfileBase):
         R = np.abs(Z)
 
         # angular dependency with extra factor of R, eq. (23)
-        R_omega = Z*hyp2f1(1, gamma/2, 2-gamma/2, -(1-q)/(1+q)*(Z/Z.conj()))
+        R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
 
         # deflection, eq. (22)
-        alpha = 2/(1+q)*(b/R)**gamma*R_omega
+        alpha = 2/(1+q)*(b/R)**t*R_omega
 
         # return real and imaginary part
         return alpha.real, alpha.imag
 
-    def hessian(self, x, y, b, gamma, q):
+    def hessian(self, x, y, b, t, q):
         """
         returns the Hessian matrix of the lensing potential
         """
@@ -225,14 +228,14 @@ class EPLMajorAxis(LensProfileBase):
         cos2, sin2 = cos*cos*2 - 1, sin*cos*2
 
         # convergence, eq. (2)
-        kappa = (2 - gamma)/2*(b/R)**gamma
+        kappa = (2 - t)/2*(b/R)**t
 
         # deflection via method
-        alpha_x, alpha_y = self.derivatives(x, y, b, gamma, q)
+        alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
 
         # shear, eq. (17), corrected version from arXiv/corrigendum
-        gamma_1 = (1-gamma)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
-        gamma_2 = (1-gamma)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
+        gamma_1 = (1-t)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
+        gamma_2 = (1-t)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1

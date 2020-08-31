@@ -235,7 +235,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_EPL(self):
-        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 1.23}
+        kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13}
         lens_model = ['EPL']
         self.assert_differentials(lens_model, kwargs)
 

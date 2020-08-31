@@ -41,7 +41,8 @@ class EPL(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E_conv = self._theta_E_q_convert(theta_E, q)
         b = theta_E_conv * np.sqrt((1 + q**2)/2)
-        return b, gamma, q, phi_G
+        t = gamma - 1
+        return b, t, q, phi_G
 
     def set_static(self, theta_E, e1, e2, gamma, center_x=0, center_y=0):
         """
@@ -87,8 +88,7 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: lensing potential
         """
-        t = gamma - 1
-        b, gamma, q, phi_G = self.param_conv(theta_E, e1, e2, t)
+        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -112,8 +112,7 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
-        t = gamma - 1
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, t)
+        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -138,8 +137,8 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: f_xx, f_yy, f_xy
         """
-        t = gamma - 1
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, t)
+
+        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
         # shift
         x_ = x - center_x
         y_ = y - center_y

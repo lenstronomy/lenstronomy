@@ -14,8 +14,9 @@ class TestParam(object):
     def setup(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list': ['LENSED_POSITION'],
-                        'multi_plane': True, 'lens_redshift_list': [0.5], 'z_source': 2}
-        kwargs_param = {'num_point_source_list': [2], 'lens_redshift_sampling_indexes': [0]}
+                        'multi_plane': True, 'lens_redshift_list': [0.5], 'z_source': 2, 'source_redshift_list': [0.5]}
+        kwargs_param = {'num_point_source_list': [2], 'lens_redshift_sampling_indexes': [0],
+                        'source_redshift_sampling_indexes': [0], 'image_plane_source_list': [True]}
         kwargs_fixed_lens = [{'gamma': 1.9}]  # for SPEP lens
         kwargs_fixed_source = [{'sigma': 0.1, 'center_x':0.2, 'center_y': 0.2}]
         kwargs_fixed_ps = [{'ra_image': [-1, 1], 'dec_image': [-1, 1]}]
@@ -246,6 +247,10 @@ class TestParam(object):
         kwargs_ps_out = kwargs_return['kwargs_ps']
         dist = param.check_solver(kwargs_lens=kwargs_lens_out, kwargs_ps=kwargs_ps_out)
         npt.assert_almost_equal(dist, 0, decimal=10)
+
+    def test_num_point_source_images(self):
+        num = self.param_class.num_point_source_images
+        assert num == 2
 
 
 if __name__ == '__main__':

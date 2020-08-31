@@ -133,7 +133,8 @@ class Param(object):
         if lens_redshift_sampling_indexes is not None:
             num_z_sampling = int(np.max(lens_redshift_sampling_indexes) + 1)
         if source_redshift_sampling_indexes is not None:
-            num_z_sampling = np.max(num_z_sampling, np.max(source_redshift_sampling_indexes) + 1)
+            num_z_source = int(np.max(source_redshift_sampling_indexes) + 1)
+            num_z_sampling = max(num_z_sampling, num_z_source)
         self._num_z_sampling, self._lens_redshift_sampling_indexes, self._source_redshift_sampling_indexes = num_z_sampling, lens_redshift_sampling_indexes, source_redshift_sampling_indexes
 
         self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)

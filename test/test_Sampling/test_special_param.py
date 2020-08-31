@@ -9,8 +9,7 @@ from lenstronomy.Sampling.special_param import SpecialParam
 class TestParam(object):
 
     def setup(self):
-        kwargs_fixed = {}
-        self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=kwargs_fixed, point_source_offset=True, num_images=2,
+        self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
                                   source_size=True, num_tau0=2, num_z_sampling=3)
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
                        'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2])}
@@ -23,7 +22,7 @@ class TestParam(object):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
         param_fixed = SpecialParam(Ddt_sampling=True, kwargs_fixed=self.kwargs, point_source_offset=True, num_images=2,
-                                   source_size=True)
+                                   source_size=True, num_z_sampling=3, num_tau0=2)
         kwargs_new, i = param_fixed.get_params(args=[], i=0)
         kwargs_new['D_dt'] = self.kwargs['D_dt']
 

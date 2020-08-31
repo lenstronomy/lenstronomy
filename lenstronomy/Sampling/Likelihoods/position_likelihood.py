@@ -107,7 +107,8 @@ class PositionLikelihood(object):
                     return True
         return False
 
-    def astrometric_likelihood(self, kwargs_ps, kwargs_special, sigma):
+    @staticmethod
+    def astrometric_likelihood(kwargs_ps, kwargs_special, sigma):
         """
         evaluates the astrometric uncertainty of the model plotted point sources (only available for 'LENSED_POSITION'
         point source model) and predicted image position by the lens model including an astrometric correction term.

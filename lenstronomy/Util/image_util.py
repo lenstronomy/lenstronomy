@@ -6,7 +6,6 @@ from scipy import interpolate
 from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
-from skimage import filters
 
 
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
@@ -309,4 +308,5 @@ def gradient_map(image):
     :param image: 2d numpy array
     :return: array of same size as input, with gradients between neighboring pixels
     """
+    from skimage import filters
     return filters.sobel(image)

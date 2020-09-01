@@ -43,8 +43,8 @@ class ImageSparseFit(ImageFit):
                                              kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
                                              psf_error_map_bool_list=psf_error_map_bool_list)
 
-        self._setup_source_numerics(kwargs_numerics, kwargs_sparse_solver)
-        #self._setup_source_numerics_alt(kwargs_numerics, self._supersampling_factor_source)
+        # setup a numerics class for source as well, with independent supersampling
+        self.SourceNumerics, self._supersampling_factor_source = self._setup_source_numerics(kwargs_numerics, kwargs_sparse_solver)
         
         self._no_lens_light = (self.LensLightModel is None or len(self.LensLightModel.profile_type_list) == 0)
         self._no_point_sources = (self.PointSource is None or len(self.PointSource.point_source_type_list) == 0)
@@ -68,7 +68,7 @@ class ImageSparseFit(ImageFit):
                 print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
             self.sparseSolver = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
                                                      self.SourceModel, 
-                                                     self._image_linear_solve_point_sources, #TODO: not fully satisfying
+                                                     self._image_linear_solve_point_sources, #TODO: may be a better solution in future
                                                      likelihood_mask=likelihood_mask, **kwargs_sparse_solver)
         # source <-> image pixelated mapping
         self.lensingOperator = self.sparseSolver.lensingOperator
@@ -89,11 +89,7 @@ class ImageSparseFit(ImageFit):
         :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (save computation time). 
         :return: 1d array of surface brightness pixels
         """
-        # ra_grid, dec_grid = self.lensingOperator.sourcePlane.grid()
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
-
-        # TODO : support source grid offsets (using 'delta_x_source_grid' in kwargs_special)
-        # i.e. interpolate the image back to center coordinates
 
         source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
 
@@ -104,8 +100,7 @@ class ImageSparseFit(ImageFit):
                                                              update_mapping=update_mapping, original_source_grid=True)
             source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         
-        # re_size_convolve multiplied by self.Data.pixel_width**2, but flux normalization is handled in lensingOperator
-        #TODO: introduce a parameter in re_size_convolve() to avoid multiplying by this factor
+        # undo flux normalization performed by re_size_convolve (already handled in SLITronomy)
         source_light_final = source_light / self.Data.pixel_width**2
         return source_light_final
 
@@ -123,7 +118,6 @@ class ImageSparseFit(ImageFit):
         """
         if unconvolved is True:
             print("WARNING : sparse solver for lens light does not perform deconvolution of lens light, returning convolved estimate instead")
-        # ra_grid, dec_grid = self.sparseSolver.lensingOperator.imagePlane.grid()
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = util.array2image(lens_light)
@@ -143,7 +137,6 @@ class ImageSparseFit(ImageFit):
         :param kwargs_special: keyword arguments corresponding to "special" parameters
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        #TODO: add the 'inv_bool' parameters like in super.image_linear_solve for point source linear inversion ?
         return self._image_sparse_solve(kwargs_lens, kwargs_source, kwargs_lens_light, 
                                         kwargs_ps, kwargs_extinction, kwargs_special, init_lens_light_model)
 
@@ -322,26 +315,5 @@ class ImageSparseFit(ImageFit):
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source
         kwargs_numerics_source['compute_mode'] = 'regular'
-        self.SourceNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
-        self._supersampling_factor_source = supersampling_factor_source
-
-    # def _setup_source_numerics_alt(self, kwargs_numerics, subgrid_res_source):
-    #     """define a new numerics class specifically for source plane, that may have a different resolution"""
-    #     from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
-    #     from lenstronomy.Data.pixel_grid import PixelGrid
-    #     from lenstronomy.Data.psf import PSF
-    #     # get the axis orientation
-    #     nx, ny = self.Data.num_pixel_axes
-    #     nx_source, ny_source = int(nx * subgrid_res_source), int(ny * subgrid_res_source)
-    #     delta_pix_source = self.Data.pixel_width / float(subgrid_res_source)
-    #     inverse = True if self.Data.transform_pix2angle[0, 0] < 0 else False
-    #     left_lower = False  # ?? how to make sure it's consistent with data ?
-    #     _, _, ra_at_xy_0, dec_at_xy_0, _, _, Mpix2coord, _ \
-    #         = util.make_grid_with_coordtransform(nx_source, delta_pix_source, subgrid_res=1,
-    #                                              left_lower=left_lower, inverse=inverse)
-    #     pixel_grid_source = PixelGrid(nx_source, ny_source, Mpix2coord, ra_at_xy_0, dec_at_xy_0)
-    #     psf = self.PSF  #PSF(psf_type='NONE')
-    #     kwargs_numerics_source = kwargs_numerics.copy()
-    #     kwargs_numerics_source['supersampling_factor'] = 1
-    #     kwargs_numerics_source['compute_mode'] = 'regular'
-    #     return NumericsSubFrame(pixel_grid=pixel_grid_source, psf=psf, **kwargs_numerics_source)
+        sourceNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        return sourceNumerics, supersampling_factor_source

@@ -6,6 +6,7 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
+from lenstronomy.Util import util
 
 import numpy as np
 
@@ -15,7 +16,8 @@ class ImageModel(object):
     this class uses functions of lens_model and source_model to make a lensed image
     """
     def __init__(self, data_class, psf_class, lens_model_class=None, source_model_class=None,
-                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics=None):
+                 lens_light_model_class=None, point_source_class=None, extinction_class=None, kwargs_numerics=None,
+                 kwargs_pixelbased=None):
         """
         :param data_class: instance of ImageData() or PixelGrid() class
         :param psf_class: instance of PSF() class
@@ -26,6 +28,7 @@ class ImageModel(object):
         :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
         """
         self.type = 'single-band'
+        self.num_bands = 1
         self.PSF = psf_class
         self.Data = data_class
         self.PSF.set_pixel_size(self.Data.pixel_width)
@@ -51,12 +54,19 @@ class ImageModel(object):
         if lens_light_model_class is None:
             lens_light_model_class = LightModel(light_model_list=[])
         self.LensLightModel = lens_light_model_class
-        self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
-        self.num_bands = 1
         self._kwargs_numerics = kwargs_numerics
         if extinction_class is None:
             extinction_class = DifferentialExtinction(optical_depth_model=[])
         self._extinction = extinction_class
+        if kwargs_pixelbased is None:
+            kwargs_pixelbased = {}
+        self.pixelbased_bool = self._detect_pixelbased_models()
+        if self.pixelbased_bool is True:
+            self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
+            self.PixelSolver = self._setup_pixelbased_solver(kwargs_pixelbased)
+            self.source_mapping = None  # handled with pixelated operator
+        else:
+            self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -81,7 +91,7 @@ class ImageModel(object):
         self.ImageNumerics = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **self._kwargs_numerics)
 
     def source_surface_brightness(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                  unconvolved=False, de_lensed=False, k=None):
+                                  unconvolved=False, de_lensed=False, k=None, update_pixelbased_mapping=True):
         """
 
         computes the source surface brightness distribution
@@ -94,6 +104,20 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 1d array of surface brightness pixels
         """
+        if self.pixelbased_bool is True:
+            return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
+                                                       kwargs_extinction=kwargs_extinction, 
+                                                       kwargs_special=kwargs_special,
+                                                       unconvolved=unconvolved, de_lensed=de_lensed, k=k,
+                                                       update_mapping=update_pixelbased_mapping)
+        else:
+            return self._source_surface_brightness_analytical(kwargs_source, kwargs_lens=kwargs_lens, 
+                                                       kwargs_extinction=kwargs_extinction, 
+                                                       kwargs_special=kwargs_special,
+                                                       unconvolved=unconvolved, de_lensed=de_lensed, k=k)
+
+    def _source_surface_brightness_analytical(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                              unconvolved=False, de_lensed=False, k=None):
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros((self.Data.num_pixel_axes))
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
@@ -106,7 +130,56 @@ class ImageModel(object):
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
+    def _source_surface_brightness_pixelbased(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                              unconvolved=False, de_lensed=False, k=None, update_mapping=True):
+        """
+        computes the source surface brightness distribution
+
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_extinction: list of keyword arguments of extinction model
+        :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
+        :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
+        :param k: integer, if set, will only return the model of the specific index
+        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (save computation time). 
+        :return: 1d array of surface brightness pixels
+        """
+        if len(self.SourceModel.profile_type_list) == 0:
+            nx, ny = self.Data.num_pixel_axes
+            if de_lensed is True:
+                ss_factor_source = self.SourceNumerics.grid_supersampling_factor
+                return np.zeros((nx*ss_factor_source, ny*ss_factor_source))
+            else:
+                return np.zeros((nx, ny))
+
+        ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
+        source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
+        if de_lensed is True:
+            source_light = self.SourceNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
+        else:
+            source_mapping = self.PixelSolver.lensingOperator
+            source_light = source_mapping.source2image(source_light, kwargs_lens=kwargs_lens, kwargs_special=kwargs_special,
+                                                       update_mapping=update_mapping, original_source_grid=True)
+            source_light = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
+        # undo flux normalization performed by re_size_convolve (already handled in SLITronomy)
+        source_light_final = source_light / self.Data.pixel_width**2
+        return source_light_final
+
     def lens_surface_brightness(self, kwargs_lens_light, unconvolved=False, k=None):
+        """
+
+        computes the lens surface brightness distribution
+
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
+        :return: 1d array of surface brightness pixels
+        """
+        if self.pixelbased_bool is True:
+            return self._lens_surface_brightness_pixelbased(kwargs_lens_light, unconvolved=unconvolved, k=k)
+        else:
+            return self._lens_surface_brightness_analytical(kwargs_lens_light, unconvolved=unconvolved, k=k)
+
+    def _lens_surface_brightness_analytical(self, kwargs_lens_light, unconvolved=False, k=None):
         """
 
         computes the lens surface brightness distribution
@@ -118,6 +191,22 @@ class ImageModel(object):
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
+        return lens_light_final
+
+    def _lens_surface_brightness_pixelbased(self, kwargs_lens_light, unconvolved=False, k=None):
+        """
+
+        computes the lens surface brightness distribution
+
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
+        :return: 1d array of surface brightness pixels
+        """
+        ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
+        lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
+        if unconvolved is True:
+            raise ValueError("Lens light pixel-based modelling does not perform deconvolution")
+        lens_light_final = util.array2image(lens_light)
         return lens_light_final
 
     def point_source(self, kwargs_ps, kwargs_lens=None, kwargs_special=None, unconvolved=False, k=None):
@@ -198,3 +287,48 @@ class ImageModel(object):
                 x_pos = x_pos + delta_x_new
                 y_pos = y_pos + delta_y_new
         return x_pos, y_pos
+
+    def _detect_pixelbased_models(self):
+        source_model_list = self.SourceModel.profile_type_list
+        if 'SLIT_STARLETS' in source_model_list or 'SLIT_STARLETS_GEN2' in source_model_list:
+            if len(source_model_list) > 1:
+                raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only source model list for pixel-based modelling")
+            return True
+        return False
+
+    def _setup_pixelbased_source_numerics(self, kwargs_numerics, kwargs_pixelbased):
+        """define a new numerics class specifically for source plane, that may have a different resolution"""
+        from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
+        supersampling_factor_source = kwargs_pixelbased.pop('supersampling_factor_source', 1)
+        # numerics for source plane may have a different supersampling resolution
+        kwargs_numerics_source = kwargs_numerics.copy()
+        kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source
+        kwargs_numerics_source['compute_mode'] = 'regular'
+        source_numerics_class = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
+        return source_numerics_class
+
+    def _setup_pixelbased_solver(self, kwargs_pixelbased):    
+        lens_light_bool = (self.LensLightModel is not None and len(self.LensLightModel.profile_type_list) > 0)
+        point_source_bool = (self.PointSource is not None and len(self.PointSource.point_source_type_list) > 0)
+
+        if lens_light_bool is False and point_source_bool is False:
+            # model_list = self.SourceModel.profile_type_list
+            # if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+            #     raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only source model list for pixel-based modelling")
+            from slitronomy.Optimization.solver_source import SparseSolverSource
+            solver_class = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics,
+                                              self.SourceModel, **kwargs_pixelbased)
+        elif point_source_bool is False:
+            model_list = self.LensLightModel.profile_type_list
+            if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only lens light model list for pixel-based modelling")
+            from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
+            solver_class = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
+                                                  self.SourceModel, self.LensLightModel, **kwargs_pixelbased)
+        elif lens_light_bool is False:
+            if not np.all(self.PSF.psf_error_map == 0):
+                print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
+            from slitronomy.Optimization.solver_source_ps import SparseSolverSourcePS
+            solver_class = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
+                                                self.SourceModel, **kwargs_pixelbased)
+        return solver_class

@@ -66,7 +66,7 @@ class MultiBandImageReconstruction(object):
                     param_i = param[index]
                     cov_param_i = cov_param[index]
 
-                model_band = ModelBand(multi_band_list, multi_band_type, kwargs_model, model[index], error_map[index], cov_param_i,
+                model_band = ModelBand(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
                                        param_i, copy.deepcopy(kwargs_params),
                                        image_likelihood_mask_list=image_likelihood_mask_list, band_index=i)
                 self.model_band_list.append(model_band)
@@ -97,7 +97,7 @@ class ModelBand(object):
     a subset of model components get used for this specific band in the modeling.
 
     """
-    def __init__(self, multi_band_list, multi_band_type, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                  image_likelihood_mask_list=None, band_index=0):
         """
 
@@ -113,7 +113,7 @@ class ModelBand(object):
         :param band_index: integer of the band to be considered in this class
         """
 
-        self._bandmodel = SingleBandMultiModel(multi_band_list, multi_band_type, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
+        self._bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
                                                band_index=band_index)
         self._kwargs_special_partial = kwargs_params.get('kwargs_special', None)
         kwarks_lens_partial, kwargs_source_partial, kwargs_lens_light_partial, kwargs_ps_partial, self._kwargs_extinction_partial = self._bandmodel.select_kwargs(**kwargs_params)

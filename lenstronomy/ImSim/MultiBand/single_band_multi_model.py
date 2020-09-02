@@ -1,12 +1,10 @@
-from lenstronomy.ImSim.image_solve import ImageFit
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
-from lenstronomy.ImSim.image_sparse_solve import ImageSparseFit
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Util import class_creator
 
 
-class SingleBandMultiModel(ImageFit):
+class SingleBandMultiModel(ImageLinearFit):
     """
     class to simulate/reconstruct images in multi-band option.
     This class calls functions of image_model.py with different bands with
@@ -25,50 +23,23 @@ class SingleBandMultiModel(ImageFit):
 
     """
 
-    def __init__(self, multi_band_list, multi_band_type, kwargs_model, likelihood_mask_list=None, band_index=0,
-                 kwargs_sparse_solver={}):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_pixelbased=None):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
-        :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
-            - 'multi-linear': linear amplitudes are inferred on single data set
-            - 'linear-joint': linear amplitudes ae jointly inferred
-            - 'single-band': single band
-            - 'single-band-sparse': single band, for pixelated sparse modeling
         :param kwargs_model: model option keyword arguments
         :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
         :param band_index: integer, index of the imaging band to model
-        :param kwargs_sparse_solver: dict, parameters passed to the SLITronomy sparse solver
         """
+        self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
-            likelihood_mask = None
-        else:
-            likelihood_mask = likelihood_mask_list[band_index]
+            likelihood_mask_list = [None for i in range(len(multi_band_list))]
         lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(band_index=band_index, **kwargs_model)
         kwargs_data = multi_band_list[band_index][0]
         kwargs_psf = multi_band_list[band_index][1]
         kwargs_numerics = multi_band_list[band_index][2]
         data_i = ImageData(**kwargs_data)
         psf_i = PSF(**kwargs_psf)
-
-        super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
-                                                   lens_light_model_class, point_source_class, extinction_class, 
-                                                   kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
-                                                   psf_error_map_bool_list=None)
-
-        if multi_band_type in ['single-band', 'multi-linear', 'joint-linear']:
-            self.type = 'single-band-multi-linear-model'
-            self.fit = ImageLinearFit(data_i, psf_i, lens_model_class, source_model_class,
-                                      lens_light_model_class, point_source_class, extinction_class,
-                                      kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask)
-        elif multi_band_type in ['single-band-sparse']:
-            self.type = 'single-band-multi-sparse-model'
-            self.fit = ImageSparseFit(data_i, psf_i, lens_model_class, source_model_class,
-                                      lens_light_model_class, point_source_class, extinction_class,
-                                      kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask,
-                                      kwargs_sparse_solver=kwargs_sparse_solver)
-        else:
-            raise ValueError("multi_band_type '{}' is not a valid SingleBandMultiModel type.".format(multi_band_type))
 
         index_lens_model_list = kwargs_model.get('index_lens_model_list', [None for i in range(len(multi_band_list))])
         self._index_lens_model = index_lens_model_list[band_index]
@@ -78,8 +49,14 @@ class SingleBandMultiModel(ImageFit):
         self._index_lens_light = index_lens_light_list[band_index]
         index_point_source_list = kwargs_model.get('index_point_source_model_list', [None for i in range(len(multi_band_list))])
         self._index_point_source = index_point_source_list[band_index]
-        index_optical_depth = kwargs_model.get('index_optical_depth_model_list', [None for i in range(len(multi_band_list))])
+        index_optical_depth = kwargs_model.get('index_optical_depth_model_list',
+                                                   [None for i in range(len(multi_band_list))])
         self._index_optical_depth = index_optical_depth[band_index]
+
+        super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
+                                                   lens_light_model_class, point_source_class, extinction_class,
+                                                   kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],
+                                                   kwargs_pixelbased=kwargs_pixelbased)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
@@ -98,19 +75,14 @@ class SingleBandMultiModel(ImageFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        if self.type == 'single-band-multi-linear-model':
-            model, error_map, cov_param, param = self.fit.image_linear_solve(kwargs_lens_i, kwargs_source_i,
-                                                                             kwargs_lens_light_i, kwargs_ps_i,
-                                                                             kwargs_extinction_i, kwargs_special, 
-                                                                             inv_bool=inv_bool)
-        elif self.type == 'single-band-multi-sparse-model':
-            model, error_map, param, logL_penalty = self.fit.image_sparse_solve(kwargs_lens_i, kwargs_source_i, 
-                                                                  kwargs_lens_light_i, kwargs_special)
-            cov_param = None
-        return model, error_map, cov_param, param
+        wls_model, error_map, cov_param, param = self._image_linear_solve(kwargs_lens_i, kwargs_source_i,
+                                                                          kwargs_lens_light_i, kwargs_ps_i,
+                                                                          kwargs_extinction_i, kwargs_special, inv_bool=inv_bool)
+        return wls_model, error_map, cov_param, param
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
+                                    check_positive_flux=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -118,6 +90,8 @@ class SingleBandMultiModel(ImageFit):
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
+        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
+         components and applies a punishment in the likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         # generate image
@@ -126,13 +100,9 @@ class SingleBandMultiModel(ImageFit):
                                                                                               kwargs_lens_light,
                                                                                               kwargs_ps,
                                                                                               kwargs_extinction)
-        if self.type == 'single-band-multi-linear-model':
-            logL = self.fit.likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
-                                                        kwargs_extinction_i, kwargs_special, source_marg=source_marg,
-                                                        linear_prior=linear_prior)
-        elif self.type == 'single-band-multi-sparse-model':
-            logL = self.fit.likelihood_data_given_model(kwargs_lens=kwargs_lens_i, kwargs_source=kwargs_source_i, 
-                                                        kwargs_lens_light=kwargs_lens_light_i, kwargs_special=kwargs_special)
+        logL = self._likelihood_data_given_model(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
+                                                 kwargs_extinction_i, kwargs_special, source_marg=source_marg,
+                                                 linear_prior=linear_prior, check_positive_flux=check_positive_flux)
         return logL
 
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
@@ -142,10 +112,30 @@ class SingleBandMultiModel(ImageFit):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i = self.select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        num = self.fit.num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
+        num = self._num_param_linear(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i)
         return num
 
-    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param):
+    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                               kwargs_extinction=None, kwargs_special=None):
+        """
+        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+
+        :param kwargs_lens:
+        :param kwargs_source:
+        :param kwargs_lens_light:
+        :param kwargs_ps:
+        :return:
+        """
+        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i = self.select_kwargs(kwargs_lens,
+                                                                                              kwargs_source,
+                                                                                              kwargs_lens_light,
+                                                                                              kwargs_ps,
+                                                                                              kwargs_extinction)
+        A = self._linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
+                                         kwargs_extinction_i, kwargs_special)
+        return A
+
+    def error_map_source(self, kwargs_source, x_grid, y_grid, cov_param, model_index_select=True):
         """
         variance of the linear source reconstruction in the source plane coordinates,
         computed by the diagonal elements of the covariance matrix of the source reconstruction as a sum of the errors
@@ -164,19 +154,6 @@ class SingleBandMultiModel(ImageFit):
         else:
             kwargs_source_i = [kwargs_source[k] for k in self._index_source]
         return self._error_map_source(kwargs_source_i, x_grid, y_grid, cov_param)
-
-    def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
-        """
-
-        links linear parameters to kwargs arguments
-
-        :param param: linear parameter vector corresponding to the response matrix
-        :return: updated list of kwargs with linear parameter values
-        """
-        if self.type == 'single-band-multi-linear-model':
-            return self.fit.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
-        elif self.type == 'single-band-multi-sparse-model':
-            return self.fit.update_sparse_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
 
     def select_kwargs(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                       kwargs_extinction=None, kwargs_special=None):
@@ -210,27 +187,3 @@ class SingleBandMultiModel(ImageFit):
         else:
             kwargs_extinction_i = [kwargs_extinction[k] for k in self._index_optical_depth]
         return kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i
-
-    def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                               kwargs_extinction=None, kwargs_special=None):
-        """
-        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
-
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :return:
-        """
-        kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i = self.select_kwargs(kwargs_lens,
-                                                                                              kwargs_source,
-                                                                                              kwargs_lens_light,
-                                                                                              kwargs_ps,
-                                                                                              kwargs_extinction)
-        if self.type == 'single-band-multi-linear-model':
-            A = self.fit.linear_response_matrix(kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i,
-                                                  kwargs_extinction_i, kwargs_special)
-        elif self.type == 'single-band-multi-sparse-model':
-            raise ValueError("The linear response matrix is not well defined for sparse optimization")
-            #TODO: returns the "point-source-only" response matrix instead ?
-        return A

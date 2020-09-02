@@ -169,7 +169,7 @@ class LightModelBase(object):
     def delete_interpol_caches(self):
         """Call the delete_cache method of INTERPOL profiles"""
         for i, model in enumerate(self.profile_type_list):
-            if model in ['INTERPOL', 'STARLETS', 'STARLETS_GEN2']:
+            if model in ['INTERPOL', 'SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
                 self.func_list[i].delete_cache()
 
     def _transform_kwargs(self, kwargs_list):

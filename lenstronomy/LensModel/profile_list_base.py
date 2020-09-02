@@ -224,6 +224,9 @@ class ProfileListBase(object):
         elif lens_type == 'NumericalAlpha':
             from lenstronomy.LensModel.Profiles.numerical_deflections import NumericalAlpha
             return NumericalAlpha(custom_class)
+        elif lens_type == 'MULTIPOLE':
+            from lenstronomy.LensModel.Profiles.multipole import Multipole
+            return Multipole()
         else:
             raise ValueError('%s is not a valid lens model' % lens_type)
 

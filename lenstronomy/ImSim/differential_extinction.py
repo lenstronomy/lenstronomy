@@ -28,6 +28,7 @@ class DifferentialExtinction(object):
         :param y: coordinate in image plane of flux intensity
         :param tau_0: normalization factor of the extinction profile
         :param kwargs_extinction: keyword argument list matching the extinction profile
+        :param kwargs_special: keyword arguments hosting special parameters, here required 'tau0_list'
         :return: extinction corrected flux
         """
         if self._compute_bool is False or kwargs_extinction is None:

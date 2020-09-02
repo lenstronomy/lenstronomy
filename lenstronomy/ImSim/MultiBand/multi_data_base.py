@@ -6,6 +6,11 @@ class MultiDataBase(object):
     """
 
     def __init__(self, imageModel_list, compute_bool=None):
+        """
+
+        :param imageModel_list: list of ImageModel instances (supporting linear inversions)
+        :param compute_bool: list of booleans for each imaging band indicating whether to model it or not.
+        """
         self._num_bands = len(imageModel_list)
         if compute_bool is None:
             compute_bool = [True] * self._num_bands
@@ -17,10 +22,6 @@ class MultiDataBase(object):
         self._num_response_list = []
         for imageModel in imageModel_list:
             self._num_response_list.append(imageModel.num_data_evaluate)
-        #self.LensModel = self._imageModel_list[0].LensModel
-        #self.SourceModel = self._imageModel_list[0].SourceModel
-        #self.LensLightModel = self._imageModel_list[0].LensLightModel
-        #self.PointSource = self._imageModel_list[0].PointSource
 
     @property
     def num_bands(self):

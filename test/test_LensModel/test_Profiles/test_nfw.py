@@ -99,26 +99,18 @@ class TestNFW(object):
 
         nfw = NFW(interpol=False)
         nfw_interp = NFW(interpol=True)
-        nfw_interp_lookup = NFW(interpol=True, lookup=True)
 
         values = nfw.function(x, y, Rs, alpha_Rs)
         values_interp = nfw_interp.function(x, y, Rs, alpha_Rs)
-        values_interp_lookup = nfw_interp_lookup.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
-        npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
 
         values = nfw.derivatives(x, y, Rs, alpha_Rs)
         values_interp = nfw_interp.derivatives(x, y, Rs, alpha_Rs)
-        values_interp_lookup = nfw_interp_lookup.derivatives(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
-        npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
 
         values = nfw.hessian(x, y, Rs, alpha_Rs)
         values_interp = nfw_interp.hessian(x, y, Rs, alpha_Rs)
-        values_interp_lookup = nfw_interp_lookup.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values, values_interp, decimal=4)
-        npt.assert_almost_equal(values, values_interp_lookup, decimal=4)
-
 
 
 class TestMassAngleConversion(object):

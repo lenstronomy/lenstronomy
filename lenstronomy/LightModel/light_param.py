@@ -171,19 +171,6 @@ class LightParam(object):
 
     def num_param_linear(self):
         """
-
         :return: number of linear basis set coefficients
         """
         return self._lightModel.num_param_linear(kwargs_list=self.kwargs_fixed)
-
-    def check_positive_flux_profile(self, kwargs_list):
-        pos_bool = True
-        for k, model in enumerate(self.model_list):
-            if 'amp' in kwargs_list[k]:
-                if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                         'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                         'DOUBLE_CHAMELEON']:
-                    if kwargs_list[k]['amp'] < 0:
-                        pos_bool = False
-                        break
-        return pos_bool

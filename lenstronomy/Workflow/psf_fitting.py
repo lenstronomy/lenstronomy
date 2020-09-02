@@ -79,12 +79,13 @@ class PsfFitting(object):
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
 
-        point_source_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list, kernel_size, kernel_old, block_center_neighbour=block_center_neighbour)
+        psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list, kernel_size,
+                                            kernel_old, block_center_neighbour=block_center_neighbour)
 
-        kernel_new, error_map = self.combine_psf(point_source_list, kernel_old,
-                                                 sigma_bkg=self._image_model_class.Data.background_rms, factor=psf_iter_factor,
-                                                 stacking_option=stacking_method, symmetry=psf_symmetry)
+        kernel_new = self.combine_psf(psf_kernel_list, kernel_old, factor=psf_iter_factor,
+                                      stacking_option=stacking_method, symmetry=psf_symmetry)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
+        error_map = self.error_map_estimate(kernel_new, star_cutout_list, amp, x_, y_)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
         kwargs_psf_new['point_source_supersampling_factor'] = 1
@@ -99,15 +100,24 @@ class PsfFitting(object):
                          verbose=True):
         """
 
-        :param kwargs_psf:
-        :param kwargs_params:
-        :param num_iter:
-        :param no_break:
-        :param stacking_method:
-        :param block_center_neighbour:
-        :param keep_psf_error_map:
-        :param psf_symmetry:
-        :param psf_iter_factor:
+        :param kwargs_psf: keyword arguments to construct the PSF() class
+        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
+        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
+         The choices are:
+         'mean': mean of pixel values as the estimator (not robust to outliers)
+         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
+        :param num_iter: number of iterations in the PSF fitting and image fitting process
+        :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
+         reads out the overall best fit
+        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
+         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
+         contaminate the estimate.
+        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
+        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
+         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
+         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
+         limited constraints/number of point sources in the image.
+        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
         :param verbose:
         :return:
         """
@@ -163,7 +173,6 @@ class PsfFitting(object):
         """
         # reconstructed model with given psf
         model, error_map, cov_param, param = image_model_class.image_linear_solve(**kwargs_params)
-        #model = image_model_class.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         data = image_model_class.Data.data
         mask = image_model_class.likelihood_mask
         kwargs_ps = kwargs_params.get('kwargs_ps', None)
@@ -206,12 +215,17 @@ class PsfFitting(object):
         radius = block_center_neighbour
 
         kernel_list = []
+        star_cutout_list = []
         for l in range(len(x)):
             mask_point_source = self.mask_point_source(ra_image, dec_image, ra_grid, dec_grid, radius, i=l)
             mask_i = mask * mask_point_source
             kernel_deshifted = self.cutout_psf_single(x[l], y[l], image_list[l], mask_i, kernelsize, kernel_init)
             kernel_list.append(kernel_deshifted)
-        return kernel_list
+            x_int = int(round(x[l]))
+            y_int = int(round(y[l]))
+            star_cutout = kernel_util.cutout_source(x_int, y_int, image_list[l], kernelsize, shift=False)
+            star_cutout_list.append(star_cutout)
+        return kernel_list, star_cutout_list
 
     @staticmethod
     def cutout_psf_single(x, y, image, mask, kernelsize, kernel_init):
@@ -247,7 +261,8 @@ class PsfFitting(object):
         star_cutout[mask_cutout == 0] = kernel_shifted[mask_cutout == 0]
         star_cutout[star_cutout < 0] = 0
         # de-shift kernel
-        kernel_deshifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y)
+        kernel_deshifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y, iterations=20,
+                                                       fractional_step_size=0.1)
         # re-size kernel
         kernel_deshifted = image_util.cut_edges(kernel_deshifted, kernelsize)
         # re-normalize kernel again
@@ -255,12 +270,11 @@ class PsfFitting(object):
         return kernel_deshifted
 
     @staticmethod
-    def combine_psf(kernel_list_new, kernel_old, sigma_bkg, factor=1., stacking_option='median', symmetry=1):
+    def combine_psf(kernel_list_new, kernel_old, factor=1., stacking_option='median', symmetry=1):
         """
         updates psf estimate based on old kernel and several new estimates
-        :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image
+        :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image (un-normalized)
         :param kernel_old: old PSF kernel
-        :param sigma_bkg: estimated background noise in the image
         :param factor: weight of updated estimate based on new and old estimate, factor=1 means new estimate,
         factor=0 means old estimate
         :param stacking_option: option of stacking, mean or median
@@ -282,23 +296,57 @@ class PsfFitting(object):
 
         kernel_old_rotated = np.zeros((symmetry, kernelsize, kernelsize))
         for i in range(symmetry):
-            kernel_old_rotated[i, :, :] = kernel_old
+            kernel_old_rotated[i, :, :] = kernel_old/np.sum(kernel_old)
 
-        kernel_list_new = np.append(kernel_list, kernel_old_rotated, axis=0)
+        kernel_list_new_extended = np.append(kernel_list, kernel_old_rotated, axis=0)
         if stacking_option == 'median':
-            kernel_new = np.median(kernel_list_new, axis=0)
+            kernel_new = np.median(kernel_list_new_extended, axis=0)
         elif stacking_option == 'mean':
-            kernel_new = np.mean(kernel_list_new, axis=0)
+            kernel_new = np.mean(kernel_list_new_extended, axis=0)
         else:
             raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
         kernel_new[kernel_new < 0] = 0
         kernel_new = kernel_util.kernel_norm(kernel_new)
-        kernel_return = factor * kernel_new + (1.-factor)* kernel_old
+        kernel_return = factor * kernel_new + (1.-factor) * kernel_old
+        return kernel_return
 
-        kernel_bkg = copy.deepcopy(kernel_return)
-        kernel_bkg[kernel_bkg < sigma_bkg] = sigma_bkg
-        error_map = np.var(kernel_list_new, axis=0) / kernel_bkg**2 / 2.
-        return kernel_return, error_map
+    def error_map_estimate(self, kernel, star_cutout_list, amp, x_pos, y_pos):
+        """
+        provides a psf_error_map based on the goodness of fit of the given PSF kernel on the point source cutouts,
+        their estimated amplitudes and positions
+
+        :param kernel: PSF kernel
+        :param star_cutout_list: list of 2d arrays of cutouts of the point sources with all other model components subtracted
+        :param amp: list of amplitudes of the estimated PSF kernel
+        :param x_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
+        :param y_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
+        :return: relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image
+        """
+        error_map_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))
+        for i, star in enumerate(star_cutout_list):
+            x, y, amp_i = x_pos[i], y_pos[i], amp[i]
+            # shift kernel
+            x_int = int(round(x))
+            y_int = int(round(y))
+            shift_x = x_int - x
+            shift_y = y_int - y
+            kernel_shifted = interp.shift(kernel, [-shift_y, -shift_x], order=1)
+            # multiply kernel with amplitude
+            model = kernel_shifted * amp_i
+            # compute residuals
+            residual = np.abs(star - model)
+            # subtract background and Poisson noise residuals
+            C_D_cutout = kernel_util.cutout_source(x_int, y_int, self._image_model_class.Data.C_D, len(star), shift=False)
+            mask = kernel_util.cutout_source(x_int, y_int, self._image_model_class.likelihood_mask, len(star), shift=False)
+            residual -= np.sqrt(C_D_cutout)
+            residual[residual < 0] = 0
+            # estimate relative error per star
+            residual /= amp_i
+            error_map_list[i, :, :] = residual**2*mask
+        # take median absolute error for each pixel
+        error_map = np.median(error_map_list, axis=0)
+        error_map[kernel > 0] /= kernel[kernel > 0]**2
+        return error_map
 
     @staticmethod
     def mask_point_source(x_pos, y_pos, x_grid, y_grid, radius, i=0):

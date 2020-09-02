@@ -145,7 +145,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, l
 
 
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
-                  band_index=0, kwargs_sparse_solver={}):
+                  band_index=0, kwargs_pixelbased=None):
     """
 
 
@@ -154,7 +154,6 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     - 'multi-linear': linear amplitudes are inferred on single data set
     - 'linear-joint': linear amplitudes ae jointly inferred
     - 'single-band': single band
-    - 'single-band-sparse': single band, for pixelated sparse modeling
 
     :return: MultiBand class instance
     """
@@ -165,14 +164,10 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     elif multi_band_type == 'joint-linear':
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
         multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
-    elif multi_band_type in ['single-band', 'single-band-sparse']:
+    elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-        multiband = SingleBandMultiModel(multi_band_list, multi_band_type, kwargs_model, 
-                                         likelihood_mask_list=likelihood_mask_list,
-                                         band_index=band_index, kwargs_sparse_solver=kwargs_sparse_solver)
-    elif multi_band_type == 'multi-sparse':
-        from lenstronomy.ImSim.MultiBand.multi_sparse import MultiSparse
-        multiband = MultiSparse(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
+        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

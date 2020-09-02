@@ -116,7 +116,8 @@ class JointLinear(MultiLinear):
         return C_D_response, model_error
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None):
+                                    kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
+                                    check_positive_flux=False):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
@@ -124,6 +125,8 @@ class JointLinear(MultiLinear):
         :param kwargs_source:
         :param kwargs_lens_light:
         :param kwargs_ps:
+        :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
+         components and applies a punishment in the likelihood if so.
         :return: log likelihood (natural logarithm) (sum of the log likelihoods of the individual images)
         """
         # generate image
@@ -141,4 +144,8 @@ class JointLinear(MultiLinear):
         if cov_matrix is not None and source_marg:
             marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
+        if check_positive_flux is True and self._num_bands > 0:
+            bool = self._imageModel_list[0].check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool is False:
+                logL -= 10 ** 5
         return logL

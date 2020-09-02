@@ -6,35 +6,35 @@ import lenstronomy.Util.util as util
 
 g_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 22.01,
-                   'magnitude_zero_point': 25.40,
+                   'magnitude_zero_point': 26.58,
                    'num_exposures': 10,
                    'seeing': 1.12,
                    'psf_type': 'GAUSSIAN'}
 
 r_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 21.15,
-                   'magnitude_zero_point': 25.50,
+                   'magnitude_zero_point': 26.78,
                    'num_exposures': 10,
                    'seeing': 0.96,
                    'psf_type': 'GAUSSIAN'}
 
 i_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 19.89,
-                   'magnitude_zero_point': 25.39,
+                   'magnitude_zero_point': 26.75,
                    'num_exposures': 10,
                    'seeing': 0.88,
                    'psf_type': 'GAUSSIAN'}
 
 z_band_obs = {'exposure_time': 90.,
                    'sky_brightness': 18.72,
-                   'magnitude_zero_point': 25.06,
+                   'magnitude_zero_point': 26.48,
                    'num_exposures': 10,
                    'seeing': 0.84,
                    'psf_type': 'GAUSSIAN'}
 
 Y_band_obs = {'exposure_time': 45.,
                    'sky_brightness': 17.96,
-                   'magnitude_zero_point': 23.98,
+                   'magnitude_zero_point': 25.40,
                    'num_exposures': 10,
                    'seeing': 0.9,
                    'psf_type': 'GAUSSIAN'}
@@ -45,7 +45,7 @@ Y_band_obs = {'exposure_time': 45.,
 :keyword magnitude_zero_point: magnitude in which 1 count (e-) per second per arcsecond square is registered
 :keyword num_exposures: number of exposures that are combined (depends on coadd_years)  
 :keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF
-:keyword psf_type: string, type of PSF ('GAUSSIAN' and 'PIXEL' supported) 
+:keyword psf_type: string, type of PSF ('GAUSSIAN' supported) 
 """
 
 class DES(object):
@@ -57,7 +57,7 @@ class DES(object):
 
         :param band: string, 'g', 'r', 'i', 'z', or 'Y' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 3.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 1-6.
         """
         if band == 'g':
             self.obs = g_band_obs

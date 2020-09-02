@@ -134,6 +134,16 @@ def image2array(image):
 
 def array2cube(array, n_1, n_23):
     """
+    returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d array with shape (n_1, sqrt(n_23), sqrt(n_23))
+    
+    :param array: image values
+    :type array: 1d array
+    :param n_1: first dimension of returned array
+    :type int:
+    :param n_23: square of second and third dimensions of returned array
+    :type int:
+    :returns: 3d array
+    :raises ValueError: when n_23 is not a perfect square
     """
     n = int(np.sqrt(n_23))
     if n**2 != n_23:
@@ -145,6 +155,11 @@ def array2cube(array, n_1, n_23):
 
 def cube2array(cube):
     """
+    returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)
+    
+    :param array: image values
+    :type array: 3d array
+    :returns: 1d array
     """
     n_1, n_2, n_3 = cube.shape
     array = cube.reshape(n_1 * n_2 * n_3)

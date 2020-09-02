@@ -155,8 +155,16 @@ class Numerics(PointSourceRendering):
 
     @property
     def convolution_class(self):
+        """
+
+        :return: convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, ...)
+        """
         return self._conv
 
     @property
     def grid_class(self):
+        """
+
+        :return: grid class (can be RegularGrid, AdaptiveGrid)
+        """
         return self._grid

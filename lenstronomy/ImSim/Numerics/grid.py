@@ -211,7 +211,7 @@ class RegularGrid(Coordinates1D):
     @property
     def supersampling_factor(self):
         """
-        :return: factor (per axis) of super-sampling
+        :return: factor (per axis) of super-sampling relative to a pixel
         """
         return self._supersampling_factor
 

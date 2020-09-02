@@ -330,10 +330,10 @@ class ImageModel(object):
         psf_type = self.PSF.psf_type
         supersampling_convolution = kwargs_numerics.get('supersampling_convolution', False)
         supersampling_factor = kwargs_numerics.get('supersampling_factor', 1)
-        compute_type = kwargs_numerics.get('compute_type', 'regular')
-        if psf_type != 'PIXEL':
+        compute_mode = kwargs_numerics.get('compute_mode', 'regular')
+        if psf_type not in ['PIXEL', 'NONE']:
             raise ValueError("Only convolution using a pixelated kernel is supported for pixel-based modelling")
-        if compute_type != 'regular':
+        if compute_mode != 'regular':
             raise ValueError("Only regular coordinate grid is supported for pixel-based modelling")
         if (supersampling_convolution is True and supersampling_factor > 1):
             raise ValueError("Only non-supersampled convolution is supported for pixel-based modelling")

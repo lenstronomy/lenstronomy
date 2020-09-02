@@ -14,7 +14,7 @@ class ModelBandPlot(ModelBand):
     class to plot a single band given the modeling results
 
     """
-    def __init__(self, multi_band_list, multi_band_type, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+    def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                  likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
         """
 
@@ -31,7 +31,7 @@ class ModelBandPlot(ModelBand):
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         """
-        ModelBand.__init__(self, multi_band_list, multi_band_type, kwargs_model, model, error_map, cov_param, param, kwargs_params,
+        ModelBand.__init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                            image_likelihood_mask_list=likelihood_mask_list, band_index=band_index)
 
         self._lensModel = self._bandmodel.LensModel

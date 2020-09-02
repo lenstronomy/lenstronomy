@@ -306,7 +306,7 @@ class TestRaise(unittest.TestCase):
         self.kwargs_lens_light = [{'amp': lens_light_starlets, 'n_scales': n_scales, 'n_pixels': numPix, 'scale': deltaPix, 'center_x': 0, 'center_y': 0}]
         self.lens_light_model_class = LightModel(light_model_list=['SLIT_STARLETS_GEN2'])
 
-        kwargs_numerics = {'supersampling_factor': 1}
+        self.kwargs_numerics = {'supersampling_factor': 1}
         self.kwargs_pixelbased = {
             'supersampling_factor_source': 2, # supersampling of pixelated source grid
 
@@ -322,35 +322,40 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             # test various numerics that are not supported by the pixelbased solver
             kwargs_numerics = {'supersampling_factor': 2, 'supersampling_convolution': True}
-            self.imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
+            imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
                                              source_model_class=self.source_model_class, 
                                              lens_light_model_class=self.lens_light_model_class,
                                              kwargs_numerics=kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
         with self.assertRaises(ValueError):
             # test various numerics that are not supported by the pixelbased solver
             kwargs_numerics = {'compute_mode': 'adaptive'}
-            self.imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
+            imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
                                              source_model_class=self.source_model_class, 
                                              lens_light_model_class=self.lens_light_model_class, 
                                              kwargs_numerics=kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
         with self.assertRaises(ValueError):
-            kwargs_numerics = {'supersampling_factor': 1}
             # test unsupported gaussian PSF type
             kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 0.5, 'truncation': 5, 'pixel_size': 0.05}
             psf_class = PSF(**kwargs_psf)
-            self.imageModel = ImageLinearFit(self.data_class, psf_class, self.lens_model_class, 
+            imageModel = ImageLinearFit(self.data_class, psf_class, self.lens_model_class, 
                                              source_model_class=self.source_model_class, 
                                              lens_light_model_class=self.lens_light_model_class, 
-                                             kwargs_numerics=kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
+                                             kwargs_numerics=self.kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
         with self.assertRaises(ValueError):
             kwargs_numerics = {'supersampling_factor': 1}
             # test more than a single pixel-based light profile
             source_model_class = LightModel(['SLIT_STARLETS', 'SLIT_STARLETS'])
-            self.imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
+            imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
                                              source_model_class=source_model_class, 
                                              lens_light_model_class=self.lens_light_model_class, 
-                                             kwargs_numerics=kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
-
+                                             kwargs_numerics=self.kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
+        with self.assertRaises(ValueError):
+            # test access to unconvolved lens light surface brightness
+            imageModel = ImageLinearFit(self.data_class, self.psf_class, self.lens_model_class, 
+                                             source_model_class=self.source_model_class, 
+                                             lens_light_model_class=self.lens_light_model_class, 
+                                             kwargs_numerics=self.kwargs_numerics, kwargs_pixelbased=self.kwargs_pixelbased)
+            imageModel.lens_surface_brightness(self.kwargs_lens_light, unconvolved=True)
 
 
 if __name__ == '__main__':

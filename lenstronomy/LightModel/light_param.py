@@ -15,6 +15,7 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
             self.kwargs_fixed = self._lightModel.add_fixed_linear(self.kwargs_fixed)
+            print("WWW", self.kwargs_fixed)
         self._linear_solve = linear_solver
         if kwargs_lower is None:
             kwargs_lower = []
@@ -63,13 +64,13 @@ class LightParam(object):
                             raise ValueError('sigma needs to be fixed in %s.' % model)
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
-                    elif model in ['STARLETS', 'STARLETS_GEN2'] and name == 'amp':
+                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name == 'amp':
                         if 'n_scales' in kwargs_fixed and 'n_pixels' in kwargs_fixed:
                             n_scales = kwargs_fixed['n_scales']
                             n_pixels = kwargs_fixed['n_pixels']
                         else:
-                            raise ValueError("'n_scales' need to be fixed in %s." % model)
-                        num_param = n_scales * n_pixels  # TODO : put real number of coeffs ?
+                            raise ValueError("'n_scales' and 'n_pixels' both need to be fixed in %s." % model)
+                        num_param = n_scales * n_pixels
                         kwargs['amp'] = args[i:i + num_param]
                         i += num_param
                     else:
@@ -92,6 +93,10 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
+            if model == 'MULTI_GAUSSIAN':
+                print(kwargs, kwargs_fixed)
+            if model == 'SLIT_STARLETS':
+                print(kwargs, kwargs_fixed)
 
             param_names = self._param_name_list[k]
             for name in param_names:
@@ -104,19 +109,19 @@ class LightParam(object):
                             num_param = int((n_max + 1) * (n_max + 2) / 2)
                         for i in range(num_param):
                             args.append(kwargs[name][i])
-                    elif model in ['STARLETS', 'STARLETS_GEN2'] and name == 'amp':
+                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name == 'amp':
                         n_scales = kwargs_fixed.get('n_scales')
                         if 'n_pixels' in kwargs_fixed:
                             n_pixels = kwargs_fixed['n_pixels']
                         elif 'n_pixels' in kwargs:
                             n_pixels = kwargs['n_pixels']
                         else:
-                            raise ValueError("'n_pixels' for STARLETS not found in kwargs nor in kwargs_fixed")
+                            raise ValueError("'n_pixels' for SLIT_STARLETS not found in kwargs nor in kwargs_fixed")
                         num_param = n_scales * n_pixels
                         for i in range(num_param):
                             args.append(kwargs[name][i])
-                    elif model in ['STARLETS', 'STARLETS_GEN2'] and name in ['n_scales']:
-                        raise ValueError("'n_scales' must be a fixed keyword argument for STARLETS")
+                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name in ['n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']:
+                        raise ValueError("'{}' must be a fixed keyword argument for STARLETS-like models".format(name))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs['sigma'])
                         for i in range(num_param):
@@ -150,9 +155,9 @@ class LightParam(object):
                         num += num_param
                         for i in range(num_param):
                             list.append(str(name + '_' + self._type + str(k)))
-                    elif model in ['STARLETS', 'STARLETS_GEN2'] and name == 'amp':
+                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name == 'amp':
                         if 'n_scales' not in kwargs_fixed and 'n_pixels' not in kwargs_fixed:
-                            raise ValueError("n_scales and n_pixels need to be fixed in this configuration!")
+                            raise ValueError("n_scales and n_pixels need to be fixed when using STARLETS-like models!")
                         n_scales = kwargs_fixed['n_scales']
                         n_pixels = kwargs_fixed['n_pixels']
                         num_param = n_scales * n_pixels

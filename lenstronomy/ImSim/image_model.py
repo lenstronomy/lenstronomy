@@ -108,6 +108,8 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 1d array of surface brightness pixels
         """
+        if len(self.SourceModel.profile_type_list) == 0:
+            return np.zeros((self.Data.num_pixel_axes))
         if self.pixelbased_bool is True:
             return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
                                                        kwargs_extinction=kwargs_extinction, 
@@ -134,8 +136,6 @@ class ImageModel(object):
         :param k: integer, if set, will only return the model of the specific index
         :return: 1d array of surface brightness pixels
         """
-        if len(self.SourceModel.profile_type_list) == 0:
-            return np.zeros((self.Data.num_pixel_axes))
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
@@ -160,14 +160,6 @@ class ImageModel(object):
         :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed). 
         :return: 1d array of surface brightness pixels
         """
-        if len(self.SourceModel.profile_type_list) == 0:
-            nx, ny = self.Data.num_pixel_axes
-            if de_lensed is True:
-                ss_factor_source = self.SourceNumerics.grid_supersampling_factor
-                return np.zeros((nx*ss_factor_source, ny*ss_factor_source))
-            else:
-                return np.zeros((nx, ny))
-
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
         source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         if de_lensed is True:

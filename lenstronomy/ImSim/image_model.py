@@ -26,6 +26,7 @@ class ImageModel(object):
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
         :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
+        :param kwargs_pixelbased: keyword argument with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         self.type = 'single-band'
         self.num_bands = 1
@@ -292,6 +293,12 @@ class ImageModel(object):
         return x_pos, y_pos
 
     def _detect_pixelbased_models(self):
+        """
+        Returns True if light profiles specific to pixel-based modelling are present in source model list.
+        Otherwise returns False.
+
+        Currently, pixel-based light profiles are: 'SLIT_STARLETS', 'SLIT_STARLETS_GEN2'.
+        """
         source_model_list = self.SourceModel.profile_type_list
         if 'SLIT_STARLETS' in source_model_list or 'SLIT_STARLETS_GEN2' in source_model_list:
             if len(source_model_list) > 1:
@@ -300,13 +307,24 @@ class ImageModel(object):
         return False
 
     def _setup_pixelbased_source_numerics(self, kwargs_numerics, kwargs_pixelbased):
-        """define a new numerics class specifically for source plane, that may have a different resolution"""
+        """
+        Check if model requirement are compatible with support pixel-based solver,
+        and creates a new numerics class specifically for source plane.
+
+        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
+        :param kwargs_pixelbased: keyword argument with various settings related to the pixel-based solver (see SLITronomy documentation)
+        """
         # check that the required convolution type is compatible with pixel-based modelling (in current implementation)
         psf_type = self.PSF.psf_type
         supersampling_convolution = kwargs_numerics.get('supersampling_convolution', False)
         supersampling_factor = kwargs_numerics.get('supersampling_factor', 1)
-        if psf_type != 'PIXEL' or (supersampling_convolution is True and supersampling_factor > 1):
-            raise ValueError("Only convolution on non-supersampled grid using a pixelated kernel is supported for pixel-based modelling")
+        compute_type = kwargs_numerics.get('compute_type', 'regular')
+        if psf_type != 'PIXEL':
+            raise ValueError("Only convolution using a pixelated kernel is supported for pixel-based modelling")
+        if compute_type != 'regular':
+            raise ValueError("Only regular coordinate grid is supported for pixel-based modelling")
+        if (supersampling_convolution is True and supersampling_factor > 1):
+            raise ValueError("Only non-supersampled convolution is supported for pixel-based modelling")
 
         # setup the source numerics with a (possibily) different supersampling resolution
         supersampling_factor_source = kwargs_pixelbased.pop('supersampling_factor_source', 1)

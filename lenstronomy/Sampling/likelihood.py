@@ -31,7 +31,7 @@ class LikelihoodModule(object):
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
                  prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
                  prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_sparse_solver={}):
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_pixelbased={}):
         """
         initializing class
 
@@ -93,7 +93,7 @@ class LikelihoodModule(object):
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                 'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_sparse_solver': kwargs_sparse_solver}
+                                'kwargs_pixelbased': kwargs_pixelbased}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,

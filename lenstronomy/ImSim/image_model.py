@@ -25,8 +25,8 @@ class ImageModel(object):
         :param source_model_class: instance of LightModel() class describing the source parameters
         :param lens_light_model_class: instance of LightModel() class describing the lens light parameters
         :param point_source_class: instance of PointSource() class describing the point sources
-        :param kwargs_numerics: keyword argument with various numeric description (see ImageNumerics class for options)
-        :param kwargs_pixelbased: keyword argument with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param kwargs_numerics: keyword arguments with various numeric description (see ImageNumerics class for options)
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         self.type = 'single-band'
         self.num_bands = 1
@@ -62,8 +62,8 @@ class ImageModel(object):
         if kwargs_pixelbased is None:
             kwargs_pixelbased = {}
         self.pixelbased_bool = self._detect_pixelbased_models()
-        if self.pixelbased_bool is True:
-            from slitronomy.Util.class_util import create_solver_class
+        if self.pixelbased_bool is True:y
+            from slitronomy.Util.class_util import create_solver_class  # requirement on SLITronomy is exclusively here
             self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
             self.PixelSolver = create_solver_class(self.Data, self.PSF, self.ImageNumerics, self.SourceNumerics,
                                                    self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource,

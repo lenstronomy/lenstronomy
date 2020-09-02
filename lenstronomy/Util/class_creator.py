@@ -155,6 +155,8 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     - 'linear-joint': linear amplitudes ae jointly inferred
     - 'single-band': single band
 
+    :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+
     :return: MultiBand class instance
     """
 

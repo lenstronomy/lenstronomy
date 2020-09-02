@@ -6,7 +6,11 @@ import numpy as np
 
 class ImageLinearFit(ImageModel):
     """
-    linear version class, inherits ImageModel
+    linear version class, inherits ImageModel.
+    
+    When light models use pixel-based profile types, such as 'SLIT_STARLETS', 
+    the WLS linear inversion is replaced by the regularized inversion performed by an external solver.
+    The current pixel-based solver is provided by the SLITronomy plug-in.
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, 
@@ -23,6 +27,7 @@ class ImageLinearFit(ImageModel):
         :param kwargs_numerics: keyword arguments passed to the Numerics module
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         being applied to the point sources.
         """
         if likelihood_mask is None:

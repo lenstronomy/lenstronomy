@@ -177,6 +177,48 @@ class TestNumerics(object):
         delta = (self.image_true - image_conv) / self.image_true
         npt.assert_almost_equal(delta[self._conv_pixels_partial], 0, decimal=1)
 
+    def test_property_access(self):
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=self.kwargs_numerics_true)
+        grid_supersampling_factor = image_model.ImageNumerics.grid_supersampling_factor
+        assert grid_supersampling_factor == self._supersampling_factor
+
+        kwargs_numerics = {'supersampling_factor': 1, 'compute_mode': 'regular', 'supersampling_convolution': False}
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=kwargs_numerics)
+        from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
+        convolution_class = image_model.ImageNumerics.convolution_class
+        assert isinstance(convolution_class, PixelKernelConvolution)
+
+        kwargs_numerics = {'supersampling_factor': 2, 'compute_mode': 'regular', 'supersampling_convolution': True}
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=kwargs_numerics)
+        from lenstronomy.ImSim.Numerics.convolution import SubgridKernelConvolution
+        convolution_class = image_model.ImageNumerics.convolution_class
+        assert isinstance(convolution_class, SubgridKernelConvolution)
+
+        kwargs_numerics = {'supersampling_factor': 2, 'compute_mode': 'adaptive', 'supersampling_convolution': True}
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=kwargs_numerics)
+        from lenstronomy.ImSim.Numerics.adaptive_numerics import AdaptiveConvolution
+        convolution_class = image_model.ImageNumerics.convolution_class
+        assert isinstance(convolution_class, AdaptiveConvolution)
+
+        kwargs_numerics = {'compute_mode': 'regular'}
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=kwargs_numerics)
+        from lenstronomy.ImSim.Numerics.grid import RegularGrid
+        grid_class = image_model.ImageNumerics.grid_class
+        assert isinstance(grid_class, RegularGrid)
+
+        kwargs_numerics = {'compute_mode': 'adaptive'}
+        image_model = ImageModel(self.pixel_grid, self.psf_class, lens_light_model_class=self.lightModel,
+                                 kwargs_numerics=kwargs_numerics)
+        from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
+        grid_class = image_model.ImageNumerics.grid_class
+        assert isinstance(grid_class, AdaptiveGrid)
+        
+
 class TestRaise(unittest.TestCase):
 
 

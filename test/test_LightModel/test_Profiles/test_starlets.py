@@ -8,7 +8,7 @@ from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 from lenstronomy.Util import util
 
 
-_force_no_pysap = True  # if issues on Travis-CI to install pysap
+_force_no_pysap = True  # if issues on Travis-CI to install pysap, force use python-only functions
 
 
 class TestSLITStarlets(object):

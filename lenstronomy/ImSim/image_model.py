@@ -62,8 +62,11 @@ class ImageModel(object):
             kwargs_pixelbased = {}
         self.pixelbased_bool = self._detect_pixelbased_models()
         if self.pixelbased_bool is True:
+            from slitronomy.Util.class_util import create_solver_class
             self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
-            self.PixelSolver = self._setup_pixelbased_solver(kwargs_pixelbased)
+            self.PixelSolver = create_solver_class(self.Data, self.PSF, self.ImageNumerics, self.SourceNumerics,
+                                                   self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource,
+                                                   kwargs_pixelbased)
             self.source_mapping = None  # handled with pixelated operator
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
@@ -298,37 +301,17 @@ class ImageModel(object):
 
     def _setup_pixelbased_source_numerics(self, kwargs_numerics, kwargs_pixelbased):
         """define a new numerics class specifically for source plane, that may have a different resolution"""
-        from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
+        # check that the required convolution type is compatible with pixel-based modelling (in current implementation)
+        psf_type = self.PSF.psf_type
+        supersampling_convolution = kwargs_numerics.get('supersampling_convolution', False)
+        supersampling_factor = kwargs_numerics.get('supersampling_factor', 1)
+        if psf_type != 'PIXEL' or (supersampling_convolution is True and supersampling_factor > 1):
+            raise ValueError("Only convolution on non-supersampled grid using a pixelated kernel is supported for pixel-based modelling")
+
+        # setup the source numerics with a (possibily) different supersampling resolution
         supersampling_factor_source = kwargs_pixelbased.pop('supersampling_factor_source', 1)
-        # numerics for source plane may have a different supersampling resolution
         kwargs_numerics_source = kwargs_numerics.copy()
         kwargs_numerics_source['supersampling_factor'] = supersampling_factor_source
         kwargs_numerics_source['compute_mode'] = 'regular'
         source_numerics_class = NumericsSubFrame(pixel_grid=self.Data, psf=self.PSF, **kwargs_numerics_source)
         return source_numerics_class
-
-    def _setup_pixelbased_solver(self, kwargs_pixelbased):    
-        lens_light_bool = (self.LensLightModel is not None and len(self.LensLightModel.profile_type_list) > 0)
-        point_source_bool = (self.PointSource is not None and len(self.PointSource.point_source_type_list) > 0)
-
-        if lens_light_bool is False and point_source_bool is False:
-            # model_list = self.SourceModel.profile_type_list
-            # if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
-            #     raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only source model list for pixel-based modelling")
-            from slitronomy.Optimization.solver_source import SparseSolverSource
-            solver_class = SparseSolverSource(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics,
-                                              self.SourceModel, **kwargs_pixelbased)
-        elif point_source_bool is False:
-            model_list = self.LensLightModel.profile_type_list
-            if len(model_list) != 1 or model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
-                raise ValueError("'SLIT_STARLETS' or 'SLIT_STARLETS_GEN2' must be the only lens light model list for pixel-based modelling")
-            from slitronomy.Optimization.solver_source_lens import SparseSolverSourceLens
-            solver_class = SparseSolverSourceLens(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
-                                                  self.SourceModel, self.LensLightModel, **kwargs_pixelbased)
-        elif lens_light_bool is False:
-            if not np.all(self.PSF.psf_error_map == 0):
-                print("WARNING : SparseSolver with point sources does not support PSF error map for now !")
-            from slitronomy.Optimization.solver_source_ps import SparseSolverSourcePS
-            solver_class = SparseSolverSourcePS(self.Data, self.LensModel, self.ImageNumerics, self.SourceNumerics, 
-                                                self.SourceModel, **kwargs_pixelbased)
-        return solver_class

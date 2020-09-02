@@ -18,6 +18,9 @@ from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.Util import util
 
 
+_force_no_pysap = True  # if issues on Travis-CI to install pysap, force use python-only functions
+
+
 class TestImageModel(object):
     """
     tests the source model routines
@@ -78,11 +81,11 @@ class TestImageModel(object):
         from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
         n_scales = 6
         source_map = imageModel_base.source_surface_brightness(kwargs_source_base, de_lensed=True, unconvolved=True)
-        source_map_starlets = SLIT_Starlets().decomposition_2d(source_map, n_scales)
+        source_map_starlets = SLIT_Starlets(force_no_pysap=_force_no_pysap).decomposition_2d(source_map, n_scales)
         self.kwargs_source = [{'amp': source_map_starlets, 'n_scales': n_scales, 'n_pixels': numPix, 'scale': deltaPix, 'center_x': 0, 'center_y': 0}]
         source_model_class = LightModel(light_model_list=['SLIT_STARLETS'])
         lens_light_map = imageModel_base.lens_surface_brightness(kwargs_lens_light_base, unconvolved=True)
-        lens_light_starlets = SLIT_Starlets().decomposition_2d(lens_light_map, n_scales)
+        lens_light_starlets = SLIT_Starlets(force_no_pysap=_force_no_pysap).decomposition_2d(lens_light_map, n_scales)
         self.kwargs_lens_light = [{'amp': lens_light_starlets, 'n_scales': n_scales, 'n_pixels': numPix, 'scale': deltaPix, 'center_x': 0, 'center_y': 0}]
         lens_light_model_class = LightModel(light_model_list=['SLIT_STARLETS'])
 

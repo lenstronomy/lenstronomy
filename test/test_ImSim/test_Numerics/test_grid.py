@@ -4,6 +4,7 @@ import numpy as np
 import numpy.testing as npt
 from lenstronomy.Util import util
 from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
+from lenstronomy.ImSim.Numerics.grid import RegularGrid
 from lenstronomy.LightModel.light_model import LightModel
 
 import pytest

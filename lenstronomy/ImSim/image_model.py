@@ -67,7 +67,7 @@ class ImageModel(object):
             self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
             self.PixelSolver = create_solver_class(self.Data, self.PSF, self.ImageNumerics, self.SourceNumerics,
                                                    self.LensModel, self.SourceModel, self.LensLightModel, self.PointSource,
-                                                   kwargs_pixelbased)
+                                                   self._extinction, kwargs_pixelbased)
             self.source_mapping = None  # handled with pixelated operator
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)

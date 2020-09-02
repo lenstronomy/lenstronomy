@@ -1,5 +1,4 @@
 language: python
-
 python:
   #- "2.7"
   - "3.6"
@@ -7,29 +6,23 @@ python:
   # PyPy versions
   #- "pypy"   # PyPy2 5.8.0
   #- "pypy3"  # Pypy3 5.8.0-beta0
-
 services:
   - xvfb
-
 before_install:
 #  - sudo apt-get build-dep python-scipy
   - pip install coverage==4.5.4  # temporary fix for coveralls
   - pip install coveralls
   - pip install python-coveralls
-
+  - pip install scipy
 # command to install dependencies
 install:
-  - pip install PyQt5==5.14.0  # for python-pysap, required for tests to work
-  - pip install pybind11  # for python-pysap, required for tests to work
-  - pip install -r requirements.txt
   - pip install .
-
+  - pip install -r requirements.txt
 before_script: # configure a headless display to test plot generation
 - "export DISPLAY=:99.0"
 #- "sh -e /etc/init.d/xvfb start"
 - sleep 3 # give xvfb some time to start
 # command to run tests
-
 script:
   #- py.test
   - coverage run --source lenstronomy setup.py test

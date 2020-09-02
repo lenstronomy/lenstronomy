@@ -9,10 +9,10 @@ from lenstronomy.Util import util
 
 class SLIT_Starlets(object):
     """
-    Implementation of the Isotropic Undecimated Walevet Transform (aka "starlet", or "B-spline") 
-    using the 'a trous' algorithm.
+    Decomposition of an image using the Isotropic Undecimated Walevet Transform,
+    also known as "starlet" or "B-spline", using the 'a trous' algorithm.
 
-    Astronomical data (galaxies, stars, ...) are sparse when expressed in starlet basis.
+    Astronomical data (galaxies, stars, ...) are often very sparsely represented in the starlet basis.
 
     Based on Starck et al. : https://ui.adsabs.harvard.edu/abs/2007ITIP...16..297S/abstract
     """
@@ -167,4 +167,5 @@ class SLIT_Starlets(object):
             return True, pysap
 
     def delete_cache(self):
+        """delete the cached interpolated image"""
         self.interpol.delete_cache()

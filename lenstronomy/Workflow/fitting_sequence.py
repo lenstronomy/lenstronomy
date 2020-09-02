@@ -363,6 +363,7 @@ class FittingSequence(object):
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
+        kwargs_pixelbased = kwargs_likelihood.get('kwargs_pixelbased', None)
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
@@ -370,8 +371,9 @@ class FittingSequence(object):
         for band_index in range(len(self.multi_band_list)):
             if compute_bands[band_index] is True:
                 kwargs_psf = self.multi_band_list[band_index][1]
-                image_model = SingleBandMultiModel(self.multi_band_list, self.multi_band_type, kwargs_model,
-                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
+                image_model = SingleBandMultiModel(self.multi_band_list, kwargs_model,
+                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index,
+                                                   kwargs_pixelbased=kwargs_pixelbased)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, kwargs_params=kwargs_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,

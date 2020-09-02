@@ -19,6 +19,5 @@ scikit-image
 multiprocess>=0.70.8
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
 
-# temporary
-#python-pySAP==0.0.3
+# switch to PyPi version once PR is merged
 -e git://github.com/aymgal/slitronomy.git@master#egg=slitronomy

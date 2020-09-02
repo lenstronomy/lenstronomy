@@ -83,12 +83,12 @@ class TestRegularGrid(object):
         self._regular_grid = RegularGrid(nx, ny, transform_pix2angle, ra_at_xy_0, dec_at_xy_0, 
                                          supersampling_factor=self._supersampling_factor)
 
-    def test_effective_pixel_width(self):
-        deltaPix = self._regular_grid.effective_pixel_width
+    def test_grid_points_spacing(self):
+        deltaPix = self._regular_grid.grid_points_spacing
         assert deltaPix == self._deltaPix / self._supersampling_factor
 
-    def test_effective_num_pixel_axes(self):
-        nx, ny = self._regular_grid.effective_num_pixel_axes
+    def test_num_grid_points_axes(self):
+        nx, ny = self._regular_grid.num_grid_points_axes
         assert nx == self.nx * self._supersampling_factor
         assert ny == self.ny * self._supersampling_factor
 

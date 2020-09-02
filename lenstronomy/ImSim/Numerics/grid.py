@@ -193,17 +193,17 @@ class RegularGrid(Coordinates1D):
         return self._ra_subgrid, self._dec_subgrid
 
     @property
-    def effective_pixel_width(self):
+    def grid_points_spacing(self):
         """
-        size of supersampled pixel
+        effective spacing between coordinate points, after supersampling
         :return: sqrt(pixel_area)/supersampling_factor
         """
         return self.pixel_width / self._supersampling_factor
 
     @property
-    def effective_num_pixel_axes(self):
+    def num_grid_points_axes(self):
         """
-        number of pixels along each axes, after supersampling
+        effective number of points along each axes, after supersampling
         :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor
         """
         return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor

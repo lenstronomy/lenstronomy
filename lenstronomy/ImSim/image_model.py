@@ -62,7 +62,7 @@ class ImageModel(object):
         if kwargs_pixelbased is None:
             kwargs_pixelbased = {}
         self.pixelbased_bool = self._detect_pixelbased_models()
-        if self.pixelbased_bool is True:y
+        if self.pixelbased_bool is True:
             from slitronomy.Util.class_util import create_solver_class  # requirement on SLITronomy is exclusively here
             self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
             self.PixelSolver = create_solver_class(self.Data, self.PSF, self.ImageNumerics, self.SourceNumerics,

@@ -96,16 +96,6 @@ class TestSLITStarlets(object):
                                                   n_scales=self.n_scales, n_pixels=self.n_pixels)
         assert image_1d_2nd.shape == (self.num_pix**2,)
 
-    # def test_identity_operations(self):
-    #     """
-    #     test the decomposition/reconstruction 
-
-    #     :return:
-    #     """
-    #     coeffs = self.starlets.decomposition_2d(self.test_image, self.n_scales)
-    #     test_image_recon = self.starlets.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
-    #     npt.assert_almost_equal(self.test_image, test_image_recon, decimal=5)
-
     def test_identity_operations_fast(self):
         """
         test the decomposition/reconstruction 
@@ -125,6 +115,14 @@ class TestSLITStarlets(object):
         coeffs = self.starlets_2nd.decomposition_2d(self.test_image, self.n_scales)
         test_image_recon = self.starlets_2nd.function_2d(coeffs=coeffs, n_scales=self.n_scales, n_pixels=self.n_pixels)
         npt.assert_almost_equal(self.test_image, test_image_recon, decimal=5)
+
+    def test_delete_cache(self):
+        amp = self.test_coeffs.reshape(self.n_scales*self.num_pix**2)
+        kwargs_starlets = dict(amp=amp, n_scales=self.n_scales, n_pixels=self.n_pixels, center_x=0, center_y=0, scale=1)
+        output = self.starlets_fast.function(self.x, self.y, **kwargs_starlets)
+        assert hasattr(self.starlets_fast.interpol, '_image_interp')
+        self.starlets_fast.delete_cache()
+        assert not hasattr(self.starlets_fast.interpol, '_image_interp')
 
 
 if __name__ == '__main__':

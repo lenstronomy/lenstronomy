@@ -23,6 +23,7 @@ class ImageLikelihood(object):
         and evaluates if all positions exceed the minimum flux
         :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                  bands_compute=bands_compute, likelihood_mask_list=image_likelihood_mask_list,

@@ -3,6 +3,7 @@ import numpy.testing as npt
 import pytest
 import unittest
 
+from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
 from lenstronomy.Util import util
@@ -155,7 +156,13 @@ class TestRaise(unittest.TestCase):
             test_image = util.array2image(gaussian1 + gaussian2 + gaussian3)
             n_scales = -1
             _ = starlets.decomposition_2d(test_image, n_scales)
-
+        with self.assertRaises(ValueError):
+            # function_split is not supported/defined for pixel-based profiles
+            light_model = LightModel(['SLIT_STARLETS'])
+            num_pix = 50
+            x, y = util.make_grid(num_pix, 1)
+            kwargs_list = [{'amp': np.ones((3, 20, 20)), 'n_scales': 3, 'n_pixels': 20**2, 'center_x': 0, 'center_y': 0, 'scale': 1}]
+            _ = light_model.functions_split(x, y, kwargs_list)
 
 if __name__ == '__main__':
     pytest.main()

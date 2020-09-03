@@ -30,6 +30,7 @@ class SingleBandMultiModel(ImageLinearFit):
         :param kwargs_model: model option keyword arguments
         :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
         :param band_index: integer, index of the imaging band to model
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:

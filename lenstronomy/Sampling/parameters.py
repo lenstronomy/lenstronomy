@@ -117,6 +117,8 @@ class Param(object):
          are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
          in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes. These indexes are
          the sample as for the lens
+        :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
+        adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])

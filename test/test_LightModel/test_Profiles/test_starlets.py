@@ -125,5 +125,37 @@ class TestSLITStarlets(object):
         assert not hasattr(self.starlets_fast.interpol, '_image_interp')
 
 
+class TestRaise(unittest.TestCase):
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            # try to set decomposition scale to higher than maximal value
+            starlets = SLIT_Starlets(force_no_pysap=True)
+            # define a test image with gaussian components
+            num_pix = 50
+            x, y = util.make_grid(num_pix, 1)
+            # build a non-trivial positive image from sum of gaussians
+            gaussian = Gaussian()
+            gaussian1 = gaussian.function(x, y, amp=100, sigma=1, center_x=-7, center_y=-7)
+            gaussian2 = gaussian.function(x, y, amp=500, sigma=3, center_x=-3, center_y=-3)
+            gaussian3 = gaussian.function(x, y, amp=2000, sigma=5, center_x=+5, center_y=+5)
+            test_image = util.array2image(gaussian1 + gaussian2 + gaussian3)
+            n_scales = 100
+            _ = starlets.decomposition_2d(test_image, n_scales)
+        with self.assertRaises(ValueError):
+            # try to set decomposition scale to negative value
+            starlets = SLIT_Starlets(force_no_pysap=True)
+            # define a test image with gaussian components
+            num_pix = 50
+            x, y = util.make_grid(num_pix, 1)
+            # build a non-trivial positive image from sum of gaussians
+            gaussian = Gaussian()
+            gaussian1 = gaussian.function(x, y, amp=100, sigma=1, center_x=-7, center_y=-7)
+            gaussian2 = gaussian.function(x, y, amp=500, sigma=3, center_x=-3, center_y=-3)
+            gaussian3 = gaussian.function(x, y, amp=2000, sigma=5, center_x=+5, center_y=+5)
+            test_image = util.array2image(gaussian1 + gaussian2 + gaussian3)
+            n_scales = -1
+            _ = starlets.decomposition_2d(test_image, n_scales)
+
+
 if __name__ == '__main__':
     pytest.main()

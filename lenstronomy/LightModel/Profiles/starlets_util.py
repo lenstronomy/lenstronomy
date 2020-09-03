@@ -1,32 +1,22 @@
-# starlet transform from SLIT
+__author__ = 'herjy', 'aymgal'
 
 import numpy as np
 import scipy.signal as scs
 import scipy.ndimage.filters as scf
 
 
-def transform(img, n_scales, convol2d=False, second_gen=False):
+def transform(img, n_scales, second_gen=False):
     """
     Performs starlet decomposition of an 2D array.
 
     :param img: input image
     :param n_scales: number of decomposition scales
-    :param convol2d: if True, performes 2D filtering, else uses filter separability to perform only 1D filtering
     :param second_gen: if True, 'second generation' starlets are used
     """
     mode = 'nearest'
     
     lvl = n_scales-1
     sh = np.shape(img)
-    if np.size(sh) == 3:
-        mn = np.min(sh)
-        wave = np.zeros([lvl+1, sh[1], sh[1], mn])
-        for h in range(mn):
-            if mn == sh[0]:
-                wave[:, :, :, h] = transform(img[h,:,:], lvl+1, convol2d=convol2d, second_gen=second_gen)
-            else:
-                wave[:, :, :, h] = transform(img[:,:,h], lvl+1, convol2d=convol2d, second_gen=second_gen)
-        return wave
 
     n1 = sh[1]
     n2 = sh[1]
@@ -38,8 +28,9 @@ def transform(img, n_scales, convol2d=False, second_gen=False):
     
     max_lvl = np.min( (lvl, int(np.log2(n2))) )
     if lvl > max_lvl:
-        lvl = max_lvl
-        print("Warning : lvl set to {}".format(lvl))
+        raise ValueError("Maximum decomposition level is {} (required: {})".format(max_lvl, lvl))
+    elif lvl <= 0:
+        raise ValueError("Number of decomposition level can not be non-positive")
 
     c = img
     ## wavelet set of coefficients.
@@ -53,25 +44,19 @@ def transform(img, n_scales, convol2d=False, second_gen=False):
 
         ######Calculates c(j+1)
         ###### Line convolution
-        if convol2d is True:
-            cnew = scs.convolve2d(c, H, mode='same', boundary='symm')
-        else:
-            cnew = scf.convolve1d(c, newh[0, :], axis=0, mode=mode)
+        cnew = scf.convolve1d(c, newh[0, :], axis=0, mode=mode)
 
-            ###### Column convolution
-            cnew = scf.convolve1d(cnew, newh[0,:],axis=1, mode=mode)
+        ###### Column convolution
+        cnew = scf.convolve1d(cnew, newh[0,:],axis=1, mode=mode)
 
  
       
         if second_gen:
             ###### hoh for g; Column convolution
-            if convol2d is True:
-                hc = scs.convolve2d(cnew, H, mode='same', boundary='symm')
-            else:
-                hc = scf.convolve1d(cnew, newh[0, :],axis=0, mode=mode)
- 
-                ###### hoh for g; Line convolution
-                hc = scf.convolve1d(hc, newh[0, :],axis=1, mode=mode)
+            hc = scf.convolve1d(cnew, newh[0, :],axis=0, mode=mode)
+
+            ###### hoh for g; Line convolution
+            hc = scf.convolve1d(hc, newh[0, :],axis=1, mode=mode)
             
             ###### wj+1 = cj - hcj+1
             wave[i, :, :] = c - hc
@@ -88,12 +73,11 @@ def transform(img, n_scales, convol2d=False, second_gen=False):
     return wave
 
 
-def inverse_transform(wave, convol2d=False, fast=True, second_gen=False):
+def inverse_transform(wave, fast=True, second_gen=False):
     """
     Reconstructs an image fron its starlet decomposition coefficients
 
     :param wave: input coefficients, with shape (n_scales, np.sqrt(n_pixel), np.sqrt(n_pixel))
-    :param convol2d: if True, performes 2D filtering, else uses filter separability to perform only 1D filtering
     :param fast: if True, and only with second_gen is False, simply sums up all scales to reconstruct the image
     :param second_gen: if True, 'second generation' starlets are used
     """
@@ -117,12 +101,9 @@ def inverse_transform(wave, convol2d=False, fast=True, second_gen=False):
         H = np.dot(newh.T, newh)
 
         ###### Line convolution
-        if convol2d is True:
-            cnew = scs.convolve2d(cJ, H, mode='same', boundary='symm')
-        else:
-            cnew = scf.convolve1d(cJ, newh[0, :], axis=0, mode=mode)
-            ###### Column convolution
-            cnew = scf.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
+        cnew = scf.convolve1d(cJ, newh[0, :], axis=0, mode=mode)
+        ###### Column convolution
+        cnew = scf.convolve1d(cnew, newh[0, :], axis=1, mode=mode)
 
         cJ = cnew + wave[lvl-1-i, :, :]
 

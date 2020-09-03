@@ -141,8 +141,6 @@ class SLIT_Starlets(object):
                                               nb_procs=self.thread_count)
             self._n_scales = n_scales
             self._n_pixels = n_pixels
-        # if getattr(self._transf, 'nb_band_per_scale', 0) is None:
-        #     self._transf.nb_band_per_scale = [1]*self._n_scales  # dirty patch to PySAP bug
 
     def _pysap2coeffs(self, coeffs):
         """convert pySAP decomposition coefficients to numpy array"""

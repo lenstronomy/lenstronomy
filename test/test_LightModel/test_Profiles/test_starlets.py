@@ -193,6 +193,12 @@ class TestRaise(unittest.TestCase):
             _ = starlet_class.function(x, y, **kwargs_list)
             image_wrong = np.ones((1, num_pix, num_pix))
             _ = starlet_class.decomposition(image_wrong, 3)
+        with self.assertRaises(ValueError):
+            # provided a wrong shape for image to be decomposed
+            starlet_class = SLIT_Starlets()
+            num_pix = 20
+            image_wrong = np.ones((2, num_pix, num_pix))
+            _ = starlet_class.decomposition(image_wrong, 3)
 
 if __name__ == '__main__':
     pytest.main()

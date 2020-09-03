@@ -43,7 +43,7 @@ class ImageLinearFit(ImageModel):
         if psf_error_map_bool_list is None:
             psf_error_map_bool_list = [True] * len(self.PointSource.point_source_type_list)
         self._psf_error_map_bool_list = psf_error_map_bool_list
-        if self.pixelbased_bool is True:
+        if self._pixelbased_bool is True:
             # update the pixel-based solver with the likelihood mask
             self.PixelSolver.set_likelihood_mask(self.likelihood_mask)
 
@@ -81,7 +81,7 @@ class ImageLinearFit(ImageModel):
         This has no impact in case of pixel-based modelling.
         :return: 1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data
         """
-        if self.pixelbased_bool is True:
+        if self._pixelbased_bool is True:
             model, model_error, cov_param, param = self.image_pixelbased_solve(kwargs_lens, kwargs_source, 
                                                                                kwargs_lens_light, kwargs_ps, 
                                                                                kwargs_extinction, kwargs_special)
@@ -210,7 +210,7 @@ class ImageLinearFit(ImageModel):
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
 
-        if self.pixelbased_bool is False:
+        if self._pixelbased_bool is False:
             if cov_matrix is not None and source_marg:
                 marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
                 logL += marg_const
@@ -233,7 +233,7 @@ class ImageLinearFit(ImageModel):
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0
-        if self.pixelbased_bool is False:
+        if self._pixelbased_bool is False:
             num += self.SourceModel.num_param_linear(kwargs_source)
             num += self.LensLightModel.num_param_linear(kwargs_lens_light)
         num += self.PointSource.num_basis(kwargs_ps, kwargs_lens)
@@ -477,7 +477,7 @@ class ImageLinearFit(ImageModel):
         :return: boolean
         """
         pos_bool_ps = self.PointSource.check_positive_flux(kwargs_ps)
-        if self.pixelbased_bool is True:
+        if self._pixelbased_bool is True:
             # this constraint must be handled by the pixel-based solver 
             pos_bool_source = True
             pos_bool_lens_light = True

@@ -158,7 +158,7 @@ class LinearBasis(LightModelBase):
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
-    def add_fixed_linear(self, kwargs_fixed_list):
+    def add_fixed_linear(self, kwargs_fixed_list, bool_list=None):
         """
 
         :param kwargs_fixed_list: list of fixed keyword arguments

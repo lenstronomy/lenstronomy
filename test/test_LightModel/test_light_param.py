@@ -131,6 +131,18 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
             lighModel.getParams(args=[1], i=0)
+        with self.assertRaises(ValueError):
+            # no fixed params provided 
+            lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
+            lighModel.setParams(kwargs_list=[{'amp': np.ones((3*20**2))}])
+        with self.assertRaises(ValueError):
+            # missing fixed params
+            lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'n_scales': 3}], linear_solver=False)
+            lighModel.setParams(kwargs_list=[{'amp': np.ones((3*20**2))}])
+        with self.assertRaises(ValueError):
+            # missing fixed params
+            lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'n_scales': 3}], linear_solver=False)
+            lighModel.num_param()
 
 
 if __name__ == '__main__':

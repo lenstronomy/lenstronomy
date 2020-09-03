@@ -40,9 +40,9 @@ class TestLikelihoodModule(object):
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': fwhm, 'pixel_size': deltaPix}
         psf_class = PSF(**kwargs_psf)
         print(np.shape(psf_class.kernel_point_source), 'test kernel shape -')
-        kwargs_spemd = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
+        kwargs_spep = {'theta_E': 1., 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.1, 'e2': 0.1}
 
-        self.kwargs_lens = [kwargs_spemd]
+        self.kwargs_lens = [kwargs_spep]
         kwargs_sersic = {'amp': 1/0.05**2., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
         kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
@@ -109,6 +109,9 @@ class TestLikelihoodModule(object):
                                 lens_light_model_class,
                                 point_source_class, kwargs_numerics=kwargs_numerics)
         self.Likelihood = LikelihoodModule(kwargs_data_joint=self.kwargs_data, kwargs_model=kwargs_model, param_class=self.param_class, **kwargs_likelihood)
+        self.kwargs_band = kwargs_band
+        self.kwargs_psf = kwargs_psf
+        self.numPix = numPix
 
     def test_logL(self):
         args = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
@@ -133,6 +136,56 @@ class TestLikelihoodModule(object):
                                                           verbose=True)
         assert bound_hit
 
+    def test_pixelbased_modelling(self):
+        ss_source = 2
+        numPix_source = self.numPix*ss_source
+        n_scales = 3
+        kwargs_pixelbased = {
+            'source_interpolation': 'nearest',
+            'supersampling_factor_source': ss_source, # supersampling of pixelated source grid
+
+            # following choices are to minimize pixel solver runtime (not to get accurate reconstruction!)
+            'threshold_decrease_type': 'none',
+            'num_iter_source': 2,
+            'num_iter_lens': 2,
+            'num_iter_global': 2,
+            'num_iter_weights': 2,
+        }
+        kwargs_likelihood = {
+             'image_likelihood': True,
+             'kwargs_pixelbased': kwargs_pixelbased,
+             'check_positive_flux': True,  # effectively not applied, activated for code coverage purposes
+        }
+        kernel = PSF(**self.kwargs_psf).kernel_point_source
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel}
+        kwargs_numerics = {'supersampling_factor': 1}
+        kwargs_data = {'multi_band_list': [[self.kwargs_band, kwargs_psf, kwargs_numerics]]}
+        kwargs_model = {
+            'lens_model_list': ['SPEP'],
+            'lens_light_model_list': ['SLIT_STARLETS'],
+            'source_light_model_list': ['SLIT_STARLETS'],
+        }
+        
+        kwargs_fixed_source = [{'n_scales': n_scales, 'n_pixels': numPix_source**2, 'scale': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_fixed_lens_light = [{'n_scales': n_scales, 'n_pixels': self.numPix**2, 'scale': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_constraints = {'source_grid_offset': True}
+        param_class = Param(kwargs_model, 
+                            kwargs_fixed_source=kwargs_fixed_source, 
+                            kwargs_fixed_lens_light=kwargs_fixed_lens_light,
+                            **kwargs_constraints)
+
+        likelihood = LikelihoodModule(kwargs_data_joint=kwargs_data, kwargs_model=kwargs_model, 
+                                      param_class=param_class, **kwargs_likelihood)
+
+        kwargs_source = [{'amp': np.ones(n_scales*numPix_source**2)}]
+        kwargs_lens_light = [{'amp': np.ones(n_scales*self.numPix**2)}]
+        kwargs_special = {'delta_x_source_grid': 0, 'delta_y_source_grid': 0}
+        args = param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=kwargs_source,
+                                       kwargs_lens_light=kwargs_lens_light, kwargs_special=kwargs_special)
+
+        logL = likelihood.logL(args, verbose=True)
+        num_data_evaluate = likelihood.num_data
+        npt.assert_almost_equal(logL/num_data_evaluate, -1/2., decimal=1)
 
 if __name__ == '__main__':
     pytest.main()

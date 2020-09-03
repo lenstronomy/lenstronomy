@@ -61,8 +61,8 @@ class ImageModel(object):
         self._extinction = extinction_class
         if kwargs_pixelbased is None:
             kwargs_pixelbased = {}
-        self.pixelbased_bool = self._detect_pixelbased_models()
-        if self.pixelbased_bool is True:
+        self._pixelbased_bool = self._detect_pixelbased_models()
+        if self._pixelbased_bool is True:
             from slitronomy.Util.class_util import create_solver_class  # requirement on SLITronomy is exclusively here
             self.SourceNumerics = self._setup_pixelbased_source_numerics(kwargs_numerics, kwargs_pixelbased)
             self.PixelSolver = create_solver_class(self.Data, self.PSF, self.ImageNumerics, self.SourceNumerics,
@@ -110,7 +110,7 @@ class ImageModel(object):
         """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros((self.Data.num_pixel_axes))
-        if self.pixelbased_bool is True:
+        if self._pixelbased_bool is True:
             return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
                                                        kwargs_extinction=kwargs_extinction, 
                                                        kwargs_special=kwargs_special,
@@ -182,7 +182,7 @@ class ImageModel(object):
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
         :return: 1d array of surface brightness pixels
         """
-        if self.pixelbased_bool is True:
+        if self._pixelbased_bool is True:
             if unconvolved is True:
                 raise ValueError("Lens light pixel-based modelling does not perform deconvolution")
             return self._lens_surface_brightness_pixelbased(kwargs_lens_light, k=k)

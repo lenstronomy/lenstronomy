@@ -214,10 +214,10 @@ class ImageLinearFit(ImageModel):
             if cov_matrix is not None and source_marg:
                 marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
                 logL += marg_const
-            if check_positive_flux is True:
-                bool = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-                if bool is False:
-                    logL -= 10**5
+        if check_positive_flux is True:
+            bool = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool is False:
+                logL -= 10**5
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):

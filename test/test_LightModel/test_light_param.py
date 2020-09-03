@@ -52,11 +52,11 @@ class TestParam(object):
         # ]
         self.kwargs_fixed = [
             {}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}, {'n_max': 0}, {'n_max': 0}, 
-            {'amp': np.ones((3*20**2,)), 'n_scales': 3, 'n_pixels': 20**2, 'scale': 0.05, 'center_x': 0, 'center_y': 0},
+            {'n_scales': 3, 'n_pixels': 20**2, 'scale': 0.05, 'center_x': 0, 'center_y': 0},
         ]
         self.kwargs_fixed_linear = [
             {}, {'sigma': [1, 3]}, {}, {}, {}, {'n_max': 1}, {}, {}, {}, {}, {}, {}, {},
-            {'amp': np.ones((3*20**2,)), 'n_scales': 3, 'n_pixels': 20**2, 'scale': 0.05, 'center_x': 0, 'center_y': 0},
+            {'n_scales': 3, 'n_pixels': 20**2, 'scale': 0.05, 'center_x': 0, 'center_y': 0},
         ]
         # self.kwargs_mean = []
         # for i in range(len(self.light_model_list)):
@@ -91,7 +91,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 66
+        assert num == (66+1200)
 
     def test_param_name_list(self):
         param_name_list = self.param.param_name_list
@@ -128,6 +128,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['MULTI_GAUSSIAN'], kwargs_fixed=[{}], linear_solver=False)
             lighModel.getParams(args=[1, 1, 1, 1], i=0)
+        with self.assertRaises(ValueError):
+            lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
+            lighModel.getParams(args=[1], i=0)
 
 
 if __name__ == '__main__':

@@ -15,7 +15,6 @@ class LightParam(object):
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
             self.kwargs_fixed = self._lightModel.add_fixed_linear(self.kwargs_fixed)
-            print("WWW", self.kwargs_fixed)
         self._linear_solve = linear_solver
         if kwargs_lower is None:
             kwargs_lower = []
@@ -93,10 +92,6 @@ class LightParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
-            if model == 'MULTI_GAUSSIAN':
-                print(kwargs, kwargs_fixed)
-            if model == 'SLIT_STARLETS':
-                print(kwargs, kwargs_fixed)
 
             param_names = self._param_name_list[k]
             for name in param_names:

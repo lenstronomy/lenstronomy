@@ -113,11 +113,6 @@ class TestImageModel(object):
                                                 lens_light_model_class=None, 
                                                 point_source_class=None,
                                                 kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
-        self.imageModel_source_ps = ImageLinearFit(data_class, psf_class, lens_model_class, 
-                                                   source_model_class=source_model_class, 
-                                                   lens_light_model_class=None, 
-                                                   point_source_class=point_source_class_base,
-                                                   kwargs_numerics=kwargs_numerics, kwargs_pixelbased=kwargs_pixelbased)
         
         self.solver = LensEquationSolver(lensModel=self.imageModel.LensModel)
 
@@ -143,8 +138,12 @@ class TestImageModel(object):
 
     def test_image_linear_solve(self):
         model, error_map, cov_param, param = self.imageModel.image_linear_solve(self.kwargs_lens, self.kwargs_source, 
-                                                                                self.kwargs_lens_light, self.kwargs_ps, 
-                                                                                inv_bool=False)
+                                                                                self.kwargs_lens_light, self.kwargs_ps)
+        chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
+        npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
+
+        model, error_map, cov_param, param = self.imageModel_source.image_linear_solve(self.kwargs_lens, self.kwargs_source, 
+                                                                                       self.kwargs_lens_light, self.kwargs_ps)
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
@@ -180,10 +179,6 @@ class TestImageModel(object):
                                                                    self.kwargs_lens_light, self.kwargs_ps)
         assert num_param_linear == 0 # pixels of pixel-based profiles not counted as linear param
 
-        num_param_linear = self.imageModel_source_ps.num_param_linear(self.kwargs_lens, self.kwargs_source,
-                                                                      self.kwargs_lens_light, self.kwargs_ps)
-        assert num_param_linear == 1 # the point source
-
     def test_update_data(self):
         kwargs_data = sim_util.data_configure_simple(numPix=10, deltaPix=1, exposure_time=1, background_rms=1, inverse=True)
         data_class = ImageData(**kwargs_data)
@@ -217,26 +212,6 @@ class TestImageModel(object):
         assert len(psf_model_error) == 100
         print(np.sum(psf_model_error))
         npt.assert_almost_equal(np.sum(psf_model_error), 0, decimal=3)
-
-        C_D_response, psf_model_error = self.imageModel_source_ps._error_response(self.kwargs_lens, self.kwargs_ps, kwargs_special=None)
-        assert len(psf_model_error) == 100
-        print(np.sum(psf_model_error))
-        npt.assert_almost_equal(np.sum(psf_model_error), 0.0019271126921470687, decimal=3)
-
-    def test_point_source_linear_response_set(self):
-        kwargs_special = {'delta_x_image': [0.1, 0.1], 'delta_y_image': [-0.1, -0.1]}
-        ra_pos, dec_pos, amp, num_point = self.imageModel_source_ps.point_source_linear_response_set(self.kwargs_ps, self.kwargs_lens, kwargs_special, with_amp=True)
-        ra, dec = self.imageModel_source_ps.PointSource.image_position(self.kwargs_ps, self.kwargs_lens)
-        npt.assert_almost_equal(ra[0][0], ra_pos[0][0] - 0.1, decimal=5)
-
-    def test_displace_astrometry(self):
-        kwargs_special = {'delta_x_image': np.array([0.1, 0.1]), 'delta_y_image': np.array([-0.1, -0.1])}
-        x_pos, y_pos = np.array([0, 0]), np.array([0, 0])
-        x_shift, y_shift = self.imageModel_source_ps._displace_astrometry(x_pos, y_pos, kwargs_special=kwargs_special)
-        assert x_pos[0] == 0
-        assert x_shift[0] == kwargs_special['delta_x_image'][0]
-        assert y_pos[0] == 0
-        assert y_shift[0] == kwargs_special['delta_y_image'][0]
 
 
 class TestRaise(unittest.TestCase):

@@ -31,7 +31,7 @@ class LikelihoodModule(object):
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
                  prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
                  prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_pixelbased={}):
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_pixelbased=None):
         """
         initializing class
 

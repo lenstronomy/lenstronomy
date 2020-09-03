@@ -8,7 +8,7 @@ class ImageLikelihood(object):
     """
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                 source_marg=False, linear_prior=None, check_positive_flux=False, kwargs_pixelbased={}):
+                 source_marg=False, linear_prior=None, check_positive_flux=False, kwargs_pixelbased=None):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as

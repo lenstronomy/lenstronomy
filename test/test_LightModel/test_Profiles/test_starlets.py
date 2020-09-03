@@ -85,6 +85,9 @@ class TestSLITStarlets(object):
         self.starlets_fast.decomposition(self.test_image, self.n_scales)
         self.starlets_2nd.decomposition(self.test_image, self.n_scales)
 
+        # test with a 1D input
+        self.starlets.decomposition(util.image2array(self.test_image), self.n_scales)
+
         coeffs_1d = self.test_coeffs.reshape(self.n_scales*self.num_pix**2)
         
         image_1d = self.starlets.function(self.x, self.y, amp=coeffs_1d, 
@@ -125,6 +128,23 @@ class TestSLITStarlets(object):
         self.starlets_fast.delete_cache()
         assert not hasattr(self.starlets_fast.interpol, '_image_interp')
 
+    def test_coeffs2pysap(self):
+        n_scales = 3
+        num_pix = 20
+        coeffs = np.ones((n_scales, num_pix, num_pix))
+        pysap_list = self.starlets._coeffs2pysap(coeffs)
+        assert len(pysap_list) == n_scales
+        for i in range(n_scales):
+            assert pysap_list[i].shape == coeffs[i].shape
+
+    def test_pysap2coeffs(self):
+        n_scales = 3
+        num_pix = 20
+        pysap_list = n_scales * [np.ones((num_pix, num_pix))]
+        coeffs = self.starlets._pysap2coeffs(pysap_list)
+        assert coeffs.shape == (n_scales, num_pix, num_pix)
+        for i in range(n_scales):
+            assert pysap_list[i].shape == coeffs[i].shape
 
 class TestRaise(unittest.TestCase):
     def test_raise(self):
@@ -159,10 +179,20 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             # function_split is not supported/defined for pixel-based profiles
             light_model = LightModel(['SLIT_STARLETS'])
-            num_pix = 50
+            num_pix = 20
             x, y = util.make_grid(num_pix, 1)
-            kwargs_list = [{'amp': np.ones((3, 20, 20)), 'n_scales': 3, 'n_pixels': 20**2, 'center_x': 0, 'center_y': 0, 'scale': 1}]
+            kwargs_list = [{'amp': np.ones((3, num_pix, num_pix)), 'n_scales': 3, 'n_pixels': 20**2, 'center_x': 0, 'center_y': 0, 'scale': 1}]
             _ = light_model.functions_split(x, y, kwargs_list)
+        with self.assertRaises(ValueError):
+            # provided a wrong shape for starlet coefficients
+            starlet_class = SLIT_Starlets()
+            num_pix = 20
+            x, y = util.make_grid(num_pix, 1)
+            coeffs_wrong = np.ones((3, num_pix**2))
+            kwargs_list = {'amp': coeffs_wrong, 'n_scales': 3, 'n_pixels': 20**2, 'center_x': 0, 'center_y': 0, 'scale': 1}
+            _ = starlet_class.function(x, y, **kwargs_list)
+            image_wrong = np.ones((1, num_pix, num_pix))
+            _ = starlet_class.decomposition(image_wrong, 3)
 
 if __name__ == '__main__':
     pytest.main()

@@ -1,6 +1,7 @@
 __author__ = 'aymgal'
 
 import numpy as np
+import warnings
 
 from lenstronomy.LightModel.Profiles import starlets_util
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
@@ -34,6 +35,9 @@ class SLIT_Starlets(object):
         self.use_pysap, pysap = self._load_pysap(force_no_pysap)
         if self.use_pysap:
             self._transf_class = pysap.load_transform('BsplineWaveletTransformATrousAlgorithm')
+        else:
+            warnings.warn("The python package pySAP is not used for starlet operations. "
+                          "They will be performed using (slower) python routines.")
         self._fast_inverse = fast_inverse
         self._second_gen = second_gen
         self._show_pysap_plots = show_pysap_plots

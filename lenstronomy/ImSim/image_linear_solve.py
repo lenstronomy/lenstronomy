@@ -91,7 +91,7 @@ class ImageLinearFit(ImageModel):
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
             model = self.array_masked2image(wls_model)
-        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return model, model_error, cov_param, param
 
     def image_pixelbased_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
@@ -115,6 +115,7 @@ class ImageLinearFit(ImageModel):
                                                  init_lens_light_model=init_lens_light_model)
         cov_param = None
         _, _ = self.update_pixel_kwargs(kwargs_source, kwargs_lens_light)
+        _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         return model, model_error, cov_param, param
 
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,

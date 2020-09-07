@@ -61,6 +61,8 @@ class ImageModel(object):
         self._extinction = extinction_class
         if kwargs_pixelbased is None:
             kwargs_pixelbased = {}
+        else:
+            kwargs_pixelbased = kwargs_pixelbased.copy()
         self._pixelbased_bool = self._detect_pixelbased_models()
         if self._pixelbased_bool is True:
             from slitronomy.Util.class_util import create_solver_class  # requirement on SLITronomy is exclusively here
@@ -106,7 +108,7 @@ class ImageModel(object):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
             return np.zeros((self.Data.num_pixel_axes))
@@ -134,7 +136,7 @@ class ImageModel(object):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         if de_lensed is True:
@@ -158,7 +160,7 @@ class ImageModel(object):
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
         :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed). 
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
         source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
@@ -180,7 +182,7 @@ class ImageModel(object):
 
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         if self._pixelbased_bool is True:
             if unconvolved is True:
@@ -196,7 +198,7 @@ class ImageModel(object):
 
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
         :param unconvolved: if True, returns unconvolved surface brightness (perfect seeing), otherwise convolved with PSF kernel
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
@@ -210,7 +212,7 @@ class ImageModel(object):
         Important: SLITronomy does not solve for deconvolved lens light, hence the returned map is convolved with the PSF.
 
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
-        :return: 1d array of surface brightness pixels
+        :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
@@ -248,7 +250,7 @@ class ImageModel(object):
         :param source_add: if True, compute source, otherwise without
         :param lens_light_add: if True, compute lens light, otherwise without
         :param point_source_add: if True, add point sources, otherwise without
-        :return: 1d array of surface brightness pixels of the simulation
+        :return: 2d array of surface brightness pixels of the simulation
         """
         model = np.zeros((self.Data.num_pixel_axes))
         if source_add is True:

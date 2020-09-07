@@ -8,7 +8,7 @@ class ImageLikelihood(object):
     """
 
     def __init__(self, multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                 source_marg=False, linear_prior=None, check_positive_flux=False):
+                 source_marg=False, linear_prior=None, check_positive_flux=False, kwargs_pixelbased=None):
         """
 
         :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
@@ -23,10 +23,11 @@ class ImageLikelihood(object):
         and evaluates if all positions exceed the minimum flux
         :param flux_min: float, minimum flux (surface brightness to obey when force_minimum_source_brightness is enabled
         :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
-
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                 bands_compute=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
+                                                 bands_compute=bands_compute, likelihood_mask_list=image_likelihood_mask_list,
+                                                 kwargs_pixelbased=kwargs_pixelbased)
         self._model_type = self.imSim.type
         self._source_marg = source_marg
         self._linear_prior = linear_prior
@@ -44,12 +45,10 @@ class ImageLikelihood(object):
         :param kwargs_extinction: extinction parameter keyword argument list according to LightModel module
         :return: log likelihood of the data given the model
         """
-
         logL = self.imSim.likelihood_data_given_model(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,
                                                       kwargs_extinction=kwargs_extinction, kwargs_special=kwargs_special,
                                                       source_marg=self._source_marg, linear_prior=self._linear_prior,
                                                       check_positive_flux=self._check_positive_flux)
-
         if np.isnan(logL) is True:
             return -10 ** 15
         return logL

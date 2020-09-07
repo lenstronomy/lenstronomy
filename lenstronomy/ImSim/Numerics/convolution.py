@@ -36,6 +36,24 @@ class PixelKernelConvolution(object):
         self._type = convolution_type
         self._pre_computed = False
 
+    def pixel_kernel(self, num_pix=None):
+        """
+        access pixelated kernel
+
+        :param num_pix: size of returned kernel (odd number per axis). If None, return the original kernel.
+        :return: pixel kernel centered
+        """
+        if num_pix is not None:
+            return kernel_util.cut_psf(self._kernel, num_pix)
+        return self._kernel
+
+    def copy_transpose(self):
+        """
+        
+        :return: copy of the class with kernel set to the transpose of original one
+        """
+        return PixelKernelConvolution(self._kernel.T, convolution_type=self._type)
+
     def convolution2d(self, image):
         """
 

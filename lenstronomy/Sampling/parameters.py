@@ -68,7 +68,7 @@ class Param(object):
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None):
+                 source_redshift_sampling_indexes=None, source_grid_offset=False):
         """
 
         :param kwargs_model:
@@ -117,6 +117,8 @@ class Param(object):
          are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
          in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes. These indexes are
          the sample as for the lens
+        :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
+        adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -196,6 +198,11 @@ class Param(object):
             self._solver_module = Solver(solver_type=self._solver_type, lensModel=self._lens_model_class,
                                          num_images=self._num_images)
 
+        source_model_list = self._source_light_model_list
+        if (len(source_model_list) != 1 or source_model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']):
+            # source_grid_offset only defined for source profiles compatible with pixel-based solver
+            source_grid_offset = False
+
         self._joint_extinction_with_lens_light = joint_extinction_with_lens_light
         # fix parameters joint within the same model types
         kwargs_fixed_lens_updated = self._add_fixed_lens(kwargs_fixed_lens, kwargs_lens_init)
@@ -230,7 +237,8 @@ class Param(object):
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
-                                          source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling)
+                                          source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling,
+                                          source_grid_offset=source_grid_offset)
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:

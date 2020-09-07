@@ -21,7 +21,7 @@ class MultiLinear(MultiDataBase):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None, kwargs_pixelbased=None):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
@@ -33,7 +33,7 @@ class MultiLinear(MultiDataBase):
         imageModel_list = []
         for band_index in range(len(multi_band_list)):
             imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                              band_index=band_index)
+                                              band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 

@@ -9,7 +9,7 @@ class SpecialParam(object):
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0):
+                 num_z_sampling=0, source_grid_offset=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -24,6 +24,8 @@ class SpecialParam(object):
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood.
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param num_z_sampling: integer, number of different lens redshifts to be sampled
+        :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates.
+        Warning: this is only defined for pixel-based source modelluing (e.g. 'SLIT_STARLETS' light profile)
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -42,6 +44,7 @@ class SpecialParam(object):
             kwargs_fixed = {}
         self._kwargs_fixed = kwargs_fixed
         self._source_size = source_size
+        self._source_grid_offset = source_grid_offset
         if kwargs_lower is None:
             kwargs_lower = {}
             if self._D_dt_sampling is True:
@@ -57,6 +60,9 @@ class SpecialParam(object):
                 kwargs_lower['tau0_list'] = [0] * self._num_tau0
             if self._z_sampling is True:
                 kwargs_lower['z_sampling'] = [0] * self._num_z_sampling
+            if self._source_grid_offset:
+                kwargs_lower['delta_x_source_grid'] = -100
+                kwargs_lower['delta_y_source_grid'] = -100
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._D_dt_sampling is True:
@@ -72,6 +78,9 @@ class SpecialParam(object):
                 kwargs_upper['tau0_list'] = [1000] * self._num_tau0
             if self._z_sampling is True:
                 kwargs_upper['z_sampling'] = [20] * self._num_z_sampling
+            if self._source_grid_offset:
+                kwargs_upper['delta_x_source_grid'] = 100
+                kwargs_upper['delta_y_source_grid'] = 100
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -124,6 +133,17 @@ class SpecialParam(object):
                 i += self._num_z_sampling
             else:
                 kwargs_special['z_sampling'] = self._kwargs_fixed['z_sampling']
+        if self._source_grid_offset:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                kwargs_special['delta_x_source_grid'] = args[i]
+                i += 1
+            else:
+                kwargs_special['delta_x_source_grid'] = self._kwargs_fixed['delta_x_source_grid']
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                kwargs_special['delta_y_source_grid'] = args[i]
+                i += 1
+            else:
+                kwargs_special['delta_y_source_grid'] = self._kwargs_fixed['delta_y_source_grid']
         return kwargs_special, i
 
     def set_params(self, kwargs_special):
@@ -158,6 +178,11 @@ class SpecialParam(object):
             if 'z_sampling' not in self._kwargs_fixed:
                 for i in range(self._num_z_sampling):
                     args.append(kwargs_special['z_sampling'][i])
+        if self._source_grid_offset is True:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                args.append(kwargs_special['delta_x_source_grid'])
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                args.append(kwargs_special['delta_y_source_grid'])
         return args
 
     def num_param(self):
@@ -199,4 +224,11 @@ class SpecialParam(object):
                 num += self._num_z_sampling
                 for i in range(self._num_z_sampling):
                     string_list.append('z')
+        if self._source_grid_offset is True:
+            if 'delta_x_source_grid' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('delta_x_source_grid')
+            if 'delta_y_source_grid' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('delta_y_source_grid')
         return num, string_list

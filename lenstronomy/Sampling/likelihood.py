@@ -31,7 +31,7 @@ class LikelihoodModule(object):
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
                  prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
                  prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[], custom_logL_addition=None):
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_pixelbased=None):
         """
         initializing class
 
@@ -66,6 +66,7 @@ class LikelihoodModule(object):
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -92,7 +93,8 @@ class LikelihoodModule(object):
         self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
-                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux}
+                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
+                                'kwargs_pixelbased': kwargs_pixelbased}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,

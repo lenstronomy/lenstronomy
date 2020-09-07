@@ -23,7 +23,7 @@ class TestInterpol(object):
         interp = Interpol()
         kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
         output = interp.function(x, y, **kwargs_interp)
-        npt.assert_almost_equal(output, flux, decimal=0)
+        npt.assert_equal(output, flux)
 
         flux = gauss.function(x-1., y, amp=1., center_x=0., center_y=0., sigma=1.)
         kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 1., 'center_y': 0.}

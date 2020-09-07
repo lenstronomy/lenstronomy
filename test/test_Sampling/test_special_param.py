@@ -10,9 +10,10 @@ class TestParam(object):
 
     def setup(self):
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
-                                  source_size=True, num_tau0=2, num_z_sampling=3)
+                                  source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True)
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
-                       'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2])}
+                       'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2]),
+                       'delta_x_source_grid': 0, 'delta_y_source_grid': 0}
 
     def test_get_setParams(self):
         args = self.param.set_params(self.kwargs)
@@ -28,7 +29,7 @@ class TestParam(object):
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 11
+        assert num == 13
 
     def test_mass_scaling(self):
         kwargs_fixed = {}
@@ -57,6 +58,26 @@ class TestParam(object):
         kwargs_new, _ = param.get_params(args, i=0)
         print(kwargs_new)
         assert kwargs_new['delta_x_image'][0] == kwargs['delta_x_image'][0]
+
+    def test_source_grid_offsets(self):
+        param = SpecialParam(kwargs_lower={'delta_x_source_grid': -1, 'delta_y_source_grid': 1},
+                             kwargs_upper={'delta_x_source_grid': 1, 'delta_y_source_grid': 1},
+                             source_grid_offset=True)
+        kwargs = {'delta_x_source_grid': 0.1, 'delta_y_source_grid': 0.1}
+        args = param.set_params(kwargs_special=kwargs)
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new['delta_x_source_grid'] == kwargs['delta_x_source_grid']
+        assert kwargs_new['delta_y_source_grid'] == kwargs['delta_y_source_grid']
+
+        kwargs_fixed = {'delta_x_source_grid': 0, 'delta_y_source_grid': 0}
+        param = SpecialParam(kwargs_lower={'delta_x_source_grid': -1, 'delta_y_source_grid': 1},
+                             kwargs_upper={'delta_x_source_grid': 1, 'delta_y_source_grid': 1},
+                             source_grid_offset=True, kwargs_fixed=kwargs_fixed)
+        kwargs = {'delta_x_source_grid': 0.1, 'delta_y_source_grid': 0.1}
+        args = param.set_params(kwargs_special=kwargs)
+        kwargs_new, _ = param.get_params(args, i=0)
+        assert kwargs_new['delta_x_source_grid'] == kwargs_fixed['delta_x_source_grid']
+        assert kwargs_new['delta_y_source_grid'] == kwargs_fixed['delta_y_source_grid']
 
 
 if __name__ == '__main__':

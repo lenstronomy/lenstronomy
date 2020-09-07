@@ -95,7 +95,6 @@ class LSST(object):
         elif coadd_years != 10:
             self.obs['num_exposures'] = coadd_years*self.obs['num_exposures']//10
 
-
         self.camera = {'read_noise': 10,  # will be <10
                        'pixel_scale': 0.2,
                        'ccd_gain': 2.3,

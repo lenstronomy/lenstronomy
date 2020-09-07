@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim package &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.ImSim package &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -214,9 +214,12 @@ used as rarely as possible.</p>
 <span id="lenstronomy-imsim-image-linear-solve-module"></span><h2>lenstronomy.ImSim.image_linear_solve module<a class="headerlink" href="#module-lenstronomy.ImSim.image_linear_solve" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit">
-<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_linear_solve.</code><code class="descname">ImageLinearFit</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class=None</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>extinction_class=None</em>, <em>kwargs_numerics={}</em>, <em>likelihood_mask=None</em>, <em>psf_error_map_bool_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_linear_solve.</code><code class="descname">ImageLinearFit</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class=None</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>extinction_class=None</em>, <em>kwargs_numerics={}</em>, <em>likelihood_mask=None</em>, <em>psf_error_map_bool_list=None</em>, <em>kwargs_pixelbased=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.ImSim.image_model.ImageModel" title="lenstronomy.ImSim.image_model.ImageModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.ImSim.image_model.ImageModel</span></code></a></p>
-<p>linear version class, inherits ImageModel</p>
+<p>linear version class, inherits ImageModel.</p>
+<p>When light models use pixel-based profile types, such as ‘SLIT_STARLETS’, 
+the WLS linear inversion is replaced by the regularized inversion performed by an external solver.
+The current pixel-based solver is provided by the SLITronomy plug-in.</p>
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.array_masked2image">
 <code class="descname">array_masked2image</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.array_masked2image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.array_masked2image" title="Permalink to this definition">¶</a></dt>
@@ -227,6 +230,28 @@ used as rarely as possible.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> – 1d array of values not masked out (part of linear fitting)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">2d array of full image</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.check_positive_flux">
+<code class="descname">check_positive_flux</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>kwargs_lens_light</em>, <em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.check_positive_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.check_positive_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether the surface brightness profiles contain positive fluxes and returns bool if True</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_source</strong> – source surface brightness keyword argument list</li>
+<li><strong>kwargs_lens_light</strong> – lens surface brightness keyword argument list</li>
+<li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -297,7 +322,8 @@ of the basis set.</p>
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_linear_solve">
 <code class="descname">image_linear_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>inv_bool=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.image_linear_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_linear_solve" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the image (lens and source surface brightness with a given lens model).
-The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)</p>
+The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
+However in case of pixel-based modelling, pixel values are constrained by an external solver (e.g. SLITronomy).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -311,7 +337,33 @@ The linear parameters are computed with a weighted linear least square optimizat
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_pixelbased_solve">
+<code class="descname">image_pixelbased_solve</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>init_lens_light_model=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.image_pixelbased_solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.image_pixelbased_solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the image (lens and source surface brightness with a given lens model) using the pixel-based solver.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_lens</strong> – list of keyword arguments corresponding to the superposition of different lens profiles</li>
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
+<li><strong>kwargs_ps</strong> – keyword arguments corresponding to point sources</li>
+<li><strong>kwargs_extinction</strong> – keyword arguments corresponding to dust extinction</li>
+<li><strong>kwargs_special</strong> – keyword arguments corresponding to “special” parameters</li>
+<li><strong>init_lens_light_model</strong> – optional initial guess for the lens surface brightness</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of surface brightness pixels of the optimal solution of the linear parameters to match the data</p>
 </td>
 </tr>
 </tbody>
@@ -320,7 +372,7 @@ The linear parameters are computed with a weighted linear least square optimizat
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.likelihood_data_given_model">
-<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">likelihood_data_given_model</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em>, <em>check_positive_flux=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.likelihood_data_given_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.likelihood_data_given_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given a model
 This is specified with the non-linear parameters and a linear inversion and prior marginalisation.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -332,6 +384,12 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
 <li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to different lens light surface brightness profiles</li>
 <li><strong>kwargs_ps</strong> – keyword arguments corresponding to “other” parameters, such as external shear and point source image positions</li>
+<li><strong>kwargs_extinction</strong> – </li>
+<li><strong>kwargs_special</strong> – </li>
+<li><strong>source_marg</strong> – bool, performs a marginalization over the linear parameters</li>
+<li><strong>linear_prior</strong> – linear prior width in eigenvalues</li>
+<li><strong>check_positive_flux</strong> – bool, if True, checks whether the linear inversion resulted in non-negative flux
+components and applies a punishment in the likelihood if so.</li>
 </ul>
 </td>
 </tr>
@@ -469,6 +527,28 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.update_pixel_kwargs">
+<code class="descname">update_pixel_kwargs</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>kwargs_lens_light</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.update_pixel_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.update_pixel_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update kwargs arguments for pixel-based profiles with fixed properties
+such as their number of pixels, scale, and center coordinates (fixed to the origin).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_source</strong> – list of keyword arguments corresponding to the superposition of different source light profiles</li>
+<li><strong>kwargs_lens_light</strong> – list of keyword arguments corresponding to the superposition of different lens light profiles</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">updated kwargs_source and kwargs_lens_light</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -476,7 +556,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 <span id="lenstronomy-imsim-image-model-module"></span><h2>lenstronomy.ImSim.image_model module<a class="headerlink" href="#module-lenstronomy.ImSim.image_model" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.ImSim.image_model.ImageModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_model.</code><code class="descname">ImageModel</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>extinction_class=None</em>, <em>kwargs_numerics={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.ImSim.image_model.</code><code class="descname">ImageModel</code><span class="sig-paren">(</span><em>data_class</em>, <em>psf_class</em>, <em>lens_model_class=None</em>, <em>source_model_class=None</em>, <em>lens_light_model_class=None</em>, <em>point_source_class=None</em>, <em>extinction_class=None</em>, <em>kwargs_numerics=None</em>, <em>kwargs_pixelbased=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class uses functions of lens_model and source_model to make a lensed image</p>
 <dl class="method">
@@ -520,7 +600,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels of the simulation</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of surface brightness pixels of the simulation</p>
 </td>
 </tr>
 </tbody>
@@ -541,7 +621,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of surface brightness pixels</p>
 </td>
 </tr>
 </tbody>
@@ -587,7 +667,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness">
-<code class="descname">source_surface_brightness</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>kwargs_lens=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>unconvolved=False</em>, <em>de_lensed=False</em>, <em>k=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.source_surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness" title="Permalink to this definition">¶</a></dt>
+<code class="descname">source_surface_brightness</code><span class="sig-paren">(</span><em>kwargs_source</em>, <em>kwargs_lens=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em>, <em>unconvolved=False</em>, <em>de_lensed=False</em>, <em>k=None</em>, <em>update_pixelbased_mapping=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_model.html#ImageModel.source_surface_brightness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_model.ImageModel.source_surface_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the source surface brightness distribution</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -603,7 +683,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">1d array of surface brightness pixels</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d array of surface brightness pixels</p>
 </td>
 </tr>
 </tbody>
@@ -698,7 +778,7 @@ This is specified with the non-linear parameters and a linear inversion and prio
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

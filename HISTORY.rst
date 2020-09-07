@@ -203,3 +203,5 @@ History
 * observation configuration templates and examples
 * lens equation solver arguments in single sub-kwargs
 * adapted imports to latest scipy release
+* iterative PSF reconstruction improved
+* multipole lens model

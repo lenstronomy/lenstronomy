@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Optimizer.optimizer &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.LensModel.Optimizer.optimizer &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -225,18 +225,11 @@
 
         <span class="c1"># if we have a good enough solution, no point in recomputing the image positions since this can be quite slow</span>
         <span class="c1"># and will give the same answer</span>
-        <span class="k">if</span> <span class="n">src_pen_best</span><span class="p">[</span><span class="n">best_index</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol_src_penalty</span><span class="p">:</span>
-            <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pos</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Here, the solver has the instance of &quot;lensing_class&quot; or &quot;LensModel&quot; for multiplane/singleplane respectively.</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: possibly a bad fit.&#39;</span><span class="p">)</span>
-            <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">findBrightImage</span><span class="p">(</span><span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">,</span> <span class="n">kwargs_lens_final</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="c1">#if len(x_image) != len(self.x_pos) or len(y_image) != len(self.y_pos):</span>
-            <span class="c1">#    x_image, y_image = self.solver.findBrightImage(source_x, source_y, kwargs_lens_final,</span>
-            <span class="c1">#                                                   arrival_time_sort=False,</span>
-            <span class="c1">#                                                   precision_limit=10**(-11), num_iter_max=15)</span>
+        <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_pos</span>
 
-            <span class="c1">#x_image, y_image = self.solver.image_position_from_source(source_x, source_y, kwargs_lens_final, arrival_time_sort = False)</span>
+        <span class="k">if</span> <span class="n">src_pen_best</span><span class="p">[</span><span class="n">best_index</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tol_src_penalty</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Warning: possibly a bad fit.&#39;</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;optimization done.&#39;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Recovered source position: &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">srcx</span><span class="p">,</span> <span class="n">srcy</span><span class="p">))</span>
@@ -341,7 +334,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

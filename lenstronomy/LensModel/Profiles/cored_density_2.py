@@ -10,9 +10,12 @@ class CoredDensity2(LensProfileBase):
     """
     class for a uniform cored density dropping steep in the outskirts
     credits for suggesting this profile goes to Kfir Blum
-    3d rho(r) = 2/pi * Sigma_crit R_c**2 * (R_c**2 + r**2)**(-3/2)
-    This profile drops as rho(r) **(-3) like an NFW profile
 
+    .. math::
+
+        \rho(r) = 2/\pi * \Sigma_{\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
+
+    This profile drops as math:`\rho(r)^{-3}` like an NFW profile.
     """
     model_name = 'CORED_DENSITY_2'
     _s = 0.000001  # numerical limit for minimal radius

@@ -87,6 +87,7 @@ class SingleBandMultiModel(ImageLinearFit):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.multi_gauss_expansion</span> <span class="k">as</span> <span class="nn">mge</span>
 
 
-<div class="viewcode-block" id="de_shift_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.de_shift_kernel">[docs]</a><span class="k">def</span> <span class="nf">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<div class="viewcode-block" id="de_shift_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.de_shift_kernel">[docs]</a><span class="k">def</span> <span class="nf">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fractional_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.</span>
 
@@ -62,6 +62,8 @@
 <span class="sd">    :param kernel: (shifted) kernel, e.g. a star in an image that is not centered in the pixel grid</span>
 <span class="sd">    :param shift_x: x-offset relative to the center of the pixel (sub-pixel shift)</span>
 <span class="sd">    :param shift_y: y-offset relative to the center of the pixel (sub-pixel shift)</span>
+<span class="sd">    :param iterations: number of repeated iterations of shifting a new de-shifted kernel and apply corrections</span>
+<span class="sd">    :param fractional_step_size: float (0, 1] correction factor relative to previous proposal (can be used for stability</span>
 <span class="sd">    :return: de-shifted kernel such that the interpolated shift boy (shift_x, shift_y) results in the input kernel</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">kernel</span><span class="p">)</span>
@@ -78,7 +80,7 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">):</span>
         <span class="n">kernel_shifted_inv</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="n">frac_y_shift</span><span class="p">,</span> <span class="o">-</span><span class="n">frac_x_shift</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">kernel_init_shifted</span> <span class="o">-</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_shifted_inv</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span>
-        <span class="n">kernel_new</span> <span class="o">+=</span> <span class="n">delta</span> <span class="o">*</span> <span class="mf">1.</span>
+        <span class="n">kernel_new</span> <span class="o">+=</span> <span class="n">delta</span> <span class="o">*</span> <span class="n">fractional_step_size</span>
         <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span> <span class="o">*</span> <span class="n">norm</span>
     <span class="k">return</span> <span class="n">kernel_new</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
@@ -156,9 +158,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">kernel_pixel</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">averaging</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">,</span> <span class="n">numGrid</span><span class="o">=</span><span class="n">nx_new</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="n">nx</span><span class="p">)</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="n">kernel</span> <span class="o">-</span> <span class="n">kernel_pixel</span>
-        <span class="c1">#plt.matshow(delta)</span>
-        <span class="c1">#plt.colorbar()</span>
-        <span class="c1">#plt.show()</span>
         <span class="n">temp_kernel</span> <span class="o">=</span> <span class="n">kernel_input</span> <span class="o">+</span> <span class="n">delta</span>
         <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">temp_kernel</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">)</span><span class="c1">#/norm_subgrid</span>
         <span class="n">kernel_subgrid</span> <span class="o">=</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span><span class="p">)</span>
@@ -519,7 +518,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

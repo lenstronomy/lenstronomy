@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -59,6 +59,36 @@
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Solver.lens_equation_solver.</code><code class="descname">LensEquationSolver</code><span class="sig-paren">(</span><em>lensModel</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to solve for image positions given lens model and source position</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions">
+<code class="descname">candidate_solutions</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>min_distance=0.1</em>, <em>search_window=10</em>, <em>verbose=False</em>, <em>x_center=0</em>, <em>y_center=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.candidate_solutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds pixels in the image plane possibly hosting a solution of the lens equation, for the given source position and lens model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sourcePos_x</strong> – source position in units of angle</li>
+<li><strong>sourcePos_y</strong> – source position in units of angle</li>
+<li><strong>kwargs_lens</strong> – lens model parameters as keyword arguments</li>
+<li><strong>min_distance</strong> – minimum separation to consider for two images in units of angle</li>
+<li><strong>search_window</strong> – window size to be considered by the solver. Will not find image position outside this window</li>
+<li><strong>verbose</strong> – bool, if True, prints some useful information for the user</li>
+<li><strong>x_center</strong> – float, center of the window to search for point sources</li>
+<li><strong>y_center</strong> – float, center of the window to search for point sources</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(approximate) angular position of (multiple) images ra_pos, dec_pos in units of angles, related ray-traced source displacements and pixel width</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">AttributeError, KeyError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">
 <code class="descname">findBrightImage</code><span class="sig-paren">(</span><em>sourcePos_x</em>, <em>sourcePos_y</em>, <em>kwargs_lens</em>, <em>numImages=4</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=10</em>, <em>arrival_time_sort=True</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>num_random=0</em>, <em>non_linear=False</em>, <em>magnification_limit=None</em>, <em>initial_guess_cut=True</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.findBrightImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage" title="Permalink to this definition">¶</a></dt>
@@ -433,7 +463,7 @@ Credits to Giulia Pagano</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

@@ -52,6 +52,14 @@ lenstronomy.LensModel.Profiles.cnfw\_ellipse module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.const\_mag module
+------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.const_mag
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.convergence module
 -------------------------------------------------
 
@@ -104,6 +112,14 @@ lenstronomy.LensModel.Profiles.dipole module
 --------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.dipole
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.epl module
+-----------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.epl
     :members:
     :undoc-members:
     :show-inheritance:
@@ -196,6 +212,14 @@ lenstronomy.LensModel.Profiles.multi\_gaussian\_kappa module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.multipole module
+-----------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.multipole
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.nfw module
 -----------------------------------------
 
@@ -208,14 +232,6 @@ lenstronomy.LensModel.Profiles.nfw\_ellipse module
 --------------------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nfw_ellipse
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-lenstronomy.LensModel.Profiles.nfw\_lookup module
--------------------------------------------------
-
-.. automodule:: lenstronomy.LensModel.Profiles.nfw_lookup
     :members:
     :undoc-members:
     :show-inheritance:
@@ -240,6 +256,14 @@ lenstronomy.LensModel.Profiles.nie module
 -----------------------------------------
 
 .. automodule:: lenstronomy.LensModel.Profiles.nie
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.LensModel.Profiles.nie\_potential module
+----------------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.nie_potential
     :members:
     :undoc-members:
     :show-inheritance:

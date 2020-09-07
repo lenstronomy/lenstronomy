@@ -17,23 +17,37 @@ class PJaffe(LensProfileBase):
         \rho(r) = \frac{\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
 
     with :math:`Rs > Ra`.
+
     The projected density is
+
     .. math::
 
         \Sigma(R) = \Sigma_0 \frac{Ra Rs}{Rs-Ra}\left(\frac{1}{\sqrt{Ra^2+R^2}} - \frac{1}{\sqrt{Rs^2+R^2}} \right)
 
     with
+
     .. math::
 
         \Sigma_0 = \pi \rpho_0 \frac{Ra Rs}{Rs + Ra}
 
-    In the lensing parameterization, math:`sigma0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}`
+    In the lensing parameterization,
+
+    .. math::
+
+        \sigma_0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}
 
     """
-    _s = 0.0001
+
     param_names = ['sigma0', 'Ra', 'Rs', 'center_x', 'center_y']
     lower_limit_default = {'sigma0': 0, 'Ra': 0, 'Rs': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'sigma0': 10, 'Ra': 100, 'Rs': 100, 'center_x': 100, 'center_y': 100}
+
+    def __init__(self):
+        """
+
+        """
+        LensProfileBase.__init__(self)
+        self._s = 0.0001
 
     def density(self, r, rho0, Ra, Rs):
         """

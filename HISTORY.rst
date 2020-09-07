@@ -195,3 +195,11 @@ History
 * bug fix in Hession of POINT_SOURCE model
 * EPL model from Tessore et al. 2015 implemented
 * multi-observation mode for kinematics calculation
+
+
+1.6.0 (2020-09-07)
+++++++++++++++++++
+* SLITronomy integration
+* observation configuration templates and examples
+* lens equation solver arguments in single sub-kwargs
+* adapted imports to latest scipy release

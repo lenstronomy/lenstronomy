@@ -53,7 +53,6 @@ class ImageData(PixelGrid, ImageNoise):
         :param dec_shift: DEC shift of pixel grid
         """
         nx, ny = np.shape(image_data)
-        self._data = image_data
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
@@ -63,7 +62,7 @@ class ImageData(PixelGrid, ImageNoise):
     def update_data(self, image_data):
         """
 
-        update the data
+        update the data as well as the error matrix estimated from it when done so using the data
 
         :param image_data: 2d numpy array of same size as nx, ny
         :return: None
@@ -72,6 +71,8 @@ class ImageData(PixelGrid, ImageNoise):
         if not self._nx == nx and not self._ny == ny:
             raise ValueError("shape of new data %s %s must equal old data %s %s!" % (nx, ny, self._nx, self._ny))
         self._data = image_data
+        if hasattr(self, '_C_D') and self._noise_map is None:
+            del self._C_D
 
     @property
     def data(self):

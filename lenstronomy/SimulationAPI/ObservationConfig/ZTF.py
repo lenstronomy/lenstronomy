@@ -56,7 +56,7 @@ i_band_obs = {'exposure_time': 30.,
 
 class ZTF(object):
     """
-    class contains DES instrument and observation configurations
+    class contains ZTF instrument and observation configurations
     """
     def __init__(self, band='g', psf_type='GAUSSIAN', coadd_years=3):
         """

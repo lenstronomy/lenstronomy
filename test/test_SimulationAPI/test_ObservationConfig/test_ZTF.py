@@ -7,9 +7,9 @@ import lenstronomy.Util.util as util
 class TestZTF(unittest.TestCase):
 
     def setUp(self):
-        self.g = DES()  # default is g_band
-        self.r = DES(band='r')
-        self.i = DES(band='i')
+        self.g = ZTF()  # default is g_band
+        self.r = ZTF(band='r')
+        self.i = ZTF(band='i')
 
         kwargs_g_band = self.g.kwargs_single_band()
         kwargs_r_band = self.r.kwargs_single_band()
@@ -19,7 +19,7 @@ class TestZTF(unittest.TestCase):
         self.r_band = SingleBand(**kwargs_r_band)
         self.i_band = SingleBand(**kwargs_i_band)
 
-        # dictionaries mapping DES kwargs to SingleBand kwargs
+        # dictionaries mapping ZTF kwargs to SingleBand kwargs
         self.camera_settings = {'read_noise': '_read_noise',
                                 'pixel_scale': 'pixel_scale',
                                 'ccd_gain': 'ccd_gain'}

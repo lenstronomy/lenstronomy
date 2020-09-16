@@ -86,6 +86,13 @@ Dark Matter substructure
 * Quantifying the Line-of-Sight Halo Contribution to the Dark Matter Convergence Power Spectrum from Strong Gravitational Lenses; `Sengul et al. 2020 <https://arxiv.org/abs/2006.07383>`_
     * *
 
+* Detecting Subhalos in Strong Gravitational Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06663>`_
+    * *
+
+* Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06639>`_
+    * *
+
+
 Galaxy formation and evolution
 ------------------------------
 

@@ -8,7 +8,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
-                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'NumericalAlpha', 'MULTIPOLE']
+                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN']
 
 
 class ProfileListBase(object):
@@ -80,6 +80,9 @@ class ProfileListBase(object):
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()
+        elif lens_type == 'HESSIAN':
+            from lenstronomy.LensModel.Profiles.hessian import Hessian
+            return Hessian()
         elif lens_type == 'FLEXION':
             from lenstronomy.LensModel.Profiles.flexion import Flexion
             return Flexion()

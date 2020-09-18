@@ -1,11 +1,9 @@
 __author__ = 'sibirrer'
+
 from lenstronomy.GalKin.galkin_model import GalkinModel
 
-
 import numpy.testing as npt
-import numpy as np
 import pytest
-import unittest
 
 
 class TestGalkinModel(object):
@@ -29,21 +27,13 @@ class TestGalkinModel(object):
         assert out > 0
         print(out)
 
-
         kin_numeric = GalkinModel(kwargs_model, kwargs_cosmo, analytic_kinematics=False, kwargs_numerics=kwargs_numerics)
         out_num = kin_numeric.check_df(r, kwargs_mass=[{'theta_E': theta_E, 'gamma': gamma}],
                                        kwargs_light=[{'Rs': r_eff * 0.551, 'amp': 1}], kwargs_anisotropy={'r_ani': a_ani*r_eff})
         assert out_num > 1
         npt.assert_almost_equal(out_num/out, 1, decimal=2)
-        # import matplotlib.pyplot as plt
-        # import numpy as np
-        # r_list = np.logspace(-1, 1, 20)
-        # crit_list = []
-        # for r in r_list:
-        #    crit_list.append(kin.check_df(r, theta_E, gamma, a_ani, r_eff))
-        # plt.plot(r_list, crit_list)
-        # plt.show()
-        # assert 1 == 0
+
+        kin_numeric_default = GalkinModel(kwargs_model, kwargs_cosmo, analytic_kinematics=False, kwargs_numerics=None)
 
 
 if __name__ == '__main__':

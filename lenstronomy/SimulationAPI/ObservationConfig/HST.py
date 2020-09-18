@@ -9,8 +9,9 @@ WFC3_F160W_band_obs = {'exposure_time': 5400.,
               'sky_brightness': 22.3,
               'magnitude_zero_point': 25.96,
               'num_exposures': 1,
-              'seeing': 0.15,
-              'psf_type': 'PIXEL'}
+              'seeing': 0.08, # set equal to the approx pixel size for drizzled PSF. Note that undrizzled PSF FWHM ~ 0.15" (Windhorst et al 2011)
+              'psf_type': 'GAUSSIAN'
+              }
 
 # configs meant to simulate images close to those provided as part of the Time Delay Lens Modeling Challenge
 TDLMC_F160W_band_obs = {'exposure_time': 5400.,
@@ -18,7 +19,8 @@ TDLMC_F160W_band_obs = {'exposure_time': 5400.,
               'magnitude_zero_point': 25.9463,
               'num_exposures': 1,
               'seeing': None,
-              'psf_type': 'PIXEL'}
+              'psf_type': 'PIXEL' # note kernel_point_source (the PSF map) must be provided separately
+              }
 
 """
 :keyword exposure_time: exposure time per image (in seconds)
@@ -62,7 +64,7 @@ class HST(object):
 
         # WFC3 camera settings
         self.camera = {'read_noise': 4,
-                       'pixel_scale': 0.08,
+                       'pixel_scale': 0.08, # approx pixel size for drizzled PSF
                        'ccd_gain': 2.5,
                        }
         """

@@ -120,6 +120,14 @@ class Numerics(PointSourceRendering):
         return image_conv * self._pixel_width ** 2
 
     @property
+    def grid_supersampling_factor(self):
+        """
+
+        :return: supersampling factor set for higher resolution sub-pixel sampling of surface brightness
+        """
+        return self._grid.supersampling_factor
+
+    @property
     def coordinates_evaluate(self):
         """
 
@@ -144,3 +152,19 @@ class Numerics(PointSourceRendering):
             return kernel_cut
         else:
             return kernel_super
+
+    @property
+    def convolution_class(self):
+        """
+
+        :return: convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, ...)
+        """
+        return self._conv
+
+    @property
+    def grid_class(self):
+        """
+
+        :return: grid class (can be RegularGrid, AdaptiveGrid)
+        """
+        return self._grid

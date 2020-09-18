@@ -68,7 +68,7 @@ class LSST(object):
 
         :param band: string, 'u', 'g', 'r', 'i', 'z' or 'y' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
-        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 10.
+        :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 1-10.
         """
         if band.isalpha():
             band = band.lower()
@@ -90,9 +90,10 @@ class LSST(object):
         if psf_type != 'GAUSSIAN':
             raise ValueError("psf_type %s not supported!" % psf_type)
 
-        if coadd_years != 10:
-            raise ValueError(" %s coadd_years not supported! "
-                             "You may manually adjust num_exposures in obs dict if required." % coadd_years)
+        if coadd_years > 10 or coadd_years < 1:
+            raise ValueError(" %s coadd_years not supported! Choose an integer between 1 and 10." % coadd_years)
+        elif coadd_years != 10:
+            self.obs['num_exposures'] = coadd_years*self.obs['num_exposures']//10
 
         self.camera = {'read_noise': 10,  # will be <10
                        'pixel_scale': 0.2,

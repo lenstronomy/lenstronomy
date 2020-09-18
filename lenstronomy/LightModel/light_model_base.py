@@ -85,6 +85,12 @@ class LightModelBase(object):
             elif profile_type == 'INTERPOL':
                 from lenstronomy.LightModel.Profiles.interpolation import Interpol
                 self.func_list.append(Interpol())
+            elif profile_type == 'SLIT_STARLETS':
+                from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
+                self.func_list.append(SLIT_Starlets(fast_inverse=True, second_gen=False))
+            elif profile_type == 'SLIT_STARLETS_GEN2':
+                from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
+                self.func_list.append(SLIT_Starlets(second_gen=True))
             else:
                 raise ValueError('Warning! No light model of type', profile_type, ' found!')
         self._num_func = len(self.func_list)
@@ -163,7 +169,7 @@ class LightModelBase(object):
     def delete_interpol_caches(self):
         """Call the delete_cache method of INTERPOL profiles"""
         for i, model in enumerate(self.profile_type_list):
-            if model == 'INTERPOL':
+            if model in ['INTERPOL', 'SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
                 self.func_list[i].delete_cache()
 
     def _transform_kwargs(self, kwargs_list):

@@ -21,7 +21,7 @@ class MultiLinear(MultiDataBase):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None, kwargs_pixelbased=None):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
@@ -33,7 +33,7 @@ class MultiLinear(MultiDataBase):
         imageModel_list = []
         for band_index in range(len(multi_band_list)):
             imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                              band_index=band_index)
+                                              band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 
@@ -41,7 +41,9 @@ class MultiLinear(MultiDataBase):
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
-        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
+        The linear parameters are computed with a weighted linear least square optimization
+        (i.e. flux normalization of the brightness profiles)
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -71,6 +73,7 @@ class MultiLinear(MultiDataBase):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:

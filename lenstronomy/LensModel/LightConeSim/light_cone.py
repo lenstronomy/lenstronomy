@@ -95,5 +95,4 @@ class MassSlice(object):
         f_x = self._f_x_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing ** 2 * mpc2arcsec
         f_y = self._f_y_mass / lens_cosmo.sigma_crit_angle / self._grid_spacing ** 2 * mpc2arcsec
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': f_, 'f_x': f_x, 'f_y': f_y}
-        print(lens_cosmo.sigma_crit_angle, lens_cosmo.sigma_crit, grid_arcsec, self._grid_spacing)
         return kwargs_interp

@@ -23,13 +23,14 @@ class SingleBandMultiModel(ImageLinearFit):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, band_index=0, kwargs_pixelbased=None):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
         :param kwargs_model: model option keyword arguments
         :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
         :param band_index: integer, index of the imaging band to model
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
         self.type = 'single-band-multi-model'
         if likelihood_mask_list is None:
@@ -55,7 +56,8 @@ class SingleBandMultiModel(ImageLinearFit):
 
         super(SingleBandMultiModel, self).__init__(data_i, psf_i, lens_model_class, source_model_class,
                                                    lens_light_model_class, point_source_class, extinction_class,
-                                                   kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index])
+                                                   kwargs_numerics=kwargs_numerics, likelihood_mask=likelihood_mask_list[band_index],
+                                                   kwargs_pixelbased=kwargs_pixelbased)
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
@@ -85,6 +87,7 @@ class SingleBandMultiModel(ImageLinearFit):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:

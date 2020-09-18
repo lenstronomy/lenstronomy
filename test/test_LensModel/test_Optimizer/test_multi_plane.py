@@ -17,7 +17,7 @@ class TestMultiPlaneOptimizer(object):
         self.magnification_simple = np.array([2.79394452, 3.28101725, 2.29495699, 1.63409843]) * 3.28101725 ** -1
 
         redshift_list_simple = [0.5, 0.5]
-        lens_model_list_simple = ['SPEP', 'SHEAR']
+        lens_model_list_simple = ['EPL', 'SHEAR']
         self.kwargs_lens_simple = [
             {'theta_E': 0.7, 'center_x': 0.0, 'center_y': 0, 'e1': 0.0185665252864011, 'gamma': 2.,
              'e2': 0.08890716633399057}, {'gamma1': 0.00418890660015825, 'gamma2': -0.02908846518073248}]

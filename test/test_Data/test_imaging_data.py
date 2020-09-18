@@ -78,6 +78,17 @@ class TestData(object):
         npt.assert_almost_equal(x_coords[0], x_coords_new[0]-x_shift, decimal=10)
         npt.assert_almost_equal(y_coords[0], y_coords_new[0]-y_shift, decimal=10)
 
+    def test_update_data(self):
+        kwargs_data = {'image_data': np.zeros((self.numPix, self.numPix)),
+                       'noise_map': None, 'exposure_time': 1, 'background_rms': 1}
+        data = ImageData(**kwargs_data)
+        C_D = data.C_D
+        data.update_data(image_data=np.ones((self.numPix, self.numPix)))
+        C_D_new = data.C_D
+        assert C_D_new[0,0] > C_D[0, 0]
+        data_new = data.data
+        npt.assert_almost_equal(data_new, np.ones((self.numPix, self.numPix)))
+
 
 class TestRaise(unittest.TestCase):
 

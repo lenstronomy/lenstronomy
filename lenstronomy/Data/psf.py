@@ -88,7 +88,7 @@ class PSF(object):
 
         :param supersampling_factor: int >=1, supersampling factor relative to pixel resolution
         :param updata_cache: boolean, if True, updates the cached supersampling PSF if generated.
-        Attention, this will overwrite a previously used supersampled PSF if the resulution is changing.
+         Attention, this will overwrite a previously used supersampled PSF if the resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
         if hasattr(self, '_kernel_point_source_supersampled') and self._point_source_supersampling_factor == supersampling_factor:

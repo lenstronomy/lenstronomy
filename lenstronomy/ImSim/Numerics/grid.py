@@ -192,6 +192,29 @@ class RegularGrid(Coordinates1D):
         """
         return self._ra_subgrid, self._dec_subgrid
 
+    @property
+    def grid_points_spacing(self):
+        """
+        effective spacing between coordinate points, after supersampling
+        :return: sqrt(pixel_area)/supersampling_factor
+        """
+        return self.pixel_width / self._supersampling_factor
+
+    @property
+    def num_grid_points_axes(self):
+        """
+        effective number of points along each axes, after supersampling
+        :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor
+        """
+        return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
+
+    @property
+    def supersampling_factor(self):
+        """
+        :return: factor (per axis) of super-sampling relative to a pixel
+        """
+        return self._supersampling_factor
+
     def flux_array2image_low_high(self, flux_array, **kwargs):
         """
 

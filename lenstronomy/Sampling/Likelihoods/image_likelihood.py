@@ -11,8 +11,6 @@ class ImageLikelihood(object):
                  source_marg=False, linear_prior=None, check_positive_flux=False, kwargs_pixelbased=None):
         """
 
-        :param imSim_class: instance of a class that simulates one (or more) images and returns the likelihood, such as
-        ImageModel(), Multiband(), MultiExposure()
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be evaluated in the likelihood
         :param source_marg: marginalization addition on the imaging likelihood based on the covariance of the inferred

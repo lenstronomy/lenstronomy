@@ -1,6 +1,7 @@
 import numpy as np
 import copy
 from lenstronomy.PointSource.point_source_types import PointSourceCached
+_SUPPORTED_MODELS = ['UNLENSED', 'LENSED_POSITION', 'SOURCE_POSITION']
 
 
 class PointSource(object):
@@ -56,7 +57,7 @@ class PointSource(object):
                                                                  fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
             else:
-                raise ValueError("Point-source model %s not available" % model)
+                raise ValueError("Point-source model %s not available. Supported models are %s ." % (model, _SUPPORTED_MODELS))
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         self._kwargs_lens_eqn_solver = kwargs_lens_eqn_solver

@@ -1,7 +1,6 @@
 from lenstronomy.LightModel.Profiles.nie import NIE
 from lenstronomy.LensModel.Profiles.chameleon import Chameleon as ChameleonLens
 import lenstronomy.Util.param_util as param_util
-import numpy as np
 
 
 class Chameleon(object):

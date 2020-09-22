@@ -121,5 +121,13 @@ class TestEPL(object):
         npt.assert_almost_equal(f_x, phi_E * x/R)
         npt.assert_almost_equal(f_y, phi_E * y/R)
 
+        alpha = np.nan + 3j
+        alpha_real, alpha_imag = self.EPL.epl_major_axis._regularize(alpha)
+        npt.assert_almost_equal(alpha_real, 0)
+        alpha = 1. + np.nan
+        alpha_real, alpha_imag = self.EPL.epl_major_axis._regularize(alpha)
+        npt.assert_almost_equal(alpha_imag, 0)
+
+
 if __name__ == '__main__':
     pytest.main()

@@ -189,18 +189,12 @@ class EPLMajorAxis(LensProfileBase):
     @staticmethod
     def _regularize(alpha):
 
-        alpha_real, alpha_imag = alpha.real, alpha.imag
+        alpha_real = np.nan_to_num(alpha.real)
+        alpha_imag = np.nan_to_num(alpha.imag)
 
-        if isinstance(alpha_real, float) or isinstance(alpha_real, int):
-            if np.isnan(alpha_real) or np.isnan(alpha_imag):
-                alpha_real, alpha_imag = 0., 0.
-
-        else:
-            cond1 = np.isnan(alpha_real)
-            cond2 = np.isnan(alpha_imag)
-
-            alpha_real[cond1] = 0.
-            alpha_imag[cond2] = 0.
+        if isinstance(alpha.real, float) or isinstance(alpha.real, int):
+            alpha_real = float(alpha_real)
+            alpha_imag = float(alpha_imag)
 
         return alpha_real, alpha_imag
 

@@ -183,7 +183,26 @@ class EPLMajorAxis(LensProfileBase):
     param_names = ['b', 't', 'q', 'center_x', 'center_y']
 
     def __init__(self):
+
         super(EPLMajorAxis, self).__init__()
+
+    @staticmethod
+    def _regularize(alpha):
+
+        alpha_real, alpha_imag = alpha.real, alpha.imag
+
+        if isinstance(alpha_real, float) or isinstance(alpha_real, int):
+            if np.isnan(alpha_real) or np.isnan(alpha_imag):
+                alpha_real, alpha_imag = 0., 0.
+
+        else:
+            cond1 = np.isnan(alpha_real)
+            cond2 = np.isnan(alpha_imag)
+
+            alpha_real[cond1] = 0.
+            alpha_imag[cond2] = 0.
+
+        return alpha_real, alpha_imag
 
     def function(self, x, y, b, t, q):
         """
@@ -214,7 +233,9 @@ class EPLMajorAxis(LensProfileBase):
         alpha = 2/(1+q)*(b/R)**t*R_omega
 
         # return real and imaginary part
-        return alpha.real, alpha.imag
+        alpha_real, alpha_imag = self._regularize(alpha)
+
+        return alpha_real, alpha_imag
 
     def hessian(self, x, y, b, t, q):
         """

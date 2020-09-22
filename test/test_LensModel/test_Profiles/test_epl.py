@@ -100,6 +100,26 @@ class TestEPL(object):
         f_dyn = self.EPL.function(x, y, **kwargs_lens)
         assert f_dyn != f_static
 
+    def test_regularization(self):
+
+        phi_E = 1.
+        gamma = 2.
+        q = 1.
+        phi_G = 1.
+        e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
+
+        x = 0.
+        y = 0.
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_x, 0.)
+        npt.assert_almost_equal(f_y, 0.)
+
+        x = 0.3
+        y = 0.1
+        R = np.sqrt(x ** 2 + y ** 2)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_x, phi_E * x/R)
+        npt.assert_almost_equal(f_y, phi_E * y/R)
 
 if __name__ == '__main__':
     pytest.main()

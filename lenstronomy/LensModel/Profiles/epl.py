@@ -187,16 +187,13 @@ class EPLMajorAxis(LensProfileBase):
         super(EPLMajorAxis, self).__init__()
 
     @staticmethod
-    def _regularize(alpha):
+    def _regularize(value):
 
-        alpha_real = np.nan_to_num(alpha.real)
-        alpha_imag = np.nan_to_num(alpha.imag)
+        out = np.nan_to_num(value, posinf=1e+3, neginf=-1e+3)
+        if isinstance(value, float) or isinstance(value, int):
+            out = float(out)
 
-        if isinstance(alpha.real, float) or isinstance(alpha.real, int):
-            alpha_real = float(alpha_real)
-            alpha_imag = float(alpha_imag)
-
-        return alpha_real, alpha_imag
+        return out
 
     def function(self, x, y, b, t, q):
         """
@@ -227,7 +224,8 @@ class EPLMajorAxis(LensProfileBase):
         alpha = 2/(1+q)*(b/R)**t*R_omega
 
         # return real and imaginary part
-        alpha_real, alpha_imag = self._regularize(alpha)
+        alpha_real = self._regularize(alpha.real)
+        alpha_imag = self._regularize(alpha.imag)
 
         return alpha_real, alpha_imag
 
@@ -243,6 +241,7 @@ class EPLMajorAxis(LensProfileBase):
 
         # convergence, eq. (2)
         kappa = (2 - t)/2*(b/R)**t
+        kappa = self._regularize(kappa)
 
         # deflection via method
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
@@ -250,6 +249,8 @@ class EPLMajorAxis(LensProfileBase):
         # shear, eq. (17), corrected version from arXiv/corrigendum
         gamma_1 = (1-t)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
         gamma_2 = (1-t)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
+        gamma_1 = self._regularize(gamma_1)
+        gamma_2 = self._regularize(gamma_2)
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1

@@ -114,6 +114,12 @@ class TestEPL(object):
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 
+        x = 0.
+        y = 0.
+        f_xx, f_xy, f_yy = self.EPL.hessian(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_xx, 1000)
+        npt.assert_almost_equal(f_yy, 0.)
+
         x = 0.3
         y = 0.1
         R = np.sqrt(x ** 2 + y ** 2)
@@ -121,12 +127,14 @@ class TestEPL(object):
         npt.assert_almost_equal(f_x, phi_E * x/R)
         npt.assert_almost_equal(f_y, phi_E * y/R)
 
-        alpha = np.nan + 3j
-        alpha_real, alpha_imag = self.EPL.epl_major_axis._regularize(alpha)
-        npt.assert_almost_equal(alpha_real, 0)
-        alpha = 1. + np.nan
-        alpha_real, alpha_imag = self.EPL.epl_major_axis._regularize(alpha)
-        npt.assert_almost_equal(alpha_imag, 0)
+        value = np.nan
+        out = self.EPL.epl_major_axis._regularize(value)
+        npt.assert_almost_equal(out, 0)
+
+        value = 0.2
+        out = self.EPL.epl_major_axis._regularize(value)
+        npt.assert_almost_equal(out, 0.2)
+
 
 
 if __name__ == '__main__':

@@ -347,7 +347,7 @@ class PsfFitting(object):
         # take median absolute error for each pixel
         error_map = np.median(error_map_list, axis=0)
         error_map[kernel > 0] /= kernel[kernel > 0]**2
-        error_map = np.nan_to_num(error_map, nan=0, posinf=0, neginf=0)
+        error_map = np.nan_to_num(error_map)
         error_map[error_map > 1] = 1  # cap on error to be the same
         return error_map
 

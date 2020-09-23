@@ -215,8 +215,8 @@ class EPLMajorAxis(LensProfileBase):
         alpha = 2/(1+q)*(b/R)**t*R_omega
 
         # return real and imaginary part
-        alpha_real = np.nan_to_num(alpha.real)
-        alpha_imag = np.nan_to_num(alpha.imag)
+        alpha_real = np.nan_to_num(alpha.real, posinf=10**10, neginf=-10**10)
+        alpha_imag = np.nan_to_num(alpha.imag, posinf=10**10, neginf=-10**10)
 
         return alpha_real, alpha_imag
 
@@ -232,7 +232,7 @@ class EPLMajorAxis(LensProfileBase):
 
         # convergence, eq. (2)
         kappa = (2 - t)/2*(b/R)**t
-        kappa = np.nan_to_num(kappa)
+        kappa = np.nan_to_num(kappa, posinf=10**10, neginf=-10**10)
 
         # deflection via method
         alpha_x, alpha_y = self.derivatives(x, y, b, t, q)
@@ -240,8 +240,8 @@ class EPLMajorAxis(LensProfileBase):
         # shear, eq. (17), corrected version from arXiv/corrigendum
         gamma_1 = (1-t)*(alpha_x*cos - alpha_y*sin)/r - kappa*cos2
         gamma_2 = (1-t)*(alpha_y*cos + alpha_x*sin)/r - kappa*sin2
-        gamma_1 = np.nan_to_num(gamma_1)
-        gamma_2 = np.nan_to_num(gamma_2)
+        gamma_1 = np.nan_to_num(gamma_1, posinf=10**10, neginf=-10**10)
+        gamma_2 = np.nan_to_num(gamma_2, posinf=10**10, neginf=-10**10)
 
         # second derivatives from convergence and shear
         f_xx = kappa + gamma_1

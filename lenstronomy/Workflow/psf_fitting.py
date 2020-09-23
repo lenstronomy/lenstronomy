@@ -305,6 +305,7 @@ class PsfFitting(object):
             kernel_new = np.mean(kernel_list_new_extended, axis=0)
         else:
             raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
+        kernel_new = np.nan_to_num(kernel_new, nan=0, posinf=0, neginf=0)
         kernel_new[kernel_new < 0] = 0
         kernel_new = kernel_util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1.-factor) * kernel_old
@@ -346,6 +347,8 @@ class PsfFitting(object):
         # take median absolute error for each pixel
         error_map = np.median(error_map_list, axis=0)
         error_map[kernel > 0] /= kernel[kernel > 0]**2
+        error_map = np.nan_to_num(error_map, nan=0, posinf=0, neginf=0)
+        error_map[error_map > 1] = 1  # cap on error to be the same
         return error_map
 
     @staticmethod

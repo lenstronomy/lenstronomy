@@ -117,7 +117,7 @@ class TestEPL(object):
         x = 0.
         y = 0.
         f_xx, f_xy, f_yy = self.EPL.hessian(x, y, phi_E, e1, e2, gamma)
-        npt.assert_almost_equal(f_xx, np.inf)
+        npt.assert_almost_equal(f_xx, 10**10)
         npt.assert_almost_equal(f_yy, 0.)
 
 

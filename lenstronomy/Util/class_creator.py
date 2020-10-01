@@ -43,6 +43,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_lens_light_model_list:
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
+    :param index_optical_depth_model_list:
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.

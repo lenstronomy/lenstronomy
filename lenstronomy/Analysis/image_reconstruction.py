@@ -18,7 +18,7 @@ class MultiBandImageReconstruction(object):
     """
 
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, multi_band_type='multi-linear',
-                 kwargs_likelihood=None, print_likelihood_value=True):
+                 kwargs_likelihood=None, verbose=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -29,8 +29,8 @@ class MultiBandImageReconstruction(object):
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
-        :param print_likelihood_value: if True (default), computes and prints the total log-likelihood.
-        This can deactivated for speedup purposes (does not run linear inversion again), and reduces verbosity.
+        :param verbose: if True (default), computes and prints the total log-likelihood.
+        This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         """
         # here we retrieve those settings in the likelihood keyword arguments that are relevant for the image reconstruction
         if kwargs_likelihood is None:
@@ -51,7 +51,7 @@ class MultiBandImageReconstruction(object):
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
         check_solver_error(param)
 
-        if print_likelihood_value:
+        if verbose:
             logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
             n_data = self._imageModel.num_data_evaluate
             if n_data > 0:
@@ -71,7 +71,8 @@ class MultiBandImageReconstruction(object):
 
                 model_band = ModelBand(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
                                        param_i, copy.deepcopy(kwargs_params),
-                                       image_likelihood_mask_list=image_likelihood_mask_list, band_index=i)
+                                       image_likelihood_mask_list=image_likelihood_mask_list, band_index=i,
+                                       verbose=verbose)
                 self.model_band_list.append(model_band)
                 self._index_list.append(index)
             else:
@@ -101,7 +102,7 @@ class ModelBand(object):
 
     """
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
-                 image_likelihood_mask_list=None, band_index=0):
+                 image_likelihood_mask_list=None, band_index=0, verbose=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -114,6 +115,7 @@ class ModelBand(object):
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
         :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
+        :param verbose: if True (default), prints the reduced chi2 value for the current band.
         """
 
         self._bandmodel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
@@ -126,7 +128,8 @@ class ModelBand(object):
 
         self._norm_residuals = self._bandmodel.reduced_residuals(model, error_map=error_map)
         self._reduced_x2 = self._bandmodel.reduced_chi2(model, error_map=error_map)
-        print("reduced chi^2 of data ", band_index, "= ", self._reduced_x2)
+        if verbose:
+            print("reduced chi^2 of data ", band_index, "= ", self._reduced_x2)
 
         self._model = model
         self._cov_param = cov_param

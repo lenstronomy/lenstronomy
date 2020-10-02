@@ -52,10 +52,10 @@ class MultiBandImageReconstruction(object):
         check_solver_error(param)
 
         if print_likelihood_value:
-             logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
-             n_data = self._imageModel.num_data_evaluate
-             if n_data > 0:
-                 print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
+            n_data = self._imageModel.num_data_evaluate
+            if n_data > 0:
+                print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
 
         self.model_band_list = []
         self._index_list = []

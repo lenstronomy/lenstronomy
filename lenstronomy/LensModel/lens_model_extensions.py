@@ -189,20 +189,17 @@ class LensModelExtensions(object):
         ra_caustic_list = []
         dec_caustic_list = []
 
-        import matplotlib.pyplot as plt
-        cs = plt.contour(util.array2image(x_grid_high_res), util.array2image(y_grid_high_res), mag_high_res, [0],
-                         alpha=0.0)
-        paths = cs.collections[0].get_paths()
-        for i, p in enumerate(paths):
-            v = p.vertices
-            ra_points = v[:, 0]
-            dec_points = v[:, 1]
+        from skimage.measure import find_contours
+        paths = find_contours(mag_high_res, 0.)
+        for i, v in enumerate(paths):
+            # x, y changed because of skimage conventions
+            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2
+            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
             ra_caustics, dec_caustics = self._lensModel.ray_shooting(ra_points, dec_points, kwargs_lens)
             ra_caustic_list.append(ra_caustics)
             dec_caustic_list.append(dec_caustics)
-        plt.cla()
         return ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list
 
     def hessian_eigenvectors(self, x, y, kwargs_lens, diff=None):

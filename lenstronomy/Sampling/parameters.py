@@ -68,7 +68,7 @@ class Param(object):
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None, source_grid_offset=False):
+                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0):
         """
 
         :param kwargs_model:
@@ -219,7 +219,7 @@ class Param(object):
                                                             self._joint_lens_light_with_point_source)
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
-                                    kwargs_upper=kwargs_upper_lens)
+                                    kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
         self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
                                           linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
                                           kwargs_upper=kwargs_upper_lens_light)

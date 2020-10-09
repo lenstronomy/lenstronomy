@@ -252,6 +252,21 @@ class TestParam(object):
         num = self.param_class.num_point_source_images
         assert num == 2
 
+    def test_shapelet_lens(self):
+        kwargs_model = {'lens_model_list': ['SHAPELETS_CART'], 'source_light_model_list': [],
+                        'lens_light_model_list': [], 'point_source_model_list': []}
+        kwargs_param = {'num_shapelet_lens': 6}
+        kwargs_fixed_lens = [{'beta': 1}]  # for SPEP lens
+        kwargs_fixed_source = [{}]
+        kwargs_fixed_ps = [{}]
+        kwargs_fixed_lens_light = [{}]
+        kwargs_fixed_cosmo = [{}]
+        self.param_class = Param(kwargs_model, kwargs_fixed_lens=kwargs_fixed_lens,
+                                 kwargs_fixed_source=kwargs_fixed_source,
+                                 kwargs_fixed_lens_light=kwargs_fixed_lens_light, kwargs_fixed_ps=kwargs_fixed_ps,
+                                 kwargs_fixed_special=kwargs_fixed_cosmo, **kwargs_param)
+        self.param_class.print_setting()
+
 
 if __name__ == '__main__':
     pytest.main()

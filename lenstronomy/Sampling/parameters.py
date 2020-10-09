@@ -119,6 +119,7 @@ class Param(object):
          the sample as for the lens
         :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
+        :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])

@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
+from lenstronomy.Util.param_util import shear_polar2cartesian, shear_cartesian2polar
 import numpy as np
 
 __all__ = ['Params']

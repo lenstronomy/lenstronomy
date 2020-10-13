@@ -1,6 +1,8 @@
 import numpy as np
 from lenstronomy.Util import class_creator
 
+__all__ = ['ImageLikelihood']
+
 
 class ImageLikelihood(object):
     """

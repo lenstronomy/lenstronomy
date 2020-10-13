@@ -2,6 +2,8 @@ __author__ = 'aymgal'
 
 import lenstronomy.Util.sampling_util as utils
 
+__all__ = ['NestedSampler']
+
 
 class NestedSampler(object):
     """

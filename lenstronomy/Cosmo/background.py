@@ -4,6 +4,8 @@ __author__ = 'sibirrer'
 import numpy as np
 import lenstronomy.Util.constants as const
 
+__all__ = ['Background']
+
 
 class Background(object):
     """

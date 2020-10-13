@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.Profiles.flexion import Flexion
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['Flexionfg']
+
 
 class Flexionfg(LensProfileBase):
     """

@@ -1,6 +1,10 @@
 from lenstronomy.GalKin import velocity_util as util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class PSF(object):
     """
     general class to handle the PSF in the GalKin module for rendering the displacement of photons/spectro
@@ -28,6 +32,7 @@ class PSF(object):
         return self._psf.displace_psf(x, y)
 
 
+@export
 class PSF_GAUSSIAN(object):
     """
     Gaussian PSF
@@ -49,6 +54,7 @@ class PSF_GAUSSIAN(object):
         return util.displace_PSF_gaussian(x, y, self._fwhm)
 
 
+@export
 class PSF_MOFFAT(object):
     """
     Moffat PSF

@@ -3,7 +3,11 @@ routines to compute derivatives of spherical functions
 """
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def d_r_dx(x, y):
     """
     derivative of r with respect to x
@@ -14,6 +18,7 @@ def d_r_dx(x, y):
     return x / np.sqrt(x**2 + y**2)
 
 
+@export
 def d_r_dy(x, y):
     """
     differential dr/dy
@@ -25,6 +30,7 @@ def d_r_dy(x, y):
     return y / np.sqrt(x**2 + y**2)
 
 
+@export
 def d_r_dxx(x, y):
     """
     second derivative dr/dxdx
@@ -35,6 +41,7 @@ def d_r_dxx(x, y):
     return y**2 / (x**2 + y**2)**(3./2)
 
 
+@export
 def d_r_dyy(x, y):
     """
     second derivative dr/dxdx
@@ -45,6 +52,7 @@ def d_r_dyy(x, y):
     return x**2 / (x**2 + y**2)**(3./2)
 
 
+@export
 def d_r_dxy(x, y):
     """
     second derivative dr/dxdx
@@ -55,6 +63,7 @@ def d_r_dxy(x, y):
     return -x * y / (x ** 2 + y ** 2) ** (3 / 2.)
 
 
+@export
 def d_phi_dx(x, y):
     """
     angular derivative in respect to x when phi = arctan2(y, x)
@@ -66,6 +75,7 @@ def d_phi_dx(x, y):
     return -y / (x**2 + y**2)
 
 
+@export
 def d_phi_dy(x, y):
     """
     angular derivative in respect to y when phi = arctan2(y, x)
@@ -77,6 +87,7 @@ def d_phi_dy(x, y):
     return x / (x**2 + y**2)
 
 
+@export
 def d_phi_dxx(x, y):
     """
     second derivative of the orientation angle
@@ -88,6 +99,7 @@ def d_phi_dxx(x, y):
     return 2 * x * y / (x**2 + y**2)**2
 
 
+@export
 def d_phi_dyy(x, y):
     """
     second derivative of the orientation angle in dydy
@@ -99,6 +111,7 @@ def d_phi_dyy(x, y):
     return -2 * x * y / (x ** 2 + y ** 2) ** 2
 
 
+@export
 def d_phi_dxy(x, y):
     """
     second derivative of the orientation angle in dxdy
@@ -110,6 +123,7 @@ def d_phi_dxy(x, y):
     return (-x**2 + y**2) / (x ** 2 + y ** 2) ** 2
 
 
+@export
 def d_x_diffr_dx(x, y):
     """
     derivative of d(x/r)/dx
@@ -122,6 +136,7 @@ def d_x_diffr_dx(x, y):
     return y**2 / (x**2 + y**2)**(3/2.)
 
 
+@export
 def d_y_diffr_dy(x, y):
     """
     derivative of d(y/r)/dy
@@ -134,6 +149,7 @@ def d_y_diffr_dy(x, y):
     return x**2 / (x**2 + y**2)**(3/2.)
 
 
+@export
 def d_y_diffr_dx(x, y):
     """
     derivative of d(y/r)/dx
@@ -146,6 +162,7 @@ def d_y_diffr_dx(x, y):
     return -x*y / (x**2 + y**2)**(3/2.)
 
 
+@export
 def d_x_diffr_dy(x, y):
     """
     derivative of d(x/r)/dy

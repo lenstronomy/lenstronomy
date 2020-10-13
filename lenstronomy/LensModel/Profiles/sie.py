@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
+__all__ = ['SIE']
+
 
 class SIE(LensProfileBase):
     """

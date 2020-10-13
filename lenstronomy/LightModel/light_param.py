@@ -1,5 +1,7 @@
 from lenstronomy.LightModel.light_model import LightModel
 
+__all__ = ['LightParam']
+
 
 class LightParam(object):
     """

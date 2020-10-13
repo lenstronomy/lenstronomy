@@ -6,6 +6,8 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from astropy.cosmology import default_cosmology
 from lenstronomy.Util import constants as const
 
+__all__ = ['LensModel']
+
 
 class LensModel(object):
     """

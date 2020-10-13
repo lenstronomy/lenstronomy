@@ -3,6 +3,8 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 import numpy as np
 import scipy.special as special
 
+__all__ = ['PowerLaw']
+
 
 class PowerLaw(object):
     """

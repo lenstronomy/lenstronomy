@@ -6,6 +6,9 @@ this class contains physical constants and conversion factors between units
 """
 import numpy as np
 
+__all__ = ('G c M_sun M_earth AU Mpc day_s arcsec '
+           'a_ES F_ES delay_arcsec2days'.split())
+
 G = 6.67384*10**(-11)  # Gravitational constant [m^3 kg^-1 s^-2]
 c = 299792458  # [m/s]
 

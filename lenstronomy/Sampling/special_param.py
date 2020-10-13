@@ -1,5 +1,7 @@
 __author__ = 'sibirrer'
 
+__all__ = ['SpecialParam']
+
 
 class SpecialParam(object):
     """

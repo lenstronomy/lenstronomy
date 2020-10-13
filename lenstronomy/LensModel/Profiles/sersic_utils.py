@@ -3,6 +3,8 @@ import numpy as np
 import scipy
 from lenstronomy.Util import param_util
 
+__all__ = ['SersicUtil']
+
 
 class SersicUtil(object):
 

@@ -5,6 +5,8 @@ import numpy as np
 import copy
 import lenstronomy.Util.param_util as param_util
 
+__all__ = ['Solver2Point']
+
 
 class Solver2Point(object):
     """

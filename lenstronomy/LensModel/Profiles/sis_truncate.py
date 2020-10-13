@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['SIS_truncate']
+
 
 class SIS_truncate(LensProfileBase):
     """

@@ -2,7 +2,11 @@ import numpy.linalg as linalg
 import numpy as np
 import lenstronomy.Util.util as util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Coordinates(object):
     """
     class to handle linear coordinate transformations of a square pixel image
@@ -132,6 +136,7 @@ class Coordinates(object):
                                                                     self._Ma2pix)
 
 
+@export
 class Coordinates1D(Coordinates):
     """
     coordinate grid described in 1-d arrays

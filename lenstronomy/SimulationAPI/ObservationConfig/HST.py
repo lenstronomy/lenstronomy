@@ -4,6 +4,8 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+__all__ = ['HST']
+
 # F160W filter configs
 WFC3_F160W_band_obs = {'exposure_time': 5400.,
               'sky_brightness': 22.3,

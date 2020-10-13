@@ -2,6 +2,8 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['Hessian']
+
 
 class Hessian(LensProfileBase):
     """

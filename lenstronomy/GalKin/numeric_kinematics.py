@@ -8,6 +8,8 @@ from lenstronomy.GalKin.cosmo import Cosmo
 from lenstronomy.LensModel.single_plane import SinglePlane
 import lenstronomy.GalKin.velocity_util as util
 
+__all__ = ['NumericKinematics']
+
 
 class NumericKinematics(Anisotropy):
 

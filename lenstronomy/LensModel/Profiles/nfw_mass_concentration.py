@@ -5,6 +5,8 @@ from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['NFWMC']
+
 
 class NFWMC(LensProfileBase):
     """

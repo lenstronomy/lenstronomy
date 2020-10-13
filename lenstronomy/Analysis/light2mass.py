@@ -2,6 +2,8 @@ import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LightModel.light_model import LightModel
 
+__all__ = ['light2mass_interpol']
+
 
 def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5,
                         center_x=0, center_y=0):

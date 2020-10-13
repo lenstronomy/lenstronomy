@@ -5,6 +5,8 @@ import numpy as np
 import scipy.special as special
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['SPP']
+
 
 class SPP(LensProfileBase):
     """

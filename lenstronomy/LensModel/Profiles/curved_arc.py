@@ -2,6 +2,8 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['CurvedArc']
+
 
 class CurvedArc(LensProfileBase):
     """

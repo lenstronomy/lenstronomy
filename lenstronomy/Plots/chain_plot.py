@@ -5,6 +5,11 @@ import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
+
+@export
 def plot_chain_list(chain_list, index=0, num_average=100):
     """
     plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
@@ -33,6 +38,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     return f, axes
 
 
+@export
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list = chain
 
@@ -59,6 +65,7 @@ def plot_chain(chain, param_list):
     return f, axes
 
 
+@export
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """
     plots the MCMC behaviour and looks for convergence of the chain
@@ -86,6 +93,7 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
     return ax
 
 
+@export
 def psf_iteration_compare(kwargs_psf, **kwargs):
     """
 

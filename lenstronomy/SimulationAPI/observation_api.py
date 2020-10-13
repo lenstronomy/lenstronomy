@@ -3,7 +3,11 @@ import warnings
 import lenstronomy.Util.data_util as data_util
 from lenstronomy.Data.psf import PSF
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Instrument(object):
     """
     basic access points to instrument properties
@@ -23,6 +27,7 @@ class Instrument(object):
         self.pixel_scale = pixel_scale
 
 
+@export
 class Observation(object):
     """
     basic access point to observation properties
@@ -114,6 +119,7 @@ class Observation(object):
         return psf_class
 
 
+@export
 class SingleBand(Instrument, Observation):
     """
     class that combines Instrument and Observation

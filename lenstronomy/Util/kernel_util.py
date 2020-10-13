@@ -9,7 +9,11 @@ import lenstronomy.Util.image_util as image_util
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.multi_gauss_expansion as mge
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_size=1):
     """
     de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.
@@ -44,6 +48,7 @@ def de_shift_kernel(kernel, shift_x, shift_y, iterations=20, fractional_step_siz
     return kernel_new[1:-1, 1:-1]
 
 
+@export
 def center_kernel(kernel, iterations=20):
     """
     given a kernel that might not be perfectly centered, this routine computes its light weighted center and then
@@ -67,6 +72,7 @@ def center_kernel(kernel, iterations=20):
     return kernel_norm(kernel_centered)
 
 
+@export
 def kernel_norm(kernel):
     """
 
@@ -78,6 +84,7 @@ def kernel_norm(kernel):
     return kernel
 
 
+@export
 def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     """
     creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an
@@ -138,6 +145,7 @@ def subgrid_kernel(kernel, subgrid_res, odd=False, num_iter=100):
     return kernel_norm(kernel_subgrid - delta_kernel_sub)
 
 
+@export
 def averaging_even_kernel(kernel_high_res, subgrid_res):
     """
     makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both
@@ -184,6 +192,7 @@ def averaging_even_kernel(kernel_high_res, subgrid_res):
     return kernel_low_res
 
 
+@export
 def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     """
     change the pixel size of a given kernel
@@ -203,6 +212,7 @@ def kernel_pixelsize_change(kernel, deltaPix_in, deltaPix_out):
     return kernel_out
 
 
+@export
 def cut_psf(psf_data, psf_size):
     """
     cut the psf properly
@@ -215,6 +225,7 @@ def cut_psf(psf_data, psf_size):
     return kernel
 
 
+@export
 def pixel_kernel(point_source_kernel, subgrid_res=7):
     """
     converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel
@@ -235,6 +246,7 @@ def pixel_kernel(point_source_kernel, subgrid_res=7):
     return kernel_norm(kernel_pixel)
 
 
+@export
 def kernel_average_pixel(kernel_super, supersampling_factor):
     """
     computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel
@@ -266,6 +278,7 @@ def kernel_average_pixel(kernel_super, supersampling_factor):
     return kernel_pixel * kernel_sum
 
 
+@export
 def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     sigma = util.fwhm2sigma(fwhm)
     #if kernel_numPix % 2 == 0:
@@ -278,6 +291,7 @@ def kernel_gaussian(kernel_numPix, deltaPix, fwhm):
     return kernel
 
 
+@export
 def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, normalized=True):
     """
     pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
@@ -318,6 +332,7 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
     return kernel_hole_resized, kernel_subgrid_cut
 
 
+@export
 def degrade_kernel(kernel_super, degrading_factor):
     """
 
@@ -343,6 +358,7 @@ def degrade_kernel(kernel_super, degrading_factor):
     return kernel_low_res
 
 
+@export
 def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     """
     cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel
@@ -383,6 +399,7 @@ def cutout_source(x_pos, y_pos, image, kernelsize, shift=True):
     return kernel_final
 
 
+@export
 def fwhm_kernel(kernel):
     """
 
@@ -404,6 +421,7 @@ def fwhm_kernel(kernel):
     raise ValueError('The kernel did not drop to half the max value - fwhm not determined!')
 
 
+@export
 def estimate_amp(data, x_pos, y_pos, psf_kernel):
     """
     estimates the amplitude of a point source located at x_pos, y_pos
@@ -429,6 +447,7 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     return amp_estimated
 
 
+@export
 def mge_kernel(kernel, order=5):
     """
     azimutal Multi-Gaussian expansion of a pixelized kernel

@@ -3,6 +3,11 @@ from lenstronomy.Util.param_util import shear_polar2cartesian,shear_cartesian2po
     ellipticity2phi_q
 from lenstronomy.Util.util import approx_theta_E
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
+
+@export
 class FixedShearPowerLaw(object):
 
     _fixshear = True
@@ -91,6 +96,7 @@ class FixedShearPowerLaw(object):
 
         return sie_list_low+shear_list_low,sie_list_high+shear_list_high
 
+@export
 class FixedPowerLaw_Shear(object):
 
     def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):
@@ -208,6 +214,7 @@ class FixedPowerLaw_Shear(object):
 
         return sie_list_low+shear_list_low,sie_list_high+shear_list_high
 
+@export
 class VariablePowerLaw_Shear(object):
 
     def __init__(self,lens_model_list,kwargs_lens,xpos,ypos,constrain_params):

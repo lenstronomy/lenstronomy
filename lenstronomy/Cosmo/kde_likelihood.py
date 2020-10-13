@@ -1,6 +1,8 @@
 import numpy as np
 from scipy import stats
 
+__all__ = ['KDELikelihood']
+
 
 class KDELikelihood(object):
     """

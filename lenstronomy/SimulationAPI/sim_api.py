@@ -5,6 +5,8 @@ from lenstronomy.ImSim.image_model import ImageModel
 import copy
 import numpy as np
 
+__all__ = ['SimAPI']
+
 
 class SimAPI(DataAPI, ModelAPI):
     """

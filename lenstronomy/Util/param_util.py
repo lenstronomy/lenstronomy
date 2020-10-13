@@ -1,6 +1,10 @@
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def cart2polar(x, y, center_x=0, center_y=0):
     """
     transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center
@@ -22,6 +26,7 @@ def cart2polar(x, y, center_x=0, center_y=0):
     return r, phi
 
 
+@export
 def polar2cart(r, phi, center):
     """
     transforms polar coords [r,phi] into cartesian coords [x,y] in the frame of the lense center
@@ -38,6 +43,7 @@ def polar2cart(r, phi, center):
     return x - center[0], y - center[1]
 
 
+@export
 def shear_polar2cartesian(phi, gamma):
     """
 
@@ -50,6 +56,7 @@ def shear_polar2cartesian(phi, gamma):
     return gamma1, gamma2
 
 
+@export
 def shear_cartesian2polar(gamma1, gamma2):
     """
     :param gamma1: cartesian shear component
@@ -61,6 +68,7 @@ def shear_cartesian2polar(gamma1, gamma2):
     return phi, gamma
 
 
+@export
 def phi_q2_ellipticity(phi, q):
     """
     transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2
@@ -74,6 +82,7 @@ def phi_q2_ellipticity(phi, q):
     return e1, e2
 
 
+@export
 def ellipticity2phi_q(e1, e2):
     """
     transforms complex ellipticity moduli in orientation angle and axis ratio
@@ -89,6 +98,7 @@ def ellipticity2phi_q(e1, e2):
     return phi, q
 
 
+@export
 def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
     """
     maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system
@@ -114,6 +124,7 @@ def transform_e1e2_product_average(x, y, e1, e2, center_x, center_y):
     return xt1 * np.sqrt(q), xt2 / np.sqrt(q)
 
 
+@export
 def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     """
     maps the coordinates x, y with eccentricities e1 e2 into a new elliptical coordinate system

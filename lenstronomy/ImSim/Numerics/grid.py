@@ -3,7 +3,11 @@ from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 from lenstronomy.Data.coord_transforms import Coordinates1D
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class AdaptiveGrid(Coordinates1D):
     """
     manages a super-sampled grid on the partial image
@@ -151,6 +155,7 @@ class AdaptiveGrid(Coordinates1D):
         return grid2d
 
 
+@export
 class RegularGrid(Coordinates1D):
     """
     manages a super-sampled grid on the partial image

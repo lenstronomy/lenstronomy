@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.Optimizer.fixed_routines import *
 import numpy as np
 
+__all__ = ['Params']
+
 
 class Params(object):
 

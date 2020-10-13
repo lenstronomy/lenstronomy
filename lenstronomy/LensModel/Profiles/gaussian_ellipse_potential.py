@@ -6,6 +6,8 @@ from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['GaussianEllipsePotential']
+
 
 class GaussianEllipsePotential(LensProfileBase):
     """

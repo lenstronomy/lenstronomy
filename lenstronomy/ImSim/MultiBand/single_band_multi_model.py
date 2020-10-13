@@ -3,6 +3,8 @@ from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 from lenstronomy.Util import class_creator
 
+__all__ = ['SingleBandMultiModel']
+
 
 class SingleBandMultiModel(ImageLinearFit):
     """

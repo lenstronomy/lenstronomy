@@ -4,6 +4,9 @@ import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['ConstMag']
+
+
 class ConstMag(LensProfileBase):
     """
     this class implements the macromodel potential of `Diego et al. <https://www.aanda.org/articles/aa/pdf/2019/07/aa35490-19.pdf>`_

@@ -6,6 +6,8 @@ from lenstronomy.Sampling.Pool.pool import choose_pool
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 
+__all__ = ['AlignmentFitting', 'AlignmentLikelihood']
+
 
 class AlignmentFitting(object):
     """

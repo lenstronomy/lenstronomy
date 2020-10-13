@@ -3,7 +3,11 @@ import scipy.special as special
 from lenstronomy.GalKin import velocity_util
 from scipy.interpolate import interp1d
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Anisotropy(object):
     """
     class that handles the kinematic anisotropy
@@ -75,6 +79,7 @@ class Anisotropy(object):
             self._model.delete_cache()
 
 
+@export
 class Const(object):
     """
     constant anisotropy model class
@@ -122,6 +127,7 @@ class Const(object):
         raise ValueError('routine not supported yet for constant anisotropy model!')
 
 
+@export
 class Isotropic(object):
     """
     class for isotropic (beta=0) stellar orbits
@@ -166,6 +172,7 @@ class Isotropic(object):
         return 1
 
 
+@export
 class Radial(object):
     """
     class for radial (beta=1) stellar orbits
@@ -209,6 +216,7 @@ class Radial(object):
         return r**2
 
 
+@export
 class OsipkovMerritt(object):
     """
     class for Osipkov&Merrit stellar orbits
@@ -257,6 +265,7 @@ class OsipkovMerritt(object):
         return r**2 + r_ani**2
 
 
+@export
 class GeneralizedOM(object):
     """
     generalized Osipkov&Merrit profile
@@ -385,6 +394,7 @@ class GeneralizedOM(object):
             return np.array(_F_array, dtype=float)
 
 
+@export
 class Colin(object):
     """
     class for stellar orbits anisotropy parameter based on Colin et al. (2000)

@@ -1,7 +1,11 @@
 import numpy as np
 import lenstronomy.Util.util as util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     """
 
@@ -21,6 +25,7 @@ def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     return mask
 
 
+@export
 def mask_sphere(x, y, center_x, center_y, r):
     """
 
@@ -38,6 +43,7 @@ def mask_sphere(x, y, center_x, center_y, r):
     return mask
 
 
+@export
 def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     """
 
@@ -60,6 +66,7 @@ def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     return mask
 
 
+@export
 def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np.pi):
     """
 

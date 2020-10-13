@@ -5,6 +5,8 @@ from scipy.integrate import quad
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import derivative_util as calc_util
 
+__all__ = ['CoredDensity2']
+
 
 class CoredDensity2(LensProfileBase):
     """

@@ -10,6 +10,8 @@ from lenstronomy.LensModel.Optimizer.penalties import Penalties
 from scipy.optimize import minimize
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
+__all__ = ['Optimizer']
+
 
 class Optimizer(object):
 

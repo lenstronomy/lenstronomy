@@ -138,3 +138,11 @@ Theory papers
 
 * Unified lensing and kinematic analysis for any elliptical mass profile; `Shajib 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.488.1387S>`_
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*
+
+
+Simulation products
+-------------------
+
+* The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. <https://arxiv.org/abs/2010.05926v1>`_
+    *Strong lensing simulations produced by SLSprinkler utilizing lenstronomy functionalities*
+

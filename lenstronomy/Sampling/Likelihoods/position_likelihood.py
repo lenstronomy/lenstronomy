@@ -129,7 +129,7 @@ class PositionLikelihood(object):
             dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
             logL = -np.sum(dist)
             if np.isnan(logL) is True:
-                return -np.inf
+                return -10**15
             return logL
         else:
             return 0
@@ -190,7 +190,7 @@ class PositionLikelihood(object):
                     try:
                         Sigma_inv = inv(Sigma_beta)
                     except:
-                        return -np.inf
+                        return -10**15
                     chi2 = delta.T.dot(Sigma_inv.dot(delta))
                     logL -= chi2 / 2
         return logL

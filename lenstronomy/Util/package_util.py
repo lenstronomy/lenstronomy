@@ -1,3 +1,5 @@
+import types
+
 
 def exporter(export_self=False):
     """Export utility, modified from https://stackoverflow.com/a/41895194
@@ -70,12 +72,18 @@ def short(_laconic=False):
             # (unlike import *, we do not just load everything if __all__ is missing)
             if hasattr(module, '__all__'):
                 for symbol in module.__all__:
-                    if symbol in to_add:
-                        # Name clash! Do not add either this symbol
+                    symbol_name = symbol
+                    if isinstance(to_add.get(symbol), types.ModuleType):
+                        # Key class clashing with module name
+                        # (Cosmo, LensModel, LightModel, PointSource)
+                        # Try to add the symbol as LensModel_:
+                        symbol_name = symbol + '_'
+                    if symbol_name in to_add:
+                        # Name clash! Do not add the symbol
                         # or the one it clashed with.
-                        del to_add[symbol]
+                        del to_add[symbol_name]
                     else:
-                        to_add[symbol] = getattr(module, symbol)
+                        to_add[symbol_name] = getattr(module, symbol)
 
     # Make symbols accessible under lenstronomy.[x]
     for key, value in to_add.items():

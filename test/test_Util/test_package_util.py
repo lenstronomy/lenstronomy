@@ -4,10 +4,6 @@ import types
 def test_short_and_laconic():
     import lenstronomy as ls
 
-    # Without running .short() or .laconic(), nothing is changed:
-    assert not hasattr(ls, 'LensModel')
-    assert not hasattr(ls, 'MultiBandImageReconstruction')
-
     ls.short()
 
     # We can access submodules as symbols...

@@ -1,21 +1,12 @@
 import types
 
-def _remove_cached_lenstronomy():
-    """Removes lenstronomy from the module cache,
-    if it was already imported.
-    This is needed to reset the short / laconic states.
-    """
-    import sys
-    if 'lenstronomy' in sys.modules:
-        del sys.modules['lenstronomy']
 
-
-def test_short():
-    _remove_cached_lenstronomy()
+def test_short_and_laconic():
     import lenstronomy as ls
 
-    # Without running .short(), nothing is changed:
+    # Without running .short() or .laconic(), nothing is changed:
     assert not hasattr(ls, 'LensModel')
+    assert not hasattr(ls, 'MultiBandImageReconstruction')
 
     ls.short()
 
@@ -31,15 +22,6 @@ def test_short():
     assert 'LensModel' in ls.LensModel.lens_model.__all__
     assert hasattr(ls.LensModel.lens_model, 'LensModel')
     assert isinstance(ls.LensModel.lens_model.LensModel, type)
-
-
-def test_laconic():
-    _remove_cached_lenstronomy()
-    import lenstronomy as ls
-
-    # Without running .laconic(), nothing is changed:
-    assert not hasattr(ls, 'LensModel')
-    assert not hasattr(ls, 'MultiBandImageReconstruction')
 
     ls.laconic()
 

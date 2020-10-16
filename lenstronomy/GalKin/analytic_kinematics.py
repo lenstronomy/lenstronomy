@@ -9,6 +9,8 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 import lenstronomy.Util.constants as const
 import math
 
+__all__ = ['AnalyticKinematics']
+
 
 class AnalyticKinematics(Anisotropy):
     """

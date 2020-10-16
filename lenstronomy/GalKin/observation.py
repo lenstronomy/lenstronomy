@@ -1,6 +1,8 @@
 from lenstronomy.GalKin.aperture import Aperture
 from lenstronomy.GalKin.psf import PSF
 
+__all__ = ['GalkinObservation']
+
 
 class GalkinObservation(PSF, Aperture):
     """

@@ -2,7 +2,11 @@ import numpy as np
 import copy
 import lenstronomy.Util.mask_util as mask_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     """
 
@@ -25,6 +29,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     return -1
 
 
+@export
 def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     """
 
@@ -50,6 +55,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     return I_r, r
 
 
+@export
 def azimuthalAverage(image, center=None):
     """
 
@@ -89,6 +95,7 @@ def azimuthalAverage(image, center=None):
     return radial_prof, r_bin
 
 
+@export
 def moments(I_xy_input, x, y):
     """
     compute quadrupole moments from a light distribution
@@ -111,6 +118,7 @@ def moments(I_xy_input, x, y):
     return Q_xx, Q_xy, Q_yy, background / np.mean(I_xy)
 
 
+@export
 def ellipticities(I_xy, x, y):
     """
     compute ellipticities of a light distribution
@@ -127,6 +135,7 @@ def ellipticities(I_xy, x, y):
     return e1 / (1+bkg), e2 / (1+bkg)
 
 
+@export
 def bic_model(logL, num_data, num_param):
     """
     Bayesian information criteria
@@ -140,6 +149,7 @@ def bic_model(logL, num_data, num_param):
     return bic
 
 
+@export
 def profile_center(kwargs_list, center_x=None, center_y=None):
     """
     utility routine that results in the centroid estimate for the profile estimates

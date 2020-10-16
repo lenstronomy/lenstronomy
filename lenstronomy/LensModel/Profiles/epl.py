@@ -6,6 +6,8 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from scipy.special import hyp2f1
 
+__all__ = ['EPL', 'EPLMajorAxis']
+
 
 class EPL(LensProfileBase):
     """

@@ -4,6 +4,8 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+__all__ = ['LSST']
+
 u_band_obs = {'exposure_time': 15.,
               'sky_brightness': 22.99,
               'magnitude_zero_point': 26.5,

@@ -2,6 +2,8 @@
 
 import lenstronomy.Util.util as util
 
+__all__ = ['ZTF']
+
 """
 Sources
   https://iopscience.iop.org/article/10.1088/1538-3873/aaecbe/pdf

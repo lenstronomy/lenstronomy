@@ -4,7 +4,11 @@ from scipy import fftpack
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def correlation_2D(image):
     """
     #TODO document normalization output in units
@@ -21,6 +25,7 @@ def correlation_2D(image):
     return np.abs(F2)
 
 
+@export
 def power_spectrum_2d(image):
     """
 
@@ -32,6 +37,7 @@ def power_spectrum_2d(image):
     return (corr2d / nx / ny) ** 2
 
 
+@export
 def power_spectrum_1d(image):
     """
 

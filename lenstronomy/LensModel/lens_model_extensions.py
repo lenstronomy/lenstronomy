@@ -1,7 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
-import lenstronomy.Util.mask_util as mask_util
-import lenstronomy.Util.param_util as param_util
+
+__all__ = ['LensModelExtensions']
 
 
 class LensModelExtensions(object):

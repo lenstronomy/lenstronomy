@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
+__all__ = ['Shift']
+
 
 class Shift(LensProfileBase):
     """

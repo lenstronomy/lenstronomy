@@ -2,7 +2,11 @@ __author__ = 'sibirrer'
 
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Slit(object):
     """
     Slit aperture description
@@ -40,6 +44,7 @@ class Slit(object):
         return 1
 
 
+@export
 def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
     """
 
@@ -63,6 +68,7 @@ def slit_select(ra, dec, length, width, center_ra=0, center_dec=0, angle=0):
         return False
 
 
+@export
 class Frame(object):
     """
     rectangular box with a hole in the middle (also rectangular), effectively a frame
@@ -100,6 +106,7 @@ class Frame(object):
         return 1
 
 
+@export
 def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, angle=0):
     """
 
@@ -124,6 +131,7 @@ def frame_select(ra, dec, width_outer, width_inner, center_ra=0, center_dec=0, a
     return False
 
 
+@export
 class Shell(object):
     """
     Shell aperture
@@ -158,6 +166,7 @@ class Shell(object):
         return 1
 
 
+@export
 def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
     """
 
@@ -178,6 +187,7 @@ def shell_select(ra, dec, r_in, r_out, center_ra=0, center_dec=0):
         return False
 
 
+@export
 class IFUShells(object):
     """
     class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured
@@ -211,6 +221,7 @@ class IFUShells(object):
         return len(self._r_bins) - 1
 
 
+@export
 def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     """
 

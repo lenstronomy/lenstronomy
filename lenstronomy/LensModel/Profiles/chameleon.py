@@ -4,7 +4,11 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.param_util as param_util
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Chameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -146,6 +150,7 @@ class Chameleon(LensProfileBase):
         self._nie_2.set_dynamic()
 
 
+@export
 class DoubleChameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -240,6 +245,7 @@ class DoubleChameleon(LensProfileBase):
         self._chameleon_2.set_dynamic()
 
 
+@export
 class TripleChameleon(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -363,6 +369,7 @@ class TripleChameleon(LensProfileBase):
         self._chameleon_3.set_dynamic()
 
 
+@export
 class DoubleChameleonPointMass(LensProfileBase):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile

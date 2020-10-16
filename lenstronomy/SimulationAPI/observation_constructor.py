@@ -4,6 +4,8 @@ import lenstronomy.Util.util as util
 instrument_name_list = ['LSST']
 observation_name_list = ['LSST_g_band', 'LSST_r_band', 'LSST_i_band']
 
+__all__ = ['observation_constructor']
+
 
 def observation_constructor(instrument_name, observation_name):
     """

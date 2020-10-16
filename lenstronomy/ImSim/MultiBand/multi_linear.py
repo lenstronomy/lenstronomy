@@ -1,6 +1,8 @@
 from lenstronomy.ImSim.MultiBand.multi_data_base import MultiDataBase
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
+__all__ = ['MultiLinear']
+
 
 class MultiLinear(MultiDataBase):
     """

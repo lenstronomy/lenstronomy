@@ -3,6 +3,8 @@ import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
 import warnings
 
+__all__ = ['PSF']
+
 
 class PSF(object):
     """

@@ -8,6 +8,8 @@ from lenstronomy.Util import  constants as const
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
+__all__ = ['NFWVirTrunc']
+
 
 class NFWVirTrunc(LensProfileBase):
     """

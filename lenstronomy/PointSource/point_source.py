@@ -1,6 +1,9 @@
 import numpy as np
 import copy
 from lenstronomy.PointSource.point_source_types import PointSourceCached
+
+__all__ = ['PointSource']
+
 _SUPPORTED_MODELS = ['UNLENSED', 'LENSED_POSITION', 'SOURCE_POSITION']
 
 

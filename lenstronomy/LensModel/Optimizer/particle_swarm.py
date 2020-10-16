@@ -6,6 +6,8 @@ import numpy
 This class is adapted from the CosmoHammer Particle Swarm Optimizer routine.
 """
 
+__all__ = ['ParticleSwarmOptimizer']
+
 
 class ParticleSwarmOptimizer(object):
 

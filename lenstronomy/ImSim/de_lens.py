@@ -3,7 +3,11 @@ __author__ = 'sibirrer'
 import numpy as np
 import sys
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     """
     returns the parameter values given
@@ -38,6 +42,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     return B, M_inv, image
 
 
+@export
 def marginalisation_const(M_inv):
     """
     get marginalisation constant 1/2 log(M_beta) for flat priors
@@ -51,6 +56,7 @@ def marginalisation_const(M_inv):
     return sign * log_det/2
 
 
+@export
 def marginalization_new(M_inv, d_prior=None):
     """
 

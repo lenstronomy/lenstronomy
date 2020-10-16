@@ -6,6 +6,8 @@ import scipy.optimize
 import numpy as np
 import copy
 
+__all__ = ['Solver4Point']
+
 
 class Solver4Point(object):
     """

@@ -10,6 +10,8 @@ from lenstronomy.Analysis.lens_profile import LensProfileAnalysis
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 import lenstronomy.Util.multi_gauss_expansion as mge
 
+__all__ = ['KinematicsAPI']
+
 
 class KinematicsAPI(object):
     """

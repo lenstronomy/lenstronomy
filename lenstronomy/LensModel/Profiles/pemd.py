@@ -4,6 +4,8 @@ from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.spemd import SPEMD
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['PEMD']
+
 
 class PEMD(LensProfileBase):
     """

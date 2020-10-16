@@ -8,6 +8,8 @@ from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Plots import plot_util
 from lenstronomy.Analysis.image_reconstruction import ModelBand
 
+__all__ = ['ModelBandPlot']
+
 
 class ModelBandPlot(ModelBand):
     """

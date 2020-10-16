@@ -1,6 +1,8 @@
 from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
 
+__all__ = ['DifferentialExtinction']
+
 
 class DifferentialExtinction(object):
     """

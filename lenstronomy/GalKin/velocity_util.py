@@ -3,7 +3,11 @@ __author__ = 'sibirrer'
 import mpmath as mp
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def hyp_2F1(a, b, c, z):
     """
     http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html
@@ -11,6 +15,7 @@ def hyp_2F1(a, b, c, z):
     return mp.hyp2f1(a, b, c, z)
 
 
+@export
 def displace_PSF_gaussian(x, y, FWHM):
     """
 
@@ -26,6 +31,7 @@ def displace_PSF_gaussian(x, y, FWHM):
     return x_, y_
 
 
+@export
 def moffat_r(r, alpha, beta):
     """
     Moffat profile
@@ -38,6 +44,7 @@ def moffat_r(r, alpha, beta):
     return 2. * (beta - 1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
 
 
+@export
 def moffat_fwhm_alpha(FWHM, beta):
     """
     computes alpha parameter from FWHM and beta for a Moffat profile
@@ -49,6 +56,7 @@ def moffat_fwhm_alpha(FWHM, beta):
     return FWHM / (2 * np.sqrt(2 ** (1. / beta) - 1))
 
 
+@export
 def draw_moffat_r(FWHM, beta):
     """
 
@@ -63,6 +71,7 @@ def draw_moffat_r(FWHM, beta):
     return X
 
 
+@export
 def displace_PSF_moffat(x, y, FWHM, beta):
     """
 
@@ -77,6 +86,7 @@ def displace_PSF_moffat(x, y, FWHM, beta):
     return x + dx, y + dy
 
 
+@export
 def draw_cdf_Y(beta):
     """
     Draw c.d.f for Moffat function according to Berge et al. Ufig paper, equation B2
@@ -88,6 +98,7 @@ def draw_cdf_Y(beta):
     return (1-x) ** (1./(1-beta))
 
 
+@export
 def project2d_random(r):
     """
     draws a random projection from radius r in 2d and 1d
@@ -102,6 +113,7 @@ def project2d_random(r):
     return R, x, y
 
 
+@export
 def draw_xy(R):
     """
 
@@ -114,6 +126,7 @@ def draw_xy(R):
     return x, y
 
 
+@export
 def draw_hernquist(a):
     """
 

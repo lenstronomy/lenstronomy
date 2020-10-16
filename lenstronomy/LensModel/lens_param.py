@@ -1,5 +1,7 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
 
+__all__ = ['LensParam']
+
 
 class LensParam(object):
     """

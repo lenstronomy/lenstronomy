@@ -1,6 +1,8 @@
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
 
+__all__ = ['GalkinModel']
+
 
 class GalkinModel(object):
     """

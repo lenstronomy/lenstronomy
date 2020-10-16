@@ -3,6 +3,8 @@ import copy
 from scipy.interpolate import interp1d
 from lenstronomy.LightModel.light_model import LightModel
 
+__all__ = ['LightProfile']
+
 
 class LightProfile(object):
     """

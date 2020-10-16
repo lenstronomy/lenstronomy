@@ -1,7 +1,11 @@
 import numpy as np
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Unlensed(object):
     """
     class of a single point source in the image plane, aka star
@@ -66,6 +70,7 @@ class Unlensed(object):
         pass
 
 
+@export
 class LensedPositions(object):
     """
     class of a a lensed point source parameterized as the (multiple) observed image positions
@@ -188,6 +193,7 @@ class LensedPositions(object):
         self._solver = LensEquationSolver(lens_model_class)
 
 
+@export
 class SourcePositions(object):
     """
     class of a single point source defined in the original source coordinate position that is lensed.
@@ -300,6 +306,7 @@ class SourcePositions(object):
         self._solver = LensEquationSolver(lens_model_class)
 
 
+@export
 class PointSourceCached(object):
     """
     This class is the same as PointSource() except that it sames image and source positions in cache

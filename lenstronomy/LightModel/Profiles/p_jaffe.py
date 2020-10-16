@@ -1,5 +1,7 @@
 import lenstronomy.Util.param_util as param_util
 
+__all__ = ['PJaffe', 'PJaffe_Ellipse']
+
 
 class PJaffe(object):
     """

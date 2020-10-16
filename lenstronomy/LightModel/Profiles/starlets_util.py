@@ -4,7 +4,11 @@ import numpy as np
 import scipy.signal as scs
 import scipy.ndimage.filters as scf
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def transform(img, n_scales, second_gen=False):
     """
     Performs starlet decomposition of an 2D array.
@@ -73,6 +77,7 @@ def transform(img, n_scales, second_gen=False):
     return wave
 
 
+@export
 def inverse_transform(wave, fast=True, second_gen=False):
     """
     Reconstructs an image fron its starlet decomposition coefficients

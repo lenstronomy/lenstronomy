@@ -5,6 +5,8 @@ import numpy as np
 import scipy.interpolate as interp
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['NFW']
+
 
 class NFW(LensProfileBase):
     """

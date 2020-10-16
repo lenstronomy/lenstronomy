@@ -6,7 +6,11 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 import lenstronomy.Util.param_util as param_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Sersic(SersicUtil):
     """
     this class contains functions to evaluate an spherical Sersic function
@@ -33,6 +37,7 @@ class Sersic(SersicUtil):
         return amp * result
 
 
+@export
 class SersicElliptic(SersicUtil):
     """
     this class contains functions to evaluate an elliptical Sersic function
@@ -64,6 +69,7 @@ class SersicElliptic(SersicUtil):
         return amp * result
 
 
+@export
 class CoreSersic(SersicUtil):
     """
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004

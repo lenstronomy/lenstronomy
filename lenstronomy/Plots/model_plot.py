@@ -4,6 +4,8 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
 from lenstronomy.Analysis.image_reconstruction import check_solver_error
 
+__all__ = ['ModelPlot']
+
 
 class ModelPlot(object):
     """

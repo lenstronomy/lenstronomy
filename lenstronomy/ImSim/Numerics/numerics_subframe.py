@@ -3,6 +3,8 @@ from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
 from lenstronomy.Data.pixel_grid import PixelGrid
 
+__all__ = ['NumericsSubFrame']
+
 
 class NumericsSubFrame(PointSourceRendering):
     """

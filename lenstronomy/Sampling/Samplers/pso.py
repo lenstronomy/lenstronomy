@@ -10,6 +10,8 @@ from math import floor
 import math
 import numpy as np
 
+__all__ = ['ParticleSwarmOptimizer']
+
 
 class ParticleSwarmOptimizer(object):
     """

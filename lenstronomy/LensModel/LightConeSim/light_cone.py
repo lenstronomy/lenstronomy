@@ -5,6 +5,8 @@ from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.LensModel.lens_model import LensModel
 
+__all__ = ['LightCone', 'MassSlice']
+
 
 class LightCone(object):
     """

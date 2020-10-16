@@ -5,6 +5,8 @@ from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
 from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 
+__all__ = ['CoredDensityMST']
+
 
 class CoredDensityMST(LensProfileBase):
     """

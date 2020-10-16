@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.Optimizer.optimizer import Optimizer, MultiPlaneLensing
+import numpy as np     # _is_ used, import * does not bring in np due to __all__
 import numpy.testing as npt
 from astropy.cosmology import FlatLambdaCDM
 import pytest

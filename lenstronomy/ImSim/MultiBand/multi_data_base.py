@@ -1,3 +1,4 @@
+__all__ = ['MultiDataBase']
 
 
 class MultiDataBase(object):

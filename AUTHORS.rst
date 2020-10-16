@@ -18,6 +18,7 @@ Key contributors
 Contributors (alphabetic)
 -------------------------
 
+* Jelle Aalbers `JelleAalbers <https://github.com/JelleAalbers>`_
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_

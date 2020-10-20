@@ -146,3 +146,9 @@ Simulation products
 * The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. <https://arxiv.org/abs/2010.05926v1>`_
     *Strong lensing simulations produced by SLSprinkler utilizing lenstronomy functionalities*
 
+
+Large scale structure
+---------------------
+
+* Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. <https://arxiv.org/abs/2010.08680>`_
+    *inferring cosmic shear with three strong lenses in the COSMOS field*

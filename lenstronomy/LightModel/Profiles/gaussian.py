@@ -1,7 +1,11 @@
 import numpy as np
 import lenstronomy.Util.param_util as param_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Gaussian(object):
     """
     class for Gaussian light profile
@@ -56,6 +60,7 @@ class Gaussian(object):
         return self.function(r, 0, amp3d, sigma3d)
 
 
+@export
 class GaussianEllipse(object):
     """
     class for Gaussian light profile with ellipticity
@@ -115,6 +120,7 @@ class GaussianEllipse(object):
         return self.gaussian.light_3d(r, amp, sigma=sigma)
 
 
+@export
 class MultiGaussian(object):
     """
     class for elliptical pseudo Jaffe lens light (2d projected light/mass distribution
@@ -192,6 +198,7 @@ class MultiGaussian(object):
         return f_
 
 
+@export
 class MultiGaussianEllipse(object):
     """
     class for elliptical multi Gaussian profile

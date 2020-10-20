@@ -7,6 +7,8 @@ from lenstronomy.LightModel.Profiles import starlets_util
 from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.Util import util
 
+__all__ = ['SLIT_Starlets']
+
 
 class SLIT_Starlets(object):
     """

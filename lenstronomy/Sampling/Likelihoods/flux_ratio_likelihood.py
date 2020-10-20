@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 import numpy as np
 
+__all__ = ['FluxRatioLikelihood']
+
 
 class FluxRatioLikelihood(object):
     """

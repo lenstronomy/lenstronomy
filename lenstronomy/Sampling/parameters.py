@@ -10,6 +10,8 @@ from lenstronomy.LightModel.light_param import LightParam
 from lenstronomy.PointSource.point_source_param import PointSourceParam
 from lenstronomy.Sampling.special_param import SpecialParam
 
+__all__ = ['Param']
+
 
 class Param(object):
     """

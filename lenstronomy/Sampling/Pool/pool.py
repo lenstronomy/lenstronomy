@@ -38,6 +38,8 @@ from schwimmbad.serial import SerialPool
 from schwimmbad.mpi import MPIPool
 #from schwimmbad.jl import JoblibPool
 
+__all__ = ['choose_pool']
+
 
 def choose_pool(mpi=False, processes=1, **kwargs):
     """

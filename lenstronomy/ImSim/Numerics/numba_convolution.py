@@ -4,6 +4,8 @@ from lenstronomy.Util import numba_util
 from lenstronomy.ImSim.Numerics.partial_image import PartialImage
 from lenstronomy.Util import image_util
 
+__all__ = ['NumbaConvolution']
+
 
 class NumbaConvolution(object):
     """

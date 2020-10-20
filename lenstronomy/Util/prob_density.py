@@ -3,7 +3,11 @@ __author__ = 'sibirrer'
 from scipy import stats
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class SkewGaussian(object):
     """
     class for the Skew Gaussian distribution
@@ -92,6 +96,7 @@ class SkewGaussian(object):
         return e, w, a
 
 
+@export
 class KDE1D(object):
     """
     class that allows to compute likelihoods based on a 1-d posterior sample
@@ -115,6 +120,7 @@ class KDE1D(object):
         return dens
 
 
+@export
 def compute_lower_upper_errors(sample, num_sigma=1):
     """
     computes the upper and lower sigma from the median value.

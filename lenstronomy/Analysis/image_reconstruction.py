@@ -4,7 +4,11 @@ import numpy as np
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class MultiBandImageReconstruction(object):
     """
     this class manages the output/results of a fitting process and can conveniently access image reconstruction
@@ -94,6 +98,7 @@ class MultiBandImageReconstruction(object):
         return self.model_band_list[i].image_model_class, self.model_band_list[i].kwargs_model
 
 
+@export
 class ModelBand(object):
     """
     class to plot a single band given the full modeling results
@@ -158,6 +163,7 @@ class ModelBand(object):
         return kwargs_return
 
 
+@export
 def check_solver_error(image):
     """
 

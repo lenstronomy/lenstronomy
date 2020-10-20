@@ -3,6 +3,8 @@ import lenstronomy.ImSim.de_lens as de_lens
 from lenstronomy.Util import util
 import numpy as np
 
+__all__ = ['ImageLinearFit']
+
 
 class ImageLinearFit(ImageModel):
     """

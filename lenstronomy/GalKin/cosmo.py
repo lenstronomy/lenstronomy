@@ -1,6 +1,8 @@
 import lenstronomy.Util.constants as const
 import numpy as np
 
+__all__ = ['Cosmo']
+
 
 class Cosmo(object):
     """

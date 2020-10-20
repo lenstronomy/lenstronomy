@@ -6,6 +6,8 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
 import copy
 
+__all__ = ['ModelAPI']
+
 
 class ModelAPI(object):
     """

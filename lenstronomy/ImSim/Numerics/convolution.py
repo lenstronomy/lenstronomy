@@ -9,6 +9,9 @@ import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
 
 def _centered(arr, newshape):
     # Return the center newshape portion of the array.
@@ -20,6 +23,7 @@ def _centered(arr, newshape):
     return arr[tuple(myslice)]
 
 
+@export
 class PixelKernelConvolution(object):
     """
     class to compute convolutions for a given pixelized kernel (fft, grid)
@@ -175,6 +179,7 @@ class PixelKernelConvolution(object):
         return self.convolution2d(image_low_res)
 
 
+@export
 class SubgridKernelConvolution(object):
     """
     class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid
@@ -231,6 +236,7 @@ class SubgridKernelConvolution(object):
         return image_resized_conv
 
 
+@export
 class MultiGaussianConvolution(object):
     """
     class to perform a convolution consisting of multiple 2d Gaussians
@@ -304,6 +310,7 @@ class MultiGaussianConvolution(object):
         return kernel / np.sum(kernel)
 
 
+@export
 class FWHMGaussianConvolution(object):
     """
     uses a two-dimensional Gaussian function with same FWHM of given kernel as approximation
@@ -330,6 +337,7 @@ class FWHMGaussianConvolution(object):
         return image_conv
 
 
+@export
 class MGEConvolution(object):
     """
     approximates a 2d kernel with an azimuthal Multi-Gaussian expansion

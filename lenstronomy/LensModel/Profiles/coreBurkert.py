@@ -3,6 +3,8 @@ __author__ = 'dgilman'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['CoreBurkert']
+
 
 class CoreBurkert(LensProfileBase):
     """

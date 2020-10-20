@@ -13,6 +13,8 @@ nopython = True
 cache = True
 parallel = False
 
+__all__ = ['jit']
+
 
 def jit(nopython=nopython, cache=cache, parallel=parallel):
     def wrapper(func):

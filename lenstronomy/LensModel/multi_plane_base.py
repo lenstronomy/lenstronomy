@@ -3,6 +3,8 @@ from lenstronomy.Cosmo.background import Background
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
 import lenstronomy.Util.constants as const
 
+__all__ = ['MultiPlaneBase']
+
 
 class MultiPlaneBase(ProfileListBase):
 

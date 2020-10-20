@@ -4,6 +4,8 @@ from lenstronomy.Util import mask_util as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.Util import analysis_util
 
+__all__ = ['LensProfileAnalysis']
+
 
 class LensProfileAnalysis(object):
     """

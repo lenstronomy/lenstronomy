@@ -4,6 +4,10 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.Util.util import convert_bool_list
+
+__all__ = ['LightModelBase']
+
+
 _MODELS_SUPPORTED = ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'ELLIPSOID', 'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE',
                      'SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
                      'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',

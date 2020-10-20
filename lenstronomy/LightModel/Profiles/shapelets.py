@@ -6,7 +6,11 @@ import math
 
 import lenstronomy.Util.util as util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class Shapelets(object):
     """
 
@@ -139,6 +143,7 @@ class Shapelets(object):
         return H_x, H_y
 
 
+@export
 class ShapeletSet(object):
     """
     class to operate on entire shapelet set

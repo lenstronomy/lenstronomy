@@ -10,6 +10,8 @@ from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
+__all__ = ['FittingSequence']
+
 
 class FittingSequence(object):
     """

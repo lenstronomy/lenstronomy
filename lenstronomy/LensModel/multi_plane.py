@@ -2,7 +2,11 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.multi_plane_base import MultiPlaneBase
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class MultiPlane(object):
     """
     Multi-plane lensing class with option to assign positions of a selected set of lens models in the observed plane.
@@ -271,6 +275,7 @@ class MultiPlane(object):
         self._multi_plane_base.set_dynamic()
 
 
+@export
 class PhysicalLocation(object):
     """
     center_x and center_y kwargs correspond to angular location of deflectors without lensing along the LOS
@@ -280,6 +285,7 @@ class PhysicalLocation(object):
         return kwargs_lens
 
 
+@export
 class LensedLocation(object):
     """
     center_x and center_y kwargs correspond to observed (lensed) locations of deflectors

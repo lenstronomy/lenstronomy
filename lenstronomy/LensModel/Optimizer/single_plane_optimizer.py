@@ -1,5 +1,7 @@
 import numpy as np
 
+__all__ = ['SinglePlaneLensing']
+
 
 class SinglePlaneLensing(object):
 

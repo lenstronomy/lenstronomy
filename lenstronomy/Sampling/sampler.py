@@ -9,6 +9,8 @@ from lenstronomy.Sampling.Pool.pool import choose_pool
 import emcee
 from scipy.optimize import minimize
 
+__all__ = ['Sampler']
+
 
 class Sampler(object):
     """

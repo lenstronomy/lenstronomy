@@ -8,6 +8,8 @@ import numpy as np
 import copy
 import scipy.ndimage.interpolation as interp
 
+__all__ = ['PsfFitting']
+
 
 class PsfFitting(object):
     """

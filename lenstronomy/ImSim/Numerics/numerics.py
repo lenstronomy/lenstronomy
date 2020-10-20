@@ -5,6 +5,8 @@ from lenstronomy.Util import util
 from lenstronomy.Util import kernel_util
 import numpy as np
 
+__all__ = ['Numerics']
+
 
 class Numerics(PointSourceRendering):
     """

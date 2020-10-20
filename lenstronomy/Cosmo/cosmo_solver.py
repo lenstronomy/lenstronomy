@@ -7,7 +7,11 @@ import numpy as np
 from astropy.cosmology import FlatLambdaCDM
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def cosmo2angular_diameter_distances(H_0, omega_m, z_lens, z_source):
     """
 
@@ -25,6 +29,7 @@ def cosmo2angular_diameter_distances(H_0, omega_m, z_lens, z_source):
     return Dd, Ds/Dds
 
 
+@export
 def ddt2h0(ddt, z_lens, z_source, cosmo):
     """
     converts time-delay distance to H0 for a given expansion history
@@ -42,6 +47,7 @@ def ddt2h0(ddt, z_lens, z_source, cosmo):
     return h0
 
 
+@export
 class SolverFlatLCDM(object):
     """
     class to solve multidimensional non-linear equations to determine the cosmological parameters H0 and omega_m given
@@ -74,6 +80,7 @@ class SolverFlatLCDM(object):
         return x
 
 
+@export
 class InvertCosmo(object):
     """
     class to do an interpolation and call the inverse of this interpolation to get H_0 and omega_m

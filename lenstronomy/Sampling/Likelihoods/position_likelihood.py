@@ -1,6 +1,8 @@
 import numpy as np
 from numpy.linalg import inv
 
+__all__ = ['PositionLikelihood']
+
 
 class PositionLikelihood(object):
     """

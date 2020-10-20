@@ -1,3 +1,6 @@
+__all__ = ['LensProfileBase']
+
+
 class LensProfileBase(object):
     """
     this class acts as the base class of all lens model functions and indicates raise statements and default outputs

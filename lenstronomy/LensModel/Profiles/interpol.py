@@ -6,6 +6,8 @@ import numpy as np
 import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['Interpol', 'InterpolScaled']
+
 
 class Interpol(LensProfileBase):
     """

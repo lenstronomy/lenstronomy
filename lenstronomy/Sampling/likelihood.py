@@ -8,6 +8,8 @@ from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 import lenstronomy.Util.class_creator as class_creator
 import numpy as np
 
+__all__ = ['LikelihoodModule']
+
 
 class LikelihoodModule(object):
     """

@@ -146,6 +146,11 @@ Simulation products
 * The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. <https://arxiv.org/abs/2010.05926v1>`_
     *Strong lensing simulations produced by SLSprinkler utilizing lenstronomy functionalities*
 
+* The impact of mass map truncation on strong lensing simulations; `Van de Vyvere et al. <https://arxiv.org/abs/2010.13650>`_
+    *Uses numerical integration to compute lensing quantities from projected mass maps from simulations.*
+
+
+
 
 Large scale structure
 ---------------------

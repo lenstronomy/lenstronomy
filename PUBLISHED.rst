@@ -107,6 +107,10 @@ Automatized Lens Modeling
 * Is every strong lens model unhappy in its own way? Uniform modelling of a sample of 12 quadruply+ imaged quasars; `Shajib et al. 2018 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.483.5649S>`_
     *This work presents a uniform modelling framework to model 13 quadruply lensed quasars in three HST bands.*
 
+* Hierarchical Inference With Bayesian Neural Networks: An Application to Strong Gravitational Lensing; `Wagner-Carena et al. 2020 <https://arxiv.org/abs/2010.13787>`_
+    *This work conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.*
+
+
 
 Quasar-host galaxy decomposition
 --------------------------------

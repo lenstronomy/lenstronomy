@@ -145,7 +145,8 @@ class LightModelBase(object):
     def total_flux(self, kwargs_list, norm=False, k=None):
         """
         Computes the total flux of each individual light profile. This allows to estimate the total flux as
-        well as lenstronomy amp to magnitude conversions. Not all models are supported
+        well as lenstronomy amp to magnitude conversions. Not all models are supported.
+        The units are linked to the data to be modelled with associated noise properties (default is count/s).
 
         :param kwargs_list: list of keyword arguments corresponding to the light profiles. The 'amp' parameter can be missing.
         :param norm: bool, if True, computes the flux for amp=1

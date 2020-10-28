@@ -63,10 +63,12 @@ class MultiLinear(MultiDataBase):
                                                                                                      kwargs_extinction,
                                                                                                      kwargs_special,
                                                                                                      inv_bool=inv_bool)
-                wls_list.append(wls_model)
-                error_map_list.append(error_map)
-                cov_param_list.append(cov_param)
-                param_list.append(param)
+            else:
+                wls_model, error_map, cov_param, param = None, None, None, None
+            wls_list.append(wls_model)
+            error_map_list.append(error_map)
+            cov_param_list.append(cov_param)
+            param_list.append(param)
         return wls_list, error_map_list, cov_param_list, param_list
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,

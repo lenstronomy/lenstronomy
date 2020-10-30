@@ -64,9 +64,6 @@ is also required and can be cloned from: `https://github.com/sibirrer/fastell4py
     $ python setup.py install --user
 
 
-Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``
-
-
 
 Modelling Features
 ------------------

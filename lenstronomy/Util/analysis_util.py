@@ -22,7 +22,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
     r_max = np.max(np.sqrt((x_grid-center_x)**2 + (y_grid-center_y)**2))
     for i in range(1000):
         r = i/500. * r_max
-        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, r)
+        mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, r)
         flux_enclosed = np.sum(np.array(lens_light)*mask)
         if flux_enclosed > total_flux_2:
             return r
@@ -48,7 +48,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
     I_enclosed = 0
     r = np.linspace(1./n*r_max, r_max, n)
     for i, r_i in enumerate(r):
-        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, r_i)
+        mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, r_i)
         flux_enclosed = np.sum(np.array(light_grid)*mask)
         I_r[i] = flux_enclosed - I_enclosed
         I_enclosed = flux_enclosed
@@ -111,7 +111,7 @@ def moments(I_xy_input, x, y):
     x_ = np.sum(I_xy * x)
     y_ = np.sum(I_xy * y)
     r = (np.max(x) - np.min(x)) / 3.
-    mask = mask_util.mask_sphere(x, y, center_x=x_, center_y=y_, r=r)
+    mask = mask_util.mask_azimuthal(x, y, center_x=x_, center_y=y_, r=r)
     Q_xx = np.sum(I_xy * mask * (x - x_) ** 2)
     Q_xy = np.sum(I_xy * mask * (x - x_) * (y - y_))
     Q_yy = np.sum(I_xy * mask * (y - y_) ** 2)

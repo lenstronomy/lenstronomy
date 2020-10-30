@@ -26,13 +26,15 @@ def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
 
 
 @export
-def mask_sphere(x, y, center_x, center_y, r):
+def mask_azimuthal(x, y, center_x, center_y, r):
     """
 
-    :param center: 2D coordinate of center position of circular mask
-    :param r: radius of mask in pixel values
-    :param data: data image
-    :return:
+    :param x: x-coordinates (1d or 2d array numpy array)
+    :param y: y-coordinates (1d or 2d array numpy array)
+    :param center_x: center of azimuthal mask in x
+    :param center_y: center of azimuthal mask in y
+    :param r: radius of azimuthal mask
+    :return: array with zeros outside r and ones inside azimuthal radius r
     """
     x_shift = x - center_x
     y_shift = y - center_y

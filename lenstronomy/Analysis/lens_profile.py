@@ -148,7 +148,7 @@ class LensProfileAnalysis(object):
         x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=2.*theta_E / numPix)
         x_grid += center_x
         y_grid += center_y
-        mask = mask_util.mask_sphere(x_grid, y_grid, center_x, center_y, theta_E)
+        mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x, center_y, theta_E)
         kappa_list = []
         for i in range(len(kwargs_lens)):
             kappa = self._lens_model.kappa(x_grid, y_grid, kwargs_lens, k=i)

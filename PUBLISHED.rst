@@ -99,6 +99,9 @@ Galaxy formation and evolution
 * Massive elliptical galaxies at z∼0.2 are well described by stars and a Navarro-Frenk-White dark matter halo; `Shajib et al. 2020 <https://arxiv.org/abs/2008.11724>`_
     *Automatized modeling of 23 SLACS lenses with dolphin, a lenstronomy wrapper*
 
+* High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020 <https://arxiv.org/abs/2011.01971>`_
+    *Modeling of doubly lensed quasars from Keck Adaptive Optics data*
+
 
 
 Automatized Lens Modeling

@@ -1,0 +1,208 @@
+__author__ = 'lucateo'
+
+# this file contains a class to compute the Ultra Light Dark Matter soliton profile
+import numpy as np
+import scipy.interpolate as interp
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+
+__all__ = ['ULDM']
+
+
+class Uldm(LensProfileBase):
+    """
+    this class contains functions concerning the ULDM soliton density profile
+    """
+    _s = 0.000001  # numerical limit for minimal radius
+    param_names = ['theta_c', 'alpha_c', 'center_x', 'center_y']
+    lower_limit_default = {'theta_c': 0, 'alpha_c': 0, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_c': 100, 'alpha_c': 100, 'center_x': 100, 'center_y': 100}
+
+    #  def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
+    #      """
+    #
+    #      #  :param interpol: bool, if True, interpolates the functions F(), g() and h()
+    #      #  :param num_interp_X: int (only considered if interpol=True), number of interpolation elements in units of r/r_s
+    #      #  :param max_interp_X: float (only considered if interpol=True), maximum r/r_s value to be interpolated (returning zeros outside)
+    #      #  """
+    #      super(Uldm, self).__init__()
+
+    def lensing_Integral(self, x):
+        """
+        The analitic result of the integral entering the computation of the lensing potential
+
+        :param x: evaluation point of the integral
+        :return: result of the antiderivative in x
+        """
+        denominator = 3465*(x**2 +1)**(5.5)
+        numerator = 3465*x**10 + 18480*x**8 + 39963*x**6 + 44154*x**4 + 25399*x**2 + 6508
+        return np.log(np.sqrt(x**2 +1) + 1) - numerator/denominator
+
+    def function(self, x, y, alpha_c, theta_c, center_x=0, center_y=0):
+        """
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param alpha_c: deflection angle at theta_c
+        :param theta_c: core radius of ULDM soliton
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: lensing potential
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        r = np.sqrt(x_ ** 2 + y_ ** 2)
+        r = np.maximum(r, self._s)
+        result = alpha_c/0.43 * theta_c/r * (self.lensing_Integral(np.sqrt(0.091)*r/theta_c) - self.lensing_Integral(0))
+        return result
+
+    def alpha_radial(self, r, alpha_c, theta_c):
+        """
+        returns the radial part of the deflection angle
+
+        :param r: radius where the deflection angle is computed
+        :param alpha_c: deflection angle at theta_c
+        :param theta_c: core radius of ULDM soliton
+        :return: radial deflection angle
+        """
+        prefactor = alpha_c/0.43 * theta_c
+        denominator_factor = (1 + 0.091 * r**2/theta_c**2)**(6.5)
+        return prefactor/r * (1 - 1/denominator_factor)
+
+    def derivatives(self, x, y, alpha_c, theta_c, center_x=0, center_y=0):
+        """
+        returns df/dx and df/dy of the function (lensing potential), which are the deflection angles
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param alpha_c: deflection angle at theta_c
+        :param theta_c: core radius of ULDM soliton
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: deflection angle in x, deflection angle in y
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        R = np.sqrt(x_**2 + y_**2)
+        R = np.maximum(R,0.00000001)
+        f_x = self.alpha_radial(R, alpha_c, theta_c) * x_ / R
+        f_y = self.alpha_radial(R, alpha_c, theta_c) * y_ / R
+        return f_x, f_y
+
+    def hessian(self, x, y, alpha_c, theta_c, center_x=0, center_y=0):
+        """
+
+        :param x: angular position (normally in units of arc seconds)
+        :param y: angular position (normally in units of arc seconds)
+        :param alpha_c: deflection angle at theta_c
+        :param theta_c: core radius of ULDM soliton
+        :param center_x: center of halo (in angular units)
+        :param center_y: center of halo (in angular units)
+        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        R = np.sqrt(x_**2 + y_**2)
+        R = np.maximum(R,0.00000001)
+        factor1 = 2.74 * alpha_c / theta_c * (1 + 0.091*R**2 / theta_c**2)**(-7.5)/R**2
+        factor2 = 1/R**4 * (1 - (1 + 0.091 * R**2 / theta_c**2)**(-6.5))
+        f_xx = factor1 * x_**2 + factor2 * (y_**2 - x_**2)
+        f_yy = factor1 * y_**2 + factor2 * (x_**2 - y_**2)
+        f_xy = factor1 * x_ * y_ - factor2 * 2*x_*y_
+        return f_xx, f_yy, f_xy
+
+    def density(self, R, rho0, theta_c):
+        """
+        three dimensional ULDM profile in angular units (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+
+        :param R: radius of interest
+        :type R: float/numpy array
+        :param rho0: central density in angular units
+        :type rho0: float
+        :param theta_c: core angle
+        :type theta_c: float
+        :return: rho(R) density
+        """
+        return rho0/(1 + 0.091* (R/theta_c)**2)**8
+
+    def alpha_c2rho0(self, theta_c, alpha_c):
+        """
+        Converts deflection angle at the core radius in central density in angular units
+
+        :param alpha_c: deflection angle at theta_c
+        :param theta_c: core radius of ULDM soliton
+        :return: rho0
+        """
+        return alpha_c / theta_c**2 / 1.59
+
+    def density_lens(self, r, theta_c, alpha_c):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: 3d radius
+        :param theta_c: angle at the core
+        :param alpha_c: deflection at theta_core
+        :return: density rho(r)
+        """
+        rho0 = self._alpha_c2rho0(theta_c, alpha_c)
+        return self.density(r, rho0, theta_c)
+
+    def density_2d(self, x, y, theta_c, alpha_c, center_x=0, center_y=0):
+        """
+        projected two dimensional ULDM profile (convergence * \Sigma_crit), but given our
+        units convention for rho0, it is basically the convergence
+
+        :param R: radius of interest
+        :type R: float/numpy array
+        :param theta_c: angle at the core
+        :param alpha_c: deflection at theta_core
+        :return: Epsilon(R) projected density at radius R
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+        R = np.sqrt(x_**2 + y_**2)
+        return 2.18 * rho0 * theta_c / (1 + 0.091 * (R / theta_c)**2)**(7.5)
+
+    def mass_Integral(self, x):
+        """
+        Returns the analitic result of the integral appearing in mass expression
+        """
+        numerator = x * (3465 * x**12 + 23100 * x**10 + 65373 * x**8 + 101376*x**6 + 92323*x**4 + 48580 * x**2 - 3465)
+        denominator = 215040 * (x**2 + 1)**7
+        result = 33 * np.arctan(x) / 2048 + numerator/denominator
+        return result
+
+    def mass_3d(self, R, theta_c, rho0):
+        """
+        mass enclosed a 3d sphere or radius r
+        :param R: radius in arcseconds
+        :param theta_c: angle at the core
+        :param rho0: central density in angular units
+        :return: mass of soliton in angular units
+        """
+        m_3d = 4. * np.pi * rho0 * theta_c**3 / (0.091)**(1.5) * (self.mass_Integral(R/theta_c * np.sqrt(0.091)) - self.mass_Integral(0) )
+        return m_3d
+
+    def mass_3d_lens(self, r, theta_c, alpha_c):
+        """
+        mass enclosed a 3d sphere or radius r
+        :param R:
+        :param theta_c: angle at the core
+        :param rho0: central density in angular units
+        :return: mass
+        """
+        rho0 = self._alpha_c2rho0(theta_c, alpha_c)
+        m_3d = self.mass_3d(r, theta_c, rho0)
+        return m_3d
+
+    def mass_2d(self, R, theta_c, rho0):
+        """
+        mass enclosed a 2d sphere or radius r
+        :param r:
+        :param theta_c: angle at the core
+        :param rho0: central density in angular units
+        :return:
+        """
+        integral_factor = 1 - (1 + 0.091*(R/ theta_c)**2)**(-6.5)
+        m_2d = 2*np.pi * rho0 * theta_c**3 * 1.84 * integral_factor
+        return m_2d

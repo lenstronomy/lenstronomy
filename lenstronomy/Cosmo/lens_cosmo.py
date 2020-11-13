@@ -238,3 +238,23 @@ class LensCosmo(object):
         """
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E
+
+    def uldm_phys2angles_rho0(self, m_eV_log10, M_sol_log10):
+        """
+        converts physical parameters of ULDM soliton profile in angle variables (in arcseconds) used in
+        Uldm class and in physical central density (in M_sun / pc^3); the masses inputs are in logarithmic scale
+        :param m_eV_log10: mass of ULDM particle in eV, in log10 scale
+        :param M_sol_log10: mass of soliton in M_sun, in log10 scale
+        :return: theta_c, the core radius, alpha_c, the angle deviation at theta_c, and rho0, the central density
+        """
+        radius_core = 227.78 * 10**(-2*(m_eV_log10 + 22)) * 10**(-1*(M_sol_log10 - 9)) # In parsec
+        theta_c = radius_core / 10**6 / self.dd / const.arcsec # In arcseconds
+        rho0 = 190 * 10**(-2*(m_eV_log10 + 22)) * (radius_core / 100)**(-4) # In M_sun /pc^3
+        # Multiply by arcsec for correct units (theta_c already in arcsec, so a theta_c^2 term
+        # would give a arcsec^2 dimensions; remember that here const.arcsec = arcsec2rad and
+        # both dd and sigma_crit use Mpc as length unit
+        alpha_c = 1.59 * (rho0 * 10**(18)) * theta_c**2 * const.arcsec * self.dd / self.sigma_crit # In arcseconds
+        return theta_c, alpha_c, rho0
+
+
+

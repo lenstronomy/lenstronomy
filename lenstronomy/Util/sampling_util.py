@@ -1,7 +1,7 @@
 __author__ = 'aymgal'
 
 import numpy as np
-from scipy import special
+from scipy import stats
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -11,18 +11,6 @@ export, __all__ = exporter()
 
 
 SQRT2 = np.sqrt(2)
-
-
-@export
-def unit2gaussian(x, mu, sigma):
-    """
-    mapping from uniform distribution on unit hypercube
-    to truncated gaussian distribution on parameter space, 
-    with mean 'mu' and std dev 'sigma'
-
-    from Handley+15, eq. (A9)
-    """
-    return mu + SQRT2 * sigma * special.erfinv(2*x - 1)
 
 
 @export
@@ -65,7 +53,6 @@ def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
         cube[i] = unit2uniform(val, low, upp)
     return cube
 
-
 @export
 def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False):
     """
@@ -85,15 +72,9 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
     if copy:
         cube_ = cube
         cube = np.zeros_like(cube_)
-    for i in range(num_dims):
-        val = cube_[i] if copy else cube[i]
-        val = unit2gaussian(val, means[i], sigmas[i])
-        low, upp = lowers[i], uppers[i]
-        if val <= low: cube[i] = low
-        elif val >= upp: cube[i] = upp
-        else: cube[i] = val
+    a, b = (lowers-means)/sigmas, (uppers-means)/sigmas
+    cube[:] = stats.truncnorm.ppf(cube_ if copy else cube, a=a, b=b, loc=means, scale=sigmas)
     return cube
-
 
 @export
 def scale_limits(lowers, uppers, scale):

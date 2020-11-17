@@ -256,5 +256,24 @@ class LensCosmo(object):
         alpha_c = 1.59 * (rho0 * 10**(18)) * theta_c**2 * const.arcsec * self.dd / self.sigma_crit # In arcseconds
         return theta_c, alpha_c, rho0
 
+    def uldm_angles2phys(self, theta_c, alpha_c):
+        """
+        converts angles in physical mass, soliton mass (the returned values are the exponents of 10)
+        :param theta_c: core radius angle in arcseconds
+        :param alpha_c: deflection angle at core radius in arcseconds
+        :return: m_eV_log10, M_sol_log10, the exponents of 10 of the masses in electronvolt and M_sun respectively
+        """
+        D_Lens = self.dd * 10**6 # in parsec
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/parsec^2
+        # m/10^-22 eV
+        m22 = 1.59 * 1.9 * 10**(10) / (Sigma_c * D_Lens**3 * alpha_c * theta_c**2 * const.arcsec**3)
+        # M/10^9 M_sun
+        M9 = 228 / (D_Lens * theta_c * const.arcsec) * m22**(-2)
+        m_eV_log10 = np.log10(m22) - 22
+        M_sol_log10 = np.log10(M9) + 9
+        return m_eV_log10, M_sol_log10
+
+
+
 
 

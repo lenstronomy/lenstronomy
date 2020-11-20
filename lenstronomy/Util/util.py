@@ -8,7 +8,11 @@ import numpy as np
 import mpmath
 import itertools
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def merge_dicts(*dict_args):
     """
     Given any number of dicts, shallow copy and merge into a new dict,
@@ -20,6 +24,7 @@ def merge_dicts(*dict_args):
     return result
 
 
+@export
 def approx_theta_E(ximg,yimg):
 
     dis = []
@@ -42,6 +47,7 @@ def approx_theta_E(ximg,yimg):
     return 0.5*(dr_greatest*dr_second)**0.5
 
 
+@export
 def sort_image_index(ximg,yimg,xref,yref):
 
     """
@@ -74,6 +80,7 @@ def sort_image_index(ximg,yimg,xref,yref):
     return min_indexes
 
 
+@export
 def rotate(xcoords, ycoords, angle):
     """
 
@@ -85,6 +92,7 @@ def rotate(xcoords, ycoords, angle):
     return xcoords*np.cos(angle)+ycoords*np.sin(angle), -xcoords*np.sin(angle)+ycoords*np.cos(angle)
 
 
+@export
 def map_coord2pix(ra, dec, x_0, y_0, M):
     """
     this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular
@@ -100,6 +108,7 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
     return x + x_0, y + y_0
 
 
+@export
 def array2image(array, nx=0, ny=0):
     """
     returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)
@@ -118,6 +127,7 @@ def array2image(array, nx=0, ny=0):
     return image
 
 
+@export
 def image2array(image):
     """
     returns the information contained in a 2d array into an n*n 1d array
@@ -132,6 +142,7 @@ def image2array(image):
     return imgh
 
 
+@export
 def array2cube(array, n_1, n_23):
     """
     returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d array with shape (n_1, sqrt(n_23), sqrt(n_23))
@@ -153,6 +164,7 @@ def array2cube(array, n_1, n_23):
     return cube
 
 
+@export
 def cube2array(cube):
     """
     returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)
@@ -166,6 +178,7 @@ def cube2array(cube):
     return array
     
 
+@export
 def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     """
     creates pixel grid (in 1d arrays of x- and y- positions)
@@ -190,6 +203,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     return x_grid - shift, y_grid - shift
 
 
+@export
 def make_grid_transformed(numPix, Mpix2Angle):
     """
     returns grid with linear transformation (deltaPix and rotation)
@@ -202,6 +216,7 @@ def make_grid_transformed(numPix, Mpix2Angle):
     return ra_grid, dec_grid
 
 
+@export
 def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, center_dec=0, left_lower=False, inverse=True):
     """
     same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel
@@ -241,6 +256,7 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
     return ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
 
 
+@export
 def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     """
     return a grid in x and y coordinates that satisfy the coordinate system
@@ -263,6 +279,7 @@ def grid_from_coordinate_transform(nx, ny, Mpix2coord, ra_at_xy_0, dec_at_xy_0):
     return ra_grid, dec_grid
 
 
+@export
 def get_axes(x, y):
     """
     computes the axis x and y of a given 2d grid
@@ -280,6 +297,7 @@ def get_axes(x, y):
     return x_axes, y_axes
 
 
+@export
 def averaging(grid, numGrid, numPix):
     """
     resize 2d pixel grid with numGrid to numPix and averages over the pixels
@@ -295,6 +313,7 @@ def averaging(grid, numGrid, numPix):
     return small
 
 
+@export
 def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     """
     calculates a grid of distances to the observer in angel
@@ -312,6 +331,7 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     return absmapped
 
 
+@export
 def get_distance(x_mins, y_mins, x_true, y_true):
     """
 
@@ -338,6 +358,7 @@ def get_distance(x_mins, y_mins, x_true, y_true):
     return dist
 
 
+@export
 def compare_distance(x_mapped, y_mapped):
     """
 
@@ -354,6 +375,7 @@ def compare_distance(x_mapped, y_mapped):
     return X2
 
 
+@export
 def min_square_dist(x_1, y_1, x_2, y_2):
     """
     return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)
@@ -369,6 +391,7 @@ def min_square_dist(x_1, y_1, x_2, y_2):
     return dist
 
 
+@export
 def selectBest(array, criteria, numSelect, highest=True):
     """
 
@@ -392,6 +415,7 @@ def selectBest(array, criteria, numSelect, highest=True):
     return result[::-1]
 
 
+@export
 def select_best(array, criteria, num_select, highest=True):
     """
 
@@ -415,6 +439,7 @@ def select_best(array, criteria, num_select, highest=True):
     return array[indexes]
 
 
+@export
 def points_on_circle(radius, num_points):
     """
     returns a set of uniform points around a circle
@@ -428,6 +453,7 @@ def points_on_circle(radius, num_points):
     return x_coord, y_coord
 
 
+@export
 def neighborSelect(a, x, y):
     """
     #TODO replace by from scipy.signal import argrelextrema for speed up
@@ -485,6 +511,7 @@ def neighborSelect(a, x, y):
     return np.array(x_mins), np.array(y_mins), np.array(values)
 
 
+@export
 def fwhm2sigma(fwhm):
     """
 
@@ -495,6 +522,7 @@ def fwhm2sigma(fwhm):
     return sigma
 
 
+@export
 def sigma2fwhm(sigma):
     """
 
@@ -505,6 +533,7 @@ def sigma2fwhm(sigma):
     return fwhm
 
 
+@export
 def hyper2F2_array(a, b, c, d, x):
     """
 
@@ -525,6 +554,7 @@ def hyper2F2_array(a, b, c, d, x):
     return out
 
 
+@export
 def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     """
     return a grid with subgrid resolution
@@ -553,6 +583,7 @@ def make_subgrid(ra_coord, dec_coord, subgrid_res=2):
     return ra_coords_sub, dec_coords_sub
 
 
+@export
 def convert_bool_list(n, k=None):
     """
     returns a bool list of the length of the lens models

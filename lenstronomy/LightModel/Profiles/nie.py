@@ -3,6 +3,8 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 from lenstronomy.LightModel.Profiles.profile_base import LightProfileBase
 
+__all__ = ['NIE']
+
 
 class NIE(LightProfileBase):
     """

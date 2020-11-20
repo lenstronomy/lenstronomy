@@ -1,9 +1,12 @@
 from lenstronomy.LightModel.Profiles.nie import NIE
 from lenstronomy.LensModel.Profiles.chameleon import Chameleon as ChameleonLens
 import lenstronomy.Util.param_util as param_util
-import numpy as np
+
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
 
+@export
 class Chameleon(object):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -40,6 +43,7 @@ class Chameleon(object):
         return flux
 
 
+@export
 class DoubleChameleon(object):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
@@ -78,6 +82,7 @@ class DoubleChameleon(object):
         return f_1 + f_2
 
 
+@export
 class TripleChameleon(object):
     """
     class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile

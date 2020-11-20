@@ -1,8 +1,9 @@
 __author__ = 'sibirrer'
 
 import numpy as np
-import scipy.special as special
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+
+__all__ = ['SIS']
 
 
 class SIS(LensProfileBase):

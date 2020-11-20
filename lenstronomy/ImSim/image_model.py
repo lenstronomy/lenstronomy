@@ -10,6 +10,8 @@ from lenstronomy.Util import util
 
 import numpy as np
 
+__all__ = ['ImageModel']
+
 
 class ImageModel(object):
     """

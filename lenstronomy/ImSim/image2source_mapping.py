@@ -1,6 +1,8 @@
 import numpy as np
 from lenstronomy.Cosmo.background import Background
 
+__all__ = ['Image2SourceMapping']
+
 
 class Image2SourceMapping(object):
     """

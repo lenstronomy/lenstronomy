@@ -5,6 +5,8 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['NIE', 'NIEMajorAxis']
+
 
 class NIE(LensProfileBase):
     """

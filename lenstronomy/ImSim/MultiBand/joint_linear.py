@@ -3,6 +3,8 @@ import lenstronomy.ImSim.de_lens as de_lens
 
 import numpy as np
 
+__all__ = ['JointLinear']
+
 
 class JointLinear(MultiLinear):
     """

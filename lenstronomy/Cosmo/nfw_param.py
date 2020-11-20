@@ -1,5 +1,7 @@
 import numpy as np
 
+__all__ = ['NFWParam']
+
 
 class NFWParam(object):
     """

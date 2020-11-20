@@ -1,6 +1,8 @@
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
+__all__ = ['MultiPlaneLensing', 'Foreground']
+
 
 class MultiPlaneLensing(object):
     # TODO documentation of role of this class

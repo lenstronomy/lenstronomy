@@ -119,6 +119,11 @@ class TestNumericsProfile(object):
         lens_model = ['SHEAR']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_hessian(self):
+        kwargs = {'f_xx': 0.1, 'f_yy': -0.1, 'f_xy': 0.1, 'f_yx': 0.1}
+        lens_model = ['HESSIAN']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_mass_sheet(self):
         kwargs = {'kappa_ext': 0.1}
         lens_model = ['CONVERGENCE']

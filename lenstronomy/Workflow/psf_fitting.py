@@ -8,6 +8,8 @@ import numpy as np
 import copy
 import scipy.ndimage.interpolation as interp
 
+__all__ = ['PsfFitting']
+
 
 class PsfFitting(object):
     """
@@ -42,8 +44,8 @@ class PsfFitting(object):
     def __init__(self, image_model_class):
         self._image_model_class = image_model_class
 
-    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median',
-                 psf_symmetry=1, psf_iter_factor=1., block_center_neighbour=0):
+    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=1.,
+                   block_center_neighbour=0, error_map_radius=None):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -60,6 +62,8 @@ class PsfFitting(object):
         :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
          is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
          contaminate the estimate.
+        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
+         (e.g. to avoid double counting of overlapping PSF errors)
         :return: kwargs_psf_new, logL_after, error_map
         """
 
@@ -79,13 +83,14 @@ class PsfFitting(object):
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
 
-        psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list, kernel_size,
-                                            kernel_old, block_center_neighbour=block_center_neighbour)
+        psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list,
+                                                            kernel_size, kernel_old,
+                                                            block_center_neighbour=block_center_neighbour)
 
         kernel_new = self.combine_psf(psf_kernel_list, kernel_old, factor=psf_iter_factor,
                                       stacking_option=stacking_method, symmetry=psf_symmetry)
         kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
-        error_map = self.error_map_estimate(kernel_new, star_cutout_list, amp, x_, y_)
+        error_map = self.error_map_estimate(kernel_new, star_cutout_list, amp, x_, y_, error_map_radius=error_map_radius)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
         kwargs_psf_new['point_source_supersampling_factor'] = 1
@@ -97,7 +102,7 @@ class PsfFitting(object):
 
     def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, no_break=True, stacking_method='median',
                          block_center_neighbour=0, keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=0.2,
-                         verbose=True):
+                         error_map_radius=None, verbose=True):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -118,8 +123,10 @@ class PsfFitting(object):
          the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
          limited constraints/number of point sources in the image.
         :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
+        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
+         (e.g. to avoid double counting of overlapping PSF errors)
         :param verbose:
-        :return:
+        :return: keyword argument of PSF constructor for PSF() class
         """
         self._image_model_class.PointSource.set_save_cache(True)
         if not 'kernel_point_source_init' in kwargs_psf:
@@ -143,7 +150,8 @@ class PsfFitting(object):
                                                                     stacking_method=stacking_method,
                                                                     psf_symmetry=psf_symmetry,
                                                                     psf_iter_factor=psf_iter_factor,
-                                                                    block_center_neighbour=block_center_neighbour)
+                                                                    block_center_neighbour=block_center_neighbour,
+                                                                    error_map_radius=error_map_radius)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -305,12 +313,13 @@ class PsfFitting(object):
             kernel_new = np.mean(kernel_list_new_extended, axis=0)
         else:
             raise ValueError(" stack_option must be 'median' or 'mean', %s is not supported." % stacking_option)
+        kernel_new = np.nan_to_num(kernel_new)
         kernel_new[kernel_new < 0] = 0
         kernel_new = kernel_util.kernel_norm(kernel_new)
         kernel_return = factor * kernel_new + (1.-factor) * kernel_old
         return kernel_return
 
-    def error_map_estimate(self, kernel, star_cutout_list, amp, x_pos, y_pos):
+    def error_map_estimate(self, kernel, star_cutout_list, amp, x_pos, y_pos, error_map_radius=None):
         """
         provides a psf_error_map based on the goodness of fit of the given PSF kernel on the point source cutouts,
         their estimated amplitudes and positions
@@ -320,6 +329,7 @@ class PsfFitting(object):
         :param amp: list of amplitudes of the estimated PSF kernel
         :param x_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
         :param y_pos: pixel position (in original data unit, not in cutout) of the point sources (same order as amp and star cutouts)
+        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate (e.g. to avoid double counting of overlapping PSF erros)
         :return: relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image
         """
         error_map_list = np.zeros((len(star_cutout_list), len(kernel), len(kernel)))
@@ -346,6 +356,15 @@ class PsfFitting(object):
         # take median absolute error for each pixel
         error_map = np.median(error_map_list, axis=0)
         error_map[kernel > 0] /= kernel[kernel > 0]**2
+        error_map = np.nan_to_num(error_map)
+        error_map[error_map > 1] = 1  # cap on error to be the same
+
+        # mask the error map outside a certain radius (can avoid double counting of errors when map is overlapping
+        if error_map_radius is not None:
+            pixel_scale = self._image_model_class.Data.pixel_width
+            x_grid, y_grid = util.make_grid(numPix=len(error_map), deltapix=pixel_scale)
+            mask = mask_util.mask_azimuthal(x_grid, y_grid, center_x=0, center_y=0, r=error_map_radius)
+            error_map *= util.array2image(mask)
         return error_map
 
     @staticmethod
@@ -363,6 +382,6 @@ class PsfFitting(object):
         mask = np.ones_like(x_grid)
         for k in range(len(x_pos)):
             if k != i:
-                mask_point = 1 - mask_util.mask_sphere(x_grid, y_grid, x_pos[k], y_pos[k], radius)
+                mask_point = 1 - mask_util.mask_azimuthal(x_grid, y_grid, x_pos[k], y_pos[k], radius)
                 mask *= mask_point
         return util.array2image(mask)

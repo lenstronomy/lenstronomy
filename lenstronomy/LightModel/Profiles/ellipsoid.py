@@ -4,6 +4,8 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.Util import param_util
 
+__all__ = ['Ellipsoid']
+
 
 class Ellipsoid(object):
     """

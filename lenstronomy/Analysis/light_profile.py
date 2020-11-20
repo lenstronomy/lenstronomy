@@ -4,6 +4,8 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.analysis_util as analysis_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 
+__all__ = ['LightProfileAnalysis']
+
 
 class LightProfileAnalysis(object):
     """

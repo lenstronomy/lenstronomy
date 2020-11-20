@@ -4,6 +4,8 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import derivative_util as calc_util
 
+__all__ = ['CoredDensity']
+
 
 class CoredDensity(LensProfileBase):
     """

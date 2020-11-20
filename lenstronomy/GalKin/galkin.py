@@ -3,6 +3,8 @@ from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
 
+__all__ = ['Galkin']
+
 
 class Galkin(GalkinModel, GalkinObservation):
     """

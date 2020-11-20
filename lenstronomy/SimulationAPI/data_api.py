@@ -3,6 +3,8 @@ from lenstronomy.Data.imaging_data import ImageData
 import lenstronomy.Util.util as util
 import numpy as np
 
+__all__ = ['DataAPI']
+
 
 class DataAPI(SingleBand):
     """

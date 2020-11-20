@@ -7,6 +7,8 @@ from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.spp import SPP
 
+__all__ = ['SPEP']
+
 
 class SPEP(LensProfileBase):
     """

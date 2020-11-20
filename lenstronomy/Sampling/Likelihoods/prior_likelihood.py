@@ -1,6 +1,8 @@
 import numpy as np
 from lenstronomy.Util.prob_density import KDE1D
 
+__all__ = ['PriorLikelihood']
+
 
 class PriorLikelihood(object):
     """

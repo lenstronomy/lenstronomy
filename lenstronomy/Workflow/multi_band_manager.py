@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 from lenstronomy.Workflow.update_manager import UpdateManager
 import copy
 
+__all__ = ['MultiBandUpdateManager']
+
 
 class MultiBandUpdateManager(UpdateManager):
     """

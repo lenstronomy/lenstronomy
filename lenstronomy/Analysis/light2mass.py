@@ -2,6 +2,8 @@ import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LightModel.light_model import LightModel
 
+__all__ = ['light2mass_interpol']
+
 
 def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, deltaPix=0.05, subgrid_res=5,
                         center_x=0, center_y=0):
@@ -20,7 +22,7 @@ def light2mass_interpol(lens_light_model_list, kwargs_lens_light, numPix=100, de
     # make super-sampled grid
     x_grid_sub, y_grid_sub = util.make_grid(numPix=numPix * 5, deltapix=deltaPix, subgrid_res=subgrid_res)
     import lenstronomy.Util.mask_util as mask_util
-    mask = mask_util.mask_sphere(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
+    mask = mask_util.mask_azimuthal(x_grid_sub, y_grid_sub, center_x, center_y, r=1)
     x_grid, y_grid = util.make_grid(numPix=numPix, deltapix=deltaPix)
     # compute light on the subgrid
     lightModel = LightModel(light_model_list=lens_light_model_list)

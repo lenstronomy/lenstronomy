@@ -2,6 +2,8 @@ from lenstronomy.LensModel.Solver.solver2point import Solver2Point
 from lenstronomy.LensModel.Solver.solver4point import Solver4Point
 import numpy as np
 
+__all__ = ['Solver']
+
 
 class Solver(object):
     """

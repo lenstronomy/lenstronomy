@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 
 from lenstronomy.LightModel.linear_basis import LinearBasis
 
+__all__ = ['LightModel']
+
 
 class LightModel(LinearBasis):
     """

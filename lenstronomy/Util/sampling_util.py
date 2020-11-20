@@ -3,6 +3,9 @@ __author__ = 'aymgal'
 import numpy as np
 from scipy import special
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
 
 # transform the unit hypercube to pysical parameters for (nested) sampling
 
@@ -10,6 +13,7 @@ from scipy import special
 SQRT2 = np.sqrt(2)
 
 
+@export
 def unit2gaussian(x, mu, sigma):
     """
     mapping from uniform distribution on unit hypercube
@@ -21,6 +25,7 @@ def unit2gaussian(x, mu, sigma):
     return mu + SQRT2 * sigma * special.erfinv(2*x - 1)
 
 
+@export
 def unit2uniform(x, vmin, vmax):
     """
     mapping from uniform distribution on parameter space 
@@ -29,6 +34,7 @@ def unit2uniform(x, vmin, vmax):
     return vmin + (vmax - vmin) * x
 
 
+@export
 def uniform2unit(theta, vmin, vmax):
     """
     mapping from uniform distribution on unit hypercube
@@ -37,6 +43,7 @@ def uniform2unit(theta, vmin, vmax):
     return (theta - vmin) / (vmax - vmin)
 
 
+@export
 def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
     """
     mapping from uniform distribution on unit hypercube 'cube'
@@ -59,6 +66,7 @@ def cube2args_uniform(cube, lowers, uppers, num_dims, copy=False):
     return cube
 
 
+@export
 def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False):
     """
     mapping from uniform distribution on unit hypercube 'cube'
@@ -87,6 +95,7 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
     return cube
 
 
+@export
 def scale_limits(lowers, uppers, scale):
     if not isinstance(lowers, np.ndarray):
         lowers = np.asarray(lowers)
@@ -98,6 +107,7 @@ def scale_limits(lowers, uppers, scale):
     return lowers_scaled, uppers_scaled
 
 
+@export
 def sample_ball(p0, std, size=1, dist='uniform'):
     """
     Produce a ball of walkers around an initial parameter value.

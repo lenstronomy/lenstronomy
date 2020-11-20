@@ -3,6 +3,8 @@ from lenstronomy.Util import param_util
 from lenstronomy.Util import derivative_util
 import numpy as np
 
+__all__ = ['ArcPerturbations']
+
 
 class ArcPerturbations(LensProfileBase):
     """

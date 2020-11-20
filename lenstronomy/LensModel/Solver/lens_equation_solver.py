@@ -3,6 +3,8 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from scipy.optimize import minimize
 
+__all__ = ['LensEquationSolver']
+
 
 class LensEquationSolver(object):
     """

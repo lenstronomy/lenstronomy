@@ -2,6 +2,8 @@ from lenstronomy.Util import image_util
 from lenstronomy.Util import kernel_util
 import numpy as np
 
+__all__ = ['PointSourceRendering']
+
 
 class PointSourceRendering(object):
     """

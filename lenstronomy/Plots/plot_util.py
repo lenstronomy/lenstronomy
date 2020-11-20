@@ -2,7 +2,11 @@ import numpy as np
 import math
 from corner.corner import quantile
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def sqrt(inputArray, scale_min=None, scale_max=None):
     """Performs sqrt scaling of the input numpy array.
 
@@ -33,6 +37,7 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
     return imageData
 
 
+@export
 def text_description(ax, d, text, color='w', backgroundcolor='k',
                      flipped=False, font_size=15):
     c_vertical = font_size / 10.**2
@@ -46,6 +51,7 @@ def text_description(ax, d, text, color='w', backgroundcolor='k',
                 backgroundcolor=backgroundcolor)
 
 
+@export
 def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False):
     if flipped:
         p0 = d - d / 15. - dist
@@ -59,6 +65,7 @@ def scale_bar(ax, d, dist=1., text='1"', color='w', font_size=15, flipped=False)
         ax.text(p0 + dist / 2., p0 + 0.01 * d, text, fontsize=font_size, color=color, ha='center')
 
 
+@export
 def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
     d0 = d / 8.
     p0 = d / 15.
@@ -80,6 +87,7 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
     ax.text(xx_dec_t * deltaPix, yy_dec_t * deltaPix, "N", color=color, fontsize=font_size, ha='center')
 
 
+@export
 def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color='g'):
     """
 
@@ -93,6 +101,7 @@ def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color
     return ax
 
 
+@export
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
     """
 
@@ -115,6 +124,7 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     return ax
 
 
+@export
 def source_position_plot(ax, coords, ra_pos, dec_pos):
     """
 
@@ -131,6 +141,7 @@ def source_position_plot(ax, coords, ra_pos, dec_pos):
     return ax
 
 
+@export
 def result_string(x, weights=None, title_fmt=".2f", label=None):
     """
 

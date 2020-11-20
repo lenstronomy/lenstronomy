@@ -3,6 +3,8 @@ import numpy as np
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.image_noise import ImageNoise
 
+__all__ = ['ImageData']
+
 
 class ImageData(PixelGrid, ImageNoise):
     """

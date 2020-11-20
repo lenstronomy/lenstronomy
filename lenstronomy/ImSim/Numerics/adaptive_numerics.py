@@ -3,6 +3,8 @@ from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import kernel_util
 from lenstronomy.Util import image_util
 
+__all__ = ['AdaptiveConvolution']
+
 
 class AdaptiveConvolution(object):
     """

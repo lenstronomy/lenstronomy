@@ -3,6 +3,8 @@ from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_potential import GaussianEllipsePotential
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['MultiGaussianKappa', 'MultiGaussianKappaEllipse']
+
 
 class MultiGaussianKappa(LensProfileBase):
     """

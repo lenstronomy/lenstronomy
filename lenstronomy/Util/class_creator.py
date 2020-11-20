@@ -6,7 +6,11 @@ from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.ImSim.differential_extinction import DifferentialExtinction
 from lenstronomy.ImSim.image_linear_solve import ImageLinearFit
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
@@ -43,6 +47,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param index_lens_light_model_list:
     :param index_point_source_model_list:
     :param optical_depth_model_list: list of strings indicating the optical depth model to compute (differential) extinctions from the source
+    :param index_optical_depth_model_list:
     :param band_index: int, index of band to consider. Has an effect if only partial models are considered for a specific band
     :param tau0_index_list: list of integers of the specific extinction scaling parameter tau0 for each band
     :param all_models: bool, if True, will make class instances of all models ignoring potential keywords that are excluding specific models as indicated.
@@ -127,6 +132,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     return lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class
 
 
+@export
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, likelihood_mask=None):
     """
 
@@ -144,6 +150,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, l
     return imageModel
 
 
+@export
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
                   band_index=0, kwargs_pixelbased=None):
     """

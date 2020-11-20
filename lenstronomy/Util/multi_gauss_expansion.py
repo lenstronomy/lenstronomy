@@ -10,6 +10,11 @@ from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 gaussian_func = Gaussian()
 
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
+
+@export
 def gaussian(R, sigma, amp):
     """
 
@@ -22,6 +27,7 @@ def gaussian(R, sigma, amp):
     return c * np.exp(-(R/float(sigma))**2/2.)
 
 
+@export
 def mge_1d(r_array, flux_r, N=20, linspace=False):
     """
 
@@ -44,6 +50,7 @@ def mge_1d(r_array, flux_r, N=20, linspace=False):
     return amplitudes, sigmas, norm
 
 
+@export
 def _mge_1d(r_array, flux_r, N=20, linspace=False):
     """
 
@@ -65,6 +72,7 @@ def _mge_1d(r_array, flux_r, N=20, linspace=False):
     return amplitudes, sigmas, norm
 
 
+@export
 def de_projection_3d(amplitudes, sigmas):
     """
     de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)

@@ -9,9 +9,13 @@ from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
 
 #TODO define coordinate grid beforehand, e.g. kwargs_data
 
+@export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                     point_source=False, with_caustics=False, coord_center_ra=0, coord_center_dec=0,
                     coord_inverse=False):
@@ -66,6 +70,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     return ax
 
 
+@export
 def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0,
                 differential_scale=0.0001, smoothing_scale=None, **kwargs):
     """
@@ -155,6 +160,7 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     return f, axes
 
 
+@export
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                          with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
                          letter_font_size=20):

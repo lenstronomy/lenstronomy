@@ -5,6 +5,8 @@ import numpy as np
 
 import lenstronomy.Util.util as util
 
+__all__ = ['Interpol']
+
 
 class Interpol(object):
     """

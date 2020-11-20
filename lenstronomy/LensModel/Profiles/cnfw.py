@@ -5,6 +5,8 @@ from scipy.integrate import quad
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['CNFW']
+
 
 class CNFW(LensProfileBase):
     """

@@ -1,6 +1,9 @@
 import numpy as np
-from lenstronomy.Util.param_util import cart2polar,polar2cart
+from lenstronomy.Util.param_util import cart2polar
 from lenstronomy.Util.util import sort_image_index
+
+__all__ = ['Penalties']
+
 
 class Penalties(object):
 

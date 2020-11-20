@@ -7,6 +7,8 @@ import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
 
+__all__ = ['LensCosmo']
+
 
 class LensCosmo(object):
     """

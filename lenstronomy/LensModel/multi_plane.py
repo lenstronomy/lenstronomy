@@ -103,7 +103,7 @@ class MultiPlane(object):
         x, y, _, _ = self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start=0, z_stop=self._z_source,
                                                            kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
                                                            T_ij_end=self._T_ij_stop)
-        beta_x, beta_y = self._co_moving2angle_source(x, y)
+        beta_x, beta_y = self.co_moving2angle_source(x, y)
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
@@ -242,7 +242,7 @@ class MultiPlane(object):
         f_yx = dalpha_decra
         return f_xx, f_xy, f_yx, f_yy
 
-    def _co_moving2angle_source(self, x, y):
+    def co_moving2angle_source(self, x, y):
         """
         special case of the co_moving2angle definition at the source redshift
 

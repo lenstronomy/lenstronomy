@@ -117,7 +117,7 @@ class ParticleSwarmOptimizer(object):
 
         return swarm
 
-    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2):
+    def sample(self, max_iter=1000, c1=1.193, c2=1.193, p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None):
         """
         Launches the PSO. Yields the complete swarm per iteration
 
@@ -129,7 +129,9 @@ class ParticleSwarmOptimizer(object):
         best
         :param n: stop criterion, difference between norm of the particle
         vector and norm of the global best
+        :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
         """
+
         self._get_fitness(self.swarm)
         i = 0
         while True:
@@ -155,6 +157,10 @@ class ParticleSwarmOptimizer(object):
                           self.global_best.position)
                 return
 
+            if early_stop_tolerance is not None:
+                if self._acceptable_convergence(early_stop_tolerance):
+                    return
+
             for particle in self.swarm:
                 w = 0.5 + np.random.uniform(0, 1, size=self.param_count) / 2
                 # w=0.72
@@ -179,7 +185,7 @@ class ParticleSwarmOptimizer(object):
             i += 1
 
     def optimize(self, max_iter=1000, verbose=True, c1=1.193, c2=1.193,
-                 p=0.7, m=1e-3, n=1e-2):
+                 p=0.7, m=1e-3, n=1e-2, early_stop_tolerance=None):
         """
         Run the optimization and return a full list of optimization outputs.
 
@@ -192,13 +198,14 @@ class ParticleSwarmOptimizer(object):
         best
         :param n: stop criterion, difference between norm of the particle
         vector and norm of the global best
+        :param early_stop_tolerance: will terminate at the given value (should be specified as a chi^2)
         """
         chi2_list = []
         vel_list = []
         pos_list = []
 
         num_iter = 0
-        for _ in self.sample(max_iter, c1, c2, p, m, n):
+        for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance):
             chi2_list.append(self.global_best.fitness * 2)
             vel_list.append(self.global_best.velocity)
             pos_list.append(self.global_best.position)
@@ -325,6 +332,15 @@ class ParticleSwarmOptimizer(object):
             return True
         else:
             return self.pool.is_master()
+
+    def _acceptable_convergence(self, chi_square_tolerance):
+
+        chi_square = [-2 * particle.fitness for particle in self.swarm]
+
+        if np.min(chi_square) < chi_square_tolerance:
+            return True
+        else:
+            return False
 
 
 class Particle(object):

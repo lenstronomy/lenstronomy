@@ -69,7 +69,7 @@ class MultiplaneFast(object):
         :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
         param_class, see documenation in QuadOptimizer.param_manager
 
-        :return: the log-likelihood corresponding to the source plane chi^2 
+        :return: the log-likelihood corresponding to the source plane chi^2
         """
         chi_square = self.source_plane_chi_square(args_lens)
 

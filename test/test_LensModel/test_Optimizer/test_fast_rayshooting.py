@@ -78,5 +78,9 @@ class TestFastRayShooting(object):
         npt.assert_almost_equal(xfast, x)
         npt.assert_almost_equal(yfast, y)
 
+        chi_square = fast_rayshooting.source_plane_chi_square(args_lens)
+        logL = fast_rayshooting.source_plane_logL(args_lens)
+        npt.assert_almost_equal(logL, -0.5 * chi_square)
+
 if __name__ == '__main__':
     pytest.main()

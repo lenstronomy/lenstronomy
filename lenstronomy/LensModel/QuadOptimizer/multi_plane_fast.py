@@ -61,14 +61,27 @@ class MultiplaneFast(object):
         self._tol_source = tol_source
 
         self._foreground_rays = foreground_rays
-        
-    def source_plane_penalty(self, args_lens, *args, **kwargs):
+
+    def source_plane_logL(self, args_lens, *args, **kwargs):
 
         """
 
-        :param args_lens: array of lens model parameters being optimized
-        :param args:
-        :param kwargs:
+        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
+        param_class, see documenation in QuadOptimizer.param_manager
+
+        :return: the log-likelihood corresponding to the source plane chi^2 
+        """
+        chi_square = self.source_plane_chi_square(args_lens)
+
+        return -0.5 * chi_square
+
+    def source_plane_chi_square(self, args_lens, *args, **kwargs):
+
+        """
+
+        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
+        param_class, see documenation in QuadOptimizer.param_manager
+
         :return: chi2 penalty for the source position (all images must map to the same source coordinate)
         """
 
@@ -83,7 +96,9 @@ class MultiplaneFast(object):
                              betay[1] - betay[2]) ** 2 +
                      (betay[1] - betay[3]) ** 2 + (betay[2] - betay[3]) ** 2)
 
-        return 0.5 * (dx_source + dy_source) / self._tol_source ** 2
+        chi_square = 0.5 * (dx_source + dy_source) / self._tol_source ** 2
+
+        return chi_square
 
     def ray_shooting_fast(self, args_lens):
 

@@ -98,13 +98,14 @@ class Optimizer(object):
 
         low_bounds, high_bounds = self._param_class.bounds(self._re_optimize, self._re_optimize_scale)
 
-        pso = ParticleSwarmOptimizer(self.fast_rayshooting.source_plane_penalty, low_bounds, high_bounds, n_particles,
+        pso = ParticleSwarmOptimizer(self.fast_rayshooting.source_plane_logL, low_bounds, high_bounds, n_particles,
                                      pool, args=[self._tol_source])
 
-        best, _ = pso.optimize(n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean)
+        best, info = pso.optimize(n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean)
 
         if verbose:
             print('PSO done... ')
+            print('source plane chi^2: ', self.fast_rayshooting.source_plane_chi_square(best))
 
         kwargs = self._param_class.args_to_kwargs(best)
 
@@ -126,7 +127,7 @@ class Optimizer(object):
         if verbose:
             print('starting amoeba... ')
 
-        opt = minimize(self.fast_rayshooting.source_plane_penalty, x0=args_init,
+        opt = minimize(self.fast_rayshooting.source_plane_chi_square, x0=args_init,
                        method=method, options=options)
 
         kwargs = self._param_class.args_to_kwargs(opt['x'])

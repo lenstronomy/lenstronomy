@@ -54,13 +54,6 @@ class TestFastRayShooting(object):
         npt.assert_almost_equal(x_fore, xtrue)
         npt.assert_almost_equal(y_fore, ytrue)
 
-        xmain, ymain, alphaxmain, alphaymain = fast_rayshooting._add_main_deflection(x_fore, y_fore, alpha_x_fore,
-                                                                                          alpha_y_fore,
-                                                                                          self.kwargs_epl)
-
-        npt.assert_almost_equal(xmain, x_fore)
-        npt.assert_almost_equal(ymain, y_fore)
-
         args_lens = self.param_class.kwargs_to_args(self.kwargs_epl)
         xfast, yfast = fast_rayshooting.ray_shooting_fast(args_lens)
 

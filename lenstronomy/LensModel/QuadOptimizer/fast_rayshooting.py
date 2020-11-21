@@ -1,3 +1,5 @@
+__author__ = 'dgilman'
+
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
@@ -117,14 +119,3 @@ class FastRayShooting(object):
             self.foreground_rays = (x, y, alpha_x, alpha_y)
 
         return self.foreground_rays[0], self.foreground_rays[1], self.foreground_rays[2], self.foreground_rays[3]
-
-    def _add_main_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens):
-
-        """
-        Adds the deflection angles from the main deflector at the main lens plane
-        """
-
-        x, y, alpha_x, alpha_y = self.lens_model_to_vary.lens_model.ray_shooting_partial(
-            x, y, alpha_x, alpha_y, self._z_lens, self._z_lens, kwargs_lens, include_z_start=True)
-
-        return x, y, alpha_x, alpha_y

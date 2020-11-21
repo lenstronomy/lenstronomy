@@ -1,3 +1,5 @@
+__author__ = 'dgilman'
+
 from lenstronomy.Util.param_util import shear_cartesian2polar, shear_polar2cartesian
 from lenstronomy.Util.param_util import ellipticity2phi_q
 import numpy as np

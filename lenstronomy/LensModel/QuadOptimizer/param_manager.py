@@ -23,8 +23,12 @@ import numpy as np
 #
 #         to_vary_index is the number of lens models with parameters that are being optimized. For power law + shear
 #         it equals 2, for example. The lens models being optimized should always come first in the lens_model_list
-#         self.to_vary_index = ???
+#
 #         pass
+#
+#     @property
+#     def to_vary_index(self):
+#         return integer
 #
 #     def bounds(self, scale):
 #
@@ -40,10 +44,11 @@ import numpy as np
 #         pass
 
 
-class _PowerLawBase(object):
+class PowerLawParamManager(object):
 
     """
-    Base class for EPL models
+    Base class for handling the translation between key word arguments and parameter arrays for
+    EPL mass models. This class is intended for use in modeling galaxy-scale lenses
     """
 
     def __init__(self, kwargs_lens_init):
@@ -57,16 +62,33 @@ class _PowerLawBase(object):
 
     @property
     def to_vary_index(self):
+
+        """
+        The number of lens models being varied in this routine. This is set to 2 because the first three lens models
+        are EPL and SHEAR, and their parameters are being optimized.
+
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
+        and lens models with indicies > to_vary_index kept fixed.
+
+        Note that this requires a specific ordering of lens_model_list
+        :return:
+        """
+
         return 2
 
     def bounds(self, re_optimize, scale=1.):
 
         """
         Sets the low/high parameter bounds for the particle swarm optimization
+
+        NOTE: The low/high values specified here are intended for galaxy-scale lenses. If you want to use this
+        for a different size system you should create a new ParamClass with different settings
+
         :param re_optimize: keep a narrow window around each parameter
         :param scale: scales the size of the uncertainty window
         :return:
         """
+
         args = self.kwargs_to_args(self.kwargs_lens)
 
         if re_optimize:
@@ -108,7 +130,7 @@ class _PowerLawBase(object):
         return args
 
 
-class PowerLawFreeShear(_PowerLawBase):
+class PowerLawFreeShear(PowerLawParamManager):
 
     """
     This class implements a fit of EPL + external shear with every parameter except the power law slope allowed to vary
@@ -133,7 +155,7 @@ class PowerLawFreeShear(_PowerLawBase):
         return self.kwargs_lens
 
 
-class PowerLawFixedShear(_PowerLawBase):
+class PowerLawFixedShear(PowerLawParamManager):
 
     """
     This class implements a fit of EPL + external shear with every parameter except the power law slope AND the
@@ -148,7 +170,7 @@ class PowerLawFixedShear(_PowerLawBase):
         :param kwargs_lens_init: the initial kwargs_lens before optimizing
         :param shear_strength: the strenght of the external shear to be kept fixed
         """
-        self.shear_strength = shear_strength
+        self._shear_strength = shear_strength
 
         super(PowerLawFixedShear, self).__init__(kwargs_lens_init)
 
@@ -167,7 +189,7 @@ class PowerLawFixedShear(_PowerLawBase):
                       'e1': e1, 'e2': e2, 'gamma': gamma}
 
         phi, _ = shear_cartesian2polar(g1, g2)
-        gamma1, gamma2 = shear_polar2cartesian(phi, self.shear_strength)
+        gamma1, gamma2 = shear_polar2cartesian(phi, self._shear_strength)
         kwargs_shear = {'gamma1': gamma1, 'gamma2': gamma2}
 
         self.kwargs_lens[0] = kwargs_epl
@@ -176,7 +198,7 @@ class PowerLawFixedShear(_PowerLawBase):
         return self.kwargs_lens
 
 
-class PowerLawFreeShearMultipole(_PowerLawBase):
+class PowerLawFreeShearMultipole(PowerLawParamManager):
 
     """
     This class implements a fit of EPL + external shear + a multipole term with every parameter except the
@@ -187,6 +209,18 @@ class PowerLawFreeShearMultipole(_PowerLawBase):
 
     @property
     def to_vary_index(self):
+
+        """
+        The number of lens models being varied in this routine. This is set to 3 because the first three lens models
+        are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.
+
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
+        and lens models with indicies > to_vary_index kept fixed.
+
+        Note that this requires a specific ordering of lens_model_list
+        :return:
+        """
+
         return 3
 
     def args_to_kwargs(self, args):
@@ -220,6 +254,18 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
 
     @property
     def to_vary_index(self):
+
+        """
+        The number of lens models being varied in this routine. This is set to 3 because the first three lens models
+        are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.
+
+        The kwargs_list is split at to to_vary_index with indicies < to_vary_index accessed in this class,
+        and lens models with indicies > to_vary_index kept fixed.
+
+        Note that this requires a specific ordering of lens_model_list
+        :return:
+        """
+
         return 3
 
     def args_to_kwargs(self, args):
@@ -231,7 +277,7 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
                       'e1': e1, 'e2': e2, 'gamma': gamma}
 
         phi, _ = shear_cartesian2polar(g1, g2)
-        gamma1, gamma2 = shear_polar2cartesian(phi, self.shear_strength)
+        gamma1, gamma2 = shear_polar2cartesian(phi, self._shear_strength)
         kwargs_shear = {'gamma1': gamma1, 'gamma2': gamma2}
 
         self.kwargs_lens[0] = kwargs_epl

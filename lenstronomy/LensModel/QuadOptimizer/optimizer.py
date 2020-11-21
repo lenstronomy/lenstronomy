@@ -1,12 +1,11 @@
+__author__ = 'dgilman'
+
 from scipy.optimize import minimize
-from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-
-__all__ = ['Optimizer']
-
 import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
-from lenstronomy.LensModel.QuadOptimizer.fast_rayshooting import FastRayShooting
-from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.QuadOptimizer.multi_plane_fast import MultiplaneFast
+
+__all__ = ['Optimizer']
 
 class Optimizer(object):
 
@@ -44,7 +43,7 @@ class Optimizer(object):
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization
         """
 
-        self.fast_rayshooting = FastRayShooting(x_image, y_image, z_lens, z_source,
+        self.fast_rayshooting = MultiplaneFast(x_image, y_image, z_lens, z_source,
                                                  lens_model_list, redshift_list, astropy_instance, parameter_class,
                                                  foreground_rays, tol_source, numerical_alpha_class)
 
@@ -73,6 +72,7 @@ class Optimizer(object):
         :param pool: instance of Pool with a map method for multiprocessing
         :return: keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)
         """
+
         if self._particle_swarm:
             kwargs = self._fit_pso(n_particles, n_iterations, pool, verbose)
         else:
@@ -100,6 +100,7 @@ class Optimizer(object):
 
         pso = ParticleSwarmOptimizer(self.fast_rayshooting.source_plane_penalty, low_bounds, high_bounds, n_particles,
                                      pool, args=[self._tol_source])
+
         best, _ = pso.optimize(n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean)
 
         if verbose:

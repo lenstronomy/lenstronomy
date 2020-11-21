@@ -335,7 +335,7 @@ class ParticleSwarmOptimizer(object):
 
     def _acceptable_convergence(self, chi_square_tolerance):
 
-        chi_square = [-2 * particle.fitness for particle in self.swarm]
+        chi_square = -2 * self.global_best.fitness
 
         if np.min(chi_square) < chi_square_tolerance:
             return True

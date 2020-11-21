@@ -144,7 +144,7 @@ class TestOptimizer(object):
         shear_out = np.hypot(kwargs_shear['gamma1'], kwargs_shear['gamma2'])
         npt.assert_almost_equal(shear_out, 0.07)
 
-        foreground_rays = optimizer.fast_rayshooting.foreground_rays
+        foreground_rays = optimizer.fast_rayshooting._foreground_rays
         optimizer = Optimizer(self.x_image, self.y_image, self.lens_model_list_multipole, self.zlist_multipole,
                               self.zlens, self.zsource, param_class, pso_convergence_mean=50000, particle_swarm=False,
                               re_optimize=True, re_optimize_scale=0.5,

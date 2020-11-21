@@ -4,11 +4,16 @@ from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
 
-class FastRayShooting(object):
+class MultiplaneFast(object):
 
     """
-    This class accelerates ray tracing computations by only computing the light rays from everything with z < z_lens once
+    This class accelerates ray tracing computations in multi plane lensing for quadruple image lenses by only
+    computing the deflection from objects in front of the main deflector at z_lens one time. The first ray tracing
+    computation through the foreground is saved and re-used, but it will always have the same shape as the initial
+    x_image, y_image arrays.
+
     """
+
     def __init__(self, x_image, y_image, z_lens, z_source, lens_model_list, redshift_list,
                  astropy_instance, param_class, foreground_rays,
                  tol_source=1e-5, numerical_alpha_class=None):
@@ -23,7 +28,8 @@ class FastRayShooting(object):
         :param redshift_list: list of lens redshifts
         :param astropy_instance: instance of astropy to pass to lens model
         :param param_class: an instance of ParamClass (see documentation in QuadOptimmizer.param_manager)
-        :param foreground_rays: pre-computed foreground rays from a previous iteration
+        :param foreground_rays: (optional) pre-computed foreground rays from a previous iteration, if they are not specified
+        they will be re-computed
         :param tol_source: source plane chi^2 sigma
         :param numerical_alpha_class: class for computing numerically tabulated deflection angles
         """
@@ -52,11 +58,19 @@ class FastRayShooting(object):
         self._y_image = y_image
         self._param_class = param_class
 
-        self.foreground_rays = foreground_rays
-
         self._tol_source = tol_source
 
+        self._foreground_rays = foreground_rays
+        
     def source_plane_penalty(self, args_lens, *args, **kwargs):
+
+        """
+
+        :param args_lens: array of lens model parameters being optimized
+        :param args:
+        :param kwargs:
+        :return: chi2 penalty for the source position (all images must map to the same source coordinate)
+        """
 
         betax, betay = self.ray_shooting_fast(args_lens)
 
@@ -74,10 +88,14 @@ class FastRayShooting(object):
     def ray_shooting_fast(self, args_lens):
 
         """
+        Performs a ray tracing computation through observed coordinates on the sky (self._x_image, self._y_image)
+        to the source plane, returning the final coordinates of each ray on the source plane
 
-        :param args_lens: an array of parameters being optimized
-        :return: the position of each ray in the source plane
+        :param args_lens: An array of parameters being optimized. The array is computed from a set of key word arguments
+        by an instance of ParamClass (see documentation in QuadOptimizer.param_manager)
+        :return: the xy coordinate of each ray traced back to the source plane
         """
+
         # these do not depend on kwargs_lens_array
         x, y, alpha_x, alpha_y = self._ray_shooting_fast_foreground()
 
@@ -104,7 +122,7 @@ class FastRayShooting(object):
         Does the ray tracing through the foreground halos only once
         """
 
-        if self.foreground_rays is None:
+        if self._foreground_rays is None:
 
             # These do not depend on the kwargs being optimized for
             kw = self._param_class.kwargs_lens
@@ -116,6 +134,6 @@ class FastRayShooting(object):
                 x0, y0, self._x_image, self._y_image, z_start=0.,
                                                          z_stop=self._z_lens, kwargs_lens=kwargs_lens)
 
-            self.foreground_rays = (x, y, alpha_x, alpha_y)
+            self._foreground_rays = (x, y, alpha_x, alpha_y)
 
-        return self.foreground_rays[0], self.foreground_rays[1], self.foreground_rays[2], self.foreground_rays[3]
+        return self._foreground_rays[0], self._foreground_rays[1], self._foreground_rays[2], self._foreground_rays[3]

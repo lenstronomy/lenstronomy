@@ -18,7 +18,8 @@ class Optimizer(object):
 
     def __init__(self, x_image, y_image, lens_model_list, redshift_list, z_lens, z_source,
                  parameter_class, astropy_instance=None, numerical_alpha_class=None,
-                 particle_swarm=True, re_optimize=False, re_optimize_scale=1., pso_convergence_mean=50000, foreground_rays=None,
+                 particle_swarm=True, re_optimize=False, re_optimize_scale=1.,
+                 pso_convergence_mean=50000, foreground_rays=None,
                  tol_source=1e-5, tol_simplex_func=1e-3, simplex_n_iterations=400):
 
         """

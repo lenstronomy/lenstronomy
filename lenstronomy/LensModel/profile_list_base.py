@@ -13,7 +13,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
                      'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN',
-                     'ULDM']
+                     'ULDM', 'ULDM-BAR']
 
 class ProfileListBase(object):
     """
@@ -245,6 +245,9 @@ class ProfileListBase(object):
             return Multipole()
         elif lens_type == 'ULDM':
             from lenstronomy.LensModel.Profiles.uldm import Uldm
+            return Uldm()
+        elif lens_type == 'ULDM-BAR':
+            from lenstronomy.LensModel.Profiles.uldm_bar import Uldm_Bar
             return Uldm()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))

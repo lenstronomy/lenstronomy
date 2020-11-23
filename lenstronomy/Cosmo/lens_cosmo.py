@@ -273,6 +273,34 @@ class LensCosmo(object):
         M_sol_log10 = np.log10(M9) + 9
         return m_eV_log10, M_sol_log10
 
+    def m_noCosmo2m_phys(self, m_noCosmo_log10, M_noCosmo_log10):
+        """
+        converts in physical ULDM mass, soliton mass (the returned values are the exponents of 10
+        :param m_noCosmo_log10: it is \log_10 (m \sqrt{\Sigma_crit D_lens^3} ), m in eV, \Sigma_crit in M_sun / pc^2, D_lens in pc
+        :param M_noCosmo_log10: it is \log_10 ( M/(D_lens^2 \Sigma_crit) ), M in M_sun, \Sigma_crit in M_sun / pc^2, D_lens in pc)
+        :return: m_eV_log10, M_sol_log10, the exponents of 10 of the masses, m in electronvolt and M in M_sun
+        """
+        D_Lens = self.dd * 10**6 # in parsec
+        Sigma_c = self.sigma_crit * 10**(-12)
+        m = -0.5*np.log10(Sigma_c * D_Lens**3) + m_noCosmo_log10
+        M = np.log10(Sigma_c * D_Lens**2) + M_noCosmo_log10
+        return m, M
+
+    def mPhys2noCosmo(self, m_log10, M_log10):
+        """
+        converts physical ULDM mass in the ones that enter the Uldm class, which are
+        m_noCosmo_log10: it is \log_10 (m \sqrt{\Sigma_crit D_lens^3} ), m in eV, \Sigma_crit in M_sun / pc^2, D_lens in pc
+        M_noCosmo_log10: it is \log_10 ( M/(D_lens^2 \Sigma_crit) ), M in M_sun, \Sigma_crit in M_sun / pc^2, D_lens in pc)
+
+        :param m_log10: exponent of ULDM mass in eV
+        :param M_log10: exponent of soliton mass in M_sun
+        :return: m_noCosmo_log10, M_noCosmo_log10, the exponents of 10 of the masses without cosmology
+        """
+        D_Lens = self.dd * 10**6
+        Sigma_c = self.sigma_crit * 10**(-12)
+        m_noCosmo_log10 = 0.5*np.log10(Sigma_c * D_Lens**3) + m_log10
+        M_noCosmo_log10 = -np.log10(Sigma_c * D_Lens**2) + M_log10
+        return m_noCosmo_log10, M_noCosmo_log10
 
 
 

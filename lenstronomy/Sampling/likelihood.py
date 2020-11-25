@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 from lenstronomy.Sampling.Likelihoods.time_delay_likelihood import TimeDelayLikelihood
+from lenstronomy.Sampling.Likelihoods.h0_likelihood import H0Likelihood
 from lenstronomy.Sampling.Likelihoods.image_likelihood import ImageLikelihood
 from lenstronomy.Sampling.Likelihoods.position_likelihood import PositionLikelihood
 from lenstronomy.Sampling.Likelihoods.flux_ratio_likelihood import FluxRatioLikelihood
@@ -26,7 +27,7 @@ class LikelihoodModule(object):
                  source_position_likelihood=False, image_position_uncertainty=0.004, check_positive_flux=False,
                  source_position_tolerance=0.001, source_position_sigma=0.001, force_no_add_image=False,
                  source_marg=False, linear_prior=None, restrict_image_number=False,
-                 max_num_images=None, bands_compute=None, time_delay_likelihood=False,
+                 max_num_images=None, bands_compute=None, time_delay_likelihood=False, h0_likelihood=False,
                  image_likelihood_mask_list=None,
                  flux_ratio_likelihood=False, kwargs_flux_compute={}, prior_lens=[], prior_source=[],
                  prior_extinction=[], prior_lens_light=[], prior_ps=[], prior_special=[], prior_lens_kde=[],
@@ -65,6 +66,7 @@ class LikelihoodModule(object):
         :param max_num_images: int, see restrict_image_number
         :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
+        :param h0_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source WITH h0 as input (for Hubble constant sampling)
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
@@ -85,6 +87,7 @@ class LikelihoodModule(object):
                                                  prior_special_lognormal, prior_extinction_lognormal,
                                                  )
         self._time_delay_likelihood = time_delay_likelihood
+        self._h0_likelihood = h0_likelihood
         self._image_likelihood = image_likelihood
         self._flux_ratio_likelihood = flux_ratio_likelihood
         self._kwargs_flux_compute = kwargs_flux_compute
@@ -131,6 +134,10 @@ class LikelihoodModule(object):
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
                                                              point_source_class=point_source_class,
                                                              **kwargs_time_delay)
+        if self._h0_likelihood is True:
+            self.h0_likelihood = H0Likelihood(lens_model_class=lens_model_class,
+                                                             point_source_class=point_source_class,
+                                                             **kwargs_time_delay)
 
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
@@ -172,6 +179,11 @@ class LikelihoodModule(object):
                 print('image logL = %s' % logL_image)
         if self._time_delay_likelihood is True:
             logL_time_delay = self.time_delay_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special)
+            logL += logL_time_delay
+            if verbose is True:
+                print('time-delay logL = %s' % logL_time_delay)
+        if self._h0_likelihood is True:
+            logL_time_delay = self.h0_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special)
             logL += logL_time_delay
             if verbose is True:
                 print('time-delay logL = %s' % logL_time_delay)
@@ -224,6 +236,8 @@ class LikelihoodModule(object):
             num_data += self.image_likelihood.num_data
         if self._time_delay_likelihood is True:
             num_data += self.time_delay_likelihood.num_data
+        if self._h0_likelihood is True:
+            num_data += self.h0_likelihood.num_data
         if self._flux_ratio_likelihood is True:
             num_data += self.flux_ratio_likelihood.num_data
         num_data += self._position_likelihood.num_data

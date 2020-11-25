@@ -9,12 +9,13 @@ class SpecialParam(object):
     These includes cosmology relevant parameters, astrometric errors and overall scaling parameters.
     """
 
-    def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
+    def __init__(self, Ddt_sampling=False, h0_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
                  num_z_sampling=0, source_grid_offset=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
+        :param h0_sampling: bool, if True, samples the time-delay distance D_dt using h0 as sampling parameter
         :param mass_scaling: bool, if True, samples a mass scaling factor between different profiles
         :param num_scale_factor: int, number of independent mass scaling factors being sampled
         :param kwargs_fixed: keyword arguments, fixed parameters during sampling
@@ -31,6 +32,7 @@ class SpecialParam(object):
         """
 
         self._D_dt_sampling = Ddt_sampling
+        self._h0_sampling = h0_sampling
         self._mass_scaling = mass_scaling
         self._num_scale_factor = num_scale_factor
         self._point_source_offset = point_source_offset
@@ -51,6 +53,8 @@ class SpecialParam(object):
             kwargs_lower = {}
             if self._D_dt_sampling is True:
                 kwargs_lower['D_dt'] = 0
+            if self._h0_sampling is True:
+                kwargs_lower['h0'] = 60
             if self._mass_scaling is True:
                 kwargs_lower['scale_factor'] = [0] * self._num_scale_factor
             if self._point_source_offset is True:
@@ -69,6 +73,8 @@ class SpecialParam(object):
             kwargs_upper = {}
             if self._D_dt_sampling is True:
                 kwargs_upper['D_dt'] = 100000
+            if self._h0_sampling is True:
+                kwargs_upper['h0'] = 90
             if self._mass_scaling is True:
                 kwargs_upper['scale_factor'] = [1000] * self._num_scale_factor
             if self._point_source_offset is True:
@@ -100,6 +106,16 @@ class SpecialParam(object):
                 i += 1
             else:
                 kwargs_special['D_dt'] = self._kwargs_fixed['D_dt']
+        if self._h0_sampling is True:
+            kwargs_special['z_lens'] = self._kwargs_fixed['z_lens']
+            kwargs_special['z_source'] = self._kwargs_fixed['z_source']
+            kwargs_special['Om'] = self._kwargs_fixed['Om']
+
+            if 'h0' not in self._kwargs_fixed:
+                kwargs_special['h0'] = args[i]
+                i += 1
+            else:
+                kwargs_special['h0'] = self._kwargs_fixed['h0']
         if self._mass_scaling is True:
             if 'scale_factor' not in self._kwargs_fixed:
                 kwargs_special['scale_factor'] = args[i: i + self._num_scale_factor]
@@ -158,6 +174,9 @@ class SpecialParam(object):
         if self._D_dt_sampling is True:
             if 'D_dt' not in self._kwargs_fixed:
                 args.append(kwargs_special['D_dt'])
+        if self._h0_sampling is True:
+            if 'h0' not in self._kwargs_fixed:
+                args.append(kwargs_special['h0'])
         if self._mass_scaling is True:
             if 'scale_factor' not in self._kwargs_fixed:
                 for i in range(self._num_scale_factor):
@@ -198,6 +217,10 @@ class SpecialParam(object):
             if 'D_dt' not in self._kwargs_fixed:
                 num += 1
                 string_list.append('D_dt')
+        if self._h0_sampling is True:
+            if 'h0' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('h0')
         if self._mass_scaling is True:
             if 'scale_factor' not in self._kwargs_fixed:
                 num += self._num_scale_factor

@@ -168,7 +168,7 @@ class TestOptimizer(object):
         param_class = PowerLawFixedShearMultipole(self.kwargs_multipole, 0.07)
 
         optimizer = Optimizer(self.x_image, self.y_image, self.lens_model_list_multipole, self.zlist_multipole,
-                              self.zlens, self.zsource, param_class, pso_convergence_mean=50000, particle_swarm=False,
+                              self.zlens, self.zsource, param_class, pso_convergence_mean=50000, particle_swarm=True,
                               foreground_rays=None, tol_source=1e-5, tol_simplex_func=1e-3, simplex_n_iterations=400)
 
         kwargs_final, source = optimizer.optimize(50, 100, verbose=True, threadCount=5)

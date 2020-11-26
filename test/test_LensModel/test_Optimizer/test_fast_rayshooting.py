@@ -34,7 +34,6 @@ class TestFastRayShooting(object):
 
         self.param_class = PowerLawFreeShear(self.kwargs_epl)
 
-
     def test_rayshooting(self):
 
         solver = LensEquationSolver(self.lensModel)

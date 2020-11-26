@@ -60,6 +60,10 @@ class PowerLawParamManager(object):
 
         self.kwargs_lens = kwargs_lens_init
 
+    def param_chi_square_penalty(self, args):
+
+        return 0.
+
     @property
     def to_vary_index(self):
 

@@ -163,5 +163,21 @@ class TestOptimizer(object):
         shear_out = np.hypot(kwargs_shear['gamma1'], kwargs_shear['gamma2'])
         npt.assert_almost_equal(shear_out, 0.07)
 
+    def test_multi_threading(self):
+
+        param_class = PowerLawFixedShearMultipole(self.kwargs_multipole, 0.07)
+
+        optimizer = Optimizer(self.x_image, self.y_image, self.lens_model_list_multipole, self.zlist_multipole,
+                              self.zlens, self.zsource, param_class, pso_convergence_mean=50000, particle_swarm=False,
+                              foreground_rays=None, tol_source=1e-5, tol_simplex_func=1e-3, simplex_n_iterations=400)
+
+        kwargs_final, source = optimizer.optimize(50, 100, verbose=True, threadCount=5)
+        lensmodel = LensModel(self.lens_model_list_multipole, self.zlens, self.zsource, self.zlist_multipole,
+                              multi_plane=True)
+        beta_x, beta_y = lensmodel.ray_shooting(self.x_image, self.y_image, kwargs_final)
+
+        npt.assert_almost_equal(np.sum(beta_x) - 4 * np.mean(beta_x), 0)
+        npt.assert_almost_equal(np.sum(beta_y) - 4 * np.mean(beta_y), 0)
+
 if __name__ == '__main__':
     pytest.main()

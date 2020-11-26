@@ -31,6 +31,13 @@ class TestParamClasses(object):
         self.zlist_multipole = [self.zlens, self.zlens, self.zlens] + halo_z
         self.lens_model_list_multipole = ['EPL', 'SHEAR'] + ['MULTIPOLE'] + halo_list
 
+    def test_param_penalty(self):
+
+        param_class = PowerLawFreeShear(self.kwargs_epl)
+        args = param_class.kwargs_to_args(self.kwargs_epl)
+        param_penalty = param_class.param_chi_square_penalty(args)
+        npt.assert_almost_equal(0, param_penalty)
+
     def test_plaw_free_shear(self):
 
         param_class = PowerLawFreeShear(self.kwargs_epl)

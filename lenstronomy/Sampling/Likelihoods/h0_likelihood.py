@@ -39,6 +39,7 @@ class H0Likelihood(object):
         """
         x_pos, y_pos = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, original_position=True)
         x_pos, y_pos = x_pos[0], y_pos[0]
+        # In single plane, fermat_potential does not need cosmology
         delay_arcsec = self._lensModel.fermat_potential(x_pos, y_pos, kwargs_lens)
         z_lens = kwargs_cosmo['z_lens']
         z_source = kwargs_cosmo['z_source']

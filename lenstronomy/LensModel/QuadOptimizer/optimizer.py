@@ -4,6 +4,7 @@ from scipy.optimize import minimize
 import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.LensModel.QuadOptimizer.multi_plane_fast import MultiplaneFast
+from lenstronomy.Sampling.Pool.pool import choose_pool
 
 __all__ = ['Optimizer']
 
@@ -63,7 +64,7 @@ class Optimizer(object):
         self._re_optimize = re_optimize
         self._re_optimize_scale = re_optimize_scale
 
-    def optimize(self, n_particles=50, n_iterations=250, verbose=False, pool=None):
+    def optimize(self, n_particles=50, n_iterations=250, verbose=False, threadCount=1):
 
         """
 
@@ -75,7 +76,14 @@ class Optimizer(object):
         """
 
         if self._particle_swarm:
+
+            if threadCount > 1:
+                pool = choose_pool(mpi=False, processes=threadCount)
+            else:
+                pool = None
+
             kwargs = self._fit_pso(n_particles, n_iterations, pool, verbose)
+
         else:
             kwargs = self._param_class.kwargs_lens
 
@@ -99,7 +107,7 @@ class Optimizer(object):
 
         low_bounds, high_bounds = self._param_class.bounds(self._re_optimize, self._re_optimize_scale)
 
-        pso = ParticleSwarmOptimizer(self.fast_rayshooting.source_plane_logL, low_bounds, high_bounds, n_particles,
+        pso = ParticleSwarmOptimizer(self.fast_rayshooting.logL, low_bounds, high_bounds, n_particles,
                                      pool, args=[self._tol_source])
 
         best, info = pso.optimize(n_iterations, verbose, early_stop_tolerance=self._pso_convergence_mean)
@@ -107,6 +115,7 @@ class Optimizer(object):
         if verbose:
             print('PSO done... ')
             print('source plane chi^2: ', self.fast_rayshooting.source_plane_chi_square(best))
+            print('total chi^2: ', self.fast_rayshooting.chi_square(best))
 
         kwargs = self._param_class.args_to_kwargs(best)
 
@@ -128,7 +137,7 @@ class Optimizer(object):
         if verbose:
             print('starting amoeba... ')
 
-        opt = minimize(self.fast_rayshooting.source_plane_chi_square, x0=args_init,
+        opt = minimize(self.fast_rayshooting.chi_square, x0=args_init,
                        method=method, options=options)
 
         kwargs = self._param_class.args_to_kwargs(opt['x'])

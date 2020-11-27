@@ -62,16 +62,32 @@ class MultiplaneFast(object):
 
         self._foreground_rays = foreground_rays
 
-    def source_plane_logL(self, args_lens, *args, **kwargs):
+    def chi_square(self, args_lens, *args, **kwargs):
 
         """
 
         :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
-        param_class, see documenation in QuadOptimizer.param_manager
+        param_class, see documentation in QuadOptimizer.param_manager
 
-        :return: the log-likelihood corresponding to the source plane chi^2
+        :return: total chi^2 penalty (source chi^2 + param chi^2), where param chi^2 is computed
+        by the specified param_class
         """
-        chi_square = self.source_plane_chi_square(args_lens)
+        source_plane_penlty = self.source_plane_chi_square(args_lens)
+
+        param_penalty = self._param_class.param_chi_square_penalty(args_lens)
+
+        return source_plane_penlty + param_penalty
+
+    def logL(self, args_lens, *args, **kwargs):
+
+        """
+
+        :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
+        param_class, see documentation in QuadOptimizer.param_manager
+
+        :return: the log likelihood corresponding to the given chi^2
+        """
+        chi_square = self.chi_square(args_lens)
 
         return -0.5 * chi_square
 
@@ -80,7 +96,7 @@ class MultiplaneFast(object):
         """
 
         :param args_lens: array of lens model parameters being optimized, computed from kwargs_lens in a specified
-        param_class, see documenation in QuadOptimizer.param_manager
+        param_class, see documentation in QuadOptimizer.param_manager
 
         :return: chi2 penalty for the source position (all images must map to the same source coordinate)
         """

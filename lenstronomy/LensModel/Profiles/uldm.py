@@ -23,15 +23,6 @@ class Uldm(LensProfileBase):
     lower_limit_default = {'m_noCosmo_log10': -12, 'M_noCosmo_log10': -15, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'m_noCosmo_log10': -3, 'M_noCosmo_log10': -6, 'center_x': 100, 'center_y': 100}
 
-    #  def __init__(self, interpol=False, num_interp_X=1000, max_interp_X=10):
-    #      """
-    #
-    #      #  :param interpol: bool, if True, interpolates the functions F(), g() and h()
-    #      #  :param num_interp_X: int (only considered if interpol=True), number of interpolation elements in units of r/r_s
-    #      #  :param max_interp_X: float (only considered if interpol=True), maximum r/r_s value to be interpolated (returning zeros outside)
-    #      #  """
-    #      super(Uldm, self).__init__()
-
     def theta_cRad(self, m_noCosmo_log10, M_noCosmo_log10):
         """
         theta core in radiant

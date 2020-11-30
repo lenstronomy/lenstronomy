@@ -272,7 +272,7 @@ class LensCosmo(object):
         m_eV_log10 = np.log10(m22) - 22
         M_sol_log10 = np.log10(M9) + 9
         return m_eV_log10, M_sol_log10
-
+################# Delete ULDM functions before this comment, not needed anymore
     def m_noCosmo2m_phys(self, m_noCosmo_log10, M_noCosmo_log10):
         """
         converts in physical ULDM mass, soliton mass (the returned values are the exponents of 10
@@ -302,6 +302,28 @@ class LensCosmo(object):
         M_noCosmo_log10 = -np.log10(Sigma_c * D_Lens**2) + M_log10
         return m_noCosmo_log10, M_noCosmo_log10
 
+    def ULDM_BAR_angles2phys(self, kappa_0, theta_c, theta_E):
+        """
+        converts angular units entering ULDM-BAR class in physical ULDM mass which are
+        - m_log10: it is \log_10 m , m in eV
+        - M_noCosmo_log10: it is \log_10 ( M ), M in M_sun
+        :param kappa_0: central convergence of soliton
+        :param theta_c: core radius (in arcsec)
+        :return: mass_particle (log10, eV), Mass_soliton (log10, M_sun), rho0_physical (M_sun/pc^3), lambda_soliton
+        """
+        D_Lens = self.dd * 10**6 # in pc
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/pc^2
+        rhotilde = kappa_0 / (np.sqrt(np.pi) * theta_c)
+        rho_phys = rhotilde * Sigma_c / (D_Lens * const.arcsec)
+        A_factor = 4.64096 * 10**(-19) * D_Lens * Sigma_c * theta_E
+        B_factor = 1.71468 * 10**(17) / (theta_c**2 * rhotilde * Sigma_c * D_Lens)
+        lambda_factor = np.sqrt( (0.18 + np.sqrt(0.034 + 1.8 * A_factor * B_factor))/ (2*B) )
+        mass = 4.19721 * 10**(-23) * np.sqrt(Sigma_c * rhotilde /D_Lens)/ lambda_factor**2
+        a_fit = 0.18 + 0.45 * A_factor/lambda_factor**2
+        Mass_sol = 2.09294 * 10**(-11) * lambda_factor / mass  * a_fit**(-1.5)
+        mass = np.log10(mass)
+        Mass_sol = np.log10(Mass_sol)
+        return mass, Mass_sol, rho_phys, lambda_factor
 
 
 

@@ -313,12 +313,12 @@ class LensCosmo(object):
         """
         D_Lens = self.dd * 10**6 # in pc
         Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/pc^2
-        rhotilde = kappa_0 / (np.sqrt(np.pi) * theta_c)
+        rhotilde = kappa_0 / (np.sqrt(np.pi) * theta_c) # in 1/arcsec
         rho_phys = rhotilde * Sigma_c / (D_Lens * const.arcsec)
         A_factor = 4.64096 * 10**(-19) * D_Lens * Sigma_c * theta_E
         B_factor = 1.71468 * 10**(17) / (theta_c**2 * rhotilde * Sigma_c * D_Lens)
-        lambda_factor = np.sqrt( (0.18 + np.sqrt(0.034 + 1.8 * A_factor * B_factor))/ (2*B) )
-        mass = 4.19721 * 10**(-23) * np.sqrt(Sigma_c * rhotilde /D_Lens)/ lambda_factor**2
+        lambda_factor = np.sqrt( (0.18 + np.sqrt(0.034 + 1.8 * A_factor * B_factor))/ (2*B_factor) )
+        mass = 2.25221 * 10**(-27) * np.sqrt(Sigma_c * rhotilde /D_Lens)/ lambda_factor**2
         a_fit = 0.18 + 0.45 * A_factor/lambda_factor**2
         Mass_sol = 2.09294 * 10**(-11) * lambda_factor / mass  * a_fit**(-1.5)
         mass = np.log10(mass)

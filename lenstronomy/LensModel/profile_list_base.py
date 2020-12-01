@@ -248,7 +248,7 @@ class ProfileListBase(object):
             return Uldm()
         elif lens_type == 'ULDM-BAR':
             from lenstronomy.LensModel.Profiles.uldm_bar import Uldm_Bar
-            return Uldm()
+            return Uldm_Bar()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

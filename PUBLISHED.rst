@@ -106,6 +106,12 @@ Galaxy formation and evolution
 * High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020 <https://arxiv.org/abs/2011.01971>`_
     *Modeling of doubly lensed quasars from Keck Adaptive Optics data*
 
+* A versatile tool for cluster lensing source reconstruction. I. methodology and illustration on sources in the Hubble Frontier Field Cluster MACS J0717.5+3745; `Yang et al. 2020 <https://arxiv.org/abs/2001.07719>`_
+    *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
+
+* The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020 <https://arxiv.org/abs/2011.10059>`_
+    *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
+
 
 
 Automatized Lens Modeling

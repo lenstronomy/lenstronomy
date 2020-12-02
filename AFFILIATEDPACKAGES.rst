@@ -13,7 +13,7 @@ applications:
 - `LSSTDESC SLSprinkler <https://github.com/LSSTDESC/SLSprinkler>`_: The DESC SL (Strong Lensing) Sprinkler adds strongly lensed AGN and SNe to simulated catalogs and generates postage stamps for these systems.
 - `lensingGW <https://gitlab.com/gpagano/lensinggw>`_: A Python package designed to handle both strong and microlensing of compact binaries and the related gravitational-wave signals.
 - `ovejero <https://github.com/swagnercarena/ovejero>`_: Conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.
-- `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with BNN lens model posteriors.
+- `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with Bayesian neural network lens modeling.
 
 
 More to come soon...

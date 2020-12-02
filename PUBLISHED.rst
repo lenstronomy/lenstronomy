@@ -54,6 +54,10 @@ Measuring the Hubble constant
 * TDCOSMO V: strategies for precise and accurate measurements of the Hubble constant with strong lensing `Birrer & Treu 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200806157B/abstract>`_
     *lenstronomy.Galkin for kinematics calculation that folds in the hierarchical analysis for a forecast for future Hubble constant constraints*
 
+* Large-Scale Gravitational Lens Modeling with Bayesian Neural Networks for Accurate and Precise Inference of the Hubble Constant `Park et al. 2020 <https://arxiv.org/abs/2012.00042>`_
+    *BBN lens model inference using lenstronomy through `baobab <https://github.com/jiwoncpark/baobab>`_ for training set generation.*
+
+
 
 
 Dark Matter substructure

@@ -20,7 +20,7 @@ class Uldm_Bar(LensProfileBase):
     _Spep = SPEP() # call softened elliptical power law profile
     param_names = ['kappa_0', 'theta_c', 'theta_E', 'gamma', 'e1', 'e2', 'center_xULDM', 'center_yULDM', 'center_x', 'center_y']
     lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_xULDM': -100, 'center_yULDM': -100, 'center_x': -100, 'center_y': -100 }
-    upper_limit_default = {'kappa_0': 10, 'theta_c': 10, 'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_xULDM': 100, 'center_yULDM': 100, 'center_x': 100, 'center_y': 100 }
+    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_xULDM': 100, 'center_yULDM': 100, 'center_x': 100, 'center_y': 100 }
 
     def rhoTilde(self, kappa_0, theta_c):
         """
@@ -28,7 +28,6 @@ class Uldm_Bar(LensProfileBase):
         :param kappa_0: central convergence of soliton
         :param theta_c: core radius (in arcsec)
         :return: central density in 1/arcsec
-
         """
         return kappa_0 / (np.sqrt(np.pi) * theta_c)
 
@@ -42,21 +41,20 @@ class Uldm_Bar(LensProfileBase):
         :param gamma: PL slope
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: lensing potential
+        :return: lensing potential (in arcsec^2)
         """
         functionPL = self._Spep.function(x,y, theta_E, gamma, e1, e2, center_x, center_y)
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_** 2 + y_** 2)
         r = np.maximum(r, self._s)
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
         Integral_factor = 0.5 * exp1( (r/theta_c)**2) + np.log( (r/theta_c))
-        functionULDM = np.sqrt(np.pi) * rhotilde * theta_c**3 * Integral_factor
+        functionULDM = kappa_0 * theta_c**2 * Integral_factor
         return functionULDM + functionPL
 
     def alpha_radial(self, r, kappa_0, theta_c):
         """
-        returns the radial part of the deflection angle for the ULDM profile
+        returns the radial part of the deflection angle for the ULDM profile only
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -64,8 +62,7 @@ class Uldm_Bar(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :return: radial deflection angle
         """
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        prefactor = np.sqrt(np.pi) * rhotilde * theta_c**3 / r
+        prefactor = kappa_0 * theta_c**2 / r
         return prefactor * (1 - np.exp(- (r/theta_c)**2 ))
 
     def derivatives(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_xULDM = 0, center_yULDM = 0, center_x=0, center_y=0):
@@ -166,8 +163,7 @@ class Uldm_Bar(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         expFactor = np.exp( - (R/theta_c)**2)
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        return np.sqrt(np.pi)* theta_c**3 * rhotilde * expFactor
+        return kappa_0  * expFactor
 
     def mass_3d(self, R, kappa_0, theta_c):
         """
@@ -178,8 +174,8 @@ class Uldm_Bar(LensProfileBase):
         :return: mass of soliton in angular units
         """
         rhotilde = self.rhoTilde(kappa_0, theta_c)
-        integral_factor = np.sqrt(np.pi) * erf(R/theta_c) - R* np.exp(-(R/theta_c)**2)
-        m_3d =  2* np.sqrt(np.pi) * rhotilde * theta_c**3 * integral_factor
+        integral_factor = np.sqrt(np.pi) * erf(R/theta_c)/2 - R* np.exp(-(R/theta_c)**2)
+        m_3d =  2* np.pi * rhotilde * theta_c**3 * integral_factor
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c, theta_E, gamma, e1=0, e2=0):

@@ -135,7 +135,7 @@ class SinglePlane(ProfileListBase):
         mass_3d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k:v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k:v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y', 'center_xULDM','center_yULDM']}
                 mass_3d_i = func.mass_3d_lens(r, **kwargs_i)
                 mass_3d += mass_3d_i
         return mass_3d
@@ -153,7 +153,7 @@ class SinglePlane(ProfileListBase):
         mass_2d = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y', 'center_xULDM','center_yULDM']}
                 mass_2d_i = func.mass_2d_lens(r, **kwargs_i)
                 mass_2d += mass_2d_i
         return mass_2d
@@ -172,7 +172,7 @@ class SinglePlane(ProfileListBase):
         density = 0
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y']}
+                kwargs_i = {k: v for k, v in kwargs[i].items() if not k in ['center_x', 'center_y', 'center_xULDM','center_yULDM']}
                 density_i = func.density_lens(r, **kwargs_i)
                 density += density_i
         return density

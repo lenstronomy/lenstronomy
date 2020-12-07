@@ -18,9 +18,9 @@ class Uldm_Bar(LensProfileBase):
     """
     _s = 0.000001  # numerical limit for minimal radius
     _Spep = SPEP() # call softened elliptical power law profile
-    param_names = ['kappa_0', 'theta_c', 'theta_E', 'gamma', 'e1', 'e2', 'center_xULDM', 'center_yULDM', 'center_x', 'center_y']
-    lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_xULDM': -100, 'center_yULDM': -100, 'center_x': -100, 'center_y': -100 }
-    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_xULDM': 100, 'center_yULDM': 100, 'center_x': 100, 'center_y': 100 }
+    param_names = ['kappa_0', 'theta_c', 'theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100 }
+    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'theta_E': 100, 'gamma': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100 }
 
     def rhoTilde(self, kappa_0, theta_c):
         """
@@ -31,7 +31,7 @@ class Uldm_Bar(LensProfileBase):
         """
         return kappa_0 / (np.sqrt(np.pi) * theta_c)
 
-    def function(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_xULDM = 0, center_yULDM = 0, center_x=0, center_y=0):
+    def function(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -65,7 +65,7 @@ class Uldm_Bar(LensProfileBase):
         prefactor = kappa_0 * theta_c**2 / r
         return prefactor * (1 - np.exp(- (r/theta_c)**2 ))
 
-    def derivatives(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_xULDM = 0, center_yULDM = 0, center_x=0, center_y=0):
+    def derivatives(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
         returns df/dx and df/dy of the function (lensing potential), which are the deflection angles
 
@@ -90,7 +90,7 @@ class Uldm_Bar(LensProfileBase):
         f_y = self.alpha_radial(R, kappa_0, theta_c) * y_ / R
         return f_x + PL_fx, f_y + PL_fy
 
-    def hessian(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_xULDM = 0, center_yULDM = 0, center_x=0, center_y=0):
+    def hessian(self, x, y, kappa_0, theta_c, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -109,8 +109,7 @@ class Uldm_Bar(LensProfileBase):
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         R = np.maximum(R,0.00000001)
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        prefactor = np.sqrt(np.pi) * rhotilde * theta_c**3
+        prefactor = kappa_0 * theta_c**2
         expFactor = np.exp( - (R/theta_c)**2)
         factor1 = (1 - expFactor)/R**4
         factor2 = 2/(R**2 * theta_c**2) * expFactor

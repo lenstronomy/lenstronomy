@@ -173,9 +173,8 @@ class Uldm_Bar(LensProfileBase):
         :param R: radius in arcseconds
         :return: mass of soliton in angular units
         """
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        integral_factor = np.sqrt(np.pi) * erf(R/theta_c)/2 - R* np.exp(-(R/theta_c)**2)
-        m_3d =  2* np.pi * rhotilde * theta_c**3 * integral_factor
+        integral_factor = np.sqrt(np.pi) * erf(R/theta_c)/2 - R/theta_c * np.exp(-(R/theta_c)**2)
+        m_3d =  2* np.sqrt(np.pi) * kappa_0 * theta_c**2 * integral_factor
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c, theta_E, gamma, e1=0, e2=0):

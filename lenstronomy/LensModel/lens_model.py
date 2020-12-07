@@ -30,8 +30,9 @@ class LensModel(object):
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
-        :param observed_convention_index: a list of lens indexes that correspond to observed positions on the sky, not
-        physical positions
+        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
+        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+        positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
         """

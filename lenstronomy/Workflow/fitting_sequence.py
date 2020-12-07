@@ -25,7 +25,7 @@ class FittingSequence(object):
 
         :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
         :param kwargs_model:
-        :param kwargs_constraints:
+        :param kwargs_constraints: keyword arguments of the Param() Class to handle parameter constraints during the sampling
         :param kwargs_likelihood:
         :param kwargs_params:
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where

@@ -6,7 +6,9 @@ __all__ = ['NFWParam']
 class NFWParam(object):
     """
     class which contains a halo model parameters dependent on cosmology for NFW profile
-    all distances are given in comoving coordinates
+    All distances are given in comoving coordinates. Mass definitions are relative to 200 crit at z=0 (with co-moving scaling).
+    Thus, also mass-concentration relations are used to reflect this. Pay attention when using different mass definitions!
+    Reasoning: This class does not require a cosmology dependence.
     """
 
     rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
@@ -73,7 +75,8 @@ class NFWParam(object):
 
     def c_M_z(self, M, z):
         """
-        fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of the concentration parameter
+        fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of
+        the concentration parameter
 
         :param M: halo mass in M_sun/h
         :type M: float or numpy array

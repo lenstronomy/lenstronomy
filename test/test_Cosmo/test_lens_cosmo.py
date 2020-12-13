@@ -88,6 +88,11 @@ class TestLensCosmo(object):
         fermat_pot_out = self.lensCosmo.time_delay2fermat_pot(dt_days)
         npt.assert_almost_equal(fermat_pot, fermat_pot_out, decimal=10)
 
+    def test_a_z(self):
+
+        a = self.lensCosmo.a_z(z=1)
+        npt.assert_almost_equal(a, 0.5)
+
 
 if __name__ == '__main__':
     pytest.main()

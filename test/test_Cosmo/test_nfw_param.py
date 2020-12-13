@@ -35,7 +35,7 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(M200, 2.4271590540348216, decimal=5)
 
     def test_profileMain(self):
-        M = 10**(13.5)
+        M = 10 ** 13.5
         z = 0.5
         r200, rho0, c, Rs = self.nfwParam.nfw_Mz(M, z)
 

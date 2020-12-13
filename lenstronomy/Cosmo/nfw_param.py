@@ -13,12 +13,24 @@ class NFWParam(object):
 
     rhoc = 2.77536627e11  # critical density [h^2 M_sun Mpc^-3]
 
+    def __init__(self, cosmo=None):
+        """
+
+        :param cosmo: astropy.cosmology instance
+        """
+        from astropy.cosmology import default_cosmology
+
+        if cosmo is None:
+            cosmo = default_cosmology.get()
+        self.cosmo = cosmo
+
     def rhoc_z(self, z):
         """
 
         :param z: redshift
         :return: scaled critical density as a function of redshift (attention, this is not rho_crit(z))
         """
+        #return self.cosmo.critical_density(z).value
         return self.rhoc*(1+z)**3
 
     def M200(self, Rs, rho0, c):

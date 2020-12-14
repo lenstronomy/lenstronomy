@@ -191,14 +191,23 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
-    if isinstance(numPix, (tuple, list, np.ndarray)):
-        numPix = np.asarray(numPix).astype(np.int)
-    else:
-        numPix = np.array([round(numPix), round(numPix)])
 
+    # Check numPix is an integer, or 2-sequence of integers
+    if isinstance(numPix, (tuple, list, np.ndarray)):
+        assert len(numPix) == 2
+        if any(x != round(x) for x in numPix):
+            raise ValueError("numPix contains non-integers: %s" % numPix)
+        numPix = np.asarray(numPix, dtype=np.int)
+    else:
+        if numPix != round(numPix):
+            raise ValueError("Attempt to specify non-int numPix: %s" % numPix)
+        numPix = np.array([numPix, numPix], dtype=np.int)
+
+    # Super-resolution sampling
     numPix_eff = (numPix*subgrid_res).astype(np.int)
     deltapix_eff = deltapix/float(subgrid_res)
 
+    # Compute unshifted grids.
     # X values change quickly, Y values are repeated many times
     x_grid = np.tile(np.arange(numPix_eff[0]), numPix_eff[1]) * deltapix_eff
     y_grid = np.repeat(np.arange(numPix_eff[1]), numPix_eff[0]) * deltapix_eff

@@ -111,7 +111,8 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
 @export
 def array2image(array, nx=0, ny=0):
     """
-    returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)
+    returns the information contained in a 1d array into an n*n 2d array
+    (only works when length of array is n**2, or nx and ny are provided)
 
     :param array: image values
     :type array: array of size n**2
@@ -186,7 +187,7 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
 
     :param numPix: number of pixels per axis
         Give an integers for a square grid, or a 2-length sequence
-        (first, second axis length) for a rectangular grid.
+        (first, second axis length) for a non-square grid.
     :param deltapix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays

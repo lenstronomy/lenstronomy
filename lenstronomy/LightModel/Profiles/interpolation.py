@@ -54,6 +54,9 @@ class Interpol(object):
 
     def image_interp(self, x, y, image):
         if not hasattr(self, '_image_interp'):
+            # Setup the interpolator.
+            # Note that 'x' and 'y' in this block only refer to first and second
+            # image array axes. Outside this block it is more complicated.
             nx, ny = np.shape(image)
             image_bounds = np.zeros((nx + 2, ny + 2))
             nx0, ny0 = nx + 2, ny + 2
@@ -61,6 +64,9 @@ class Interpol(object):
             x_grid = np.linspace(start=-(nx0 - 1) / 2, stop=(nx0 - 1) / 2, num=nx0)
             y_grid = np.linspace(start=-(ny0 - 1) / 2, stop=(ny0 - 1) / 2, num=ny0)
             self._image_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, image_bounds, kx=1, ky=1, s=0)
+
+        # y and x must be flipped in call to interpolator
+        # (try reversing, the unit tests will fail)
         return self._image_interp(y, x)
 
     def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):

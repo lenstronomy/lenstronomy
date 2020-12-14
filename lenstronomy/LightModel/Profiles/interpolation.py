@@ -60,7 +60,7 @@ class Interpol(object):
             image_bounds[1:-1, 1:-1] = image
             x_grid = np.linspace(start=-(nx0 - 1) / 2, stop=(nx0 - 1) / 2, num=nx0)
             y_grid = np.linspace(start=-(ny0 - 1) / 2, stop=(ny0 - 1) / 2, num=ny0)
-            self._image_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, image_bounds, kx=1, ky=1, s=0)
+            self._image_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, image_bounds, kx=1, ky=1, s=0)
         return self._image_interp(y, x)
 
     def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):

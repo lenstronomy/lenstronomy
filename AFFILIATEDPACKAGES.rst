@@ -16,10 +16,7 @@ applications:
 - `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with Bayesian neural network lens modeling.
 - `deeplenstronomy <https://github.com/deepskies/deeplenstronomy>`_: Tool for simulating large datasets for applying deep learning to strong gravitational lensing.
 
-
-
-More to come soon...
-pyhalo
+These packages come with their own documentation and examples - so check them out!
 
 
 
@@ -28,4 +25,4 @@ guidelines for affiliated packages
 If you have a package/wrapper/analysis pipeline that is open source and you would like to have it advertised here, please let the developers know!
 Before you write your own wrapper and scripts in executing lenstronomy for your purpose check out the list
 of existing add-on packages. Affiliated packages should not duplicate the core routines of lenstronomy and whenever possible make use of the lenstronomy modules.
-The packages should be maintained to keep up with the development of lenstronomy.
+The packages should be maintained to keep up with the development of lenstronomy. Please also make sure the citation guidelines are presented.

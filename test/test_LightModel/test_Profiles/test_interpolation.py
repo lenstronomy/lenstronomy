@@ -16,27 +16,30 @@ class TestInterpol(object):
 
         :return:
         """
-        x, y = util.make_grid(numPix=20, deltapix=1.)
-        gauss = Gaussian()
-        flux = gauss.function(x, y, amp=1., center_x=0., center_y=0., sigma=1.)
-        image = util.array2image(flux)
-        interp = Interpol()
-        kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
-        output = interp.function(x, y, **kwargs_interp)
-        npt.assert_equal(output, flux)
+        for len_x, len_y in [(20, 20), (14, 20)]:
+            x, y = util.make_grid(numPix=(len_x, len_y), deltapix=1.)
+            gauss = Gaussian()
+            flux = gauss.function(x, y, amp=1., center_x=0., center_y=0., sigma=1.)
+            image = util.array2image(flux, nx=len_y, ny=len_x)
 
-        flux = gauss.function(x-1., y, amp=1., center_x=0., center_y=0., sigma=1.)
-        kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 1., 'center_y': 0.}
-        output = interp.function(x, y, **kwargs_interp)
-        npt.assert_almost_equal(output, flux, decimal=0)
+            interp = Interpol()
+            kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 0., 'center_y': 0.}
+            output = interp.function(x, y, **kwargs_interp)
 
-        flux = gauss.function(x - 1., y - 1., amp=1, center_x=0., center_y=0., sigma=1.)
-        kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 1., 'center_y': 1.}
-        output = interp.function(x, y, **kwargs_interp)
-        npt.assert_almost_equal(output, flux, decimal=0)
+            npt.assert_equal(output, flux)
 
-        out = interp.function(x=1000, y=0, **kwargs_interp)
-        assert out == 0
+            flux = gauss.function(x-1., y, amp=1., center_x=0., center_y=0., sigma=1.)
+            kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 1., 'center_y': 0.}
+            output = interp.function(x, y, **kwargs_interp)
+            npt.assert_almost_equal(output, flux, decimal=0)
+
+            flux = gauss.function(x - 1., y - 1., amp=1, center_x=0., center_y=0., sigma=1.)
+            kwargs_interp = {'image': image, 'scale': 1., 'phi_G': 0., 'center_x': 1., 'center_y': 1.}
+            output = interp.function(x, y, **kwargs_interp)
+            npt.assert_almost_equal(output, flux, decimal=0)
+
+            out = interp.function(x=1000, y=0, **kwargs_interp)
+            assert out == 0
 
     def test_delete_cache(self):
         x, y = util.make_grid(numPix=20, deltapix=1.)

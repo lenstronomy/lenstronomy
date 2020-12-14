@@ -14,10 +14,12 @@ applications:
 - `lensingGW <https://gitlab.com/gpagano/lensinggw>`_: A Python package designed to handle both strong and microlensing of compact binaries and the related gravitational-wave signals.
 - `ovejero <https://github.com/swagnercarena/ovejero>`_: Conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.
 - `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with Bayesian neural network lens modeling.
+- `deeplenstronomy <https://github.com/deepskies/deeplenstronomy>`_: Tool for simulating large datasets for applying deep learning to strong gravitational lensing.
+
 
 
 More to come soon...
-pyhalo, deeplenstronomy
+pyhalo
 
 
 

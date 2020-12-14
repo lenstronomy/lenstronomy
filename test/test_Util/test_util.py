@@ -60,15 +60,31 @@ def test_map_coord2pix():
 def test_make_grid():
     numPix = 11
     deltapix = 1.
+
     grid = util.make_grid(numPix, deltapix)
     assert grid[0][0] == -5
-    assert np.sum(grid[0]) == 0
+    assert np.sum(grid[0]) == 0.
+
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
-    print(np.sum(x_grid))
-    assert np.sum(x_grid) == 0
+    assert np.sum(x_grid) == 0.
     assert x_grid[0] == -5.25
 
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1, left_lower=True)
+    assert x_grid[0] == 0.
+    assert y_grid[0] == 0.
+
+    # Similar tests for a non-rectangular grid
+
+    x_grid, y_grid = util.make_grid((numPix, numPix - 1), deltapix)
+    assert x_grid[0] == -5.
+    assert y_grid[0] == -4.5
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+    assert x_grid[0] == -5.25
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, left_lower=True)
     assert x_grid[0] == 0
     assert y_grid[0] == 0
 

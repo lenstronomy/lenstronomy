@@ -185,22 +185,33 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     default coordinate frame is such that (0,0) is in the center of the coordinate grid
 
     :param numPix: number of pixels per axis
+        Give an integers for a square grid, or a 2-length sequence
+        (first, second axis length) for a rectangular grid.
     :param deltapix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
-
-    numPix_eff = numPix*subgrid_res
-    deltapix_eff = deltapix/float(subgrid_res)
-    a = np.arange(numPix_eff)
-    matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
-    x_grid = matrix[:, 0] * deltapix_eff
-    y_grid = matrix[:, 1] * deltapix_eff
-    if left_lower is True:
-        shift = -1. / 2 + 1. / (2 * subgrid_res)
+    if isinstance(numPix, (tuple, list, np.ndarray)):
+        numPix = np.asarray(numPix).astype(np.int)
     else:
-        shift = np.sum(x_grid) / numPix_eff**2
-    return x_grid - shift, y_grid - shift
+        numPix = np.array([round(numPix), round(numPix)])
+
+    numPix_eff = (numPix*subgrid_res).astype(np.int)
+    deltapix_eff = deltapix/float(subgrid_res)
+
+    # X values change quickly, Y values are repeated many times
+    x_grid = np.tile(np.arange(numPix_eff[0]), numPix_eff[1]) * deltapix_eff
+    y_grid = np.repeat(np.arange(numPix_eff[1]), numPix_eff[0]) * deltapix_eff
+
+    if left_lower is True:
+        # Shift so (0, 0) is in the "lower left"
+        # Note this does not shift when subgrid_res = 1
+        shift = -1. / 2 + 1. / (2 * subgrid_res) * np.array([1, 1])
+    else:
+        # Shift so (0, 0) is centered
+        shift = deltapix_eff * (numPix_eff - 1) / 2
+
+    return x_grid - shift[0], y_grid - shift[1]
 
 
 @export

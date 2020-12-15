@@ -4,6 +4,7 @@ from lenstronomy.LightModel.Profiles.interpolation import Interpol
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 import lenstronomy.Util.util as util
 
+
 class TestInterpol(object):
     """
     class to test Shapelets
@@ -38,6 +39,16 @@ class TestInterpol(object):
         out = interp.function(x=1000, y=0, **kwargs_interp)
         assert out == 0
 
+        # test change of center without re-doing interpolation
+        out = interp.function(x=0, y=0, image=image, scale=1., phi_G=0, center_x=0, center_y=0)
+        out_shift = interp.function(x=1, y=0, image=image, scale=1., phi_G=0, center_x=1, center_y=0)
+        assert out_shift == out
+
+        # test change of scale without re-doing interpolation
+        out = interp.function(x=1., y=0, image=image, scale=1., phi_G=0, center_x=0, center_y=0)
+        out_scaled = interp.function(x=2., y=0, image=image, scale=2, phi_G=0, center_x=0, center_y=0)
+        assert out_scaled == out
+
     def test_delete_cache(self):
         x, y = util.make_grid(numPix=20, deltapix=1.)
         gauss = Gaussian()
@@ -49,6 +60,7 @@ class TestInterpol(object):
         assert hasattr(interp, '_image_interp')
         interp.delete_cache()
         assert not hasattr(interp, '_image_interp')
+
 
 if __name__ == '__main__':
     pytest.main()

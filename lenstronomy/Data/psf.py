@@ -67,7 +67,7 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):
             if self.psf_type == 'GAUSSIAN':
-                kernel_numPix = self._truncation * self._fwhm / self._pixel_size
+                kernel_numPix = round(self._truncation * self._fwhm / self._pixel_size)
                 if kernel_numPix % 2 == 0:
                     kernel_numPix += 1
                 self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)

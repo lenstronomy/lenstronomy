@@ -3,7 +3,11 @@ import lenstronomy.Util.image_util as image_util
 
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=None, center_ra=0, center_dec=0,
                           inverse=False):
     """
@@ -33,6 +37,7 @@ def data_configure_simple(numPix, deltaPix, exposure_time=None, background_rms=N
     return kwargs_data
 
 
+@export
 def simulate_simple(image_model_class, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                     no_noise=False, source_add=True, lens_light_add=True, point_source_add=True):
     """

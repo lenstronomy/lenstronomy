@@ -5,6 +5,8 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['NIE', 'NIEMajorAxis']
+
 
 class NIE(LensProfileBase):
     """
@@ -172,8 +174,11 @@ class NIE(LensProfileBase):
 class NIEMajorAxis(LensProfileBase):
     """
     This class contains the function and the derivatives of the non-singular isothermal ellipse.
-    See Keeton&Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
-    kappa =  b *(q2(s2 + x2) + y2􏰉)−1/2
+    See Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
+
+    .. math::
+        \kappa =  b *(q2(s2 + x2) + y2􏰉)^{−1/2}`
+
     """
 
     param_names = ['b', 's', 'q', 'center_x', 'center_y']

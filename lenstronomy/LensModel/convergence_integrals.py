@@ -7,7 +7,11 @@ from lenstronomy.Util import kernel_util
 class to compute lensing potentials and deflection angles provided a convergence map
 """
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def potential_from_kappa_grid(kappa, grid_spacing):
     """
     lensing potential on the convergence grid
@@ -25,6 +29,7 @@ def potential_from_kappa_grid(kappa, grid_spacing):
     return f_
 
 
+@export
 def potential_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size):
     """
     lensing potential on the convergence grid
@@ -50,6 +55,7 @@ def potential_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fac
     return f_high_res + f_low_res
 
 
+@export
 def deflection_from_kappa_grid(kappa, grid_spacing):
     """
     deflection angles on the convergence grid
@@ -68,6 +74,7 @@ def deflection_from_kappa_grid(kappa, grid_spacing):
     return f_x, f_y
 
 
+@export
 def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_factor, high_res_kernel_size):
     """
     deflection angles on the convergence grid with adaptive FFT
@@ -107,6 +114,7 @@ def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fa
     return f_x, f_y
 
 
+@export
 def potential_kernel(num_pix, delta_pix):
     """
     numerical gridded integration kernel for convergence to lensing kernel with given pixel size
@@ -124,6 +132,7 @@ def potential_kernel(num_pix, delta_pix):
     return kernel
 
 
+@export
 def deflection_kernel(num_pix, delta_pix):
     """
     numerical gridded integration kernel for convergence to deflection angle with given pixel size

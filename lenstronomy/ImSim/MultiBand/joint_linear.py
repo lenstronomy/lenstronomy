@@ -3,6 +3,8 @@ import lenstronomy.ImSim.de_lens as de_lens
 
 import numpy as np
 
+__all__ = ['JointLinear']
+
 
 class JointLinear(MultiLinear):
     """
@@ -26,7 +28,9 @@ class JointLinear(MultiLinear):
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
         computes the image (lens and source surface brightness with a given lens model).
-        The linear parameters are computed with a weighted linear least square optimization (i.e. flux normalization of the brightness profiles)
+        The linear parameters are computed with a weighted linear least square optimization
+        (i.e. flux normalization of the brightness profiles)
+
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
         :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
@@ -121,6 +125,7 @@ class JointLinear(MultiLinear):
         """
         computes the likelihood of the data given a model
         This is specified with the non-linear parameters and a linear inversion and prior marginalisation.
+
         :param kwargs_lens:
         :param kwargs_source:
         :param kwargs_lens_light:

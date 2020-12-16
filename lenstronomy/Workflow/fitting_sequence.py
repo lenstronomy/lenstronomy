@@ -10,6 +10,8 @@ from lenstronomy.Sampling.Samplers.dynesty_sampler import DynestySampler
 import numpy as np
 import lenstronomy.Util.analysis_util as analysis_util
 
+__all__ = ['FittingSequence']
+
 
 class FittingSequence(object):
     """
@@ -23,7 +25,7 @@ class FittingSequence(object):
 
         :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
         :param kwargs_model:
-        :param kwargs_constraints:
+        :param kwargs_constraints: keyword arguments of the Param() Class to handle parameter constraints during the sampling
         :param kwargs_likelihood:
         :param kwargs_params:
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
@@ -32,6 +34,7 @@ class FittingSequence(object):
         """
         self.kwargs_data_joint = kwargs_data_joint
         self.multi_band_list = kwargs_data_joint.get('multi_band_list', [])
+        self.multi_band_type = kwargs_data_joint.get('multi_band_type', 'single-band')
         self._verbose = verbose
         self._mpi = mpi
         self._updateManager = MultiBandUpdateManager(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params,
@@ -343,7 +346,7 @@ class FittingSequence(object):
         return output
 
     def psf_iteration(self, num_iter=10, no_break=True, stacking_method='median', block_center_neighbour=0,
-                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, verbose=True,
+                      keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=1, error_map_radius=None, verbose=True,
                       compute_bands=None):
         """
         iterative PSF reconstruction
@@ -355,13 +358,16 @@ class FittingSequence(object):
         :param keep_psf_error_map: bool, whether or not to keep the previous psf_error_map
         :param psf_symmetry: int, number of invariant rotations in the reconstructed PSF
         :param psf_iter_factor: factor of new estimated PSF relative to the old one PSF_updated = (1-psf_iter_factor) * PSF_old + psf_iter_factor*PSF_new
+        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
+         (e.g. to avoid double counting of overlapping PSF errors)
         :param verbose: bool, print statements
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
-        :return: 0, updated PSF is stored in self.mult_iband_list
+        :return: 0, updated PSF is stored in self.multi_band_list
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
         likelihood_mask_list = kwargs_likelihood.get('image_likelihood_mask_list', None)
+        kwargs_pixelbased = kwargs_likelihood.get('kwargs_pixelbased', None)
         kwargs_temp = self.best_fit(bijective=False)
         if compute_bands is None:
             compute_bands = [True] * len(self.multi_band_list)
@@ -370,13 +376,15 @@ class FittingSequence(object):
             if compute_bands[band_index] is True:
                 kwargs_psf = self.multi_band_list[band_index][1]
                 image_model = SingleBandMultiModel(self.multi_band_list, kwargs_model,
-                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index)
+                                                   likelihood_mask_list=likelihood_mask_list, band_index=band_index,
+                                                   kwargs_pixelbased=kwargs_pixelbased)
                 psf_iter = PsfFitting(image_model_class=image_model)
                 kwargs_psf = psf_iter.update_iterative(kwargs_psf, kwargs_params=kwargs_temp, num_iter=num_iter,
                                                        no_break=no_break, stacking_method=stacking_method,
                                                        block_center_neighbour=block_center_neighbour,
                                                        keep_psf_error_map=keep_psf_error_map, psf_symmetry=psf_symmetry,
-                                                       psf_iter_factor=psf_iter_factor, verbose=verbose)
+                                                       psf_iter_factor=psf_iter_factor,
+                                                       error_map_radius=error_map_radius, verbose=verbose)
                 self.multi_band_list[band_index][1] = kwargs_psf
         return 0
 

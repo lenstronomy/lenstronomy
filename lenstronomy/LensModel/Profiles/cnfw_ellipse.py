@@ -8,6 +8,8 @@ from lenstronomy.LensModel.Profiles.cnfw import CNFW
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['CNFW_ELLIPSE']
+
 
 class CNFW_ELLIPSE(LensProfileBase):
     """

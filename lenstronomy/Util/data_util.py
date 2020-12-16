@@ -1,6 +1,10 @@
 import numpy as np
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exposures=1):
     """
     computes the expected Gaussian background noise of a pixel in units of counts/second
@@ -19,6 +23,7 @@ def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exp
     return sigma_bkg
 
 
+@export
 def flux_noise(cps_pixel, exposure_time):
     """
     computes the variance of the shot noise Gaussian approximation of Poisson noise term
@@ -30,6 +35,7 @@ def flux_noise(cps_pixel, exposure_time):
     return cps_pixel / np.sqrt(exposure_time)
 
 
+@export
 def magnitude2cps(magnitude, magnitude_zero_point):
     """
     converts an apparent magnitude to counts per second
@@ -48,6 +54,7 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     return counts
 
 
+@export
 def cps2magnitude(cps, magnitude_zero_point):
     """
 
@@ -60,6 +67,7 @@ def cps2magnitude(cps, magnitude_zero_point):
     return magnitude
 
 
+@export
 def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
     """
     converts absolute to apparent magnitudes
@@ -72,6 +80,7 @@ def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
     return m_apparent
 
 
+@export
 def adu2electrons(adu, ccd_gain):
     """
     converts analog-to-digital units into electron counts
@@ -82,6 +91,7 @@ def adu2electrons(adu, ccd_gain):
     return adu * ccd_gain
 
 
+@export
 def electrons2adu(electrons, ccd_gain):
     """
     converts electron counts into analog-to-digital unit

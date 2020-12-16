@@ -15,9 +15,13 @@ from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllips
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
 _SQRT_2PI = np.sqrt(2*np.pi)
 
 
+@export
 class GaussianEllipseKappaSet(LensProfileBase):
     """
     This class computes the lensing properties of a set of concentric
@@ -199,6 +203,7 @@ class GaussianEllipseKappaSet(LensProfileBase):
         return density_2d
 
 
+@export
 class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
     """
     This abstract class sets up a template for computing lensing properties of
@@ -429,6 +434,7 @@ class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
                                                    center_x, center_y)
 
 
+@export
 class SersicEllipseGaussDec(GaussDecompositionAbstract):
     """
     This class computes the lensing properties of an elliptical Sersic
@@ -490,6 +496,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
         return kwargs['R_sersic']
 
 
+@export
 class NFWEllipseGaussDec(GaussDecompositionAbstract):
     """
     This class computes the lensing properties of an elliptical, projected NFW
@@ -590,6 +597,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         return kwargs['Rs']
 
 
+@export
 class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
     """
     This abstract class sets up a template for computing lensing properties of
@@ -615,6 +623,7 @@ class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
         return f_sigmas * sigmas * _SQRT_2PI, sigmas
 
 
+@export
 class CTNFWGaussDec(GaussDecompositionAbstract3D):
     """
     This class computes the lensing properties of an projection from a

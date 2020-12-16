@@ -6,9 +6,12 @@ from scipy import interpolate
 from scipy.ndimage import interpolation as interp
 import copy
 import lenstronomy.Util.util as util
-from skimage import filters
+
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
 
+@export
 def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     """
     adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order
@@ -28,6 +31,7 @@ def add_layer2image(grid2d, x_pos, y_pos, kernel, order=1):
     return add_layer2image_int(grid2d, x_int, y_int, kernel_shifted)
 
 
+@export
 def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     """
     adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel
@@ -66,6 +70,7 @@ def add_layer2image_int(grid2d, x_pos, y_pos, kernel):
     return new
 
 
+@export
 def add_background(image, sigma_bkd):
     """
     adds background noise to image
@@ -78,6 +83,7 @@ def add_background(image, sigma_bkd):
     return background
 
 
+@export
 def add_poisson(image, exp_time):
     """
     adds a poison (or Gaussian) distributed noise with mean given by surface brightness
@@ -95,6 +101,7 @@ def add_poisson(image, exp_time):
     return poisson
 
 
+@export
 def rotateImage(img, angle):
     """
 
@@ -107,6 +114,7 @@ def rotateImage(img, angle):
     return imgR
 
 
+@export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):
     """
     resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.
@@ -123,6 +131,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     return out_values
 
 
+@export
 def symmetry_average(image, symmetry):
     """
     symmetry averaged image
@@ -138,6 +147,7 @@ def symmetry_average(image, symmetry):
     return img_sym
 
 
+@export
 def findOverlap(x_mins, y_mins, min_distance):
     """
     finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well
@@ -157,6 +167,7 @@ def findOverlap(x_mins, y_mins, min_distance):
     return x_mins, y_mins
 
 
+@export
 def coordInImage(x_coord, y_coord, numPix, deltapix):
     """
     checks whether image positions are within the pixel image in units of arcsec
@@ -177,6 +188,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
     return x_coord, y_coord
 
 
+@export
 def re_size(image, factor=1):
     """
     re-sizes image with nx x ny to nx/factor x ny/factor
@@ -186,6 +198,8 @@ def re_size(image, factor=1):
     """
     if factor < 1:
         raise ValueError('scaling factor in re-sizing %s < 1' %factor)
+    elif factor == 1:
+        return image
     f = int(factor)
     nx, ny = np.shape(image)
     if int(nx/f) == nx/f and int(ny/f) == ny/f:
@@ -195,6 +209,7 @@ def re_size(image, factor=1):
         raise ValueError("scaling with factor %s is not possible with grid size %s, %s" %(f, nx, ny))
 
 
+@export
 def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask):
     """
     rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
@@ -219,6 +234,7 @@ def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex
     return image_resized, wht_map_resized, sigma_bkg_resized, ra_coords_resized, dec_coords_resized, idex_mask_resized
 
 
+@export
 def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix):
     """
     adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image
@@ -240,6 +256,7 @@ def rebin_coord_transform(factor, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord
     return ra_at_xy_0_resized, dec_at_xy_0_resized, x_at_radec_0_resized, y_at_radec_0_resized, Mpix2coord_resized, Mcoord2pix_resized
 
 
+@export
 def stack_images(image_list, wht_list, sigma_list):
     """
     stacks images and saves new image as a fits file
@@ -259,6 +276,7 @@ def stack_images(image_list, wht_list, sigma_list):
     return image_stacked, wht_stacked, np.sqrt(sigma_stacked)
 
 
+@export
 def cut_edges(image, numPix):
     """
     cuts out the edges of a 2d image and returns re-sized image to numPix
@@ -284,6 +302,7 @@ def cut_edges(image, numPix):
     return copy.deepcopy(resized)
 
 
+@export
 def radial_profile(data, center=[0, 0]):
     """
     computes radial profile
@@ -302,6 +321,7 @@ def radial_profile(data, center=[0, 0]):
     return radialprofile
 
 
+@export
 def gradient_map(image):
     """
     computes gradients of images with the sobel transform
@@ -309,4 +329,5 @@ def gradient_map(image):
     :param image: 2d numpy array
     :return: array of same size as input, with gradients between neighboring pixels
     """
+    from skimage import filters
     return filters.sobel(image)

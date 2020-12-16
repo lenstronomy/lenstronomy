@@ -8,6 +8,8 @@ from lenstronomy.Sampling.Likelihoods.prior_likelihood import PriorLikelihood
 import lenstronomy.Util.class_creator as class_creator
 import numpy as np
 
+__all__ = ['LikelihoodModule']
+
 
 class LikelihoodModule(object):
     """
@@ -31,7 +33,7 @@ class LikelihoodModule(object):
                  prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[], prior_special_kde=[],
                  prior_extinction_kde=[], prior_lens_lognormal=[], prior_source_lognormal=[],
                  prior_extinction_lognormal=[], prior_lens_light_lognormal=[], prior_ps_lognormal=[],
-                 prior_special_lognormal=[], custom_logL_addition=None):
+                 prior_special_lognormal=[], custom_logL_addition=None, kwargs_pixelbased=None):
         """
         initializing class
 
@@ -66,17 +68,16 @@ class LikelihoodModule(object):
         :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
-        multi_band_list, image_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
+        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
 
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
-        self.PointSource = point_source_class
-
-        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction,
+        self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special,
+                                                 prior_extinction,
                                                  prior_lens_kde, prior_source_kde, prior_lens_light_kde, prior_ps_kde,
                                                  prior_special_kde, prior_extinction_kde,
                                                  prior_lens_lognormal, prior_source_lognormal,
@@ -84,56 +85,61 @@ class LikelihoodModule(object):
                                                  prior_special_lognormal, prior_extinction_lognormal,
                                                  )
         self._time_delay_likelihood = time_delay_likelihood
-        if self._time_delay_likelihood is True:
-            self.time_delay_likelihood = TimeDelayLikelihood(time_delays_measured, time_delays_uncertainties,
-                                                             lens_model_class, point_source_class)
-
         self._image_likelihood = image_likelihood
-        if self._image_likelihood is True:
-            self.image_likelihood = ImageLikelihood(multi_band_list, image_type, kwargs_model, bands_compute=bands_compute,
-                                                    likelihood_mask_list=image_likelihood_mask_list,
-                                                    source_marg=source_marg, linear_prior=linear_prior,
-                                                    check_positive_flux=check_positive_flux)
-        self._position_likelihood = PositionLikelihood(point_source_class, astrometric_likelihood=astrometric_likelihood,
-                                                       image_position_likelihood=image_position_likelihood,
-                                                       source_position_likelihood=source_position_likelihood,
-                                                       ra_image_list=ra_image_list, dec_image_list=dec_image_list,
-                                                       image_position_uncertainty=image_position_uncertainty,
-                                                       check_matched_source_position=check_matched_source_position,
-                                                       source_position_tolerance=source_position_tolerance,
-                                                       source_position_sigma=source_position_sigma,
-                                                       force_no_add_image=force_no_add_image,
-                                                       restrict_image_number=restrict_image_number,
-                                                       max_num_images=max_num_images)
         self._flux_ratio_likelihood = flux_ratio_likelihood
         self._kwargs_flux_compute = kwargs_flux_compute
-        if self._flux_ratio_likelihood is True:
-            self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, flux_ratios, flux_ratio_errors,
-                                                             **self._kwargs_flux_compute)
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
+        self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
+                                   'time_delays_uncertainties': time_delays_uncertainties}
+        self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
+                                'bands_compute': bands_compute,
+                                'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
+                                'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
+                                'kwargs_pixelbased': kwargs_pixelbased}
+        self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
+                                 'image_position_likelihood': image_position_likelihood,
+                                 'source_position_likelihood': source_position_likelihood,
+                                 'ra_image_list': ra_image_list, 'dec_image_list': dec_image_list,
+                                 'image_position_uncertainty': image_position_uncertainty,
+                                 'check_matched_source_position': check_matched_source_position,
+                                 'source_position_tolerance': source_position_tolerance,
+                                 'source_position_sigma': source_position_sigma,
+                                 'force_no_add_image': force_no_add_image,
+                                 'restrict_image_number': restrict_image_number, 'max_num_images': max_num_images}
+        self._kwargs_flux = {'flux_ratios': flux_ratios, 'flux_ratio_errors': flux_ratio_errors}
+        self._kwargs_flux.update(self._kwargs_flux_compute)
+        self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+                              kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
+                              kwargs_time_delay=self._kwargs_time_delay)
 
-    @staticmethod
-    def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
-                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[],
-                     dec_image_list=[]):
+    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay):
         """
 
-        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
-        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
-        :param time_delays_measured: measured time delays (units of days)
-        :param time_delays_uncertainties: uncertainties in time-delay measurement
-        :param flux_ratios: flux ratios of point sources
-        :param flux_ratio_errors: error in flux ratio measurement
-        :return:
+        :param kwargs_model: lenstronomy model keyword arguments
+        :param kwargs_imaging: keyword arguments for imaging likelihood
+        :param kwargs_position: keyword arguments for positional likelihood
+        :param kwargs_flux: keyword arguments for flux ratio likelihood
+        :param kwargs_time_delay: keyword arguments for time delay likelihood
+        :return: updated model instances of this class
         """
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
 
-    def _reset_point_source_cache(self, bool=True):
-        self.PointSource.delete_lens_model_cache()
-        self.PointSource.set_save_cache(bool)
+        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        self.PointSource = point_source_class
+
+        if self._time_delay_likelihood is True:
+            self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
+                                                             point_source_class=point_source_class,
+                                                             **kwargs_time_delay)
+
         if self._image_likelihood is True:
-            self.image_likelihood.reset_point_source_cache(bool)
+            self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
+        self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
+        if self._flux_ratio_likelihood is True:
+            self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
+
+    def __call__(self, a):
+        return self.logL(a)
 
     def logL(self, args, verbose=False):
         """
@@ -153,6 +159,8 @@ class LikelihoodModule(object):
                                                                                    kwargs_return['kwargs_lens_light'], \
                                                                                    kwargs_return['kwargs_ps'], \
                                                                                    kwargs_return['kwargs_special']
+        # update model instance in case of changes affecting it (i.e. redshift sampling in multi-plane)
+        self._update_model(kwargs_special)
         # generate image and computes likelihood
         self._reset_point_source_cache(bool=True)
         logL = 0
@@ -235,9 +243,6 @@ class LikelihoodModule(object):
         num_param, param_names = self.param.num_param()
         return self.num_data - num_param - num_linear
 
-    def __call__(self, a):
-        return self.logL(a)
-
     def likelihood(self, a):
         return self.logL(a)
 
@@ -249,3 +254,40 @@ class LikelihoodModule(object):
         :return: -logL
         """
         return -self.logL(a)
+
+    @staticmethod
+    def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
+                     time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[],
+                     dec_image_list=[]):
+        """
+
+        :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
+        :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
+        :param time_delays_measured: measured time delays (units of days)
+        :param time_delays_uncertainties: uncertainties in time-delay measurement
+        :param flux_ratios: flux ratios of point sources
+        :param flux_ratio_errors: error in flux ratio measurement
+        :return:
+        """
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
+
+    def _reset_point_source_cache(self, bool=True):
+        self.PointSource.delete_lens_model_cache()
+        self.PointSource.set_save_cache(bool)
+        if self._image_likelihood is True:
+            self.image_likelihood.reset_point_source_cache(bool)
+
+    def _update_model(self, kwargs_special):
+        """
+        updates lens model instance of this class (and all class instances related to it) when an update to the
+        modeled redshifts of the deflector and/or source planes are made
+
+        :param kwargs_special: keyword arguments from SpecialParam() class return of sampling arguments
+        :return: None, all class instances updated to recent modek
+        """
+        kwargs_model, update_bool = self.param.update_kwargs_model(kwargs_special)
+        if update_bool is True:
+            self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
+                                  kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
+                                  kwargs_time_delay=self._kwargs_time_delay)
+        # TODO remove redundancies with Param() calls updates

@@ -3,7 +3,8 @@ this file is taken from schwimmbad (https://github.com/adrn/schwimmbad) and an e
 to replace the multiprocessing with the multiprocess dependence as for multi-threading, multiprocessing is
 not supporting dill (only pickle) which is required.
 
-The class also extends with a is_master() definition
+The class also extends with a ``is_master()`` definition
+
 """
 
 
@@ -20,9 +21,8 @@ __all__ = ['MultiPool']
 
 def _initializer_wrapper(actual_initializer, *rest):
     """
-    We ignore SIGINT. It's up to our parent to kill us in the typical
-    condition of this arising from ``^C`` on a terminal. If someone is
-    manually killing us with that signal, well... nothing will happen.
+    We ignore SIGINT. It's up to our parent to kill us in the typical condition of this arising from ``^C`` on a
+    terminal. If someone is manually killing us with that signal, well... nothing will happen.
     """
     signal.signal(signal.SIGINT, signal.SIG_IGN)
     if actual_initializer is not None:
@@ -44,19 +44,21 @@ class MultiPool(Pool):
     A modified version of :class:`multiprocessing.pool.Pool` that has better
     behavior with regard to ``KeyboardInterrupts`` in the :func:`map` method.
     (Original author: `Peter K. G. Williams <peter@newton.cx>`_)
+
     Parameters
     ----------
     processes : int, optional
-     The number of worker processes to use; defaults to the number of CPUs.
+        The number of worker processes to use; defaults to the number of CPUs.
+
     initializer : callable, optional
-     If specified, a callable that will be invoked by each worker process
-     when it starts.
+        If specified, a callable that will be invoked by each worker process when it starts.
+
     initargs : iterable, optional
-     Arguments for ``initializer``; it will be called as
-     ``initializer(*initargs)``.
+        Arguments for ``initializer``; it will be called as ``initializer(*initargs)``.
+
     kwargs:
-     Extra arguments passed to the :class:`multiprocessing.pool.Pool`
-     superclass.
+        Extra arguments passed to the :class:`multiprocessing.pool.Pool` superclass.
+
     """
     wait_timeout = 3600
 
@@ -82,15 +84,16 @@ class MultiPool(Pool):
         Equivalent to the built-in ``map()`` function and
         :meth:`multiprocessing.pool.Pool.map()`, without catching
         ``KeyboardInterrupt``.
+
         Parameters
         ----------
-        worker : callable
+        func : callable
             A function or callable object that is executed on each element of
             the specified ``tasks`` iterable. This object must be picklable
             (i.e. it can't be a function scoped within a function or a
             ``lambda`` function). This should accept a single positional
             argument and return a single object.
-        tasks : iterable
+        iterable : iterable
             A list or iterable of tasks. Each task can be itself an iterable
             (e.g., tuple) of values or data to pass in to the worker function.
         callback : callable, optional
@@ -98,10 +101,12 @@ class MultiPool(Pool):
             result from each worker run and is executed on the master process.
             This is useful for, e.g., saving results to a file, since the
             callback is only called on the master thread.
+
         Returns
         -------
         results : list
             A list of results from the output of each ``worker()`` call.
+
         """
 
         if callback is None:

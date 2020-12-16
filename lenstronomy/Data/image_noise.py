@@ -2,6 +2,11 @@ import numpy as np
 from lenstronomy.Util import image_util
 
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
+
+@export
 class ImageNoise(object):
     """
     class that deals with noise properties of imaging data
@@ -94,6 +99,7 @@ class ImageNoise(object):
             return covariance_matrix(model, self._background_rms, self._exp_map, self._gradient_boost_factor)
 
 
+@export
 def covariance_matrix(data, background_rms, exposure_map, gradient_boost_factor=None):
     """
     returns a diagonal matrix for the covariance estimation which describes the error

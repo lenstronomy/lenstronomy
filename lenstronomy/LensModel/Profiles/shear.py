@@ -4,10 +4,12 @@ import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import numpy as np
 
+__all__ = ['Shear', 'ShearGammaPsi']
+
 
 class Shear(LensProfileBase):
     """
-    class for external shear e1, e2 expression
+    class for external shear gamma1, gamma2 expression
     """
     param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']
     lower_limit_default = {'gamma1': -0.5, 'gamma2': -0.5, 'ra_0': -100, 'dec_0': -100}
@@ -22,7 +24,7 @@ class Shear(LensProfileBase):
         :param gamma2: shear component
         :param ra_0: x/ra position where shear deflection is 0
         :param dec_0: y/dec position where shear deflection is 0
-        :return:
+        :return: lensing potential
         """
         x_ = x - ra_0
         y_ = y - dec_0
@@ -30,7 +32,16 @@ class Shear(LensProfileBase):
         return f_
 
     def derivatives(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
-        # rotation angle
+        """
+
+        :param x: x-coordinate (angle)
+        :param y: y0-coordinate (angle)
+        :param gamma1: shear component
+        :param gamma2: shear component
+        :param ra_0: x/ra position where shear deflection is 0
+        :param dec_0: y/dec position where shear deflection is 0
+        :return: deflection angles
+        """
         x_ = x - ra_0
         y_ = y - dec_0
         f_x = gamma1 * x_ + gamma2 * y_
@@ -38,6 +49,16 @@ class Shear(LensProfileBase):
         return f_x, f_y
 
     def hessian(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):
+        """
+
+        :param x: x-coordinate (angle)
+        :param y: y0-coordinate (angle)
+        :param gamma1: shear component
+        :param gamma2: shear component
+        :param ra_0: x/ra position where shear deflection is 0
+        :param dec_0: y/dec position where shear deflection is 0
+        :return: f_xx, f_yy, f_xy
+        """
         gamma1 = gamma1
         gamma2 = gamma2
         kappa = 0

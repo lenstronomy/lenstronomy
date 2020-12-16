@@ -5,6 +5,9 @@ import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['NIE_POTENTIAL', 'NIEPotentialMajorAxis']
+
+
 class NIE_POTENTIAL(LensProfileBase):
     """
     this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_ 

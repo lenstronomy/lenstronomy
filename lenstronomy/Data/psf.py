@@ -3,6 +3,8 @@ import lenstronomy.Util.kernel_util as kernel_util
 import lenstronomy.Util.util as util
 import warnings
 
+__all__ = ['PSF']
+
 
 class PSF(object):
     """
@@ -65,7 +67,7 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):
             if self.psf_type == 'GAUSSIAN':
-                kernel_numPix = self._truncation * self._fwhm / self._pixel_size
+                kernel_numPix = round(self._truncation * self._fwhm / self._pixel_size)
                 if kernel_numPix % 2 == 0:
                     kernel_numPix += 1
                 self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)
@@ -88,7 +90,7 @@ class PSF(object):
 
         :param supersampling_factor: int >=1, supersampling factor relative to pixel resolution
         :param updata_cache: boolean, if True, updates the cached supersampling PSF if generated.
-        Attention, this will overwrite a previously used supersampled PSF if the resulution is changing.
+         Attention, this will overwrite a previously used supersampled PSF if the resolution is changing.
         :return: super-sampled PSF as 2d numpy array
         """
         if hasattr(self, '_kernel_point_source_supersampled') and self._point_source_supersampling_factor == supersampling_factor:

@@ -7,6 +7,8 @@ import scipy.integrate as integrate
 from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['GaussianKappa']
+
 
 class GaussianKappa(LensProfileBase):
     """

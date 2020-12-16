@@ -1,6 +1,8 @@
 import copy
 from lenstronomy.Sampling.parameters import Param
 
+__all__ = ['UpdateManager']
+
 
 class UpdateManager(object):
     """

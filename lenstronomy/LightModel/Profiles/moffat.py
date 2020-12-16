@@ -2,6 +2,8 @@ __author__ = 'sibirrer'
 
 #this file contains a class to make a moffat profile
 
+__all__ = ['Moffat']
+
 
 class Moffat(object):
     """

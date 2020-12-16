@@ -19,7 +19,7 @@ Implementations of four different types of processing pools:
 
     - MPIPool: An MPI pool.
     - MultiPool: A multiprocessing for local parallelization.
-    - SerialPool: A serial pool, which uses the built-in ``map`` function
+    - SerialPool: A serial pool, which uses the built-in `map` function
 
 """
 
@@ -38,6 +38,8 @@ from schwimmbad.serial import SerialPool
 from schwimmbad.mpi import MPIPool
 #from schwimmbad.jl import JoblibPool
 
+__all__ = ['choose_pool']
+
 
 def choose_pool(mpi=False, processes=1, **kwargs):
     """
@@ -49,7 +51,6 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     The requirement of schwimmbad relies on the master branch (as specified in requirements.txt).
     The 'use_dill' functionality can raise if not following the requirement specified.
 
-
     Choose between the different pools given options from, e.g., argparse.
 
     Parameters
@@ -60,11 +61,10 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     processes : int, optional
         Use the multiprocessing pool,
         :class:`~schwimmbad.multiprocessing.MultiPool`, with this number of
-        processes. By default, ``processes=1``, will use the
-        :class:`~schwimmbad.serial.SerialPool`.
-    **kwargs
-        Any additional kwargs are passed in to the pool class initializer
-        selected by the arguments.
+        processes. By default, ``processes=1``, will use them:class:`~schwimmbad.serial.SerialPool`.
+
+    Any additional kwargs are passed in to the pool class initializer selected by the arguments.
+
     """
 
     if mpi:

@@ -5,6 +5,11 @@ import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
+
+
+@export
 def plot_chain_list(chain_list, index=0, num_average=100):
     """
     plots the output of a chain of samples (MCMC or PSO) with the some diagnostics of convergence.
@@ -33,6 +38,7 @@ def plot_chain_list(chain_list, index=0, num_average=100):
     return f, axes
 
 
+@export
 def plot_chain(chain, param_list):
     X2_list, pos_list, vel_list = chain
 
@@ -59,6 +65,7 @@ def plot_chain(chain, param_list):
     return f, axes
 
 
+@export
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """
     plots the MCMC behaviour and looks for convergence of the chain
@@ -86,6 +93,7 @@ def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_averag
     return ax
 
 
+@export
 def psf_iteration_compare(kwargs_psf, **kwargs):
     """
 
@@ -95,6 +103,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     """
     psf_out = kwargs_psf['kernel_point_source']
     psf_in = kwargs_psf['kernel_point_source_init']
+    psf_error_map = kwargs_psf.get('psf_error_map', None)
     n_kernel = len(psf_in)
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.
@@ -102,7 +111,10 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     if not 'cmap' in kwargs:
         kwargs['cmap'] = 'seismic'
 
-    f, axes = plt.subplots(1, 3, figsize=(15, 5))
+    n = 3
+    if psf_error_map is not None:
+        n += 1
+    f, axes = plt.subplots(1, n, figsize=(5*n, 5))
     ax = axes[0]
     im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
@@ -139,5 +151,16 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.text(delta_x, n_kernel-delta_y, "difference", color="k", fontsize=20, backgroundcolor='w')
+
+    if psf_error_map is not None:
+        ax = axes[3]
+        im = ax.matshow(np.log10(psf_error_map*psf_out**2), origin='lower', **kwargs)
+        divider = make_axes_locatable(ax)
+        cax = divider.append_axes("right", size="5%", pad=0.05)
+        plt.colorbar(im, cax=cax)
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.text(delta_x, n_kernel - delta_y, "psf error map", color="k", fontsize=20, backgroundcolor='w')
+
     f.tight_layout()
     return f, axes

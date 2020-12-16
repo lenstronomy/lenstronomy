@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource package &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.PointSource package &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-pointsource-point-source-module"></span><h2>lenstronomy.PointSource.point_source module<a class="headerlink" href="#module-lenstronomy.PointSource.point_source" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.PointSource.point_source.PointSource">
-<em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source.</code><code class="descname">PointSource</code><span class="sig-paren">(</span><em>point_source_type_list</em>, <em>lensModel=None</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>magnification_limit=None</em>, <em>save_cache=False</em>, <em>min_distance=0.05</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source.</code><code class="descname">PointSource</code><span class="sig-paren">(</span><em>point_source_type_list</em>, <em>lensModel=None</em>, <em>fixed_magnification_list=None</em>, <em>additional_images_list=None</em>, <em>flux_from_point_source_list=None</em>, <em>magnification_limit=None</em>, <em>save_cache=False</em>, <em>kwargs_lens_eqn_solver=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source.PointSource.check_image_positions">
@@ -75,6 +75,22 @@
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool: True, if requirement on tolerance is fulfilled, False if not.</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="lenstronomy.PointSource.point_source.PointSource.check_positive_flux">
+<em class="property">classmethod </em><code class="descname">check_positive_flux</code><span class="sig-paren">(</span><em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.check_positive_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.check_positive_flux" title="Permalink to this definition">¶</a></dt>
+<dd><p>check whether inferred linear parameters are positive</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
@@ -147,12 +163,14 @@ equation solver</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_ps</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
+<li><strong>kwargs_ps</strong> – point source keyword argument list</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>with_amp</strong> – bool, if True returns the image amplitude derived from kwargs_ps,
+otherwise the magnification of the lens model</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ra_pos, dec_pos, amp, n</p>
 </td>
 </tr>
 </tbody>
@@ -305,7 +323,7 @@ each point source image</li>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source.PointSource.update_search_window">
-<code class="descname">update_search_window</code><span class="sig-paren">(</span><em>search_window</em>, <em>x_center</em>, <em>y_center</em>, <em>min_distance=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.update_search_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.update_search_window" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_search_window</code><span class="sig-paren">(</span><em>search_window</em>, <em>x_center</em>, <em>y_center</em>, <em>min_distance=None</em>, <em>only_from_unspecified=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.update_search_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.update_search_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the search area for the lens equation solver</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -316,6 +334,7 @@ each point source image</li>
 <li><strong>x_center</strong> – center of search window</li>
 <li><strong>y_center</strong> – center of search window</li>
 <li><strong>min_distance</strong> – minimum search distance</li>
+<li><strong>only_from_unspecified</strong> – bool, if True, only sets keywords that previously have not been set</li>
 </ul>
 </td>
 </tr>
@@ -350,22 +369,6 @@ each point source image</li>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="lenstronomy.PointSource.point_source_param.PointSourceParam.check_positive_flux">
-<em class="property">classmethod </em><code class="descname">check_positive_flux</code><span class="sig-paren">(</span><em>kwargs_ps</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_param.html#PointSourceParam.check_positive_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_param.PointSourceParam.check_positive_flux" title="Permalink to this definition">¶</a></dt>
-<dd><p>check whether inferred linear parameters are positive</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – </td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool</td>
 </tr>
 </tbody>
 </table>
@@ -441,28 +444,56 @@ each point source image</li>
 <dt id="lenstronomy.PointSource.point_source_types.LensedPositions">
 <em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source_types.</code><code class="descname">LensedPositions</code><span class="sig-paren">(</span><em>lensModel</em>, <em>fixed_magnification=False</em>, <em>additional_image=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class of a single point source in the image plane, aka star
-parameters: ra_image, dec_image, point_amp</p>
+<p>class of a a lensed point source parameterized as the (multiple) observed image positions
+Name within the PointSource module: ‘LENSED_POSITION’
+parameters: ra_image, dec_image, point_amp
+If fixed_magnification=True, than ‘source_amp’ is a parameter instead of ‘point_amp’</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.LensedPositions.image_amplitude">
-<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>x_pos=None</em>, <em>y_pos=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.image_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.PointSource.point_source_types.LensedPositions.image_position">
-<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>magnification_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.image_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>x_pos=None</em>, <em>y_pos=None</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.image_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>image brightness amplitudes</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra_image</strong> – </li>
-<li><strong>dec_image</strong> – </li>
-<li><strong>point_amp</strong> – </li>
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</li>
+<li><strong>x_pos</strong> – pre-computed image position (no lens equation solver applied)</li>
+<li><strong>y_pos</strong> – pre-computed image position (no lens equation solver applied)</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of image amplitudes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.PointSource.point_source_types.LensedPositions.image_position">
+<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.image_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>on-sky image positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">image positions in x, y as arrays</p>
 </td>
 </tr>
 </tbody>
@@ -472,17 +503,63 @@ parameters: ra_image, dec_image, point_amp</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.LensedPositions.source_amplitude">
 <code class="descname">source_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.source_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.source_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>intrinsic brightness amplitude of point source
+When brightnesses are defined in magnified on-sky positions, the intrinsic brightness is computed as the mean
+in the magnification corrected image position brightnesses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), used when brightness are defined in
+magnified on-sky positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">brightness amplitude (as numpy array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.LensedPositions.source_position">
 <code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.source_position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>original source position (prior to lensing)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – point source keyword arguments</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list (required to ray-trace back in the source plane)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x, y position (as numpy arrays)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.LensedPositions.update_lens_model">
 <code class="descname">update_lens_model</code><span class="sig-paren">(</span><em>lens_model_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#LensedPositions.update_lens_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.LensedPositions.update_lens_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>update LensModel() and LensEquationSolver() instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lens_model_class</strong> – LensModel() class instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">internal lensModel class updated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -490,6 +567,7 @@ parameters: ra_image, dec_image, point_amp</p>
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached">
 <em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source_types.</code><code class="descname">PointSourceCached</code><span class="sig-paren">(</span><em>point_source_model</em>, <em>save_cache=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class is the same as PointSource() except that it sames image and source positions in cache</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.delete_lens_model_cache">
 <code class="descname">delete_lens_model_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.delete_lens_model_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.delete_lens_model_cache" title="Permalink to this definition">¶</a></dt>
@@ -497,24 +575,48 @@ parameters: ra_image, dec_image, point_amp</p>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.image_amplitude">
-<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>magnification_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.image_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.image_position">
-<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>min_distance=0.05</em>, <em>search_window=10</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>magnification_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.image_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.image_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>image brightness amplitudes</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra_image</strong> – </li>
-<li><strong>dec_image</strong> – </li>
-<li><strong>point_amp</strong> – </li>
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of image amplitudes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.image_position">
+<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.image_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>on-sky image positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">image positions in x, y as arrays</p>
 </td>
 </tr>
 </tbody>
@@ -529,12 +631,45 @@ parameters: ra_image, dec_image, point_amp</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.source_amplitude">
 <code class="descname">source_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.source_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.source_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>intrinsic brightness amplitude of point source</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when positions are defined in image
+plane and have to be ray-traced back</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">brightness amplitude (as numpy array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.source_position">
 <code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#PointSourceCached.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.PointSourceCached.source_position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>original source position (prior to lensing)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – point source keyword arguments</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list (only used when required)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x, y position</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.PointSourceCached.update_lens_model">
@@ -547,28 +682,58 @@ parameters: ra_image, dec_image, point_amp</p>
 <dt id="lenstronomy.PointSource.point_source_types.SourcePositions">
 <em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source_types.</code><code class="descname">SourcePositions</code><span class="sig-paren">(</span><em>lensModel</em>, <em>fixed_magnification=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class of a single point source in the image plane, aka star
-parameters: ra_image, dec_image, point_amp</p>
+<p>class of a single point source defined in the original source coordinate position that is lensed.
+The lens equation is solved to compute the image positions for the specified source position.</p>
+<p>Name within the PointSource module: ‘SOURCE_POSITION’
+parameters: ra_source, dec_source, source_amp
+If fixed_magnification=True, than ‘source_amp’ is a parameter instead of ‘point_amp’</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.SourcePositions.image_amplitude">
-<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>x_pos=None</em>, <em>y_pos=None</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>magnification_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.image_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.PointSource.point_source_types.SourcePositions.image_position">
-<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>min_distance=0.01</em>, <em>search_window=5</em>, <em>precision_limit=1e-10</em>, <em>num_iter_max=100</em>, <em>x_center=0</em>, <em>y_center=0</em>, <em>magnification_limit=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.image_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>x_pos=None</em>, <em>y_pos=None</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.image_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>image brightness amplitudes</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra_image</strong> – </li>
-<li><strong>dec_image</strong> – </li>
-<li><strong>point_amp</strong> – </li>
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only ignored when providing image positions
+directly</li>
+<li><strong>x_pos</strong> – pre-computed image position (no lens equation solver applied)</li>
+<li><strong>y_pos</strong> – pre-computed image position (no lens equation solver applied)</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of image amplitudes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.PointSource.point_source_types.SourcePositions.image_position">
+<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens</em>, <em>magnification_limit=None</em>, <em>kwargs_lens_eqn_solver={}</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.image_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>on-sky image positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</li>
+<li><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
+images will be computed that exceed the lensing magnification (absolute value) limit</li>
+<li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
+see LensEquationSolver() class for details</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">image positions in x, y as arrays</p>
 </td>
 </tr>
 </tbody>
@@ -578,17 +743,58 @@ parameters: ra_image, dec_image, point_amp</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.SourcePositions.source_amplitude">
 <code class="descname">source_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.source_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.source_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>intrinsic brightness amplitude of point source
+When brightnesses are defined in magnified on-sky positions, the intrinsic brightness is computed as the mean
+in the magnification corrected image position brightnesses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword arguments of the point source model</li>
+<li><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), used when brightness are defined in
+magnified on-sky positions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">brightness amplitude (as numpy array)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.SourcePositions.source_position">
-<code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.source_position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.source_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>original source position (prior to lensing)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – point source keyword arguments</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">x, y position (as numpy arrays)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.SourcePositions.update_lens_model">
 <code class="descname">update_lens_model</code><span class="sig-paren">(</span><em>lens_model_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#SourcePositions.update_lens_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.SourcePositions.update_lens_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>update LensModel() and LensEquationSolver() instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lens_model_class</strong> – LensModel() class instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">internal lensModel class updated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -597,27 +803,24 @@ parameters: ra_image, dec_image, point_amp</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.PointSource.point_source_types.</code><code class="descname">Unlensed</code><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class of a single point source in the image plane, aka star
+Name within the PointSource module: ‘UNLENSED’
+This model can deal with arrays of point sources.
 parameters: ra_image, dec_image, point_amp</p>
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.Unlensed.image_amplitude">
-<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.image_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.PointSource.point_source_types.Unlensed.image_position">
-<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.image_position" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<code class="descname">image_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.image_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.image_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>amplitudes as observed on the sky</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra_image</strong> – </li>
-<li><strong>dec_image</strong> – </li>
-<li><strong>point_amp</strong> – </li>
+<li><strong>kwargs_ps</strong> – keyword argument of point source model</li>
+<li><strong>kwargs</strong> – keyword arguments of function call (which are not used for this object</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array of amplitudes</p>
 </td>
 </tr>
 </tbody>
@@ -625,19 +828,72 @@ parameters: ra_image, dec_image, point_amp</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.PointSource.point_source_types.Unlensed.image_position">
+<code class="descname">image_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.image_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.image_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>on-sky position</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – keyword argument of point source model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array of x, y image positions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.Unlensed.source_amplitude">
-<code class="descname">source_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.source_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.source_amplitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">source_amplitude</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.source_amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.source_amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>intrinsic source amplitudes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>kwargs_ps</strong> – keyword argument of point source model</li>
+<li><strong>kwargs</strong> – keyword arguments of function call (which are not used for this object</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">numpy array of amplitudes</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.Unlensed.source_position">
-<code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_lens=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.source_position" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descname">source_position</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.source_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.source_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>original physical position (identical for this object)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_ps</strong> – keyword argument of point source model</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">numpy array of x, y source positions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.PointSource.point_source_types.Unlensed.update_lens_model">
 <code class="descname">update_lens_model</code><span class="sig-paren">(</span><em>lens_model_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_types.html#Unlensed.update_lens_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_types.Unlensed.update_lens_model" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>lens_model_class</strong> – LensModel() class instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">internal lensModel class updated</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
@@ -709,7 +965,7 @@ parameters: ra_image, dec_image, point_amp</p>
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

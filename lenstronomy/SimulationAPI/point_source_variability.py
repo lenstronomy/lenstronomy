@@ -3,6 +3,8 @@ from lenstronomy.SimulationAPI.sim_api import SimAPI
 
 import numpy as np
 
+__all__ = ['PointSourceVariability']
+
 
 class PointSourceVariability(object):
     """

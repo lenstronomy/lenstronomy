@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.Likelihoods package &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.Sampling.Likelihoods package &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" accesskey="U">lenstronomy.Sampling package</a> &#187;</li> 
       </ul>
@@ -56,7 +56,7 @@
 <span id="lenstronomy-sampling-likelihoods-image-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.image_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.image_likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood">
-<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.image_likelihood.</code><code class="descname">ImageLikelihood</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>multi_band_type</em>, <em>kwargs_model</em>, <em>bands_compute=None</em>, <em>likelihood_mask_list=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em>, <em>force_minimum_source_surface_brightness=False</em>, <em>flux_min=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.image_likelihood.</code><code class="descname">ImageLikelihood</code><span class="sig-paren">(</span><em>multi_band_list</em>, <em>multi_band_type</em>, <em>kwargs_model</em>, <em>bands_compute=None</em>, <em>image_likelihood_mask_list=None</em>, <em>source_marg=False</em>, <em>linear_prior=None</em>, <em>check_positive_flux=False</em>, <em>kwargs_pixelbased=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>manages imaging data likelihoods</p>
 <dl class="method">
@@ -67,14 +67,16 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
-<li><strong>kwargs_lens_light</strong> – </li>
-<li><strong>kwargs_ps</strong> – </li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list according to LensModel module</li>
+<li><strong>kwargs_source</strong> – source light keyword argument list according to LightModel module</li>
+<li><strong>kwargs_lens_light</strong> – deflector light (not lensed) keyword argument list according to LightModel module</li>
+<li><strong>kwargs_ps</strong> – point source keyword argument list according to PointSource module</li>
+<li><strong>kwargs_special</strong> – special keyword argument list as part of the Param module</li>
+<li><strong>kwargs_extinction</strong> – extinction parameter keyword argument list according to LightModel module</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">log likelihood of the data given the model</p>
 </td>
 </tr>
 </tbody>
@@ -132,9 +134,9 @@
 <em class="property">class </em><code class="descclassname">lenstronomy.Sampling.Likelihoods.position_likelihood.</code><code class="descname">PositionLikelihood</code><span class="sig-paren">(</span><em>point_source_class</em>, <em>image_position_uncertainty=0.005</em>, <em>astrometric_likelihood=False</em>, <em>image_position_likelihood=False</em>, <em>ra_image_list=[]</em>, <em>dec_image_list=[]</em>, <em>source_position_likelihood=False</em>, <em>check_matched_source_position=False</em>, <em>source_position_tolerance=0.001</em>, <em>source_position_sigma=0.001</em>, <em>force_no_add_image=False</em>, <em>restrict_image_number=False</em>, <em>max_num_images=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>likelihood of positions of multiply imaged point sources</p>
-<dl class="method">
+<dl class="staticmethod">
 <dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood">
-<code class="descname">astrometric_likelihood</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_special</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.astrometric_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">astrometric_likelihood</code><span class="sig-paren">(</span><em>kwargs_ps</em>, <em>kwargs_special</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.astrometric_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>evaluates the astrometric uncertainty of the model plotted point sources (only available for ‘LENSED_POSITION’
 point source model) and predicted image position by the lens model including an astrometric correction term.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -384,7 +386,7 @@ Sigma_theta: image plane covariance matrix of uncertainties</p>
         <li class="right" >
           <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" >lenstronomy.Sampling package</a> &#187;</li> 
       </ul>

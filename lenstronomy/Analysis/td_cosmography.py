@@ -3,11 +3,12 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from astropy.cosmology import default_cosmology
-
 from lenstronomy.Util import class_creator
 from lenstronomy.Util import constants as const
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Analysis.kinematics_api import KinematicsAPI
+
+__all__ = ['TDCosmography']
 
 
 class TDCosmography(KinematicsAPI):
@@ -106,6 +107,8 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
          if set to None will be computed in this function with default settings that may not be accurate.
+        :param theta_E: pre-computed Einstein radius (optional)
+        :param gamma: pre-computed power-law slope of mass profile
         :return: dimensionless velocity dispersion (see e.g. Birrer et al. 2016, 2019)
         """
         sigma_v = self.velocity_dispersion(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
@@ -134,7 +137,7 @@ class TDCosmography(KinematicsAPI):
         sigma_v_map = self.velocity_dispersion_map(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light,
                                                kwargs_anisotropy=kwargs_anisotropy, r_eff=r_eff, theta_E=theta_E,
                                                gamma=gamma)
-        sigma_v_map *= 1000 # convert from [km/s] to  [m/s]
+        sigma_v_map *= 1000  # convert from [km/s] to  [m/s]
         J_map = sigma_v_map ** 2 * self._lens_cosmo.dds / self._lens_cosmo.ds / const.c ** 2
         return J_map
 

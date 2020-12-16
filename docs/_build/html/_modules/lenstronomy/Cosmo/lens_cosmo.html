@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.Cosmo.lens_cosmo &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,7 +41,7 @@
   <h1>Source code for lenstronomy.Cosmo.lens_cosmo</h1><div class="highlight"><pre>
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 
-<span class="c1">#this file contains a class to convert units</span>
+<span class="c1"># this file contains a class to convert lensing and physical units</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
@@ -113,15 +113,15 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sigma_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns the critical projected mass density in units of M_sun/rad^2</span>
-<span class="sd">        :return: critical projected mass density</span>
+<span class="sd">        returns the critical projected lensing mass density in units of M_sun/Mpc^2</span>
+<span class="sd">        :return: critical projected lensing mass density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Epsilon_Crit&#39;</span><span class="p">):</span>
-            <span class="n">const_SI</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1">#c^2/(4*pi*G) in units of [kg/m]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_sigma_crit_mpc&#39;</span><span class="p">):</span>
+            <span class="n">const_SI</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># c^2/(4*pi*G) in units of [kg/m]</span>
             <span class="n">conversion</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span>  <span class="c1"># converts [kg/m] to [M_sun/Mpc]</span>
-            <span class="n">factor</span> <span class="o">=</span> <span class="n">const_SI</span><span class="o">*</span><span class="n">conversion</span>   <span class="c1">#c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span> <span class="c1">#[M_sun/Mpc^2]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="n">const_SI</span><span class="o">*</span><span class="n">conversion</span>  <span class="c1"># c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_crit_mpc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span>  <span class="c1"># [M_sun/Mpc^2]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_crit_mpc</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sigma_crit_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -130,12 +130,12 @@
 <span class="sd">        when provided a physical mass per physical Mpc^2</span>
 <span class="sd">        :return: critical projected mass density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Epsilon_Crit_arcsec&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_sigma_crit_arcsec&#39;</span><span class="p">):</span>
             <span class="n">const_SI</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># c^2/(4*pi*G) in units of [kg/m]</span>
             <span class="n">conversion</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span>  <span class="c1"># converts [kg/m] to [M_sun/Mpc]</span>
             <span class="n">factor</span> <span class="o">=</span> <span class="n">const_SI</span> <span class="o">*</span> <span class="n">conversion</span>  <span class="c1"># c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit_arcsec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># [M_sun/arcsec^2]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Epsilon_Crit_arcsec</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_crit_arcsec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># [M_sun/arcsec^2]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sigma_crit_arcsec</span>
 
 <div class="viewcode-block" id="LensCosmo.phys2arcsec_lens"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.lens_cosmo.LensCosmo.phys2arcsec_lens">[docs]</a>    <span class="k">def</span> <span class="nf">phys2arcsec_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phys</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -309,7 +309,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

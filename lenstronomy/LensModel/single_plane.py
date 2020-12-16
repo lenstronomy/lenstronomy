@@ -3,6 +3,8 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.profile_list_base import ProfileListBase
 
+__all__ = ['SinglePlane']
+
 
 class SinglePlane(ProfileListBase):
     """

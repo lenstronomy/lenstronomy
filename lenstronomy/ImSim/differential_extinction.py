@@ -1,6 +1,8 @@
 from lenstronomy.LightModel.light_model import LightModel
 import numpy as np
 
+__all__ = ['DifferentialExtinction']
+
 
 class DifferentialExtinction(object):
     """
@@ -20,6 +22,13 @@ class DifferentialExtinction(object):
         else:
             self._compute_bool = True
         self._tau0_index = tau0_index
+
+    @property
+    def compute_bool(self):
+        """
+        :return: True when a differential extinction is set, False otherwise 
+        """
+        return self._compute_bool
 
     def extinction(self, x, y, kwargs_extinction=None, kwargs_special=None):
         """

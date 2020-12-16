@@ -7,6 +7,8 @@ import numpy as np
 import warnings
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['TNFW']
+
 
 class TNFW(LensProfileBase):
     """

@@ -6,6 +6,8 @@ import scipy.optimize
 import numpy as np
 import copy
 
+__all__ = ['Solver4Point']
+
 
 class Solver4Point(object):
     """
@@ -14,9 +16,9 @@ class Solver4Point(object):
     def __init__(self, lensModel, solver_type='PROFILE'):
         self._solver_type = solver_type  # supported:
         if not lensModel.lens_model_list[0] in ['SPEP', 'SPEMD', 'PEMD', 'SIE', 'NIE', 'NFW_ELLIPSE',
-                                                'SHAPELETS_CART', 'CNFW_ELLIPSE']:
+                                                'SHAPELETS_CART', 'CNFW_ELLIPSE', 'EPL']:
             raise ValueError("first lens model must be supported by the solver: 'SPEP', 'SPEMD', 'PEMD',"
-                             " 'SIE', 'NIE', 'NFW_ELLIPSE', 'SHAPELETS_CART', 'CNFW_ELLIPSE'. "
+                             " 'SIE', 'NIE', 'EPL', 'NFW_ELLIPSE', 'SHAPELETS_CART', 'CNFW_ELLIPSE'. "
                              "Your choice was %s" % lensModel.lens_model_list[0])
         if not solver_type in ['PROFILE', 'PROFILE_SHEAR']:
             raise ValueError("solver_type %s not supported! Choose from 'PROFILE', 'PROFILE_SHEAR'"
@@ -100,6 +102,7 @@ class Solver4Point(object):
         :return:
         """
         a = np.zeros(6)
+
         a[0] = - x_sub[0] + x_sub[1]
         a[1] = - x_sub[0] + x_sub[2]
         a[2] = - x_sub[0] + x_sub[3]
@@ -125,7 +128,7 @@ class Solver4Point(object):
             kwargs_list[1]['gamma1'] = gamma1
             kwargs_list[1]['gamma2'] = gamma2
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL']:
             [theta_E, e1, e2, center_x, center_y, no_sens_param] = x
             kwargs_list[0]['theta_E'] = theta_E
             kwargs_list[0]['e1'] = e1
@@ -169,7 +172,7 @@ class Solver4Point(object):
         else:
             phi_ext = 0
         lens_model = self._lens_mode_list[0]
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL']:
             e1 = kwargs_list[0]['e1']
             e2 = kwargs_list[0]['e2']
             center_x = kwargs_list[0]['center_x']
@@ -205,7 +208,7 @@ class Solver4Point(object):
         if self._solver_type in ['PROFILE_SHEAR', 'PROFILE_SHEAR_GAMMA_PSI']:
             pass
             #kwargs_fixed_lens_list[1]['psi_ext'] = kwargs_lens_init[1]['psi_ext']
-        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD']:
+        if lens_model in ['SPEP', 'SPEMD', 'SIE', 'NIE', 'PEMD', 'EPL']:
             kwargs_fixed['theta_E'] = kwargs_lens['theta_E']
             kwargs_fixed['e1'] = kwargs_lens['e1']
             kwargs_fixed['e2'] = kwargs_lens['e2']

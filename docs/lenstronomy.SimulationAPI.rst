@@ -1,6 +1,13 @@
 lenstronomy.SimulationAPI package
 =================================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.SimulationAPI.ObservationConfig
+
 Submodules
 ----------
 
@@ -32,6 +39,14 @@ lenstronomy.SimulationAPI.observation\_constructor module
 ---------------------------------------------------------
 
 .. automodule:: lenstronomy.SimulationAPI.observation_constructor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+lenstronomy.SimulationAPI.point\_source\_variability module
+-----------------------------------------------------------
+
+.. automodule:: lenstronomy.SimulationAPI.point_source_variability
     :members:
     :undoc-members:
     :show-inheritance:

@@ -5,7 +5,7 @@ lenstronomy - gravitational lensing software package
 .. image:: docs/figures/readme_fig.png
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
-    :target: http://badge.fury.io/py/lenstronomy
+    :target: https://badge.fury.io/py/lenstronomy
 
 .. image:: https://travis-ci.org/sibirrer/lenstronomy.png?branch=master
         :target: https://travis-ci.org/sibirrer/lenstronomy
@@ -29,11 +29,10 @@ lenstronomy - gravitational lensing software package
 
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
-``lenstronomy`` finds application in e.g. `Birrer et al 2016 <http://adsabs.harvard.edu/abs/2016JCAP...08..020B>`_,
-`Birrer et al 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.4726B/abstract>`_, `Shajib et al 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.494.6072S/abstract>`_ and
-`Birrer et al 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200702941B/abstract>`_ for time-delay cosmography and measuring
-the expansion rate of the universe and `Birrer et al 2017 <http://adsabs.harvard.edu/abs/2017JCAP...05..037B>`_ and `Gilman et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020MNRAS.491.6077G/abstract>`_ for
-quantifying lensing substructure to infer dark matter properties.
+``lenstronomy`` finds application for time-delay cosmography and measuring
+the expansion rate of the universe, for quantifying lensing substructure to infer dark matter properties, morphological quantifications of galaxies,
+quasar-host galaxy decomposition and many more.
+A (incomplete) list of publications making use of lenstronomy can be found `here <https://github.com/sibirrer/lenstronomy/blob/master/PUBLISHED.rst>`_.
 
 
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.
@@ -49,23 +48,6 @@ Installation
 .. code-block:: bash
 
     $ pip install lenstronomy --user
-
-
-Requirements
-------------
-To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
-is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
-
-.. code-block:: bash
-
-    $ sudo apt-get install gfortran
-    $ git clone https://github.com/sibirrer/fastell4py.git <desired location>
-    $ cd <desired location>
-    $ python setup.py install --user
-
-
-Additional python libraries are e.g. : ``numpy``, ``scipy``, ``matplotlib`` ``astropy``, ``dynesty``, ``pymultinest``, ``pypolychord``, ``nestcheck``
-
 
 
 Modelling Features
@@ -97,7 +79,7 @@ Example notebooks
 We have made an extension module available at `https://github.com/sibirrer/lenstronomy_extensions <https://github.com/sibirrer/lenstronomy_extensions>`_.
 You can find simple examle notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.
 
-* `Units, coordiante system and parameter definitions in lenstronomy <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb>`_
+* `Units, coordinate system and parameter definitions in lenstronomy <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/units_coordinates_parameters.ipynb>`_
 * `FITS handling and extracting needed information from the data prior to modeling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/fits_handling.ipynb>`_
 * `Modeling a simple Einstein ring <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/simple_ring.ipynb>`_
 * `Quadrupoly lensed quasar modelling <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quad_model.ipynb>`_
@@ -105,6 +87,7 @@ You can find simple examle notebooks for various cases. The latest versions of t
 * `Time-delay cosmography <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/time-delay%20cosmography.ipynb>`_
 * `Source reconstruction and deconvolution with Shapelets <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/shapelet_source_modelling.ipynb>`_
 * `Solving the lens equation <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lens_equation.ipynb>`_
+* `Multi-band fitting <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/multi_band_fitting.ipynb>`_
 * `Measuring cosmic shear with Einstein rings <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/EinsteinRingShear_simulations.ipynb>`_
 * `Fitting of galaxy light profiles, like e.g. GALFIT <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/galfitting.ipynb>`_
 * `Quasar-host galaxy decomposition <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/quasar-host%20decomposition.ipynb>`_
@@ -113,7 +96,20 @@ You can find simple examle notebooks for various cases. The latest versions of t
 * `Mock simulation API with multi color models <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/simulation_api.ipynb>`_
 * `Catalogue data modeling of image positions, flux ratios and time delays <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/catalogue%20modelling.ipynb>`_
 * `Example of numerical ray-tracing and convolution options <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb>`_
+* `Simulated lenses with populations generated by SkyPy <https://github.com/sibirrer/lenstronomy_extensions/blob/master/lenstronomy_extensions/Notebooks/skypy_lenstronomy.ipynb>`_
 
+
+Requirements
+------------
+To run lens models with elliptical mass distributions, the fastell4py package, originally from Barkana (fastell),
+is also required and can be cloned from: `https://github.com/sibirrer/fastell4py <https://github.com/sibirrer/fastell4py>`_ (needs a fortran compiler)
+
+.. code-block:: bash
+
+    $ sudo apt-get install gfortran
+    $ git clone https://github.com/sibirrer/fastell4py.git <desired location>
+    $ cd <desired location>
+    $ python setup.py install --user
 
 
 Contribution

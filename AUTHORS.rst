@@ -18,6 +18,7 @@ Key contributors
 Contributors (alphabetic)
 -------------------------
 
+* Jelle Aalbers `JelleAalbers <https://github.com/JelleAalbers>`_
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
@@ -25,6 +26,7 @@ Contributors (alphabetic)
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
+* Robert Morgan `rmorgan10 <https://github.com/rmorgan10/>`_
 * Anna Nierenberg `amn3142 <https://github.com/amn3142/>`_
 * Brian Nord `bnord <https://github.com/bnord/>`_
 * Giulia Pagano

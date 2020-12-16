@@ -60,15 +60,31 @@ def test_map_coord2pix():
 def test_make_grid():
     numPix = 11
     deltapix = 1.
+
     grid = util.make_grid(numPix, deltapix)
     assert grid[0][0] == -5
-    assert np.sum(grid[0]) == 0
+    assert np.sum(grid[0]) == 0.
+
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
-    print(np.sum(x_grid))
-    assert np.sum(x_grid) == 0
+    assert np.sum(x_grid) == 0.
     assert x_grid[0] == -5.25
 
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1, left_lower=True)
+    assert x_grid[0] == 0.
+    assert y_grid[0] == 0.
+
+    # Similar tests for a non-rectangular grid
+
+    x_grid, y_grid = util.make_grid((numPix, numPix - 1), deltapix)
+    assert x_grid[0] == -5.
+    assert y_grid[0] == -4.5
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+    assert x_grid[0] == -5.25
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, left_lower=True)
     assert x_grid[0] == 0
     assert y_grid[0] == 0
 
@@ -161,6 +177,31 @@ def test_image2array2image():
     array = util.image2array(image)
     image_new = util.array2image(array, nx, ny)
     assert image_new[1, 2] == image[1, 2]
+
+
+def test_array2cube():
+    array = np.linspace(1, 200, 200)
+    image = util.array2cube(array, 2, 100)
+    assert image[0][9][9] == 100
+    assert image[1][0][9] == 110
+
+
+def test_cube2array():
+    sube = np.zeros((2, 10, 10))
+    sube[1, 2, 2] = 1
+    array = util.cube2array(sube)
+    assert array[122] == 1
+
+
+def test_cube2array2cube():
+    cube = np.zeros((2, 10, 10))
+    ns, nx, ny = np.shape(cube)
+    assert nx == ny  # condition required
+    nxy = nx*ny
+    cube[1, 2, 2] = 1
+    array = util.cube2array(cube)
+    cube_new = util.array2cube(array, ns, nxy)
+    assert cube_new[1, 2, 2] == cube[1, 2, 2]
 
 
 def test_get_axes():
@@ -346,6 +387,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             array = np.ones(5)
             util.array2image(array)
+        with self.assertRaises(ValueError):
+            array = np.ones((2, 2))
+            util.array2cube(array, 2, 2)
         with self.assertRaises(ValueError):
             x, y = np.ones(6), np.ones(6)
             util.get_axes(x, y)

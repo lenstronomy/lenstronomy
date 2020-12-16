@@ -4,6 +4,8 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+__all__ = ['LSST']
+
 u_band_obs = {'exposure_time': 15.,
               'sky_brightness': 22.99,
               'magnitude_zero_point': 26.5,
@@ -94,7 +96,6 @@ class LSST(object):
             raise ValueError(" %s coadd_years not supported! Choose an integer between 1 and 10." % coadd_years)
         elif coadd_years != 10:
             self.obs['num_exposures'] = coadd_years*self.obs['num_exposures']//10
-
 
         self.camera = {'read_noise': 10,  # will be <10
                        'pixel_scale': 0.2,

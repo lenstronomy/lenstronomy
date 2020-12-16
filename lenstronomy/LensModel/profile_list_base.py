@@ -1,5 +1,18 @@
 from lenstronomy.Util.util import convert_bool_list
 
+__all__ = ['ProfileListBase']
+
+
+_SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'CONVERGENCE', 'FLEXION',
+                     'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'NFW', 'NFW_ELLIPSE',
+                     'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
+                     'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
+                     'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
+                     'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
+                     'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
+                     'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
+                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN']
 
 class ProfileListBase(object):
     """
@@ -70,6 +83,9 @@ class ProfileListBase(object):
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()
+        elif lens_type == 'HESSIAN':
+            from lenstronomy.LensModel.Profiles.hessian import Hessian
+            return Hessian()
         elif lens_type == 'FLEXION':
             from lenstronomy.LensModel.Profiles.flexion import Flexion
             return Flexion()
@@ -152,8 +168,7 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.sersic_ellipse_kappa import SersicEllipseKappa
             return SersicEllipseKappa()
         elif lens_type == 'SERSIC_ELLIPSE_GAUSS_DEC':
-            from lenstronomy.LensModel.Profiles.gauss_decomposition \
-                import SersicEllipseGaussDec
+            from lenstronomy.LensModel.Profiles.gauss_decomposition import SersicEllipseGaussDec
             return SersicEllipseGaussDec()
         elif lens_type == 'PJAFFE':
             from lenstronomy.LensModel.Profiles.p_jaffe import PJaffe
@@ -228,7 +243,7 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()
         else:
-            raise ValueError('%s is not a valid lens model' % lens_type)
+            raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 
     def _bool_list(self, k=None):
         """

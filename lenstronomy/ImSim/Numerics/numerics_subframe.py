@@ -3,6 +3,8 @@ from lenstronomy.ImSim.Numerics.numerics import Numerics
 from lenstronomy.ImSim.Numerics.point_source_rendering import PointSourceRendering
 from lenstronomy.Data.pixel_grid import PixelGrid
 
+__all__ = ['NumericsSubFrame']
+
 
 class NumericsSubFrame(PointSourceRendering):
     """
@@ -68,12 +70,36 @@ class NumericsSubFrame(PointSourceRendering):
         return self._complete_frame(image_sub_frame)
 
     @property
+    def grid_supersampling_factor(self):
+        """
+
+        :return: supersampling factor set for higher resolution sub-pixel sampling of surface brightness
+        """
+        return self._numerics_subframe.grid_supersampling_factor
+
+    @property
     def coordinates_evaluate(self):
         """
 
         :return: 1d array of all coordinates being evaluated to perform the image computation
         """
         return self._numerics_subframe.coordinates_evaluate
+
+    @property
+    def convolution_class(self):
+        """
+
+        :return: convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, ...)
+        """
+        return self._numerics_subframe.convolution_class
+
+    @property
+    def grid_class(self):
+        """
+
+        :return: grid class (can be RegularGrid, AdaptiveGrid)
+        """
+        return self._numerics_subframe.grid_class
 
     def _complete_frame(self, image_sub_frame):
         """

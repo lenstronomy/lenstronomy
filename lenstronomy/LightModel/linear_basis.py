@@ -5,6 +5,8 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LightModel.light_model_base import LightModelBase
 
+__all__ = ['LinearBasis']
+
 
 class LinearBasis(LightModelBase):
     """
@@ -72,6 +74,8 @@ class LinearBasis(LightModelBase):
                     kwargs_new.update(new)
                     response += self.func_list[i].function_split(x, y, **kwargs_new)
                     n += num_param
+                elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                    raise ValueError("'{}' model does not support function split".format(model))
                 else:
                     raise ValueError('model type %s not valid!' % model)
         return response, n
@@ -111,6 +115,11 @@ class LinearBasis(LightModelBase):
                 else:
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 n_list += [num_param]
+            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                n_scales = kwargs_list[i]['n_scales']
+                n_pixels = kwargs_list[i]['n_pixels']
+                num_param = int(n_scales * n_pixels)
+                n_list += [num_param]  # TODO : find a way to make it the number of source pixels
             else:
                 raise ValueError('model type %s not valid!' % model)
         return n_list
@@ -141,11 +150,17 @@ class LinearBasis(LightModelBase):
                     num_param = int((n_max + 1) * (n_max + 2) / 2)
                 kwargs_list[k]['amp'] = param[i:i+num_param]
                 i += num_param
+            elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
+                n_scales = kwargs_list[k]['n_scales']
+                n_pixels = kwargs_list[k]['n_pixels']
+                num_param = int(n_scales * n_pixels)
+                kwargs_list[k]['amp'] = param[i:i+num_param]
+                i += num_param
             else:
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
-    def add_fixed_linear(self, kwargs_fixed_list):
+    def add_fixed_linear(self, kwargs_fixed_list, bool_list=None):
         """
 
         :param kwargs_fixed_list: list of fixed keyword arguments

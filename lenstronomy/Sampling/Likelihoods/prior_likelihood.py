@@ -1,6 +1,8 @@
 import numpy as np
 from lenstronomy.Util.prob_density import KDE1D
 
+__all__ = ['PriorLikelihood']
+
 
 class PriorLikelihood(object):
     """
@@ -40,6 +42,7 @@ class PriorLikelihood(object):
         :param prior_extinction_lognormal: list of [index_model, param_name, mean, 1-sigma priors]
 
         """
+
         self._prior_lens, self._prior_source, self._prior_lens_light, self._prior_ps, self._prior_special, self._prior_extinction = \
             prior_lens, prior_source, prior_lens_light, prior_ps, prior_special, prior_extinction
         self._prior_lens_kde, self._prior_source_kde, self._prior_lens_light_kde, self._prior_ps_kde = prior_lens_kde, \

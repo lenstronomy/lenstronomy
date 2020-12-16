@@ -1,6 +1,8 @@
 import numpy as np
 import lenstronomy.Util.constants as const
 
+__all__ = ['TimeDelayLikelihood']
+
 
 class TimeDelayLikelihood(object):
     """

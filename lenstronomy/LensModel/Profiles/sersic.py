@@ -6,6 +6,8 @@ import lenstronomy.Util.util as util
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['Sersic']
+
 
 class Sersic(SersicUtil, LensProfileBase):
     """

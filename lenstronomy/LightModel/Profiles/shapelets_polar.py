@@ -6,7 +6,11 @@ import scipy.special
 
 import lenstronomy.Util.param_util as param_util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class ShapeletsPolar(object):
     """
     2D polar Shapelets, see Massey & Refregier 2005
@@ -147,6 +151,7 @@ class ShapeletsPolar(object):
         return int((n_max+1)*(n_max+2)/2)
 
 
+@export
 class ShapeletsPolarExp(object):
     """
     2D exponential shapelets, Berge et al. 2019
@@ -257,6 +262,7 @@ class ShapeletsPolarExp(object):
         return int(index)
 
 
+@export
 class ShapeletSetPolar(object):
     """
     class to operate on entire shapelet set

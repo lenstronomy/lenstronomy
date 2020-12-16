@@ -4,6 +4,8 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+__all__ = ['Euclid']
+
 VIS_obs = {'exposure_time': 565.,
                    'sky_brightness': 22.35,
                    'magnitude_zero_point': 24.0,

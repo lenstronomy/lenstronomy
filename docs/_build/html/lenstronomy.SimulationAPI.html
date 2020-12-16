@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI package &#8212; lenstronomy 1.5.1 documentation</title>
+    <title>lenstronomy.SimulationAPI package &#8212; lenstronomy 1.6.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -18,7 +18,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="lenstronomy.Util package" href="lenstronomy.Util.html" />
+    <link rel="next" title="lenstronomy.SimulationAPI.ObservationConfig package" href="lenstronomy.SimulationAPI.ObservationConfig.html" />
     <link rel="prev" title="lenstronomy.Sampling.Samplers package" href="lenstronomy.Sampling.Samplers.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -31,12 +31,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
+          <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,6 +48,22 @@
             
   <div class="section" id="lenstronomy-simulationapi-package">
 <h1>lenstronomy.SimulationAPI package<a class="headerlink" href="#lenstronomy-simulationapi-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html">lenstronomy.SimulationAPI.ObservationConfig package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#module-lenstronomy.SimulationAPI.ObservationConfig.DES">lenstronomy.SimulationAPI.ObservationConfig.DES module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#module-lenstronomy.SimulationAPI.ObservationConfig.Euclid">lenstronomy.SimulationAPI.ObservationConfig.Euclid module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#module-lenstronomy.SimulationAPI.ObservationConfig.HST">lenstronomy.SimulationAPI.ObservationConfig.HST module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#module-lenstronomy.SimulationAPI.ObservationConfig.LSST">lenstronomy.SimulationAPI.ObservationConfig.LSST module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lenstronomy.SimulationAPI.ObservationConfig.html#module-lenstronomy.SimulationAPI.ObservationConfig">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -231,13 +247,13 @@ For the full possibility of how to create such an instance, see the PSF() class 
 
 <dl class="class">
 <dt id="lenstronomy.SimulationAPI.observation_api.SingleBand">
-<em class="property">class </em><code class="descclassname">lenstronomy.SimulationAPI.observation_api.</code><code class="descname">SingleBand</code><span class="sig-paren">(</span><em>pixel_scale</em>, <em>exposure_time</em>, <em>magnitude_zero_point</em>, <em>read_noise=None</em>, <em>ccd_gain=None</em>, <em>sky_brightness=None</em>, <em>seeing=None</em>, <em>num_exposures=1</em>, <em>psf_type='GAUSSIAN'</em>, <em>kernel_point_source=None</em>, <em>truncation=5</em>, <em>data_count_unit='ADU'</em>, <em>background_noise=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/observation_api.html#SingleBand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.SimulationAPI.observation_api.</code><code class="descname">SingleBand</code><span class="sig-paren">(</span><em>pixel_scale</em>, <em>exposure_time</em>, <em>magnitude_zero_point</em>, <em>read_noise=None</em>, <em>ccd_gain=None</em>, <em>sky_brightness=None</em>, <em>seeing=None</em>, <em>num_exposures=1</em>, <em>psf_type='GAUSSIAN'</em>, <em>kernel_point_source=None</em>, <em>truncation=5</em>, <em>data_count_unit='e-'</em>, <em>background_noise=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/observation_api.html#SingleBand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.SimulationAPI.observation_api.Instrument" title="lenstronomy.SimulationAPI.observation_api.Instrument"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.SimulationAPI.observation_api.Instrument</span></code></a>, <a class="reference internal" href="#lenstronomy.SimulationAPI.observation_api.Observation" title="lenstronomy.SimulationAPI.observation_api.Observation"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.SimulationAPI.observation_api.Observation</span></code></a></p>
 <p>class that combines Instrument and Observation</p>
 <dl class="attribute">
 <dt id="lenstronomy.SimulationAPI.observation_api.SingleBand.background_noise">
 <code class="descname">background_noise</code><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand.background_noise" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gaussian sigma of noise level per pixel (in counts per second)</p>
+<dd><p>Gaussian sigma of noise level per pixel in counts (e- or ADU) per second</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -258,6 +274,23 @@ For the full possibility of how to create such an instance, see the PSF() class 
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image</strong> – noisy data, background subtracted</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">estimated noise map  sqrt(variance) for each pixel as estimated from the instrument and observation</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.SimulationAPI.observation_api.SingleBand.flux_iid">
+<code class="descname">flux_iid</code><span class="sig-paren">(</span><em>flux_per_second</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/observation_api.html#SingleBand.flux_iid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand.flux_iid" title="Permalink to this definition">¶</a></dt>
+<dd><p>IID counts. This can be used by lenstronomy to estimate the Poisson errors
+keeping the assumption that the counts are IIDs (even if they are not).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>flux_per_second</strong> – flux count per second in the units set in this class (ADU or e-)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">IID count number</td>
 </tr>
 </tbody>
 </table>
@@ -321,41 +354,13 @@ m = -2.5 x log10(DN / EXPTIME) + ZEROPOINT</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="lenstronomy.SimulationAPI.observation_api.SingleBand.read_noise">
-<code class="descname">read_noise</code><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand.read_noise" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sqrt(variance) of read noise in units of the data</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.SimulationAPI.observation_api.SingleBand.scaled_exposure_time">
-<code class="descname">scaled_exposure_time</code><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand.scaled_exposure_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>scaled “effective” exposure time of IID counts. This can be used by lenstronomy to estimate the Poisson errors
-keeping the assumption that the counts are IIDs (even if they are not).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">scaled exposure time</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="lenstronomy.SimulationAPI.observation_api.SingleBand.sky_brightness">
 <code class="descname">sky_brightness</code><a class="headerlink" href="#lenstronomy.SimulationAPI.observation_api.SingleBand.sky_brightness" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sky brightness (counts per square arcseconds in unit of data per unit time)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sky brightness (counts per square arcseconds in unit of data (e- or ADU’s) per unit time)</td>
 </tr>
 </tbody>
 </table>
@@ -384,6 +389,76 @@ keeping the assumption that the counts are IIDs (even if they are not).</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.SimulationAPI.point_source_variability">
+<span id="lenstronomy-simulationapi-point-source-variability-module"></span><h2>lenstronomy.SimulationAPI.point_source_variability module<a class="headerlink" href="#module-lenstronomy.SimulationAPI.point_source_variability" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability">
+<em class="property">class </em><code class="descclassname">lenstronomy.SimulationAPI.point_source_variability.</code><code class="descname">PointSourceVariability</code><span class="sig-paren">(</span><em>source_x</em>, <em>source_y</em>, <em>variability_func</em>, <em>numpix</em>, <em>kwargs_single_band</em>, <em>kwargs_model</em>, <em>kwargs_numerics</em>, <em>kwargs_lens</em>, <em>kwargs_source_mag=None</em>, <em>kwargs_lens_light_mag=None</em>, <em>kwargs_ps_mag=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/point_source_variability.html#PointSourceVariability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class enables to plug in a variable point source in the source plane to be added on top of a fixed lens and
+extended surface brightness model. The class inherits SimAPI and additionally requires the lens and light model
+parameters as well as a position in the source plane.</p>
+<p>The intrinsic source variability can be defined by the user and additional uncorrelated variability in the image
+plane can be plugged in as well (e.g. due to micro-lensing)</p>
+<dl class="attribute">
+<dt id="lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.delays">
+<code class="descname">delays</code><a class="headerlink" href="#lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.delays" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">time delays</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.image_bkg">
+<code class="descname">image_bkg</code><a class="headerlink" href="#lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.image_bkg" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2d numpy array, image of the extended light components without the variable source</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.image_time">
+<code class="descname">image_time</code><span class="sig-paren">(</span><em>time=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/point_source_variability.html#PointSourceVariability.image_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.image_time" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>time</strong> – time relative to the definition of t=0 for the first appearing image</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">image with time variable source at given time</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.point_source_time">
+<code class="descname">point_source_time</code><span class="sig-paren">(</span><em>t</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/point_source_variability.html#PointSourceVariability.point_source_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.point_source_variability.PointSourceVariability.point_source_time" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>t</strong> – time (in units of days)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">image plane parameters of the point source observed at t</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -417,7 +492,7 @@ All other model choices are equivalent to the ones provided by LightModel, LensM
 <dl class="method">
 <dt id="lenstronomy.SimulationAPI.sim_api.SimAPI.magnitude2amplitude">
 <code class="descname">magnitude2amplitude</code><span class="sig-paren">(</span><em>kwargs_lens_light_mag=None</em>, <em>kwargs_source_mag=None</em>, <em>kwargs_ps_mag=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/sim_api.html#SimAPI.magnitude2amplitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.sim_api.SimAPI.magnitude2amplitude" title="Permalink to this definition">¶</a></dt>
-<dd><p>‘magnitued’ definition are in APPARENT magnitudes as observed on the sky, not intrinsic!</p>
+<dd><p>‘magnitude’ definition are in APPARENT magnitudes as observed on the sky, not intrinsic!</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -453,11 +528,13 @@ All other model choices are equivalent to the ones provided by LightModel, LensM
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">lenstronomy.SimulationAPI package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.data_api">lenstronomy.SimulationAPI.data_api module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.model_api">lenstronomy.SimulationAPI.model_api module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.observation_api">lenstronomy.SimulationAPI.observation_api module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.observation_constructor">lenstronomy.SimulationAPI.observation_constructor module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.point_source_variability">lenstronomy.SimulationAPI.point_source_variability module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI.sim_api">lenstronomy.SimulationAPI.sim_api module</a></li>
 <li><a class="reference internal" href="#module-lenstronomy.SimulationAPI">Module contents</a></li>
 </ul>
@@ -468,8 +545,8 @@ All other model choices are equivalent to the ones provided by LightModel, LensM
   <p class="topless"><a href="lenstronomy.Sampling.Samplers.html"
                         title="previous chapter">lenstronomy.Sampling.Samplers package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="lenstronomy.Util.html"
-                        title="next chapter">lenstronomy.Util package</a></p>
+  <p class="topless"><a href="lenstronomy.SimulationAPI.ObservationConfig.html"
+                        title="next chapter">lenstronomy.SimulationAPI.ObservationConfig package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -503,12 +580,12 @@ All other model choices are equivalent to the ones provided by LightModel, LensM
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
+          <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              >next</a> |</li>
         <li class="right" >
           <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.5.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

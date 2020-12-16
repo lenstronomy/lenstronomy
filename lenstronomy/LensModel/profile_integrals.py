@@ -2,6 +2,8 @@ import copy
 import scipy.integrate as integrate
 import numpy as np
 
+__all__ = ['ProfileIntegrals']
+
 
 class ProfileIntegrals(object):
     """

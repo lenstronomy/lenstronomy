@@ -3,7 +3,11 @@ from lenstronomy.Util import util
 from lenstronomy.Util import image_util
 from lenstronomy.Data.coord_transforms import Coordinates1D
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class AdaptiveGrid(Coordinates1D):
     """
     manages a super-sampled grid on the partial image
@@ -151,6 +155,7 @@ class AdaptiveGrid(Coordinates1D):
         return grid2d
 
 
+@export
 class RegularGrid(Coordinates1D):
     """
     manages a super-sampled grid on the partial image
@@ -191,6 +196,29 @@ class RegularGrid(Coordinates1D):
         :return: 1d array of all coordinates being evaluated to perform the image computation
         """
         return self._ra_subgrid, self._dec_subgrid
+
+    @property
+    def grid_points_spacing(self):
+        """
+        effective spacing between coordinate points, after supersampling
+        :return: sqrt(pixel_area)/supersampling_factor
+        """
+        return self.pixel_width / self._supersampling_factor
+
+    @property
+    def num_grid_points_axes(self):
+        """
+        effective number of points along each axes, after supersampling
+        :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor
+        """
+        return self._nx * self._supersampling_factor, self._ny * self._supersampling_factor
+
+    @property
+    def supersampling_factor(self):
+        """
+        :return: factor (per axis) of super-sampling relative to a pixel
+        """
+        return self._supersampling_factor
 
     def flux_array2image_low_high(self, flux_array, **kwargs):
         """

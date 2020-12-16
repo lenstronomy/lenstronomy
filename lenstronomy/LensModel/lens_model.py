@@ -6,6 +6,8 @@ from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from astropy.cosmology import default_cosmology
 from lenstronomy.Util import constants as const
 
+__all__ = ['LensModel']
+
 
 class LensModel(object):
     """
@@ -13,7 +15,8 @@ class LensModel(object):
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
-                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None, z_source_convention=None):
+                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
+                 z_source_convention=None):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -27,8 +30,9 @@ class LensModel(object):
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
-        :param observed_convention_index: a list of lens indexes that correspond to observed positions on the sky, not
-        physical positions
+        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
+        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+        positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
         """
@@ -54,7 +58,8 @@ class LensModel(object):
                                          z_source_convention=z_source_convention)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                          lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
+                                          lens_redshift_list=lens_redshift_list,
+                                          z_source_convention=z_source_convention)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
@@ -272,6 +277,13 @@ class LensModel(object):
         f_yyy = (f_yy_dy - f_yy_dy_) / diff / 2
         return f_xxx, f_xxy, f_xyy, f_yyy
 
+    def updated_lens_redshift(self, lens_redshift_list):
+        """
+
+        :param lens_redshift_list:
+        :return:
+        """
+
     def set_static(self, kwargs):
         """
         set this instance to a static lens model. This can improve the speed in evaluating lensing quantities at
@@ -318,8 +330,6 @@ class LensModel(object):
         :param y: y-coordinate
         :return: f_xx, f_xy, f_yx, f_yy
         """
-        #alpha_ra, alpha_dec = self.alpha(x, y, kwargs, k=k)
-
         alpha_ra_dx, alpha_dec_dx = self.alpha(x + diff, y, kwargs, k=k)
         alpha_ra_dy, alpha_dec_dy = self.alpha(x, y + diff, kwargs, k=k)
 

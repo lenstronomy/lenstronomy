@@ -1,7 +1,11 @@
 import numpy as np
 import lenstronomy.Util.util as util
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     """
 
@@ -21,13 +25,16 @@ def mask_center_2d(center_x, center_y, r, x_grid, y_grid):
     return mask
 
 
-def mask_sphere(x, y, center_x, center_y, r):
+@export
+def mask_azimuthal(x, y, center_x, center_y, r):
     """
 
-    :param center: 2D coordinate of center position of circular mask
-    :param r: radius of mask in pixel values
-    :param data: data image
-    :return:
+    :param x: x-coordinates (1d or 2d array numpy array)
+    :param y: y-coordinates (1d or 2d array numpy array)
+    :param center_x: center of azimuthal mask in x
+    :param center_y: center of azimuthal mask in y
+    :param r: radius of azimuthal mask
+    :return: array with zeros outside r and ones inside azimuthal radius r
     """
     x_shift = x - center_x
     y_shift = y - center_y
@@ -38,6 +45,7 @@ def mask_sphere(x, y, center_x, center_y, r):
     return mask
 
 
+@export
 def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     """
 
@@ -60,6 +68,7 @@ def mask_ellipse(x, y, center_x, center_y, a, b, angle):
     return mask
 
 
+@export
 def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np.pi):
     """
 

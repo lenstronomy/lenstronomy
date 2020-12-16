@@ -4,6 +4,8 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
 from lenstronomy.Analysis.image_reconstruction import check_solver_error
 
+__all__ = ['ModelPlot']
+
 
 class ModelPlot(object):
     """
@@ -39,6 +41,7 @@ class ModelPlot(object):
                                                        likelihood_mask_list=likelihood_mask_list)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
+
         check_solver_error(param)
         logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
 
@@ -62,6 +65,7 @@ class ModelPlot(object):
                                          param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
                                          cmap_string=cmap_string)
+
                 self._band_plot_list.append(bandplot)
                 self._index_list.append(index)
             else:

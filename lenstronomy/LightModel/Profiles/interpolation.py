@@ -5,6 +5,8 @@ import numpy as np
 
 import lenstronomy.Util.util as util
 
+__all__ = ['Interpol']
+
 
 class Interpol(object):
     """
@@ -38,12 +40,11 @@ class Interpol(object):
         :param scale: pixel scale (in angular units) of the simulated image
         :return: surface brightness from the model at coordinates (x, y)
         """
-        #self._check_interp(grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         n = len(np.atleast_1d(x))
         x_, y_ = self.coord2image_pixel(x, y, center_x, center_y, phi_G, scale)
         if n <= 1 and np.shape(x) == ():
             f_out = self.image_interp(x_, y_, image)
-            return f_out[0][0]
+            return f_out[0][0] * amp
         else:
             f_out = np.zeros(n)
             for i in range(n):
@@ -52,13 +53,19 @@ class Interpol(object):
 
     def image_interp(self, x, y, image):
         if not hasattr(self, '_image_interp'):
+            # Setup the interpolator.
+            # Note that 'x' and 'y' in this block only refer to first and second
+            # image array axes. Outside this block it is more complicated.
             nx, ny = np.shape(image)
             image_bounds = np.zeros((nx + 2, ny + 2))
             nx0, ny0 = nx + 2, ny + 2
             image_bounds[1:-1, 1:-1] = image
             x_grid = np.linspace(start=-(nx0 - 1) / 2, stop=(nx0 - 1) / 2, num=nx0)
             y_grid = np.linspace(start=-(ny0 - 1) / 2, stop=(ny0 - 1) / 2, num=ny0)
-            self._image_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, image_bounds, kx=1, ky=1, s=0)
+            self._image_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, image_bounds, kx=1, ky=1, s=0)
+
+        # y and x must be flipped in call to interpolator
+        # (try reversing, the unit tests will fail)
         return self._image_interp(y, x)
 
     def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):

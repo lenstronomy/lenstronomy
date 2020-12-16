@@ -2,7 +2,11 @@ import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.multi_plane_base import MultiPlaneBase
 
+from lenstronomy.Util.package_util import exporter
+export, __all__ = exporter()
 
+
+@export
 class MultiPlane(object):
     """
     Multi-plane lensing class with option to assign positions of a selected set of lens models in the observed plane.
@@ -21,9 +25,9 @@ class MultiPlane(object):
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
-        :param observed_convention_index: a list of indices where the 'center_x' and 'center_y' kwargs correspond
-        to observed (lensed) positions, not physical positions. The code will compute the physical locations when
-        performing computations
+        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
+        index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
+        positions. The code will compute the physical locations when performing computations
         :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical
         position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
@@ -99,7 +103,7 @@ class MultiPlane(object):
         x, y, _, _ = self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start=0, z_stop=self._z_source,
                                                            kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
                                                            T_ij_end=self._T_ij_stop)
-        beta_x, beta_y = self._co_moving2angle_source(x, y)
+        beta_x, beta_y = self.co_moving2angle_source(x, y)
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
@@ -238,7 +242,7 @@ class MultiPlane(object):
         f_yx = dalpha_decra
         return f_xx, f_xy, f_yx, f_yy
 
-    def _co_moving2angle_source(self, x, y):
+    def co_moving2angle_source(self, x, y):
         """
         special case of the co_moving2angle definition at the source redshift
 
@@ -271,6 +275,7 @@ class MultiPlane(object):
         self._multi_plane_base.set_dynamic()
 
 
+@export
 class PhysicalLocation(object):
     """
     center_x and center_y kwargs correspond to angular location of deflectors without lensing along the LOS
@@ -280,6 +285,7 @@ class PhysicalLocation(object):
         return kwargs_lens
 
 
+@export
 class LensedLocation(object):
     """
     center_x and center_y kwargs correspond to observed (lensed) locations of deflectors

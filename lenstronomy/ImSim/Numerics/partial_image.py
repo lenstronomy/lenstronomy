@@ -1,6 +1,8 @@
 import numpy as np
 import lenstronomy.Util.util as util
 
+__all__ = ['PartialImage']
+
 
 class PartialImage(object):
     """

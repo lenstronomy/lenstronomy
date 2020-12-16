@@ -4,6 +4,8 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
+__all__ = ['Gaussian']
+
 
 class Gaussian(LensProfileBase):
     """

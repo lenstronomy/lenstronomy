@@ -36,11 +36,11 @@ class TestChainPlots(object):
     def test_psf_iteration_compare(self):
         kwargs_psf = self.kwargs_psf
         kwargs_psf['kernel_point_source_init'] = kwargs_psf['kernel_point_source']
+        kwargs_psf['psf_error_map'] = np.ones_like(kwargs_psf['kernel_point_source'])
         f, ax = chain_plot.psf_iteration_compare(kwargs_psf=kwargs_psf, vmin=-1, vmax=1)
         plt.close()
         f, ax = chain_plot.psf_iteration_compare(kwargs_psf=kwargs_psf)
         plt.close()
-
 
     def test_plot_chain(self):
         X2_list = [1, 1, 2]

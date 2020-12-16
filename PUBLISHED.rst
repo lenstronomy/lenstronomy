@@ -150,6 +150,11 @@ Lensing of Gravitational Waves
 * Localizing merging black holes with sub-arcsecond precision using gravitational-wave lensing; `Hannuksela et al. 2020 <https://arxiv.org/abs/2004.13811v3>`_
     *solving the lens equation with lenstronomy using lensingGW*
 
+* Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
+    *lensing magnificatoin calculations*
+
+
+
 
 Theory papers
 -------------

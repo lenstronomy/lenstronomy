@@ -205,3 +205,14 @@ History
 * adapted imports to latest scipy release
 * iterative PSF reconstruction improved
 * multipole lens model
+
+
+1.7.0 (2020-12-16)
+++++++++++++++++++
+* cosmo.NFWParam mass definition changed
+* QuadOptimizer re-factored
+* interpol light model support for non-square grid
+* add functionality to psf error map
+* fix in multiband reconstruction
+* observational config for ZTF
+* short-hand class imports

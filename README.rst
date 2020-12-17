@@ -1,6 +1,6 @@
-========================================================
+====================================================
 lenstronomy - gravitational lensing software package
-========================================================
+====================================================
 
 .. image:: docs/figures/readme_fig.png
 
@@ -32,7 +32,7 @@ lenstronomy - gravitational lensing software package
 ``lenstronomy`` finds application for time-delay cosmography and measuring
 the expansion rate of the universe, for quantifying lensing substructure to infer dark matter properties, morphological quantifications of galaxies,
 quasar-host galaxy decomposition and many more.
-A (incomplete) list of publications making use of lenstronomy can be found `here <https://github.com/sibirrer/lenstronomy/blob/master/PUBLISHED.rst>`_.
+A (incomplete) list of publications making use of lenstronomy can be found `at this link <https://github.com/sibirrer/lenstronomy/blob/master/PUBLISHED.rst>`_.
 
 
 The development is coordinated on `GitHub <https://github.com/sibirrer/lenstronomy>`_ and contributions are welcome.

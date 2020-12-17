@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource.point_source_types &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.PointSource.point_source_types &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,8 +42,12 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.lens_equation_solver</span> <span class="k">import</span> <span class="n">LensEquationSolver</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Unlensed"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.Unlensed">[docs]</a><span class="k">class</span> <span class="nc">Unlensed</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Unlensed"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.Unlensed">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Unlensed</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class of a single point source in the image plane, aka star</span>
 <span class="sd">    Name within the PointSource module: &#39;UNLENSED&#39;</span>
@@ -107,7 +111,8 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="LensedPositions"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.LensedPositions">[docs]</a><span class="k">class</span> <span class="nc">LensedPositions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="LensedPositions"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.LensedPositions">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">LensedPositions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class of a a lensed point source parameterized as the (multiple) observed image positions</span>
 <span class="sd">    Name within the PointSource module: &#39;LENSED_POSITION&#39;</span>
@@ -229,7 +234,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="n">lens_model_class</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="SourcePositions"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.SourcePositions">[docs]</a><span class="k">class</span> <span class="nc">SourcePositions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="SourcePositions"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.SourcePositions">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">SourcePositions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class of a single point source defined in the original source coordinate position that is lensed.</span>
 <span class="sd">    The lens equation is solved to compute the image positions for the specified source position.</span>
@@ -341,7 +347,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="n">lens_model_class</span><span class="p">)</span></div></div>
 
 
-<div class="viewcode-block" id="PointSourceCached"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.PointSourceCached">[docs]</a><span class="k">class</span> <span class="nc">PointSourceCached</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="PointSourceCached"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source_types.PointSourceCached">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">PointSourceCached</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class is the same as PointSource() except that it sames image and source positions in cache</span>
 
@@ -471,7 +478,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -42,6 +42,10 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.point_source_types</span> <span class="k">import</span> <span class="n">PointSourceCached</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PointSource&#39;</span><span class="p">]</span>
+
+<span class="n">_SUPPORTED_MODELS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;UNLENSED&#39;</span><span class="p">,</span> <span class="s1">&#39;LENSED_POSITION&#39;</span><span class="p">,</span> <span class="s1">&#39;SOURCE_POSITION&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="PointSource"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource">[docs]</a><span class="k">class</span> <span class="nc">PointSource</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -97,7 +101,7 @@
                                                                  <span class="n">fixed_magnification</span><span class="o">=</span><span class="n">fixed_magnification_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
                                                                  <span class="n">save_cache</span><span class="o">=</span><span class="n">save_cache</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available. Supported models are </span><span class="si">%s</span><span class="s2"> .&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">_SUPPORTED_MODELS</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">kwargs_lens_eqn_solver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs_lens_eqn_solver</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span> <span class="o">=</span> <span class="n">kwargs_lens_eqn_solver</span>
@@ -433,7 +437,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

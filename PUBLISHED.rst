@@ -21,7 +21,7 @@ Core lenstronomy methodology and software publications
 Related software publications
 -----------------------------
 
-* A versatile tool for cluster lensing source reconstruction. I. methodology and illustration on sources in the Hubble Frontier Field Cluster MACS J0717.5+3745; `Yang et al. 2020 <https://arxiv.org/abs/2001.07719>`_
+* A versatile tool for cluster lensing source reconstruction. I. methodology and illustration on sources in the Hubble Frontier Field Cluster MACS J0717.5+3745; `Yang et al. 2020a <https://arxiv.org/abs/2001.07719>`_
     *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
 
 * SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
@@ -100,23 +100,23 @@ Dark Matter substructure
 * Quantifying the Line-of-Sight Halo Contribution to the Dark Matter Convergence Power Spectrum from Strong Gravitational Lenses; `Sengul et al. 2020 <https://arxiv.org/abs/2006.07383>`_
     * *
 
-* Detecting Subhalos in Strong Gravitational Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06663>`_
+* Detecting Subhalos in Strong Gravitational Lens Images with Image Segmentation; `Ostdiek et al. 2020a <https://arxiv.org/abs/2009.06663>`_
     * *
 
-* Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06639>`_
+* Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
 
 
 Galaxy formation and evolution
 ------------------------------
 
-* Massive elliptical galaxies at z∼0.2 are well described by stars and a Navarro-Frenk-White dark matter halo; `Shajib et al. 2020 <https://arxiv.org/abs/2008.11724>`_
+* Massive elliptical galaxies at z∼0.2 are well described by stars and a Navarro-Frenk-White dark matter halo; `Shajib et al. 2020a <https://arxiv.org/abs/2008.11724>`_
     *Automatized modeling of 23 SLACS lenses with dolphin, a lenstronomy wrapper*
 
-* High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020 <https://arxiv.org/abs/2011.01971>`_
+* High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020b <https://arxiv.org/abs/2011.01971>`_
     *Modeling of doubly lensed quasars from Keck Adaptive Optics data*
 
-* The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020 <https://arxiv.org/abs/2011.10059>`_
+* The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020b <https://arxiv.org/abs/2011.10059>`_
     *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
 
 

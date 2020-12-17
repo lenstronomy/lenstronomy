@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.de_lens &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.ImSim.de_lens &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,8 +44,12 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="get_param_WLS"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.get_param_WLS">[docs]</a><span class="k">def</span> <span class="nf">get_param_WLS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C_D_inv</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">inv_bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+<div class="viewcode-block" id="get_param_WLS"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.get_param_WLS">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">get_param_WLS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">C_D_inv</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">inv_bool</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the parameter values given</span>
 <span class="sd">    :param A: response matrix Nd x Ns (Nd = # data points, Ns = # parameters)</span>
@@ -79,7 +83,8 @@
     <span class="k">return</span> <span class="n">B</span><span class="p">,</span> <span class="n">M_inv</span><span class="p">,</span> <span class="n">image</span></div>
 
 
-<div class="viewcode-block" id="marginalisation_const"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.marginalisation_const">[docs]</a><span class="k">def</span> <span class="nf">marginalisation_const</span><span class="p">(</span><span class="n">M_inv</span><span class="p">):</span>
+<div class="viewcode-block" id="marginalisation_const"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.marginalisation_const">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">marginalisation_const</span><span class="p">(</span><span class="n">M_inv</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    get marginalisation constant 1/2 log(M_beta) for flat priors</span>
 <span class="sd">    :param M_inv: 2D covariance matrix</span>
@@ -92,7 +97,8 @@
     <span class="k">return</span> <span class="n">sign</span> <span class="o">*</span> <span class="n">log_det</span><span class="o">/</span><span class="mi">2</span></div>
 
 
-<div class="viewcode-block" id="marginalization_new"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.marginalization_new">[docs]</a><span class="k">def</span> <span class="nf">marginalization_new</span><span class="p">(</span><span class="n">M_inv</span><span class="p">,</span> <span class="n">d_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="marginalization_new"><a class="viewcode-back" href="../../../lenstronomy.ImSim.html#lenstronomy.ImSim.de_lens.marginalization_new">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">marginalization_new</span><span class="p">(</span><span class="n">M_inv</span><span class="p">,</span> <span class="n">d_prior</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param M_inv: 2D covariance matrix</span>
@@ -143,7 +149,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

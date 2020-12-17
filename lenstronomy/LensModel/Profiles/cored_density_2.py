@@ -15,10 +15,12 @@ class CoredDensity2(LensProfileBase):
 
     .. math::
 
-        \rho(r) = 2/\pi * \Sigma_{\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
+      \rho(r) = 2/\pi * \Sigma_{\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
 
-    This profile drops as math:`\rho(r)^{-3}` like an NFW profile.
+    This profile drops like an NFW profile as math:`\rho(r)^{-3}`.
+
     """
+
     model_name = 'CORED_DENSITY_2'
     _s = 0.000001  # numerical limit for minimal radius
     param_names = ['sigma0', 'r_core', 'center_x', 'center_y']

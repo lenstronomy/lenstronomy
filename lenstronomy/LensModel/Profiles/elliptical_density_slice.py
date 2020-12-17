@@ -35,10 +35,19 @@ class ElliSLICE (LensProfileBase):
         kwargs_slice = {'center_x': center_x, 'center_y': center_y, 'a': a, 'b': b, 'psi': psi, 'sigma_0': sigma_0}
         x_ = x - center_x
         y_ = y - center_y
-        if (x_ ** 2 / a ** 2) + (y_ ** 2 / b ** 2) <= 1:
-            return self.pot_in(x_, y_, kwargs_slice)
+        x_rot = x_*np.cos(psi) + y_*np.sin(psi)
+        y_rot = -x_*np.sin(psi) + y_*np.cos(psi)
+        try:
+            len(x_)
+        except:
+            if (x_rot ** 2 / a ** 2) + (y_rot ** 2 / b ** 2) <= 1:
+                return self.pot_in(x_, y_, kwargs_slice)
+            else:
+                return self.pot_ext(x_, y_, kwargs_slice)
         else:
-            return self.pot_ext(x_, y_, kwargs_slice)
+            f = np.array([self.pot_in(x_[i], y_[i], kwargs_slice) if (x_rot[i] ** 2 / a ** 2) + (y_rot[i] ** 2 / b ** 2) <= 1
+                          else self.pot_ext(x_[i], y_[i], kwargs_slice) for i in range(len(x_))])
+            return f
 
     def derivatives(self,x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
         """
@@ -55,10 +64,20 @@ class ElliSLICE (LensProfileBase):
         kwargs_slice = {'center_x': center_x, 'center_y': center_y, 'a': a, 'b': b, 'psi': psi, 'sigma_0': sigma_0}
         x_ = x - center_x
         y_ = y - center_y
-        if (x_ ** 2 / a ** 2) + (y_ ** 2 / b ** 2) <= 1:
-            return self.alpha_in(x_, y_, kwargs_slice)
+        x_rot = x_ * np.cos(psi) + y_ * np.sin(psi)
+        y_rot = -x_ * np.sin(psi) + y_ * np.cos(psi)
+        try:
+            len(x_)
+        except:
+            if (x_rot ** 2 / a ** 2) + (y_rot ** 2 / b ** 2) <= 1:
+                return self.alpha_in(x_, y_, kwargs_slice)
+            else:
+                return self.alpha_ext(x_, y_, kwargs_slice)
         else:
-            return self.alpha_ext(x_, y_, kwargs_slice)
+            defl = np.array([self.alpha_in(x_[i], y_[i], kwargs_slice) if (x_rot[i] ** 2 / a ** 2) + (y_rot[i] ** 2 / b ** 2) <= 1
+                             else self.alpha_ext(x_[i], y_[i], kwargs_slice) for i in range(len(x_))])
+            return defl[:, 0], defl[:, 1]
+
 
     def hessian(self,x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
         """

@@ -3,7 +3,6 @@ __author__ = 'dgilman'
 from lenstronomy.LensModel.lens_model import LensModel
 import numpy as np
 
-
 class MultiplaneFast(object):
 
     """
@@ -116,6 +115,24 @@ class MultiplaneFast(object):
 
         return chi_square
 
+    def alpha_fast(self, args_lens):
+        """
+        Performs a ray tracing computation through observed coordinates on the sky (self._x_image, self._y_image)
+        to the source plane coordinate beta. Returns the deflection angle alpha:
+
+        beta = x - alpha(x)
+
+        :param args_lens: An array of parameters being optimized. The array is computed from a set of key word arguments
+        by an instance of ParamClass (see documentation in QuadOptimizer.param_manager)
+        :return: the xy coordinate of each ray traced back to the source plane
+        """
+
+        betax, betay = self.ray_shooting_fast(args_lens)
+        alpha_x = self._x_image - betax
+        alpha_y = self._y_image - betay
+
+        return alpha_x, alpha_y
+
     def ray_shooting_fast(self, args_lens):
 
         """
@@ -168,3 +185,77 @@ class MultiplaneFast(object):
             self._foreground_rays = (x, y, alpha_x, alpha_y)
 
         return self._foreground_rays[0], self._foreground_rays[1], self._foreground_rays[2], self._foreground_rays[3]
+
+class MultiplaneFastDifferential(object):
+
+    """
+    This class uses the ray tracing routines in MultiPlaneFast to compute numerical derivatives of deflection angles
+    i.e. the components of the hessian matrix
+    """
+
+    def __init__(self, diff, xcoords, ycoords, z_lens, z_source, lens_model_list, redshift_list,
+                 astropy_instance, param_class, numerical_alpha_class=None):
+
+        """
+
+        :param diff: the angular scale over which to compute the finite difference derivative
+        :param xcoords: the x coordinates where the derivatives are taken
+        :param ycoords: the y coordinates where the derivatives are taken
+        :param z_lens: the lens redshift
+        :param z_source: the source redshift
+        :param lens_model_list: the list of lens models to be passed to MultiPlaneFast
+        :param redshift_list: the list of deflector redshifts to be passed to MuliPlaneFast
+        :param astropy_instance: an instance as astropy
+        :param param_class: the param class that defintes the function being minimized (see param_manager)
+        :param numerical_alpha_class: (optional) a class that returns deflection angles for a numerically
+        integrated mass profile
+        """
+
+        self._diff = diff
+
+        self._fast_ray_shooting_dx_plus = MultiplaneFast(xcoords + diff, ycoords, z_lens, z_source,
+                                                   lens_model_list, redshift_list, astropy_instance, param_class, None,
+                                                   numerical_alpha_class=numerical_alpha_class)
+
+        self._fast_ray_shooting_dy_plus = MultiplaneFast(xcoords, ycoords + diff, z_lens, z_source,
+                                                    lens_model_list, redshift_list, astropy_instance, param_class, None,
+                                                    numerical_alpha_class=numerical_alpha_class)
+
+        self._fast_ray_shooting_dx_minus = MultiplaneFast(xcoords - diff, ycoords, z_lens, z_source,
+                                                         lens_model_list, redshift_list, astropy_instance, param_class,
+                                                         None,
+                                                         numerical_alpha_class=numerical_alpha_class)
+
+        self._fast_ray_shooting_dy_minus = MultiplaneFast(xcoords, ycoords - diff, z_lens, z_source,
+                                                         lens_model_list, redshift_list, astropy_instance, param_class,
+                                                         None,
+                                                         numerical_alpha_class=numerical_alpha_class)
+
+    def hessian(self, args):
+        """
+
+        :param args: the array of lens model args being optimized (see param_manager)
+        :return: the derivatives of the deflection angles
+        """
+
+        alpha_ra_dx, alpha_dec_dx = self._fast_ray_shooting_dx_plus.alpha_fast(args)
+        alpha_ra_dy, alpha_dec_dy = self._fast_ray_shooting_dy_plus.alpha_fast(args)
+
+        alpha_ra_dx_, alpha_dec_dx_ = self._fast_ray_shooting_dx_minus.alpha_fast(args)
+        alpha_ra_dy_, alpha_dec_dy_ = self._fast_ray_shooting_dy_minus.alpha_fast(args)
+
+        dalpha_rara = (alpha_ra_dx - alpha_ra_dx_) / self._diff / 2
+        dalpha_radec = (alpha_ra_dy - alpha_ra_dy_) / self._diff / 2
+        dalpha_decra = (alpha_dec_dx - alpha_dec_dx_) / self._diff / 2
+        dalpha_decdec = (alpha_dec_dy - alpha_dec_dy_) / self._diff / 2
+
+        f_xx = dalpha_rara
+        f_yy = dalpha_decdec
+        f_xy = dalpha_radec
+        f_yx = dalpha_decra
+
+        return f_xx, f_xy, f_yx, f_yy
+
+
+
+

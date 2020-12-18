@@ -305,6 +305,10 @@ class TestNumericsProfile(object):
         kwargs = {'m': 3, 'a_m': 0.07, 'phi_m': 0., 'center_x': -0.01, 'center_y': -0.5}
         lens_model = ['MULTIPOLE']
         self.assert_differentials(lens_model, kwargs, potential=True)
+    def test_elli_slice(self):
+        kwargs = {'a':1., 'b':2., 'psi':30*np.pi/180., 'sigma_0':5., 'center_x':1., 'center_y':2.}
+        lens_model = ['ElliSLICE']
+        self.assert_differentials(lens_model,kwargs,potential=True)
 
 
 if __name__ == '__main__':

@@ -128,8 +128,10 @@ class KinematicsAPI(object):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
          if set to None will be computed in this function with default settings that may not be accurate.
-        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
-        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :param theta_E: circularized Einstein radius, optional, if not provided will either be computed in this
+         function with default settings or not required
+        :param gamma: power-law slope at the Einstein radius, optional
+        :param kappa_ext: external convergence
         :return: velocity dispersion [km/s]
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,

@@ -231,7 +231,10 @@ class KinematicsAPI(object):
             main deflector potential
         :param theta_E: (optional float) estimate of the Einstein radius. If present, does not numerically compute this
          quantity in this routine numerically
+        :param gamma: local power-law slope at the Einstein radius (optional)
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
+        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
+         power-law mass profile with Hernquist light profile
         :return: mass_profile_list, keyword argument list
         """
         if analytic_kinematics is True:
@@ -295,6 +298,8 @@ class KinematicsAPI(object):
         :param Hernquist_approx: boolean, if True replaces the actual light profile(s) with a Hernquist model with
          matched half-light radius.
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
+        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
+         power-law mass profile with Hernquist light profile and adjust the settings accordingly
         :return: deflector type list, keyword arguments list
         """
         if analytic_kinematics is True:

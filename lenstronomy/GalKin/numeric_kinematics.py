@@ -14,7 +14,7 @@ __all__ = ['NumericKinematics']
 class NumericKinematics(Anisotropy):
 
     def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=1000, log_integration=True, max_integrate=1000,
-                 min_integrate=0.0001):
+                 min_integrate=0.0001, lum_weight_int_method=False):
         """
         What we need:
         - max projected R to have ACCURATE I_R_sigma values
@@ -24,6 +24,8 @@ class NumericKinematics(Anisotropy):
         :param log_integration: bool, if True, performs the numerical integral in log space distance (adviced)
         :param max_integrate: maximum radius (in arc seconds) of the Jeans equation integral
          (assumes zero tracer particles outside this radius)
+        :param lum_weight_int_method: bool, luminosity weighted dispersion integral to calculate LOS projected Jean's
+         solution. ATTENTION: currently less accurate than 3d solution
         :param min_integrate:
         """
         mass_profile_list = kwargs_model.get('mass_profile_list')
@@ -40,6 +42,7 @@ class NumericKinematics(Anisotropy):
         Anisotropy.__init__(self, anisotropy_type=anisotropy_model)
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = SinglePlane(mass_profile_list)
+        self._lum_weight_int_method = lum_weight_int_method
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -53,7 +56,10 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R
         """
-        return self.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        if self._lum_weight_int_method is True:
+            return self.sigma_s2_project_int(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        else:
+            return self.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
 
     def sigma_s2_project_int(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

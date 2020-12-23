@@ -107,7 +107,6 @@ class TestMassProfile(object):
                 sigma_s2_analytic = analytic_kin.sigma_s2(r, R, {'theta_E': theta_E, 'gamma': gamma}, {'r_eff': r_eff}, kwargs_anisotropy)
                 sigma_s2_full_num = numeric_kin.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
                 npt.assert_almost_equal(sigma_s2_full_num/sigma_s2_analytic, 1, decimal=2)
-                #sigma_s2_num = numeric_kin.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
 
     def test_delete_cache(self):
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}

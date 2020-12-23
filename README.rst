@@ -2,7 +2,7 @@
 lenstronomy - gravitational lensing software package
 ====================================================
 
-.. image:: docs/figures/readme_fig.png
+.. image:: https://github.com/sibirrer/lenstronomy/blob/master/docs/figures/readme_fig.png
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: https://badge.fury.io/py/lenstronomy

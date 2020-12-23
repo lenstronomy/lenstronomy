@@ -134,9 +134,11 @@ class TestKinematicsAPI(object):
         np.random.seed(42)
         z_lens = 0.5
         z_source = 1.5
+        r_eff = 1.
+        theta_E = 1.
         kwargs_model = {'lens_model_list': ['SIS'], 'lens_light_model_list': ['HERNQUIST']}
-        kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
-        kwargs_lens_light = [{'amp': 1, 'Rs': 1, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens = [{'theta_E': theta_E, 'center_x': 0, 'center_y': 0}]
+        kwargs_lens_light = [{'amp': 1, 'Rs': r_eff * 0.551, 'center_x': 0, 'center_y': 0}]
         kwargs_anisotropy = {'r_ani': 1}
         # settings
 
@@ -151,17 +153,17 @@ class TestKinematicsAPI(object):
         kin_api = KinematicsAPI(z_lens, z_source, kwargs_model, kwargs_aperture, kwargs_seeing,
                                 anisotropy_model=anisotropy_model)
 
-        kwargs_numerics_galkin = {'interpol_grid_num': 500, 'log_integration': True,
-                                  'max_integrate': 10, 'min_integrate': 0.001}
+        kwargs_numerics_galkin = {'interpol_grid_num': 2000, 'log_integration': True,
+                                  'max_integrate': 1000, 'min_integrate': 0.0001}
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=True,
                                      Hernquist_approx=False, MGE_light=False, MGE_mass=False)
-        vel_disp_analytic = kin_api.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None,
-                                                        theta_E=None, gamma=None)
+        vel_disp_analytic = kin_api.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=r_eff,
+                                                        theta_E=theta_E, gamma=2)
 
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,
                                              Hernquist_approx=False, MGE_light=False, MGE_mass=False)
         vel_disp_numerical = kin_api.velocity_dispersion(kwargs_lens, kwargs_lens_light, kwargs_anisotropy,
-                                                         r_eff=None, theta_E=None, gamma=None)
+                                                         r_eff=r_eff, theta_E=theta_E, gamma=2)
         npt.assert_almost_equal(vel_disp_numerical / vel_disp_analytic, 1, decimal=2)
 
         kin_api.kinematics_modeling_settings(anisotropy_model, kwargs_numerics_galkin, analytic_kinematics=False,

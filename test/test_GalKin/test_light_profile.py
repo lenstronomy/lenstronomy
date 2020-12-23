@@ -75,6 +75,10 @@ class TestLightProfile(object):
         hist /= np.sum(hist)
         print(light2d / hist)
         npt.assert_almost_equal(light2d[5] / hist[5], 1, decimal=1)
+        assert hasattr(lightProfile, '_kwargs_light_circularized')
+        lightProfile.delete_cache()
+        if hasattr(lightProfile, '_kwargs_light_circularized'):
+            assert False
 
     def test_draw_light_3d(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'], min_interpolate=0.0001, max_interpolate=100.)

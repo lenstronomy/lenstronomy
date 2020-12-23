@@ -57,6 +57,15 @@ class TestVelocityUtil(object):
         assert x_d != x
         assert y_d != y
 
+    def test_project_2d_random(self):
+        r = 1
+        R, x, y = velocity_util.project2d_random(r=r)
+        assert R <= r
+
+        r = np.linspace(0, 10, 100)
+        R, x, y = velocity_util.project2d_random(r=r)
+        assert len(R) == 100
+
 
 
 

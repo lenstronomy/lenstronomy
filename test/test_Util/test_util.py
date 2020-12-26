@@ -404,6 +404,12 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             util.convert_bool_list(n=2, k=[0.1, True])
 
+    def test_raise_make_grid(self):
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=1.1, deltapix=1)
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=[1.1, 1], deltapix=1)
+
 
 if __name__ == '__main__':
     pytest.main()

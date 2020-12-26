@@ -251,6 +251,9 @@ class TestKinematicsAPI(object):
         # use as kinematic constraints
         # compare with MGE Sersic kinematic estimate
 
+    def test_galkin_settings(self):
+        pass
+
 
 class TestRaise(unittest.TestCase):
 

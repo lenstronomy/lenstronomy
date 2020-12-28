@@ -303,7 +303,7 @@ class PointSource(object):
                     i += 1
                 else:
                     n_points = len(ra_pos_list[k])
-                    kwargs['point_amp'] = param[i:i + n_points]
+                    kwargs['point_amp'] = np.array(param[i:i + n_points])
                     i += n_points
         return kwargs_ps, i
 
@@ -314,7 +314,7 @@ class PointSource(object):
 
         :param kwargs_ps:
         :param kwargs_lens:
-        :param tolerance:
+        :param tolerance: Eucledian
         :return: bool: True, if requirement on tolerance is fulfilled, False if not.
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
@@ -353,14 +353,13 @@ class PointSource(object):
         """
         check whether inferred linear parameters are positive
 
-        :param kwargs_ps:
-        :return: bool
+        :param kwargs_ps: point source keyword argument list
+        :return: bool, True, if all 'point_amp' parameters are positive semi-definite
         """
         pos_bool = True
         for kwargs in kwargs_ps:
             point_amp = kwargs['point_amp']
-            for amp in point_amp:
-                if amp < 0:
-                    pos_bool = False
-                    break
+            if not np.all(point_amp >= 0):
+                pos_bool = False
+                break
         return pos_bool

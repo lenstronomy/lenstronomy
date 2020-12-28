@@ -35,7 +35,7 @@ class PointSourceParam(object):
             for k, model in enumerate(self.model_list):
                 num = self._num_point_sources_list[k]
                 if model in ['LENSED_POSITION', 'UNLENSED']:
-                    fixed_low = {'ra_image': [-100] * num, 'dec_image': [-100] * num, 'point_amp': [0] * num}
+                    fixed_low = {'ra_image': [-100] * num, 'dec_image': [-100] * num, 'point_amp': np.zeros(num)}
                 elif model in ['SOURCE_POSITION']:
                     fixed_low = {'ra_source': -100, 'dec_source': -100, 'point_amp': 0}
                 else:
@@ -46,7 +46,7 @@ class PointSourceParam(object):
             for k, model in enumerate(self.model_list):
                 num = self._num_point_sources_list[k]
                 if model in ['LENSED_POSITION', 'UNLENSED']:
-                    fixed_high = {'ra_image': [100] * num, 'dec_image': [100] * num, 'point_amp': [100] * num}
+                    fixed_high = {'ra_image': [100] * num, 'dec_image': [100] * num, 'point_amp': np.ones(num)*100}
                 elif model in ['SOURCE_POSITION']:
                     fixed_high = {'ra_source': 100, 'dec_source': 100, 'point_amp': 100}
                 else:
@@ -104,7 +104,7 @@ class PointSourceParam(object):
     def setParams(self, kwargs_list):
         """
 
-        :param kwargs:
+        :param kwargs_list:
         :return:
         """
         args = []
@@ -169,13 +169,13 @@ class PointSourceParam(object):
 
     def add_fix_linear(self, kwargs_fixed):
         """
+        updates fixed keyword argument list with linear parameters
 
-        :param kwargs_options:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_fixed: list of keyword arguments held fixed during sampling
+        :return: updated keyword argument list
         """
         for k, model in enumerate(self.model_list):
-            kwargs_fixed[k]['point_amp'] = [1] * self._num_point_sources_list[k]
+            kwargs_fixed[k]['point_amp'] = np.ones(self._num_point_sources_list[k])
         return kwargs_fixed
 
     def num_param_linear(self):

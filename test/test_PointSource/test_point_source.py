@@ -164,7 +164,7 @@ class TestPointSourceFixedMag(object):
 
     def test_check_image_positions(self):
         bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
-        assert bool == True
+        assert bool is True
 
     def test_set_amplitudes(self):
         amp_list = [10, [100], 10]
@@ -172,6 +172,17 @@ class TestPointSourceFixedMag(object):
         assert kwargs_out[0]['source_amp'] == 10 * self.kwargs_ps[0]['source_amp']
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
+
+    def test_positive_flux(self):
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([1, -1])}])
+        assert bool is False
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': -1}])
+        assert bool is False
+
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1])}])
+        assert bool is True
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1}])
+        assert bool is True
 
 
 class TestUtil(object):

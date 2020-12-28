@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
 
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
@@ -150,11 +151,22 @@ class TestPointSourceFixedMag(object):
         assert num_basis == 3
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens,
+                                                                       with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
         assert ra_pos[1][0] == 1
+        assert np.all(amp != 1)
+        npt.assert_almost_equal(ra_pos[2][0], self.x_pos[0], decimal=8)
+
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens,
+                                                                       with_amp=True)
+        num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
+        assert n == num_basis
+        assert ra_pos[0][0] == self.x_pos[0]
+        assert ra_pos[1][0] == 1
+        assert np.all(amp != 1)
         npt.assert_almost_equal(ra_pos[2][0], self.x_pos[0], decimal=8)
 
     def test_point_source_list(self):
@@ -218,6 +230,13 @@ class TestUtil(object):
         array_out = point_source_types._expand_to_array(array, num)
         assert len(array_out) == num
         assert array_out[1] == 1
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            PointSource(point_source_type_list=['BAD'])
 
 
 if __name__ == '__main__':

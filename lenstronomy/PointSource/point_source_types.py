@@ -309,7 +309,9 @@ class SourcePositions(object):
 @export
 class PointSourceCached(object):
     """
-    This class is the same as PointSource() except that it sames image and source positions in cache
+    This class is the same as PointSource() except that it saves image and source positions in cache.
+    This speeds-up repeated calls for the same source and lens model and avoids duplicating the lens equation solving.
+    Attention: cache needs to be deleted before calling functions with different lens and point source parameters.
 
     """
     def __init__(self, point_source_model, save_cache=False):

@@ -13,8 +13,7 @@ class PointSource(object):
                  additional_images_list=None, flux_from_point_source_list=None, magnification_limit=None,
                  save_cache=False, kwargs_lens_eqn_solver=None):
         """
-        min_distance=0.05, search_window=5, precision_limit=10**(-10), num_iter_max=100,
-                 x_center=0, y_center=0):
+
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
         :param fixed_magnification_list: list of bools (same length as point_source_type_list). If True, magnification

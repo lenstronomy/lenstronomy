@@ -166,6 +166,11 @@ class TestPointSourceFixedMag(object):
         bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
         assert bool is True
 
+        # now we change the lens model to make the test fail
+        kwargs_lens = [{'theta_E': 2., 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0, 'gamma': 2}]
+        bool = self.PointSource.check_image_positions(self.kwargs_ps, kwargs_lens, tolerance=0.001)
+        assert bool is False
+
     def test_set_amplitudes(self):
         amp_list = [10, [100], 10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)

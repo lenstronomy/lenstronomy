@@ -312,13 +312,13 @@ class PointSource(object):
         checks whether the point sources in kwargs_ps satisfy the lens equation with a tolerance
         (computed by ray-tracing in the source plane)
 
-        :param kwargs_ps:
-        :param kwargs_lens:
-        :param tolerance: Eucledian
+        :param kwargs_ps: point source keyword argument list
+        :param kwargs_lens: lens model keyword argument list
+        :param tolerance: Eucledian distance between the source positions ray-traced backwards to be tolerated
         :return: bool: True, if requirement on tolerance is fulfilled, False if not.
         """
         x_image_list, y_image_list = self.image_position(kwargs_ps, kwargs_lens)
-        for i, model in enumerate(self._point_source_list):
+        for i, model in enumerate(self.point_source_type_list):
             if model in ['LENSED_POSITION', 'SOURCE_POSITION']:
                 x_pos = x_image_list[i]
                 y_pos = y_image_list[i]

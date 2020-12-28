@@ -16,7 +16,7 @@ class PointSource(object):
 
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
-        :param fixed_magnification_list: list of bools (same length as point_source_type_list). If True, magnification
+        :param fixed_magnification_list: list of booleans (same length as point_source_type_list). If True, magnification
         ratio of point sources is fixed to the one given by the lens model
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
@@ -30,7 +30,7 @@ class PointSource(object):
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
 
-        for the kwargs_lens_eqn_solver parameters: have a look at the lensEquationSolver class
+        for the kwargs_lens_eqn_solver parameters: have a look at the lensEquationSolver class, such as:
         min_distance=0.01, search_window=5, precision_limit=10**(-10), num_iter_max=100
 
         """
@@ -103,7 +103,7 @@ class PointSource(object):
         """
         deletes the variables saved for a specific lens model
 
-        :return:
+        :return: None
         """
         for model in self._point_source_list:
             model.delete_lens_model_cache()
@@ -182,7 +182,7 @@ class PointSource(object):
         :param k: None, int or list of int's to select a subset of the point source models in the return
         :param with_amp: bool, if False, ignores the amplitude parameters in the return and instead provides ones for
          each point source image
-        :return: a_array, dec_array, amp_array
+        :return: ra_array, dec_array, amp_array
         """
         self._set_save_cache(True)
         # we make sure we do not re-compute the image positions twice when evaluating position and their amplitudes
@@ -242,8 +242,8 @@ class PointSource(object):
         """
         intrinsic (unlensed) point source amplitudes
 
-        :param kwargs_ps:
-        :param kwargs_lens:
+        :param kwargs_ps: point source keyword argument list
+        :param kwargs_lens: lens model keyword argument list
         :return: list of intrinsic (unlensed) point source amplitudes
         """
         amp_list = []
@@ -339,7 +339,8 @@ class PointSource(object):
 
     def set_amplitudes(self, amp_list, kwargs_ps):
         """
-        translates the linear parameters (after inversion) back into the convention of the keyword argument list
+        translates the amplitude parameters into the convention of the keyword argument list
+        currently only used in SimAPI to transform magnitudes to amplitudes in the lenstronomy conventions
 
         :param amp_list: list of model amplitudes for each point source model
         :param kwargs_ps: list of point source keywords

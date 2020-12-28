@@ -184,6 +184,11 @@ class TestPointSourceFixedMag(object):
         bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1}])
         assert bool is True
 
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1]), 'source_amp': 1}])
+        assert bool is True
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1, 'source_amp': -1}])
+        assert bool is False
+
 
 class TestUtil(object):
 

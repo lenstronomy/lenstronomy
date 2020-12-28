@@ -358,8 +358,14 @@ class PointSource(object):
         """
         pos_bool = True
         for kwargs in kwargs_ps:
-            point_amp = kwargs['point_amp']
-            if not np.all(point_amp >= 0):
-                pos_bool = False
-                break
+            if 'point_amp' in kwargs:
+                point_amp = kwargs['point_amp']
+                if not np.all(point_amp >= 0):
+                    pos_bool = False
+                    break
+            if 'source_amp' in kwargs:
+                point_amp = kwargs['source_amp']
+                if not np.all(point_amp >= 0):
+                    pos_bool = False
+                    break
         return pos_bool

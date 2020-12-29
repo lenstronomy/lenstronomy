@@ -77,6 +77,7 @@ class PointSourceParam(object):
                     i += self._num_point_sources_list[k]
                 else:
                     kwargs['dec_image'] = kwargs_fixed['dec_image']
+                # TODO needs to be changed and checked for 'source_amp'
                 if not 'point_amp' in kwargs_fixed:
                     kwargs['point_amp'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
@@ -93,6 +94,7 @@ class PointSourceParam(object):
                     i += 1
                 else:
                     kwargs['dec_source'] = kwargs_fixed['dec_source']
+                # TODO needs to be changed and checked for 'source_amp'
                 if not 'point_amp' in kwargs_fixed:
                     kwargs['point_amp'] = args[i]
                     i += 1

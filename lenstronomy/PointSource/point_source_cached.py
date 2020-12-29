@@ -28,7 +28,7 @@ class PointSourceCached(object):
     def update_lens_model(self, lens_model_class):
         self._model.update_lens_model(lens_model_class)
 
-    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver={}):
+    def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
         """
         on-sky image positions
 

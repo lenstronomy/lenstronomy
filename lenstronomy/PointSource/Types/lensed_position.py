@@ -12,17 +12,9 @@ class LensedPositions(PSBase):
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
 
     """
-    def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
-        super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
-                                              additional_image=additional_image)
-        if self._fixed_magnification is True:
-            self.param_names = ['source_amp', 'ra_image', 'dec_image']
-            self.lower_limit_default = {'source_amp': 0, 'ra_image': -100, 'dec_image': -100}
-            self.upper_limit_default = {'source_amp': 1000, 'ra_image': 100, 'dec_image': 100}
-        else:
-            self.param_names = ['point_amp', 'ra_image', 'dec_image']
-            self.lower_limit_default = {'point_amp': 0, 'ra_image': -100, 'dec_image': -100}
-            self.upper_limit_default = {'point_amp': 1000, 'ra_image': 100, 'dec_image': 100}
+    #def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
+    #    super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
+    #                                          additional_image=additional_image)
 
     def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
         """

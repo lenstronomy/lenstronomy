@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-from lenstronomy.PointSource.point_source_types import PointSourceCached
+from lenstronomy.PointSource.point_source_cached import PointSourceCached
 
 __all__ = ['PointSource']
 
@@ -47,14 +47,14 @@ class PointSource(object):
         self._flux_from_point_source_list = flux_from_point_source_list
         for i, model in enumerate(point_source_type_list):
             if model == 'UNLENSED':
-                from lenstronomy.PointSource.point_source_types import Unlensed
+                from lenstronomy.PointSource.Types.unlensed import Unlensed
                 self._point_source_list.append(PointSourceCached(Unlensed(), save_cache=save_cache))
             elif model == 'LENSED_POSITION':
-                from lenstronomy.PointSource.point_source_types import LensedPositions
+                from lenstronomy.PointSource.Types.lensed_position import LensedPositions
                 self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
                                                                additional_image=additional_images_list[i]), save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
-                from lenstronomy.PointSource.point_source_types import SourcePositions
+                from lenstronomy.PointSource.Types.source_position import SourcePositions
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
                                                                  fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
@@ -184,6 +184,7 @@ class PointSource(object):
          each point source image
         :return: ra_array, dec_array, amp_array
         """
+        # here we save the cache of the individual models but do not overwrite the class boolean variable to do so
         self._set_save_cache(True)
         # we make sure we do not re-compute the image positions twice when evaluating position and their amplitudes
         ra_list, dec_list = self.image_position(kwargs_ps, kwargs_lens, k=k)
@@ -192,6 +193,7 @@ class PointSource(object):
         else:
             amp_list = np.ones_like(ra_list)
 
+        # here we delete the individual modeling caches in case this was the option
         if self._save_cache is False:
             self.delete_lens_model_cache()
             self._set_save_cache(self._save_cache)

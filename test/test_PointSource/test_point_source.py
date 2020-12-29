@@ -207,31 +207,6 @@ class TestPointSourceFixedMag(object):
         assert bool is False
 
 
-class TestUtil(object):
-
-    def setup(self):
-        pass
-
-    def test_expand_t0_array(self):
-        from lenstronomy.PointSource import point_source_types
-        array = 1
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
-
-        array = [1]
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
-        assert array_out[1] == 0
-
-        array = [1, 1, 1]
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
-        assert array_out[1] == 1
-
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

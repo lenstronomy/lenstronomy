@@ -22,7 +22,7 @@ class PointSourceParam(object):
         """
         self.model_list = model_list
         if num_point_source_list is None:
-            num_point_source_list = [0] * len(model_list)
+            num_point_source_list = [1] * len(model_list)
         self._num_point_sources_list = num_point_source_list
         self.kwargs_fixed = kwargs_fixed
         if linear_solver is True:

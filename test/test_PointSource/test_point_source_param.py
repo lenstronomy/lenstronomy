@@ -1,6 +1,7 @@
 __author__ = 'sibirrer'
 
 import pytest
+import unittest
 import numpy as np
 import numpy.testing as npt
 from lenstronomy.PointSource.point_source_param import PointSourceParam
@@ -51,6 +52,20 @@ class TestParam(object):
 
         num = self.param_linear.num_param_linear()
         assert num == 0
+
+    def test_init(self):
+        ps_param = PointSourceParam(model_list=['UNLENSED'], kwargs_fixed=[{}], num_point_source_list=None)
+        assert ps_param._num_point_sources_list[0] == 1
+
+
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            PointSourceParam(model_list=['BAD'], kwargs_fixed=[{}], kwargs_lower=None, kwargs_upper=[{'bla': 1}])
+        with self.assertRaises(ValueError):
+            PointSourceParam(model_list=['BAD'], kwargs_fixed=[{}], kwargs_lower=[{'bla': 1}], kwargs_upper=None)
 
 
 if __name__ == '__main__':

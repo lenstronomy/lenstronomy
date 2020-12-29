@@ -58,7 +58,6 @@ class TestParam(object):
         assert ps_param._num_point_sources_list[0] == 1
 
 
-
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

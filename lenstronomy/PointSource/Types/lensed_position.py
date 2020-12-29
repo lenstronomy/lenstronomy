@@ -29,6 +29,8 @@ class LensedPositions(PSBase):
         :return: image positions in x, y as arrays
         """
         if self._additional_image is True:
+            if kwargs_lens_eqn_solver is None:
+                kwargs_lens_eqn_solver = {}
             ra_source, dec_source = self.source_position(kwargs_ps, kwargs_lens)
             ra_image, dec_image = self._solver.image_position_from_source(ra_source, dec_source, kwargs_lens,
                                                                           magnification_limit=magnification_limit,

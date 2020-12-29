@@ -16,14 +16,14 @@ class TestParam(object):
                                       num_point_source_list=num_point_sources_list)
         self.kwargs =[{'ra_image': np.array([0, 0, 0, 0]), 'dec_image': np.array([0, 0, 0, 0]),
                        'point_amp': np.array([1, 1, 1, 1])},
-                      {'ra_source': 1, 'dec_source': 1, 'point_amp': 1.},
-                      {'ra_image': [1], 'dec_image': [1], 'point_amp': [1.]}]
-        self.kwargs_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}]
+                      {'ra_source': 1, 'dec_source': 1, 'point_amp': np.array([1.])},
+                      {'ra_image': [1], 'dec_image': [1], 'point_amp': np.array([1.])}]
+        #self.kwargs_sigma = [{'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}, {'pos_sigma': 1, 'point_amp_sigma': 1}]
 
         self.kwargs_mean = []
         for i in range(len(self.kwargs)):
             kwargs_mean_k = self.kwargs[i].copy()
-            kwargs_mean_k.update(self.kwargs_sigma[i])
+            #kwargs_mean_k.update(self.kwargs_sigma[i])
             self.kwargs_mean.append(kwargs_mean_k)
 
         self.param_linear = PointSourceParam(model_list=point_source_model_list, kwargs_fixed=[{}, {}, {}],

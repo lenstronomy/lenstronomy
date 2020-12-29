@@ -14,17 +14,6 @@ class SourcePositions(PSBase):
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
 
     """
-    def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
-        super(SourcePositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
-                                              additional_image=additional_image)
-        if self._fixed_magnification is True:
-            self.param_names = ['source_amp', 'ra_source', 'dec_source']
-            self.lower_limit_default = {'source_amp': 0, 'ra_source': -100, 'dec_source': -100}
-            self.upper_limit_default = {'source_amp': 1000, 'ra_source': 100, 'dec_source': 100}
-        else:
-            self.param_names = ['point_amp', 'ra_source', 'dec_source']
-            self.lower_limit_default = {'point_amp': 0, 'ra_source': -100, 'dec_source': -100}
-            self.upper_limit_default = {'point_amp': 1000, 'ra_source': 100, 'dec_source': 100}
 
     def image_position(self, kwargs_ps, kwargs_lens=None, magnification_limit=None, kwargs_lens_eqn_solver=None):
         """
@@ -77,7 +66,9 @@ class SourcePositions(PSBase):
             if x_pos is not None and y_pos is not None:
                 ra_image, dec_image = x_pos, y_pos
             else:
-                ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens,
+                if kwargs_lens_eqn_solver is None:
+                    kwargs_lens_eqn_solver = {}
+                ra_image, dec_image = self.image_position(kwargs_ps, kwargs_lens=kwargs_lens,
                                                           magnification_limit=magnification_limit,
                                                           **kwargs_lens_eqn_solver)
             mag = self._lens_model.magnification(ra_image, dec_image, kwargs_lens)

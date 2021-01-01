@@ -132,6 +132,9 @@ Automatized Lens Modeling
 
 
 
+
+
+
 Quasar-host galaxy decomposition
 --------------------------------
 
@@ -172,10 +175,10 @@ Theory papers
 Simulation products
 -------------------
 
-* The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. <https://arxiv.org/abs/2010.05926v1>`_
+* The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. 2020 <https://arxiv.org/abs/2010.05926v1>`_
     *Strong lensing simulations produced by SLSprinkler utilizing lenstronomy functionalities*
 
-* The impact of mass map truncation on strong lensing simulations; `Van de Vyvere et al. <https://arxiv.org/abs/2010.13650>`_
+* The impact of mass map truncation on strong lensing simulations; `Van de Vyvere et al. 2020 <https://arxiv.org/abs/2010.13650>`_
     *Uses numerical integration to compute lensing quantities from projected mass maps from simulations.*
 
 
@@ -183,5 +186,12 @@ Simulation products
 Large scale structure
 ---------------------
 
-* Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. <https://arxiv.org/abs/2010.08680>`_
+* Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
+
+
+Others
+------
+
+* Predicting future astronomical events using deep learning; `Singh et al. <https://arxiv.org/abs/2012.15476>`_
+    *simulating strongly lensed galaxy merger pairs in time sequence*

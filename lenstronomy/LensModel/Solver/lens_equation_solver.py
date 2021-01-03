@@ -25,7 +25,7 @@ class LensEquationSolver(object):
                                   precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
                                   y_center=0, num_random=1000):
         """
-        Solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
+        Solves the lens equation stochastic with the scipy minimization routine on the quadratic distance between
         the backwards ray-shooted proposed image position and the source position.
         Credits to Giulia Pagano
 
@@ -230,7 +230,7 @@ class LensEquationSolver(object):
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
             delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
 
-            while (delta > precision_limit and l < num_iter_max):
+            while delta > precision_limit and l < num_iter_max:
                 x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
                 delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
                 f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_guess, y_guess, kwargs_lens)
@@ -260,7 +260,7 @@ class LensEquationSolver(object):
         :param iter_num: int, current iteration number
         :param num_iter_max: int, maximum iteration number before aborting the process
         :return: updated image position in x, updated image position in y, updated precision in the source plane,
-        total iterations done after this call
+         total iterations done after this call
         """
         x_new = x_guess - image_plane_vector[0]
         y_new = y_guess - image_plane_vector[1]
@@ -302,7 +302,6 @@ class LensEquationSolver(object):
         :param magnification_limit: None or float, if set will only return image positions that have an
          abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
-        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
 
         x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
@@ -326,6 +325,7 @@ class LensEquationSolver(object):
     def sort_arrival_times(self, x_mins, y_mins, kwargs_lens):
         """
         sort arrival times (fermat potential) of image positions in increasing order of light travel time
+
         :param x_mins: ra position of images
         :param y_mins: dec position of images
         :param kwargs_lens: keyword arguments of lens model

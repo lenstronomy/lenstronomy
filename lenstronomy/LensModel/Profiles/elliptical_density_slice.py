@@ -150,6 +150,12 @@ class ElliSLICE (LensProfileBase):
         f2 = a ** 2 - b ** 2
         sig_0 = kwargs_slice['sigma_0']
         median_op = False
+        # when (x,y) is on one of the ellipse axis, there might be an issue when calculating the square root of
+        # zb ** 2 * e2ipsi - f2. When the argument has an imaginary part ==0, having 0. or -0. may return different
+        # answers. Therefore, for points (x,y) close to one axis, we take 3 points (one is x,y ; another one is a delta
+        # away from this position, perpendicularly to the axis ; another one is at -delta perpendicularly away from
+        # x,y). We calculate the function for each point and take the median. This avoids any singularity for points
+        # along the axis but it slows down the function.
         if np.abs(np.sin(phi - psi)) <= 10 ** -10 \
                 or np.abs(np.sin(phi - psi)) - np.pi / 2. <= 10 ** -10:  # very close to one of the ellipse axis
             median_op = True
@@ -216,6 +222,12 @@ class ElliSLICE (LensProfileBase):
         sig_0 = kwargs_slice['sigma_0']
         r, phi = param_util.cart2polar(x, y)
         median_op = False
+        # when (x,y) is on one of the ellipse axis, there might be an issue when calculating the square root of
+        # z ** 2 * em2ipsi - f2. When the argument has an imaginary part ==0, having 0. or -0. may return different
+        # answers. Therefore, for points (x,y) close to one axis, we take 3 points (one is x,y ; another one is a delta
+        # away from this position, perpendicularly to the axis ; another one is at -delta perpendicularly away from
+        # x,y). We calculate the function for each point and take the median. This avoids any singularity for points
+        # along the axis but it slows down the function.
         if np.abs(np.sin(phi - psi)) <= 10 ** -10 \
                 or np.abs(np.sin(phi - psi)) - np.pi / 2. <= 10 ** -10:  # very close to one of the ellipse axis
             median_op = True

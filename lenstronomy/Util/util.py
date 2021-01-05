@@ -7,8 +7,7 @@ this file contains standard routines
 import numpy as np
 import mpmath
 import itertools
-from numba import njit
-
+from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
@@ -82,6 +81,7 @@ def sort_image_index(ximg,yimg,xref,yref):
 
 
 @export
+@jit()
 def rotate(xcoords, ycoords, angle):
     """
 
@@ -476,7 +476,7 @@ def points_on_circle(radius, num_points):
 
 
 @export
-@njit
+@jit()
 def neighborSelect(a, x, y):
     """
     #TODO replace by from scipy.signal import argrelextrema for speed up

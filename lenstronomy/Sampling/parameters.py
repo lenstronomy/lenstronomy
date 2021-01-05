@@ -439,12 +439,19 @@ class Param(object):
         :param kwargs_list_1: list of keyword arguments
         :param kwargs_list_2: list of keyword arguments
         :param joint_setting_list: [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
+                                     or: [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]
         :return: updated kwargs_list_2 with arguments from kwargs_list_1 as defined in joint_setting_list
         """
         for setting in joint_setting_list:
             i_1, k_2, param_list = setting
-            for param_name in param_list:
-                kwargs_list_2[k_2][param_name] = kwargs_list_1[i_1][param_name]
+            if type(param_list) == list:
+                for param_name in param_list:
+                    kwargs_list_2[k_2][param_name] = kwargs_list_1[i_1][param_name]
+            elif type(param_list) == dict:
+                for param_to, param_from in param_list.items():
+                    kwargs_list_2[k_2][param_to] = kwargs_list_1[i_1][param_from]
+            else:
+                raise TypeError("Bad format for settings list")
         return kwargs_list_2
 
     @staticmethod

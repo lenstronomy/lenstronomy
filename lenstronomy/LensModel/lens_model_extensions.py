@@ -1,5 +1,6 @@
 import numpy as np
 import lenstronomy.Util.util as util
+from skimage.measure import find_contours
 
 __all__ = ['LensModelExtensions']
 
@@ -189,8 +190,7 @@ class LensModelExtensions(object):
         ra_caustic_list = []
         dec_caustic_list = []
 
-        from skimage.measure import find_contours
-        paths = find_contours(mag_high_res, 0.)
+        paths = find_contours(1/mag_high_res, 0.)
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
             ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2

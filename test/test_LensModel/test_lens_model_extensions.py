@@ -21,14 +21,18 @@ class TestLensModelExtensions(object):
         phi, q = 1., 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
-        lensModel = LensModelExtensions(LensModel(lens_model_list))
-        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModel.critical_curve_caustics(kwargs_lens,
-                                                                                compute_window=5, grid_scale=0.005)
-        print(ra_caustic_list)
-        npt.assert_almost_equal(ra_caustic_list[0][3], -0.25629009803139047, decimal=5)
-        npt.assert_almost_equal(dec_caustic_list[0][3], -0.39153358367275115, decimal=5)
-        npt.assert_almost_equal(ra_crit_list[0][3], -0.53249999999999997, decimal=5)
-        npt.assert_almost_equal(dec_crit_list[0][3], -1.2536936868024853, decimal=5)
+        lens_model = LensModel(lens_model_list)
+        lensModelExtensions = LensModelExtensions(LensModel(lens_model_list))
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExtensions.critical_curve_caustics(kwargs_lens,
+                                                                                                           compute_window=5, grid_scale=0.005)
+
+        # here we test whether the caustic points are in fact at high magnifications (close to infinite)
+        # close here means above magnification of 100
+        for k in range(len(ra_crit_list)):
+            ra_crit = ra_crit_list[k]
+            dec_crit = dec_crit_list[k]
+            mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
+            assert np.all(np.abs(mag) > 100)
 
     def test_critical_curves_tiling(self):
         lens_model_list = ['SPEP']
@@ -37,7 +41,12 @@ class TestLensModelExtensions(object):
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(LensModel(lens_model_list))
         ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01, max_order=10)
-        npt.assert_almost_equal(ra_crit[0], -0.5355208333333333, decimal=5)
+        # here we test whether the caustic points are in fact at high magnifications (close to infinite)
+        # close here means above magnification of 1000. This is more precise than the critical_curve_caustics() method
+        lens_model = LensModel(lens_model_list)
+        mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
+        assert np.all(np.abs(mag) > 1000)
+
 
     def test_get_magnification_model(self):
         self.kwargs_options = { 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'],

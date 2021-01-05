@@ -9,7 +9,7 @@ import numpy.testing as npt
 
 class TestElliSLICE(object):
     """
-    tests tthe elliptical slice lens model
+    tests the elliptical slice lens model
     """
     def setup(self):
         self.ElliSLICE = ElliSLICE()

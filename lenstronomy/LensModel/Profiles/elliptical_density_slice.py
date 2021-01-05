@@ -14,7 +14,26 @@ class ElliSLICE (LensProfileBase):
 
     Computes the lensing quantities of an elliptical slice with semi major axis 'a' and
     semi minor axis 'b', centered on 'center_x' and 'center_y', oriented with an angle 'psi'
-    in radian, and with constant surface mass density 'sigma_0'
+    in radian, and with constant surface mass density 'sigma_0'.
+    In other words, this lens model is characterized by the surface mass density :
+
+    ..math::
+
+        \kappax,y)= \left\{
+            \begin{array}{ll}
+                \sigma_0  & \mbox{if } \frac{x_{rot}^2}{a^2} + \frac{y_{rot}^2}{b^2} \leq 1 \\
+                0 & \mbox{else}
+            \end{array}
+        \right.
+
+    with
+
+    ..math::
+
+        x_{rot} = x_c \cos \psi + y_c \sin \psi  \\
+        y_{rot} = - x_c \sin \psi + y_c \cos \psi  \\
+        x_c = x - center_x  \\
+        y_c = y - center_y
 
     """
     param_names = ['a','b','psi','sigma_0','center_x','center_y']
@@ -157,7 +176,7 @@ class ElliSLICE (LensProfileBase):
         # x,y). We calculate the function for each point and take the median. This avoids any singularity for points
         # along the axis but it slows down the function.
         if np.abs(np.sin(phi - psi)) <= 10 ** -10 \
-                or np.abs(np.sin(phi - psi)) - np.pi / 2. <= 10 ** -10:  # very close to one of the ellipse axis
+                or np.abs(np.sin(phi - psi - np.pi / 2.)) <= 10 ** -10:  # very close to one of the ellipse axis
             median_op = True
         e2ipsi = c.exp(2j * psi)
         eipsi = c.exp(1j * psi)
@@ -229,7 +248,7 @@ class ElliSLICE (LensProfileBase):
         # x,y). We calculate the function for each point and take the median. This avoids any singularity for points
         # along the axis but it slows down the function.
         if np.abs(np.sin(phi - psi)) <= 10 ** -10 \
-                or np.abs(np.sin(phi - psi)) - np.pi / 2. <= 10 ** -10:  # very close to one of the ellipse axis
+                or np.abs(np.sin(phi - psi - np.pi / 2.)) <= 10 ** -10:  # very close to one of the ellipse axis
             median_op = True
         e = (a - b) / (a + b)
         f2 = a ** 2 - b ** 2

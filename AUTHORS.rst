@@ -37,4 +37,5 @@ Contributors (alphabetic)
 * Madison Ueland `mueland <https://github.com/mueland/>`_
 * Lyne Van de Vyvere `LyneVdV <https://github.com/LyneVdV/>`_
 * Cyril Welschen
+* Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_

@@ -22,6 +22,8 @@ class PointSource(object):
         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
          (for imaging modeling) for the subset of the point source lists that =True. This option enables to model
+         imaging data with transient point sources, when the point source positions are measured and present at a
+         different time than the imaging data
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param save_cache: bool, saves image positions and only if delete_cache is executed, a new solution of the lens

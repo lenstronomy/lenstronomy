@@ -23,6 +23,12 @@ class TestElliSLICE(object):
         sigma_0 = 5.
         values = self.ElliSLICE.function(x, y, a, b, psi, sigma_0)
         npt.assert_almost_equal(values, 4.532482297, decimal=4)
+
+        x = 3.*np.sqrt(3)/2.
+        y = 3./2.
+        values = self.ElliSLICE.function(x, y, a, b, psi, sigma_0)
+        npt.assert_almost_equal(values, 15.52885056, decimal=4)
+
         x = np.array([0])
         y = np.array([0])
         values = self.ElliSLICE.function(x, y, a, b, psi, sigma_0)
@@ -44,6 +50,12 @@ class TestElliSLICE(object):
         f_x, f_y = self.ElliSLICE.derivatives(x, y, a, b, psi, sigma_0)
         npt.assert_almost_equal(f_x, 1.938995765, decimal=6)
         npt.assert_almost_equal(f_y, -0.13835403, decimal=6)
+
+        x = 4
+        y = 0.
+        f_x, f_y = self.ElliSLICE.derivatives(x, y, a, b, 0., sigma_0)
+        npt.assert_almost_equal(f_x, 2.629658164, decimal=6)
+        npt.assert_almost_equal(f_y, 0., decimal=6)
 
         x = np.array([0.5])
         y = np.array([0.1])

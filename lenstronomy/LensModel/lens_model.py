@@ -182,7 +182,7 @@ class LensModel(object):
         else:
             raise ValueError('diff_method %s not supported. Chose among "square" or "cross".' % diff_method)
 
-    def kappa(self, x, y, kwargs, k=None, diff=None):
+    def kappa(self, x, y, kwargs, k=None, diff=None, diff_method='square'):
         """
         lensing convergence k = 1/2 laplacian(phi)
 
@@ -192,15 +192,18 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
+         exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
+         cross or a square of points around (x, y)
         :return: lensing convergence
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff, diff_method=diff_method)
         kappa = 1./2 * (f_xx + f_yy)
         return kappa
 
-    def curl(self, x, y, kwargs, k=None, diff=None):
+    def curl(self, x, y, kwargs, k=None, diff=None, diff_method='square'):
         """
         curl computation F_xy - F_yx
 
@@ -210,13 +213,16 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
+         exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
+         cross or a square of points around (x, y)
         :return: curl at position (x, y)
         """
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff, diff_method=diff_method)
         return f_xy - f_yx
 
-    def gamma(self, x, y, kwargs, k=None, diff=None):
+    def gamma(self, x, y, kwargs, k=None, diff=None, diff_method='square'):
         """
         shear computation
         g1 = 1/2(d^2phi/dx^2 - d^2phi/dy^2)
@@ -228,16 +234,19 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
+         exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
+         cross or a square of points around (x, y)
         :return: gamma1, gamma2
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff, diff_method=diff_method)
         gamma1 = 1./2 * (f_xx - f_yy)
         gamma2 = f_xy
         return gamma1, gamma2
 
-    def magnification(self, x, y, kwargs, k=None, diff=None):
+    def magnification(self, x, y, kwargs, k=None, diff=None, diff_method='square'):
         """
         magnification
         mag = 1/det(A)
@@ -249,11 +258,14 @@ class LensModel(object):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
-        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the exact (if available) differentials.
+        :param diff: float, scale over which the finite numerical differential is computed. If None, then using the
+         exact (if available) differentials.
+        :param diff_method: string, 'square' or 'cross', indicating whether finite differentials are computed from a
+         cross or a square of points around (x, y)
         :return: magnification
         """
 
-        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, kwargs, k=k, diff=diff, diff_method=diff_method)
         det_A = (1 - f_xx) * (1 - f_yy) - f_xy*f_yx
         return 1./det_A  # attention, if dividing by zero
 

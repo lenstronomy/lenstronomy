@@ -54,6 +54,11 @@ class Param(object):
     4. Lens model solver is applied
     5. Joint source and point source is applied
 
+    Alternatively to the format of the linking of parameters with IDENTICAL names as listed above as:
+    [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
+    the following format of the arguments are supported to join parameters with DIFFERENT names:
+    [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]
+
 
     """
 

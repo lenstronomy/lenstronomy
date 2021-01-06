@@ -451,7 +451,7 @@ class Param(object):
                 for param_to, param_from in param_list.items():
                     kwargs_list_2[k_2][param_to] = kwargs_list_1[i_1][param_from]
             else:
-                raise TypeError("Bad format for settings list")
+                raise TypeError("Bad format for constraint setting: got %s" % param_list)
         return kwargs_list_2
 
     @staticmethod

@@ -40,7 +40,8 @@ class TestLensModelExtensions(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
         lensModel = LensModelExtensions(LensModel(lens_model_list))
-        ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01, max_order=10)
+        ra_crit, dec_crit = lensModel.critical_curve_tiling(kwargs_lens, compute_window=5, start_scale=0.01,
+                                                            max_order=10)
         # here we test whether the caustic points are in fact at high magnifications (close to infinite)
         # close here means above magnification of 1000. This is more precise than the critical_curve_caustics() method
         lens_model = LensModel(lens_model_list)
@@ -57,7 +58,8 @@ class TestLensModelExtensions(object):
         x_pos = np.array([1., 1., 2.])
         y_pos = np.array([-1., 0., 0.])
         lens_model = LensModelExtensions(LensModel(lens_model_list=['GAUSSIAN']))
-        mag = lens_model.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100)
+        mag = lens_model.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1,
+                                              grid_number=100)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
     def test_elliptical_ray_trace(self):
@@ -68,13 +70,14 @@ class TestLensModelExtensions(object):
                        {'gamma1':0.01, 'gamma2':0.03}]
 
         extension = LensModelExtensions(LensModel(lens_model_list))
-        x_image, y_image = [ 0.56153533,-0.78067875,-0.72551184,0.75664112],[-0.74722528,0.52491177,-0.72799235,0.78503659]
+        x_image = [0.56153533, -0.78067875, -0.72551184, 0.75664112]
+        y_image = [-0.74722528, 0.52491177, -0.72799235, 0.78503659]
 
-        mag_square_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
-                                                         grid_number=200,window_size=0.1)
+        mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
+                                                         grid_number=200, window_size=0.1)
 
-        mag_polar_grid = extension.magnification_finite(x_image,y_image,kwargs_lens,source_sigma=0.001,
-                                                        grid_number=200,window_size=0.1,polar_grid=True)
+        mag_polar_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
+                                                        grid_number=200, window_size=0.1, polar_grid=True)
 
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
@@ -91,8 +94,8 @@ class TestLensModelExtensions(object):
         x_img, y_img = lensEquationSolver.image_position_from_source(kwargs_lens=kwargs_lens, sourcePos_x=x_source,
                                                                      sourcePos_y=y_source)
 
-        image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
-                    shape="GAUSSIAN")
+        image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1,
+                                                grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
 
 

@@ -79,7 +79,7 @@ class PointSource(object):
         :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set
         :return: updated self instances
         """
-        if min_distance is not None and not (hasattr(self._kwargs_lens_eqn_solver, 'min_distance') and only_from_unspecified):
+        if min_distance is not None and not 'min_distance' in self._kwargs_lens_eqn_solver and only_from_unspecified:
             self._kwargs_lens_eqn_solver['min_distance'] = min_distance
         if only_from_unspecified:
             self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window', search_window)

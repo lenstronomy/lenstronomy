@@ -9,10 +9,6 @@ export, __all__ = exporter()
 
 # transform the unit hypercube to pysical parameters for (nested) sampling
 
-
-SQRT2 = np.sqrt(2)
-
-
 @export
 def unit2uniform(x, vmin, vmax):
     """
@@ -72,7 +68,7 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
     if copy:
         cube_ = cube
         cube = np.zeros_like(cube_)
-    a, b = (lowers-means)/sigmas, (uppers-means)/sigmas
+    a, b = (np.array(lowers)-means)/sigmas, (np.array(uppers)-means)/sigmas
     cube[:] = stats.truncnorm.ppf(cube_ if copy else cube, a=a, b=b, loc=means, scale=sigmas)
     return cube
 

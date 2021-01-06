@@ -27,12 +27,12 @@ class TestLensModelExtensions(object):
                                                                                                            compute_window=5, grid_scale=0.005)
 
         # here we test whether the caustic points are in fact at high magnifications (close to infinite)
-        # close here means above magnification of 100
+        # close here means above magnification of 1000000 (with matplotlib method, this limit achieved was 170)
         for k in range(len(ra_crit_list)):
             ra_crit = ra_crit_list[k]
             dec_crit = dec_crit_list[k]
             mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
-            assert np.all(np.abs(mag) > 100)
+            assert np.all(np.abs(mag) > 100000)
 
     def test_critical_curves_tiling(self):
         lens_model_list = ['SPEP']

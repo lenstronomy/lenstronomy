@@ -333,6 +333,7 @@ def test_make_subgrid():
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1)
     x_sub_grid, y_sub_grid = util.make_subgrid(x_grid, y_grid, subgrid_res=2)
     assert np.sum(x_grid) == 0
+    assert len(x_grid) == 101*101
     assert x_sub_grid[0] == -50.25
     assert y_sub_grid[17] == -50.25
 

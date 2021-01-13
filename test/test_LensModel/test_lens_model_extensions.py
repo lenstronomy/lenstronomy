@@ -6,7 +6,10 @@ import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.Cosmo.background import Background
 import lenstronomy.Util.param_util as param_util
+from time import time
+from lenstronomy.LightModel.light_model import LightModel
 
 
 class TestLensModelExtensions(object):
@@ -75,11 +78,62 @@ class TestLensModelExtensions(object):
 
         mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
                                                          grid_number=200, window_size=0.1)
-
         mag_polar_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
                                                         grid_number=200, window_size=0.1, polar_grid=True)
 
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
+
+    def test_magnification_finite_adaptive(self):
+
+        lens_model_list = ['EPL', 'SHEAR']
+        z_source = 1.5
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
+                       {'gamma1': 0.01, 'gamma2': 0.03}]
+
+        lensmodel = LensModel(lens_model_list)
+        extension = LensModelExtensions(lensmodel)
+        solver = LensEquationSolver(lensmodel)
+        source_x, source_y = 0.07, 0.03
+        x_image, y_image = solver.findBrightImage(source_x, source_y, kwargs_lens)
+
+        source_fwhm_parsec = 60.
+        background = Background()
+        astropy = background.cosmo
+        pc_per_arcsec = 1000 / astropy.arcsec_per_kpc_proper(z_source).value
+        source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
+
+        mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
+                                                         grid_number=5000, window_size=0.45)
+
+        mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens, source_fwhm_parsec,
+                                                                    z_source)
+
+        mag_square_grid *= max(mag_square_grid) ** -1
+        mag_adaptive_grid *= max(mag_adaptive_grid) ** -1
+        npt.assert_almost_equal(mag_square_grid, mag_adaptive_grid, 3)
+
+        flux_array = np.array([0., 0.])
+        x_image, y_image = [x_image[0]], [y_image[0]]
+        grid_x = np.array([0., source_sigma])
+        grid_y = np.array([0., 0.])
+        grid_r = np.hypot(grid_x, grid_y)
+
+        source_model = LightModel(['GAUSSIAN'])
+        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
+
+        r_min = 0.
+        r_max = source_sigma*0.9
+        flux_array = extension._iterate_adaptive(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                          lensmodel, kwargs_lens, source_model, kwargs_source)
+        npt.assert_equal(True, flux_array[0] > 0.)
+        npt.assert_equal(True, flux_array[1] == 0.)
+
+        r_min = source_sigma*0.9
+        r_max = 2 * source_sigma
+
+        flux_array = extension._iterate_adaptive(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                                                 lensmodel, kwargs_lens, source_model, kwargs_source)
+        npt.assert_equal(True, flux_array[1] > 0.)
 
     def test_zoom_source(self):
         lens_model_list = ['SIE', 'SHEAR']
@@ -97,7 +151,6 @@ class TestLensModelExtensions(object):
         image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1,
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -1,6 +1,8 @@
 import numpy as np
 import lenstronomy.Util.util as util
 from skimage.measure import find_contours
+from lenstronomy.Cosmo.background import Background
+from lenstronomy.LightModel.light_model import LightModel
 
 __all__ = ['LensModelExtensions']
 
@@ -22,6 +24,137 @@ class LensModelExtensions(object):
 
         """
         self._lensModel = lensModel
+
+    def magnification_finite_adaptive(self, x_pos, y_pos, source_x, source_y, kwargs_lens,
+                                      source_fwhm_pasec, z_source,
+                                      astropy=None, grid_resolution=None, grid_radius_arcsec=None, tol=0.001,
+                                      grid_res_scale=0.0004, grid_size_scale=0.004):
+        """
+        This method computes image magnifications with a finite-size background source assuming a Gaussian
+        source light profile. This method can be much faster that magnification_finite for lens models with many
+        deflectors. This is because most pixels in a rectangular window around a lensed image will contain zero flux.
+        Rather than ray tracing through a rectangular grid, this routine ray traces through a circular
+        region that resembles the actual shape of the lensed image. The region is made progressively larger until
+        all of the light is captured and the magnification converges to a fixed value.
+
+        The default settings for the grid resolution and ray tracing window size work well for sources with fwhm between
+        0.5 - 100 pc.
+
+        :param x_pos: a list or array of x coordinates
+        :param y_pos: a list or array of y coordinates
+        :param kwargs_lens: keyword arguments for the lens model
+        :param source_fwhm_pasec: the size of the background source in parsecs
+        :param z_source: the source redshift
+        :param astropy: (optional) an instance of astropy; if not specified, a default cosmology will be used
+        :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
+        be estimated from the source size
+        :param grid_radius_arcsec: (optional) the size of the ray tracing region; if not specified, an appropriate value
+        will be estimated from the source size
+        :param tol: tolerance for convergence in the magnification
+        :return: an array of image magnifications
+        """
+
+        if astropy is None:
+            background_cosmology = Background()
+            astropy = background_cosmology.cosmo
+
+        # These default settings determined by guess and check, seem adequate for sources with size 0.1 - 100 pc
+        if grid_resolution is None:
+            ref = 10.
+            power = 1
+            grid_resolution = grid_res_scale * (source_fwhm_pasec / ref) ** power
+        if grid_radius_arcsec is None:
+            size_0 = 1.
+            power = 1.
+            grid_radius_arcsec = grid_size_scale * (source_fwhm_pasec / size_0) ** power
+
+        pc_per_arcsec = 1000 / astropy.arcsec_per_kpc_proper(z_source).value
+        # factor of 2.355 for FWHM to variance
+        source_sigma = source_fwhm_pasec / pc_per_arcsec / 2.355
+        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
+        source_model = LightModel(['GAUSSIAN'])
+
+        npix = int(2 * grid_radius_arcsec / grid_resolution)
+        _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+        _grid_y = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+
+        magnifications = []
+
+        for i, (xi, yi) in enumerate(zip(x_pos, y_pos)):
+
+            grid_x, grid_y = np.meshgrid(_grid_x, _grid_y)
+            grid_r = np.hypot(grid_x, grid_y).ravel()
+            grid_x, grid_y = grid_x.ravel(), grid_y.ravel()
+
+            flux_array = np.zeros_like(grid_x)
+
+            step = 0.05 * grid_radius_arcsec
+            r_min = 0.
+            r_max = r_min + step
+            flux_array = self._iterate_adaptive(flux_array, xi, yi, grid_x, grid_y, grid_r,
+                                                           r_min, r_max, self._lensModel, kwargs_lens,
+                                                           source_model, kwargs_source)
+            magnification_current = np.sum(flux_array) * grid_resolution ** 2
+
+            r_min += step
+            r_max += step
+            minimum_magnification = 1e-4
+
+            while True:
+
+                flux_array = self._iterate_adaptive(flux_array, xi, yi, grid_x, grid_y, grid_r,
+                                                           r_min, r_max, self._lensModel, kwargs_lens,
+                                                           source_model, kwargs_source)
+
+                new_magnification = np.sum(flux_array) * grid_resolution ** 2
+
+                diff = abs(new_magnification - magnification_current)/magnification_current
+
+                if diff < tol and new_magnification > minimum_magnification:
+                    break
+                else:
+                    r_min += step
+                    r_max += step
+                    magnification_current = new_magnification
+
+            magnifications.append(new_magnification)
+
+        return np.array(magnifications)
+
+    @staticmethod
+    def _iterate_adaptive(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                          lensModel, kwargs_lens, source_model, kwargs_source):
+        """
+        performs a signle iteration of the ray tracing computations performed in magnification_finite_adaptive
+        :param flux_array: an array that contains the flux in each pixel
+        :param x_image: image x coordinate
+        :param y_image: image y coordinate
+        :param grid_x: an array of x coordinates
+        :param grid_y: an array of y coordinates
+        :param grid_r: an array of projected distances from the origin
+        :param r_min: sets the inner radius of the annulus where ray tracing happens
+        :param r_max: sets the outer radius of the annulus where ray tracing happens
+        :param lensModel: an instance of LensModel
+        :param kwargs_lens: keywords for the lens model
+        :param source_model: an instance of LightModel
+        :param kwargs_source: keywords for the light model
+        :return: the flux array where the surface brightness has been computed for all pixels
+        with r_min < grid_r < r_max.
+        """
+
+        condition1 = grid_r >= r_min
+        condition2 = grid_r < r_max
+        condition = np.logical_and(condition1, condition2)
+
+        inds = np.where(condition)[0]
+
+        xcoords = grid_x[inds] + x_image
+        ycoords = grid_y[inds] + y_image
+        beta_x, beta_y = lensModel.ray_shooting(xcoords, ycoords, kwargs_lens)
+        flux_in_pixels = source_model.surface_brightness(beta_x, beta_y, kwargs_source)
+        flux_array[inds] = flux_in_pixels
+
+        return flux_array
 
     def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
                              shape="GAUSSIAN", polar_grid=False, aspect_ratio=0.5):

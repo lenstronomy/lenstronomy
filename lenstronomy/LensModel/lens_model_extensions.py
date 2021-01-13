@@ -28,14 +28,14 @@ class LensModelExtensions(object):
     def magnification_finite_adaptive(self, x_pos, y_pos, source_x, source_y, kwargs_lens,
                                       source_fwhm_pasec, z_source,
                                       astropy=None, grid_resolution=None, grid_radius_arcsec=None, tol=0.001,
-                                      grid_res_scale=0.0004, grid_size_scale=0.004):
+                                      grid_res_scale=0.0004, grid_size_scale=0.004, step_size=0.05):
         """
         This method computes image magnifications with a finite-size background source assuming a Gaussian
         source light profile. This method can be much faster that magnification_finite for lens models with many
         deflectors. This is because most pixels in a rectangular window around a lensed image will contain zero flux.
         Rather than ray tracing through a rectangular grid, this routine ray traces through a circular
-        region that resembles the actual shape of the lensed image. The region is made progressively larger until
-        all of the light is captured and the magnification converges to a fixed value.
+        aperture that becomes progressively larger until all of the light is captured and the magnification converges
+        to a fixed value.
 
         The default settings for the grid resolution and ray tracing window size work well for sources with fwhm between
         0.5 - 100 pc.
@@ -51,6 +51,9 @@ class LensModelExtensions(object):
         :param grid_radius_arcsec: (optional) the size of the ray tracing region; if not specified, an appropriate value
         will be estimated from the source size
         :param tol: tolerance for convergence in the magnification
+        :param grid_res_scale: sets the grid resolution
+        :param grid_size_scale: determines the size of the ray tracing window
+        :param step_size: sets the increment for the successively larger ray tracing windows
         :return: an array of image magnifications
         """
 
@@ -88,7 +91,7 @@ class LensModelExtensions(object):
 
             flux_array = np.zeros_like(grid_x)
 
-            step = 0.05 * grid_radius_arcsec
+            step = step_size * grid_radius_arcsec
             r_min = 0.
             r_max = r_min + step
             flux_array = self._iterate_adaptive(flux_array, xi, yi, grid_x, grid_y, grid_r,

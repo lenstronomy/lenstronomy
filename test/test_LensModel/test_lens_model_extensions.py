@@ -8,9 +8,7 @@ from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Cosmo.background import Background
 import lenstronomy.Util.param_util as param_util
-from time import time
 from lenstronomy.LightModel.light_model import LightModel
-
 
 class TestLensModelExtensions(object):
     """

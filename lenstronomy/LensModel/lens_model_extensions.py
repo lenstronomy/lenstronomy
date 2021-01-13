@@ -113,7 +113,10 @@ class LensModelExtensions(object):
 
                 diff = abs(new_magnification - magnification_current)/magnification_current
 
-                if diff < tol and new_magnification > minimum_magnification:
+                # the sqrt(2) will allow this algorithm to eventully fill up the entire rectangular aperture
+                if r_max > np.sqrt(2) * grid_radius_arcsec:
+                    break
+                elif diff < tol and new_magnification > minimum_magnification:
                     break
                 else:
                     r_min += step

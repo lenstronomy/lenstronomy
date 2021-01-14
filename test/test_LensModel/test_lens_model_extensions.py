@@ -9,13 +9,15 @@ from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Cosmo.background import Background
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
+from astropy.cosmology import FlatLambdaCDM
 
 class TestLensModelExtensions(object):
     """
     tests the source model routines
     """
     def setup(self):
-        pass
+
+        self.cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
 
     def test_critical_curves(self):
         lens_model_list = ['SPEP']
@@ -48,7 +50,6 @@ class TestLensModelExtensions(object):
         lens_model = LensModel(lens_model_list)
         mag = lens_model.magnification(ra_crit, dec_crit, kwargs_lens)
         assert np.all(np.abs(mag) > 1000)
-
 
     def test_get_magnification_model(self):
         self.kwargs_options = { 'lens_model_list': ['GAUSSIAN'], 'source_light_model_list': ['GAUSSIAN'],
@@ -94,21 +95,21 @@ class TestLensModelExtensions(object):
         source_x, source_y = 0.07, 0.03
         x_image, y_image = solver.findBrightImage(source_x, source_y, kwargs_lens)
 
-        source_fwhm_parsec = 60.
-        background = Background()
-        astropy = background.cosmo
-        pc_per_arcsec = 1000 / astropy.arcsec_per_kpc_proper(z_source).value
+        source_fwhm_parsec = 40.
+
+        pc_per_arcsec = 1000 / self.cosmo.arcsec_per_kpc_proper(z_source).value
         source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
 
         mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
-                                                         grid_number=5000, window_size=0.45)
+                                                          grid_number=1501, window_size=0.15)
 
         mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens, source_fwhm_parsec,
-                                                                    z_source)
+                                                                    z_source, cosmo=self.cosmo, tol=0.0001)
 
-        mag_square_grid *= max(mag_square_grid) ** -1
-        mag_adaptive_grid *= max(mag_adaptive_grid) ** -1
-        npt.assert_almost_equal(mag_square_grid, mag_adaptive_grid, 3)
+        mag_point_source = abs(lensmodel.magnification(x_image, y_image, kwargs_lens))
+
+        npt.assert_almost_equal(mag_square_grid/mag_adaptive_grid, np.ones_like(mag_square_grid), 2)
+        npt.assert_almost_equal(mag_adaptive_grid/mag_point_source, np.ones_like(mag_square_grid), 2)
 
         flux_array = np.array([0., 0.])
         x_image, y_image = [x_image[0]], [y_image[0]]
@@ -121,17 +122,21 @@ class TestLensModelExtensions(object):
 
         r_min = 0.
         r_max = source_sigma*0.9
-        flux_array = extension._iterate_adaptive(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
-                          lensmodel, kwargs_lens, source_model, kwargs_source)
-        npt.assert_equal(True, flux_array[0] > 0.)
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                                                                 lensmodel, kwargs_lens, source_model, kwargs_source)
+        bx, by = lensmodel.ray_shooting(x_image[0], y_image[0], kwargs_lens)
+        sb_true = source_model.surface_brightness(bx, by, kwargs_source)
+        npt.assert_equal(True, flux_array[0] == sb_true)
         npt.assert_equal(True, flux_array[1] == 0.)
 
         r_min = source_sigma*0.9
         r_max = 2 * source_sigma
 
-        flux_array = extension._iterate_adaptive(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
-                                                 lensmodel, kwargs_lens, source_model, kwargs_source)
-        npt.assert_equal(True, flux_array[1] > 0.)
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                                                                 lensmodel, kwargs_lens, source_model, kwargs_source)
+        bx, by = lensmodel.ray_shooting(x_image[0] + source_sigma, y_image[0], kwargs_lens)
+        sb_true = source_model.surface_brightness(bx, by, kwargs_source)
+        npt.assert_equal(True, flux_array[1] == sb_true)
 
     def test_zoom_source(self):
         lens_model_list = ['SIE', 'SHEAR']
@@ -149,6 +154,7 @@ class TestLensModelExtensions(object):
         image = lensModelExtensions.zoom_source(x_img[0], y_img[0], kwargs_lens, source_sigma=0.003, window_size=0.1,
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

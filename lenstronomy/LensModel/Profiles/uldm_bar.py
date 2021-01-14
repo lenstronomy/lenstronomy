@@ -91,12 +91,8 @@ class Uldm_Bar(LensProfileBase):
         :param y: angular position (normally in units of arc seconds)
         :param kappa_0: central convergence of soliton
         :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
         :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
         x_ = x - center_x
@@ -181,7 +177,7 @@ class Uldm_Bar(LensProfileBase):
         :return: mass
         """
         m_3d = self.mass_3d(r, kappa_0, theta_c)
-        return m_3d 
+        return m_3d
 
     def mass_2d(self, R, kappa_0, theta_c):
         """

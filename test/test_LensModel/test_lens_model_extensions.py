@@ -102,14 +102,28 @@ class TestLensModelExtensions(object):
 
         mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
                                                           grid_number=1501, window_size=0.15)
+        flux_ratios_square_grid = mag_square_grid/max(mag_square_grid)
 
         mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens, source_fwhm_parsec,
                                                                     z_source, cosmo=self.cosmo, tol=0.0001)
+        flux_ratios_adaptive_grid = mag_adaptive_grid/max(mag_adaptive_grid)
+
+        mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                                    source_fwhm_parsec, z_source,
+                                                                      cosmo=self.cosmo, tol=0.0001, axis_ratio=0)
+        flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2/max(mag_adaptive_grid_2)
+
 
         # tests the default cosmology
         _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                     source_fwhm_parsec,
                                                                     z_source, cosmo=None, tol=0.0001)
+
+        # test smallest eigenvalue
+        _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                    source_fwhm_parsec,
+                                                    z_source, cosmo=None, tol=0.0001, use_largest_eigenvalue=False)
+
         # tests the r_max > sqrt(2) * grid_radius stop criterion
         _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                     source_fwhm_parsec,
@@ -117,8 +131,15 @@ class TestLensModelExtensions(object):
 
         mag_point_source = abs(lensmodel.magnification(x_image, y_image, kwargs_lens))
 
-        npt.assert_almost_equal(mag_square_grid/mag_adaptive_grid, np.ones_like(mag_square_grid), 2)
-        npt.assert_almost_equal(mag_adaptive_grid/mag_point_source, np.ones_like(mag_square_grid), 2)
+        quarter_precent_precision = [0.0025] * 4
+        npt.assert_array_less(flux_ratios_square_grid/flux_ratios_adaptive_grid - 1,
+                                quarter_precent_precision)
+        npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid_2 - 1,
+                                quarter_precent_precision)
+        half_percent_precision = [0.005] * 4
+        npt.assert_array_less(mag_square_grid/mag_adaptive_grid - 1, half_percent_precision)
+        npt.assert_array_less(mag_square_grid / mag_adaptive_grid_2 - 1, half_percent_precision)
+        npt.assert_array_less(mag_adaptive_grid/mag_point_source - 1, half_percent_precision)
 
         flux_array = np.array([0., 0.])
         x_image, y_image = [x_image[0]], [y_image[0]]
@@ -164,6 +185,8 @@ class TestLensModelExtensions(object):
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
 
-
-if __name__ == '__main__':
-    pytest.main("-k TestLensModel")
+t = TestLensModelExtensions()
+t.setup()
+t.test_magnification_finite_adaptive()
+# if __name__ == '__main__':
+#     pytest.main("-k TestLensModel")

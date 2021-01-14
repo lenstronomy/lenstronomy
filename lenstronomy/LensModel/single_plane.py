@@ -99,7 +99,7 @@ class SinglePlane(ProfileListBase):
         :type y: numpy array
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param k: only evaluate the k-th lens model
-        :return: f_xx, f_xy, f_yy components
+        :return: f_xx, f_xy, f_yx, f_yy components
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)

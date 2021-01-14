@@ -131,30 +131,6 @@ class MultiPlane(object):
         return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=include_z_start, T_ij_start=T_ij_start, T_ij_end=T_ij_end)
 
-    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, check_convention=True):
-        """
-        ray-tracing through parts of the cone, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop. Saves the angular position of the ray at each lens plane
-
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
-        :param alpha_x: ray angle at z_start [arcsec]
-        :param alpha_y: ray angle at z_start [arcsec]
-        :param z_start: redshift of start of computation
-        :param z_stop: redshift where output is computed
-        :param kwargs_lens: lens model keyword argument list
-        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed! This can lead to duplications in the computation of deflection angles.
-        :param check_convention: flag to check the image position convention (leave this alone)
-        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow. If not set, will compute the distance each time this function gets executed.
-        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set, will compute the distance each time this function gets executed.
-        :return: co-moving position and angles at redshift z_stop
-        """
-
-        if check_convention and not self.ignore_observed_positions:
-            kwargs_lens = self._convention(kwargs_lens)
-        return self._multi_plane_base.ray_shooting_partial_steps(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False)
-
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """
         computes the transverse distance (T_ij) that is required by the ray-tracing between the starting redshift and

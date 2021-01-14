@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.observation_api &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.SimulationAPI.observation_api &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -44,8 +44,12 @@
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.data_util</span> <span class="k">as</span> <span class="nn">data_util</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="k">import</span> <span class="n">PSF</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Instrument"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.Instrument">[docs]</a><span class="k">class</span> <span class="nc">Instrument</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Instrument"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.Instrument">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Instrument</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    basic access points to instrument properties</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -64,7 +68,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">pixel_scale</span> <span class="o">=</span> <span class="n">pixel_scale</span></div>
 
 
-<div class="viewcode-block" id="Observation"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.Observation">[docs]</a><span class="k">class</span> <span class="nc">Observation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Observation"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.Observation">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Observation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    basic access point to observation properties</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -155,7 +160,8 @@
         <span class="k">return</span> <span class="n">psf_class</span></div>
 
 
-<div class="viewcode-block" id="SingleBand"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.SingleBand">[docs]</a><span class="k">class</span> <span class="nc">SingleBand</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="n">Observation</span><span class="p">):</span>
+<div class="viewcode-block" id="SingleBand"><a class="viewcode-back" href="../../../lenstronomy.SimulationAPI.html#lenstronomy.SimulationAPI.observation_api.SingleBand">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">SingleBand</span><span class="p">(</span><span class="n">Instrument</span><span class="p">,</span> <span class="n">Observation</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class that combines Instrument and Observation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -341,7 +347,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

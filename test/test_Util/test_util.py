@@ -333,6 +333,7 @@ def test_make_subgrid():
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1)
     x_sub_grid, y_sub_grid = util.make_subgrid(x_grid, y_grid, subgrid_res=2)
     assert np.sum(x_grid) == 0
+    assert len(x_grid) == 101*101
     assert x_sub_grid[0] == -50.25
     assert y_sub_grid[17] == -50.25
 
@@ -403,6 +404,12 @@ class TestRaise(unittest.TestCase):
             util.convert_bool_list(n=3, k=[True, True])
         with self.assertRaises(ValueError):
             util.convert_bool_list(n=2, k=[0.1, True])
+
+    def test_raise_make_grid(self):
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=1.1, deltapix=1)
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=[1.1, 1], deltapix=1)
 
 
 if __name__ == '__main__':

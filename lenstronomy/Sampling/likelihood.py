@@ -44,7 +44,7 @@ class LikelihoodModule(object):
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
         relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
-        :param check_matched_source_position: bool, option to check whether point source position solver finds a
+        :param check_matched_source_position: bool, option to check whether point source positi gon solver finds a
          solution to match all the image positions in the same source plane coordinate
         :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
         :param flaot, image_position_uncertainty: 1-sigma Gaussian uncertainty on the point source position

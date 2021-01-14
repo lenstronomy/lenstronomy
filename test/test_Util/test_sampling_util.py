@@ -5,13 +5,6 @@ import numpy.testing as npt
 from lenstronomy.Util import sampling_util
 
 
-def test_unit2gaussian():
-    mu, sigma = 5, 1
-    cube = np.linspace(0, 1, 3)
-    cube = sampling_util.unit2gaussian(cube, mu, sigma)
-    npt.assert_equal(cube, [-np.inf, mu, np.inf])
-
-
 def test_unit2uniform():
     lower, upper = -5, 15
     cube = np.linspace(0, 1, 3)

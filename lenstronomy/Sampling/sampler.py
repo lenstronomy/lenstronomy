@@ -85,8 +85,7 @@ class Sampler(object):
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
         
-        if mpi is True and pool.is_master():
-            print('MPI option chosen for PSO.')
+        if mpi is True and pool.is_master(): print('MPI option chosen for PSO.')
 
         pso = ParticleSwarmOptimizer(self.chain.logL,
                                      lower_start, upper_start, n_particles,

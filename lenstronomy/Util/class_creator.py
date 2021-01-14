@@ -39,7 +39,10 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param additional_images_list:
     :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
          see LensEquationSolver() class for details
-    :param source_deflection_scaling_list:
+    :param source_deflection_scaling_list: List of floats for each source ligth model (optional, and only applicable
+     for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
+     =1 means identical source position as without this option. This option enables multiple source planes.
+     The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.
     :param source_redshift_list:
     :param cosmo: astropy.cosmology instance
     :param index_lens_model_list:

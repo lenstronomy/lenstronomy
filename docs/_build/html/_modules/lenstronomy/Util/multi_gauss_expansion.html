@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.multi_gauss_expansion &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.Util.multi_gauss_expansion &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +51,12 @@
 <span class="n">gaussian_func</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.gaussian">[docs]</a><span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">amp</span><span class="p">):</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.gaussian">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">gaussian</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">amp</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param R: radius</span>
@@ -63,7 +68,8 @@
     <span class="k">return</span> <span class="n">c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">sigma</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="mge_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.mge_1d">[docs]</a><span class="k">def</span> <span class="nf">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">linspace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="mge_1d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.mge_1d">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">linspace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param r_array: list or radii (numpy array)</span>
@@ -85,6 +91,7 @@
     <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span></div>
 
 
+<span class="nd">@export</span>
 <span class="k">def</span> <span class="nf">_mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">flux_r</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">linspace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -106,7 +113,8 @@
     <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span>
 
 
-<div class="viewcode-block" id="de_projection_3d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.de_projection_3d">[docs]</a><span class="k">def</span> <span class="nf">de_projection_3d</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
+<div class="viewcode-block" id="de_projection_3d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.multi_gauss_expansion.de_projection_3d">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">de_projection_3d</span><span class="p">(</span><span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    de-projects a gaussian (or list of multiple Gaussians from a 2d projected to a 3d profile)</span>
 <span class="sd">    :param amplitudes:</span>
@@ -147,7 +155,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

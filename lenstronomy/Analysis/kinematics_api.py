@@ -128,8 +128,10 @@ class KinematicsAPI(object):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :param r_eff: projected half-light radius of the stellar light associated with the deflector galaxy, optional,
          if set to None will be computed in this function with default settings that may not be accurate.
-        :param num_kin_sampling: int, number of draws from a kinematic prediction of a LOS
-        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :param theta_E: circularized Einstein radius, optional, if not provided will either be computed in this
+         function with default settings or not required
+        :param gamma: power-law slope at the Einstein radius, optional
+        :param kappa_ext: external convergence
         :return: velocity dispersion [km/s]
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
@@ -229,7 +231,10 @@ class KinematicsAPI(object):
             main deflector potential
         :param theta_E: (optional float) estimate of the Einstein radius. If present, does not numerically compute this
          quantity in this routine numerically
+        :param gamma: local power-law slope at the Einstein radius (optional)
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
+        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
+         power-law mass profile with Hernquist light profile
         :return: mass_profile_list, keyword argument list
         """
         if analytic_kinematics is True:
@@ -293,6 +298,8 @@ class KinematicsAPI(object):
         :param Hernquist_approx: boolean, if True replaces the actual light profile(s) with a Hernquist model with
          matched half-light radius.
         :param kwargs_mge: keyword arguments that go into the MGE decomposition routine
+        :param analytic_kinematics: bool, if True, solves the Jeans equation analytically for the
+         power-law mass profile with Hernquist light profile and adjust the settings accordingly
         :return: deflector type list, keyword arguments list
         """
         if analytic_kinematics is True:

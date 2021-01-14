@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.Util.kernel_util &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,8 +50,12 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.multi_gauss_expansion</span> <span class="k">as</span> <span class="nn">mge</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="de_shift_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.de_shift_kernel">[docs]</a><span class="k">def</span> <span class="nf">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fractional_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="de_shift_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.de_shift_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">de_shift_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fractional_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    de-shifts a shifted kernel to the center of a pixel. This is performed iteratively.</span>
 
@@ -85,7 +89,8 @@
     <span class="k">return</span> <span class="n">kernel_new</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="center_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.center_kernel">[docs]</a><span class="k">def</span> <span class="nf">center_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+<div class="viewcode-block" id="center_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.center_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">center_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    given a kernel that might not be perfectly centered, this routine computes its light weighted center and then</span>
 <span class="sd">    moves the center in an iterative process such that it is centered</span>
@@ -108,7 +113,8 @@
     <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_centered</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="kernel_norm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_norm">[docs]</a><span class="k">def</span> <span class="nf">kernel_norm</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="kernel_norm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_norm">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">kernel_norm</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param kernel:</span>
@@ -119,7 +125,8 @@
     <span class="k">return</span> <span class="n">kernel</span></div>
 
 
-<div class="viewcode-block" id="subgrid_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.subgrid_kernel">[docs]</a><span class="k">def</span> <span class="nf">subgrid_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+<div class="viewcode-block" id="subgrid_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.subgrid_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">subgrid_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">odd</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    creates a higher resolution kernel with subgrid resolution as an interpolation of the original kernel in an</span>
 <span class="sd">    iterative approach</span>
@@ -179,7 +186,8 @@
     <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_subgrid</span> <span class="o">-</span> <span class="n">delta_kernel_sub</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="averaging_even_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.averaging_even_kernel">[docs]</a><span class="k">def</span> <span class="nf">averaging_even_kernel</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
+<div class="viewcode-block" id="averaging_even_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.averaging_even_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">averaging_even_kernel</span><span class="p">(</span><span class="n">kernel_high_res</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    makes a lower resolution kernel based on the kernel_high_res (odd numbers) and the subgrid_res (even number), both</span>
 <span class="sd">    meant to be centered.</span>
@@ -225,7 +233,8 @@
     <span class="k">return</span> <span class="n">kernel_low_res</span></div>
 
 
-<div class="viewcode-block" id="kernel_pixelsize_change"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_pixelsize_change">[docs]</a><span class="k">def</span> <span class="nf">kernel_pixelsize_change</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">deltaPix_in</span><span class="p">,</span> <span class="n">deltaPix_out</span><span class="p">):</span>
+<div class="viewcode-block" id="kernel_pixelsize_change"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_pixelsize_change">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">kernel_pixelsize_change</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">deltaPix_in</span><span class="p">,</span> <span class="n">deltaPix_out</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    change the pixel size of a given kernel</span>
 <span class="sd">    :param kernel:</span>
@@ -244,7 +253,8 @@
     <span class="k">return</span> <span class="n">kernel_out</span></div>
 
 
-<div class="viewcode-block" id="cut_psf"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cut_psf">[docs]</a><span class="k">def</span> <span class="nf">cut_psf</span><span class="p">(</span><span class="n">psf_data</span><span class="p">,</span> <span class="n">psf_size</span><span class="p">):</span>
+<div class="viewcode-block" id="cut_psf"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cut_psf">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">cut_psf</span><span class="p">(</span><span class="n">psf_data</span><span class="p">,</span> <span class="n">psf_size</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    cut the psf properly</span>
 <span class="sd">    :param psf_data: image of PSF</span>
@@ -256,7 +266,8 @@
     <span class="k">return</span> <span class="n">kernel</span></div>
 
 
-<div class="viewcode-block" id="pixel_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.pixel_kernel">[docs]</a><span class="k">def</span> <span class="nf">pixel_kernel</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+<div class="viewcode-block" id="pixel_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.pixel_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">pixel_kernel</span><span class="p">(</span><span class="n">point_source_kernel</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    converts a pixelised kernel of a point source to a kernel representing a uniform extended pixel</span>
 
@@ -276,7 +287,8 @@
     <span class="k">return</span> <span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_pixel</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="kernel_average_pixel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_average_pixel">[docs]</a><span class="k">def</span> <span class="nf">kernel_average_pixel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">):</span>
+<div class="viewcode-block" id="kernel_average_pixel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_average_pixel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">kernel_average_pixel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes the effective convolution kernel assuming a uniform surface brightness on the scale of a pixel</span>
 
@@ -307,7 +319,8 @@
     <span class="k">return</span> <span class="n">kernel_pixel</span> <span class="o">*</span> <span class="n">kernel_sum</span></div>
 
 
-<div class="viewcode-block" id="kernel_gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_gaussian">[docs]</a><span class="k">def</span> <span class="nf">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
+<div class="viewcode-block" id="kernel_gaussian"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.kernel_gaussian">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="n">deltaPix</span><span class="p">,</span> <span class="n">fwhm</span><span class="p">):</span>
     <span class="n">sigma</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">)</span>
     <span class="c1">#if kernel_numPix % 2 == 0:</span>
     <span class="c1">#    kernel_numPix += 1</span>
@@ -319,7 +332,8 @@
     <span class="k">return</span> <span class="n">kernel</span></div>
 
 
-<div class="viewcode-block" id="split_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.split_kernel">[docs]</a><span class="k">def</span> <span class="nf">split_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_kernel_size</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="split_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.split_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">split_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_kernel_size</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    pixel kernel and subsampling kernel such that the convolution of both applied on an image can be</span>
 <span class="sd">    performed, i.e. smaller subsampling PSF and hole in larger PSF</span>
@@ -359,7 +373,8 @@
     <span class="k">return</span> <span class="n">kernel_hole_resized</span><span class="p">,</span> <span class="n">kernel_subgrid_cut</span></div>
 
 
-<div class="viewcode-block" id="degrade_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.degrade_kernel">[docs]</a><span class="k">def</span> <span class="nf">degrade_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">degrading_factor</span><span class="p">):</span>
+<div class="viewcode-block" id="degrade_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.degrade_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">degrade_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">degrading_factor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param kernel_super: higher resolution kernel (odd number per axis)</span>
@@ -384,7 +399,8 @@
     <span class="k">return</span> <span class="n">kernel_low_res</span></div>
 
 
-<div class="viewcode-block" id="cutout_source"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cutout_source">[docs]</a><span class="k">def</span> <span class="nf">cutout_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="cutout_source"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.cutout_source">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">cutout_source</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    cuts out point source (e.g. PSF estimate) out of image and shift it to the center of a pixel</span>
 <span class="sd">    :param x_pos:</span>
@@ -424,7 +440,8 @@
     <span class="k">return</span> <span class="n">kernel_final</span></div>
 
 
-<div class="viewcode-block" id="fwhm_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.fwhm_kernel">[docs]</a><span class="k">def</span> <span class="nf">fwhm_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="fwhm_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.fwhm_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">fwhm_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param kernel:</span>
@@ -445,7 +462,8 @@
     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The kernel did not drop to half the max value - fwhm not determined!&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="estimate_amp"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.estimate_amp">[docs]</a><span class="k">def</span> <span class="nf">estimate_amp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">psf_kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="estimate_amp"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.estimate_amp">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">estimate_amp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">psf_kernel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    estimates the amplitude of a point source located at x_pos, y_pos</span>
 <span class="sd">    :param data:</span>
@@ -470,7 +488,8 @@
     <span class="k">return</span> <span class="n">amp_estimated</span></div>
 
 
-<div class="viewcode-block" id="mge_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.mge_kernel">[docs]</a><span class="k">def</span> <span class="nf">mge_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+<div class="viewcode-block" id="mge_kernel"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.kernel_util.mge_kernel">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">mge_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    azimutal Multi-Gaussian expansion of a pixelized kernel</span>
 
@@ -518,7 +537,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

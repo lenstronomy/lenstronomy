@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.Sampling.parameters &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -50,6 +50,8 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_param</span> <span class="k">import</span> <span class="n">LightParam</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.point_source_param</span> <span class="k">import</span> <span class="n">PointSourceParam</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Sampling.special_param</span> <span class="k">import</span> <span class="n">SpecialParam</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Param&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../../lenstronomy.Sampling.html#lenstronomy.Sampling.parameters.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -109,7 +111,7 @@
                  <span class="n">joint_lens_with_source_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">mass_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">num_point_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_plane_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">Ddt_sampling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">source_size</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_tau0</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lens_redshift_sampling_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">source_redshift_sampling_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_grid_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">source_redshift_sampling_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_grid_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_shapelet_lens</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_model:</span>
@@ -160,6 +162,7 @@
 <span class="sd">         the sample as for the lens</span>
 <span class="sd">        :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),</span>
 <span class="sd">        adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.</span>
+<span class="sd">        :param num_shapelet_lens: number of shapelet coefficients in the &#39;SHAPELETS_CART&#39; or &#39;SHAPELETS_POLAR&#39; mass profile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model_list</span> <span class="o">=</span> <span class="n">kwargs_model</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;lens_model_list&#39;</span><span class="p">,</span> <span class="p">[])</span>
@@ -260,7 +263,7 @@
                                                             <span class="bp">self</span><span class="o">.</span><span class="n">_joint_lens_light_with_point_source</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lensParams</span> <span class="o">=</span> <span class="n">LensParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lens_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_updated</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span><span class="p">,</span>
                                     <span class="n">solver_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="o">=</span><span class="n">kwargs_lower_lens</span><span class="p">,</span>
-                                    <span class="n">kwargs_upper</span><span class="o">=</span><span class="n">kwargs_upper_lens</span><span class="p">)</span>
+                                    <span class="n">kwargs_upper</span><span class="o">=</span><span class="n">kwargs_upper_lens</span><span class="p">,</span> <span class="n">num_shapelet_lens</span><span class="o">=</span><span class="n">num_shapelet_lens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lensLightParams</span> <span class="o">=</span> <span class="n">LightParam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed_lens_light_updated</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;lens_light&#39;</span><span class="p">,</span>
                                           <span class="n">linear_solver</span><span class="o">=</span><span class="n">linear_solver</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="o">=</span><span class="n">kwargs_lower_lens_light</span><span class="p">,</span>
                                           <span class="n">kwargs_upper</span><span class="o">=</span><span class="n">kwargs_upper_lens_light</span><span class="p">)</span>
@@ -663,7 +666,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

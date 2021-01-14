@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 from skimage.measure import find_contours
+from lenstronomy.LightModel.light_model import LightModel
 
 __all__ = ['LensModelExtensions']
 
@@ -10,8 +11,8 @@ class LensModelExtensions(object):
     class with extension routines not part of the LensModel core routines
     """
     def __init__(self, lensModel):
-        """
 
+        """
         :param lensModel: instance of the LensModel() class, or with same functionalities.
         In particular, the following definitions are required to execute all functionalities presented in this class:
         def ray_shooting()
@@ -23,6 +24,167 @@ class LensModelExtensions(object):
         """
         self._lensModel = lensModel
 
+    def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
+                                      source_fwhm_parsec, z_source,
+                                      cosmo=None, grid_resolution=None, grid_radius_arcsec=None, axis_ratio=0.5,
+                                      tol=0.001, grid_res_scale=0.0004, grid_size_scale=0.01, step_size=0.05,
+                                      use_largest_eigenvalue=True):
+        """
+        This method computes image magnifications with a finite-size background source assuming a Gaussian
+        source light profile. It can be much faster that magnification_finite for lens models with many
+        deflectors and a relatively compact source. This is because most pixels in a rectangular window around a lensed
+        image of a compact source will contain zero flux, and therefore don't contribute to the image brightness.
+
+        Rather than ray tracing through a rectangular grid, this routine accelerates the computation of image
+        magnifications with finite-size sources by ray tracing through an elliptical aperture oriented such that
+        it resembles the surface brightness of the lensed image itself. The aperture size is initially quite small,
+        and increases in size until the flux inside of it (and hence the magnification) converges. The orientation of
+        the elliptical aperture is computed from the magnification tensor at the image coordinate.
+
+        If for whatever reason you prefer a circular aperture to the elliptical approximation using the hessian eigenvectors,
+        you can just set axis_ratio = 1.
+
+        To use the eigenvalues of the hessian matrix to estimate the optimum axis ratio, set axis_ratio = 0.
+
+        The default settings for the grid resolution and ray tracing window size work well for sources with fwhm between
+        0.5 - 100 pc.
+
+        :param x_image: a list or array of x coordinates [units arcsec]
+        :param y_image: a list or array of y coordinates [units arcsec]
+        :param kwargs_lens: keyword arguments for the lens model
+        :param source_fwhm_parsec: the size of the background source [units parsec]
+        :param z_source: the source redshift
+        :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
+        :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
+        be estimated from the source size
+        :param grid_radius_arcsec: (optional) the size of the ray tracing region; if not specified, an appropriate value
+        will be estimated from the source size
+        :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
+        the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
+        magnified it will tend to curve out of the resulting ellipse
+        :param tol: tolerance for convergence in the magnification
+        :param grid_res_scale: sets the grid resolution
+        :param grid_size_scale: determines the size of the ray tracing window
+        :param step_size: sets the increment for the successively larger ray tracing windows
+        :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
+        will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
+        :return: an array of image magnifications
+        """
+
+        if cosmo is None:
+            from astropy.cosmology import default_cosmology
+            cosmo = default_cosmology.get()
+
+        # These default settings determined by guess and check seem adequate for sources with size 0.1 - 100 pc
+        if grid_resolution is None:
+            ref = 10.
+            power = 1
+            grid_resolution = grid_res_scale * (source_fwhm_parsec / ref) ** power
+        if grid_radius_arcsec is None:
+            size_0 = 1.
+            power = 1.
+            grid_radius_arcsec = grid_size_scale * (source_fwhm_parsec / size_0) ** power
+
+        pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
+        # factor of 2.355 for FWHM to variance
+        source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
+        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
+        source_model = LightModel(['GAUSSIAN'])
+
+        npix = int(2 * grid_radius_arcsec / grid_resolution)
+        _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+        _grid_y = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+
+        magnifications = []
+        minimum_magnification = 1e-4
+        grid_x_0, grid_y_0 = np.meshgrid(_grid_x, _grid_y)
+        grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
+
+        for xi, yi in zip(x_image, y_image):
+
+            w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
+            _v = [np.array([v11, v12]), np.array([v21, v22])]
+            _w = [abs(w1), abs(w2)]
+            if use_largest_eigenvalue:
+                idx = int(np.argmax(_w))
+            else:
+                idx = int(np.argmin(_w))
+            v = _v[idx]
+
+            rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
+            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
+            if axis_ratio == 0:
+                sort = np.argsort(_w)
+                q = _w[sort[0]]/_w[sort[1]]
+                grid_r = np.hypot(grid_x, grid_y / q).ravel()
+            else:
+                grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
+
+            flux_array = np.zeros_like(grid_x_0)
+            step = step_size * grid_radius_arcsec
+            r_min = 0
+            r_max = step
+            magnification_current = 0.
+
+            while True:
+
+                flux_array = self._magnification_adaptive_iteration(flux_array, xi, yi, grid_x_0, grid_y_0, grid_r,
+                                                                    r_min, r_max, self._lensModel, kwargs_lens,
+                                                                    source_model, kwargs_source)
+                new_magnification = np.sum(flux_array) * grid_resolution ** 2
+                diff = abs(new_magnification - magnification_current)/new_magnification
+
+                # the sqrt(2) will allow this algorithm to fill up the entire square window
+                if r_max > np.sqrt(2) * grid_radius_arcsec:
+                    break
+                elif diff < tol and new_magnification > minimum_magnification:
+                    break
+                else:
+                    r_min += step
+                    r_max += step
+                    magnification_current = new_magnification
+
+            magnifications.append(new_magnification)
+
+        return np.array(magnifications)
+
+    @staticmethod
+    def _magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+                                          lensModel, kwargs_lens, source_model, kwargs_source):
+        """
+        This function computes the surface brightness of coordinates in 'flux_array' that satisfy r_min < grid_r < r_max,
+        where each coordinate in grid_r corresponds to a certain entry in flux_array. Likewise, grid_x, and grid_y
+
+        :param flux_array: an array that contains the flux in each pixel
+        :param x_image: image x coordinate
+        :param y_image: image y coordinate
+        :param grid_x: an array of x coordinates
+        :param grid_y: an array of y coordinates
+        :param grid_r: an array of projected distances from the origin
+        :param r_min: sets the inner radius of the annulus where ray tracing happens
+        :param r_max: sets the outer radius of the annulus where ray tracing happens
+        :param lensModel: an instance of LensModel
+        :param kwargs_lens: keywords for the lens model
+        :param source_model: an instance of LightModel
+        :param kwargs_source: keywords for the light model
+        :return: the flux array where the surface brightness has been computed for all pixels
+        with r_min < grid_r < r_max.
+        """
+
+        condition1 = grid_r >= r_min
+        condition2 = grid_r < r_max
+        condition = np.logical_and(condition1, condition2)
+
+        inds = np.where(condition)[0]
+
+        xcoords = grid_x[inds] + x_image
+        ycoords = grid_y[inds] + y_image
+        beta_x, beta_y = lensModel.ray_shooting(xcoords, ycoords, kwargs_lens)
+        flux_in_pixels = source_model.surface_brightness(beta_x, beta_y, kwargs_source)
+        flux_array[inds] = flux_in_pixels
+
+        return flux_array
+
     def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
                              shape="GAUSSIAN", polar_grid=False, aspect_ratio=0.5):
         """
@@ -32,7 +194,7 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model kwargs
         :param source_sigma: Gaussian sigma in arc sec in source
         :param window_size: size of window to compute the finite flux
-        :param grid_number: number of grid cells per axis in the window to numerically comute the flux
+        :param grid_number: number of grid cells per axis in the window to numerically compute the flux
         :return: numerically computed brightness of the sources
         """
 

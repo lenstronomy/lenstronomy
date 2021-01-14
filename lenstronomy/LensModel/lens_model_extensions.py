@@ -72,13 +72,8 @@ class LensModelExtensions(object):
         """
 
         if cosmo is None:
-            # try to access a cosmology specified in the lens model first
-            try:
-                cosmo = self._lensModel.cosmo
-            except:
-                from astropy.cosmology import default_cosmology
-                cosmo = default_cosmology.get()
-
+            cosmo = self._lensModel.cosmo
+            
         # These default settings determined by guess and check seem adequate for sources with size 0.1 - 100 pc
         if grid_resolution is None:
             ref = 10.

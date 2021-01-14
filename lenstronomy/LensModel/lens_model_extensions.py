@@ -94,20 +94,15 @@ class LensModelExtensions(object):
         grid_x_0, grid_y_0 = np.meshgrid(_grid_x, _grid_y)
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 
-        rotation_angles = []
-        w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(x_image, y_image, kwargs_lens)
-        for i in range(0, len(w1)):
+        for i, (xi, yi) in enumerate(zip(x_image, y_image)):
 
-            if abs(w1[i]) > abs(w2[i]):
-                v = np.array([v11[i], v12[i]])
+            w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
+            if abs(w1) > abs(w2):
+                v = np.array([v11, v12])
             else:
-                v = np.array([v21[i], v22[i]])
-            theta = np.arctan(v[1] / v[0]) - np.pi / 2
-            rotation_angles.append(theta)
-
-        for i, (xi, yi, angle) in enumerate(zip(x_image, y_image, rotation_angles)):
-
-            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, angle)
+                v = np.array([v21, v22])
+            rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
+            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
             grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec

@@ -106,6 +106,15 @@ class TestLensModelExtensions(object):
         mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens, source_fwhm_parsec,
                                                                     z_source, cosmo=self.cosmo, tol=0.0001)
 
+        # tests the default cosmology
+        _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                                    source_fwhm_parsec,
+                                                                    z_source, cosmo=None, tol=0.0001)
+        # tests the r_max > sqrt(2) * grid_radius stop criterion
+        _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                    source_fwhm_parsec,
+                                                    z_source, cosmo=None, tol=0.0001, step_size=1000)
+
         mag_point_source = abs(lensmodel.magnification(x_image, y_image, kwargs_lens))
 
         npt.assert_almost_equal(mag_square_grid/mag_adaptive_grid, np.ones_like(mag_square_grid), 2)

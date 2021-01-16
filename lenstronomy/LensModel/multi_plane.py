@@ -100,14 +100,15 @@ class MultiPlane(object):
         y = np.zeros_like(theta_y, dtype=float)
         alpha_x = np.array(theta_x)
         alpha_y = np.array(theta_y)
-        x, y, _, _ = self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start=0, z_stop=self._z_source,
-                                                           kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
-                                                           T_ij_end=self._T_ij_stop)
+        x, y, _, _ = self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start=0,
+                                                                 z_stop=self._z_source,
+                                                                 kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
+                                                                 T_ij_end=self._T_ij_stop)
         beta_x, beta_y = self.co_moving2angle_source(x, y)
         return beta_x, beta_y
 
-    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False, check_convention=True, T_ij_start=None, T_ij_end=None):
+    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
+                             check_convention=True, T_ij_start=None, T_ij_end=None):
         """
         ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
         and then backwards to redshift z_stop
@@ -119,17 +120,22 @@ class MultiPlane(object):
         :param z_start: redshift of start of computation
         :param z_stop: redshift where output is computed
         :param kwargs_lens: lens model keyword argument list
-        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed! This can lead to duplications in the computation of deflection angles.
+        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed!
+         This can lead to duplications in the computation of deflection angles.
         :param check_convention: flag to check the image position convention (leave this alone)
-        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow. If not set, will compute the distance each time this function gets executed.
-        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set, will compute the distance each time this function gets executed.
+        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
+         If not set, will compute the distance each time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set,
+         will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
 
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=include_z_start, T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+                                                           include_z_start=include_z_start, T_ij_start=T_ij_start,
+                                                           T_ij_end=T_ij_end)
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """
@@ -138,6 +144,7 @@ class MultiPlane(object):
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
+        :param include_z_start: bool, i
         :return: T_ij_start, T_ij_end
         """
         return self._multi_plane_base.transverse_distance_start_stop(z_start, z_stop, include_z_start)
@@ -180,7 +187,7 @@ class MultiPlane(object):
         :param theta_y: angle in y-direction
         :param kwargs_lens: lens model kwargs
         :param check_convention: flag to check the image position convention (leave this alone)
-        :return:
+        :return: deflection angles in x and y directions
         """
         beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
         alpha_x = theta_x - beta_x
@@ -234,8 +241,8 @@ class MultiPlane(object):
     def set_static(self, kwargs):
         """
 
-        :param kwargs:
-        :return:
+        :param kwargs: lens model keyword argument list
+        :return: lens model keyword argument list with positional parameters all in flat sky coordinates
         """
 
         kwargs = self.observed2flat_convention(kwargs)

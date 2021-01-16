@@ -93,7 +93,7 @@ class MultiPlane(object):
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
         """
-
+        self._check_raise(k=k)
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         x = np.zeros_like(theta_x, dtype=float)
@@ -110,8 +110,8 @@ class MultiPlane(object):
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
                              check_convention=True, T_ij_start=None, T_ij_end=None):
         """
-        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop
+        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at
+        redshift z_start and then backwards to redshift z_stop
 
         :param x: co-moving position [Mpc]
         :param y: co-moving position [Mpc]
@@ -189,6 +189,7 @@ class MultiPlane(object):
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: deflection angles in x and y directions
         """
+        self._check_raise(k=k)
         beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
         alpha_x = theta_x - beta_x
         alpha_y = theta_y - beta_y
@@ -204,8 +205,11 @@ class MultiPlane(object):
         :type theta_y: numpy array
         :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
         :param diff: numerical differential step (float)
+        :param check_convention: boolean, if True goes through the lens model list and checks whether the positional
+         conventions are satisfied.
         :return: f_xx, f_xy, f_yx, f_yy
         """
+        self._check_raise(k=k)
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
 
@@ -256,6 +260,19 @@ class MultiPlane(object):
         """
         self.ignore_observed_positions = False
         self._multi_plane_base.set_dynamic()
+
+    @staticmethod
+    def _check_raise(k=None):
+        """
+        checks whether no option to select a specific subset of deflector models is selected, as this feature is not
+        yet supported in multi-plane
+
+        :param k: parameter that optionally indicates a sub-set of lens models being executed for single plane
+        :return: None, optional raise
+        """
+        if k is not None:
+            raise ValueError('no specific selection of a subset of lens models supported in multi-plane mode. Please'
+                             'use single plane mode or generate new instance of LensModel of the subset of profiles.')
 
 
 @export

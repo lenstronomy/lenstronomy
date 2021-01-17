@@ -155,7 +155,6 @@ def test_grid_with_coords():
     assert ra_at_xy_0 == 0
     assert dec_at_xy_0 == 0
 
-
 def test_array2image():
     array = np.linspace(1, 100, 100)
     image = util.array2image(array)

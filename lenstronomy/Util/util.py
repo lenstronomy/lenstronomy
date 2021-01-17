@@ -529,7 +529,6 @@ def neighborSelect(a, x, y):
                     values.append(a[i])
     return np.array(x_mins), np.array(y_mins), np.array(values)
 
-
 @export
 def fwhm2sigma(fwhm):
     """

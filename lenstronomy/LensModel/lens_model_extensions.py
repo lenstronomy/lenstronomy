@@ -73,7 +73,6 @@ class LensModelExtensions(object):
         if cosmo is None:
             cosmo = self._lensModel.cosmo
 
-        # These default settings determined by guess and check seem adequate for sources with size 0.1 - 100 pc
         if grid_radius_arcsec is None:
             grid_radius_arcsec = auto_raytracing_grid_size(source_fwhm_parsec)
         if grid_resolution is None:

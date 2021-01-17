@@ -2,6 +2,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 from skimage.measure import find_contours
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.Util.util import fwhm2sigma, auto_raytracing_grid_resolution, auto_raytracing_grid_size
 
 __all__ = ['LensModelExtensions']
 
@@ -27,7 +28,7 @@ class LensModelExtensions(object):
     def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
                                       source_fwhm_parsec, z_source,
                                       cosmo=None, grid_resolution=None, grid_radius_arcsec=None, axis_ratio=0.5,
-                                      tol=0.001, grid_res_scale=0.0004, grid_size_scale=0.01, step_size=0.05,
+                                      tol=0.001, step_size=0.05,
                                       use_largest_eigenvalue=True):
         """
         This method computes image magnifications with a finite-size background source assuming a Gaussian
@@ -57,14 +58,12 @@ class LensModelExtensions(object):
         :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
         :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
         be estimated from the source size
-        :param grid_radius_arcsec: (optional) the size of the ray tracing region; if not specified, an appropriate value
+        :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
         will be estimated from the source size
         :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
         the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
         magnified it will tend to curve out of the resulting ellipse
         :param tol: tolerance for convergence in the magnification
-        :param grid_res_scale: sets the grid resolution
-        :param grid_size_scale: determines the size of the ray tracing window
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
         will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
@@ -73,21 +72,18 @@ class LensModelExtensions(object):
 
         if cosmo is None:
             cosmo = self._lensModel.cosmo
-            
+
         # These default settings determined by guess and check seem adequate for sources with size 0.1 - 100 pc
-        if grid_resolution is None:
-            ref = 10.
-            power = 1
-            grid_resolution = grid_res_scale * (source_fwhm_parsec / ref) ** power
         if grid_radius_arcsec is None:
-            size_0 = 1.
-            power = 1.
-            grid_radius_arcsec = grid_size_scale * (source_fwhm_parsec / size_0) ** power
+            grid_radius_arcsec = auto_raytracing_grid_size(source_fwhm_parsec)
+        if grid_resolution is None:
+            grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
 
         pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
         # factor of 2.355 for FWHM to variance
-        source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
-        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
+        source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
+        source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
+        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
         source_model = LightModel(['GAUSSIAN'])
 
         npix = int(2 * grid_radius_arcsec / grid_resolution)
@@ -112,9 +108,10 @@ class LensModelExtensions(object):
 
             rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
             grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
+
             if axis_ratio == 0:
                 sort = np.argsort(_w)
-                q = _w[sort[0]]/_w[sort[1]]
+                q = _w[sort[0]] / _w[sort[1]]
                 grid_r = np.hypot(grid_x, grid_y / q).ravel()
             else:
                 grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
@@ -131,7 +128,7 @@ class LensModelExtensions(object):
                                                                     r_min, r_max, self._lensModel, kwargs_lens,
                                                                     source_model, kwargs_source)
                 new_magnification = np.sum(flux_array) * grid_resolution ** 2
-                diff = abs(new_magnification - magnification_current)/new_magnification
+                diff = abs(new_magnification - magnification_current) / new_magnification
 
                 # the sqrt(2) will allow this algorithm to fill up the entire square window
                 if r_max > np.sqrt(2) * grid_radius_arcsec:

@@ -212,6 +212,83 @@ class CurvedArcFixedCurvature(CurvedArcBase):
 
         return self.kwargs_lens
 
+class CurvedArcFree(CurvedArcBase):
+
+    @staticmethod
+    def kwargs_to_args(kwargs):
+
+        """
+
+        :param kwargs: keyword arguments corresponding to the lens model parameters being optimized
+        :return: array of lens model parameters
+        """
+
+        radial_stretch = kwargs[0]['radial_stretch']
+        tangential_stretch = kwargs[0]['tangential_stretch']
+        curvature = kwargs[0]['curvature']
+        direction = kwargs[0]['direction']
+
+        args = (radial_stretch, tangential_stretch, curvature, direction)
+
+        return args
+
+    def bounds(self, re_optimize, scale=1.):
+
+        """
+        Sets the low/high parameter bounds for the particle swarm optimization
+
+        NOTE: The low/high values specified here are intended for galaxy-scale lenses. If you want to use this
+        for a different size system you should create a new ParamClass with different settings
+
+        :param re_optimize: keep a narrow window around each parameter
+        :param scale: scales the size of the uncertainty window
+        :return:
+        """
+
+        args = self.kwargs_to_args(self.kwargs_lens)
+
+        if re_optimize:
+            d_radial_stretch = 2.
+            d_tangential_stretch = 2.
+            d_direction = np.pi / 10
+            d_curvature = 2.
+
+        else:
+            d_radial_stretch = 10
+            d_tangential_stretch = 10
+            d_direction = np.pi / 2
+            d_curvature = 10.
+
+        shifts = np.array([d_radial_stretch, d_tangential_stretch, d_curvature, d_direction]) * scale
+
+        low, high = np.empty_like(shifts), np.empty_like(shifts)
+
+        for i in range(0, len(shifts)):
+            low[i] = args[i] / shifts[i]
+            high[i] = args[i] * shifts[i]
+
+        return low, high
+
+    def args_to_kwargs(self, args):
+
+        """
+
+        :param args: array of lens model parameters
+        :return: dictionary of lens model parameters
+        """
+
+        (radial_stretch, tangential_stretch, curvature, direction) = args
+
+        center_x = self.kwargs_lens[0]['center_x']
+        center_y = self.kwargs_lens[0]['center_y']
+
+        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch,
+         'curvature': curvature, 'direction': direction, 'center_x': center_x, 'center_y': center_y}
+
+        self.kwargs_lens[0] = kwargs
+
+        return self.kwargs_lens
+
 class CurvedArcFixedCurvatureDirection(CurvedArcBase):
 
     @staticmethod

@@ -381,6 +381,18 @@ def test_convert_bool_list():
     assert len(bool_list) == 3
     assert bool_list[0] is False
 
+def test_auto_raytracing_grid_size():
+
+    size = 1.5
+    out = util.auto_raytracing_grid_size(size, 0.02, 1.25)
+    npt.assert_equal(out, 0.02 * size ** 1.25)
+
+def test_auto_raytracing_grid_resolution():
+
+    size = 1.5
+    out = util.auto_raytracing_grid_resolution(size, 0.0001, 11., 1.1)
+    npt.assert_equal(out, 0.0001 * (size/11) ** 1.1)
+
 
 class TestRaise(unittest.TestCase):
 

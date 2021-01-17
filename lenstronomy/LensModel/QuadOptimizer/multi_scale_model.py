@@ -1,7 +1,8 @@
 from lenstronomy.LensModel.QuadOptimizer.param_manager import ShiftLensModelParamManager
 from lenstronomy.LensModel.QuadOptimizer.multi_plane_fast import MultiplaneFast, MultiplaneFastDifferential
 from lenstronomy.LensModel.QuadOptimizer.param_manager import CurvedArcFixedCurvature, \
-    CurvedArcFixedCurvatureDirection, Hessian
+    CurvedArcFixedCurvatureDirection, CurvedArcFree, Hessian
+from lenstronomy.LensModel.lens_model import LensModel
 from scipy.optimize import minimize
 import numpy as np
 from lenstronomy.Cosmo.background import Background
@@ -24,6 +25,7 @@ class MultiScaleModel(object):
     """
 
     def __init__(self, x_image_coordinate, y_image_coordinate,
+                 source_x_coordinate, source_y_coordinate,
                  lens_model_list_other, redshift_list_other,
                  kwargs_lens_other, z_lens, z_source, astropy_instance=None):
 
@@ -31,6 +33,8 @@ class MultiScaleModel(object):
 
         :param x_image_coordinate: x image position in arcsec
         :param y_image_coordinate: y image position in arcsec
+        :param source_x_coordinate: source x position in arcsec
+        :param source_y_coordinate: source y position in arcsec
         :param lens_model_list_other: a list of other lens models to be included in the computation
         (could be dark matter halos)
         :param redshift_list_other: a list of redshifts for the other lens models
@@ -54,13 +58,22 @@ class MultiScaleModel(object):
         self._lens_model_list_other = lens_model_list_other
         self._redshift_list_other = redshift_list_other
         self._kwargs_lens_other = kwargs_lens_other
-        self.reset()
-
-    def reset(self):
+        self._source_x = source_x_coordinate
+        self._source_y = source_y_coordinate
 
         self._kwargs_shift = None
+        self.compute_kwargs_shift()
 
-    def solve_kwargs_shift(self, source_x, source_y):
+        self._lens_model_other = LensModel(self._lens_model_list_other, lens_redshift_list=self._redshift_list_other,
+                                           z_source=self._zsource, multi_plane=True)
+
+        x, y, _, _ = self._lens_model_other.lens_model.ray_shooting_partial(
+            0., 0., x_image_coordinate, y_image_coordinate, 0., self._zlens, self._kwargs_lens_other)
+        d = self._lens_model_other.cosmo.comoving_transverse_distance(self._zlens).value
+        self._img_plane_x = x / d
+        self._img_plane_y = y / d
+
+    def compute_kwargs_shift(self):
 
         """
         Solve for deflection angles that map each observed image coordinate to the source position
@@ -81,7 +94,7 @@ class MultiScaleModel(object):
 
             x0 = np.array([self._x, self._y])
             opt = minimize(self._coordinate_func_to_min, x0, method='Nelder-Mead',
-                           args=(source_x, source_y, fast_ray_shooting))['x']
+                           args=(self._source_x, self._source_y, fast_ray_shooting))['x']
 
             kwargs = param_class_shift.args_to_kwargs(opt)
 
@@ -89,14 +102,12 @@ class MultiScaleModel(object):
 
         return self._kwargs_shift
 
-    def solve_kwargs_hessian(self, hessian_init, source_x, source_y, kappa_constraint,
+    def solve_kwargs_hessian(self, hessian_init, kappa_constraint,
                          gamma_constraint1, gamma_constraint2, angular_matching_scale):
 
         """
 
         :param hessian_init: an initial guess for the hessian
-        :param source_x: source x coordinate in arcsec
-        :param source_y: source y coordinate in arcsec
         :param kappa_constraint: the constraint on the convergence to match
         :param gamma_constraint1: the constraint on the 1st shear component to match
         gamma1 = 0.5 * (fxx - fyy)
@@ -106,7 +117,10 @@ class MultiScaleModel(object):
         :return: kwargs that yield the specified kappa/gamma values on the angular scale angular_matching_scale
         """
 
-        kwargs_shift = self.solve_kwargs_shift(source_x, source_y)
+        hessian_init['ra_0'] = self._img_plane_x
+        hessian_init['dec_0'] = self._img_plane_y
+
+        kwargs_shift = self.compute_kwargs_shift()
 
         lens_model_list = ['HESSIAN', 'SHIFT'] + self._lens_model_list_other
 
@@ -135,15 +149,13 @@ class MultiScaleModel(object):
 
         return kwargs_hessian, kwargs_full, result
 
-    def solve_kwargs_arc(self, kwargs_curved_arc_init, source_x, source_y, kappa_constraint,
+    def solve_kwargs_arc(self, kwargs_curved_arc_init, kappa_constraint,
                          gamma_constraint1, gamma_constraint2, angular_matching_scale,
                          fit_setting='FIXED_CURVATURE_DIRECTION'):
 
         """
 
         :param kwargs_curved_arc_init: an initial guess for the curved_arc parameters
-        :param source_x: source x coordinate in arcsec
-        :param source_y: source y coordinate in arcsec
         :param kappa_constraint: the constraint on the convergence to match
         :param gamma_constraint1: the constraint on the 1st shear component to match
         gamma1 = 0.5 * (fxx - fyy)
@@ -155,9 +167,14 @@ class MultiScaleModel(object):
         :return: kwargs that yield the specified kappa/gamma values on the angular scale angular_matching_scale
         """
 
-        kwargs_shift = self.solve_kwargs_shift(source_x, source_y)
+        kwargs_shift = self.compute_kwargs_shift()
 
         lens_model_list = ['CURVED_ARC', 'SHIFT'] + self._lens_model_list_other
+
+        # we have to make sure the center of the curved arc model is at the coordinate where
+        # the ray hits the image plane, not necessarily = to the observed image position!
+        kwargs_curved_arc_init['center_x'] = self._img_plane_x
+        kwargs_curved_arc_init['center_y'] = self._img_plane_y
 
         kwargs_lens = [kwargs_curved_arc_init] + [kwargs_shift] + self._kwargs_lens_other
 
@@ -167,12 +184,13 @@ class MultiScaleModel(object):
             param_class_curved_arc = CurvedArcFixedCurvatureDirection(kwargs_lens)
         elif fit_setting == 'FIXED_CURVATURE':
             param_class_curved_arc = CurvedArcFixedCurvature(kwargs_lens)
+        elif fit_setting == 'FREE':
+            param_class_curved_arc = CurvedArcFree(kwargs_lens)
         else:
             raise Exception('fit_setting '+str(fit_setting)+' not recognized')
 
         fast_ray_shooting = MultiplaneFastDifferential(angular_matching_scale, self._x, self._y, self._zlens, self._zsource,
                                            lens_model_list, redshift_list, self._astropy, param_class_curved_arc)
-        self._fast_ray_shooting_differential = fast_ray_shooting
 
         args_minimize = (kappa_constraint, gamma_constraint1, gamma_constraint2, fast_ray_shooting,
                          param_class_curved_arc)

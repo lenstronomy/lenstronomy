@@ -2,10 +2,10 @@ import numpy as np
 import lenstronomy.Util.util as util
 from skimage.measure import find_contours
 from lenstronomy.LightModel.light_model import LightModel
-from lenstronomy.Util.util import fwhm2sigma, auto_raytracing_grid_resolution, auto_raytracing_grid_size
+from lenstronomy.Util.util import fwhm2sigma
+from lenstronomy.Util.magnification_finite_util import auto_raytracing_grid_size, auto_raytracing_grid_resolution
 
 __all__ = ['LensModelExtensions']
-
 
 class LensModelExtensions(object):
     """
@@ -80,7 +80,7 @@ class LensModelExtensions(object):
             grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
 
         pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
-        # factor of 2.355 for FWHM to variance
+
         source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
         source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
         kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]

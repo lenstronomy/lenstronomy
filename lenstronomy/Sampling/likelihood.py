@@ -70,7 +70,7 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
         """
-        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, ULDM_mass_fixed, ULDM_sigma_mass = self._unpack_data(**kwargs_data_joint)
+        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
 
@@ -92,8 +92,6 @@ class LikelihoodModule(object):
         self._custom_logL_addition = custom_logL_addition
         self._kwargs_time_delay = {'time_delays_measured': time_delays_measured,
                                    'time_delays_uncertainties': time_delays_uncertainties}
-        self._kwargs_ULDM_m = {'ULDM_mass_fixed': ULDM_mass_fixed,
-                                   'ULDM_sigma_mass': ULDM_sigma_mass}
         self._kwargs_imaging = {'multi_band_list': multi_band_list, 'multi_band_type': multi_band_type,
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
@@ -113,10 +111,9 @@ class LikelihoodModule(object):
         self._kwargs_flux.update(self._kwargs_flux_compute)
         self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                              kwargs_time_delay=self._kwargs_time_delay,
-                              kwargs_ULDM_m=self._kwargs_ULDM_m)
+                              kwargs_time_delay=self._kwargs_time_delay)
 
-    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay, kwargs_ULDM_m):
+    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay):
         """
 
         :param kwargs_model: lenstronomy model keyword arguments
@@ -134,6 +131,7 @@ class LikelihoodModule(object):
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
                                                              point_source_class=point_source_class,
                                                              **kwargs_time_delay)
+        
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
@@ -260,7 +258,8 @@ class LikelihoodModule(object):
     @staticmethod
     def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[],
-                     dec_image_list=[], ULDM_mass_fixed=None, ULDM_sigma_mass=None):
+                     dec_image_list=[]):
+        
         """
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
         :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
@@ -270,7 +269,7 @@ class LikelihoodModule(object):
         :param flux_ratio_errors: error in flux ratio measurement
         :return:
         """
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, ULDM_mass_fixed, ULDM_sigma_mass
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
 
     def _reset_point_source_cache(self, bool=True):
         self.PointSource.delete_lens_model_cache()
@@ -290,5 +289,5 @@ class LikelihoodModule(object):
         if update_bool is True:
             self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
                                   kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                                  kwargs_time_delay=self._kwargs_time_delay, kwargs_ULDM_m = self._kwargs_ULDM_m)
+                                  kwargs_time_delay=self._kwargs_time_delay)
         # TODO remove redundancies with Param() calls updates

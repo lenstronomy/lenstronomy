@@ -12,8 +12,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
-                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN',
-                     'ULDM', 'ULDM-BAR']
+                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP','CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN',
+                     'ULDM']
 
 class ProfileListBase(object):
     """
@@ -231,6 +231,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_2':
             from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
             return CoredDensity2()
+        elif lens_type == 'CORED_DENSITY_EXP':
+            from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp
+            return CoredDensityExp()
         elif lens_type == 'CORED_DENSITY_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY')
@@ -249,9 +252,6 @@ class ProfileListBase(object):
         elif lens_type == 'ULDM':
             from lenstronomy.LensModel.Profiles.uldm import Uldm
             return Uldm()
-        elif lens_type == 'ULDM-BAR':
-            from lenstronomy.LensModel.Profiles.uldm_bar import Uldm_Bar
-            return Uldm_Bar()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

@@ -240,87 +240,37 @@ class LensCosmo(object):
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E
 
-    def m_noCosmo2m_phys(self, m_noCosmo_log10, M_noCosmo_log10):
+    def ULDM_angular2phys(self, kappa_0, theta_c):
         """
-        converts in physical ULDM mass, soliton mass (the returned values are the exponents of 10
-        :param m_noCosmo_log10: it is \log_10 (m \sqrt{\Sigma_crit D_lens^3} ), m in eV, \Sigma_crit in M_sun / pc^2, D_lens in pc
-        :param M_noCosmo_log10: it is \log_10 ( M/(D_lens^2 \Sigma_crit) ), M in M_sun, \Sigma_crit in M_sun / pc^2, D_lens in pc)
+        converts the anguar parameters entering the Uldm() (Ultra Light Dark Matter) class in physical masses, i.e. the total soliton mass and the mass of the particle
+        :param kappa_0: central convergence of profile
+        :param theta_c: core radius (in arcseconds)
         :return: m_eV_log10, M_sol_log10, the exponents of 10 of the masses, m in electronvolt and M in M_sun
         """
         D_Lens = self.dd * 10**6 # in parsec
-        Sigma_c = self.sigma_crit * 10**(-12)
-        m = -0.5*np.log10(Sigma_c * D_Lens**3) + m_noCosmo_log10
-        M = np.log10(Sigma_c * D_Lens**2) + M_noCosmo_log10
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun / parsec^2
+        r_c = theta_c * const.arcsec * D_Lens
+        rho0 = 2048 * np.sqrt(0.091) * kappa_0 * Sigma_c / (429 * np.pi * r_c)
+        m = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
+        M = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m + 22)
         return m, M
 
-    def mPhys2noCosmo(self, m_log10, M_log10):
+    def ULDM_mPhys2angular(self, m_log10, M_log10):
         """
-        converts physical ULDM mass in the ones that enter the Uldm class, which are
+        converts physical ULDM mass in the ones, in angular units, that enter the Uldm() class, which are:
         m_noCosmo_log10: it is \log_10 (m \sqrt{\Sigma_crit D_lens^3} ), m in eV, \Sigma_crit in M_sun / pc^2, D_lens in pc
         M_noCosmo_log10: it is \log_10 ( M/(D_lens^2 \Sigma_crit) ), M in M_sun, \Sigma_crit in M_sun / pc^2, D_lens in pc)
-
         :param m_log10: exponent of ULDM mass in eV
         :param M_log10: exponent of soliton mass in M_sun
-        :return: m_noCosmo_log10, M_noCosmo_log10, the exponents of 10 of the masses without cosmology
+        :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds) respectively
         """
-        D_Lens = self.dd * 10**6
-        Sigma_c = self.sigma_crit * 10**(-12)
-        m_noCosmo_log10 = 0.5*np.log10(Sigma_c * D_Lens**3) + m_log10
-        M_noCosmo_log10 = -np.log10(Sigma_c * D_Lens**2) + M_log10
-        return m_noCosmo_log10, M_noCosmo_log10
-
-    def ULDM_BAR_angles2phys(self, kappa_0, theta_c, theta_E):
-        """
-        converts angular units entering ULDM-BAR class in physical ULDM mass which are
-        - m_log10: it is \log_10 m , m in eV
-        - M_noCosmo_log10: it is \log_10 ( M ), M in M_sun
-        :param kappa_0: central convergence of soliton
-        :param theta_c: core radius (in arcsec)
-        :param theta_E: Einstein radius of power law model (in arcsec)
-        :return: mass_particle (log10, eV), Mass_soliton (log10, M_sun), rho0_physical (M_sun/pc^3), lambda_soliton
-        """
-        D_Lens = self.dd * 10**6 # in pc
-        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/pc^2
-        rhotilde = kappa_0 / (np.sqrt(np.pi) * theta_c) # in 1/arcsec
-        rho_phys = rhotilde * Sigma_c / (D_Lens * const.arcsec)
-        A_factor = 4.64096 * 10**(-19) * D_Lens * Sigma_c * theta_E
-        B_factor = 1.71468 * 10**(17) / (theta_c**2 * rhotilde * Sigma_c * D_Lens)
-        lambda_factor = np.sqrt( (0.18 + np.sqrt(0.034 + 1.8 * A_factor * B_factor))/ (2*B_factor) )
-        mass = 2.25221 * 10**(-27) * np.sqrt(Sigma_c * rhotilde /D_Lens)/ lambda_factor**2
-        a_fit = 0.18 + 0.45 * A_factor/lambda_factor**2
-        Mass_sol = 2.09294 * 10**(-11) * lambda_factor / mass  * a_fit**(-1.5)
-        mass = np.log10(mass)
-        Mass_sol = np.log10(Mass_sol)
-        return mass, Mass_sol, rho_phys, lambda_factor
-
-    def ULDM_BAR_phys2angles(self, m_log10, M_log10, theta_E):
-        """
-        converts physical ULDM mass in angles entering ULDM-BAR class
-        :param m_log10: it is \log_10 m , m in eV
-        :param M_noCosmo_log10: it is \log_10 ( M ), M in M_sun
-        :param theta_E: Einstein radius of power law model (in arcsec)
-        :return: kappa_0, the central convergence, theta_c, the core radius (in arcseconds), and lambda_soliton
-        """
-        m = 10**m_log10
-        M = 10**M_log10
-        D_Lens = self.dd * 10**6 # in pc
-        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/pc^2
-        A_factor = 4.64096 * 10**(-19) * D_Lens * Sigma_c * theta_E
-        A_tilde = 7.48536 * 10**9 * m * M
-        x = Symbol('x')
-        eq1 = (0.18 + 0.45*A_factor/x**2)**3 * A_tilde**2 * 128/np.pi  - x**2
-        lambda_factor = nsolve(eq1, x, 0.001)
-        lambda_factor = float(lambda_factor)
-        a_fit = 0.18 + 0.45 * A_factor/lambda_factor**2
-        theta_c = 1.31891 * 10**(-18) / (lambda_factor * m * D_Lens * np.sqrt(2*a_fit))
-        kappa_0 = 1.97143 * 10**53 * np.sqrt(np.pi) * theta_c * m**2 * lambda_factor**4 * D_Lens / Sigma_c
-        return kappa_0, theta_c, lambda_factor
-
-
-
-
-
-
-
-
+        D_Lens = self.dd * 10**6 # in parsec
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/parsec^2
+        m22 = 10**(m_log10 + 22)
+        M9 = 10**(M_log10 -9)
+        r_c = 160 * 1.4 * m22**(-2) * M9**(-1) # core radius in parsec
+        rho0 = 190 * m22**(-2) * (r_c / 100)**(-4) # central density in M_sun/parsec^3
+        kappa_0 = 429 * np.pi * rho0 * r_c / (2048 * np.sqrt(0.091) * Sigma_c)
+        theta_c = r_c / D_Lens / const.arcsec
+        return kappa_0, theta_c
 

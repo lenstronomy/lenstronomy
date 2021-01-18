@@ -6,9 +6,9 @@ from scipy.special import exp1, erf
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.constants as const
 
-__all__ = ['ULDM-BAR']
+__all__ = ['CORED_DENSITY_EXP']
 
-class Uldm_Bar(LensProfileBase):
+class CoredDensityExp(LensProfileBase):
     """
     this class contains functions concerning an exponential cored density profile
     """
@@ -20,7 +20,7 @@ class Uldm_Bar(LensProfileBase):
     def rhoTilde(self, kappa_0, theta_c):
         """
         Computes the central density in angular units
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: central density in 1/arcsec
         """
@@ -30,10 +30,8 @@ class Uldm_Bar(LensProfileBase):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
         :return: lensing potential (in arcsec^2)
@@ -43,16 +41,15 @@ class Uldm_Bar(LensProfileBase):
         r = np.sqrt(x_** 2 + y_** 2)
         r = np.maximum(r, self._s)
         Integral_factor = 0.5 * exp1( (r/theta_c)**2) + np.log( (r/theta_c))
-        functionULDM = kappa_0 * theta_c**2 * Integral_factor
-        return functionULDM
+        function = kappa_0 * theta_c**2 * Integral_factor
+        return function
 
     def alpha_radial(self, r, kappa_0, theta_c):
         """
-        returns the radial part of the deflection angle for the ULDM profile only
-
+        returns the radial part of the deflection angle
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: radial deflection angle
         """
@@ -65,14 +62,10 @@ class Uldm_Bar(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :param x: angular position (normally in units of arc seconds)
-        :param y: angular position (normally in units of arc seconds)
         :return: deflection angle in x, deflection angle in y
         """
         x_ = x - center_x
@@ -87,7 +80,7 @@ class Uldm_Bar(LensProfileBase):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
@@ -108,11 +101,11 @@ class Uldm_Bar(LensProfileBase):
 
     def density(self, R, kappa_0, theta_c):
         """
-        three dimensional ULDM profile in angular units (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        three dimensional density profile in angular units (rho0_physical = rho0_angular \Sigma_crit / D_lens)
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: rho(R) density
         """
@@ -126,13 +119,23 @@ class Uldm_Bar(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
         :return: density rho(r)
         """
         return self.density(r, kappa_0, theta_c)
+
+    def kappa_r(self, R, kappa_0, theta_c):
+        """
+        convergence of the cored density profile. This routine is also for testing
+
+        :param R: radius (angular scale)
+        :param kappa_0: convergence in the core
+        :param theta_c: core radius
+        :return: convergence at r
+        """
+        expFactor = np.exp( - (R/theta_c)**2)
+        return kappa_0  * expFactor
 
     def density_2d(self, x, y, kappa_0, theta_c):
         """
@@ -141,20 +144,19 @@ class Uldm_Bar(LensProfileBase):
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: Epsilon(R) projected density at radius R
         """
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
-        expFactor = np.exp( - (R/theta_c)**2)
-        return kappa_0  * expFactor
+        return self.kappa_r(R, kappa_0, theta_c)
 
     def mass_3d(self, R, kappa_0, theta_c):
         """
-        mass enclosed a 3d sphere or radius r for ULDM profile only
-        :param kappa_0: central convergence of soliton
+        mass enclosed a 3d sphere or radius r
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :param R: radius in arcseconds
         :return: mass of soliton in angular units
@@ -166,10 +168,8 @@ class Uldm_Bar(LensProfileBase):
     def mass_3d_lens(self, r, kappa_0, theta_c):
         """
         mass enclosed a 3d sphere or radius r
-        :param kappa_0: central convergence of soliton
+        :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
         :return: mass
@@ -179,26 +179,11 @@ class Uldm_Bar(LensProfileBase):
 
     def mass_2d(self, R, kappa_0, theta_c):
         """
-        mass enclosed a 2d sphere of radius r, ULDM profile only.
-        returns M_2D = 2 \pi r \int dz \rho(\sqrt(r^2 + z^2))
+        mass enclosed a 2d sphere of radius r
+        returns M_2D = 2 \pi \int_0^r dr' r' \int dz \rho(\sqrt(r'^2 + z^2))
         :param kappa_0: central convergence of soliton
         :param theta_c: core radius (in arcsec)
         :return: M_2D (ULDM only)
         """
-        exp_factor =  np.exp(-(R/theta_c)**2)
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        m_2d = 2*np.pi**(1.5) * R * theta_c * rhotilde * exp_factor
-        return m_2d
+        return self.alpha_radial(R, kappa_0, theta_c) * np.pi * r
 
-    def mass_2d_lens(self, R, kappa_0, theta_c):
-        """
-        mass enclosed a 2d sphere of radius r, both ULDM and PL profiles.
-        returns M_2D = 2 \pi r \int dz \rho(\sqrt(r^2 + z^2))
-        :param kappa_0: central convergence of soliton
-        :param theta_c: core radius (in arcsec)
-        :param theta_E: PL Einstein angle
-        :param gamma: PL slope
-        :return: M_2D
-        """
-        m_2dULDM = self.mass_2d(R,kappa_0, theta_c)
-        return m_2dULDM

@@ -131,7 +131,6 @@ class LikelihoodModule(object):
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
                                                              point_source_class=point_source_class,
                                                              **kwargs_time_delay)
-        
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
@@ -259,8 +258,8 @@ class LikelihoodModule(object):
     def _unpack_data(multi_band_list=[], multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=[],
                      dec_image_list=[]):
-        
         """
+
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
         :param multi_band_type: string, type of multi-plane settings (multi-linear or joint-linear)
         :param time_delays_measured: measured time delays (units of days)

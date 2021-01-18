@@ -1,4 +1,4 @@
-def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.01, power=1.):
+def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.005, power=1.):
 
     """
     This function returns the size of a ray tracing grid in units of arcsec appropriate for magnification computations
@@ -12,7 +12,7 @@ def auto_raytracing_grid_size(source_fwhm_parcsec, grid_size_scale=0.01, power=1
     grid_radius_arcsec = grid_size_scale * source_fwhm_parcsec ** power
     return grid_radius_arcsec
 
-def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0.0004, ref=10., power=1.):
+def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0.0002, ref=10., power=1.):
 
     """
     This function returns a resolution factor in units arcsec/pixel appropriate for magnification computations with

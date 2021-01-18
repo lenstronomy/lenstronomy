@@ -6,7 +6,7 @@ import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Cosmo.background import Background
+from lenstronomy.Util.magnification_finite_util import auto_raytracing_grid_resolution, auto_raytracing_grid_size
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 from astropy.cosmology import FlatLambdaCDM
@@ -99,18 +99,24 @@ class TestLensModelExtensions(object):
         pc_per_arcsec = 1000 / self.cosmo.arcsec_per_kpc_proper(z_source).value
         source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
 
+        grid_size = auto_raytracing_grid_size(source_fwhm_parsec)
+        grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
+        # make this even higher resolution to show convergence
+        grid_number = int(2 * grid_size / grid_resolution)
+        window_size = 2 * grid_size
+
         mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
-                                                         grid_number=1501, window_size=0.15)
+                                                         grid_number=grid_number, window_size=window_size)
         flux_ratios_square_grid = mag_square_grid / max(mag_square_grid)
 
         mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                     source_fwhm_parsec,
-                                                                    z_source, cosmo=self.cosmo, tol=0.0001)
+                                                                    z_source, cosmo=self.cosmo)
         flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
 
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                       source_fwhm_parsec, z_source,
-                                                                      cosmo=self.cosmo, tol=0.0001, axis_ratio=0)
+                                                                      cosmo=self.cosmo, axis_ratio=0)
 
         flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2 / max(mag_adaptive_grid_2)
 
@@ -187,8 +193,5 @@ class TestLensModelExtensions(object):
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
 
-t = TestLensModelExtensions()
-t.setup()
-t.test_magnification_finite_adaptive()
-# if __name__ == '__main__':
-#     pytest.main("-k TestLensModel")
+if __name__ == '__main__':
+    pytest.main("-k TestLensModel")

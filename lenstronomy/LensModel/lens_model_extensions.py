@@ -79,7 +79,6 @@ class LensModelExtensions(object):
             grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
 
         pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
-
         source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
         source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
         kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]

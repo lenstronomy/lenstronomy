@@ -131,6 +131,7 @@ class LikelihoodModule(object):
             self.time_delay_likelihood = TimeDelayLikelihood(lens_model_class=lens_model_class,
                                                              point_source_class=point_source_class,
                                                              **kwargs_time_delay)
+
         if self._image_likelihood is True:
             self.image_likelihood = ImageLikelihood(kwargs_model=kwargs_model, **kwargs_imaging)
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)

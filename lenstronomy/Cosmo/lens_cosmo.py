@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 # this file contains a class to convert lensing and physical units
 
 import numpy as np
-from sympy import Symbol, nsolve
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam

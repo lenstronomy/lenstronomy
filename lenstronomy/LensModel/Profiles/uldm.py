@@ -5,7 +5,7 @@ import numpy as np
 import scipy.interpolate as interp
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.constants as const
-__all__ = ['ULDM']
+__all__ = ['Uldm']
 
 
 class Uldm(LensProfileBase):

@@ -39,7 +39,7 @@ class Uldm(LensProfileBase):
         num_factor = 2048 * np.sqrt(0.091) /(429 * np.pi)
         return kappa_0 * num_factor / theta_c
 
-    def lensing_Integral(self, x):
+    def _lensing_integral(self, x):
         """
         The analitic result of the integral entering the computation of the
         lensing potential, that is
@@ -68,7 +68,7 @@ class Uldm(LensProfileBase):
         y_ = y - center_y
         r = np.sqrt(x_** 2 + y_** 2)
         r = np.maximum(r, self._s)
-        Integral_factor = self.lensing_Integral(np.sqrt(0.091) * r / theta_c)
+        Integral_factor = self._lensing_integral(np.sqrt(0.091) * r / theta_c)
         prefactor = 2/ 13 * kappa_0 * theta_c**2 / 0.091
         return prefactor * Integral_factor
 
@@ -182,7 +182,7 @@ class Uldm(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         return self.kappa_r(R, kappa_0, theta_c)
 
-    def mass_Integral(self, x):
+    def _mass_integral(self, x):
         """
         Returns the analitic result of the integral appearing in mass expression
         """
@@ -201,7 +201,7 @@ class Uldm(LensProfileBase):
         """
         rhotilde = self.rhotilde(kappa_0, theta_c)
         prefactor = 4. * np.pi * rhotilde * theta_c**3 / (0.091)**(1.5)
-        m_3d = prefactor * (self.mass_Integral(R/theta_c * np.sqrt(0.091)) - self.mass_Integral(0) )
+        m_3d = prefactor * (self._mass_integral(R/theta_c * np.sqrt(0.091)) - self._mass_integral(0) )
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c):

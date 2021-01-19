@@ -10,7 +10,12 @@ __all__ = ['CoredDensityExp']
 
 class CoredDensityExp(LensProfileBase):
     """
-    this class contains functions concerning an exponential cored density profile
+    this class contains functions concerning an exponential cored density profile,
+    namely
+
+    ..math::
+        \rho(r) = \rho_0 \exp(- (\theta / \theta_c)^2)
+
     """
     _s = 0.000001  # numerical limit for minimal radius
     param_names = ['kappa_0', 'theta_c', 'center_x', 'center_y']

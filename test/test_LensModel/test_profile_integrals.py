@@ -301,6 +301,18 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
         self.assert_lens_integrals(Model, kwargs)
 
+    def test_cored_density_exp(self):
+        from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp as Model
+        kwargs = {'sigma0': 0.1, 'r_core': 6.}
+        self.assert_integrals(Model, kwargs)
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_uldm(self):
+        from lenstronomy.LensModel.Profiles.uldm import Uldm as Model
+        kwargs = {'sigma0': 0.1, 'r_core': 6.}
+        self.assert_integrals(Model, kwargs)
+        self.assert_lens_integrals(Model, kwargs)
+
 
     """
     def test_sis(self):

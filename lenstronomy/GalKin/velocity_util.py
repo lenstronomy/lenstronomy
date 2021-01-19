@@ -105,8 +105,11 @@ def project2d_random(r):
     :param r: 3d radius
     :return: R, x, y
     """
-    phi = np.random.uniform(0, 2*np.pi)
-    theta = np.random.uniform(0, np.pi)
+    size = len(np.atleast_1d(r))
+    if size == 1:
+        size = None
+    phi = np.random.uniform(0, 2*np.pi, size=size)
+    theta = np.random.uniform(0, np.pi, size=size)
     x = r * np.sin(theta) * np.cos(phi)
     y = r * np.sin(theta) * np.sin(phi)
     R = np.sqrt(x**2 + y**2)

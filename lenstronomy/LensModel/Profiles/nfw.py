@@ -23,8 +23,20 @@ class NFW(LensProfileBase):
     >>> from astropy.cosmology import FlatLambdaCDM
     >>> cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
     >>> lens_cosmo = LensCosmo(z_lens=0.5, z_source=1.5, cosmo=cosmo)
+
+    Here we compute the angular scale of Rs on the sky (in arc seconds) and the deflection angle at Rs (in arc seconds):
+
     >>> Rs_angle, alpha_Rs = lens_cosmo.nfw_physical2angle(M=10**13, c=6)
+
+    And here we perform the inverse calculation given Rs_angle and alpha_Rs to return the physical halo properties.
+
     >>> rho0, Rs, c, r200, M200 = lens_cosmo.nfw_angle2physical(Rs_angle=Rs_angle, alpha_Rs=alpha_Rs)
+
+    The lens model calculation uses angular units as arguments! So to execute a deflection angle calculation one uses
+
+    >>> from lenstronomy.LensModel.Profiles.nfw import NFW
+    >>> nfw = NFW()
+    >>> alpha_x, alpha_y = nfw.derivatives(x=1, y=1, Rs=Rs_angle, alpha_Rs=alpha_Rs, center_x=0, center_y=0)
 
     """
     param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y']

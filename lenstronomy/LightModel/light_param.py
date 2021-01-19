@@ -5,11 +5,21 @@ __all__ = ['LightParam']
 
 class LightParam(object):
     """
-
+    class manages the parameters corresponding to the LightModel() module. Also manages linear parameter handling.
     """
 
     def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, type='light',
                  linear_solver=True):
+        """
+
+        :param light_model_list: list of light models
+        :param kwargs_fixed: list of keyword arguments corresponding to parameters held fixed during sampling
+        :param kwargs_lower: list of keyword arguments indicating hard lower limit of the parameter space
+        :param kwargs_upper: list of keyword arguments indicating hard upper limit of the parameter space
+        :param type: string (optional), adding specifications in the output strings (such as lens light or source light)
+        :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
+         get overwritten by the linear solver solution.
+        """
         self._lightModel = LightModel(light_model_list=light_model_list)
         self._param_name_list = self._lightModel.param_name_list
         self._type = type
@@ -36,9 +46,10 @@ class LightParam(object):
     def getParams(self, args, i):
         """
 
-        :param args:
-        :param i:
-        :return:
+        :param args: list of floats corresponding ot the arguments being sampled
+        :param i: int, index of the first argument that is managed/read-out by this class
+        :return: keyword argument list of the light profile, index after reading out the arguments corresponding to
+         this class
         """
         kwargs_list = []
         for k, model in enumerate(self.model_list):
@@ -86,9 +97,9 @@ class LightParam(object):
     def setParams(self, kwargs_list):
         """
 
-        :param kwargs_list:
-        :param bounds: bool, if True, ellitpicity of min/max
-        :return:
+        :param kwargs_list: list of keyword arguments of the light profile (free parameter as well as optionally the
+         fixed ones)
+        :return: list of floats corresponding to the free parameters
         """
         args = []
         for k, model in enumerate(self.model_list):
@@ -110,7 +121,7 @@ class LightParam(object):
                         if 'n_scales' in kwargs_fixed:
                             n_scales = kwargs_fixed['n_scales']
                         else:
-                            raise ValueError("'n_scakes' for SLIT_STARLETS not found in kwargs_fixed")
+                            raise ValueError("'n_scales' for SLIT_STARLETS not found in kwargs_fixed")
                         if 'n_pixels' in kwargs_fixed:
                             n_pixels = kwargs_fixed['n_pixels']
                         else:
@@ -133,7 +144,7 @@ class LightParam(object):
     def num_param(self):
         """
 
-        :return:
+        :return: int, list of strings with param names
         """
         num = 0
         list = []

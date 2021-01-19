@@ -104,6 +104,13 @@ class TestImageModel(object):
         chi2_reduced = self.imageModel.reduced_chi2(model, error_map)
         npt.assert_almost_equal(chi2_reduced, 1, decimal=1)
 
+    def test_linear_response_matrix(self):
+        A = self.imageModel.linear_response_matrix(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light,
+                                                   self.kwargs_ps)
+        n, m = np.shape(A)
+        assert n == 3
+        assert m == 100*100
+
     def test_image_with_params(self):
         model = self.imageModel.image(self.kwargs_lens, self.kwargs_source, self.kwargs_lens_light, self.kwargs_ps, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True)
         error_map = self.imageModel._error_map_psf(self.kwargs_lens, self.kwargs_ps)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -49,8 +49,12 @@
 <span class="kn">import</span> <span class="nn">mpmath</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="merge_dicts"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.merge_dicts">[docs]</a><span class="k">def</span> <span class="nf">merge_dicts</span><span class="p">(</span><span class="o">*</span><span class="n">dict_args</span><span class="p">):</span>
+
+<div class="viewcode-block" id="merge_dicts"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.merge_dicts">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">merge_dicts</span><span class="p">(</span><span class="o">*</span><span class="n">dict_args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Given any number of dicts, shallow copy and merge into a new dict,</span>
 <span class="sd">    precedence goes to key value pairs in latter dicts.</span>
@@ -61,7 +65,8 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="approx_theta_E"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.approx_theta_E">[docs]</a><span class="k">def</span> <span class="nf">approx_theta_E</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">):</span>
+<div class="viewcode-block" id="approx_theta_E"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.approx_theta_E">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">approx_theta_E</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">):</span>
 
     <span class="n">dis</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">xinds</span><span class="p">,</span><span class="n">yinds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
@@ -83,7 +88,8 @@
     <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">dr_greatest</span><span class="o">*</span><span class="n">dr_second</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span></div>
 
 
-<div class="viewcode-block" id="sort_image_index"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sort_image_index">[docs]</a><span class="k">def</span> <span class="nf">sort_image_index</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">,</span><span class="n">xref</span><span class="p">,</span><span class="n">yref</span><span class="p">):</span>
+<div class="viewcode-block" id="sort_image_index"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sort_image_index">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">sort_image_index</span><span class="p">(</span><span class="n">ximg</span><span class="p">,</span><span class="n">yimg</span><span class="p">,</span><span class="n">xref</span><span class="p">,</span><span class="n">yref</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -115,7 +121,8 @@
     <span class="k">return</span> <span class="n">min_indexes</span></div>
 
 
-<div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.rotate">[docs]</a><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">xcoords</span><span class="p">,</span> <span class="n">ycoords</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<div class="viewcode-block" id="rotate"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.rotate">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">xcoords</span><span class="p">,</span> <span class="n">ycoords</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param xcoords: x points</span>
@@ -126,7 +133,8 @@
     <span class="k">return</span> <span class="n">xcoords</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">+</span><span class="n">ycoords</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">),</span> <span class="o">-</span><span class="n">xcoords</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span><span class="o">+</span><span class="n">ycoords</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="map_coord2pix"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.map_coord2pix">[docs]</a><span class="k">def</span> <span class="nf">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+<div class="viewcode-block" id="map_coord2pix"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.map_coord2pix">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y_0</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    this routines performs a linear transformation between two coordinate systems. Mainly used to transform angular</span>
 <span class="sd">    into pixel coordinates in an image</span>
@@ -141,9 +149,11 @@
     <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="n">x_0</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">y_0</span></div>
 
 
-<div class="viewcode-block" id="array2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.array2image">[docs]</a><span class="k">def</span> <span class="nf">array2image</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="array2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.array2image">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">array2image</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)</span>
+<span class="sd">    returns the information contained in a 1d array into an n*n 2d array</span>
+<span class="sd">    (only works when length of array is n**2, or nx and ny are provided)</span>
 
 <span class="sd">    :param array: image values</span>
 <span class="sd">    :type array: array of size n**2</span>
@@ -159,7 +169,8 @@
     <span class="k">return</span> <span class="n">image</span></div>
 
 
-<div class="viewcode-block" id="image2array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.image2array">[docs]</a><span class="k">def</span> <span class="nf">image2array</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="image2array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.image2array">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">image2array</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 2d array into an n*n 1d array</span>
 
@@ -173,7 +184,8 @@
     <span class="k">return</span> <span class="n">imgh</span></div>
 
 
-<div class="viewcode-block" id="array2cube"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.array2cube">[docs]</a><span class="k">def</span> <span class="nf">array2cube</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n_1</span><span class="p">,</span> <span class="n">n_23</span><span class="p">):</span>
+<div class="viewcode-block" id="array2cube"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.array2cube">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">array2cube</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">n_1</span><span class="p">,</span> <span class="n">n_23</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 1d array of shape (n_1*n_23*n_23) into 3d array with shape (n_1, sqrt(n_23), sqrt(n_23))</span>
 <span class="sd">    </span>
@@ -194,7 +206,8 @@
     <span class="k">return</span> <span class="n">cube</span></div>
 
 
-<div class="viewcode-block" id="cube2array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.cube2array">[docs]</a><span class="k">def</span> <span class="nf">cube2array</span><span class="p">(</span><span class="n">cube</span><span class="p">):</span>
+<div class="viewcode-block" id="cube2array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.cube2array">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">cube2array</span><span class="p">(</span><span class="n">cube</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)</span>
 <span class="sd">    </span>
@@ -207,31 +220,53 @@
     <span class="k">return</span> <span class="n">array</span></div>
     
 
-<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid">[docs]</a><span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    creates pixel grid (in 1d arrays of x- and y- positions)</span>
 <span class="sd">    default coordinate frame is such that (0,0) is in the center of the coordinate grid</span>
 
 <span class="sd">    :param numPix: number of pixels per axis</span>
+<span class="sd">        Give an integers for a square grid, or a 2-length sequence</span>
+<span class="sd">        (first, second axis length) for a non-square grid.</span>
 <span class="sd">    :param deltapix: pixel size</span>
 <span class="sd">    :param subgrid_res: sub-pixel resolution (default=1)</span>
 <span class="sd">    :return: x, y position information in two 1d arrays</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="n">numPix</span><span class="o">*</span><span class="n">subgrid_res</span>
-    <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
-    <span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">)</span>
-    <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-    <span class="n">x_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
-    <span class="n">y_grid</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
-    <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-        <span class="n">shift</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span>
+    <span class="c1"># Check numPix is an integer, or 2-sequence of integers</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">numPix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numPix</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;numPix contains non-integers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">shift</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">x_grid</span><span class="p">)</span> <span class="o">/</span> <span class="n">numPix_eff</span><span class="o">**</span><span class="mi">2</span>
-    <span class="k">return</span> <span class="n">x_grid</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">-</span> <span class="n">shift</span></div>
+        <span class="k">if</span> <span class="n">numPix</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">numPix</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Attempt to specify non-int numPix: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+    <span class="c1"># Super-resolution sampling</span>
+    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
+
+    <span class="c1"># Compute unshifted grids.</span>
+    <span class="c1"># X values change quickly, Y values are repeated many times</span>
+    <span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">numPix_eff</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
+    <span class="n">y_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">numPix_eff</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">numPix_eff</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
+
+    <span class="k">if</span> <span class="n">left_lower</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># Shift so (0, 0) is in the &quot;lower left&quot;</span>
+        <span class="c1"># Note this does not shift when subgrid_res = 1</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Shift so (0, 0) is centered</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="n">deltapix_eff</span> <span class="o">*</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">return</span> <span class="n">x_grid</span> <span class="o">-</span> <span class="n">shift</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">y_grid</span> <span class="o">-</span> <span class="n">shift</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="make_grid_transformed"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_transformed">[docs]</a><span class="k">def</span> <span class="nf">make_grid_transformed</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">Mpix2Angle</span><span class="p">):</span>
+<div class="viewcode-block" id="make_grid_transformed"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_transformed">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">make_grid_transformed</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">Mpix2Angle</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns grid with linear transformation (deltaPix and rotation)</span>
 <span class="sd">    :param numPix: number of Pixels</span>
@@ -243,7 +278,8 @@
     <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span></div>
 
 
-<div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="make_grid_with_coordtransform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_grid_with_coordtransform">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">make_grid_with_coordtransform</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">left_lower</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    same as make_grid routine, but returns the transformation matrix and shift between coordinates and pixel</span>
 
@@ -282,7 +318,8 @@
     <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span></div>
 
 
-<div class="viewcode-block" id="grid_from_coordinate_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.grid_from_coordinate_transform">[docs]</a><span class="k">def</span> <span class="nf">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">):</span>
+<div class="viewcode-block" id="grid_from_coordinate_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.grid_from_coordinate_transform">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return a grid in x and y coordinates that satisfy the coordinate system</span>
 
@@ -304,7 +341,8 @@
     <span class="k">return</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span></div>
 
 
-<div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_axes">[docs]</a><span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="get_axes"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_axes">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">get_axes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes the axis x and y of a given 2d grid</span>
 <span class="sd">    :param x:</span>
@@ -321,7 +359,8 @@
     <span class="k">return</span> <span class="n">x_axes</span><span class="p">,</span> <span class="n">y_axes</span></div>
 
 
-<div class="viewcode-block" id="averaging"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.averaging">[docs]</a><span class="k">def</span> <span class="nf">averaging</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">numGrid</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
+<div class="viewcode-block" id="averaging"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.averaging">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">averaging</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">numGrid</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    resize 2d pixel grid with numGrid to numPix and averages over the pixels</span>
 <span class="sd">    :param grid: higher resolution pixel grid</span>
@@ -336,7 +375,8 @@
     <span class="k">return</span> <span class="n">small</span></div>
 
 
-<div class="viewcode-block" id="displaceAbs"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.displaceAbs">[docs]</a><span class="k">def</span> <span class="nf">displaceAbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
+<div class="viewcode-block" id="displaceAbs"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.displaceAbs">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">displaceAbs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    calculates a grid of distances to the observer in angel</span>
 
@@ -353,7 +393,8 @@
     <span class="k">return</span> <span class="n">absmapped</span></div>
 
 
-<div class="viewcode-block" id="get_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_distance">[docs]</a><span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_true</span><span class="p">,</span> <span class="n">y_true</span><span class="p">):</span>
+<div class="viewcode-block" id="get_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.get_distance">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">get_distance</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">x_true</span><span class="p">,</span> <span class="n">y_true</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param x_mins:</span>
@@ -379,7 +420,8 @@
     <span class="k">return</span> <span class="n">dist</span></div>
 
 
-<div class="viewcode-block" id="compare_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.compare_distance">[docs]</a><span class="k">def</span> <span class="nf">compare_distance</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span><span class="p">):</span>
+<div class="viewcode-block" id="compare_distance"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.compare_distance">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">compare_distance</span><span class="p">(</span><span class="n">x_mapped</span><span class="p">,</span> <span class="n">y_mapped</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param x_mapped: array of x-positions of remapped catalogue image</span>
@@ -395,7 +437,8 @@
     <span class="k">return</span> <span class="n">X2</span></div>
 
 
-<div class="viewcode-block" id="min_square_dist"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.min_square_dist">[docs]</a><span class="k">def</span> <span class="nf">min_square_dist</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y_2</span><span class="p">):</span>
+<div class="viewcode-block" id="min_square_dist"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.min_square_dist">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">min_square_dist</span><span class="p">(</span><span class="n">x_1</span><span class="p">,</span> <span class="n">y_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="n">y_2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return minimum of quadratic distance of pairs (x1, y1) to pairs (x2, y2)</span>
 <span class="sd">    :param x_1:</span>
@@ -410,7 +453,8 @@
     <span class="k">return</span> <span class="n">dist</span></div>
 
 
-<div class="viewcode-block" id="selectBest"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.selectBest">[docs]</a><span class="k">def</span> <span class="nf">selectBest</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">numSelect</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="selectBest"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.selectBest">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">selectBest</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">numSelect</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param array: numpy array to be selected from</span>
@@ -433,7 +477,8 @@
     <span class="k">return</span> <span class="n">result</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="select_best"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.select_best">[docs]</a><span class="k">def</span> <span class="nf">select_best</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">num_select</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="select_best"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.select_best">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">select_best</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">num_select</span><span class="p">,</span> <span class="n">highest</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param array: numpy array to be selected from</span>
@@ -456,7 +501,8 @@
     <span class="k">return</span> <span class="n">array</span><span class="p">[</span><span class="n">indexes</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
+<div class="viewcode-block" id="points_on_circle"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.points_on_circle">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">points_on_circle</span><span class="p">(</span><span class="n">radius</span><span class="p">,</span> <span class="n">num_points</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns a set of uniform points around a circle</span>
 <span class="sd">    :param radius: radius of the circle</span>
@@ -469,7 +515,8 @@
     <span class="k">return</span> <span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span></div>
 
 
-<div class="viewcode-block" id="neighborSelect"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.neighborSelect">[docs]</a><span class="k">def</span> <span class="nf">neighborSelect</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<div class="viewcode-block" id="neighborSelect"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.neighborSelect">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">neighborSelect</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    #TODO replace by from scipy.signal import argrelextrema for speed up</span>
 <span class="sd">    &gt;&gt;&gt; from scipy.signal import argrelextrema</span>
@@ -526,7 +573,8 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_mins</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_mins</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">values</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fwhm2sigma"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.fwhm2sigma">[docs]</a><span class="k">def</span> <span class="nf">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">):</span>
+<div class="viewcode-block" id="fwhm2sigma"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.fwhm2sigma">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">fwhm2sigma</span><span class="p">(</span><span class="n">fwhm</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param fwhm: full-widt-half-max value</span>
@@ -536,7 +584,8 @@
     <span class="k">return</span> <span class="n">sigma</span></div>
 
 
-<div class="viewcode-block" id="sigma2fwhm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sigma2fwhm">[docs]</a><span class="k">def</span> <span class="nf">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
+<div class="viewcode-block" id="sigma2fwhm"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.sigma2fwhm">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">sigma2fwhm</span><span class="p">(</span><span class="n">sigma</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param sigma:</span>
@@ -546,7 +595,8 @@
     <span class="k">return</span> <span class="n">fwhm</span></div>
 
 
-<div class="viewcode-block" id="hyper2F2_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.hyper2F2_array">[docs]</a><span class="k">def</span> <span class="nf">hyper2F2_array</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="hyper2F2_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.hyper2F2_array">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">hyper2F2_array</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param a:</span>
@@ -566,7 +616,8 @@
     <span class="k">return</span> <span class="n">out</span></div>
 
 
-<div class="viewcode-block" id="make_subgrid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_subgrid">[docs]</a><span class="k">def</span> <span class="nf">make_subgrid</span><span class="p">(</span><span class="n">ra_coord</span><span class="p">,</span> <span class="n">dec_coord</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="make_subgrid"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.make_subgrid">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">make_subgrid</span><span class="p">(</span><span class="n">ra_coord</span><span class="p">,</span> <span class="n">dec_coord</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return a grid with subgrid resolution</span>
 <span class="sd">    :param ra_coord:</span>
@@ -594,7 +645,8 @@
     <span class="k">return</span> <span class="n">ra_coords_sub</span><span class="p">,</span> <span class="n">dec_coords_sub</span></div>
 
 
-<div class="viewcode-block" id="convert_bool_list"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.convert_bool_list">[docs]</a><span class="k">def</span> <span class="nf">convert_bool_list</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_bool_list"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.util.convert_bool_list">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">convert_bool_list</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns a bool list of the length of the lens models</span>
 <span class="sd">    if k = None: returns bool list with True&#39;s</span>
@@ -663,7 +715,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -235,7 +235,7 @@ class TestMultiPlane(object):
                                                                                 kwargs_lens=kwargs_lens_full)
 
 
-        beta_x, beta_y = lensModel._co_moving2angle_source(x_src, y_src)
+        beta_x, beta_y = lensModel.co_moving2angle_source(x_src, y_src)
         beta_x_true, beta_y_true = lensModel_full.ray_shooting(theta_x, theta_y, kwargs_lens_full)
 
         npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
@@ -274,20 +274,8 @@ class TestMultiPlane(object):
                                                                                 alpha_y=alpha_y_out, z_start=z_intermediate,
                                                                                     z_stop=z_source,
                                                                                     kwargs_lens=kwargs_lens)
-            x_out_full_0 = np.append(x_out_full_0, x_out)
-            y_out_full_0 = np.append(y_out_full_0, y_out)
 
-            x_out_full, y_out_full, redshifts, tzlist = lensmodel_class.ray_shooting_partial_steps(x=0, y=0, alpha_x=theta_x,
-                                                alpha_y=theta_y, z_start=0, z_stop=z_source, kwargs_lens=kwargs_lens)
-
-
-            npt.assert_almost_equal(x_out_full_0[0], x_out_full[intermediate_index+1])
-            npt.assert_almost_equal(x_out_full_0[-1], x_out_full[-1])
-            npt.assert_almost_equal(y_out_full_0[0], y_out_full[intermediate_index+1])
-            npt.assert_almost_equal(y_out_full_0[-1], y_out_full[-1])
-            npt.assert_almost_equal(tzlist[0], lensModel._multi_plane_base._cosmo_bkg.T_xy(0, redshifts[0]))
-
-            beta_x, beta_y = lensModel._co_moving2angle_source(x_out, y_out)
+            beta_x, beta_y = lensModel.co_moving2angle_source(x_out, y_out)
             beta_x_true, beta_y_true = lensmodel_class.ray_shooting(theta_x, theta_y, kwargs_lens)
             npt.assert_almost_equal(beta_x, beta_x_true, decimal=8)
             npt.assert_almost_equal(beta_y, beta_y_true, decimal=8)
@@ -375,6 +363,10 @@ class TestRaise(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             MultiPlaneBase(z_source_convention=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5])
+
+        with self.assertRaises(ValueError):
+            lens = MultiPlane(z_source_convention=1, z_source=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5, 0.8])
+            lens._check_raise(k=[1])
 
 
 if __name__ == '__main__':

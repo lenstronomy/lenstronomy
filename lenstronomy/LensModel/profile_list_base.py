@@ -12,8 +12,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
-                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP','CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN',
-                     'ULDM']
+                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP','CORED_DENSITY_EXP_MST',
+                     'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM']
 
 class ProfileListBase(object):
     """
@@ -249,9 +249,15 @@ class ProfileListBase(object):
         elif lens_type == 'MULTIPOLE':
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()
+<<<<<<< HEAD
         elif lens_type == 'ULDM':
             from lenstronomy.LensModel.Profiles.uldm import Uldm
             return Uldm()
+=======
+        elif lens_type == 'ElliSLICE':
+            from lenstronomy.LensModel.Profiles.elliptical_density_slice import ElliSLICE
+            return ElliSLICE()
+>>>>>>> lenstronomyproject/master
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

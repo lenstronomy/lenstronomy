@@ -123,7 +123,8 @@ class TestImageModel(object):
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
-        kwargs_psf_iter = {'stacking_method': 'median'}
+        kwargs_psf_iter = {'stacking_method': 'median', 'psf_symmetry': 2, 'psf_iter_factor': 0.2,
+                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5}
 
         kwargs_params = copy.deepcopy(self.kwargs_params)
         kwargs_ps = kwargs_params['kwargs_ps']
@@ -138,6 +139,7 @@ class TestImageModel(object):
         diff_new = np.sum((kernel_new - kernel_true) ** 2)
         assert diff_old > diff_new
         assert diff_new < 0.01
+        assert 'psf_error_map' in kwargs_psf_new
 
         kwargs_psf_new = self.psf_fitting.update_iterative(kwargs_psf, kwargs_params, num_iter=3,
                                                            no_break=True, keep_psf_error_map=True)

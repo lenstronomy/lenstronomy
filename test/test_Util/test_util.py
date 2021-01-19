@@ -60,15 +60,31 @@ def test_map_coord2pix():
 def test_make_grid():
     numPix = 11
     deltapix = 1.
+
     grid = util.make_grid(numPix, deltapix)
     assert grid[0][0] == -5
-    assert np.sum(grid[0]) == 0
+    assert np.sum(grid[0]) == 0.
+
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
-    print(np.sum(x_grid))
-    assert np.sum(x_grid) == 0
+    assert np.sum(x_grid) == 0.
     assert x_grid[0] == -5.25
 
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1, left_lower=True)
+    assert x_grid[0] == 0.
+    assert y_grid[0] == 0.
+
+    # Similar tests for a non-rectangular grid
+
+    x_grid, y_grid = util.make_grid((numPix, numPix - 1), deltapix)
+    assert x_grid[0] == -5.
+    assert y_grid[0] == -4.5
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=2.)
+    assert np.sum(x_grid) == np.sum(y_grid) == 0
+    assert x_grid[0] == -5.25
+
+    x_grid, y_grid = util.make_grid(numPix, deltapix, left_lower=True)
     assert x_grid[0] == 0
     assert y_grid[0] == 0
 
@@ -138,7 +154,6 @@ def test_grid_with_coords():
         numPix, deltaPix, subgrid_res=1, left_lower=True)
     assert ra_at_xy_0 == 0
     assert dec_at_xy_0 == 0
-
 
 def test_array2image():
     array = np.linspace(1, 100, 100)
@@ -317,6 +332,7 @@ def test_make_subgrid():
     x_grid, y_grid = util.make_grid(numPix, deltapix, subgrid_res=1)
     x_sub_grid, y_sub_grid = util.make_subgrid(x_grid, y_grid, subgrid_res=2)
     assert np.sum(x_grid) == 0
+    assert len(x_grid) == 101*101
     assert x_sub_grid[0] == -50.25
     assert y_sub_grid[17] == -50.25
 
@@ -387,6 +403,12 @@ class TestRaise(unittest.TestCase):
             util.convert_bool_list(n=3, k=[True, True])
         with self.assertRaises(ValueError):
             util.convert_bool_list(n=2, k=[0.1, True])
+
+    def test_raise_make_grid(self):
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=1.1, deltapix=1)
+        with self.assertRaises(ValueError):
+            util.make_grid(numPix=[1.1, 1], deltapix=1)
 
 
 if __name__ == '__main__':

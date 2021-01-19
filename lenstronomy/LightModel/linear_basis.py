@@ -18,7 +18,6 @@ class LinearBasis(LightModelBase):
 
         :param light_model_list:
         :param smoothing:
-        :param merge_with_other_list: list of indexes of models that are merged with other models with fixed amplitude ratio
         """
         super(LinearBasis, self).__init__(light_model_list=light_model_list, smoothing=smoothing)
 

@@ -123,7 +123,7 @@ class ImageLinearFit(ImageModel):
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                kwargs_extinction=None, kwargs_special=None):
         """
-        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+        computes the linear response matrix (m x n), with n being the data size and m being the coefficients
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_source: extended source model keyword argument list
@@ -133,7 +133,8 @@ class ImageLinearFit(ImageModel):
         :param kwargs_special: special keyword argument list
         :return: linear response matrix
         """
-        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction, kwargs_special)
+        A = self._linear_response_matrix(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
+                                         kwargs_special)
         return A
 
     @property
@@ -273,20 +274,20 @@ class ImageLinearFit(ImageModel):
             image = source_light_response[i]
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.image2array_masked(image)
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         # response of lens light profile
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
-            A[n, :] = self.image2array_masked(image)
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         # response of point sources
         for i in range(0, n_points):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
-            A[n, :] = self.image2array_masked(image)
+            A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        return np.nan_to_num(A)
+        return A
 
     def update_linear_kwargs(self, param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """

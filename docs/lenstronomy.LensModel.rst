@@ -7,8 +7,8 @@ Subpackages
 .. toctree::
 
     lenstronomy.LensModel.LightConeSim
-    lenstronomy.LensModel.Optimizer
     lenstronomy.LensModel.Profiles
+    lenstronomy.LensModel.QuadOptimizer
     lenstronomy.LensModel.Solver
 
 Submodules

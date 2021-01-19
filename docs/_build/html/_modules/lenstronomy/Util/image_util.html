@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.image_util &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.Util.image_util &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -48,8 +48,12 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
-<div class="viewcode-block" id="add_layer2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image">[docs]</a><span class="k">def</span> <span class="nf">add_layer2image</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+<div class="viewcode-block" id="add_layer2image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">add_layer2image</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds a kernel on the grid2d image at position x_pos, y_pos with an interpolated subgrid pixel shift of order=order</span>
 <span class="sd">    :param grid2d: 2d pixel grid (i.e. image)</span>
@@ -68,7 +72,8 @@
     <span class="k">return</span> <span class="n">add_layer2image_int</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">kernel_shifted</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="add_layer2image_int"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image_int">[docs]</a><span class="k">def</span> <span class="nf">add_layer2image_int</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">):</span>
+<div class="viewcode-block" id="add_layer2image_int"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_layer2image_int">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">add_layer2image_int</span><span class="p">(</span><span class="n">grid2d</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kernel</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds a kernel on the grid2d image at position x_pos, y_pos at integer positions of pixel</span>
 <span class="sd">    :param grid2d: 2d pixel grid (i.e. image)</span>
@@ -106,7 +111,8 @@
     <span class="k">return</span> <span class="n">new</span></div>
 
 
-<div class="viewcode-block" id="add_background"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_background">[docs]</a><span class="k">def</span> <span class="nf">add_background</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">sigma_bkd</span><span class="p">):</span>
+<div class="viewcode-block" id="add_background"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_background">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">add_background</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">sigma_bkd</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds background noise to image</span>
 <span class="sd">    :param image: pixel values of image</span>
@@ -118,7 +124,8 @@
     <span class="k">return</span> <span class="n">background</span></div>
 
 
-<div class="viewcode-block" id="add_poisson"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_poisson">[docs]</a><span class="k">def</span> <span class="nf">add_poisson</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">exp_time</span><span class="p">):</span>
+<div class="viewcode-block" id="add_poisson"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.add_poisson">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">add_poisson</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">exp_time</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adds a poison (or Gaussian) distributed noise with mean given by surface brightness</span>
 <span class="sd">    :param image: pixel values (photon counts per unit exposure time)</span>
@@ -135,7 +142,8 @@
     <span class="k">return</span> <span class="n">poisson</span></div>
 
 
-<div class="viewcode-block" id="rotateImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rotateImage">[docs]</a><span class="k">def</span> <span class="nf">rotateImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
+<div class="viewcode-block" id="rotateImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rotateImage">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">rotateImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span> <span class="n">angle</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    querries scipy.ndimage.rotate routine</span>
@@ -147,7 +155,8 @@
     <span class="k">return</span> <span class="n">imgR</span></div>
 
 
-<div class="viewcode-block" id="re_size_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size_array">[docs]</a><span class="k">def</span> <span class="nf">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
+<div class="viewcode-block" id="re_size_array"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size_array">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">re_size_array</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">y_in</span><span class="p">,</span> <span class="n">input_values</span><span class="p">,</span> <span class="n">x_out</span><span class="p">,</span> <span class="n">y_out</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    resizes 2d array (i.e. image) to new coordinates. So far only works with square output aligned with coordinate axis.</span>
 <span class="sd">    :param x_in:</span>
@@ -163,7 +172,8 @@
     <span class="k">return</span> <span class="n">out_values</span></div>
 
 
-<div class="viewcode-block" id="symmetry_average"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.symmetry_average">[docs]</a><span class="k">def</span> <span class="nf">symmetry_average</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
+<div class="viewcode-block" id="symmetry_average"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.symmetry_average">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">symmetry_average</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">symmetry</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    symmetry averaged image</span>
 <span class="sd">    :param image:</span>
@@ -178,7 +188,8 @@
     <span class="k">return</span> <span class="n">img_sym</span></div>
 
 
-<div class="viewcode-block" id="findOverlap"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.findOverlap">[docs]</a><span class="k">def</span> <span class="nf">findOverlap</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">):</span>
+<div class="viewcode-block" id="findOverlap"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.findOverlap">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">findOverlap</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    finds overlapping solutions, deletes multiples and deletes non-solutions and if it is not a solution, deleted as well</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -197,7 +208,8 @@
     <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
 
 
-<div class="viewcode-block" id="coordInImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.coordInImage">[docs]</a><span class="k">def</span> <span class="nf">coordInImage</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">):</span>
+<div class="viewcode-block" id="coordInImage"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.coordInImage">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">coordInImage</span><span class="p">(</span><span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span><span class="p">,</span> <span class="n">numPix</span><span class="p">,</span> <span class="n">deltapix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    checks whether image positions are within the pixel image in units of arcsec</span>
 <span class="sd">    if not: remove it</span>
@@ -217,7 +229,8 @@
     <span class="k">return</span> <span class="n">x_coord</span><span class="p">,</span> <span class="n">y_coord</span></div>
 
 
-<div class="viewcode-block" id="re_size"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size">[docs]</a><span class="k">def</span> <span class="nf">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="re_size"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.re_size">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    re-sizes image with nx x ny to nx/factor x ny/factor</span>
 <span class="sd">    :param image: 2d image with shape (nx,ny)</span>
@@ -237,7 +250,8 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;scaling with factor </span><span class="si">%s</span><span class="s2"> is not possible with grid size </span><span class="si">%s</span><span class="s2">, </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="rebin_image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_image">[docs]</a><span class="k">def</span> <span class="nf">rebin_image</span><span class="p">(</span><span class="n">bin_size</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">wht_map</span><span class="p">,</span> <span class="n">sigma_bkg</span><span class="p">,</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">):</span>
+<div class="viewcode-block" id="rebin_image"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_image">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">rebin_image</span><span class="p">(</span><span class="n">bin_size</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">wht_map</span><span class="p">,</span> <span class="n">sigma_bkg</span><span class="p">,</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF</span>
 <span class="sd">    :param bin_size: number of pixels (per axis) to merge</span>
@@ -261,7 +275,8 @@
     <span class="k">return</span> <span class="n">image_resized</span><span class="p">,</span> <span class="n">wht_map_resized</span><span class="p">,</span> <span class="n">sigma_bkg_resized</span><span class="p">,</span> <span class="n">ra_coords_resized</span><span class="p">,</span> <span class="n">dec_coords_resized</span><span class="p">,</span> <span class="n">idex_mask_resized</span></div>
 
 
-<div class="viewcode-block" id="rebin_coord_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_coord_transform">[docs]</a><span class="k">def</span> <span class="nf">rebin_coord_transform</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span><span class="p">):</span>
+<div class="viewcode-block" id="rebin_coord_transform"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.rebin_coord_transform">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">rebin_coord_transform</span><span class="p">(</span><span class="n">factor</span><span class="p">,</span> <span class="n">x_at_radec_0</span><span class="p">,</span> <span class="n">y_at_radec_0</span><span class="p">,</span> <span class="n">Mpix2coord</span><span class="p">,</span> <span class="n">Mcoord2pix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    adopt coordinate system and transformation between angular and pixel coordinates of a re-binned image</span>
 <span class="sd">    :param bin_size:</span>
@@ -282,7 +297,8 @@
     <span class="k">return</span> <span class="n">ra_at_xy_0_resized</span><span class="p">,</span> <span class="n">dec_at_xy_0_resized</span><span class="p">,</span> <span class="n">x_at_radec_0_resized</span><span class="p">,</span> <span class="n">y_at_radec_0_resized</span><span class="p">,</span> <span class="n">Mpix2coord_resized</span><span class="p">,</span> <span class="n">Mcoord2pix_resized</span></div>
 
 
-<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">wht_list</span><span class="p">,</span> <span class="n">sigma_list</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.stack_images">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">wht_list</span><span class="p">,</span> <span class="n">sigma_list</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    stacks images and saves new image as a fits file</span>
 <span class="sd">    :param image_name_list: list of image_names to be stacked</span>
@@ -301,7 +317,8 @@
     <span class="k">return</span> <span class="n">image_stacked</span><span class="p">,</span> <span class="n">wht_stacked</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_stacked</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="cut_edges"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.cut_edges">[docs]</a><span class="k">def</span> <span class="nf">cut_edges</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
+<div class="viewcode-block" id="cut_edges"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.cut_edges">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">cut_edges</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">numPix</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    cuts out the edges of a 2d image and returns re-sized image to numPix</span>
 <span class="sd">    center is well defined for odd pixel sizes.</span>
@@ -326,7 +343,8 @@
     <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">resized</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="radial_profile"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.radial_profile">[docs]</a><span class="k">def</span> <span class="nf">radial_profile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
+<div class="viewcode-block" id="radial_profile"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.radial_profile">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">radial_profile</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes radial profile</span>
 
@@ -344,7 +362,8 @@
     <span class="k">return</span> <span class="n">radialprofile</span></div>
 
 
-<div class="viewcode-block" id="gradient_map"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.gradient_map">[docs]</a><span class="k">def</span> <span class="nf">gradient_map</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+<div class="viewcode-block" id="gradient_map"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.image_util.gradient_map">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">gradient_map</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    computes gradients of images with the sobel transform</span>
 
@@ -385,7 +404,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

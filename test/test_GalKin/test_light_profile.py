@@ -7,6 +7,7 @@ import numpy as np
 from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 from lenstronomy.LightModel.light_model import LightModel
+from lenstronomy.GalKin import velocity_util
 
 
 class TestLightProfile(object):
@@ -32,7 +33,7 @@ class TestLightProfile(object):
 
     def test_draw_light_2d_linear(self):
         np.random.seed(41)
-        lightProfile = LightProfile(profile_list=['HERNQUIST'])
+        lightProfile = LightProfile(profile_list=['HERNQUIST'], interpol_grid_num=1000, max_interpolate=10, min_interpolate=0.01)
         kwargs_profile = [{'amp': 1., 'Rs': 0.8}]
         r_list = lightProfile.draw_light_2d_linear(kwargs_profile, n=100000)
         bins = np.linspace(0., 1, 20)
@@ -74,6 +75,34 @@ class TestLightProfile(object):
         hist /= np.sum(hist)
         print(light2d / hist)
         npt.assert_almost_equal(light2d[5] / hist[5], 1, decimal=1)
+        assert hasattr(lightProfile, '_kwargs_light_circularized')
+        lightProfile.delete_cache()
+        if hasattr(lightProfile, '_kwargs_light_circularized'):
+            assert False
+
+    def test_draw_light_3d(self):
+        lightProfile = LightProfile(profile_list=['HERNQUIST'], min_interpolate=0.0001, max_interpolate=100.)
+        kwargs_profile = [{'amp': 1., 'Rs': 0.5}]
+        r_list = lightProfile.draw_light_3d(kwargs_profile, n=100000, new_compute=False)
+        print(r_list, 'r_list')
+        # project it
+        R, x, y = velocity_util.project2d_random(r_list)
+        # test with draw light 2d profile routine
+
+        bins = np.linspace(0.1, 1, 10)
+        hist, bins_hist = np.histogram(r_list, bins=bins, density=True)
+        bins_plot = (bins_hist[1:] + bins_hist[:-1]) / 2.
+        light3d = lightProfile.light_3d(r=bins_plot, kwargs_list=kwargs_profile)
+        light3d *= bins_plot **2
+        light3d /= np.sum(light3d)
+        hist /= np.sum(hist)
+        #import matplotlib.pyplot as plt
+        #plt.plot(bins_plot , light3d/light3d[5], label='3d reference')
+        #plt.plot(bins_plot, hist / hist[5], label='hist')
+        #plt.legend()
+        #plt.show()
+        print(light3d / hist)
+        npt.assert_almost_equal(light3d[5] / hist[5], 1, decimal=1)
 
     def test_ellipticity_in_profiles(self):
         np.random.seed(41)

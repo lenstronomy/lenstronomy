@@ -18,6 +18,16 @@ Core lenstronomy methodology and software publications
     *This is the method paper lenstronomy is primary based on. Please cite this paper whenever you publish results with lenstronomy by using Shapelet basis sets and/or the PSO and MCMC chain.*
 
 
+Related software publications
+-----------------------------
+
+* A versatile tool for cluster lensing source reconstruction. I. methodology and illustration on sources in the Hubble Frontier Field Cluster MACS J0717.5+3745; `Yang et al. 2020a <https://arxiv.org/abs/2001.07719>`_
+    *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
+
+* SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
+    *This is the method paper presenting SLITromomy, an improved version of the SLIT algorithm fully implemented and compatible with lenstronomy.*
+
+
 Measuring the Hubble constant
 -----------------------------
 
@@ -54,6 +64,10 @@ Measuring the Hubble constant
 * TDCOSMO V: strategies for precise and accurate measurements of the Hubble constant with strong lensing `Birrer & Treu 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200806157B/abstract>`_
     *lenstronomy.Galkin for kinematics calculation that folds in the hierarchical analysis for a forecast for future Hubble constant constraints*
 
+* Large-Scale Gravitational Lens Modeling with Bayesian Neural Networks for Accurate and Precise Inference of the Hubble Constant `Park et al. 2020 <https://arxiv.org/abs/2012.00042>`_
+    *BBN lens model inference using lenstronomy through `baobab <https://github.com/jiwoncpark/baobab>`_ for training set generation.*
+
+
 
 
 Dark Matter substructure
@@ -86,21 +100,24 @@ Dark Matter substructure
 * Quantifying the Line-of-Sight Halo Contribution to the Dark Matter Convergence Power Spectrum from Strong Gravitational Lenses; `Sengul et al. 2020 <https://arxiv.org/abs/2006.07383>`_
     * *
 
-* Detecting Subhalos in Strong Gravitational Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06663>`_
+* Detecting Subhalos in Strong Gravitational Lens Images with Image Segmentation; `Ostdiek et al. 2020a <https://arxiv.org/abs/2009.06663>`_
     * *
 
-* Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020 <https://arxiv.org/abs/2009.06639>`_
+* Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
 
 
 Galaxy formation and evolution
 ------------------------------
 
-* Massive elliptical galaxies at z∼0.2 are well described by stars and a Navarro-Frenk-White dark matter halo; `Shajib et al. 2020 <https://arxiv.org/abs/2008.11724>`_
+* Massive elliptical galaxies at z∼0.2 are well described by stars and a Navarro-Frenk-White dark matter halo; `Shajib et al. 2020a <https://arxiv.org/abs/2008.11724>`_
     *Automatized modeling of 23 SLACS lenses with dolphin, a lenstronomy wrapper*
 
-* High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020 <https://arxiv.org/abs/2011.01971>`_
+* High-resolution imaging follow-up of doubly imaged quasars; `Shajib et al. 2020b <https://arxiv.org/abs/2011.01971>`_
     *Modeling of doubly lensed quasars from Keck Adaptive Optics data*
+
+* The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020b <https://arxiv.org/abs/2011.10059>`_
+    *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
 
 
 
@@ -112,6 +129,9 @@ Automatized Lens Modeling
 
 * Hierarchical Inference With Bayesian Neural Networks: An Application to Strong Gravitational Lensing; `Wagner-Carena et al. 2020 <https://arxiv.org/abs/2010.13787>`_
     *This work conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.*
+
+
+
 
 
 
@@ -131,7 +151,12 @@ Lensing of Gravitational Waves
     *A Python package designed to handle both strong and microlensing of compact binaries and the related gravitational-wave signals.*
 
 * Localizing merging black holes with sub-arcsecond precision using gravitational-wave lensing; `Hannuksela et al. 2020 <https://arxiv.org/abs/2004.13811v3>`_
-    *solving the lens equation with lenstronomy*
+    *solving the lens equation with lenstronomy using lensingGW*
+
+* Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
+    *lensing magnificatoin calculations*
+
+
 
 
 Theory papers
@@ -150,17 +175,23 @@ Theory papers
 Simulation products
 -------------------
 
-* The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. <https://arxiv.org/abs/2010.05926v1>`_
+* The LSST DESC DC2 Simulated Sky Survey; `LSST Dark Energy Science Collaboration et al. 2020 <https://arxiv.org/abs/2010.05926v1>`_
     *Strong lensing simulations produced by SLSprinkler utilizing lenstronomy functionalities*
 
-* The impact of mass map truncation on strong lensing simulations; `Van de Vyvere et al. <https://arxiv.org/abs/2010.13650>`_
+* The impact of mass map truncation on strong lensing simulations; `Van de Vyvere et al. 2020 <https://arxiv.org/abs/2010.13650>`_
     *Uses numerical integration to compute lensing quantities from projected mass maps from simulations.*
-
 
 
 
 Large scale structure
 ---------------------
 
-* Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. <https://arxiv.org/abs/2010.08680>`_
+* Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
+
+
+Others
+------
+
+* Predicting future astronomical events using deep learning; `Singh et al. <https://arxiv.org/abs/2012.15476>`_
+    *simulating strongly lensed galaxy merger pairs in time sequence*

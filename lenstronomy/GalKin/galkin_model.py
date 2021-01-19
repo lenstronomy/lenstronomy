@@ -77,7 +77,7 @@ class GalkinModel(object):
         :param r_eff: half-light radius in arc seconds
         :return: equation (10) >= 0 for physical interpretation
         """
-        dr = 0.01 # finite differential in radial direction
+        dr = 0.01  # finite differential in radial direction
         r_dr = r + dr
 
         sigmar2 = self.numerics.sigma_r2(r, kwargs_mass, kwargs_light, kwargs_anisotropy)

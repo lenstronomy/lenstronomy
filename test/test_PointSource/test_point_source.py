@@ -1,6 +1,7 @@
 import pytest
 import numpy as np
 import numpy.testing as npt
+import unittest
 
 from lenstronomy.PointSource.point_source import PointSource
 from lenstronomy.LensModel.lens_model import LensModel
@@ -21,7 +22,7 @@ class TestPointSource(object):
         self.PointSource = PointSource(point_source_type_list=['LENSED_POSITION', 'UNLENSED', 'SOURCE_POSITION'],
                                        lensModel=lensModel, fixed_magnification_list=[False]*3,
                                        additional_images_list=[False]*4, flux_from_point_source_list=[True, True, True])
-        self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos)},
+        self.kwargs_ps = [{'ra_image': self.x_pos, 'dec_image': self.y_pos, 'point_amp': np.ones_like(self.x_pos) * 2},
                           {'ra_image': [1.], 'dec_image': [1.], 'point_amp': [10]},
                           {'ra_source': self.sourcePos_x, 'dec_source': self.sourcePos_y, 'point_amp': np.ones_like(self.x_pos)}, {}]
 
@@ -44,6 +45,14 @@ class TestPointSource(object):
     def test_linear_response_set(self):
         ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
+        assert amp[0][0] == 1
+        assert n == num_basis
+        assert ra_pos[0][0] == self.x_pos[0]
+
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens,
+                                                                       with_amp=True)
+        num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
+        assert amp[0][0] != 1
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
 
@@ -78,9 +87,9 @@ class TestPointSource(object):
         npt.assert_almost_equal(x_image_list[0][-1], -0.82654997748011705 , decimal=8)
 
     def test_set_amplitudes(self):
-        amp_list = [np.ones_like(self.x_pos)*10, [100], np.ones_like(self.x_pos)*10]
+        amp_list = [np.ones_like(self.x_pos)*20, [100], np.ones_like(self.x_pos)*10]
         kwargs_out = self.PointSource.set_amplitudes(amp_list, self.kwargs_ps)
-        assert kwargs_out[0]['point_amp'][0] == 10* self.kwargs_ps[0]['point_amp'][0]
+        assert kwargs_out[0]['point_amp'][0] == 10 * self.kwargs_ps[0]['point_amp'][0]
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['point_amp'][3] == 10 * self.kwargs_ps[2]['point_amp'][3]
 
@@ -150,11 +159,22 @@ class TestPointSourceFixedMag(object):
         assert num_basis == 3
 
     def test_linear_response_set(self):
-        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens, with_amp=False)
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens,
+                                                                       with_amp=False)
         num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
         assert n == num_basis
         assert ra_pos[0][0] == self.x_pos[0]
         assert ra_pos[1][0] == 1
+        assert np.all(amp != 1)
+        npt.assert_almost_equal(ra_pos[2][0], self.x_pos[0], decimal=8)
+
+        ra_pos, dec_pos, amp, n = self.PointSource.linear_response_set(self.kwargs_ps, kwargs_lens=self.kwargs_lens,
+                                                                       with_amp=True)
+        num_basis = self.PointSource.num_basis(self.kwargs_ps, self.kwargs_lens)
+        assert n == num_basis
+        assert ra_pos[0][0] == self.x_pos[0]
+        assert ra_pos[1][0] == 1
+        assert np.all(amp != 1)
         npt.assert_almost_equal(ra_pos[2][0], self.x_pos[0], decimal=8)
 
     def test_point_source_list(self):
@@ -164,7 +184,12 @@ class TestPointSourceFixedMag(object):
 
     def test_check_image_positions(self):
         bool = self.PointSource.check_image_positions(self.kwargs_ps, self.kwargs_lens, tolerance=0.001)
-        assert bool == True
+        assert bool is True
+
+        # now we change the lens model to make the test fail
+        kwargs_lens = [{'theta_E': 2., 'center_x': 0, 'center_y': 0, 'e1': 0, 'e2': 0, 'gamma': 2}]
+        bool = self.PointSource.check_image_positions(self.kwargs_ps, kwargs_lens, tolerance=0.001)
+        assert bool is False
 
     def test_set_amplitudes(self):
         amp_list = [10, [100], 10]
@@ -173,30 +198,28 @@ class TestPointSourceFixedMag(object):
         assert kwargs_out[1]['point_amp'][0] == 10 * self.kwargs_ps[1]['point_amp'][0]
         assert kwargs_out[2]['source_amp'] == 10 * self.kwargs_ps[2]['source_amp']
 
+    def test_positive_flux(self):
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([1, -1])}])
+        assert bool is False
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': -1}])
+        assert bool is False
 
-class TestUtil(object):
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1])}])
+        assert bool is True
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1}])
+        assert bool is True
 
-    def setup(self):
-        pass
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': np.array([0, 1]), 'source_amp': 1}])
+        assert bool is True
+        bool = PointSource.check_positive_flux(kwargs_ps=[{'point_amp': 1, 'source_amp': -1}])
+        assert bool is False
 
-    def test_expand_t0_array(self):
-        from lenstronomy.PointSource import point_source_types
-        array = 1
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
 
-        array = [1]
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
-        assert array_out[1] == 0
+class TestRaise(unittest.TestCase):
 
-        array = [1, 1, 1]
-        num = 3
-        array_out = point_source_types._expand_to_array(array, num)
-        assert len(array_out) == num
-        assert array_out[1] == 1
+    def test_raise(self):
+        with self.assertRaises(ValueError):
+            PointSource(point_source_type_list=['BAD'])
 
 
 if __name__ == '__main__':

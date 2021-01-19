@@ -45,11 +45,13 @@ class Solver2Point(object):
 
     def constraint_lensmodel(self, x_pos, y_pos, kwargs_list, xtol=1.49012e-12):
         """
+        constrains lens model parameters by demanding the solution to match the image positions to a single source
+        position
 
         :param x_pos: list of image positions (x-axis)
         :param y_pos: list of image position (y-axis)
-        :param init: initial parameters
         :param kwargs_list: list of lens model kwargs
+        :param xtol: tolerance level of solution when to stop the non-linear solver
         :return: updated lens model that satisfies the lens equation for the point sources
         """
         kwargs = copy.deepcopy(kwargs_list)
@@ -83,7 +85,8 @@ class Solver2Point(object):
         y[1] = beta_y[0] - beta_y[1]
         return y - a
 
-    def _subtract_constraint(self, x_sub, y_sub):
+    @staticmethod
+    def _subtract_constraint(x_sub, y_sub):
         """
 
         :param x_pos:
@@ -139,6 +142,7 @@ class Solver2Point(object):
     def _extract_array(self, kwargs_list):
         """
         inverse of _update_kwargs
+
         :param kwargs_list:
         :return:
         """

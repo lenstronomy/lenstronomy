@@ -5,6 +5,7 @@ import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.Util.util import make_grid
 import unittest
 
 
@@ -131,6 +132,27 @@ class TestLensModel(object):
         curl = lensModel.curl(x=1, y=1, kwargs=kwargs)
         assert curl != 0
 
+    def test_hessian_differentials(self):
+        """
+        routine to test the private numerical differentials, both cross and square methods in the infinitesimal regime
+        """
+        lens_model = LensModel(lens_model_list=['SIS'])
+        kwargs = [{'theta_E': 1, 'center_x': 0.01, 'center_y': 0}]
+        x, y = make_grid(numPix=10, deltapix=0.2)
+        diff = 0.0000001
+        f_xx_sq, f_xy_sq, f_yx_sq, f_yy_sq = lens_model.hessian(x, y, kwargs, diff=diff, diff_method='square')
+        f_xx_cr, f_xy_cr, f_yx_cr, f_yy_cr = lens_model.hessian(x, y, kwargs, diff=diff, diff_method='cross')
+        f_xx, f_xy, f_yx, f_yy = lens_model.hessian(x, y, kwargs, diff=None)
+        npt.assert_almost_equal(f_xx_cr, f_xx, decimal=5)
+        npt.assert_almost_equal(f_xy_cr, f_xy, decimal=5)
+        npt.assert_almost_equal(f_yx_cr, f_yx, decimal=5)
+        npt.assert_almost_equal(f_yy_cr, f_yy, decimal=5)
+
+        npt.assert_almost_equal(f_xx_sq, f_xx, decimal=5)
+        npt.assert_almost_equal(f_xy_sq, f_xy, decimal=5)
+        npt.assert_almost_equal(f_yx_sq, f_yx, decimal=5)
+        npt.assert_almost_equal(f_yy_sq, f_yy, decimal=5)
+
 
 class TestRaise(unittest.TestCase):
 
@@ -153,6 +175,10 @@ class TestRaise(unittest.TestCase):
                                   z_source=z_source)
             kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
             fermat_pot = lensModel.fermat_potential(x_image, y_image, kwargs)
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(lens_model_list=['SIS'])
+            kwargs = [{'theta_E': 1., 'center_x': 0., 'center_y': 0.}]
+            lens_model.hessian(0, 0, kwargs, diff=0.001, diff_method='bad')
 
 
 if __name__ == '__main__':

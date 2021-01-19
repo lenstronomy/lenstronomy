@@ -20,10 +20,7 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     M = A.T.dot(np.multiply(C_D_inv, A.T).T)
     if inv_bool:
         if np.linalg.cond(M) < 5/sys.float_info.epsilon:
-            try:
-                M_inv = np.linalg.inv(M)
-            except:
-                M_inv = np.zeros_like(M)
+            M_inv = _stable_inv(M)
         else:
             M_inv = np.zeros_like(M)
         R = A.T.dot(np.multiply(C_D_inv, d))
@@ -31,10 +28,11 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
     else:
         if np.linalg.cond(M) < 5/sys.float_info.epsilon:
             R = A.T.dot(np.multiply(C_D_inv, d))
-            try:
-                B = np.linalg.solve(M, R).T
-            except:
-                B = np.zeros(len(A.T))
+            B = _solve_stable(M, R)
+            #try:
+            #    B = np.linalg.solve(M, R).T
+            #except:
+            #    B = np.zeros(len(A.T))
         else:
             B = np.zeros(len(A.T))
         M_inv = None
@@ -76,3 +74,32 @@ def marginalization_new(M_inv, d_prior=None):
         return -10**15
     m = len(v)
     return log_det / 2 + m/2. * np.log(np.pi/2.) - m * np.log(d_prior)
+
+
+def _stable_inv(m):
+    """
+    stable linear inversion
+
+    :param m: square matrix to be inverted
+    :return: inverse of M (or zeros)
+    """
+    try:
+        m_inv = np.linalg.inv(m)
+    except:
+        m_inv = np.zeros_like(m)
+    return m_inv
+
+
+def _solve_stable(m, r):
+    """
+
+    :param m: matrix
+    :param r: vector
+    :return: solution for B = M x R
+    """
+    try:
+        b = np.linalg.solve(m, r).T
+    except:
+        n = np.shape(m)[0]
+        b = np.zeros(n)
+    return b

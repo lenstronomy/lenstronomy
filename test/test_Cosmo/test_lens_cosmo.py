@@ -103,5 +103,11 @@ class TestLensCosmo(object):
         npt.assert_almost_equal(mcheck, m_log10, decimal=4)
         npt.assert_almost_equal(Mcheck, M_log10, decimal=4)
 
+    def test_a_z(self):
+
+        a = self.lensCosmo.a_z(z=1)
+        npt.assert_almost_equal(a, 0.5)
+
+
 if __name__ == '__main__':
     pytest.main()

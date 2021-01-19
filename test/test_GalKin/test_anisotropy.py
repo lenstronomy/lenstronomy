@@ -130,6 +130,13 @@ class TestAnisotropy(object):
         K_gom = gom.K(r, R, **kwargs_gom)
         K_om = om.K(r, R, **kwargs_om)
         npt.assert_almost_equal(K_gom, K_om, decimal=3)
+        assert hasattr(gom._model, '_f_12_interp')
+        assert hasattr(gom._model, '_f_32_interp')
+        gom.delete_anisotropy_cache()
+        if hasattr(gom._model, '_f_12_interp'):
+            assert False
+        if hasattr(gom._model, '_f_32_interp'):
+            assert False
 
         from lenstronomy.GalKin.anisotropy import GeneralizedOM
         gom_class = GeneralizedOM()

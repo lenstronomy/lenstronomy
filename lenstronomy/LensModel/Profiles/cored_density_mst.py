@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
 from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
+from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 
 __all__ = ['CoredDensityMST']
@@ -25,6 +26,8 @@ class CoredDensityMST(LensProfileBase):
             self._profile = CoredDensity()
         elif profile_type == 'CORED_DENSITY_2':
             self._profile = CoredDensity2()
+        elif profile_type == 'CORED_DENSITY_EXP':
+            self._profile = CoredDensityExp()
         else:
             raise ValueError('profile_type %s not supported for CoredDensityMST instance.' % profile_type)
         self._convergence = Convergence()

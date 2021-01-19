@@ -255,9 +255,6 @@ class ProfileListBase(object):
         elif lens_type == 'ULDM':
             from lenstronomy.LensModel.Profiles.uldm import Uldm
             return Uldm()
-        elif lens_type == 'ElliSLICE':
-            from lenstronomy.LensModel.Profiles.elliptical_density_slice import ElliSLICE
-            return ElliSLICE()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

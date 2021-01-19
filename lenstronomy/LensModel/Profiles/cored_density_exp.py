@@ -144,7 +144,7 @@ class CoredDensityExp(LensProfileBase):
         expFactor = np.exp( - (R/theta_c)**2)
         return kappa_0  * expFactor
 
-    def density_2d(self, x, y, kappa_0, theta_c):
+    def density_2d(self, x, y, kappa_0, theta_c, center_x = 0, center_y = 0):
         """
         projected two dimensional ULDM profile (convergence * \Sigma_crit), but given our
         units convention for rho0, it is basically the convergence
@@ -192,5 +192,5 @@ class CoredDensityExp(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :return: M_2D (ULDM only)
         """
-        return self.alpha_radial(R, kappa_0, theta_c) * np.pi * r
+        return self.alpha_radial(R, kappa_0, theta_c) * np.pi * R
 

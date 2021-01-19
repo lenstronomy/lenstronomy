@@ -239,29 +239,30 @@ class LensCosmo(object):
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E
 
-    def ULDM_angular2phys(self, kappa_0, theta_c):
+    def uldm_angular2phys(self, kappa_0, theta_c):
         """
-        converts the anguar parameters entering the Uldm() (Ultra Light Dark Matter) class in physical masses, i.e. the total soliton mass and the mass of the particle
+        converts the anguar parameters entering the LensModel Uldm() (Ultra Light
+        Dark Matter) class in physical masses, i.e. the total soliton mass and the
+        mass of the particle
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcseconds)
-        :return: m_eV_log10, M_sol_log10, the exponents of 10 of the masses, m in electronvolt and M in M_sun
+        :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun
         """
         D_Lens = self.dd * 10**6 # in parsec
         Sigma_c = self.sigma_crit * 10**(-12) # in M_sun / parsec^2
         r_c = theta_c * const.arcsec * D_Lens
         rho0 = 2048 * np.sqrt(0.091) * kappa_0 * Sigma_c / (429 * np.pi * r_c)
-        m = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
-        M = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m + 22)
-        return m, M
+        m_log10 = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
+        M_log10 = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m + 22)
+        return m_log10, M_log10
 
-    def ULDM_mPhys2angular(self, m_log10, M_log10):
+    def uldm_mphys2angular(self, m_log10, M_log10):
         """
-        converts physical ULDM mass in the ones, in angular units, that enter the Uldm() class, which are:
-        m_noCosmo_log10: it is \log_10 (m \sqrt{\Sigma_crit D_lens^3} ), m in eV, \Sigma_crit in M_sun / pc^2, D_lens in pc
-        M_noCosmo_log10: it is \log_10 ( M/(D_lens^2 \Sigma_crit) ), M in M_sun, \Sigma_crit in M_sun / pc^2, D_lens in pc)
+        converts physical ULDM mass in the ones, in angular units, that enter
+        the LensModel Uldm() class
         :param m_log10: exponent of ULDM mass in eV
         :param M_log10: exponent of soliton mass in M_sun
-        :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds) respectively
+        :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)
         """
         D_Lens = self.dd * 10**6 # in parsec
         Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/parsec^2

@@ -10,8 +10,15 @@ __all__ = ['ULDM']
 
 class Uldm(LensProfileBase):
     """
-    This class contains functions concerning the ULDM soliton density profile, whose good approximation is
-    \rho = \rho_0 (1 + 0.091(r/r_core)^2)^-8
+    This class contains functions concerning the ULDM soliton density profile,
+    whose good approximation is (see for example https://arxiv.org/pdf/1406.6586.pdf )
+
+    .. math::
+
+        \rho = \rho_0 (1 + 0.091(r/r_c)^2)^{-8}
+
+    where :math:`r_c` is the core radius, corresponding to the radius where the
+    density drops by half its central value
     it has, as parameters:
     :param kappa_0: central convergence
     :param theta_c: core radius (in arcseconds)
@@ -22,7 +29,7 @@ class Uldm(LensProfileBase):
     lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'kappa_0': 1., 'theta_c': 100, 'center_x': 100, 'center_y': 100}
 
-    def rhoTilde(self, kappa_0, theta_c):
+    def rhotilde(self, kappa_0, theta_c):
         """
         Computes the central density in angular units
         :param kappa_0: central convergence of profile
@@ -34,8 +41,12 @@ class Uldm(LensProfileBase):
 
     def lensing_Integral(self, x):
         """
-        The analitic result of the integral entering the computation of the lensing potential, that is
-        \int dy/y (1 - (1 + y^2)^(-13/2))
+        The analitic result of the integral entering the computation of the
+        lensing potential, that is
+        ..math::
+
+            \int dy/y (1 - (1 + y^2)^{-13/2})
+
         :param x: evaluation point of the integral
         :return: result of the antiderivative in x
         """
@@ -120,19 +131,21 @@ class Uldm(LensProfileBase):
 
     def density(self, R, kappa_0, theta_c):
         """
-        three dimensional ULDM profile in angular units (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        three dimensional ULDM profile in angular units
+        (rho0_physical = rho0_angular \Sigma_crit / D_lens)
         :param R: radius of interest
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
         :return: rho(R) density in angular units
         """
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
+        rhotilde = self.rhotilde(kappa_0, theta_c)
         return rhotilde/(1 + 0.091* (R/theta_c)**2)**8
 
     def density_lens(self, r, kappa_0, theta_c):
         """
         computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
+        The integral in the LOS projection of this quantity results in the
+        convergence quantity.
 
         :param r: 3d radius
         :param kappa_0: central convergence of profile
@@ -140,7 +153,7 @@ class Uldm(LensProfileBase):
         :return: density rho(r)
         """
         return self.density(r, kappa_0, theta_c)
-        
+
     def kappa_r(self, R, kappa_0, theta_c):
         """
         convergence of the cored density profile. This routine is also for testing
@@ -155,8 +168,8 @@ class Uldm(LensProfileBase):
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
         """
-        projected two dimensional ULDM profile (convergence * \Sigma_crit), but given our
-        units convention for rho0, it is basically the convergence
+        projected two dimensional ULDM profile (convergence * \Sigma_crit), but
+        given our units convention for rho0, it is basically the convergence
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -186,8 +199,9 @@ class Uldm(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :return: mass of soliton in angular units
         """
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
-        m_3d = 4. * np.pi * rhotilde * theta_c**3 / (0.091)**(1.5) * (self.mass_Integral(R/theta_c * np.sqrt(0.091)) - self.mass_Integral(0) )
+        rhotilde = self.rhotilde(kappa_0, theta_c)
+        prefactor = 4. * np.pi * rhotilde * theta_c**3 / (0.091)**(1.5)
+        m_3d = prefactor * (self.mass_Integral(R/theta_c * np.sqrt(0.091)) - self.mass_Integral(0) )
         return m_3d
 
     def mass_3d_lens(self, r, kappa_0, theta_c):

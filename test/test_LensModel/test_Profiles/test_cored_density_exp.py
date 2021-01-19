@@ -24,9 +24,22 @@ class TestCoredDensityExp(object):
         f_x_num = (f_d - f_) / delta
         f_x, _ = self.model.derivatives(r, 0, kappa_0, theta_c)
         npt.assert_almost_equal(f_x_num, f_x, decimal=3)
+        # Try MSD limit
+        theta_c_large = 13
+        f_reference = self.model.function(0, 0, kappa_0, theta_c_large)
+        f_large = self.model.function(r, 0, kappa_0, theta_c_large)
+        f_MSD = 0.5* kappa_0 * r**2
+        npt.assert_almost_equal(f_large - f_reference, f_MSD, decimal=3)
 
     def test_derivatives(self):
-        pass
+        x = 0.5
+        y = 0.8
+        r = np.sqrt(x**2 + y**2)
+        kappa_0, theta_c = 0.2, 9 # Trying MSD limit
+        f_x, f_y = self.model.derivatives( x, y, kappa_0, theta_c)
+        alpha_MSD = kappa_0 * r
+        npt.assert_almost_equal(f_x, alpha_MSD * x/r, decimal=3)
+        npt.assert_almost_equal(f_y, alpha_MSD * y/r, decimal=3)
 
     def test_hessian(self):
         x = np.linspace(start=0.01, stop=100, num=100)

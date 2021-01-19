@@ -15,9 +15,9 @@ class CoredDensityExp(LensProfileBase):
     _s = 0.000001  # numerical limit for minimal radius
     param_names = ['kappa_0', 'theta_c', 'center_x', 'center_y']
     lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'center_x': -100, 'center_y': -100 }
-    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'theta_E': 100, 'center_x': 100, 'center_y': 100 }
+    upper_limit_default = {'kappa_0': 10, 'theta_c': 100, 'center_x': 100, 'center_y': 100 }
 
-    def rhoTilde(self, kappa_0, theta_c):
+    def rhotilde(self, kappa_0, theta_c):
         """
         Computes the central density in angular units
         :param kappa_0: central convergence of profile
@@ -58,7 +58,8 @@ class CoredDensityExp(LensProfileBase):
 
     def derivatives(self, x, y, kappa_0, theta_c, center_x=0, center_y=0):
         """
-        returns df/dx and df/dy of the function (lensing potential), which are the deflection angles
+        returns df/dx and df/dy of the function (lensing potential), which are
+        the deflection angles
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -101,7 +102,8 @@ class CoredDensityExp(LensProfileBase):
 
     def density(self, R, kappa_0, theta_c):
         """
-        three dimensional density profile in angular units (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        three dimensional density profile in angular units
+        (rho0_physical = rho0_angular \Sigma_crit / D_lens)
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -109,7 +111,7 @@ class CoredDensityExp(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :return: rho(R) density
         """
-        rhotilde = self.rhoTilde(kappa_0, theta_c)
+        rhotilde = self.rhotilde(kappa_0, theta_c)
         return rhotilde * np.exp( -(R/theta_c)**2)
 
     def density_lens(self, r, kappa_0, theta_c):

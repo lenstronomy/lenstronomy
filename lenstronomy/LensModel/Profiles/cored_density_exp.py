@@ -6,7 +6,7 @@ from scipy.special import exp1, erf
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.constants as const
 
-__all__ = ['CORED_DENSITY_EXP']
+__all__ = ['CoredDensityExp']
 
 class CoredDensityExp(LensProfileBase):
     """

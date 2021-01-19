@@ -253,7 +253,7 @@ class LensCosmo(object):
         r_c = theta_c * const.arcsec * D_Lens
         rho0 = 2048 * np.sqrt(0.091) * kappa_0 * Sigma_c / (429 * np.pi * r_c)
         m_log10 = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
-        M_log10 = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m + 22)
+        M_log10 = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m_log10 + 22)
         return m_log10, M_log10
 
     def uldm_mphys2angular(self, m_log10, M_log10):

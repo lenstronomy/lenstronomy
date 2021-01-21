@@ -33,8 +33,10 @@ Contributors (alphabetic)
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
+* Luca Teodori `lucateo <https://github.com/lucateo/>`_
 * Nicolas Tessore `ntessore <https://github.com/ntessore/>`_
 * Madison Ueland `mueland <https://github.com/mueland/>`_
 * Lyne Van de Vyvere `LyneVdV <https://github.com/LyneVdV/>`_
 * Cyril Welschen
+* Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_

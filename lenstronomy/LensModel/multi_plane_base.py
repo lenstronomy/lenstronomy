@@ -12,19 +12,20 @@ class MultiPlaneBase(ProfileListBase):
     Multi-plane lensing class
 
     The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the
-    sourde redshift of the class instance.
+    source redshift of the class instance.
     """
 
-    def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None, numerical_alpha_class=None):
+    def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
+                 numerical_alpha_class=None):
         """
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        (see documentation in Profiles/numerical_alpha)
+         (see documentation in Profiles/numerical_alpha)
 
         """
         self._cosmo_bkg = Background(cosmo)
@@ -40,7 +41,8 @@ class MultiPlaneBase(ProfileListBase):
 
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                       lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
+                                             lens_redshift_list=lens_redshift_list,
+                                             z_source_convention=z_source_convention)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
@@ -67,8 +69,8 @@ class MultiPlaneBase(ProfileListBase):
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=False, T_ij_start=None, T_ij_end=None):
         """
-        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop
+        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y)
+        at redshift z_start and then backwards to redshift z_stop
 
         :param x: co-moving position [Mpc]
         :param y: co-moving position [Mpc]
@@ -129,6 +131,8 @@ class MultiPlaneBase(ProfileListBase):
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
+        :param include_z_start: boolean, if True includes the computation of the starting position if the first
+         deflector is at z_start
         :return: T_ij_start, T_ij_end
         """
         z_lens_last = z_start
@@ -143,79 +147,6 @@ class MultiPlaneBase(ProfileListBase):
                 z_lens_last = z_lens
         T_ij_end = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         return T_ij_start, T_ij_end
-
-    def ray_shooting_partial_steps(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False):
-        """
-        ray-tracing through parts of the coin, starting with (x,y) and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop.
-
-        This function differs from 'ray_shooting_partial' in that it returns the angular position of the ray
-        at each lens plane.
-
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
-        :param alpha_x: ray angle at z_start [arcsec]
-        :param alpha_y: ray angle at z_start [arcsec]
-        :param z_start: redshift of start of computation
-        :param z_stop: redshift where output is computed
-        :param kwargs_lens: lens model keyword argument list
-        :param keep_range: bool, if True, only computes the angular diameter ratio between the first and last step once
-        :param check_convention: flag to check the image position convention (leave this alone)
-        :return: co-moving position and angles at redshift z_stop
-        """
-        z_lens_last = z_start
-        first_deflector = True
-
-        pos_x, pos_y, redshifts, Tz_list = [], [], [], []
-        pos_x.append(x)
-        pos_y.append(y)
-        redshifts.append(z_start)
-        Tz_list.append(self._cosmo_bkg.T_xy(0, z_start))
-
-        current_z = z_lens_last
-
-        for i, idex in enumerate(self._sorted_redshift_index):
-
-            z_lens = self._lens_redshift_list[idex]
-
-            if self._start_condition(include_z_start,z_lens,z_start) and z_lens <= z_stop:
-
-                if z_lens != current_z:
-                    new_plane = True
-                    current_z = z_lens
-
-                else:
-                    new_plane = False
-
-                if first_deflector is True:
-                    delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
-
-                    first_deflector = False
-                else:
-                    delta_T = self._T_ij_list[i]
-                x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-                alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-                z_lens_last = z_lens
-
-                if new_plane:
-
-                    pos_x.append(x)
-                    pos_y.append(y)
-                    redshifts.append(z_lens)
-                    Tz_list.append(self._T_z_list[i])
-
-        delta_T = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
-
-        x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
-
-        pos_x.append(x)
-        pos_y.append(y)
-        redshifts.append(z_stop)
-        T_z_source = self._cosmo_bkg.T_xy(0, z_stop)
-        Tz_list.append(T_z_source)
-
-        return pos_x, pos_y, redshifts, Tz_list
 
     def geo_shapiro_delay(self, theta_x, theta_y, kwargs_lens, z_stop, T_z_stop=None, T_ij_end=None):
         """
@@ -277,7 +208,7 @@ class MultiPlaneBase(ProfileListBase):
         """
 
         :param redshift_list: list of redshifts
-        :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
+        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
         #sort_index = np.argsort(redshift_list[redshift_list < z_source])
@@ -291,8 +222,7 @@ class MultiPlaneBase(ProfileListBase):
         alpha_reduced = D_ds/Ds alpha_physical
 
         :param alpha_reduced: reduced deflection angle
-        :param z_lens: lens redshift
-        :param z_source: source redshift
+        :param index_lens: integer, index of the deflector plane
         :return: physical deflection angle
         """
         factor = self._reduced2physical_factor[index_lens]
@@ -413,6 +343,13 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _start_condition(inclusive, z_lens, z_start):
+        """
+
+        :param inclusive: boolean, if True selects z_lens including z_start, else only selects z_lens > z_start
+        :param z_lens: deflector redshift
+        :param z_start: starting redshift (lowest redshift)
+        :return: boolean of condition
+        """
 
         if inclusive:
             return z_lens >= z_start

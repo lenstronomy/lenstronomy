@@ -63,6 +63,12 @@ class TestGalkin(object):
             npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)
 
     def test_log_vs_linear_integral(self):
+        """
+        here we test logarithmic vs linear integral in an end-to-end fashion.
+        We do not demand the highest level of precsions here!!!
+        We are using the luminosity-weighted velocitydispersion integration calculation in this test.
+        """
+
         # light profile
         light_profile_list = ['HERNQUIST']
         Rs = .5
@@ -88,9 +94,9 @@ class TestGalkin(object):
         psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics_log = {'interpol_grid_num': 500, 'log_integration': True,
-                           'max_integrate': 10}
+                           'max_integrate': 10, 'lum_weight_int_method': True}
         kwargs_numerics_linear = {'interpol_grid_num': 500, 'log_integration': False,
-                           'max_integrate': 10}
+                           'max_integrate': 10, 'lum_weight_int_method': True}
         kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         kwargs_model = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list,

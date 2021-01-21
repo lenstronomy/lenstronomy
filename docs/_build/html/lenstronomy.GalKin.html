@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin package &#8212; lenstronomy 1.6.0 documentation</title>
+    <title>lenstronomy.GalKin package &#8212; lenstronomy 1.7.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -247,57 +247,6 @@ d ln(f)/ d ln(r) = 2 beta(r)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.GalKin.anisotropy.Colin">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Colin</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for stellar orbits anisotropy parameter based on Colin et al. (2000)
-See Mamon &amp; Lokas 2005 for details</p>
-<dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.Colin.K">
-<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin.K" title="Permalink to this definition">¶</a></dt>
-<dd><p>equation A16 im Mamon &amp; Lokas for Osipkov&amp;Merrit anisotropy</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>R</strong> – projected 2d radius</li>
-<li><strong>r_ani</strong> – anisotropy radius</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="lenstronomy.GalKin.anisotropy.Colin.beta_r">
-<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin.beta_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>anisotropy as a function of radius</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>r_ani</strong> – anisotropy radius</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">beta</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
 <dt id="lenstronomy.GalKin.anisotropy.Const">
 <em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Const</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Const"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Const" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -358,6 +307,216 @@ d ln(f)/ d ln(r) = 2 beta(r)</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> – 3d radius</li>
 <li><strong>beta</strong> – anisotropy</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">beta</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.GalKin.anisotropy.Isotropic">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Isotropic</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for isotropic (beta=0) stellar orbits
+See Mamon &amp; Lokas 2005 for details</p>
+<dl class="staticmethod">
+<dt id="lenstronomy.GalKin.anisotropy.Isotropic.K">
+<em class="property">static </em><code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.K" title="Permalink to this definition">¶</a></dt>
+<dd><p>equation A16 im Mamon &amp; Lokas for constant anisotropy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>R</strong> – projected 2d radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.GalKin.anisotropy.Isotropic.anisotropy_solution">
+<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>the solution to
+d ln(f)/ d ln(r) = 2 beta(r)
+See e.g. A3 in Mamon &amp; Lokas</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>kwargs</strong> – parameters of the specified anisotropy model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.GalKin.anisotropy.Isotropic.beta_r">
+<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.beta_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>anisotropy as a function of radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>r</strong> – 3d radius</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">beta</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.GalKin.anisotropy.Radial">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Radial</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for radial (beta=1) stellar orbits
+See Mamon &amp; Lokas 2005 for details</p>
+<dl class="method">
+<dt id="lenstronomy.GalKin.anisotropy.Radial.K">
+<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.K" title="Permalink to this definition">¶</a></dt>
+<dd><p>equation A16 im Mamon &amp; Lokas for constant anisotropy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>R</strong> – projected 2d radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.GalKin.anisotropy.Radial.anisotropy_solution">
+<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>the solution to
+d ln(f)/ d ln(r) = 2 beta(r)
+See e.g. A4 in Mamon &amp; Lokas</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>kwargs</strong> – parameters of the specified anisotropy model</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.GalKin.anisotropy.Radial.beta_r">
+<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.beta_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>anisotropy as a function of radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>r</strong> – 3d radius</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">beta</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">OsipkovMerritt</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for Osipkov&amp;Merrit stellar orbits
+See Mamon &amp; Lokas 2005 for details</p>
+<dl class="method">
+<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.K">
+<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.K" title="Permalink to this definition">¶</a></dt>
+<dd><p>equation A16 im Mamon &amp; Lokas for Osipkov&amp;Merrit anisotropy</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>R</strong> – projected 2d radius</li>
+<li><strong>r_ani</strong> – anisotropy radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.anisotropy_solution">
+<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
+<dd><p>the solution to
+d ln(f)/ d ln(r) = 2 beta(r)
+See e.g. A5 in Mamon &amp; Lokas</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>r_ani</strong> – anisotropy radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.beta_r">
+<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.beta_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>anisotropy as a function of radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>r_ani</strong> – anisotropy radius</li>
 </ul>
 </td>
 </tr>
@@ -464,82 +623,14 @@ See e.g. A5 in Mamon &amp; Lokas with a scaling (nominator of Agnello et al. 201
 </dd></dl>
 
 <dl class="class">
-<dt id="lenstronomy.GalKin.anisotropy.Isotropic">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Isotropic</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.anisotropy.Colin">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Colin</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for isotropic (beta=0) stellar orbits
-See Mamon &amp; Lokas 2005 for details</p>
-<dl class="staticmethod">
-<dt id="lenstronomy.GalKin.anisotropy.Isotropic.K">
-<em class="property">static </em><code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.K" title="Permalink to this definition">¶</a></dt>
-<dd><p>equation A16 im Mamon &amp; Lokas for constant anisotropy</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>R</strong> – projected 2d radius</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.Isotropic.anisotropy_solution">
-<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>the solution to
-d ln(f)/ d ln(r) = 2 beta(r)
-See e.g. A3 in Mamon &amp; Lokas</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>kwargs</strong> – parameters of the specified anisotropy model</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="lenstronomy.GalKin.anisotropy.Isotropic.beta_r">
-<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Isotropic.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Isotropic.beta_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>anisotropy as a function of radius</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>r</strong> – 3d radius</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">beta</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">OsipkovMerritt</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for Osipkov&amp;Merrit stellar orbits
+<p>class for stellar orbits anisotropy parameter based on Colin et al. (2000)
 See Mamon &amp; Lokas 2005 for details</p>
 <dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.K">
-<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.K" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.anisotropy.Colin.K">
+<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin.K" title="Permalink to this definition">¶</a></dt>
 <dd><p>equation A16 im Mamon &amp; Lokas for Osipkov&amp;Merrit anisotropy</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -559,32 +650,9 @@ See Mamon &amp; Lokas 2005 for details</p>
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.anisotropy_solution">
-<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>the solution to
-d ln(f)/ d ln(r) = 2 beta(r)
-See e.g. A5 in Mamon &amp; Lokas</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>r_ani</strong> – anisotropy radius</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="staticmethod">
-<dt id="lenstronomy.GalKin.anisotropy.OsipkovMerritt.beta_r">
-<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#OsipkovMerritt.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.OsipkovMerritt.beta_r" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.GalKin.anisotropy.Colin.beta_r">
+<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em>, <em>r_ani</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Colin.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Colin.beta_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>anisotropy as a function of radius</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -598,74 +666,6 @@ See e.g. A5 in Mamon &amp; Lokas</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">beta</p>
 </td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="lenstronomy.GalKin.anisotropy.Radial">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.anisotropy.</code><code class="descname">Radial</code><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for radial (beta=1) stellar orbits
-See Mamon &amp; Lokas 2005 for details</p>
-<dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.Radial.K">
-<code class="descname">K</code><span class="sig-paren">(</span><em>r</em>, <em>R</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.K"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.K" title="Permalink to this definition">¶</a></dt>
-<dd><p>equation A16 im Mamon &amp; Lokas for constant anisotropy</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>R</strong> – projected 2d radius</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">K(r, R)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.GalKin.anisotropy.Radial.anisotropy_solution">
-<code class="descname">anisotropy_solution</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.anisotropy_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.anisotropy_solution" title="Permalink to this definition">¶</a></dt>
-<dd><p>the solution to
-d ln(f)/ d ln(r) = 2 beta(r)
-See e.g. A4 in Mamon &amp; Lokas</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – 3d radius</li>
-<li><strong>kwargs</strong> – parameters of the specified anisotropy model</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">f(r)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="lenstronomy.GalKin.anisotropy.Radial.beta_r">
-<em class="property">static </em><code class="descname">beta_r</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/anisotropy.html#Radial.beta_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.anisotropy.Radial.beta_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>anisotropy as a function of radius</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>r</strong> – 3d radius</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">beta</td>
 </tr>
 </tbody>
 </table>
@@ -712,6 +712,65 @@ See e.g. A4 in Mamon &amp; Lokas</p>
 <div class="section" id="module-lenstronomy.GalKin.aperture_types">
 <span id="lenstronomy-galkin-aperture-types-module"></span><h2>lenstronomy.GalKin.aperture_types module<a class="headerlink" href="#module-lenstronomy.GalKin.aperture_types" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
+<dt id="lenstronomy.GalKin.aperture_types.Slit">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">Slit</code><span class="sig-paren">(</span><em>length</em>, <em>width</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#Slit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Slit aperture description</p>
+<dl class="method">
+<dt id="lenstronomy.GalKin.aperture_types.Slit.aperture_select">
+<code class="descname">aperture_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#Slit.aperture_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit.aperture_select" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – angular coordinate of photon/ray</li>
+<li><strong>dec</strong> – angular coordinate of photon/ray</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.GalKin.aperture_types.Slit.num_segments">
+<code class="descname">num_segments</code><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit.num_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of segments with separate measurements of the velocity dispersion
+:return: int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.GalKin.aperture_types.slit_select">
+<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">slit_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>length</em>, <em>width</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#slit_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.slit_select" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – angular coordinate of photon/ray</li>
+<li><strong>dec</strong> – angular coordinate of photon/ray</li>
+<li><strong>length</strong> – length of slit</li>
+<li><strong>width</strong> – width of slit</li>
+<li><strong>center_ra</strong> – center of slit</li>
+<li><strong>center_dec</strong> – center of slit</li>
+<li><strong>angle</strong> – orientation angle of slit, angle=0 corresponds length in RA direction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
 <dt id="lenstronomy.GalKin.aperture_types.Frame">
 <em class="property">class </em><code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">Frame</code><span class="sig-paren">(</span><em>width_outer</em>, <em>width_inner</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#Frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Frame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -745,14 +804,9 @@ See e.g. A4 in Mamon &amp; Lokas</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.GalKin.aperture_types.IFUShells">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">IFUShells</code><span class="sig-paren">(</span><em>r_bins</em>, <em>center_ra=0</em>, <em>center_dec=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#IFUShells"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured</p>
-<dl class="method">
-<dt id="lenstronomy.GalKin.aperture_types.IFUShells.aperture_select">
-<code class="descname">aperture_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#IFUShells.aperture_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells.aperture_select" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="lenstronomy.GalKin.aperture_types.frame_select">
+<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">frame_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>width_outer</em>, <em>width_inner</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#frame_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.frame_select" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -760,23 +814,19 @@ See e.g. A4 in Mamon &amp; Lokas</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ra</strong> – angular coordinate of photon/ray</li>
 <li><strong>dec</strong> – angular coordinate of photon/ray</li>
+<li><strong>width_outer</strong> – width of box to the outer parts</li>
+<li><strong>width_inner</strong> – width of inner removed box</li>
+<li><strong>center_ra</strong> – center of slit</li>
+<li><strong>center_dec</strong> – center of slit</li>
+<li><strong>angle</strong> – orientation angle of slit, angle=0 corresponds length in RA direction</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise, index of shell</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the box with a hole, False otherwise</p>
 </td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.GalKin.aperture_types.IFUShells.num_segments">
-<code class="descname">num_segments</code><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells.num_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of segments with separate measurements of the velocity dispersion
-:return: int</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -813,89 +863,6 @@ See e.g. A4 in Mamon &amp; Lokas</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.GalKin.aperture_types.Slit">
-<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">Slit</code><span class="sig-paren">(</span><em>length</em>, <em>width</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#Slit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Slit aperture description</p>
-<dl class="method">
-<dt id="lenstronomy.GalKin.aperture_types.Slit.aperture_select">
-<code class="descname">aperture_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#Slit.aperture_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit.aperture_select" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra</strong> – angular coordinate of photon/ray</li>
-<li><strong>dec</strong> – angular coordinate of photon/ray</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="lenstronomy.GalKin.aperture_types.Slit.num_segments">
-<code class="descname">num_segments</code><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.Slit.num_segments" title="Permalink to this definition">¶</a></dt>
-<dd><p>number of segments with separate measurements of the velocity dispersion
-:return: int</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.aperture_types.frame_select">
-<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">frame_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>width_outer</em>, <em>width_inner</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#frame_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.frame_select" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra</strong> – angular coordinate of photon/ray</li>
-<li><strong>dec</strong> – angular coordinate of photon/ray</li>
-<li><strong>width_outer</strong> – width of box to the outer parts</li>
-<li><strong>width_inner</strong> – width of inner removed box</li>
-<li><strong>center_ra</strong> – center of slit</li>
-<li><strong>center_dec</strong> – center of slit</li>
-<li><strong>angle</strong> – orientation angle of slit, angle=0 corresponds length in RA direction</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the box with a hole, False otherwise</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.aperture_types.shell_ifu_select">
-<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">shell_ifu_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>r_bin</em>, <em>center_ra=0</em>, <em>center_dec=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#shell_ifu_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.shell_ifu_select" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra</strong> – angular coordinate of photon/ray</li>
-<li><strong>dec</strong> – angular coordinate of photon/ray</li>
-<li><strong>r_bin</strong> – array of radial bins to average the dispersion spectra in ascending order.
-It starts with the inner-most edge to the outermost edge.</li>
-<li><strong>center_ra</strong> – center of the sphere</li>
-<li><strong>center_dec</strong> – center of the sphere</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean, True if within the radial range, False otherwise</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="function">
 <dt id="lenstronomy.GalKin.aperture_types.shell_select">
 <code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">shell_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>r_in</em>, <em>r_out</em>, <em>center_ra=0</em>, <em>center_dec=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#shell_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.shell_select" title="Permalink to this definition">¶</a></dt>
@@ -920,9 +887,14 @@ It starts with the inner-most edge to the outermost edge.</li>
 </table>
 </dd></dl>
 
-<dl class="function">
-<dt id="lenstronomy.GalKin.aperture_types.slit_select">
-<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">slit_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>length</em>, <em>width</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>angle=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#slit_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.slit_select" title="Permalink to this definition">¶</a></dt>
+<dl class="class">
+<dt id="lenstronomy.GalKin.aperture_types.IFUShells">
+<em class="property">class </em><code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">IFUShells</code><span class="sig-paren">(</span><em>r_bins</em>, <em>center_ra=0</em>, <em>center_dec=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#IFUShells"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured</p>
+<dl class="method">
+<dt id="lenstronomy.GalKin.aperture_types.IFUShells.aperture_select">
+<code class="descname">aperture_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#IFUShells.aperture_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells.aperture_select" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -930,15 +902,43 @@ It starts with the inner-most edge to the outermost edge.</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ra</strong> – angular coordinate of photon/ray</li>
 <li><strong>dec</strong> – angular coordinate of photon/ray</li>
-<li><strong>length</strong> – length of slit</li>
-<li><strong>width</strong> – width of slit</li>
-<li><strong>center_ra</strong> – center of slit</li>
-<li><strong>center_dec</strong> – center of slit</li>
-<li><strong>angle</strong> – orientation angle of slit, angle=0 corresponds length in RA direction</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">bool, True if photon/ray is within the slit, False otherwise, index of shell</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.GalKin.aperture_types.IFUShells.num_segments">
+<code class="descname">num_segments</code><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.IFUShells.num_segments" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of segments with separate measurements of the velocity dispersion
+:return: int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.GalKin.aperture_types.shell_ifu_select">
+<code class="descclassname">lenstronomy.GalKin.aperture_types.</code><code class="descname">shell_ifu_select</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em>, <em>r_bin</em>, <em>center_ra=0</em>, <em>center_dec=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/aperture_types.html#shell_ifu_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.aperture_types.shell_ifu_select" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ra</strong> – angular coordinate of photon/ray</li>
+<li><strong>dec</strong> – angular coordinate of photon/ray</li>
+<li><strong>r_bin</strong> – array of radial bins to average the dispersion spectra in ascending order.
+It starts with the inner-most edge to the outermost edge.</li>
+<li><strong>center_ra</strong> – center of the sphere</li>
+<li><strong>center_dec</strong> – center of the sphere</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">boolean, True if within the radial range, False otherwise</p>
 </td>
 </tr>
 </tbody>
@@ -1443,6 +1443,12 @@ We refer to the Anisotropy() class for details on the parameters.</li>
 <div class="section" id="module-lenstronomy.GalKin.velocity_util">
 <span id="lenstronomy-galkin-velocity-util-module"></span><h2>lenstronomy.GalKin.velocity_util module<a class="headerlink" href="#module-lenstronomy.GalKin.velocity_util" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
+<dt id="lenstronomy.GalKin.velocity_util.hyp_2F1">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">hyp_2F1</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#hyp_2F1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.hyp_2F1" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html">http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html</a></p>
+</dd></dl>
+
+<dl class="function">
 <dt id="lenstronomy.GalKin.velocity_util.displace_PSF_gaussian">
 <code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">displace_PSF_gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>FWHM</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#displace_PSF_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.displace_PSF_gaussian" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -1457,6 +1463,69 @@ We refer to the Anisotropy() class for details on the parameters.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">x’, y’ random displaced according to psf</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.GalKin.velocity_util.moffat_r">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">moffat_r</code><span class="sig-paren">(</span><em>r</em>, <em>alpha</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#moffat_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.moffat_r" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moffat profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radial coordinate</li>
+<li><strong>alpha</strong> – </li>
+<li><strong>beta</strong> – exponent</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">moffat_fwhm_alpha</code><span class="sig-paren">(</span><em>FWHM</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#moffat_fwhm_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes alpha parameter from FWHM and beta for a Moffat profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>FWHM</strong> – full width at half maximum</li>
+<li><strong>beta</strong> – beta parameter of Moffat profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">alpha parameter of Moffat profile</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.GalKin.velocity_util.draw_moffat_r">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">draw_moffat_r</code><span class="sig-paren">(</span><em>FWHM</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#draw_moffat_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.draw_moffat_r" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>FWHM</strong> – full width at half maximum</li>
+<li><strong>beta</strong> – Moffat beta parameter</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">draw from radial Moffat distribution</p>
 </td>
 </tr>
 </tbody>
@@ -1501,38 +1570,11 @@ cdf(Y) = 1-Y**(1-beta)</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.draw_hernquist">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">draw_hernquist</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#draw_hernquist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.draw_hernquist" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – 0.551*r_eff</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">realisation of radius of Hernquist luminosity weighting in 3d</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.draw_moffat_r">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">draw_moffat_r</code><span class="sig-paren">(</span><em>FWHM</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#draw_moffat_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.draw_moffat_r" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>FWHM</strong> – full width at half maximum</li>
-<li><strong>beta</strong> – Moffat beta parameter</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">draw from radial Moffat distribution</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dt id="lenstronomy.GalKin.velocity_util.project2d_random">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">project2d_random</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#project2d_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.project2d_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>draws a random projection from radius r in 2d and 1d
+:param r: 3d radius
+:return: R, x, y</p>
 </dd></dl>
 
 <dl class="function">
@@ -1551,60 +1593,18 @@ cdf(Y) = 1-Y**(1-beta)</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.hyp_2F1">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">hyp_2F1</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>c</em>, <em>z</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#hyp_2F1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.hyp_2F1" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html">http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html</a></p>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">moffat_fwhm_alpha</code><span class="sig-paren">(</span><em>FWHM</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#moffat_fwhm_alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.moffat_fwhm_alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes alpha parameter from FWHM and beta for a Moffat profile</p>
-<table class="docutils field-list" frame="void" rules="none">
+<dt id="lenstronomy.GalKin.velocity_util.draw_hernquist">
+<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">draw_hernquist</code><span class="sig-paren">(</span><em>a</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#draw_hernquist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.draw_hernquist" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>FWHM</strong> – full width at half maximum</li>
-<li><strong>beta</strong> – beta parameter of Moffat profile</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>a</strong> – 0.551*r_eff</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">alpha parameter of Moffat profile</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">realisation of radius of Hernquist luminosity weighting in 3d</td>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.moffat_r">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">moffat_r</code><span class="sig-paren">(</span><em>r</em>, <em>alpha</em>, <em>beta</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#moffat_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.moffat_r" title="Permalink to this definition">¶</a></dt>
-<dd><p>Moffat profile</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – radial coordinate</li>
-<li><strong>alpha</strong> – </li>
-<li><strong>beta</strong> – exponent</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="lenstronomy.GalKin.velocity_util.project2d_random">
-<code class="descclassname">lenstronomy.GalKin.velocity_util.</code><code class="descname">project2d_random</code><span class="sig-paren">(</span><em>r</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/velocity_util.html#project2d_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.GalKin.velocity_util.project2d_random" title="Permalink to this definition">¶</a></dt>
-<dd><p>draws a random projection from radius r in 2d and 1d
-:param r: 3d radius
-:return: R, x, y</p>
 </dd></dl>
 
 </div>
@@ -1684,7 +1684,7 @@ cdf(Y) = 1-Y**(1-beta)</p>
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.6.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

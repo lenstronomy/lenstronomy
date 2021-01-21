@@ -7,7 +7,7 @@ this file contains standard routines
 import numpy as np
 import mpmath
 import itertools
-
+from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
@@ -81,6 +81,7 @@ def sort_image_index(ximg,yimg,xref,yref):
 
 
 @export
+@jit()
 def rotate(xcoords, ycoords, angle):
     """
 
@@ -111,7 +112,8 @@ def map_coord2pix(ra, dec, x_0, y_0, M):
 @export
 def array2image(array, nx=0, ny=0):
     """
-    returns the information contained in a 1d array into an n*n 2d array (only works when lenght of array is n**2)
+    returns the information contained in a 1d array into an n*n 2d array
+    (only works when length of array is n**2, or nx and ny are provided)
 
     :param array: image values
     :type array: array of size n**2
@@ -185,22 +187,42 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
     default coordinate frame is such that (0,0) is in the center of the coordinate grid
 
     :param numPix: number of pixels per axis
+        Give an integers for a square grid, or a 2-length sequence
+        (first, second axis length) for a non-square grid.
     :param deltapix: pixel size
     :param subgrid_res: sub-pixel resolution (default=1)
     :return: x, y position information in two 1d arrays
     """
 
-    numPix_eff = numPix*subgrid_res
-    deltapix_eff = deltapix/float(subgrid_res)
-    a = np.arange(numPix_eff)
-    matrix = np.dstack(np.meshgrid(a, a)).reshape(-1, 2)
-    x_grid = matrix[:, 0] * deltapix_eff
-    y_grid = matrix[:, 1] * deltapix_eff
-    if left_lower is True:
-        shift = -1. / 2 + 1. / (2 * subgrid_res)
+    # Check numPix is an integer, or 2-sequence of integers
+    if isinstance(numPix, (tuple, list, np.ndarray)):
+        assert len(numPix) == 2
+        if any(x != round(x) for x in numPix):
+            raise ValueError("numPix contains non-integers: %s" % numPix)
+        numPix = np.asarray(numPix, dtype=np.int)
     else:
-        shift = np.sum(x_grid) / numPix_eff**2
-    return x_grid - shift, y_grid - shift
+        if numPix != round(numPix):
+            raise ValueError("Attempt to specify non-int numPix: %s" % numPix)
+        numPix = np.array([numPix, numPix], dtype=np.int)
+
+    # Super-resolution sampling
+    numPix_eff = (numPix*subgrid_res).astype(np.int)
+    deltapix_eff = deltapix/float(subgrid_res)
+
+    # Compute unshifted grids.
+    # X values change quickly, Y values are repeated many times
+    x_grid = np.tile(np.arange(numPix_eff[0]), numPix_eff[1]) * deltapix_eff
+    y_grid = np.repeat(np.arange(numPix_eff[1]), numPix_eff[0]) * deltapix_eff
+
+    if left_lower is True:
+        # Shift so (0, 0) is in the "lower left"
+        # Note this does not shift when subgrid_res = 1
+        shift = -1. / 2 + 1. / (2 * subgrid_res) * np.array([1, 1])
+    else:
+        # Shift so (0, 0) is centered
+        shift = deltapix_eff * (numPix_eff - 1) / 2
+
+    return x_grid - shift[0], y_grid - shift[1]
 
 
 @export
@@ -454,6 +476,7 @@ def points_on_circle(radius, num_points):
 
 
 @export
+@jit()
 def neighborSelect(a, x, y):
     """
     #TODO replace by from scipy.signal import argrelextrema for speed up
@@ -489,27 +512,22 @@ def neighborSelect(a, x, y):
             and a[i] < a[i-(dim+1)]
             and a[i] < a[i+(dim-1)]
             and a[i] < a[i+(dim+1)]):
-                if(a[i] < a[(i-2*dim-1)%dim**2]
+                if (a[i] < a[(i-2*dim-1)%dim**2]
                     and a[i] < a[(i-2*dim+1)%dim**2]
                     and a[i] < a[(i-dim-2)%dim**2]
                     and a[i] < a[(i-dim+2)%dim**2]
                     and a[i] < a[(i+dim-2)%dim**2]
                     and a[i] < a[(i+dim+2)%dim**2]
                     and a[i] < a[(i+2*dim-1)%dim**2]
-                    and a[i] < a[(i+2*dim+1)%dim**2]):
-                    if(a[i] < a[(i-3*dim-1)%dim**2]
-                        and a[i] < a[(i-3*dim+1)%dim**2]
-                        and a[i] < a[(i-dim-3)%dim**2]
-                        and a[i] < a[(i-dim+3)%dim**2]
-                        and a[i] < a[(i+dim-3)%dim**2]
-                        and a[i] < a[(i+dim+3)%dim**2]
-                        and a[i] < a[(i+3*dim-1)%dim**2]
-                        and a[i] < a[(i+3*dim+1)%dim**2]):
-                        x_mins.append(x[i])
-                        y_mins.append(y[i])
-                        values.append(a[i])
+                    and a[i] < a[(i+2*dim+1)%dim**2]
+                    and a[i] < a[(i+2*dim)%dim**2]
+                    and a[i] < a[(i-2*dim)%dim**2]
+                    and a[i] < a[(i-2)%dim**2]
+                    and a[i] < a[(i+2)%dim**2]):
+                    x_mins.append(x[i])
+                    y_mins.append(y[i])
+                    values.append(a[i])
     return np.array(x_mins), np.array(y_mins), np.array(values)
-
 
 @export
 def fwhm2sigma(fwhm):

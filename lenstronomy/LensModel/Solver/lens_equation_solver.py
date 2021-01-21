@@ -12,12 +12,13 @@ class LensEquationSolver(object):
     """
     def __init__(self, lensModel):
         """
-
-        :param lensModel: instance of a class according to lenstronomy.LensModel.lens_model
         This class must contain the following definitions (with same syntax as the standard LensModel() class:
         def ray_shooting()
         def hessian()
         def magnification()
+
+        :param lensModel: instance of a class according to lenstronomy.LensModel.lens_model
+
         """
         self.lensModel = lensModel
 
@@ -25,7 +26,7 @@ class LensEquationSolver(object):
                                   precision_limit=10**(-10), arrival_time_sort=True, x_center=0,
                                   y_center=0, num_random=1000):
         """
-        Solves the lens equation stochastically with the scipy minimization routine on the quadratic distance between
+        Solves the lens equation stochastic with the scipy minimization routine on the quadratic distance between
         the backwards ray-shooted proposed image position and the source position.
         Credits to Giulia Pagano
 
@@ -131,12 +132,11 @@ class LensEquationSolver(object):
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
-        # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and pixel width
+        # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and
+        # pixel width
         x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
         if verbose is True:
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
-        #mag = np.abs(mag)
-        #print(x_mins, y_mins, 'before requirement of min_distance')
         if len(x_mins) < 1:
             return x_mins, y_mins
         if initial_guess_cut is True:
@@ -148,8 +148,8 @@ class LensEquationSolver(object):
                 print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
         x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
                                                      size=num_random))
-        y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
-                                             size=num_random))
+        y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center,
+                                                     high=search_window / 2 + y_center, size=num_random))
         # iterative solving of the lens equation for the selected grid points
         x_mins, y_mins, solver_precision = self._find_gradient_decent(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
                                                                       precision_limit, num_iter_max, verbose=verbose,
@@ -183,7 +183,7 @@ class LensEquationSolver(object):
         :param precision_limit: float, required match in the solution in the source plane
         :param num_iter_max: int, maximum number of iterations before the algorithm stops
         :param verbose: bool, if True inserts print statements about the behavior of the solver
-        :param min_distance: maximum correction applied per step (to avoid over-shooting in instable regions)
+        :param min_distance: maximum correction applied per step (to avoid over-shooting in unstable regions)
         :param non_linear: bool, if True, uses scipy.miminize instead of the directly implemented gradient decent approach.
         :return: x_position array, y_position array, error in the source plane array
         """
@@ -193,7 +193,7 @@ class LensEquationSolver(object):
         solver_precision = np.zeros(num_candidates)
         for i in range(len(x_min)):
             x_guess, y_guess, delta, l = self._solve_single_proposal(x_min[i], y_min[i], sourcePos_x, sourcePos_y,
-                                                                  kwargs_lens, precision_limit, num_iter_max,
+                                                                     kwargs_lens, precision_limit, num_iter_max,
                                                                      max_step=min_distance, non_linear=non_linear)
             if verbose is True:
                 print("Solution found for region %s with required precision at iteration %s" % (i, l))
@@ -230,7 +230,7 @@ class LensEquationSolver(object):
             x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
             delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
 
-            while (delta > precision_limit and l < num_iter_max):
+            while delta > precision_limit and l < num_iter_max:
                 x_mapped, y_mapped = self.lensModel.ray_shooting(x_guess, y_guess, kwargs_lens)
                 delta = np.sqrt((x_mapped - source_x) ** 2 + (y_mapped - source_y) ** 2)
                 f_xx, f_xy, f_yx, f_yy = self.lensModel.hessian(x_guess, y_guess, kwargs_lens)
@@ -260,7 +260,7 @@ class LensEquationSolver(object):
         :param iter_num: int, current iteration number
         :param num_iter_max: int, maximum iteration number before aborting the process
         :return: updated image position in x, updated image position in y, updated precision in the source plane,
-        total iterations done after this call
+         total iterations done after this call
         """
         x_new = x_guess - image_plane_vector[0]
         y_new = y_guess - image_plane_vector[1]
@@ -302,7 +302,6 @@ class LensEquationSolver(object):
         :param magnification_limit: None or float, if set will only return image positions that have an
          abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
-        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
 
         x_mins, y_mins = self.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
@@ -326,6 +325,7 @@ class LensEquationSolver(object):
     def sort_arrival_times(self, x_mins, y_mins, kwargs_lens):
         """
         sort arrival times (fermat potential) of image positions in increasing order of light travel time
+
         :param x_mins: ra position of images
         :param y_mins: dec position of images
         :param kwargs_lens: keyword arguments of lens model

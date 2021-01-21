@@ -143,6 +143,5 @@ class TestRaises(unittest.TestCase):
             multi_band.band_setup(band_index=0)
 
 
-
 if __name__ == '__main__':
     pytest.main()

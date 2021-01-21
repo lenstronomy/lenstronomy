@@ -166,7 +166,7 @@ def check_solver_error(image):
     :return: bool, True if solver could not find a unique solution, False if solver works
     """
     result = np.all(image == 0)
-    if result is True:
+    if result:
         Warning('Linear inversion of surface brightness components did not result in a unique solution.'
                 'All linear amplitude parameters are set =0 instead. Please check whether '
                 'a) there are too many basis functions in the model, '

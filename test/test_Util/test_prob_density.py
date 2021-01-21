@@ -72,6 +72,10 @@ def test_compute_lower_upper_errors():
     npt.assert_almost_equal(lower_sigma1, 1, decimal=2)
     npt.assert_almost_equal(upper_sigma1, 1, decimal=2)
 
+    median, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2]] = prob_density.compute_lower_upper_errors(sample, num_sigma=2)
+    npt.assert_almost_equal(lower_sigma2, 2, decimal=2)
+    npt.assert_almost_equal(upper_sigma2, 2, decimal=2)
+
     median, [[lower_sigma1, upper_sigma1], [lower_sigma2, upper_sigma2],
              [lower_sigma3, upper_sigma3]] = prob_density.compute_lower_upper_errors(sample, num_sigma=3)
     npt.assert_almost_equal(lower_sigma2, 2, decimal=2)

@@ -152,7 +152,7 @@ class TestParam(object):
         param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
         args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
         kwargs_return = param.args2kwargs(args)
-        kwargs_lens_out = kwargs_return['kwargs_lens_light']
+        kwargs_lens_out = kwargs_return['kwargs_lens']
         kwargs_lens_light_out = kwargs_return['kwargs_lens_light']
         assert kwargs_lens_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
         assert kwargs_lens_light_out[0]['w_c'] == kwargs_lens_light[0]['w_c']
@@ -171,6 +171,22 @@ class TestParam(object):
 
         assert kwargs_lens_out[0]['theta_E'] == kwargs_lens[0]['theta_E']
         assert kwargs_lens_out[0]['center_x'] == kwargs_lens_light[0]['center_x']
+
+    def test_joint_lens_with_light_dict(self):
+        kwargs_model = {'lens_model_list': ['SHEAR'], 'lens_light_model_list': ['SERSIC']}
+        i_light, k_lens = 0, 0
+        kwargs_constraints = {'joint_lens_with_light': [[i_light, k_lens, {'ra_0': 'center_x', 'dec_0': 'center_y'}]]}
+        kwargs_lens = [{'gamma1': 0.05, 'gamma2':0.06}]
+        kwargs_lens_light = [{'amp': 1, 'R_sersic': 1, 'n_sersic': 4, 'center_x': 0.1, 'center_y': 0.3}]
+        param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
+        args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_lens_light=kwargs_lens_light)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+        kwargs_lens_light_out = kwargs_return['kwargs_lens_light']
+        assert kwargs_lens_out[0]['gamma1'] == kwargs_lens[0]['gamma1']
+        assert kwargs_lens_out[0]['ra_0'] == kwargs_lens_light[0]['center_x']
+        assert kwargs_lens_out[0]['dec_0'] == kwargs_lens_light[0]['center_y']
+
 
     def test_joint_source_with_point_source(self):
         kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'], 'point_source_model_list': ['SOURCE_POSITION']}

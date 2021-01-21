@@ -38,7 +38,7 @@ class TestLightModel(object):
             {'amp': 1},  # 'UNIFORM'
             {'amp': 1., 'gamma': 2., 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0},  # 'POWER_LAW'
             {'amp': .001, 'e1': 0, 'e2': 1., 'center_x': 0, 'center_y': 0, 's_scale': 1.},  # 'NIE'
-            {'image': np.zeros((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},
+            {'image': np.zeros((20, 5)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},
             {'amp': [1], 'n_max': 0, 'beta': 1, 'center_x': 0, 'center_y': 0},
             {'amp': 1, 'radius': 1., 'e1': 0, 'e2': 0.1, 'center_x': 0, 'center_y': 0}  # 'ELLIPSOID'
             ]
@@ -86,7 +86,7 @@ class TestLightModel(object):
                             'MULTI_GAUSSIAN_ELLIPSE']
         kwargs_list = [{'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'center_x': 0, 'center_y': 0},  # 'SERSIC'
                        {'amp': 1, 'R_sersic': 0.5, 'n_sersic': 1, 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'SERSIC_ELLIPSE'
-                       {'image': np.ones((10, 10)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},  # 'INTERPOL'
+                       {'image': np.ones((20, 5)), 'scale': 1, 'phi_G': 0, 'center_x': 0, 'center_y': 0},  # 'INTERPOL'
                        {'amp': 2, 'sigma': 2, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN'
                        {'amp': 2, 'sigma': 2, 'e1': 0.1, 'e2': 0, 'center_x': 0, 'center_y': 0},  # 'GAUSSIAN_ELLIPSE'
                        {'amp': [1,1], 'sigma': [2, 1], 'center_x': 0, 'center_y': 0},  # 'MULTI_GAUSSIAN'

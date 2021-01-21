@@ -14,8 +14,12 @@ nestcheck
 corner
 h5py
 scikit-image
+
 #schwimmbad==0.3.0
 -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
 slitronomy==0.3.2
+
+# requirements for tests
+colossus

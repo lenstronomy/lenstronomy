@@ -175,6 +175,7 @@ class PsfFitting(object):
     def image_single_point_source(self, image_model_class, kwargs_params):
         """
         return model without including the point source contributions as a list (for each point source individually)
+
         :param image_model_class: ImageModel class instance
         :param kwargs_params: keyword arguments of model component keyword argument lists
         :return: list of images with point source isolated

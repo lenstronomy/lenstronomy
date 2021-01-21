@@ -27,7 +27,7 @@ class SimAPI(DataAPI, ModelAPI):
         DataAPI.__init__(self, numpix, **kwargs_single_band)
         ModelAPI.__init__(self, **kwargs_model)
 
-    def image_model_class(self, kwargs_numerics={}):
+    def image_model_class(self, kwargs_numerics=None):
         """
 
         :param kwargs_numerics: keyword arguments list of Numerics module
@@ -40,10 +40,14 @@ class SimAPI(DataAPI, ModelAPI):
         """
         'magnitude' definition are in APPARENT magnitudes as observed on the sky, not intrinsic!
 
-        :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
-        :param kwargs_source_mag: keyword argument list as for LightModel module except that 'amp' parameters are 'magnitude' parameters.
-        :param kwargs_ps_mag: keyword argument list as for PointSource module except that 'amp' parameters are 'magnitude' parameters.
-        :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
+        :param kwargs_lens_light_mag: keyword argument list as for LightModel module except that 'amp' parameters are
+         'magnitude' parameters.
+        :param kwargs_source_mag: keyword argument list as for LightModel module except that 'amp' parameters are
+         'magnitude' parameters.
+        :param kwargs_ps_mag: keyword argument list as for PointSource module except that 'amp' parameters are
+         'magnitude' parameters.
+        :return: value of the lenstronomy 'amp' parameter such that the total flux of the profile type results in this
+         magnitude for all the light models. These keyword arguments conform with the lenstronomy LightModel syntax.
         """
 
         kwargs_lens_light = copy.deepcopy(kwargs_lens_light_mag)

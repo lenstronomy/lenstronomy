@@ -364,6 +364,10 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             MultiPlaneBase(z_source_convention=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5])
 
+        with self.assertRaises(ValueError):
+            lens = MultiPlane(z_source_convention=1, z_source=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5, 0.8])
+            lens._check_raise(k=[1])
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

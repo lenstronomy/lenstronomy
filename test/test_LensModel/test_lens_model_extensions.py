@@ -6,7 +6,7 @@ import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.Cosmo.background import Background
+from lenstronomy.Util.magnification_finite_util import auto_raytracing_grid_resolution, auto_raytracing_grid_size
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LightModel.light_model import LightModel
 from astropy.cosmology import FlatLambdaCDM
@@ -83,7 +83,6 @@ class TestLensModelExtensions(object):
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
     def test_magnification_finite_adaptive(self):
-
         lens_model_list = ['EPL', 'SHEAR']
         z_source = 1.5
         kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
@@ -100,25 +99,38 @@ class TestLensModelExtensions(object):
         pc_per_arcsec = 1000 / self.cosmo.arcsec_per_kpc_proper(z_source).value
         source_sigma = source_fwhm_parsec / pc_per_arcsec / 2.355
 
-        mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
-                                                          grid_number=1501, window_size=0.15)
-        flux_ratios_square_grid = mag_square_grid/max(mag_square_grid)
+        grid_size = auto_raytracing_grid_size(source_fwhm_parsec)
+        grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
+        # make this even higher resolution to show convergence
+        grid_number = int(2 * grid_size / grid_resolution)
+        window_size = 2 * grid_size
 
-        mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens, source_fwhm_parsec,
-                                                                    z_source, cosmo=self.cosmo, tol=0.0001)
-        flux_ratios_adaptive_grid = mag_adaptive_grid/max(mag_adaptive_grid)
+        mag_square_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=source_sigma,
+                                                         grid_number=grid_number, window_size=window_size)
+        flux_ratios_square_grid = mag_square_grid / max(mag_square_grid)
+
+        mag_adaptive_grid = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                                    source_fwhm_parsec,
+                                                                    z_source, cosmo=self.cosmo)
+        flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
 
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+<<<<<<< HEAD
                                                                     source_fwhm_parsec, z_source,
                                                                       cosmo=self.cosmo, tol=0.0001, axis_ratio=0)
 
         flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2/max(mag_adaptive_grid_2)
+=======
+                                                                      source_fwhm_parsec, z_source,
+                                                                      cosmo=self.cosmo, axis_ratio=0)
+>>>>>>> master
 
+        flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2 / max(mag_adaptive_grid_2)
 
         # tests the default cosmology
         _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
-                                                                    source_fwhm_parsec,
-                                                                    z_source, cosmo=None, tol=0.0001)
+                                                    source_fwhm_parsec,
+                                                    z_source, cosmo=None, tol=0.0001)
 
         # test smallest eigenvalue
         _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
@@ -133,14 +145,14 @@ class TestLensModelExtensions(object):
         mag_point_source = abs(lensmodel.magnification(x_image, y_image, kwargs_lens))
 
         quarter_precent_precision = [0.0025] * 4
-        npt.assert_array_less(flux_ratios_square_grid/flux_ratios_adaptive_grid - 1,
-                                quarter_precent_precision)
+        npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid - 1,
+                              quarter_precent_precision)
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid_2 - 1,
-                                quarter_precent_precision)
+                              quarter_precent_precision)
         half_percent_precision = [0.005] * 4
-        npt.assert_array_less(mag_square_grid/mag_adaptive_grid - 1, half_percent_precision)
+        npt.assert_array_less(mag_square_grid / mag_adaptive_grid - 1, half_percent_precision)
         npt.assert_array_less(mag_square_grid / mag_adaptive_grid_2 - 1, half_percent_precision)
-        npt.assert_array_less(mag_adaptive_grid/mag_point_source - 1, half_percent_precision)
+        npt.assert_array_less(mag_adaptive_grid / mag_point_source - 1, half_percent_precision)
 
         flux_array = np.array([0., 0.])
         x_image, y_image = [x_image[0]], [y_image[0]]
@@ -152,18 +164,20 @@ class TestLensModelExtensions(object):
         kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
 
         r_min = 0.
-        r_max = source_sigma*0.9
-        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+        r_max = source_sigma * 0.9
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r,
+                                                                 r_min, r_max,
                                                                  lensmodel, kwargs_lens, source_model, kwargs_source)
         bx, by = lensmodel.ray_shooting(x_image[0], y_image[0], kwargs_lens)
         sb_true = source_model.surface_brightness(bx, by, kwargs_source)
         npt.assert_equal(True, flux_array[0] == sb_true)
         npt.assert_equal(True, flux_array[1] == 0.)
 
-        r_min = source_sigma*0.9
+        r_min = source_sigma * 0.9
         r_max = 2 * source_sigma
 
-        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r, r_min, r_max,
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r,
+                                                                 r_min, r_max,
                                                                  lensmodel, kwargs_lens, source_model, kwargs_source)
         bx, by = lensmodel.ray_shooting(x_image[0] + source_sigma, y_image[0], kwargs_lens)
         sb_true = source_model.surface_brightness(bx, by, kwargs_source)
@@ -186,8 +200,5 @@ class TestLensModelExtensions(object):
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
 
-t = TestLensModelExtensions()
-t.setup()
-t.test_magnification_finite_adaptive()
-# if __name__ == '__main__':
-#     pytest.main("-k TestLensModel")
+if __name__ == '__main__':
+    pytest.main("-k TestLensModel")

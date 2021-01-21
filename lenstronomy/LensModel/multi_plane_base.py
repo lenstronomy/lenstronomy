@@ -12,19 +12,20 @@ class MultiPlaneBase(ProfileListBase):
     Multi-plane lensing class
 
     The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the
-    sourde redshift of the class instance.
+    source redshift of the class instance.
     """
 
-    def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None, numerical_alpha_class=None):
+    def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
+                 numerical_alpha_class=None):
         """
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-        models. If None, 'z_source' is used.
+         models. If None, 'z_source' is used.
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
-        (see documentation in Profiles/numerical_alpha)
+         (see documentation in Profiles/numerical_alpha)
 
         """
         self._cosmo_bkg = Background(cosmo)
@@ -40,7 +41,8 @@ class MultiPlaneBase(ProfileListBase):
 
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                       lens_redshift_list=lens_redshift_list, z_source_convention=z_source_convention)
+                                             lens_redshift_list=lens_redshift_list,
+                                             z_source_convention=z_source_convention)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
@@ -67,8 +69,8 @@ class MultiPlaneBase(ProfileListBase):
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                              include_z_start=False, T_ij_start=None, T_ij_end=None):
         """
-        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at redshift z_start
-        and then backwards to redshift z_stop
+        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y)
+        at redshift z_start and then backwards to redshift z_stop
 
         :param x: co-moving position [Mpc]
         :param y: co-moving position [Mpc]
@@ -129,6 +131,8 @@ class MultiPlaneBase(ProfileListBase):
 
         :param z_start: redshift of the start of the ray-tracing
         :param z_stop: stop of ray-tracing
+        :param include_z_start: boolean, if True includes the computation of the starting position if the first
+         deflector is at z_start
         :return: T_ij_start, T_ij_end
         """
         z_lens_last = z_start
@@ -204,7 +208,7 @@ class MultiPlaneBase(ProfileListBase):
         """
 
         :param redshift_list: list of redshifts
-        :return: indexes in acending order to be evaluated (from z=0 to z=z_source)
+        :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
         #sort_index = np.argsort(redshift_list[redshift_list < z_source])
@@ -218,8 +222,7 @@ class MultiPlaneBase(ProfileListBase):
         alpha_reduced = D_ds/Ds alpha_physical
 
         :param alpha_reduced: reduced deflection angle
-        :param z_lens: lens redshift
-        :param z_source: source redshift
+        :param index_lens: integer, index of the deflector plane
         :return: physical deflection angle
         """
         factor = self._reduced2physical_factor[index_lens]
@@ -340,6 +343,13 @@ class MultiPlaneBase(ProfileListBase):
 
     @staticmethod
     def _start_condition(inclusive, z_lens, z_start):
+        """
+
+        :param inclusive: boolean, if True selects z_lens including z_start, else only selects z_lens > z_start
+        :param z_lens: deflector redshift
+        :param z_start: starting redshift (lowest redshift)
+        :return: boolean of condition
+        """
 
         if inclusive:
             return z_lens >= z_start

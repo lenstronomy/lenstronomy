@@ -189,7 +189,7 @@ class LensCosmo(object):
         """
         converts the physical mass and concentration parameter of an NFW profile into the lensing quantities
 
-        :param M: mass enclosed 200 rho_crit in units of M_sun
+        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :return: alpha_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
         """

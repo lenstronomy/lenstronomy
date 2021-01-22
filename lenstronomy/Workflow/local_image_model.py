@@ -11,8 +11,6 @@ class LocalImageModel(object):
                  kwargs_lens_other, z_lens, z_source, astropy_instance=None):
 
         self._image_models = []
-        self._kwargs_shift = []
-
         self._nimg = len(x_image_coordinate)
 
         for (xcoord, ycoord) in zip(x_image_coordinate, y_image_coordinate):
@@ -25,10 +23,12 @@ class LocalImageModel(object):
 
         self._lens_model_list_other = lens_model_list_other
         self._redshift_list_other = redshift_list_other
+        self._kwargs_lens_other = kwargs_lens_other
         self._x_image_coords = x_image_coordinate
         self._y_image_coords = y_image_coordinate
         self._zlens = z_lens
         self._zsource = z_source
+        self._cosmo = astropy_instance
 
     def estimate_curved_arc(self, lens_model, kwargs_lens):
 
@@ -37,6 +37,19 @@ class LocalImageModel(object):
         for i in range(0, len(self._x_image_coords)):
             estimate.append(ext.curved_arc_estimate(self._x_image_coords[i], self._y_image_coords[i], kwargs_lens))
         return estimate
+
+    def shift_lensmodels(self):
+
+        kwargs_shift_list = []
+        for model in self._image_models:
+
+            kwargs_shift = model.compute_kwargs_shift()
+            kwargs_shift_list.append(kwargs_shift)
+
+        lensmodel_shift = LensModel(['SHIFT'] + self._lens_model_list_other,
+                                    lens_redshift_list=[self._zlens] + list(self._redshift_list_other),
+                                    z_source=self._zsource, multi_plane=True, cosmo=self._cosmo)
+        return lensmodel_shift, kwargs_shift_list
 
     def model_hessian(self, kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
                          angular_matching_scale, hessian_init=None,

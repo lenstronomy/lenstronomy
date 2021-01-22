@@ -56,7 +56,7 @@ class MultiScaleModel(object):
         self._zsource = z_source
 
         self._lens_model_list_other = lens_model_list_other
-        self._redshift_list_other = redshift_list_other
+        self._redshift_list_other = list(redshift_list_other)
         self._kwargs_lens_other = kwargs_lens_other
         self._source_x = source_x_coordinate
         self._source_y = source_y_coordinate
@@ -87,7 +87,6 @@ class MultiScaleModel(object):
 
             kwargs_lens = [{'alpha_x': 0., 'alpha_y': 0.}] + self._kwargs_lens_other
             param_class_shift = ShiftLensModelParamManager(kwargs_lens)
-
             fast_ray_shooting = MultiplaneFast(self._x, self._y, self._zlens, self._zsource,
                                                lens_model_list, redshift_list, self._astropy,
                                                param_class_shift, None)
@@ -260,7 +259,7 @@ class MultiScaleModel(object):
         dy = gamma_model_1 - gamma1
         dz = gamma_model_2 - gamma2
 
-        chi2 = (dx ** 2 + dy ** 2 + dz ** 2)/0.0001 ** 2 + arg_penalty
+        chi2 = (dx ** 2 + dy ** 2 + dz ** 2)/0.000001 ** 2 + arg_penalty
 
         return chi2
 

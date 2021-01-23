@@ -27,23 +27,27 @@ class LensModelExtensions(object):
 
     def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
                                       source_fwhm_parsec, z_source,
-                                      cosmo=None, grid_resolution=None, grid_radius_arcsec=None, axis_ratio=0.5,
+                                      cosmo=None, grid_resolution=None,
+                                      grid_radius_arcsec=None, axis_ratio=0.5,
                                       tol=0.001, step_size=0.05,
-                                      use_largest_eigenvalue=True):
+                                      use_largest_eigenvalue=True,
+                                      source_light_model='SINGLE_GAUSSIAN',
+                                      dx=None, dy=None, size_scale=None, amp_scale=None):
         """
-        This method computes image magnifications with a finite-size background source assuming a Gaussian
-        source light profile. It can be much faster that magnification_finite for lens models with many
-        deflectors and a relatively compact source. This is because most pixels in a rectangular window around a lensed
-        image of a compact source will contain zero flux, and therefore don't contribute to the image brightness.
+        This method computes image magnifications with a finite-size background source assuming a Gaussian or a
+        double Gaussian source light profile. It can be much faster that magnification_finite for lens models with many
+        deflectors and a compact source. This is because most pixels in a rectangular window around a lensed
+        image of a compact source do not map onto the source, and therefore don't contribute to the integrated flux in
+        the image plane.
 
         Rather than ray tracing through a rectangular grid, this routine accelerates the computation of image
-        magnifications with finite-size sources by ray tracing through an elliptical aperture oriented such that
-        it resembles the surface brightness of the lensed image itself. The aperture size is initially quite small,
+        magnifications with finite-size sources by ray tracing through an elliptical region oriented such that
+        tracks the surface brightness of the lensed image. The aperture size is initially quite small,
         and increases in size until the flux inside of it (and hence the magnification) converges. The orientation of
-        the elliptical aperture is computed from the magnification tensor at the image coordinate.
+        the elliptical aperture is computed from the magnification tensor evaluated at the image coordinate.
 
-        If for whatever reason you prefer a circular aperture to the elliptical approximation using the hessian eigenvectors,
-        you can just set axis_ratio = 1.
+        If for whatever reason you prefer a circular aperture to the elliptical approximation using the hessian
+        eigenvectors, you can just set axis_ratio = 1.
 
         To use the eigenvalues of the hessian matrix to estimate the optimum axis ratio, set axis_ratio = 0.
 
@@ -67,6 +71,16 @@ class LensModelExtensions(object):
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
         will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
+        :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
+        'DOUBLE_GAUSSIAN'.
+        :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
+        to the first
+        :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
+        relative to the first
         :return: an array of image magnifications
         """
 
@@ -81,8 +95,22 @@ class LensModelExtensions(object):
         pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
         source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
         source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
-        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
-        source_model = LightModel(['GAUSSIAN'])
+
+        if source_light_model == 'SINGLE_GAUSSIAN':
+            kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            source_model = LightModel(['GAUSSIAN'])
+        elif source_light_model == 'DOUBLE_GAUSSIAN':
+            amp_1 = 1.
+            kwargs_source_1 = [{'amp': amp_1, 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            # c = amp / (2 * np.pi * sigma**2)
+            amp_2 = amp_1 * amp_scale * size_scale ** 2
+            kwargs_source_2 = [{'amp': amp_2, 'center_x': source_x + dx, 'center_y': source_y + dy,
+                                'sigma': source_sigma_arcsec * size_scale}]
+            kwargs_source = kwargs_source_1 + kwargs_source_2
+            source_model = LightModel(['GAUSSIAN'] * 2)
+        else:
+            raise Exception('source light model must be specified, currently implemented models are  SINGLE_GAUSSIAN '
+                            'and DOUBLE_GAUSSIAN')
 
         npix = int(2 * grid_radius_arcsec / grid_resolution)
         _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)

@@ -148,17 +148,49 @@ class TestLensModelExtensions(object):
         npt.assert_array_less(mag_adaptive_grid / mag_point_source - 1, half_percent_precision)
 
         flux_array = np.array([0., 0.])
-        x_image, y_image = [x_image[0]], [y_image[0]]
         grid_x = np.array([0., source_sigma])
         grid_y = np.array([0., 0.])
         grid_r = np.hypot(grid_x, grid_y)
+
+        # test that the double gaussian profile has 2x the flux when dx, dy = 0
+        magnification_double_gaussian = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                                    source_fwhm_parsec, z_source, cosmo=self.cosmo,
+                                                      source_light_model='DOUBLE_GAUSSIAN', dx=0., dy=0., amp_scale=1., size_scale=1.)
+        npt.assert_almost_equal(magnification_double_gaussian, 2 * mag_adaptive_grid)
+
+
+        grid_radius = 0.3
+        npix = 400
+        _x = _y = np.linspace(-grid_radius, grid_radius, npix)
+        resolution = 2 * grid_radius / npix
+        xx, yy = np.meshgrid(_x, _y)
+        for i in range(0, 4):
+            beta_x, beta_y = lensmodel.ray_shooting(x_image[i] + xx.ravel(), y_image[i] + yy.ravel(), kwargs_lens)
+            source_light_model = LightModel(['GAUSSIAN'] * 2)
+            amp_scale, dx, dy, size_scale = 0.2, 0.005, -0.005, 1.
+            kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma},
+                             {'amp': amp_scale, 'center_x': source_x + dx, 'center_y': source_y + dy,
+                              'sigma': source_sigma * size_scale}]
+            sb = source_light_model.surface_brightness(beta_x, beta_y, kwargs_source)
+            magnification_double_gaussian_reference = np.sum(sb) * resolution ** 2
+            magnification_double_gaussian = extension.magnification_finite_adaptive([x_image[i]], [y_image[i]], source_x, source_y,
+                                                                                    kwargs_lens,
+                                                                                    source_fwhm_parsec, z_source,
+                                                                                    cosmo=self.cosmo,
+                                                                                    source_light_model='DOUBLE_GAUSSIAN',
+                                                                                    dx=dx, dy=dy, amp_scale=amp_scale,
+                                                                                    size_scale=size_scale,
+                                                                                    grid_resolution=resolution,
+                                                                                    grid_radius_arcsec=grid_radius,
+                                                                                    axis_ratio=1.)
+            npt.assert_almost_equal(magnification_double_gaussian/magnification_double_gaussian_reference, 1., 3)
 
         source_model = LightModel(['GAUSSIAN'])
         kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma}]
 
         r_min = 0.
         r_max = source_sigma * 0.9
-        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r,
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image[0], y_image[0], grid_x, grid_y, grid_r,
                                                                  r_min, r_max,
                                                                  lensmodel, kwargs_lens, source_model, kwargs_source)
         bx, by = lensmodel.ray_shooting(x_image[0], y_image[0], kwargs_lens)
@@ -169,7 +201,7 @@ class TestLensModelExtensions(object):
         r_min = source_sigma * 0.9
         r_max = 2 * source_sigma
 
-        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image, y_image, grid_x, grid_y, grid_r,
+        flux_array = extension._magnification_adaptive_iteration(flux_array, x_image[0], y_image[0], grid_x, grid_y, grid_r,
                                                                  r_min, r_max,
                                                                  lensmodel, kwargs_lens, source_model, kwargs_source)
         bx, by = lensmodel.ray_shooting(x_image[0] + source_sigma, y_image[0], kwargs_lens)

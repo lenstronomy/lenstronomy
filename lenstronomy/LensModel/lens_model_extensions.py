@@ -125,6 +125,7 @@ class LensModelExtensions(object):
                         fontsize=12)
             ax.annotate('flux ratio: ' + str(np.round(fr, 3)), xy=(0.05, 0.8), xycoords='axes fraction', color='w',
                         fontsize=12)
+        plt.show()
 
     def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
                                       source_fwhm_parsec, z_source,
@@ -133,7 +134,8 @@ class LensModelExtensions(object):
                                       tol=0.001, step_size=0.05,
                                       use_largest_eigenvalue=True,
                                       source_light_model='SINGLE_GAUSSIAN',
-                                      dx=None, dy=None, size_scale=None, amp_scale=None):
+                                      dx=None, dy=None, size_scale=None, amp_scale=None,
+                                      fixed_aperture_size=False):
         """
         This method computes image magnifications with a finite-size background source assuming a Gaussian or a
         double Gaussian source light profile. It can be much faster that magnification_finite for lens models with many
@@ -182,6 +184,8 @@ class LensModelExtensions(object):
         to the first
         :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
         relative to the first
+        :param fixed_aperture_size: bool, if True the flux is computed inside a fixed aperture size with radius
+        grid_radius_arcsec
         :return: an array of image magnifications
         """
 
@@ -245,8 +249,12 @@ class LensModelExtensions(object):
 
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec
+
             r_min = 0
-            r_max = step
+            if fixed_aperture_size:
+                r_max = grid_radius_arcsec
+            else:
+                r_max = step
             magnification_current = 0.
 
             while True:
@@ -257,8 +265,7 @@ class LensModelExtensions(object):
                 new_magnification = np.sum(flux_array) * grid_resolution ** 2
                 diff = abs(new_magnification - magnification_current) / new_magnification
 
-                # the sqrt(2) will allow this algorithm to fill up the entire square window
-                if r_max > np.sqrt(2) * grid_radius_arcsec:
+                if r_max >= grid_radius_arcsec:
                     break
                 elif diff < tol and new_magnification > minimum_magnification:
                     break

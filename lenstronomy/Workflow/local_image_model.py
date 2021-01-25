@@ -21,6 +21,8 @@ class LocalImageModel(object):
 
             self._image_models.append(new)
 
+        self._source_x_coordinate = source_x_coordinate
+        self._source_y_coordinate = source_y_coordinate
         self._lens_model_list_other = lens_model_list_other
         self._redshift_list_other = redshift_list_other
         self._kwargs_lens_other = kwargs_lens_other
@@ -152,54 +154,28 @@ class LocalImageModel(object):
 
         return kwargs_curved_arc, kwargs_full, lens_model_curved_arc, result
 
-    def model_from_samples(self, model_type, kappa_samples, gamma1_samples, gamma2_samples,
-                         angular_matching_scale, fit_setting, model_init=None,
-                         lens_model_init=None, kwargs_lens_init=None):
+    def model_flux_ratio(self, source_fwhm_parsec, kappa_constraint_list, gamma1_constraint_list,
+                         gamma2_constraint_list, angular_matching_scale, fit_setting, curved_arc_init=None,
+                         lens_model_init=None, kwargs_lens_init=None, verbose=False,
+                         **kwargs_magnification_finite):
 
-        # First use a Gaussian kernel density estimator to model the joint distribution of
-        # kappa, gamma1, gamma2, source_x, source_y samples
+        _, kwargs_lens, lens_model, _ = self.model_curved_arc(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
+                         angular_matching_scale, fit_setting, curved_arc_init,
+                         lens_model_init, kwargs_lens_init, verbose)
 
-        kde_list = self._setup_constraint_kde(kappa_samples, gamma1_samples, gamma2_samples)
+        extension = LensModelExtensions(lens_model)
 
-        kappa_constraint_list = []
-        gamma1_constraint_list = []
-        gamma2_constraint_list = []
+        magnifications = []
+        for i in range(0, len(self._x_image_coords)):
+            mag = extension.magnification_finite_adaptive([self._x_image_coords[i]],
+                                                                 [self._y_image_coords[i]],
+                                                                     self._source_x_coordinate,
+                                                                     self._source_y_coordinate,
+                                                                     kwargs_lens[i], source_fwhm_parsec,
+                                                          self._zsource, **kwargs_magnification_finite)
+            magnifications.append(float(mag))
 
-        for i in range(0, len(kde_list)):
-            samples = kde_list[i].resample()
-            (k, g1, g2) = samples
-            kappa_constraint_list.append(k)
-            gamma1_constraint_list.append(g1)
-            gamma2_constraint_list.append(g2)
-
-        if model_type == 'HESSIAN':
-            return self.model_hessian(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
-                                     angular_matching_scale, fit_setting, model_init, lens_model_init, kwargs_lens_init)
-        elif model_type == 'CURVED_ARC':
-            return self.model_curved_arc(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
-                                     angular_matching_scale, fit_setting, model_init, lens_model_init, kwargs_lens_init)
-
-
-    def _setup_constraint_kde(self, kappa_samples_list, gamma1_samples_list, gamma2_samples_list,
-                              bandwidth=0.01):
-
-        if not hasattr(self, '_kde_list'):
-
-            kde_list = []
-            for i in range(0, len(kappa_samples_list)):
-                dataset = np.empty(5, len(kappa_samples_list[i]))
-                dataset[0, :] = kappa_samples_list[i]
-                dataset[1, :] = gamma1_samples_list[i]
-                dataset[2, :] = gamma2_samples_list[i]
-                # use a really small bandwidth by default, effectively a histogram
-                kde = gaussian_kde(dataset, bw_method=bandwidth)
-                kde_list.append(kde)
-
-            self._kde_list = kde_list
-
-        return self._kde_list
-
-
-
+        flux_ratios = np.array(magnifications)/magnifications[0]
+        return flux_ratios
 
 

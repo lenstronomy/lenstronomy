@@ -115,15 +115,8 @@ class TestLensModelExtensions(object):
         flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
 
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
-<<<<<<< HEAD
-                                                                    source_fwhm_parsec, z_source,
-                                                                      cosmo=self.cosmo, tol=0.0001, axis_ratio=0)
-
-        flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2/max(mag_adaptive_grid_2)
-=======
                                                                       source_fwhm_parsec, z_source,
                                                                       cosmo=self.cosmo, axis_ratio=0)
->>>>>>> master
 
         flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2 / max(mag_adaptive_grid_2)
 

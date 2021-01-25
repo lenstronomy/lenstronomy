@@ -222,7 +222,8 @@ class TestLensModelExtensions(object):
         source_fwhm_parsec = 40.
 
         import matplotlib.pyplot as plt
-        extension.plot_quasar_images(x_image, y_image, source_x, source_y, source_fwhm_parsec, z_source)
+        extension.plot_quasar_images(x_image, y_image, source_x, source_y, kwargs_lens,
+                                     source_fwhm_parsec, z_source)
         plt.close()
 
     def test_zoom_source(self):

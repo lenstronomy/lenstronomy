@@ -156,6 +156,9 @@ Lensing of Gravitational Waves
 * Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
     *lensing magnificatoin calculations*
 
+* Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
+    *solving the lens equation*
+
 
 
 

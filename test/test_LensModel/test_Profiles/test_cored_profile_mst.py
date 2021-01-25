@@ -16,6 +16,7 @@ class TestMassSheet(object):
     def setup(self):
         self.profile1 = CoredDensityMST(profile_type='CORED_DENSITY')
         self.profile2 = CoredDensityMST(profile_type='CORED_DENSITY_2')
+        self.profile3 = CoredDensityMST(profile_type='CORED_DENSITY_EXP')
         self.kwargs_lens = {'lambda_approx': 1.1, 'r_core': 100, 'center_x': 0, 'center_y': 0}
 
     def test_function(self):

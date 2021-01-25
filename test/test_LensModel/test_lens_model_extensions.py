@@ -208,6 +208,23 @@ class TestLensModelExtensions(object):
         sb_true = source_model.surface_brightness(bx, by, kwargs_source)
         npt.assert_equal(True, flux_array[1] == sb_true)
 
+    def test_plot_quasar_images(self):
+
+        lens_model_list = ['EPL', 'SHEAR']
+        z_source = 1.5
+        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
+                       {'gamma1': 0.01, 'gamma2': 0.03}]
+        lensmodel = LensModel(lens_model_list)
+        extension = LensModelExtensions(lensmodel)
+        solver = LensEquationSolver(lensmodel)
+        source_x, source_y = 0.07, 0.03
+        x_image, y_image = solver.findBrightImage(source_x, source_y, kwargs_lens)
+        source_fwhm_parsec = 40.
+
+        import matplotlib.pyplot as plt
+        extension.plot_quasar_images(x_image, y_image, source_x, source_y, source_fwhm_parsec, z_source)
+        plt.close()
+
     def test_zoom_source(self):
         lens_model_list = ['SIE', 'SHEAR']
         lensModel = LensModel(lens_model_list=lens_model_list)

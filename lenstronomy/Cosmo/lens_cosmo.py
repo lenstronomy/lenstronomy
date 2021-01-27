@@ -189,7 +189,7 @@ class LensCosmo(object):
         """
         converts the physical mass and concentration parameter of an NFW profile into the lensing quantities
 
-        :param M: mass enclosed 200 rho_crit in units of M_sun
+        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :return: alpha_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)
         """
@@ -238,3 +238,39 @@ class LensCosmo(object):
         """
         theta_E = 4 * np.pi * (v_sigma * 1000./const.c) ** 2 * self.dds / self.ds / const.arcsec
         return theta_E
+
+    def uldm_angular2phys(self, kappa_0, theta_c):
+        """
+        converts the anguar parameters entering the LensModel Uldm() (Ultra Light
+        Dark Matter) class in physical masses, i.e. the total soliton mass and the
+        mass of the particle
+        :param kappa_0: central convergence of profile
+        :param theta_c: core radius (in arcseconds)
+        :return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun
+        """
+        D_Lens = self.dd * 10**6 # in parsec
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun / parsec^2
+        r_c = theta_c * const.arcsec * D_Lens
+        rho0 = 2048 * np.sqrt(0.091) * kappa_0 * Sigma_c / (429 * np.pi * r_c)
+        m_log10 = -22 + 0.5*np.log10(190 / rho0 * (r_c / 100)**(-4))
+        M_log10 = 9 + np.log10(160 * 1.4 / r_c) - 2 * (m_log10 + 22)
+        return m_log10, M_log10
+
+    def uldm_mphys2angular(self, m_log10, M_log10):
+        """
+        converts physical ULDM mass in the ones, in angular units, that enter
+        the LensModel Uldm() class
+        :param m_log10: exponent of ULDM mass in eV
+        :param M_log10: exponent of soliton mass in M_sun
+        :return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)
+        """
+        D_Lens = self.dd * 10**6 # in parsec
+        Sigma_c = self.sigma_crit * 10**(-12) # in M_sun/parsec^2
+        m22 = 10**(m_log10 + 22)
+        M9 = 10**(M_log10 -9)
+        r_c = 160 * 1.4 * m22**(-2) * M9**(-1) # core radius in parsec
+        rho0 = 190 * m22**(-2) * (r_c / 100)**(-4) # central density in M_sun/parsec^3
+        kappa_0 = 429 * np.pi * rho0 * r_c / (2048 * np.sqrt(0.091) * Sigma_c)
+        theta_c = r_c / D_Lens / const.arcsec
+        return kappa_0, theta_c
+

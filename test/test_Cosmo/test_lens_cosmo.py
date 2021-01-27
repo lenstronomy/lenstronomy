@@ -88,6 +88,21 @@ class TestLensCosmo(object):
         fermat_pot_out = self.lensCosmo.time_delay2fermat_pot(dt_days)
         npt.assert_almost_equal(fermat_pot, fermat_pot_out, decimal=10)
 
+    def test_uldm_angular2phys(self):
+
+        kappa_0, theta_c = 0.1, 3
+        mlog10, Mlog10 = self.lensCosmo.uldm_angular2phys(kappa_0, theta_c)
+        npt.assert_almost_equal(mlog10, -24.3610006, decimal=5)
+        npt.assert_almost_equal(Mlog10, 11.7195843, decimal=5)
+
+    def test_uldm_mphys2angular(self):
+
+        m_log10, M_log10 = -24, 11
+        kappa_0, theta_c = self.lensCosmo.uldm_mphys2angular(m_log10, M_log10)
+        mcheck, Mcheck = self.lensCosmo.uldm_angular2phys(kappa_0, theta_c)
+        npt.assert_almost_equal(mcheck, m_log10, decimal=4)
+        npt.assert_almost_equal(Mcheck, M_log10, decimal=4)
+
     def test_a_z(self):
 
         a = self.lensCosmo.a_z(z=1)

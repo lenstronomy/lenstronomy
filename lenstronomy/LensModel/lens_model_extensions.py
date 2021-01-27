@@ -26,25 +26,132 @@ class LensModelExtensions(object):
         """
         self._lensModel = lensModel
 
+    def plot_quasar_images(self, x_image, y_image, source_x, source_y, kwargs_lens,
+                           source_fwhm_parsec, z_source,
+                           cosmo=None, grid_resolution=None,
+                           grid_radius_arcsec=None,
+                           source_light_model='SINGLE_GAUSSIAN',
+                           dx=None, dy=None, size_scale=None, amp_scale=None
+                           ):
+
+        """
+        This function plots the surface brightness in the image plane of a background source modeled as either a single
+        Gaussian or two Gaussian light profiles. The flux is computed inside a circular aperture with radius
+        grid_radius_arcsec. If grid_radius_arcsec is not specified a default value will be assumed.
+
+        :param x_image: a list or array of x coordinates [units arcsec]
+        :param y_image: a list or array of y coordinates [units arcsec]
+        :param kwargs_lens: keyword arguments for the lens model
+        :param source_fwhm_parsec: the size of the background source [units parsec]
+        :param z_source: the source redshift
+        :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
+        :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
+        be estimated from the source size
+        :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
+        will be estimated from the source size
+        :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
+        'DOUBLE_GAUSSIAN'.
+        :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
+        to the first
+        :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
+        relative to the first
+        :return: Four images of the background source in the image plane
+        """
+
+        if cosmo is None:
+            cosmo = self._lensModel.cosmo
+
+        if grid_radius_arcsec is None:
+            grid_radius_arcsec = auto_raytracing_grid_size(source_fwhm_parsec)
+        if grid_resolution is None:
+            grid_resolution = auto_raytracing_grid_resolution(source_fwhm_parsec)
+
+        pc_per_arcsec = 1000 / cosmo.arcsec_per_kpc_proper(z_source).value
+        source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
+        source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
+
+        if source_light_model == 'SINGLE_GAUSSIAN':
+            kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            source_model = LightModel(['GAUSSIAN'])
+        elif source_light_model == 'DOUBLE_GAUSSIAN':
+            amp_1 = 1.
+            kwargs_source_1 = [{'amp': amp_1, 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            # c = amp / (2 * np.pi * sigma**2)
+            amp_2 = amp_1 * amp_scale * size_scale ** 2
+            kwargs_source_2 = [{'amp': amp_2, 'center_x': source_x + dx, 'center_y': source_y + dy,
+                                'sigma': source_sigma_arcsec * size_scale}]
+            kwargs_source = kwargs_source_1 + kwargs_source_2
+            source_model = LightModel(['GAUSSIAN'] * 2)
+        else:
+            raise Exception('source light model must be specified, currently implemented models are  SINGLE_GAUSSIAN '
+                            'and DOUBLE_GAUSSIAN')
+
+        npix = int(2 * grid_radius_arcsec / grid_resolution)
+        _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+        _grid_y = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
+        grid_x_0, grid_y_0 = np.meshgrid(_grid_x, _grid_y)
+        shape0 = grid_x_0.shape
+        grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
+
+        magnifications = []
+        images = []
+
+        for xi, yi in zip(x_image, y_image):
+            flux_array = np.zeros_like(grid_x_0)
+            r_min = 0
+            r_max = grid_radius_arcsec
+            grid_r = np.hypot(grid_x_0, grid_y_0)
+            flux_array = self._magnification_adaptive_iteration(flux_array, xi, yi, grid_x_0, grid_y_0, grid_r,
+                                                                r_min, r_max, self._lensModel, kwargs_lens,
+                                                                source_model, kwargs_source)
+            m = np.sum(flux_array) * grid_resolution ** 2
+            magnifications.append(m)
+            images.append(flux_array.reshape(shape0))
+
+        magnifications = np.array(magnifications)
+        flux_ratios = magnifications/max(magnifications)
+        import matplotlib.pyplot as plt
+        fig = plt.figure(1)
+        fig.set_size_inches(16, 6)
+        N = len(images)
+        for i, (image, mag, fr) in enumerate(zip(images, magnifications, flux_ratios)):
+            ax = plt.subplot(1, N, i+1)
+            ax.imshow(image, origin='lower',
+                      extent=[-grid_radius_arcsec, grid_radius_arcsec, -grid_radius_arcsec, grid_radius_arcsec])
+            ax.annotate('magnification: '+str(np.round(mag, 3)), xy=(0.05, 0.9), xycoords='axes fraction', color='w',
+                        fontsize=12)
+            ax.annotate('flux ratio: ' + str(np.round(fr, 3)), xy=(0.05, 0.8), xycoords='axes fraction', color='w',
+                        fontsize=12)
+        plt.show()
+
     def magnification_finite_adaptive(self, x_image, y_image, source_x, source_y, kwargs_lens,
                                       source_fwhm_parsec, z_source,
-                                      cosmo=None, grid_resolution=None, grid_radius_arcsec=None, axis_ratio=0.5,
+                                      cosmo=None, grid_resolution=None,
+                                      grid_radius_arcsec=None, axis_ratio=0.5,
                                       tol=0.001, step_size=0.05,
-                                      use_largest_eigenvalue=True):
+                                      use_largest_eigenvalue=True,
+                                      source_light_model='SINGLE_GAUSSIAN',
+                                      dx=None, dy=None, size_scale=None, amp_scale=None,
+                                      fixed_aperture_size=False):
         """
-        This method computes image magnifications with a finite-size background source assuming a Gaussian
-        source light profile. It can be much faster that magnification_finite for lens models with many
-        deflectors and a relatively compact source. This is because most pixels in a rectangular window around a lensed
-        image of a compact source will contain zero flux, and therefore don't contribute to the image brightness.
+        This method computes image magnifications with a finite-size background source assuming a Gaussian or a
+        double Gaussian source light profile. It can be much faster that magnification_finite for lens models with many
+        deflectors and a compact source. This is because most pixels in a rectangular window around a lensed
+        image of a compact source do not map onto the source, and therefore don't contribute to the integrated flux in
+        the image plane.
 
         Rather than ray tracing through a rectangular grid, this routine accelerates the computation of image
-        magnifications with finite-size sources by ray tracing through an elliptical aperture oriented such that
-        it resembles the surface brightness of the lensed image itself. The aperture size is initially quite small,
+        magnifications with finite-size sources by ray tracing through an elliptical region oriented such that
+        tracks the surface brightness of the lensed image. The aperture size is initially quite small,
         and increases in size until the flux inside of it (and hence the magnification) converges. The orientation of
-        the elliptical aperture is computed from the magnification tensor at the image coordinate.
+        the elliptical aperture is computed from the magnification tensor evaluated at the image coordinate.
 
-        If for whatever reason you prefer a circular aperture to the elliptical approximation using the hessian eigenvectors,
-        you can just set axis_ratio = 1.
+        If for whatever reason you prefer a circular aperture to the elliptical approximation using the hessian
+        eigenvectors, you can just set axis_ratio = 1.
 
         To use the eigenvalues of the hessian matrix to estimate the optimum axis ratio, set axis_ratio = 0.
 
@@ -68,6 +175,18 @@ class LensModelExtensions(object):
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
         will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
+        :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
+        'DOUBLE_GAUSSIAN'.
+        :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
+        [arcsec]
+        :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
+        to the first
+        :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
+        relative to the first
+        :param fixed_aperture_size: bool, if True the flux is computed inside a fixed aperture size with radius
+        grid_radius_arcsec
         :return: an array of image magnifications
         """
 
@@ -83,8 +202,22 @@ class LensModelExtensions(object):
 
         source_fwhm_arcsec = source_fwhm_parsec / pc_per_arcsec
         source_sigma_arcsec = fwhm2sigma(source_fwhm_arcsec)
-        kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
-        source_model = LightModel(['GAUSSIAN'])
+
+        if source_light_model == 'SINGLE_GAUSSIAN':
+            kwargs_source = [{'amp': 1., 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            source_model = LightModel(['GAUSSIAN'])
+        elif source_light_model == 'DOUBLE_GAUSSIAN':
+            amp_1 = 1.
+            kwargs_source_1 = [{'amp': amp_1, 'center_x': source_x, 'center_y': source_y, 'sigma': source_sigma_arcsec}]
+            # c = amp / (2 * np.pi * sigma**2)
+            amp_2 = amp_1 * amp_scale * size_scale ** 2
+            kwargs_source_2 = [{'amp': amp_2, 'center_x': source_x + dx, 'center_y': source_y + dy,
+                                'sigma': source_sigma_arcsec * size_scale}]
+            kwargs_source = kwargs_source_1 + kwargs_source_2
+            source_model = LightModel(['GAUSSIAN'] * 2)
+        else:
+            raise Exception('source light model must be specified, currently implemented models are  SINGLE_GAUSSIAN '
+                            'and DOUBLE_GAUSSIAN')
 
         npix = int(2 * grid_radius_arcsec / grid_resolution)
         _grid_x = np.linspace(-grid_radius_arcsec, grid_radius_arcsec, npix)
@@ -118,8 +251,12 @@ class LensModelExtensions(object):
 
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec
+
             r_min = 0
-            r_max = step
+            if fixed_aperture_size:
+                r_max = grid_radius_arcsec
+            else:
+                r_max = step
             magnification_current = 0.
 
             while True:
@@ -130,8 +267,7 @@ class LensModelExtensions(object):
                 new_magnification = np.sum(flux_array) * grid_resolution ** 2
                 diff = abs(new_magnification - magnification_current) / new_magnification
 
-                # the sqrt(2) will allow this algorithm to fill up the entire square window
-                if r_max > np.sqrt(2) * grid_radius_arcsec:
+                if r_max >= grid_radius_arcsec:
                     break
                 elif diff < tol and new_magnification > minimum_magnification:
                     break

@@ -314,7 +314,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_uldm(self):
-        kwargs = {'kappa_0': 0.1, 'theta_c': 8}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 5, 'slope': 9.5}
         lens_model = ['ULDM']
         self.assert_differentials(lens_model, kwargs)
 

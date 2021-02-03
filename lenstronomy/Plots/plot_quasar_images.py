@@ -1,4 +1,4 @@
-from lenstronomy.Util.magnification_finite_util import setup
+from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 import numpy as np
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
@@ -44,8 +44,8 @@ def plot_quasar_images(lens_model, x_image, y_image, source_x, source_y, kwargs_
     images = []
 
     grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec = \
-        setup(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec,
-              source_light_model, z_source, source_x, source_y, dx, dy, amp_scale, size_scale)
+        setup_mag_finite(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec,
+                         source_light_model, z_source, source_x, source_y, dx, dy, amp_scale, size_scale)
     shape0 = grid_x_0.shape
     grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 

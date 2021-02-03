@@ -1,7 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 from skimage.measure import find_contours
-from lenstronomy.Util.magnification_finite_util import setup
+from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 
 __all__ = ['LensModelExtensions']
 
@@ -85,18 +85,18 @@ class LensModelExtensions(object):
         :return: an array of image magnifications
         """
 
-        grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec = setup(cosmo,
-                                                                                                     self._lensModel,
-                                                                                                     grid_radius_arcsec,
-                                                                                                     grid_resolution,
-                                                                                                     source_fwhm_parsec,
-                                                                                                     source_light_model,
-                                                                                                     z_source,
-                                                                                                     source_x,
-                                                                                                     source_y,
-                                                                                                     dx, dy,
-                                                                                                     amp_scale,
-                                                                                                     size_scale)
+        grid_x_0, grid_y_0, source_model, kwargs_source, grid_resolution, grid_radius_arcsec = setup_mag_finite(cosmo,
+                                                                                                                self._lensModel,
+                                                                                                                grid_radius_arcsec,
+                                                                                                                grid_resolution,
+                                                                                                                source_fwhm_parsec,
+                                                                                                                source_light_model,
+                                                                                                                z_source,
+                                                                                                                source_x,
+                                                                                                                source_y,
+                                                                                                                dx, dy,
+                                                                                                                amp_scale,
+                                                                                                                size_scale)
         grid_x_0, grid_y_0 = grid_x_0.ravel(), grid_y_0.ravel()
 
         minimum_magnification = 1e-5

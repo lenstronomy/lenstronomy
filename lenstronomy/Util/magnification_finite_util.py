@@ -31,8 +31,8 @@ def auto_raytracing_grid_resolution(source_fwhm_parcsec, grid_resolution_scale=0
     grid_resolution = grid_resolution_scale * (source_fwhm_parcsec / ref) ** power
     return grid_resolution
 
-def setup(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec, source_light_model, z_source,
-          source_x, source_y, dx, dy, amp_scale, size_scale):
+def setup_mag_finite(cosmo, lens_model, grid_radius_arcsec, grid_resolution, source_fwhm_parsec, source_light_model, z_source,
+                     source_x, source_y, dx, dy, amp_scale, size_scale):
 
     """
     Sets up the ray tracing grid and source light model for magnification_finite_adaptive and

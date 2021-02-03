@@ -1,8 +1,55 @@
 from lenstronomy.LensModel.QuadOptimizer.multi_scale_model import MultiScaleModel
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.lens_model import LensModel
-from scipy.stats.kde import gaussian_kde
+from multiprocessing.pool import Pool
 import numpy as np
+
+# def compute_magnifications_pool(args_list, nproc):
+#
+#     pool = Pool(nproc)
+#     out = pool.map(compute_magnifications, args_list)
+#     pool.close()
+#     return out
+
+def compute_magnifications_pool(args_list, pool):
+
+    out = pool.map(compute_magnifications, args_list)
+
+    return out
+
+def compute_magnifications(args):
+    
+    fit_setting = 'FREE'
+    kwargs_magnification_finite = {'grid_resolution': 0.001}
+
+    (sample_index, matching_scale, source_fwhm_pc, z_lens, z_source, kwargs_mcmc_fit,
+     lens_model_fit, kwargs_lens_fit, lens_model_list_other, redshift_list_other, kwargs_lens_other,
+     fit_model) = args
+
+    kwargs_lens_fit = kwargs_mcmc_fit['kwargs_lens']
+    kwargs_ps_fit = kwargs_mcmc_fit['kwargs_ps'][0]
+
+    x_img, y_img = kwargs_ps_fit['ra_image'], kwargs_ps_fit['dec_image']
+    source_x_sample, source_y_sample = lens_model_fit.ray_shooting(x_img, y_img, kwargs_lens_fit)
+    src_x, src_y = np.mean(source_x_sample), np.mean(source_y_sample)
+
+    local_image_model = LocalImageModel(x_img, y_img,
+                                        src_x, src_y,
+                                        lens_model_list_other, list(redshift_list_other),
+                                        kwargs_lens_other, z_lens, z_source)
+
+    fxx_fit, fxy_fit, fyx_fit, fyy_fit = lens_model_fit.hessian(x_img, y_img, kwargs_lens_fit,
+                                                                diff=matching_scale)
+    kappa_constraint = 0.5 * (fxx_fit + fyy_fit)
+    gamma1_constraint = 0.5 * (fxx_fit - fyy_fit)
+    gamma2_constraint = 0.5 * (fxy_fit + fyx_fit)
+
+    m = local_image_model.model_magnifications(source_fwhm_pc, kappa_constraint, gamma1_constraint,
+                                            gamma2_constraint, matching_scale, fit_setting, curved_arc_init=None,
+                                            lens_model_init=lens_model_fit, kwargs_lens_init=kwargs_lens_fit,
+                                            verbose=False, fit_model=fit_model,
+                                            **kwargs_magnification_finite)
+    return m
 
 class LocalImageModel(object):
 
@@ -154,14 +201,21 @@ class LocalImageModel(object):
 
         return kwargs_curved_arc, kwargs_full, lens_model_curved_arc, result
 
-    def model_flux_ratio(self, source_fwhm_parsec, kappa_constraint_list, gamma1_constraint_list,
+    def model_magnifications(self, source_fwhm_parsec, kappa_constraint_list, gamma1_constraint_list,
                          gamma2_constraint_list, angular_matching_scale, fit_setting, curved_arc_init=None,
-                         lens_model_init=None, kwargs_lens_init=None, verbose=False,
+                         lens_model_init=None, kwargs_lens_init=None, verbose=False, fit_model='CURVED_ARC',
                          **kwargs_magnification_finite):
 
-        _, kwargs_lens, lens_model, _ = self.model_curved_arc(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
+        if fit_model == 'CURVED_ARC':
+            _, kwargs_lens, lens_model, _ = self.model_curved_arc(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
                          angular_matching_scale, fit_setting, curved_arc_init,
                          lens_model_init, kwargs_lens_init, verbose)
+        elif fit_model == 'HESSIAN':
+            _, kwargs_lens, lens_model, _ = self.model_hessian(kappa_constraint_list, gamma1_constraint_list, gamma2_constraint_list,
+                         angular_matching_scale, curved_arc_init,
+                         lens_model_init, kwargs_lens_init, verbose)
+        else:
+            raise Exception('fit_model must be HESSIAN or CURVED_ARC')
 
         extension = LensModelExtensions(lens_model)
 
@@ -175,7 +229,6 @@ class LocalImageModel(object):
                                                           self._zsource, **kwargs_magnification_finite)
             magnifications.append(float(mag))
 
-        flux_ratios = np.array(magnifications)/magnifications[0]
-        return flux_ratios
+        return np.array(magnifications)
 
 

@@ -64,7 +64,7 @@ class TestLensModelExtensions(object):
                                               grid_number=100)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
-    def test_elliptical_ray_trace(self):
+    def test_magnification_finite(self):
 
         lens_model_list = ['SPEP','SHEAR']
 
@@ -79,7 +79,6 @@ class TestLensModelExtensions(object):
                                                          grid_number=200, window_size=0.1)
         mag_polar_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
                                                         grid_number=200, window_size=0.1, polar_grid=True)
-
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
     def test_magnification_finite_adaptive(self):

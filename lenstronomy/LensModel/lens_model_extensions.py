@@ -207,13 +207,8 @@ class LensModelExtensions(object):
 
         mag_finite = np.zeros_like(x_pos)
         deltaPix = float(window_size)/grid_number
-        if shape == 'GAUSSIAN':
-            from lenstronomy.LightModel.Profiles.gaussian import Gaussian
-            quasar = Gaussian()
-        elif shape == 'TORUS':
-            import lenstronomy.LightModel.Profiles.ellipsoid as quasar
-        else:
-            raise ValueError("shape %s not valid for finite magnification computation!" % shape)
+        from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+        quasar = Gaussian()
         x_grid, y_grid = util.make_grid(numPix=grid_number, deltapix=deltaPix, subgrid_res=1)
 
         if polar_grid is True:

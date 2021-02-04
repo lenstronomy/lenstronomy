@@ -18,7 +18,8 @@ class FluxRatioLikelihood(object):
         :param param_class: Param() class instance
         :param flux_ratios: ratio of fluxes of the multiple images (relative to the first appearing)
         :param flux_ratio_errors: errors in the flux ratios (relative to the first appearing
-        :param source_type: string, type of source, options are 'INF', 'GAUSSIAN', 'TORUS
+        :param source_type: string, type of source, 'INF' specifies a point source, while 'GAUSSIAN' specifies a
+        finite-size source modeled as a Gaussian
         :param window_size: size of window to compute the finite flux
         :param grid_number: number of grid cells per axis in the window to numerically comute the flux
         """
@@ -47,7 +48,7 @@ class FluxRatioLikelihood(object):
             mag = self._lens_model_extensions.magnification_finite(x_pos, y_pos, kwargs_lens, source_sigma=source_sigma,
                                                                    window_size=self._window_size,
                                                                    grid_number=self._gird_number,
-                                                                   shape=self._source_type, polar_grid=self._polar_grid,
+                                                                   polar_grid=self._polar_grid,
                                                                    aspect_ratio=self._aspect_ratio)
         mag_ratio = mag[1:] / mag[0]
         return self._logL(mag_ratio)

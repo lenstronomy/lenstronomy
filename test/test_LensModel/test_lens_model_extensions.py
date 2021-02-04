@@ -114,6 +114,12 @@ class TestLensModelExtensions(object):
                                                                     z_source, cosmo=self.cosmo)
         flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
 
+        mag_adaptive_grid_fixed_aperture_size = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                    source_fwhm_parsec,
+                                                    z_source, cosmo=self.cosmo, fixed_aperture_size=True,
+                                                    grid_radius_arcsec=0.2)
+        flux_ratios_fixed_aperture_size = mag_adaptive_grid_fixed_aperture_size / max(mag_adaptive_grid_fixed_aperture_size)
+
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                       source_fwhm_parsec, z_source,
                                                                       cosmo=self.cosmo, axis_ratio=0)
@@ -139,6 +145,8 @@ class TestLensModelExtensions(object):
 
         quarter_precent_precision = [0.0025] * 4
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid - 1,
+                              quarter_precent_precision)
+        npt.assert_array_less(flux_ratios_fixed_aperture_size / flux_ratios_adaptive_grid - 1,
                               quarter_precent_precision)
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid_2 - 1,
                               quarter_precent_precision)

@@ -56,5 +56,34 @@ class TestMagnificationFiniteUtil(object):
         npt.assert_equal(True, grid_resolution == 0.001)
         npt.assert_equal(True, grid_radius_arcsec == 0.05)
 
+        source_light_model = 'trash'
+        gridx, gridy, source_model, kwargs_source, grid_resolution, grid_radius_arcsec = setup_mag_finite(cosmo,
+                                                                                                          lens_model,
+                                                                                                          grid_radius_arcsec,
+                                                                                                          grid_resolution,
+                                                                                                          source_fwhm_parsec,
+                                                                                                          source_light_model,
+                                                                                                          z_source,
+                                                                                                          source_x,
+                                                                                                          source_y, dx,
+                                                                                                          dy,
+                                                                                                          amp_scale,
+                                                                                                          size_scale)
+        npt.assert_raises(Exception, setup_mag_finite,
+                          cosmo,
+                          lens_model,
+                          grid_radius_arcsec,
+                          grid_resolution,
+                          source_fwhm_parsec,
+                          source_light_model,
+                          z_source,
+                          source_x,
+                          source_y, dx,
+                          dy,
+                          amp_scale,
+                          size_scale
+                          )
+
+
 if __name__ == '__main__':
     pytest.main()

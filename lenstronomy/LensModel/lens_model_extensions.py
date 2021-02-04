@@ -193,7 +193,7 @@ class LensModelExtensions(object):
         return flux_array
 
     def magnification_finite(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
-                             shape="GAUSSIAN", polar_grid=False, aspect_ratio=0.5):
+                             polar_grid=False, aspect_ratio=0.5):
         """
         returns the magnification of an extended source with Gaussian light profile
         :param x_pos: x-axis positons of point sources

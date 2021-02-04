@@ -144,6 +144,11 @@ Quasar-host galaxy decomposition
 * Testing the Evolution of the Correlations between Supermassive Black Holes and their Host Galaxies using Eight Strongly Lensed Quasars; `Ding et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200513550D/abstract>`_
     *Quasar host galaxy decomposition with lensed quasars.*
 
+* A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
+    *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
+
+
+
 
 Lensing of Gravitational Waves
 ------------------------------

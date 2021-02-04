@@ -64,7 +64,7 @@ class TestLensModelExtensions(object):
                                               grid_number=100)
         npt.assert_almost_equal(mag[0], 0.98848384784633392, decimal=5)
 
-    def test_elliptical_ray_trace(self):
+    def test_magnification_finite(self):
 
         lens_model_list = ['SPEP','SHEAR']
 
@@ -79,7 +79,6 @@ class TestLensModelExtensions(object):
                                                          grid_number=200, window_size=0.1)
         mag_polar_grid = extension.magnification_finite(x_image, y_image, kwargs_lens, source_sigma=0.001,
                                                         grid_number=200, window_size=0.1, polar_grid=True)
-
         npt.assert_almost_equal(mag_polar_grid,mag_square_grid,decimal=5)
 
     def test_magnification_finite_adaptive(self):
@@ -114,6 +113,12 @@ class TestLensModelExtensions(object):
                                                                     z_source, cosmo=self.cosmo)
         flux_ratios_adaptive_grid = mag_adaptive_grid / max(mag_adaptive_grid)
 
+        mag_adaptive_grid_fixed_aperture_size = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                    source_fwhm_parsec,
+                                                    z_source, cosmo=self.cosmo, fixed_aperture_size=True,
+                                                    grid_radius_arcsec=0.2)
+        flux_ratios_fixed_aperture_size = mag_adaptive_grid_fixed_aperture_size / max(mag_adaptive_grid_fixed_aperture_size)
+
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                       source_fwhm_parsec, z_source,
                                                                       cosmo=self.cosmo, axis_ratio=0)
@@ -139,6 +144,8 @@ class TestLensModelExtensions(object):
 
         quarter_precent_precision = [0.0025] * 4
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid - 1,
+                              quarter_precent_precision)
+        npt.assert_array_less(flux_ratios_fixed_aperture_size / flux_ratios_adaptive_grid - 1,
                               quarter_precent_precision)
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid_2 - 1,
                               quarter_precent_precision)
@@ -207,24 +214,6 @@ class TestLensModelExtensions(object):
         bx, by = lensmodel.ray_shooting(x_image[0] + source_sigma, y_image[0], kwargs_lens)
         sb_true = source_model.surface_brightness(bx, by, kwargs_source)
         npt.assert_equal(True, flux_array[1] == sb_true)
-
-    def test_plot_quasar_images(self):
-
-        lens_model_list = ['EPL', 'SHEAR']
-        z_source = 1.5
-        kwargs_lens = [{'theta_E': 1., 'gamma': 2., 'e1': 0.02, 'e2': -0.09, 'center_x': 0, 'center_y': 0},
-                       {'gamma1': 0.01, 'gamma2': 0.03}]
-        lensmodel = LensModel(lens_model_list)
-        extension = LensModelExtensions(lensmodel)
-        solver = LensEquationSolver(lensmodel)
-        source_x, source_y = 0.07, 0.03
-        x_image, y_image = solver.findBrightImage(source_x, source_y, kwargs_lens)
-        source_fwhm_parsec = 40.
-
-        import matplotlib.pyplot as plt
-        extension.plot_quasar_images(x_image, y_image, source_x, source_y, kwargs_lens,
-                                     source_fwhm_parsec, z_source)
-        plt.close()
 
     def test_zoom_source(self):
         lens_model_list = ['SIE', 'SHEAR']

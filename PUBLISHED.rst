@@ -27,6 +27,11 @@ Related software publications
 * SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
     *This is the method paper presenting SLITromomy, an improved version of the SLIT algorithm fully implemented and compatible with lenstronomy.*
 
+* deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021 <https://arxiv.org/abs/2102.02830>`_
+    *Software to simulating large datasets for applying deep learning to strong gravitational lensing.*
+
+
+
 
 Measuring the Hubble constant
 -----------------------------

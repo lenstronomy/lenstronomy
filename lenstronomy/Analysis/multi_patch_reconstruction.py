@@ -1,6 +1,8 @@
 from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstruction
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.imaging_data import ImageData
+from lenstronomy.Data.coord_transforms import Coordinates
+from lenstronomy.Util import util
 import numpy as np
 import numpy.testing as npt
 
@@ -152,3 +154,38 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
                 alpha_x_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = alpha_x
                 alpha_y_joint[int(y_min):int(y_min + ny_i), int(x_min):int(x_min + nx_i)] = alpha_y
         return kappa_joint, magnification_joint, alpha_x_joint, alpha_y_joint
+
+    def source(self, num_pix, delta_pix, center=None):
+        """
+        source in the same coordinate system as the image
+
+        :param num_pix: number of pixels per axes
+        :param delta_pix: pixel size
+        :param center: list with two entries [center_x, center_y] (optional)
+        :return: 2d surface brightness grid of the reconstructed source and PixelGrid() instance of source grid
+        """
+        Mpix2coord = self._pixel_grid_joint.transform_pix2angle * delta_pix / self._pixel_grid_joint.pixel_width
+        x_grid_source, y_grid_source = util.make_grid_transformed(num_pix, Mpix2Angle=Mpix2coord)
+        ra_at_xy_0, dec_at_xy_0 = x_grid_source[0], y_grid_source[0]
+
+        image_model = self.model_band_list[0].image_model_class
+        kwargs_model = self.model_band_list[0].kwargs_model
+        kwargs_source = kwargs_model['kwargs_source']
+
+        center_x = 0
+        center_y = 0
+        if center is not None:
+            center_x, center_y = center[0], center[1]
+        elif len(kwargs_source) > 0:
+            center_x = kwargs_source[0]['center_x']
+            center_y = kwargs_source[0]['center_y']
+        x_grid_source += center_x
+        y_grid_source += center_y
+
+        pixel_grid = PixelGrid(nx=num_pix, ny=num_pix,transform_pix2angle=Mpix2coord,
+                                    ra_at_xy_0=ra_at_xy_0 + center_x,
+                                    dec_at_xy_0=dec_at_xy_0 + center_y)
+
+        source = image_model.SourceModel.surface_brightness(x_grid_source, y_grid_source, kwargs_source)
+        source = util.array2image(source) * delta_pix ** 2
+        return source, pixel_grid

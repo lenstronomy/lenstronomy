@@ -40,8 +40,8 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 @export
 def text_description(ax, d, text, color='w', backgroundcolor='k',
                      flipped=False, font_size=15):
-    c_vertical = font_size / 10.**2
-    c_horizontal = 1./20
+    c_vertical = 1/15. #+ font_size / d / 10.**2
+    c_horizontal = 1./30
     if flipped:
         ax.text(d - d * c_horizontal, d - d * c_vertical, text, color=color,
                 fontsize=font_size,

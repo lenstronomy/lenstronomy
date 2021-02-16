@@ -10,13 +10,12 @@ from lenstronomy.Util import image_util
 import pytest
 
 import numpy as np
-import numpy.testing as npt
-import unittest
+import matplotlib.pyplot as plt
 
-from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction
+from lenstronomy.Plots.multi_patch_plot import MultiPatchPlot
 
 
-class TestMultiPatchReconstruction(object):
+class TestMultiPatchPlot(object):
 
     def setup(self):
         # data specifics
@@ -108,81 +107,50 @@ class TestMultiPatchReconstruction(object):
             multi_band_list.append([kwargs_data_i, kwargs_psf, kwargs_numerics])
 
         kwargs_params = {'kwargs_lens': kwargs_lens_true, 'kwargs_source': kwargs_source_true}
-        self.multiPatch = MultiPatchReconstruction(multi_band_list, kwargs_model, kwargs_params,
-                                                   multi_band_type='joint-linear', kwargs_likelihood=None, verbose=True)
+        self.multiPatch = MultiPatchPlot(multi_band_list, kwargs_model, kwargs_params, multi_band_type='joint-linear',
+                 kwargs_likelihood=None, verbose=True, cmap_string="gist_heat")
         self.data_class = data_class
         self.model = model
         self.lens_model_class = lens_model_class
         self.kwargs_lens = kwargs_lens_true
 
-    def test_pixel_grid(self):
-        pixel_grid = self.multiPatch.pixel_grid_joint
-        nx, ny = pixel_grid.num_pixel_axes
-        assert nx == 74
-        assert ny == 67
+    def test_data_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.data_plot(ax)
+        plt.close()
 
-    def test_image_joint(self):
-        image_joint, model_joint, norm_residuals_joint = self.multiPatch.image_joint()
+    def test_model_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.model_plot(ax)
+        plt.close()
 
-        # compute pixel shift from original
-        pixel_grid = self.multiPatch.pixel_grid_joint
-        nx, ny = pixel_grid.num_pixel_axes
-        ra, dec = pixel_grid.radec_at_xy_0
-        x0, y0 = self.data_class.map_coord2pix(ra, dec)
-        # cutout original
-        data = self.data_class.data
-        data_cut = data[int(y0):int(y0+ny), int(x0):int(x0+nx)]
-        model_cut = self.model[int(y0):int(y0 + ny), int(x0):int(x0 + nx)]
-        # compare with original
-        npt.assert_almost_equal(data_cut[image_joint > 0], image_joint[image_joint > 0], decimal=5)
-        model_cut[model_joint == 0] = 0
-        print(np.sum(model_cut), np.sum(model_joint), 'test sum')
-        #import matplotlib.pyplot as plt
-        #plt.matshow((model_joint - model_cut))
-        #plt.show()
+    def test_source_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.source_plot(ax, delta_pix=0.01, num_pix=50, center=None)
+        plt.close()
 
-        #plt.matshow(model_cut)
-        #plt.show()
-        # TODO make this test more precise (to do with narrower PSF convolution?)
-        npt.assert_almost_equal(model_cut[model_joint > 0], model_joint[model_joint > 0], decimal=1)
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.source_plot(ax, delta_pix=0.01, num_pix=50, center=[0, 0])
+        plt.close()
 
-    def test_lens_model_joint(self):
-        kappa_joint, magnification_joint, alpha_x_joint, alpha_y_joint = self.multiPatch.lens_model_joint()
+    def test_normalized_residual_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.normalized_residual_plot(ax)
+        plt.close()
 
-        # compute pixel shift from original
-        pixel_grid = self.multiPatch.pixel_grid_joint
-        nx, ny = pixel_grid.num_pixel_axes
-        ra, dec = pixel_grid.radec_at_xy_0
-        x0, y0 = self.data_class.map_coord2pix(ra, dec)
-        # cutout original
-        x_grid, y_grid = self.data_class.pixel_coordinates
-        kappa = self.lens_model_class.kappa(x_grid, y_grid, self.kwargs_lens)
-        kappa_cut = kappa[int(y0):int(y0+ny), int(x0):int(x0+nx)]
-        # compare with original
-        npt.assert_almost_equal(kappa_cut[kappa_joint > 0], kappa_joint[kappa_joint > 0], decimal=5)
+    def test_convergence_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.convergence_plot(ax)
+        plt.close()
 
-        alpha_x, alpha_y = self.lens_model_class.alpha(x_grid, y_grid, self.kwargs_lens)
-        alpha_x_cut = alpha_x[int(y0):int(y0 + ny), int(x0):int(x0 + nx)]
-        # compare with original
-        npt.assert_almost_equal(alpha_x_cut[alpha_x_joint > 0], alpha_x_joint[alpha_x_joint > 0], decimal=5)
+    def test_magnification_plot(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = self.multiPatch.magnification_plot(ax)
+        plt.close()
 
-    def test_source(self):
-
-        source, coords = self.multiPatch.source(num_pix=50, delta_pix=0.01, center=None)
-        nx, ny = np.shape(source)
-        assert nx == 50
-
-        source, coords = self.multiPatch.source(num_pix=50, delta_pix=0.01, center=[0, 0])
-        nx, ny = np.shape(source)
-        assert nx == 50
-
-
-class TestRaise(unittest.TestCase):
-
-    def test_raise(self):
-        with self.assertRaises(ValueError):
-            MultiPatchReconstruction(multi_band_list=[], kwargs_model={}, kwargs_params={},
-                                     multi_band_type='multi-linear', kwargs_likelihood=None, verbose=True)
+    def test_main_plot(self):
+        f, axes = self.multiPatch.plot_main()
+        plt.close()
 
 
 if __name__ == '__main__':

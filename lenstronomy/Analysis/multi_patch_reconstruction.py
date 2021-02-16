@@ -1,7 +1,6 @@
 from lenstronomy.Analysis.image_reconstruction import MultiBandImageReconstruction
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.imaging_data import ImageData
-from lenstronomy.Data.coord_transforms import Coordinates
 from lenstronomy.Util import util
 import numpy as np
 import numpy.testing as npt

@@ -13,7 +13,7 @@ import numpy as np
 import numpy.testing as npt
 import unittest
 
-from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction
+from lenstronomy.Analysis.multi_patch_reconstruction import MultiPatchReconstruction, _update_frame_size
 
 
 class TestMultiPatchReconstruction(object):
@@ -175,6 +175,10 @@ class TestMultiPatchReconstruction(object):
         source, coords = self.multiPatch.source(num_pix=50, delta_pix=0.01, center=[0, 0])
         nx, ny = np.shape(source)
         assert nx == 50
+
+    def test__update_frame_size(self):
+        nx, ny = _update_frame_size(nx=10, ny=10, x_min=-5, y_min=2, nx_i=5, ny_i=5)
+        assert nx == 15
 
 
 class TestRaise(unittest.TestCase):

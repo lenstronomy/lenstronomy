@@ -77,15 +77,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             ra0, dec0 = data_class_i.radec_at_xy_0
             x_min, y_min = pixel_grid.map_coord2pix(ra0, dec0)
             nx_i, ny_i = data_class_i.num_pixel_axes
-            # what if values are negative?
-            if x_min < 0:
-                nx += int(abs(x_min))
-            else:
-                nx = np.maximum(nx, int(x_min) + int(nx_i))
-            if y_min < 0:
-                ny += int(abs(y_min))
-            else:
-                ny = np.maximum(ny, int(y_min) + int(ny_i))
+            nx, ny = _update_frame_size(nx, ny, x_min, y_min, nx_i, ny_i)
 
             # select minimum in x- and y-axis
             # transform back in RA/DEC and make this the new zero point of the base coordinate system
@@ -188,3 +180,25 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         source = image_model.SourceModel.surface_brightness(x_grid_source, y_grid_source, kwargs_source)
         source = util.array2image(source) * delta_pix ** 2
         return source, pixel_grid
+
+
+def _update_frame_size(nx, ny, x_min, y_min, nx_i, ny_i):
+    """
+
+    :param nx: x-axis frame size prior to addition of subframe
+    :param ny: y-axis frame size prior to addition of subframe
+    :param x_min: lower left pixel coordinate in the prior frame coordinates of the new subframe
+    :param y_min: lower left pixel coordinate in the prior frame coordinates of the new subframe
+    :param nx_i: x-size of new subframe
+    :param ny_i: y-size of new subframe
+    :return:
+    """
+    if x_min < 0:
+        nx += int(abs(x_min))
+    else:
+        nx = np.maximum(nx, int(x_min) + int(nx_i))
+    if y_min < 0:
+        ny += int(abs(y_min))
+    else:
+        ny = np.maximum(ny, int(y_min) + int(ny_i))
+    return nx, ny

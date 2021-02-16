@@ -50,6 +50,12 @@ class TestPlotUtil(object):
         print(string)
         assert string == str('test = ${1.00}_{-0.10}^{+0.10}$')
 
+    def test_cmap_conf(self):
+        cmap = plot_util.cmap_conf(cmap_string='gist_heat')
+        cmap_update = plot_util.cmap_conf(cmap_string=cmap)
+        assert cmap is cmap_update
+
+
 
 if __name__ == '__main__':
     pytest.main()

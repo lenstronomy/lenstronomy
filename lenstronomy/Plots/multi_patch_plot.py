@@ -38,14 +38,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         log_model[np.isnan(log_model)] = -5
         self._v_min_default = max(np.min(log_model), -5)
         self._v_max_default = min(np.max(log_model), 10)
-
-        if isinstance(cmap_string, str):
-            cmap = plt.get_cmap(cmap_string)
-        else:
-            cmap = cmap_string
-        cmap.set_bad(color='k', alpha=1.)
-        cmap.set_under('k')
-        self._cmap = cmap
+        self._cmap = plot_util.cmap_conf(cmap_string)
 
     def data_plot(self, ax, log_scale=True, text='Observed', colorbar_label=r'log$_{10}$ flux', **kwargs):
         """

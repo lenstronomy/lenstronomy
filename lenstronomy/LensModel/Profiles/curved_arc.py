@@ -43,10 +43,8 @@ class CurvedArc(LensProfileBase):
         :param center_y: center of source in image plane
         :return: parameters in terms of a spherical power-law profile resulting in the same observables
         """
-        r_curvature = 1./curvature
-        center_x_spp = center_x - np.cos(direction) / curvature
-        center_y_spp = center_y - np.sin(direction) / curvature
-
+        center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
+        r_curvature = 1. / curvature
         gamma = (1./radial_stretch - 1) / (1 - 1./tangential_stretch) + 2
         theta_E = abs(1 - 1./tangential_stretch)**(1./(gamma - 1)) * r_curvature
         return theta_E, gamma, center_x_spp, center_y_spp
@@ -126,3 +124,17 @@ class CurvedArc(LensProfileBase):
                                                                       radial_stretch, curvature,
                                                                       direction, center_x, center_y)
         return self._spp.hessian(x, y, theta_E, gamma, center_x_spp, center_y_spp)
+
+
+def center_deflector(curvature, direction, center_x, center_y):
+    """
+
+    :param curvature: 1/curvature radius
+    :param direction: float, angle in radian
+    :param center_x: center of source in image plane
+    :param center_y: center of source in image plane
+    :return: center_spp_x, center_spp_y
+    """
+    center_x_spp = center_x - np.cos(direction) / curvature
+    center_y_spp = center_y - np.sin(direction) / curvature
+    return center_x_spp, center_y_spp

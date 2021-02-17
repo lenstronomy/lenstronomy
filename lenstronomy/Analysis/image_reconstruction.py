@@ -134,6 +134,23 @@ class ModelBand(object):
         self._model = model
         self._cov_param = cov_param
         self._param = param
+        self._error_map = error_map
+
+    @property
+    def model(self):
+        """
+
+        :return: model, 2d numpy array
+        """
+        return self._model
+
+    @property
+    def norm_residuals(self):
+        """
+
+        :return: normalized residuals, 2d numpy array
+        """
+        return self._norm_residuals
 
     @property
     def image_model_class(self):

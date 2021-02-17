@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
+from lenstronomy.LensModel.Profiles.curved_arc import center_deflector
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage
@@ -230,3 +231,76 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
     return ax
+
+
+def curved_arc_illustration(ax, lensModel, kwargs_lens):
+    """
+
+    :param ax: matplotlib axis instance
+    :param lensModel: LensModel() instance
+    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
+    :return:
+    """
+
+    # loop through lens models
+    # check whether curved arc
+    lens_model_list = lensModel.lens_model_list
+    for i, lens_type in enumerate(lens_model_list):
+        if lens_type == 'CURVED_ARC':
+            plot_arc(ax, **kwargs_lens[i])
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+
+    # plot coordinate frame and scale
+
+
+def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1):
+    """
+
+    :param ax:
+    :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+    :param radial_stretch: float, stretch of intrinsic source in radial direction
+    :param curvature: 1/curvature radius
+    :param direction: float, angle in radian
+    :param center_x: center of source in image plane
+    :param center_y: center of source in image plane
+    :return:
+    """
+    # plot line to centroid
+    center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
+    ax.plot([center_x, center_x_spp], [center_y, center_y_spp], 'k--', alpha=0.5)
+    ax.plot([center_x_spp], [center_y_spp], 'k*', alpha=0.5)
+
+    # plot radial and tangential stretch to scale
+
+    x_r = np.cos(direction) * radial_stretch * stretch_scale
+    y_r = np.sin(direction) * radial_stretch * stretch_scale
+    ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], 'k-')
+
+    # plot curved tangential stretch
+    #x_t = np.sin(direction) * tangential_stretch / 2 * stretch_scale
+    #y_t = -np.cos(direction) * tangential_stretch / 2 * stretch_scale
+
+    # compute angle of size of the tangential stretch
+    r = 1. / curvature
+    d_phi = tangential_stretch * stretch_scale / r
+
+    # linearly interpolate angle around center
+    phi = np.linspace(-1, 1, 50) * d_phi + direction
+    # plot points on circle
+    x_curve = r * np.cos(phi) + center_x_spp
+    y_curve = r * np.sin(phi) + center_y_spp
+    ax.plot(x_curve, y_curve, 'k-')
+
+    # make round circle with start point to end to close the circle
+    r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=50)
+    r_c = radial_stretch * r_c + r
+    phi_c = t_c * tangential_stretch / r_c + direction
+    x_c = r_c * np.cos(phi_c) + center_x_spp
+    y_c = r_c * np.sin(phi_c) + center_y_spp
+    ax.plot(x_c, y_c, 'k--')
+
+    # TODO add different colors for each quarter to identify parities
+

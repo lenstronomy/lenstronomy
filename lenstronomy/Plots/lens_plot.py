@@ -277,7 +277,7 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
         ax.plot([center_x, center_x_spp], [center_y, center_y_spp], 'k--', alpha=0.5, linewidth=linewidth)
         ax.plot([center_x_spp], [center_y_spp], 'k*', alpha=0.5, linewidth=linewidth)
 
-    # plot radial and tangential stretch to scale
+    # plot radial stretch to scale
 
     x_r = np.cos(direction) * radial_stretch * stretch_scale
     y_r = np.sin(direction) * radial_stretch * stretch_scale
@@ -289,7 +289,11 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
 
     # compute angle of size of the tangential stretch
     r = 1. / curvature
-    d_phi = min(tangential_stretch * stretch_scale / r, 2*np.pi)
+
+    # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only plotted once
+    tangential_stretch_ = min(tangential_stretch, np.pi * r / stretch_scale)
+
+    d_phi = tangential_stretch_ * stretch_scale / r
 
     # linearly interpolate angle around center
     phi = np.linspace(-1, 1, 50) * d_phi + direction
@@ -299,9 +303,9 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     ax.plot(x_curve, y_curve, 'k--', linewidth=linewidth)
 
     # make round circle with start point to end to close the circle
-    r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=50)
+    r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=200)
     r_c = radial_stretch * r_c + r
-    phi_c = t_c * tangential_stretch / r_c + direction
+    phi_c = t_c * tangential_stretch_ / r_c + direction
     x_c = r_c * np.cos(phi_c) + center_x_spp
     y_c = r_c * np.sin(phi_c) + center_y_spp
     ax.plot(x_c, y_c, 'k-', linewidth=linewidth)

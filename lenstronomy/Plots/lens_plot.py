@@ -233,12 +233,13 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     return ax
 
 
-def curved_arc_illustration(ax, lensModel, kwargs_lens):
+def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1):
     """
 
     :param ax: matplotlib axis instance
     :param lensModel: LensModel() instance
     :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
+    :param with_centroid: plots the center of the curvature radius
     :return:
     """
 
@@ -247,7 +248,7 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens):
     lens_model_list = lensModel.lens_model_list
     for i, lens_type in enumerate(lens_model_list):
         if lens_type == 'CURVED_ARC':
-            plot_arc(ax, **kwargs_lens[i])
+            plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, **kwargs_lens[i])
 
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
@@ -256,7 +257,8 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens):
     # plot coordinate frame and scale
 
 
-def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1):
+def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
+             with_centroid=True, linewidth=1):
     """
 
     :param ax:
@@ -266,18 +268,20 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     :param direction: float, angle in radian
     :param center_x: center of source in image plane
     :param center_y: center of source in image plane
+    :param with_centroid: plots the center of the curvature radius
     :return:
     """
     # plot line to centroid
     center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
-    ax.plot([center_x, center_x_spp], [center_y, center_y_spp], 'k--', alpha=0.5)
-    ax.plot([center_x_spp], [center_y_spp], 'k*', alpha=0.5)
+    if with_centroid:
+        ax.plot([center_x, center_x_spp], [center_y, center_y_spp], 'k--', alpha=0.5, linewidth=linewidth)
+        ax.plot([center_x_spp], [center_y_spp], 'k*', alpha=0.5, linewidth=linewidth)
 
     # plot radial and tangential stretch to scale
 
     x_r = np.cos(direction) * radial_stretch * stretch_scale
     y_r = np.sin(direction) * radial_stretch * stretch_scale
-    ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], 'k-')
+    ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], 'k--', linewidth=linewidth)
 
     # plot curved tangential stretch
     #x_t = np.sin(direction) * tangential_stretch / 2 * stretch_scale
@@ -285,14 +289,14 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
 
     # compute angle of size of the tangential stretch
     r = 1. / curvature
-    d_phi = tangential_stretch * stretch_scale / r
+    d_phi = min(tangential_stretch * stretch_scale / r, 2*np.pi)
 
     # linearly interpolate angle around center
     phi = np.linspace(-1, 1, 50) * d_phi + direction
     # plot points on circle
     x_curve = r * np.cos(phi) + center_x_spp
     y_curve = r * np.sin(phi) + center_y_spp
-    ax.plot(x_curve, y_curve, 'k-')
+    ax.plot(x_curve, y_curve, 'k--', linewidth=linewidth)
 
     # make round circle with start point to end to close the circle
     r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=50)
@@ -300,7 +304,7 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     phi_c = t_c * tangential_stretch / r_c + direction
     x_c = r_c * np.cos(phi_c) + center_x_spp
     y_c = r_c * np.sin(phi_c) + center_y_spp
-    ax.plot(x_c, y_c, 'k--')
+    ax.plot(x_c, y_c, 'k-', linewidth=linewidth)
 
     # TODO add different colors for each quarter to identify parities
 

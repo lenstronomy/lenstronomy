@@ -19,7 +19,7 @@ class PsfFitting(object):
     those point sources and combines them to update the estimate of the PSF. This is done in an iterative procedure as
     the model components of the extended features is PSF-dependent (hopefully not too much).
 
-    Various options can be chosen. There is no quarante that the method works for specific data and models.
+    Various options can be chosen. There is no guarantee that the method works for specific data and models.
 
     'stacking_method': 'median', 'mean'; the different estimates of the PSF are stacked and combined together. The choices are:
         'mean': mean of pixel values as the estimator (not robust to outliers)

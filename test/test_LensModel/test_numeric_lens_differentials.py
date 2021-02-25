@@ -353,6 +353,16 @@ class TestNumericsProfile(object):
         lens_model = ['ElliSLICE']
         self.assert_differentials(lens_model, kwargs, potential=True)
 
+    def test_curved_arc(self):
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': .9 , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_curved_arc_sis_mst(self):
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': 1 , 'direction': 0.5, 'curvature': 0.2, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC_SIS_MST']
+        self.assert_differentials(lens_model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -3,6 +3,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import lenstronomy.Util.constants as const
+from lenstronomy.Cosmo.cosmo_interp import CosmoInterp
 
 __all__ = ['Background']
 
@@ -11,17 +12,23 @@ class Background(object):
     """
     class to compute cosmological distances
     """
-    def __init__(self, cosmo=None):
+    def __init__(self, cosmo=None, interp=False, **kwargs_interp):
         """
 
         :param cosmo: instance of astropy.cosmology
+        :param interp: boolean, if True, uses interpolated cosmology to evaluate specific redshifts
+        :param kwargs_interp: keyword arguments of CosmoInterp specifying the interpolation interval and maximum
+        redshift
         :return: Background class with instance of astropy.cosmology
         """
         from astropy.cosmology import default_cosmology
 
         if cosmo is None:
             cosmo = default_cosmology.get()
-        self.cosmo = cosmo
+        if interp:
+            self.cosmo = CosmoInterp(cosmo, **kwargs_interp)
+        else:
+            self.cosmo = cosmo
 
     def a_z(self, z):
         """

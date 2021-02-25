@@ -16,7 +16,7 @@ class MultiPlaneBase(ProfileListBase):
     """
 
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
-                 numerical_alpha_class=None):
+                 numerical_alpha_class=None, cosmo_interp=True, z_interp_stop=None, num_z_interp=100):
         """
 
         :param lens_model_list: list of lens model strings
@@ -28,7 +28,9 @@ class MultiPlaneBase(ProfileListBase):
          (see documentation in Profiles/numerical_alpha)
 
         """
-        self._cosmo_bkg = Background(cosmo)
+        if z_interp_stop is None:
+            z_interp_stop = z_source_convention
+        self._cosmo_bkg = Background(cosmo, interp=cosmo_interp, z_stop=z_interp_stop, num_interp=num_z_interp)
         self._z_source_convention = z_source_convention
         if len(lens_redshift_list) > 0:
             z_lens_max = np.max(lens_redshift_list)

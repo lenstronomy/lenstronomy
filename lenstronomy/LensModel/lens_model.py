@@ -3,7 +3,6 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
-from astropy.cosmology import default_cosmology
 from lenstronomy.Util import constants as const
 
 __all__ = ['LensModel']
@@ -16,7 +15,7 @@ class LensModel(object):
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
                  multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
-                 z_source_convention=None):
+                 z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -35,16 +34,21 @@ class LensModel(object):
         positions. The code will compute the physical locations when performing computations
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
+        :param cosmo_interp: boolean (only employed in multi-plane mode), interpolates astropy.cosmology distances for
+        faster calls when accessing several lensing planes
+        :param z_interp_stop: (only in multi-plane with cosmo_interp=True); maximum redshift for distance interpolation
+        This number should be higher or equal the maximum of the source redshift and/or the z_source_convention
+        :param num_z_interp: (only in multi-plane with cosmo_interp=True); number of redshift bins for interpolating
+        distances
         """
         self.lens_model_list = lens_model_list
         self.z_lens = z_lens
-        if z_source_convention is None:
-            z_source_convention = z_source
         self.z_source = z_source
         self._z_source_convention = z_source_convention
         self.redshift_list = lens_redshift_list
 
         if cosmo is None:
+            from astropy.cosmology import default_cosmology
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
         self.multi_plane = multi_plane
@@ -55,7 +59,8 @@ class LensModel(object):
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index,
-                                         z_source_convention=z_source_convention)
+                                         z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
+                                         z_interp_stop=z_interp_stop, num_z_interp=num_z_interp)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,

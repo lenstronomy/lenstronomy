@@ -20,7 +20,7 @@ class CosmoInterp(object):
         """
         self._cosmo = cosmo
         self._comoving_distance_interpolation_func = self._interpolate_comoving_distance(z_start=0, z_stop=z_stop,
-                                                                             num_interp=num_interp)
+                                                                                         num_interp=num_interp)
 
     def _comoving_distance_interp(self, z):
         """

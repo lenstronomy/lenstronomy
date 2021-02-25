@@ -21,9 +21,9 @@ class Background(object):
         redshift
         :return: Background class with instance of astropy.cosmology
         """
-        from astropy.cosmology import default_cosmology
 
         if cosmo is None:
+            from astropy.cosmology import default_cosmology
             cosmo = default_cosmology.get()
         if interp:
             self.cosmo = CosmoInterp(cosmo, **kwargs_interp)

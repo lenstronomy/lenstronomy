@@ -11,9 +11,10 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
-                     'DIPOLE', 'CURVED_ARC', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY', 'CORED_DENSITY_2',
-                     'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP','CORED_DENSITY_EXP_MST',
-                     'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM']
+                     'DIPOLE', 'CURVED_ARC', 'CURVED_ARC_SIS_MST', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY',
+                     'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
+                     'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM']
+
 
 class ProfileListBase(object):
     """
@@ -219,6 +220,9 @@ class ProfileListBase(object):
         elif lens_type == 'CURVED_ARC':
             from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
             return CurvedArc()
+        elif lens_type == 'CURVED_ARC_SIS_MST':
+            from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
+            return CurvedArcSISMST()
         elif lens_type == 'ARC_PERT':
             from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
             return ArcPerturbations()

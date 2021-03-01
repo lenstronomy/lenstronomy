@@ -87,6 +87,7 @@ class LensParam(object):
         :return:
         """
         args = []
+
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]

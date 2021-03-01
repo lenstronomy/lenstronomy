@@ -65,7 +65,7 @@ class NumericalAlpha(LensProfileBase):
 
         raise Exception('no potential for this class.')
 
-    def derivatives(self, x, y, center_x = 0, center_y = 0, **kwargs):
+    def derivatives(self, x, y, center_x=0, center_y=0, **kwargs):
 
         """
         returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table
@@ -79,6 +79,10 @@ class NumericalAlpha(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
 
         alpha = self._interp(x_, y_, **kwargs)
+        if isinstance(R, np.ndarray):
+            R[np.where(R < 1e-5)] = 1e-5
+        else:
+            R = max(1e-6, R)
 
         cos_theta = x_ * R ** -1
         sin_theta = y_ * R ** -1

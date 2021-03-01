@@ -87,7 +87,7 @@ class MultiScaleModel(object):
 
             kwargs_lens = [{'alpha_x': 0., 'alpha_y': 0.}] + self._kwargs_lens_other
             param_class_shift = ShiftLensModelParamManager(kwargs_lens)
-            fast_ray_shooting = MultiplaneFast(self._x, self._y, self._zlens, self._zsource,
+            fast_ray_shooting = MultiplaneFast.fromModelList(self._x, self._y, self._zlens, self._zsource,
                                                lens_model_list, redshift_list, self._astropy,
                                                param_class_shift, None)
 

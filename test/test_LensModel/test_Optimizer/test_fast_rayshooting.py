@@ -40,10 +40,10 @@ class TestFastRayShooting(object):
         source_x, source_y = -0.05, -0.02
         x_image_true, y_image_true = solver.findBrightImage(source_x, source_y, self.kwargs_epl)
 
-        fast_rayshooting = MultiplaneFast(x_image_true, y_image_true, self.zlens, self.zsource,
-                                           self.lens_model_list_epl, self.zlist_epl,
-                 astropy_instance=None, param_class=self.param_class, foreground_rays=None,
-                 tol_source=1e-5, numerical_alpha_class=None)
+        fast_rayshooting = MultiplaneFast.fromModelList(x_image_true, y_image_true, self.zlens, self.zsource,
+                                                        self.lens_model_list_epl, self.zlist_epl,
+                                                        astropy_instance=None, param_class=self.param_class, foreground_rays=None,
+                                                        tol_source=1e-5, numerical_alpha_class=None)
 
         x_fore, y_fore, alpha_x_fore, alpha_y_fore = fast_rayshooting._ray_shooting_fast_foreground()
         xtrue, ytrue, alpha_xtrue, alpha_ytrue = self.lensModel.lens_model.\
@@ -67,10 +67,10 @@ class TestFastRayShooting(object):
 
         foreground_rays = fast_rayshooting._foreground_rays
 
-        fast_rayshooting_new = MultiplaneFast(x_image_true, y_image_true, self.zlens, self.zsource,
-                                           self.lens_model_list_epl, self.zlist_epl,
-                 astropy_instance=None, param_class=self.param_class, foreground_rays=foreground_rays,
-                 tol_source=1e-5, numerical_alpha_class=None)
+        fast_rayshooting_new = MultiplaneFast.fromModelList(x_image_true, y_image_true, self.zlens, self.zsource,
+                                                            self.lens_model_list_epl, self.zlist_epl,
+                                                            astropy_instance=None, param_class=self.param_class, foreground_rays=foreground_rays,
+                                                            tol_source=1e-5, numerical_alpha_class=None)
 
         xfast, yfast = fast_rayshooting_new.ray_shooting_fast(args_lens)
 

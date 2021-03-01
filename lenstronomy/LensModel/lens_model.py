@@ -179,6 +179,14 @@ class LensModel(object):
             return self._hessian_differential_square(x, y, kwargs, k=k, diff=diff)
         elif diff_method == 'cross':
             return self._hessian_differential_cross(x, y, kwargs, k=k, diff=diff)
+        elif diff_method == 'average':
+            fxx_, fxy_, fyx_, fyy_ = self._hessian_differential_square(x, y, kwargs, k=k, diff=diff)
+            _fxx, _fxy, _fyx, _fyy = self._hessian_differential_cross(x, y, kwargs, k=k, diff=diff)
+            fxx = 0.5 * (fxx_ + _fxx)
+            fxy = 0.5 * (fxy_ + _fxy)
+            fyx = 0.5 * (fyx_ + _fyx)
+            fyy = 0.5 * (fyy_ + _fyy)
+            return fxx, fxy, fyx, fyy
         else:
             raise ValueError('diff_method %s not supported. Chose among "square" or "cross".' % diff_method)
 

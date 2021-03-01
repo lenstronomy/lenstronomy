@@ -121,6 +121,7 @@ class SPEMD(LensProfileBase):
         """
         x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y)
         compute_bool = self._parameter_constraints(q_fastell, gam, s2, q)
+
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
             f_x_prim, f_y_prim, f_xx_prim, f_yy_prim, f_xy_prim = self.fastell4py.fastellmag(x1, x2, q_fastell, gam,
                                                                                              arat=q, s2=s2)

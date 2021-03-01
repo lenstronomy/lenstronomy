@@ -45,9 +45,9 @@ class Optimizer(object):
         :param simplex_n_iterations: number of iterations per dimension for the downhill simplex optimization
         """
 
-        self.fast_rayshooting = MultiplaneFast(x_image, y_image, z_lens, z_source,
-                                                 lens_model_list, redshift_list, astropy_instance, parameter_class,
-                                                 foreground_rays, tol_source, numerical_alpha_class)
+        self.fast_rayshooting = MultiplaneFast.fromModelList(x_image, y_image, z_lens, z_source,
+                                                             lens_model_list, redshift_list, astropy_instance, parameter_class,
+                                                             foreground_rays, tol_source, numerical_alpha_class)
 
         self._tol_source = tol_source
 

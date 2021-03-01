@@ -13,11 +13,48 @@ class MultiplaneFast(object):
 
     """
 
-    def __init__(self, x_image, y_image, z_lens, z_source, lens_model_list, redshift_list,
-                 astropy_instance, param_class, foreground_rays,
-                 tol_source=1e-5, numerical_alpha_class=None):
+    def __init__(self, x_image, y_image, lensModel, lens_model_to_vary, lens_model_fixed,
+                 param_class, foreground_rays=None, tol_source=1e-5):
 
         """
+        This creates the class from a specified set of lens models that have already been created, thus saving
+        memory if several instances of MultiplaneFast need to be created for a fixed lens model.
+
+        :param x_image: x_image to fit
+        :param y_image: y_image to fit
+        :param lensModel: an instance of LensModel that contains every deflector in the lens system
+        :param lens_model_to_vary: an instance of LensModel that contains only the lens models whose keywords are
+        being sampled in the optimization
+        :param lens_model_fixed: an instance of LensModel that contains the lens models whose properties are being
+        held fixed during the optimization
+        :param param_class: an instance of ParamClass (see documentation in QuadOptimmizer.param_manager)
+        :param foreground_rays: (optional) pre-computed foreground rays from a previous iteration, if they are not specified
+        they will be re-computed
+        :param tol_source: source plane chi^2 sigma
+        :param numerical_alpha_class: class for computing numerically tabulated deflection angles
+        """
+
+        self.lens_model_to_vary = lens_model_to_vary
+        self.lensModel = lensModel
+        self.lens_model_fixed = lens_model_fixed
+
+        self._z_lens = lensModel.z_lens
+        self._z_source = lensModel.z_source
+        self._x_image = x_image
+        self._y_image = y_image
+        self._param_class = param_class
+        self._tol_source = tol_source
+        self._foreground_rays = foreground_rays
+
+    @classmethod
+    def fromModelList(cls, x_image, y_image, z_lens, z_source, lens_model_list, redshift_list,
+                      astropy_instance, param_class, foreground_rays=None,
+                      tol_source=1e-5, numerical_alpha_class=None):
+
+        """
+        This creates the class from a list of lens models and redshifts. The lens model list and redshift list
+        will be split at the value of "to_vary_index" specified in the param_class (see classes in param_manager).
+        Since this method creates several lens model classes it can consume significant memory.
 
         :param x_image: x_image to fit
         :param y_image: y_image to fit
@@ -31,35 +68,24 @@ class MultiplaneFast(object):
         they will be re-computed
         :param tol_source: source plane chi^2 sigma
         :param numerical_alpha_class: class for computing numerically tabulated deflection angles
+        :return:
         """
-
-        self.lensModel = LensModel(lens_model_list, z_lens, z_source, redshift_list, astropy_instance,
-                                   multi_plane=True, numerical_alpha_class=numerical_alpha_class)
-
+        lensModel = LensModel(lens_model_list, z_lens, z_source, redshift_list, astropy_instance,
+                              multi_plane=True, numerical_alpha_class=numerical_alpha_class)
         lensmodel_list_to_vary = lens_model_list[0:param_class.to_vary_index]
         redshift_list_to_vary = redshift_list[0:param_class.to_vary_index]
         lensmodel_list_fixed = lens_model_list[param_class.to_vary_index:]
         redshift_list_fixed = redshift_list[param_class.to_vary_index:]
-
-        self.lens_model_to_vary = LensModel(lensmodel_list_to_vary, z_lens, z_source, redshift_list_to_vary,
+        lens_model_to_vary = LensModel(lensmodel_list_to_vary, z_lens, z_source, redshift_list_to_vary,
                                        cosmo=astropy_instance, multi_plane=True,
                                        numerical_alpha_class=numerical_alpha_class)
+        lens_model_fixed = LensModel(lensmodel_list_fixed, z_lens, z_source, redshift_list_fixed,
+                                     cosmo=astropy_instance, multi_plane=True,
+                                     numerical_alpha_class=numerical_alpha_class)
 
-        self.lens_model_fixed = LensModel(lensmodel_list_fixed, z_lens, z_source, redshift_list_fixed,
-                                            cosmo=astropy_instance, multi_plane=True,
-                                            numerical_alpha_class=numerical_alpha_class)
+        return MultiplaneFast(x_image, y_image, lensModel, lens_model_to_vary, lens_model_fixed,
+                              param_class, foreground_rays, tol_source)
 
-        self._z_lens = z_lens
-
-        self._z_source = z_source
-
-        self._x_image = x_image
-        self._y_image = y_image
-        self._param_class = param_class
-
-        self._tol_source = tol_source
-
-        self._foreground_rays = foreground_rays
 
     def chi_square(self, args_lens, *args, **kwargs):
 
@@ -210,25 +236,63 @@ class MultiplaneFastDifferential(object):
 
         self._diff = diff
 
-        self._fast_ray_shooting_dx_plus = MultiplaneFast(xcoords + diff, ycoords, z_lens, z_source,
-                                                   lens_model_list, redshift_list, astropy_instance, param_class, None,
-                                                   numerical_alpha_class=numerical_alpha_class)
+        self._fast_ray_shooting_dx_plus = MultiplaneFast.fromModelList(xcoords + diff / 2, ycoords, z_lens, z_source,
+                                                                       lens_model_list, redshift_list, astropy_instance, param_class, None,
+                                                                       numerical_alpha_class=numerical_alpha_class)
 
-        self._fast_ray_shooting_dy_plus = MultiplaneFast(xcoords, ycoords + diff, z_lens, z_source,
-                                                    lens_model_list, redshift_list, astropy_instance, param_class, None,
-                                                    numerical_alpha_class=numerical_alpha_class)
+        lens_model_to_vary = self._fast_ray_shooting_dx_plus.lens_model_to_vary
+        lens_model = self._fast_ray_shooting_dx_plus.lensModel
+        lens_model_fixed = self._fast_ray_shooting_dx_plus.lens_model_fixed
 
-        self._fast_ray_shooting_dx_minus = MultiplaneFast(xcoords - diff, ycoords, z_lens, z_source,
-                                                         lens_model_list, redshift_list, astropy_instance, param_class,
-                                                         None,
-                                                         numerical_alpha_class=numerical_alpha_class)
+        self._fast_ray_shooting_dy_plus = MultiplaneFast(xcoords, ycoords + diff / 2, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
 
-        self._fast_ray_shooting_dy_minus = MultiplaneFast(xcoords, ycoords - diff, z_lens, z_source,
-                                                         lens_model_list, redshift_list, astropy_instance, param_class,
-                                                         None,
-                                                         numerical_alpha_class=numerical_alpha_class)
+        self._fast_ray_shooting_dx_minus = MultiplaneFast(xcoords - diff / 2, ycoords, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
 
-    def hessian(self, args):
+        self._fast_ray_shooting_dy_minus = MultiplaneFast(xcoords, ycoords - diff / 2, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
+
+        self._fast_ray_shooting_dx_plus_dy_plus = MultiplaneFast(xcoords + diff / 2, ycoords + diff / 2,
+                                                                 lens_model, lens_model_to_vary,
+                                                                 lens_model_fixed, param_class)
+
+        self._fast_ray_shooting_dx_plus_dy_minus = MultiplaneFast(xcoords + diff/2, ycoords - diff/2, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
+
+        self._fast_ray_shooting_dx_minus_dy_minus = MultiplaneFast(xcoords - diff / 2, ycoords - diff / 2, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
+
+        self._fast_ray_shooting_dx_minus_dy_plus = MultiplaneFast(xcoords - diff / 2, ycoords + diff / 2, lens_model, lens_model_to_vary,
+                                                         lens_model_fixed, param_class)
+
+    def hessian(self, args, diff_method='square'):
+
+        """
+
+        :param args: the array of lens model args being optimized (see param_manager)
+        :param diff_method: the method for calculating the derivatives, options include cross, square, and
+        average, where average is the mean of cross and square
+        :return: the derivatives of the deflection angles computed using the specified diff_methdd
+        """
+
+        if diff_method == 'cross':
+            f_xx, f_xy, f_yx, f_yy = self._hessian_cross(args)
+        elif diff_method == 'square':
+            f_xx, f_xy, f_yx, f_yy = self._hessian_square(args)
+        elif diff_method == 'average':
+            _fxx, _fxy, _fyx, _fyy = self._hessian_cross(args)
+            fxx_, fxy_, fyx_, fyy_ = self._hessian_square(args)
+            f_xx = 0.5 * (fxx_ + _fxx)
+            f_xy = 0.5 * (fxy_ + _fxy)
+            f_yx = 0.5 * (fyx_ + _fyx)
+            f_yy = 0.5 * (fyy_ + _fyy)
+        else:
+            raise Exception('diff method must be either cross, square, or average')
+
+        return f_xx, f_xy, f_yx, f_yy
+
+    def _hessian_cross(self, args):
         """
 
         :param args: the array of lens model args being optimized (see param_manager)
@@ -250,6 +314,26 @@ class MultiplaneFastDifferential(object):
         f_yy = dalpha_decdec
         f_xy = dalpha_radec
         f_yx = dalpha_decra
+
+        return f_xx, f_xy, f_yx, f_yy
+
+    def _hessian_square(self, args):
+        """
+
+        :param args: the array of lens model args being optimized (see param_manager)
+        :return: the derivatives of the deflection angles
+        """
+
+        alpha_ra_pp, alpha_dec_pp = self._fast_ray_shooting_dx_plus_dy_plus.alpha_fast(args)
+        alpha_ra_pn, alpha_dec_pn = self._fast_ray_shooting_dx_plus_dy_minus.alpha_fast(args)
+
+        alpha_ra_np, alpha_dec_np = self._fast_ray_shooting_dx_minus_dy_plus.alpha_fast(args)
+        alpha_ra_nn, alpha_dec_nn = self._fast_ray_shooting_dx_minus_dy_minus.alpha_fast(args)
+
+        f_xx = (alpha_ra_pp - alpha_ra_np + alpha_ra_pn - alpha_ra_nn) / self._diff / 2
+        f_xy = (alpha_ra_pp - alpha_ra_pn + alpha_ra_np - alpha_ra_nn) / self._diff / 2
+        f_yx = (alpha_dec_pp - alpha_dec_np + alpha_dec_pn - alpha_dec_nn) / self._diff / 2
+        f_yy = (alpha_dec_pp - alpha_dec_pn + alpha_dec_np - alpha_dec_nn) / self._diff / 2
 
         return f_xx, f_xy, f_yx, f_yy
 

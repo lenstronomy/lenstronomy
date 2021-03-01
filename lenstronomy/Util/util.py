@@ -459,14 +459,18 @@ def select_best(array, criteria, num_select, highest=True):
 
 
 @export
-def points_on_circle(radius, num_points):
+def points_on_circle(radius, num_points, connect_ends=True):
     """
     returns a set of uniform points around a circle
     :param radius: radius of the circle
     :param num_points: number of points on the circle
-    :return:
+    :param connect_ends: boolean, if True, start and end point are the same
+    :return: x-coords, y-coords of points on the circle
     """
-    angle = np.linspace(0, 2 * np.pi, num_points)
+    if connect_ends:
+        angle = np.linspace(0, 2 * np.pi, num_points)
+    else:
+        angle = np.linspace(0, 2 * np.pi * (1 - 1./num_points), num_points)
     x_coord = np.cos(angle) * radius
     y_coord = np.sin(angle) * radius
     return x_coord, y_coord

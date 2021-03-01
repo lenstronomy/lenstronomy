@@ -30,13 +30,23 @@ class DataAPI(SingleBand):
 
         :return: instance of Data() class
         """
+        data_class = ImageData(**self.kwargs_data)
+        return data_class
+
+    @property
+    def kwargs_data(self):
+        """
+
+        :return: keyword arguments for ImageData class instance
+        """
         x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
             numPix=self.numpix, deltapix=self.pixel_scale, subgrid_res=1, left_lower=False, inverse=False)
         # CCD gain corrected exposure time to allow a direct Poisson estimates based on IID counts
         scaled_exposure_time = self.flux_iid(1)
-        kwargs_data = {'image_data': np.zeros((self.numpix, self.numpix)), 'ra_at_xy_0': ra_at_xy_0, 'dec_at_xy_0': dec_at_xy_0,
+        kwargs_data = {'image_data': np.zeros((self.numpix, self.numpix)), 'ra_at_xy_0': ra_at_xy_0,
+                       'dec_at_xy_0': dec_at_xy_0,
                        'transform_pix2angle': Mpix2coord,
                        'background_rms': self.background_noise,
                        'exposure_time': scaled_exposure_time}
-        data_class = ImageData(**kwargs_data)
-        return data_class
+        return kwargs_data
+

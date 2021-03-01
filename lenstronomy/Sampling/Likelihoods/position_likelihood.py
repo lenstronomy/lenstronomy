@@ -152,7 +152,8 @@ class PositionLikelihood(object):
 
     def source_position_likelihood(self, kwargs_lens, kwargs_ps, sigma, hard_bound_rms=None, verbose=False):
         """
-        computes a likelihood/punishing factor of how well the source positions of multiple images match given the image position and a lens model.
+        computes a likelihood/punishing factor of how well the source positions of multiple images match given the image
+        position and a lens model.
         The likelihood level is computed in respect of a displacement in the image plane and transposed through the
         Hessian into the source plane.
 
@@ -168,7 +169,7 @@ class PositionLikelihood(object):
         logL = 0
         source_x, source_y = self._pointSource.source_position(kwargs_ps, kwargs_lens)
         for k in range(len(kwargs_ps)):
-            if 'ra_image' in kwargs_ps[k]:
+            if 'ra_image' in kwargs_ps[k] and self._pointSource.point_source_type_list[k] == 'LENSED_POSITION':
 
                 x_image = kwargs_ps[k]['ra_image']
                 y_image = kwargs_ps[k]['dec_image']

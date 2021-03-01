@@ -48,7 +48,7 @@ class JointLinear(MultiLinear):
     def linear_response_matrix(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                kwargs_extinction=None, kwargs_special=None):
         """
-        computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients
+        computes the linear response matrix (m x n), with n being the data size and m being the coefficients
 
         :param kwargs_lens:
         :param kwargs_source:

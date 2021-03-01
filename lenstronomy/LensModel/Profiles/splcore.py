@@ -10,23 +10,25 @@ __all__ = ['SPLCORE']
 
 class SPLCORE(LensProfileBase):
     """
-    This lens profile corresponds to a spherical power law (SPL) mass distribution with logarithmic slope gamma (g) and
+    This lens profile corresponds to a spherical power law (SPL) mass distribution with logarithmic slope gamma and
     a 3D core radius r_core
 
-    $\rho\left(r, \rho_0, r_c, \gamma\right) = \rho_0  \frac{{r_c}^\gamma}{\left(r^2 + r_c^2\right)^{\frac{\gamma}{2}}}$
+    .. math::
 
-    The difference between this and EPL is that this model contains a core radius, is cir_coreular, and is also defined for gamma=3.
+        \rho\left(r, \rho_0, r_c, \gamma\right) = \rho_0  \frac{{r_c}^\gamma}{\left(r^2 + r_c^2\right)^{\frac{\gamma}{2}}}
 
-    With respect to SPEMD, this model is different in that it is also defined for gamma = 3, is cir_coreular, and is defined
+    The difference between this and EPL is that this model contains a core radius, is circular, and is also defined for gamma=3.
+
+    With respect to SPEMD, this model is different in that it is also defined for gamma = 3, is circular, and is defined
     in terms of a physical density parameter rho0, or the central density at r=0 divided by the critical density for lensing
     such that rho0 has units 1/arcsec.
 
     This class is defined for all gamma > 1
     """
 
-    param_names = ['rho0', 'center_x', 'center_y', 'r_core', 'gamma']
-    lower_limit_default = {'rho0': 0, 'center_x': -100, 'center_y': -100, 'r_core': 1e-6, 'gamma': 1.+1e-6}
-    upper_limit_default = {'rho0': 1e+12, 'center_x': 100, 'center_y': 100, 'r_core': 100, 'gamma': 5.}
+    param_names = ['sigma0', 'center_x', 'center_y', 'r_core', 'gamma']
+    lower_limit_default = {'sigma0': 0, 'center_x': -100, 'center_y': -100, 'r_core': 1e-6, 'gamma': 1.+1e-6}
+    upper_limit_default = {'sigma0': 1e+12, 'center_x': 100, 'center_y': 100, 'r_core': 100, 'gamma': 5.}
 
     def function(self, x, y, sigma0, r_core, gamma, center_x=0, center_y=0):
 
@@ -246,7 +248,10 @@ class SPLCORE(LensProfileBase):
     def _f(x, gamma):
         """
         Returns the solution of the 2D mass integral defined such that
-        $m_{\rm{2D}}\left(R\right) = 4 \pi r_{\rm{core}}^3 \rho_0 F\left(\frac{R}{r_{\rm{core}}}, \gamma\right)$
+
+        .. math::
+
+            m_{\rm{2D}}\left(R\right) = 4 \pi r_{\rm{core}}^3 \rho_0 F\left(\frac{R}{r_{\rm{core}}}, \gamma\right)
 
         :param x: dimensionaless radius r/r_core
         :param gamma: logarithmic slope at r -> infinity
@@ -267,7 +272,9 @@ class SPLCORE(LensProfileBase):
         """
         Returns the solution of the 3D mass integral defined such that
         Returns the solution of the 2D mass integral defined such that
-        $m_{\rm{3D}}\left(R\right) = 4 \pi r_{\rm{core}}^3 \rho_0 G\left(\frac{R}{r_{\rm{core}}}, \gamma\right)$
+
+        .. math::
+            m_{\rm{3D}}\left(R\right) = 4 \pi r_{\rm{core}}^3 \rho_0 G\left(\frac{R}{r_{\rm{core}}}, \gamma\right)
 
         :param x: dimensionaless radius r/r_core
         :param gamma: logarithmic slope at r -> infinity

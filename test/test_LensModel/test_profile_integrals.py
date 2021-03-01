@@ -313,6 +313,24 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
         self.assert_lens_integrals(Model, kwargs)
 
+    def test_splcore(self):
+
+        from lenstronomy.LensModel.Profiles.splcore import SPLCORE as Model
+        kwargs = {'rho0': 1., 'gamma': 3, 'rc': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 3, 'rc': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'rho0': 1., 'gamma': 2, 'rc': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 2, 'rc': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'rho0': 1., 'gamma': 2.5, 'rc': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 2.5, 'rc': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
 
     """
     def test_sis(self):

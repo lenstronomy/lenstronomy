@@ -13,6 +13,42 @@ class TestSPLCORE(object):
 
         self.profile = SPLCORE()
 
+    def test_no_potential(self):
+
+        npt.assert_raises(Exception, self.profile.function, (0., 0., 0., 0., 0.))
+
+    def test_origin(self):
+
+        x = 0.
+        y = 0.
+        sigma0 = 1.
+        r_core = 0.1
+        gamma = 2.4
+        alpha_x, alpha_y = self.profile.derivatives(x, y, sigma0, r_core, gamma)
+        npt.assert_almost_equal(alpha_x, 0.)
+        npt.assert_almost_equal(alpha_y, 0.)
+
+        fxx, fyy, fxy = self.profile.hessian(x, y, sigma0, r_core, gamma)
+        kappa = self.profile.density_2d(x, y, sigma0 / r_core, r_core, gamma)
+        npt.assert_almost_equal(fxx, kappa)
+        npt.assert_almost_equal(fyy, kappa)
+        npt.assert_almost_equal(fxy, 0.)
+
+        r = 0.01
+        xmin = 0.001
+        rmin = self.profile._safe_r_division(r, 1., xmin)
+        npt.assert_equal(rmin, r)
+
+        r = 1e-9
+        rmin = self.profile._safe_r_division(r, 1., xmin)
+        npt.assert_equal(rmin, xmin)
+
+        xmin = 1e-2
+        r = np.logspace(-3, 0, 100)
+        inds = np.where(r < xmin)
+        rmin = self.profile._safe_r_division(r, 1., xmin)
+        npt.assert_almost_equal(rmin[inds], xmin)
+
     def test_g_function(self):
 
         gamma = 2.5

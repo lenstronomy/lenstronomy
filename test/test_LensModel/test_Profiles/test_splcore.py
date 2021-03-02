@@ -15,7 +15,7 @@ class TestSPLCORE(object):
 
     def test_no_potential(self):
 
-        npt.assert_raises(Exception, self.profile.function, (0., 0., 0., 0., 0.))
+        npt.assert_raises(Exception, self.profile.function, 0., 0., 0., 0., 0.)
 
     def test_origin(self):
 

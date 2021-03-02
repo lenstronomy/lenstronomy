@@ -169,7 +169,7 @@ class EPL(LensProfileBase):
         :param q: axis ratio minor/major
         :return: theta_E in convention of kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
         """
-        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) #/ (1+(1-q)/2.)
+        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q)))
         return theta_E_new
 
 

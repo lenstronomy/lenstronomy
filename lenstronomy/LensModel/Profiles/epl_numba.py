@@ -84,18 +84,20 @@ class EPL_numba(LensProfileBase):
         R = np.abs(zz_ell)
         phi = np.angle(zz_ell)
 
-        kappa = (2-t)/2*(b/R)**t
+        u = (b/R)**t
+        kappa = (2-t)/2
+        Roverr = np.sqrt(np.cos(ang)**2*q**2+np.sin(ang)**2)
 
         Omega = omega(phi, t, q)
-        alph = (2*b)/(1+q)*(b/R)**(t-1)*Omega
-        gamma_shear = -np.exp(2j*(ang+ang_ell))*kappa + (1-t)*np.exp(1j*(ang+2*ang_ell)) * alph/r
+        alph = (2*b)/(1+q)/b*Omega
+        gamma_shear = -np.exp(2j*(ang+ang_ell))*kappa + (1-t)*np.exp(1j*(ang+2*ang_ell)) * alph*Roverr
 
-        f_xx = kappa + gamma_shear.real
-        f_yy = kappa - gamma_shear.real
-        f_xy = gamma_shear.imag
+        f_xx = (kappa + gamma_shear.real)*u
+        f_yy = (kappa - gamma_shear.real)*u
+        f_xy = gamma_shear.imag*u
         # Fix the nans if x=y=0 is filled in
 
-        return nan_to_zero(f_xx), nan_to_zero(f_yy), nan_to_zero(f_xy)
+        return nan_to_num(f_xx), nan_to_num(f_yy), nan_to_num(f_xy)
 
 @jit()
 def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
@@ -109,24 +111,31 @@ def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
     return z, theta_E*np.sqrt(q), t, q, ang
 
 
+from lenstronomy.Util.numba_util import jit
 @nb.generated_jit(nopython=True, cache=True)
-def nan_to_zero(x):
+def nan_to_num(x, inf=-1e10, nan=0):
     """Converts the nans in an array or scalar and returns the (overwritten) array or scalar.
     This is necessary because of the need to support both arrays and scalars for all input functions.
     """
     if isinstance(x, nb.types.Array) and x.ndim > 0:
-        return nan_to_zero_arr
+        return nan_to_num_arr
     else:
-        return nan_to_zero_single
+        return nan_to_num_single
 
 @jit()
-def nan_to_zero_arr(x):
-    x[~np.isfinite(x)] = 0
+def nan_to_num_arr(x, inf=1e10, nan=0):
+    x[np.isnan(x)] = nan
+    x[np.isinf(x)] = inf
     return x
 
 @jit()
-def nan_to_zero_single(x):
-    return x if np.isfinite(x) else 0
+def nan_to_num_single(x, inf=1e10, nan=0):
+    if np.isfinite(x):
+        return x
+    elif np.isinf(x):
+        return inf
+    else:
+        return nan
 
 @jit()
 def alpha(x, y, b, q, t):
@@ -138,7 +147,7 @@ def alpha(x, y, b, q, t):
         #Omega = omega(phi, t, q)
     Omega = omega(phi, t, q)
     alph = (2*b)/(1+q)*(b/R)**(t-1)*Omega
-    return nan_to_zero(alph)
+    return nan_to_num(alph)
 
 @jit(fastmath=True) # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
 def omega(phi, t, q, niter=200, tol=1e-16):

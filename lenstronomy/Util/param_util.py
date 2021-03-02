@@ -1,5 +1,6 @@
 import numpy as np
 
+from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 

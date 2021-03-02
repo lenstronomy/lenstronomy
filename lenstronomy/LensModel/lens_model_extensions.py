@@ -5,6 +5,7 @@ from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 
 __all__ = ['LensModelExtensions']
 
+
 class LensModelExtensions(object):
     """
     class with extension routines not part of the LensModel core routines
@@ -527,14 +528,15 @@ class LensModelExtensions(object):
         :param x: float, x-position where the estimate is provided
         :param y: float, y-position where the estimate is provided
         :param kwargs_lens: lens model keyword arguments
+        :param smoothing: (optional) finite differential of second derivative (radial and tangential stretches)
+        :param smoothing_3rd: differential scale for third derivative to estimate the tangential curvature
         :return: keyword argument list corresponding to a CURVED_ARC profile at (x, y) given the initial lens model
         """
         radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens, diff=smoothing)
         dx_tang = x + smoothing_3rd * v_tang1
         dy_tang = y + smoothing_3rd * v_tang2
-        rad_dt, tang_dt, v_rad1_dt, v_rad2_dt, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang,
-                                                                                                       kwargs_lens,
-                                                                                                       diff=smoothing)
+        _, _, _, _, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang,kwargs_lens,
+                                                                            diff=smoothing)
         d_tang1 = v_tang1_dt - v_tang1
         d_tang2 = v_tang2_dt - v_tang2
         delta = np.sqrt(d_tang1**2 + d_tang2**2)
@@ -544,10 +546,30 @@ class LensModelExtensions(object):
             delta = np.sqrt(d_tang1 ** 2 + d_tang2 ** 2)
         curvature = delta / smoothing_3rd
         direction = np.arctan2(v_rad2 * np.sign(v_rad1 * x + v_rad2 * y), v_rad1 * np.sign(v_rad1 * x + v_rad2 * y))
-        #direction = np.arctan2(v_rad2, v_rad1)
         kwargs_arc = {'radial_stretch': radial_stretch,
                       'tangential_stretch': tangential_stretch,
                       'curvature': curvature,
                       'direction': direction,
                       'center_x': x, 'center_y': y}
         return kwargs_arc
+
+    def tangential_average(self, x, y, kwargs_lens, dr, smoothing=None, num_average=9):
+        """
+        computes average tangential stretch around position (x, y) within dr in radial direction
+
+        :param x: x-position (float)
+        :param y: y-position (float)
+        :param kwargs_lens: lens model keyword argument list
+        :param dr: averaging scale in radial direction
+        :param smoothing: smoothing scale of derivative
+        :param num_average: integer, number of points averaged over within dr in the radial direction
+        :return:
+        """
+        radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y,
+                                                                                                              kwargs_lens,
+                                                                                                              diff=smoothing)
+        dr_array = np.linspace(start=-dr/2., stop=dr/2., num=num_average)
+        dx_r = x + dr_array * v_rad1
+        dy_r = y + dr_array * v_rad2
+        _, tangential_stretch_dr, _, _, _, _ = self.radial_tangential_stretch(dx_r, dy_r, kwargs_lens, diff=smoothing)
+        return np.average(tangential_stretch_dr)

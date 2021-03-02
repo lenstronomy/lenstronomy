@@ -25,7 +25,6 @@ class MultiPatchPlot(MultiPatchReconstruction):
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
         :param verbose: if True (default), computes and prints the total log-likelihood.
         This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
-        :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
         """
         MultiPatchReconstruction.__init__(self, multi_band_list, kwargs_model, kwargs_params,
@@ -62,7 +61,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         return self._plot(ax, image=self._model_joint, coords=self._pixel_grid_joint, log_scale=log_scale, text=text,
                           colorbar_label=colorbar_label, **kwargs)
 
-    def source_plot(self, ax, delta_pix, num_pix, center=None, log_scale=True, text='Reconstructed',
+    def source_plot(self, ax, delta_pix, num_pix, center=None, log_scale=True, text='Source',
                     colorbar_label=r'log$_{10}$ flux', dist_scale=0.1, **kwargs):
         """
         illustrates source
@@ -137,7 +136,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
     def _plot(self, ax, image, coords, log_scale=True, v_min=None, v_max=None, text='Observed', font_size=15,
               colorbar_label=r'log$_{10}$ flux', arrow_size=0.02, cmap=None, dist_scale=1., white_on_black=True,
-              **kwargs):
+              no_support=False, **kwargs):
         """
 
         :param ax: matplotlib axis instance
@@ -172,15 +171,16 @@ class MultiPatchPlot(MultiPatchReconstruction):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
 
-        text_dist = "{:.1f}".format(dist_scale) + '"'
-        plot_util.scale_bar(ax, frame_size, dist=dist_scale, text=text_dist, font_size=font_size, color=text_k)
-        plot_util.text_description(ax, frame_size, text=text, color=text_k, backgroundcolor=bkg_k, font_size=font_size)
+        if not no_support:
+            text_dist = "{:.1f}".format(dist_scale) + '"'
+            plot_util.scale_bar(ax, frame_size, dist=dist_scale, text=text_dist, font_size=font_size, color=text_k)
+            plot_util.text_description(ax, frame_size, text=text, color=text_k, backgroundcolor=bkg_k, font_size=font_size)
 
-        if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
-            plot_util.coordinate_arrows(ax, frame_size, coords, color=text_k, arrow_size=arrow_size, font_size=font_size)
+            if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
+                plot_util.coordinate_arrows(ax, frame_size, coords, color=text_k, arrow_size=arrow_size, font_size=font_size)
 
-        divider = make_axes_locatable(ax)
-        cax = divider.append_axes("right", size="5%", pad=0.05)
-        cb = plt.colorbar(im, cax=cax, orientation='vertical')
-        cb.set_label(colorbar_label, fontsize=font_size)
+            divider = make_axes_locatable(ax)
+            cax = divider.append_axes("right", size="5%", pad=0.05)
+            cb = plt.colorbar(im, cax=cax, orientation='vertical')
+            cb.set_label(colorbar_label, fontsize=font_size)
         return ax

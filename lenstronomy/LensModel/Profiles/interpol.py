@@ -58,7 +58,7 @@ class Interpol(LensProfileBase):
         else:
             if self._grid and n >= self._min_grid_number:
                 x_axes, y_axes = util.get_axes(x, y)
-                f_out = self.f_interp(x_axes, y_axes, grid_interp_x, grid_interp_y, f_)
+                f_out = self.f_interp(x_axes, y_axes, grid_interp_x, grid_interp_y, f_, grid=self._grid)
                 f_out = util.image2array(f_out)
             else:
                 #n = len(x)
@@ -92,16 +92,14 @@ class Interpol(LensProfileBase):
         else:
             if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
-                f_x_out = self.f_x_interp(x_, y_, grid_interp_x, grid_interp_y, f_x)
-                f_y_out = self.f_y_interp(x_, y_, grid_interp_x, grid_interp_y, f_y)
+                f_x_out = self.f_x_interp(x_, y_, grid_interp_x, grid_interp_y, f_x, grid=self._grid)
+                f_y_out = self.f_y_interp(x_, y_, grid_interp_x, grid_interp_y, f_y, grid=self._grid)
                 f_x_out = util.image2array(f_x_out)
                 f_y_out = util.image2array(f_y_out)
             else:
                 #n = len(x)
-                f_x_out, f_y_out = np.zeros(n), np.zeros(n)
-                for i in range(n):
-                    f_x_out[i] = self.f_x_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_x)
-                    f_y_out[i] = self.f_y_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_y)
+                f_x_out = self.f_x_interp(x, y, grid_interp_x, grid_interp_y, f_x)
+                f_y_out = self.f_y_interp(x, y, grid_interp_x, grid_interp_y, f_y)
         return f_x_out, f_y_out
 
     def hessian(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
@@ -130,9 +128,9 @@ class Interpol(LensProfileBase):
         else:
             if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
-                f_xx_out = self.f_xx_interp(x_, y_, grid_interp_x, grid_interp_y, f_xx)
-                f_yy_out = self.f_yy_interp(x_, y_, grid_interp_x, grid_interp_y, f_yy)
-                f_xy_out = self.f_xy_interp(x_, y_, grid_interp_x, grid_interp_y, f_xy)
+                f_xx_out = self.f_xx_interp(x_, y_, grid_interp_x, grid_interp_y, f_xx, grid=self._grid)
+                f_yy_out = self.f_yy_interp(x_, y_, grid_interp_x, grid_interp_y, f_yy, grid=self._grid)
+                f_xy_out = self.f_xy_interp(x_, y_, grid_interp_x, grid_interp_y, f_xy, grid=self._grid)
                 f_xx_out = util.image2array(f_xx_out)
                 f_yy_out = util.image2array(f_yy_out)
                 f_xy_out = util.image2array(f_xy_out)
@@ -145,35 +143,35 @@ class Interpol(LensProfileBase):
                     f_xy_out[i] = self.f_xy_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_xy)
         return f_xx_out, f_yy_out, f_xy_out
 
-    def f_interp(self, x, y, x_grid=None, y_grid=None, f_=None):
+    def f_interp(self, x, y, x_grid=None, y_grid=None, f_=None, grid=False):
         if not hasattr(self, '_f_interp'):
             self._f_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_, kx=1, ky=1, s=0)
-        return self._f_interp(y, x)
+        return self._f_interp(y, x, grid=grid)
 
-    def f_x_interp(self, x, y, x_grid=None, y_grid=None, f_x=None):
+    def f_x_interp(self, x, y, x_grid=None, y_grid=None, f_x=None, grid=False):
         if not hasattr(self, '_f_x_interp'):
             self._f_x_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_x, kx=1, ky=1, s=0)
-        return self._f_x_interp(y, x)
+        return self._f_x_interp(y, x, grid=grid)
 
-    def f_y_interp(self, x, y, x_grid=None, y_grid=None, f_y=None):
+    def f_y_interp(self, x, y, x_grid=None, y_grid=None, f_y=None, grid=False):
         if not hasattr(self, '_f_y_interp'):
             self._f_y_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_y, kx=1, ky=1, s=0)
-        return self._f_y_interp(y, x)
+        return self._f_y_interp(y, x, grid=grid)
 
-    def f_xx_interp(self, x, y, x_grid=None, y_grid=None, f_xx=None):
+    def f_xx_interp(self, x, y, x_grid=None, y_grid=None, f_xx=None, grid=False):
         if not hasattr(self, '_f_xx_interp'):
             self._f_xx_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xx, kx=1, ky=1, s=0)
-        return self._f_xx_interp(y, x)
+        return self._f_xx_interp(y, x, grid=grid)
 
-    def f_xy_interp(self, x, y, x_grid=None, y_grid=None, f_xy=None):
+    def f_xy_interp(self, x, y, x_grid=None, y_grid=None, f_xy=None, grid=False):
         if not hasattr(self, '_f_xy_interp'):
             self._f_xy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xy, kx=1, ky=1, s=0)
-        return self._f_xy_interp(y, x)
+        return self._f_xy_interp(y, x, grid=grid)
 
-    def f_yy_interp(self, x, y, x_grid=None, y_grid=None, f_yy=None):
+    def f_yy_interp(self, x, y, x_grid=None, y_grid=None, f_yy=None, grid=False):
         if not hasattr(self, '_f_yy_interp'):
             self._f_yy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_yy, kx=1, ky=1, s=0)
-        return self._f_yy_interp(y, x)
+        return self._f_yy_interp(y, x, grid=grid)
 
     def do_interp(self, x_grid, y_grid, f_, f_x, f_y, f_xx=None, f_yy=None, f_xy=None):
         self._f_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_, kx=1, ky=1, s=0)

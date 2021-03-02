@@ -16,7 +16,7 @@ class MultiPlaneBase(ProfileListBase):
     """
 
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
-                 numerical_alpha_class=None, cosmo_interp=True, z_interp_stop=None, num_z_interp=100):
+                 numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
         """
 
         :param lens_model_list: list of lens model strings
@@ -54,7 +54,12 @@ class MultiPlaneBase(ProfileListBase):
         T_z = 0
         self._T_ij_list = []
         self._T_z_list = []
-        self._reduced2physical_factor = []
+        # Sort redshift for vectorized reduced2physical factor calculation
+        if len(lens_model_list)<1:
+            self._reduced2physical_factor = []
+        else:
+            z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
+            self._reduced2physical_factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_sort, z_source_convention)
         for idex in self._sorted_redshift_index:
             z_lens = self._lens_redshift_list[idex]
             if z_before == z_lens:
@@ -64,8 +69,6 @@ class MultiPlaneBase(ProfileListBase):
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
-            factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_lens, z_source_convention)
-            self._reduced2physical_factor.append(factor)
             z_before = z_lens
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,

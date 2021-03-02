@@ -1,6 +1,7 @@
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
+from lenstronomy.Util.numba_util import jit
 export, __all__ = exporter()
 
 
@@ -69,6 +70,7 @@ def shear_cartesian2polar(gamma1, gamma2):
 
 
 @export
+@jit()
 def phi_q2_ellipticity(phi, q):
     """
     transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2
@@ -83,6 +85,7 @@ def phi_q2_ellipticity(phi, q):
 
 
 @export
+@jit()
 def ellipticity2phi_q(e1, e2):
     """
     transforms complex ellipticity moduli in orientation angle and axis ratio

@@ -2,7 +2,7 @@ import numba
 import lenstronomy
 import os
 import yaml
-
+import numpy as np
 
 """
 From pyautolens:
@@ -12,7 +12,6 @@ If on laptop:
 If on super computer:
 @numba.jit(nopython=True, cache=False, parallel=True)
 """
-
 
 from xdg.BaseDirectory import xdg_config_home
 
@@ -44,16 +43,58 @@ if numba_enabled:
     except ImportError:
         numba_enabled = False
 
-__all__ = ['jit']
+__all__ = ['jit', 'generated_jit']
 
 
 def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
     if numba_enabled:
         def wrapper(func):
-            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
-                             error_model=error_model)
+            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model)
     else:
         def wrapper(func):
             return func
     return wrapper
 
+def generated_jit(nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model):
+    if numba_enabled:
+        def wrapper(func):
+            return numba.generated_jit(func, nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model)
+    else:
+        def wrapper(func):
+            return func
+
+    return wrapper
+
+@generated_jit()
+def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
+    """Implements an equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.
+    The generated_jit part is necessary because of the need to support both arrays and scalars for all input functions.
+    """
+    if (isinstance(x, numba.types.Array) or isinstance(x, np.ndarray)) and x.ndim > 0:
+        return nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
+    else:
+        return nan_to_num_single if numba_enabled else nan_to_num_single(x, posinf, neginf, nan)
+
+@jit()
+def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
+    for i in range(len(x)):
+        if np.isnan(x[i]):
+            x[i] = nan
+        if np.isinf(x[i]):
+            if x[i] > 0:
+                x[i]=posinf
+            else:
+                x[i]=neginf
+    return x
+
+@jit()
+def nan_to_num_single(x, posinf=1e10, neginf=-1e10, nan=0.):
+    if np.isnan(x):
+        return nan
+    elif np.isinf(x):
+        if x > 0:
+            return posinf
+        else:
+            return neginf
+    else:
+        return x

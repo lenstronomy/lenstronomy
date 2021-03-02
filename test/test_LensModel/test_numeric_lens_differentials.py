@@ -363,6 +363,19 @@ class TestNumericsProfile(object):
         lens_model = ['CURVED_ARC_SIS_MST']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_splcore(self):
+
+        kwargs = {'sigma0': 1., 'gamma': 3, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['SPL_CORE']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'sigma0': 1., 'gamma': 2., 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['SPL_CORE']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['SPL_CORE']
+        self.assert_differentials(lens_model, kwargs, potential=False)
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

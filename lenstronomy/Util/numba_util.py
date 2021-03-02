@@ -38,9 +38,11 @@ with open(conf_file) as file:
     fastmath = numba_conf['fastmath']
     error_model = numba_conf['error_model']
 
-#nopython = True
-#cache = True
-#parallel = False
+if numba_enabled:
+    try:
+        import numba
+    except ImportError:
+        numba_enabled = False
 
 __all__ = ['jit']
 

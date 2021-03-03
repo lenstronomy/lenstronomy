@@ -14,8 +14,10 @@ If on super computer:
 """
 
 
-# TODO define a special path outside the lenstronomy package to save a user configuration yaml file
-user_config_file = ''
+from xdg.BaseDirectory import xdg_config_home
+
+user_config_file = os.path.join(xdg_config_home, "lenstronomy", "config.yaml")
+
 module_path = os.path.dirname(lenstronomy.__file__)
 default_config_file = os.path.join(module_path, 'Conf', 'numba_conf_default.yaml')
 

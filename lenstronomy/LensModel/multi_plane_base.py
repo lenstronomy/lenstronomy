@@ -16,7 +16,7 @@ class MultiPlaneBase(ProfileListBase):
     """
 
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
-                 numerical_alpha_class=None):
+                 numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
         """
 
         :param lens_model_list: list of lens model strings
@@ -28,7 +28,9 @@ class MultiPlaneBase(ProfileListBase):
          (see documentation in Profiles/numerical_alpha)
 
         """
-        self._cosmo_bkg = Background(cosmo)
+        if z_interp_stop is None:
+            z_interp_stop = z_source_convention
+        self._cosmo_bkg = Background(cosmo, interp=cosmo_interp, z_stop=z_interp_stop, num_interp=num_z_interp)
         self._z_source_convention = z_source_convention
         if len(lens_redshift_list) > 0:
             z_lens_max = np.max(lens_redshift_list)
@@ -52,7 +54,13 @@ class MultiPlaneBase(ProfileListBase):
         T_z = 0
         self._T_ij_list = []
         self._T_z_list = []
-        self._reduced2physical_factor = []
+        # Sort redshift for vectorized reduced2physical factor calculation
+        if len(lens_model_list)<1:
+            self._reduced2physical_factor = []
+        else:
+            z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
+            z_source_array = np.ones(z_sort.shape)*z_source_convention
+            self._reduced2physical_factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_sort, z_source_array)
         for idex in self._sorted_redshift_index:
             z_lens = self._lens_redshift_list[idex]
             if z_before == z_lens:
@@ -62,8 +70,6 @@ class MultiPlaneBase(ProfileListBase):
                 delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
             self._T_ij_list.append(delta_T)
             self._T_z_list.append(T_z)
-            factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_lens, z_source_convention)
-            self._reduced2physical_factor.append(factor)
             z_before = z_lens
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,

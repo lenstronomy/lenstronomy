@@ -31,7 +31,9 @@ class TestClass():
 
         a = 4 * rho0 * Rs * R * self._g(x) / x ** 2
 
-        return a
+        cos = _x/R
+        sin = _y/R
+        return a * cos, a * sin
 
     def _g(self, X):
         """
@@ -80,6 +82,10 @@ class TestNumericalAlpha(object):
 
         self.numerical_alpha = NumericalAlpha(custom_class=TestClass())
         self.nfw = NFW()
+
+    def test_no_potential(self):
+
+        npt.assert_raises(Exception, self.numerical_alpha.function, 0., 0., 0., 0.)
 
     def test_derivatives(self):
 

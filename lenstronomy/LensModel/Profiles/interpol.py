@@ -54,7 +54,7 @@ class Interpol(LensProfileBase):
         if n <= 1 and np.shape(x) == ():
         #if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) <= 1:
             f_out = self.f_interp(x, y, grid_interp_x, grid_interp_y, f_)
-            return f_out[0][0]
+            return f_out
         else:
             if self._grid and n >= self._min_grid_number:
                 x_axes, y_axes = util.get_axes(x, y)
@@ -88,7 +88,7 @@ class Interpol(LensProfileBase):
         #if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) <= 1:
             f_x_out = self.f_x_interp(x, y, grid_interp_x, grid_interp_y, f_x)
             f_y_out = self.f_y_interp(x, y, grid_interp_x, grid_interp_y, f_y)
-            return f_x_out[0][0], f_y_out[0][0]
+            return f_x_out, f_y_out
         else:
             if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
@@ -124,7 +124,7 @@ class Interpol(LensProfileBase):
             f_xx_out = self.f_xx_interp(x, y, grid_interp_x, grid_interp_y, f_xx)
             f_yy_out = self.f_yy_interp(x, y, grid_interp_x, grid_interp_y, f_yy)
             f_xy_out = self.f_xy_interp(x, y, grid_interp_x, grid_interp_y, f_xy)
-            return f_xx_out[0][0], f_yy_out[0][0], f_xy_out[0][0]
+            return f_xx_out, f_yy_out, f_xy_out
         else:
             if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)

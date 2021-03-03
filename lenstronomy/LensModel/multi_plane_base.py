@@ -59,7 +59,8 @@ class MultiPlaneBase(ProfileListBase):
             self._reduced2physical_factor = []
         else:
             z_sort = np.array(self._lens_redshift_list)[self._sorted_redshift_index]
-            self._reduced2physical_factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_sort, z_source_convention)
+            z_source_array = np.ones(z_sort.shape)*z_source_convention
+            self._reduced2physical_factor = self._cosmo_bkg.d_xy(0, z_source_convention) / self._cosmo_bkg.d_xy(z_sort, z_source_array)
         for idex in self._sorted_redshift_index:
             z_lens = self._lens_redshift_list[idex]
             if z_before == z_lens:

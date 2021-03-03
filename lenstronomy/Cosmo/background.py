@@ -45,6 +45,7 @@ class Background(object):
         :param z_source: source redshift
         :return: angular diameter distance in units of Mpc
         """
+        print(z_observer,z_source)
         D_xy = self.cosmo.angular_diameter_distance_z1z2(z_observer, z_source)
         return D_xy.value
 

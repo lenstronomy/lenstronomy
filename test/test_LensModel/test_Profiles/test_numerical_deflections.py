@@ -83,6 +83,10 @@ class TestNumericalAlpha(object):
         self.numerical_alpha = NumericalAlpha(custom_class=TestClass())
         self.nfw = NFW()
 
+    def test_no_potential(self):
+
+        npt.assert_raises(Exception, self.numerical_alpha.function, 0., 0., 0., 0.)
+
     def test_derivatives(self):
 
         Rs = 10.

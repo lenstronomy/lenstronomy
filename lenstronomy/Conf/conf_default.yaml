@@ -1,0 +1,7 @@
+# conf_default.yaml file for lenstronomy configurations
+
+numba:
+
+  nopython: True
+  cache: True
+  parallel: False

@@ -1,5 +1,0 @@
-# numba_conf_default.yaml file
-
-nopython: True
-cache: True
-parallel: False

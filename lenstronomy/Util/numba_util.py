@@ -34,6 +34,9 @@ with open(conf_file) as file:
     nopython = numba_conf['nopython']
     cache = numba_conf['cache']
     parallel = numba_conf['parallel']
+    numba_enabled = numba_conf['enable']
+    fastmath = numba_conf['fastmath']
+    error_model = numba_conf['error_model']
 
 #nopython = True
 #cache = True
@@ -42,8 +45,13 @@ with open(conf_file) as file:
 __all__ = ['jit']
 
 
-def jit(nopython=nopython, cache=cache, parallel=parallel):
-    def wrapper(func):
-        return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel)
-
+def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
+    if numba_enabled:
+        def wrapper(func):
+            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath,
+                             error_model=error_model)
+    else:
+        def wrapper(func):
+            return func
     return wrapper
+

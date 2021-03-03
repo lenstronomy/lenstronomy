@@ -2,6 +2,10 @@
 
 numba:
 
-  nopython: True
-  cache: True
-  parallel: False
+  enable: True  # if False, does ignore all numba functionalities
+  nopython: True  # see numba jit
+  cache: True  # see numba jit
+  parallel: False  # see numba jit
+  error_model: 'numpy' # This avoids ZeroDivisionErrors and instead makes numba return nans (with a one-time warning)
+  fastmath: False # Disabled by default because it changes nans to poison values which could lead to incorrect results
+                  # for functions that can return nans, but useful for some functions.

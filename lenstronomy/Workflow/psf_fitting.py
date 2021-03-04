@@ -44,8 +44,8 @@ class PsfFitting(object):
     def __init__(self, image_model_class):
         self._image_model_class = image_model_class
 
-    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=1.,
-                   block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=0):
+    def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
+                   block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -62,11 +62,15 @@ class PsfFitting(object):
         :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
          is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
          contaminate the estimate.
+        :param block_center_neighbour_error_map: angle, radius of neighbouring point sources around their centers the
+         estimates of the ERROR MAP is ignored. If None, then the value of block_center_neighbour is used (recommended)
         :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
-         (e.g. to avoid double counting of overlapping PSF errors)
+         (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered
+         (unless blocked through other means)
         :return: kwargs_psf_new, logL_after, error_map
         """
-
+        if block_center_neighbour_error_map is None:
+            block_center_neighbour_error_map = block_center_neighbour
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
@@ -102,33 +106,20 @@ class PsfFitting(object):
         logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
 
-    def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, no_break=True, stacking_method='median',
-                         block_center_neighbour=0, keep_psf_error_map=True, psf_symmetry=1, psf_iter_factor=0.2,
-                         error_map_radius=None, verbose=True, block_center_neighbour_error_map=0):
+    def update_iterative(self, kwargs_psf, kwargs_params, num_iter=10, keep_psf_error_map=True, no_break=True,
+                         verbose=True, **kwargs_psf_update):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
         :param kwargs_params: keyword arguments of the parameters of the model components (e.g. 'kwargs_lens' etc)
-        :param stacking_method: 'median', 'mean'; the different estimates of the PSF are stacked and combined together.
-         The choices are:
-         'mean': mean of pixel values as the estimator (not robust to outliers)
-         'median': median of pixel values as the estimator (outlier rejection robust but needs >2 point sources in the data
         :param num_iter: number of iterations in the PSF fitting and image fitting process
+        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
         :param no_break: boolean, if True, runs until the end regardless of the next step getting worse, and then
          reads out the overall best fit
-        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
-         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
-         contaminate the estimate.
-        :param keep_psf_error_map: boolean, if True keeps previous psf_error_map
-        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.
-         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to
-         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are
-         limited constraints/number of point sources in the image.
-        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.
-        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
-         (e.g. to avoid double counting of overlapping PSF errors)
-        :param verbose:
-        :return: keyword argument of PSF constructor for PSF() class
+        :param verbose: print statements informing about progress of iterative procedure
+        :param kwargs_psf_update: keyword arguments providing the settings for a single iteration of the PSF, as being
+        passed to update_psf() method
+        :return: keyword argument of PSF constructor for PSF() class with updated PSF
         """
         self._image_model_class.PointSource.set_save_cache(True)
         if not 'kernel_point_source_init' in kwargs_psf:
@@ -148,13 +139,7 @@ class PsfFitting(object):
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
         for i in range(num_iter):
-            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params,
-                                                                    stacking_method=stacking_method,
-                                                                    psf_symmetry=psf_symmetry,
-                                                                    psf_iter_factor=psf_iter_factor,
-                                                                    block_center_neighbour=block_center_neighbour,
-                                                                    error_map_radius=error_map_radius,
-                                                                    block_center_neighbour_error_map=block_center_neighbour_error_map)
+            kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, **kwargs_psf_update)
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)

@@ -4,7 +4,7 @@ import numpy as np
 import numba as nb
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
-from lenstronomy.Util.numba_util import jit
+from lenstronomy.Util.numba_util import jit, nan_to_num
 
 __all__ = ['EPL_numba']
 
@@ -110,32 +110,6 @@ def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
     z = np.exp(-1j*phi_G) * (x_shift + y_shift*1j)
     return z, theta_E*np.sqrt(q), t, q, ang
 
-
-from lenstronomy.Util.numba_util import jit
-@nb.generated_jit(nopython=True, cache=True)
-def nan_to_num(x, inf=-1e10, nan=0):
-    """Converts the nans in an array or scalar and returns the (overwritten) array or scalar.
-    This is necessary because of the need to support both arrays and scalars for all input functions.
-    """
-    if isinstance(x, nb.types.Array) and x.ndim > 0:
-        return nan_to_num_arr
-    else:
-        return nan_to_num_single
-
-@jit()
-def nan_to_num_arr(x, inf=1e10, nan=0):
-    x[np.isnan(x)] = nan
-    x[np.isinf(x)] = inf
-    return x
-
-@jit()
-def nan_to_num_single(x, inf=1e10, nan=0):
-    if np.isfinite(x):
-        return x
-    elif np.isinf(x):
-        return inf
-    else:
-        return nan
 
 @jit()
 def alpha(x, y, b, q, t):

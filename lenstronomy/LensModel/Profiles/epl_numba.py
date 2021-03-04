@@ -148,8 +148,8 @@ def alpha(x, y, b, q, t):
     R = np.abs(zz)
     phi = np.angle(zz)
     Omega = omega(phi, t, q)
-    alph = (2*b)/(1+q)*(b/R)**t*R/b*Omega
-    return nan_to_num(alph)
+    alph = (2*b)/(1+q)*nan_to_num((b/R)**t*R/b)*Omega
+    return alph
 
 @jit(fastmath=True) # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
 def omega(phi, t, q, niter_max=200, tol=1e-16):

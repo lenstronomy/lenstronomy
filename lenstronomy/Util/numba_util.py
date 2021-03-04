@@ -49,16 +49,17 @@ __all__ = ['jit', 'generated_jit']
 def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
     if numba_enabled:
         def wrapper(func):
-            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model)
+            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model)
     else:
         def wrapper(func):
             return func
     return wrapper
 
-def generated_jit(nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model):
+def generated_jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
+    """ Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type - see the Numba docs for more info"""
     if numba_enabled:
         def wrapper(func):
-            return numba.generated_jit(func, nopython=nopython, cache=cache, parallel=parallel,fastmath=fastmath,error_model=error_model)
+            return numba.generated_jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model)
     else:
         def wrapper(func):
             return func
@@ -67,9 +68,11 @@ def generated_jit(nopython=nopython, cache=cache, parallel=parallel,fastmath=fas
 
 @generated_jit()
 def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
-    """Implements an equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.
-    The generated_jit part is necessary because of the need to support both arrays and scalars for all input functions.
     """
+    Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.
+    Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and scalar inputs.
+    """
+    # The generated_jit part is necessary because of the need to support both arrays and scalars for all input functions.
     if (isinstance(x, numba.types.Array) or isinstance(x, np.ndarray)) and x.ndim > 0:
         return nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
     else:
@@ -77,6 +80,7 @@ def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
 
 @jit()
 def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
+    """Part of the Numba implementation of np.nan_to_num - see nan_to_num"""
     for i in range(len(x)):
         if np.isnan(x[i]):
             x[i] = nan
@@ -89,6 +93,7 @@ def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
 
 @jit()
 def nan_to_num_single(x, posinf=1e10, neginf=-1e10, nan=0.):
+    """Part of the Numba implementation of np.nan_to_num - see nan_to_num"""
     if np.isnan(x):
         return nan
     elif np.isinf(x):

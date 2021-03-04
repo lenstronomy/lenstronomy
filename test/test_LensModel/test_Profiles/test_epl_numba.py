@@ -114,6 +114,10 @@ class TestEPL_numba(object):
         x = 0.
         y = 0.
         f_xx, f_xy, f_yy = self.EPL_numba.hessian(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_xx, 1e10, decimal=10)
+        npt.assert_almost_equal(f_xy, 0, decimal=10)
+        npt.assert_almost_equal(f_yy, 0, decimal=5) # floating point cancellation, so less precise
+        # Magnification:
         npt.assert_almost_equal(1/((1-f_xx)*(1-f_yy)-f_xy**2), 0., decimal=10)
 
 

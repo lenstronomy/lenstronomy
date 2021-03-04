@@ -268,7 +268,7 @@ class TestNumericsProfile(object):
 
     def test_EPL_numba(self):
         kwargs = {'theta_E': 2., 'e1': 0.1, 'e2': 0., 'gamma': 2.13}
-        lens_model = ['EPL']
+        lens_model = ['EPL_NUMBA']
         self.assert_differentials(lens_model, kwargs)
 
     def test_coreBurk(self):

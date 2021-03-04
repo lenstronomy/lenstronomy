@@ -60,8 +60,7 @@ class EPL_numba(LensProfileBase):
         """
         z, b, t, q, ang = param_transform(x, y, theta_E, e1, e2, gamma, center_x, center_y)
         alph = alpha(z.real, z.imag, b, q, t)
-        # Fix the nans if x=y=0 is filled in
-        return nan_to_num(1/(2-t)*(z.real*alph.real+z.imag*alph.imag))
+        return 1/(2-t)*(z.real*alph.real+z.imag*alph.imag)
 
     @staticmethod
     @jit()
@@ -80,7 +79,7 @@ class EPL_numba(LensProfileBase):
         """
         z, b, t, q, ang = param_transform(x, y, theta_E, e1, e2, gamma, center_x, center_y)
         alph = alpha(z.real, z.imag, b, q, t) * np.exp(1j*ang)
-        return nan_to_num(alph.real), nan_to_num(alph.imag)
+        return alph.real, alph.imag
 
     @staticmethod
     @jit()
@@ -148,11 +147,9 @@ def alpha(x, y, b, q, t):
     zz = x*q + 1j*y
     R = np.abs(zz)
     phi = np.angle(zz)
-    #if Omega is None:
-        #Omega = omega(phi, t, q)
     Omega = omega(phi, t, q)
-    alph = (2*b)/(1+q)*(b/R)**(t-1)*Omega
-    return alph
+    alph = (2*b)/(1+q)*(b/R)**t*R/b*Omega
+    return nan_to_num(alph)
 
 @jit(fastmath=True) # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
 def omega(phi, t, q, niter_max=200, tol=1e-16):

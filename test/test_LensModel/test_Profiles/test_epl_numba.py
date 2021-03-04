@@ -94,15 +94,21 @@ class TestEPL_numba(object):
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
 
-        #x = 0.
-        #y = 0.
-        #f_x, f_y = self.EPL_numba.derivatives(x, y, phi_E, e1, e2, gamma)
-        #npt.assert_almost_equal(f_x, 0.)
-        #npt.assert_almost_equal(f_y, 0.)
+        x = 0.
+        y = 0.
+        f_x, f_y = self.EPL_numba.derivatives(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_x, 0.)
+        npt.assert_almost_equal(f_y, 0.)
 
         x = 0.
         y = 0.
         f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        npt.assert_almost_equal(f_x, 0.)
+        npt.assert_almost_equal(f_y, 0.)
+
+        x = 0.
+        y = 0.
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma+0.1)
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 

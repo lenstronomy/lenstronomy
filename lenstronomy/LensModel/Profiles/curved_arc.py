@@ -1,6 +1,7 @@
 import numpy as np
-from lenstronomy.LensModel.Profiles.spp import SPP
+from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.Util import util
 
 __all__ = ['CurvedArc']
 
@@ -28,47 +29,9 @@ class CurvedArc(LensProfileBase):
     upper_limit_default = {'tangential_stretch': 100, 'radial_stretch': 5, 'curvature': 100, 'direction': np.pi, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self._spp = SPP()
+        self._mst = Convergence()
+        self._curve = CurvedArcOnAxis()
         super(CurvedArc, self).__init__()
-
-    @staticmethod
-    def stretch2spp(tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
-        """
-
-        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
-        :param radial_stretch: float, stretch of intrinsic source in radial direction
-        :param curvature: 1/curvature radius
-        :param direction: float, angle in radian
-        :param center_x: center of source in image plane
-        :param center_y: center of source in image plane
-        :return: parameters in terms of a spherical power-law profile resulting in the same observables
-        """
-        center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
-        r_curvature = 1. / curvature
-        gamma = (1./radial_stretch - 1) / (1 - 1./tangential_stretch) + 2
-        theta_E = abs(1 - 1./tangential_stretch)**(1./(gamma - 1)) * r_curvature
-        return theta_E, gamma, center_x_spp, center_y_spp
-
-    @staticmethod
-    def spp2stretch(theta_E, gamma, center_x_spp, center_y_spp, center_x, center_y):
-        """
-        turn Singular power-law lens model into stretch parameterization at position (center_x, center_y)
-        This is the inverse function of stretch2spp()
-
-        :param theta_E: Einstein radius of SPP model
-        :param gamma: power-law slope
-        :param center_x_spp: center of SPP model
-        :param center_y_spp: center of SPP model
-        :param center_x: center of curved model definition
-        :param center_y: center of curved model definition
-        :return: tangential_stretch, radial_stretch, curvature, direction
-        """
-        r_curvature = np.sqrt((center_x_spp - center_x)**2 + (center_y_spp - center_y)**2)
-        direction = np.arctan2(center_y - center_y_spp, center_x - center_x_spp)
-        tangential_stretch = 1 / (1 - (theta_E/r_curvature) ** (gamma - 1))
-        radial_stretch = 1 / (1 + (gamma - 2) * (theta_E/r_curvature) ** (gamma - 1))
-        curvature = 1./r_curvature
-        return tangential_stretch, radial_stretch, curvature, direction
 
     def function(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
         """
@@ -84,11 +47,7 @@ class CurvedArc(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        theta_E, gamma, center_x_spp, center_y_spp = self.stretch2spp(tangential_stretch, radial_stretch, curvature, direction, center_x, center_y)
-        f_ = self._spp.function(x, y, theta_E, gamma, center_x_spp, center_y_spp)
-        alpha_x, alpha_y = self._spp.derivatives(center_x, center_y, theta_E, gamma, center_x_spp, center_y_spp)
-        f_0 = alpha_x * (x - center_x) + alpha_y * (y - center_y)
-        return f_ - f_0
+        raise NotImplemented('lensing potential for regularly curved arc is not implemented')
 
     def derivatives(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
         """
@@ -103,12 +62,16 @@ class CurvedArc(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        theta_E, gamma, center_x_spp, center_y_spp = self.stretch2spp(tangential_stretch,
-                                                                      radial_stretch, curvature,
-                                                                      direction, center_x, center_y)
-        f_x, f_y = self._spp.derivatives(x, y, theta_E, gamma, center_x_spp, center_y_spp)
-        f_x0, f_y0 = self._spp.derivatives(center_x, center_y, theta_E, gamma, center_x_spp, center_y_spp)
-        return f_x - f_x0, f_y - f_y0
+        lambda_mst = 1. / radial_stretch
+        kappa_ext = 1 - lambda_mst
+        curve_stretch = tangential_stretch / radial_stretch
+
+        f_x_curve, f_y_curve = self._curve.derivatives(x, y, curve_stretch, curvature, direction, center_x, center_y)
+        f_x0, f_y0 = self._curve.derivatives(center_x, center_y, curvature, curvature, direction, center_x, center_y)
+        f_x_mst, f_y_mst = self._mst.derivatives(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
+        f_x = lambda_mst * (f_x_curve - f_x0) + f_x_mst
+        f_y = lambda_mst * (f_y_curve - f_y0) + f_y_mst
+        return f_x, f_y
 
     def hessian(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
         """
@@ -123,21 +86,43 @@ class CurvedArc(LensProfileBase):
         :param center_y: center of source in image plane
         :return:
         """
-        theta_E, gamma, center_x_spp, center_y_spp = self.stretch2spp(tangential_stretch,
-                                                                      radial_stretch, curvature,
-                                                                      direction, center_x, center_y)
-        return self._spp.hessian(x, y, theta_E, gamma, center_x_spp, center_y_spp)
+        raise NotImplemented('Hessian not implemented as f_xy != f_yx for this profile. Use numerical differentiation.')
 
 
-def center_deflector(curvature, direction, center_x, center_y):
+class CurvedArcOnAxis(object):
+    """
+    curved arc lensing with orientation of curvature perpendicular to the x-axis
+
     """
 
-    :param curvature: 1/curvature radius
-    :param direction: float, angle in radian
-    :param center_x: center of source in image plane
-    :param center_y: center of source in image plane
-    :return: center_spp_x, center_spp_y
-    """
-    center_x_spp = center_x - np.cos(direction) / curvature
-    center_y_spp = center_y - np.sin(direction) / curvature
-    return center_x_spp, center_y_spp
+    def derivatives(self, x, y, tangential_stretch, curvature, direction, center_x, center_y):
+        """
+
+        :param x:
+        :param y:
+        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+        :param curvature: 1/curvature radius
+        :param direction: float, angle in radian
+        :param center_x: center of source in image plane
+        :param center_y: center of source in image plane
+        :return:
+        """
+
+        r = 1 / curvature
+        # deflection angle to allow for tangential stretch
+        # (ratio of source position around zero point relative to radius is tangential stretch)
+        alpha = r * (1/tangential_stretch - 1)
+
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, direction)
+        # evaluate
+        f__x = alpha * np.cos(y__ * curvature)
+        f__y = alpha * np.sin(y__ * curvature)
+        # rotate back
+        f_x, f_y = util.rotate(f__x, f__y, -direction)
+        return f_x, f_y
+
+

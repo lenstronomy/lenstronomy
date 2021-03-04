@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.LensModel.Profiles.curved_arc import center_deflector
+from lenstronomy.LensModel.Profiles.curved_arc_spp import center_deflector
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage

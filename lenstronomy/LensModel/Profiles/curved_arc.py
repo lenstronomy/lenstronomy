@@ -67,7 +67,7 @@ class CurvedArc(LensProfileBase):
         curve_stretch = tangential_stretch / radial_stretch
 
         f_x_curve, f_y_curve = self._curve.derivatives(x, y, curve_stretch, curvature, direction, center_x, center_y)
-        f_x0, f_y0 = self._curve.derivatives(center_x, center_y, curvature, curvature, direction, center_x, center_y)
+        f_x0, f_y0 = self._curve.derivatives(center_x, center_y, curve_stretch, curvature, direction, center_x, center_y)
         f_x_mst, f_y_mst = self._mst.derivatives(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
         f_x = lambda_mst * (f_x_curve - f_x0) + f_x_mst
         f_y = lambda_mst * (f_y_curve - f_y0) + f_y_mst
@@ -111,7 +111,7 @@ class CurvedArcOnAxis(object):
         r = 1 / curvature
         # deflection angle to allow for tangential stretch
         # (ratio of source position around zero point relative to radius is tangential stretch)
-        alpha = r * (1/tangential_stretch - 1)
+        alpha = r * (1/tangential_stretch + 1)
 
         # shift
         x_ = x - center_x

@@ -36,9 +36,10 @@ class EPL(LensProfileBase):
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
-    converging in few iterations to high precision and accuracy, which is not implemented (yet) in lenstronomy.
+    converging in few iterations to high precision and accuracy.
 
-    A (faster) implementation of the same model using numba is accessible as 'EPL_NUMBA'.
+    A (faster) implementation of the same model using numba is accessible as 'EPL_NUMBA' with the iterative calculation
+    scheme.
     """
     param_names = ['theta_E', 'e1', 'e2', 'gamma', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'center_x': -100, 'center_y': -100}

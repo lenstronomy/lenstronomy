@@ -35,10 +35,11 @@ class EPL_numba(LensProfileBase):
         e = \frac{1-q}{1+q}
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
-    The paper presents an iterative calculation scheme, converging in few iterations to high precision and accuracy,
-    which is not implemented (yet) in lenstronomy.
+    The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
+    converging in few iterations to high precision and accuracy.
 
-    A (slower) implementation of the same model using hyperbolic functions is accessible as 'EPL' not requiring numba.
+    A (slower) implementation of the same model using hyperbolic functions without the iterative calculation
+    is accessible as 'EPL' not requiring numba.
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 1., 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}

@@ -3,10 +3,10 @@ from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import util
 
-__all__ = ['CurvedArcConst']
+__all__ = ['CurvedArcConstMST']
 
 
-class CurvedArcConst(LensProfileBase):
+class CurvedArcConstMST(LensProfileBase):
     """
     lens model that describes a section of a highly magnified deflector region.
     The parameterization is chosen to describe local observables efficient.
@@ -30,8 +30,8 @@ class CurvedArcConst(LensProfileBase):
 
     def __init__(self):
         self._mst = Convergence()
-        self._curve = CurvedArcOnAxis()
-        super(CurvedArcConst, self).__init__()
+        self._curve = CurvedArcConst()
+        super(CurvedArcConstMST, self).__init__()
 
     def function(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
         """
@@ -89,7 +89,7 @@ class CurvedArcConst(LensProfileBase):
         raise NotImplemented('Hessian not implemented as f_xy != f_yx for this profile. Use numerical differentiation.')
 
 
-class CurvedArcOnAxis(object):
+class CurvedArcConst(LensProfileBase):
     """
     curved arc lensing with orientation of curvature perpendicular to the x-axis
 
@@ -125,4 +125,30 @@ class CurvedArcOnAxis(object):
         f_x, f_y = util.rotate(f__x, f__y, -direction)
         return f_x, f_y
 
+    def hessian(self, x, y, tangential_stretch, curvature, direction, center_x, center_y):
+        """
 
+        :param x:
+        :param y:
+        :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+        :param curvature: 1/curvature radius
+        :param direction: float, angle in radian
+        :param center_x: center of source in image plane
+        :param center_y: center of source in image plane
+        :return:
+        """
+        r = 1 / curvature
+        # deflection angle to allow for tangential stretch
+        # (ratio of source position around zero point relative to radius is tangential stretch)
+        alpha = r * (1 / tangential_stretch + 1)
+
+        # shift
+        x_ = x - center_x
+        y_ = y - center_y
+        # rotate
+        x__, y__ = util.rotate(x_, y_, direction)
+        f__xx = 0
+        f__xy = -alpha * curvature * np.sin(y__ * curvature)
+        f__yx = 0
+        f__yy = alpha * curvature * np.cos(y__ * curvature)
+        # transform back

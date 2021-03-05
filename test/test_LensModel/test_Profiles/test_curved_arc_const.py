@@ -4,7 +4,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
-from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConst
+from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConstMST
 from lenstronomy.Util import util
 
 
@@ -14,7 +14,7 @@ class TestCurvedArcConst(object):
     """
     def setup(self):
         self.arc_sis = CurvedArcSISMST()
-        self.arc_const = CurvedArcConst()
+        self.arc_const = CurvedArcConstMST()
 
     def test_function(self):
         kwargs_arc = {'tangential_stretch': 5,

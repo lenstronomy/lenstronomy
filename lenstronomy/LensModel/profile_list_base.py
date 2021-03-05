@@ -221,8 +221,8 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.dipole import Dipole
             return Dipole()
         elif lens_type == 'CURVED_ARC_CONST':
-            from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConst
-            return CurvedArcConst()
+            from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConstMST
+            return CurvedArcConstMST()
         elif lens_type == 'CURVED_ARC_SPP':
             from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
             return CurvedArcSPP()

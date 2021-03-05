@@ -68,7 +68,7 @@ class ProfileListBase(object):
         """
 
         if lens_type == 'SHIFT':
-            from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+            from lenstronomy.LensModel.Profiles.constant_shift import Shift
             return Shift()
         elif lens_type == 'NIE_POTENTIAL':
             from lenstronomy.LensModel.Profiles.nie_potential import NIE_POTENTIAL
@@ -221,8 +221,8 @@ class ProfileListBase(object):
             from lenstronomy.LensModel.Profiles.dipole import Dipole
             return Dipole()
         elif lens_type == 'CURVED_ARC_CONST':
-            from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
-            return CurvedArc()
+            from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConst
+            return CurvedArcConst()
         elif lens_type == 'CURVED_ARC_SPP':
             from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
             return CurvedArcSPP()

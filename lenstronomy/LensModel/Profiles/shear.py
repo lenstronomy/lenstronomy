@@ -57,7 +57,7 @@ class Shear(LensProfileBase):
         :param gamma2: shear component
         :param ra_0: x/ra position where shear deflection is 0
         :param dec_0: y/dec position where shear deflection is 0
-        :return: f_xx, f_yy, f_xy
+        :return: f_xx, f_xy, f_yx, f_yy
         """
         gamma1 = gamma1
         gamma2 = gamma2
@@ -65,7 +65,7 @@ class Shear(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
 
 class ShearGammaPsi(LensProfileBase):

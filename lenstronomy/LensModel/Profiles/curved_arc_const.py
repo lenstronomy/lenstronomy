@@ -3,10 +3,10 @@ from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import util
 
-__all__ = ['CurvedArc']
+__all__ = ['CurvedArcConst']
 
 
-class CurvedArc(LensProfileBase):
+class CurvedArcConst(LensProfileBase):
     """
     lens model that describes a section of a highly magnified deflector region.
     The parameterization is chosen to describe local observables efficient.
@@ -31,7 +31,7 @@ class CurvedArc(LensProfileBase):
     def __init__(self):
         self._mst = Convergence()
         self._curve = CurvedArcOnAxis()
-        super(CurvedArc, self).__init__()
+        super(CurvedArcConst, self).__init__()
 
     def function(self, x, y, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):
         """

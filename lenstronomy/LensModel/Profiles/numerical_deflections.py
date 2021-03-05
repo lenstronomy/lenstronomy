@@ -80,28 +80,27 @@ class NumericalAlpha(LensProfileBase):
 
         return f_x, f_y
 
-    def hessian(self, x, y, center_x = 0, center_y = 0, **kwargs):
+    def hessian(self, x, y, center_x=0, center_y=0, **kwargs):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         (un-normalized!!!) interpolated from the numerical deflection table
         """
 
         diff = 1e-6
-        alpha_ra, alpha_dec = self.derivatives(x, y, center_x = center_x, center_y = center_y,
-                                               **kwargs)
+        alpha_ra, alpha_dec = self.derivatives(x, y, center_x=center_x, center_y=center_y, **kwargs)
 
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, center_x = center_x, center_y = center_y,
-                                               **kwargs)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, center_x = center_x, center_y = center_y,
-                                               **kwargs)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, center_x=center_x, center_y=center_y, **kwargs)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, center_x=center_x, center_y=center_y, **kwargs)
 
         dalpha_rara = (alpha_ra_dx - alpha_ra) / diff
         dalpha_radec = (alpha_ra_dy - alpha_ra) / diff
+        dalpha_decra = (alpha_dec_dx - alpha_dec) / diff
         dalpha_decdec = (alpha_dec_dy - alpha_dec) / diff
 
         f_xx = dalpha_rara
         f_yy = dalpha_decdec
         f_xy = dalpha_radec
+        f_yx = dalpha_decra
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 

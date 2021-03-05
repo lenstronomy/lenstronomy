@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.dipole import Dipole, Dipole_util
+from lenstronomy.LensModel.Profiles.dipole import Dipole, DipoleUtil
 
 import numpy as np
 import numpy.testing as npt
@@ -13,7 +13,7 @@ class TestDipole(object):
     """
     def setup(self):
         self.dipole = Dipole()
-        self.dipole_util = Dipole_util()
+        self.dipole_util = DipoleUtil()
 
     def test_function(self):
         x = np.array([1])
@@ -75,7 +75,7 @@ class TestDipole(object):
         Fm = 0.5
         com_x, com_y = self.dipole_util.com(center1_x, center1_y, center2_x, center2_y, Fm)
         phi_dipole = self.dipole_util.angle(center1_x, center1_y, center2_x, center2_y)
-        f_xx, f_yy,f_xy = self.dipole.hessian(x, y, com_x, com_y, phi_dipole, c)
+        f_xx, f_xy, f_yx, f_yy = self.dipole.hessian(x, y, com_x, com_y, phi_dipole, c)
         npt.assert_almost_equal(f_xx[0], 0.29625219299960942, decimal=5)
         npt.assert_almost_equal(f_yy[0], -0.064402650652089, decimal=5)
         npt.assert_almost_equal(f_xy[0], -0.1159247711737602, decimal=5)
@@ -84,11 +84,11 @@ class TestDipole(object):
         y = np.array([2,1,1])
         values = self.dipole.hessian(x, y, com_x, com_y, phi_dipole, c)
         npt.assert_almost_equal(values[0][0], 0.29625219299960942, decimal=5)
-        npt.assert_almost_equal(values[1][0], -0.064402650652089, decimal=5)
-        npt.assert_almost_equal(values[2][0], -0.1159247711737602, decimal=5)
+        npt.assert_almost_equal(values[3][0], -0.064402650652089, decimal=5)
+        npt.assert_almost_equal(values[1][0], -0.1159247711737602, decimal=5)
         npt.assert_almost_equal(values[0][1], 0.11310581066966192, decimal=5)
-        npt.assert_almost_equal(values[1][1], 0.22621162133932399, decimal=5)
-        npt.assert_almost_equal(values[2][1], -0.16965871600449295, decimal=5)
+        npt.assert_almost_equal(values[3][1], 0.22621162133932399, decimal=5)
+        npt.assert_almost_equal(values[1][1], -0.16965871600449295, decimal=5)
 
     def test_mass_ratio(self):
         ratio = self.dipole_util.mass_ratio(theta_E=1., theta_E_sub=0.1)

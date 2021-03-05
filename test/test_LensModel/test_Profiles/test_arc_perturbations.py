@@ -40,7 +40,7 @@ class TestArcPerturbations(object):
     def test_hessian(self):
         x, y = util.make_grid(numPix=100, deltapix=0.1)
         delta = 0.0000001
-        f_xx, f_yy, f_xy = self.model.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.model.hessian(x, y, **self.kwargs_lens)
         f_x, f_y = self.model.derivatives(x, y, **self.kwargs_lens)
         f_x_dx, f_y_dx = self.model.derivatives(x + delta, y, **self.kwargs_lens)
         f_x_dy, f_y_dy = self.model.derivatives(x, y + delta, **self.kwargs_lens)

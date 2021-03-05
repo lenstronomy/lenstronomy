@@ -65,7 +65,7 @@ class SPLCORE(LensProfileBase):
         :param gamma: logarithmic slope at r -> infinity
         :param center_x: x coordinate center of lens model [arcsec]
         :param center_y: y coordinate center of lens model [arcsec]
-        :return: deflection angle alpha in x and y directions
+        :return: hessian elements
 
         alpha_(x/y) = alpha_r * cos/sin(x/y / r)
         """
@@ -87,7 +87,7 @@ class SPLCORE(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def alpha(self, r, sigma0, r_core, gamma):
 

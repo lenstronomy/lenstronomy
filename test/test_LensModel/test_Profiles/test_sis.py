@@ -4,7 +4,9 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.sis import SIS
 
 import numpy as np
+import numpy.testing as npt
 import pytest
+
 
 class TestSIS(object):
     """
@@ -12,7 +14,6 @@ class TestSIS(object):
     """
     def setup(self):
         self.SIS = SIS()
-
 
     def test_function(self):
         x = np.array([1])
@@ -58,19 +59,20 @@ class TestSIS(object):
         x = np.array([1])
         y = np.array([2])
         phi_E = 1.
-        f_xx, f_yy,f_xy = self.SIS.hessian( x, y, phi_E)
+        f_xx, f_xy, f_yx, f_yy = self.SIS.hessian( x, y, phi_E)
         assert f_xx[0] == 0.35777087639996635
         assert f_yy[0] == 0.089442719099991588
         assert f_xy[0] == -0.17888543819998318
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.SIS.hessian( x, y, phi_E)
         assert values[0][0] == 0.35777087639996635
-        assert values[1][0] == 0.089442719099991588
-        assert values[2][0] == -0.17888543819998318
+        assert values[3][0] == 0.089442719099991588
+        assert values[1][0] == -0.17888543819998318
         assert values[0][1] == 0.031622776601683791
-        assert values[1][1] == 0.28460498941515411
-        assert values[2][1] == -0.094868329805051374
+        assert values[3][1] == 0.28460498941515411
+        assert values[1][1] == -0.094868329805051374
 
 
 if __name__ == '__main__':

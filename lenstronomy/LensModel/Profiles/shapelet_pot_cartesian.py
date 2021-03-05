@@ -49,7 +49,7 @@ class CartShapelets(LensProfileBase):
 
     def hessian(self, x, y, coeffs, beta, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         shapelets = self._createShapelet(coeffs)
         n_order = self._get_num_n(len(coeffs))
@@ -66,7 +66,7 @@ class CartShapelets(LensProfileBase):
             f_xx = self._shapeletOutput(H_x, H_y, beta, dxx_shapelets)
             f_yy = self._shapeletOutput(H_x, H_y, beta, dyy_shapelets)
             f_xy = self._shapeletOutput(H_x, H_y, beta, dxy_shapelets)
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _createShapelet(self, coeffs):
         """

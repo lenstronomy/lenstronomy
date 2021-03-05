@@ -28,11 +28,12 @@ class TestSPLCORE(object):
         npt.assert_almost_equal(alpha_x, 0.)
         npt.assert_almost_equal(alpha_y, 0.)
 
-        fxx, fyy, fxy = self.profile.hessian(x, y, sigma0, r_core, gamma)
+        fxx, fxy, fyx, fyy = self.profile.hessian(x, y, sigma0, r_core, gamma)
         kappa = self.profile.density_2d(x, y, sigma0 / r_core, r_core, gamma)
         npt.assert_almost_equal(fxx, kappa)
         npt.assert_almost_equal(fyy, kappa)
         npt.assert_almost_equal(fxy, 0.)
+        npt.assert_almost_equal(fyx, 0.)
 
         r = 0.01
         xmin = 0.001
@@ -129,6 +130,7 @@ class TestSPLCORE(object):
 
     def _mass_integrand2d(self, r, rho0, rc, gamma):
         return 2 * np.pi * r * self.profile.density_2d(r, 0, rho0, rc, gamma)
+
 
 if __name__ == '__main__':
     pytest.main()

@@ -79,7 +79,7 @@ class SPP(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     @staticmethod
     def rho2theta(rho0, gamma):

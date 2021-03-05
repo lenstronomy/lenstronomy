@@ -119,11 +119,11 @@ class TestMGE(object):
         kwargs = {'theta_E': theta_E, 'e1': 0,
            'e2': 0, 'gamma': 1.61}
         rs = np.logspace(-2., 1., 100) * theta_E
-        f_xx, f_yy, f_xy = spep.hessian(rs, 0, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = spep.hessian(rs, 0, **kwargs)
         kappa = 1/2. * (f_xx + f_yy)
         amplitudes, sigmas, norm = mge.mge_1d(rs, kappa, N=n_comp)
         kappa_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
-        f_xx_mge, f_yy_mge, f_xy_mge = mge_kappa.hessian(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
+        f_xx_mge, f_xy_mge, f_yx_mge, f_yy_mge = mge_kappa.hessian(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
         for i in range(0, 80):
             npt.assert_almost_equal(kappa_mge[i], 1./2 * (f_xx_mge[i] + f_yy_mge[i]), decimal=1)
             npt.assert_almost_equal((kappa[i] - kappa_mge[i])/kappa[i], 0, decimal=1)
@@ -196,14 +196,14 @@ class TestMGE(object):
         theta_E = 1.5
         n_comp = 10
         rs = np.logspace(-2., 1., 100) * theta_E
-        f_xx_nfw, f_yy_nfw, f_xy_nfw = nfw.hessian(rs, 0, **kwargs_lens_nfw)
-        f_xx_s, f_yy_s, f_xy_s = sersic.hessian(rs, 0, **kwargs_lens_sersic)
+        f_xx_nfw, f_xy_nfw, f_yx_nfw, f_yy_nfw = nfw.hessian(rs, 0, **kwargs_lens_nfw)
+        f_xx_s, f_xy_s, f_yx_s, f_yy_s = sersic.hessian(rs, 0, **kwargs_lens_sersic)
         kappa = 1 / 2. * (f_xx_nfw + f_xx_s + f_yy_nfw + f_yy_s)
         amplitudes, sigmas, norm = mge.mge_1d(rs, kappa, N=n_comp)
         kappa_mge = self.multiGaussian.function(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
         from lenstronomy.LensModel.Profiles.multi_gaussian_kappa import MultiGaussianKappa
         mge_kappa = MultiGaussianKappa()
-        f_xx_mge, f_yy_mge, f_xy_mge = mge_kappa.hessian(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
+        f_xx_mge, f_xy_mge, f_yx_mge, f_yy_mge = mge_kappa.hessian(rs, np.zeros_like(rs), amp=amplitudes, sigma=sigmas)
         for i in range(0, 80):
             npt.assert_almost_equal(kappa_mge[i], 1. / 2 * (f_xx_mge[i] + f_yy_mge[i]), decimal=1)
             npt.assert_almost_equal((kappa[i] - kappa_mge[i]) / kappa[i], 0, decimal=1)

@@ -122,7 +122,7 @@ class TestSPEMD(object):
         q = 0.9
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy,f_xy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx, f_xy, f_yx, f_yy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
             npt.assert_almost_equal(f_xx, 0.41789957732890953, decimal=7)
             npt.assert_almost_equal(f_yy, 0.14047593655054141, decimal=7)
@@ -131,6 +131,7 @@ class TestSPEMD(object):
             npt.assert_almost_equal(f_xx, 0, decimal=7)
             npt.assert_almost_equal(f_yy, 0, decimal=7)
             npt.assert_almost_equal(f_xy, 0, decimal=7)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
         x = 1.
         y = 2.
@@ -140,7 +141,7 @@ class TestSPEMD(object):
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         a = np.zeros_like(x)
-        f_xx, f_yy,f_xy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx, f_xy, f_yx, f_yy = self.PEMD.hessian(x, y, phi_E, gamma, e1, e2)
         if fastell4py_bool:
             npt.assert_almost_equal(f_xx, 0.41789957732890953, decimal=7)
             npt.assert_almost_equal(f_yy, 0.14047593655054141, decimal=7)
@@ -156,11 +157,11 @@ class TestSPEMD(object):
         print(values, 'values')
         if fastell4py_bool:
             npt.assert_almost_equal(values[0][0], 0.41789957732890953, decimal=7)
-            npt.assert_almost_equal(values[1][0], 0.14047593655054141, decimal=7)
-            npt.assert_almost_equal(values[2][0], -0.18560737698052343, decimal=7)
+            npt.assert_almost_equal(values[3][0], 0.14047593655054141, decimal=7)
+            npt.assert_almost_equal(values[1][0], -0.18560737698052343, decimal=7)
             npt.assert_almost_equal(values[0][1], 0.068359818958208918, decimal=7)
-            npt.assert_almost_equal(values[1][1], 0.32494089371516482, decimal=7)
-            npt.assert_almost_equal(values[2][1], -0.097845438684594374, decimal=7)
+            npt.assert_almost_equal(values[3][1], 0.32494089371516482, decimal=7)
+            npt.assert_almost_equal(values[1][1], -0.097845438684594374, decimal=7)
         else:
             npt.assert_almost_equal(values[0][0], 0, decimal=7)
 

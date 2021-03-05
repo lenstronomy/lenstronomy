@@ -43,11 +43,12 @@ class TestGaussianKappaPot(object):
         e1, e2 = 0, 0
         sigma = 1
         amp = 1
-        f_xx, f_yy, f_xy = self.ellipse.hessian(x, y, amp, sigma, e1, e2)
-        f_xx_sphere, f_yy_sphere, f_xy_sphere = self.gaussian_kappa.hessian(x, y, amp=amp, sigma=sigma)
+        f_xx, f_xy, f_yx, f_yy = self.ellipse.hessian(x, y, amp, sigma, e1, e2)
+        f_xx_sphere, f_xy_sphere, f_yx_sphere, f_yy_sphere = self.gaussian_kappa.hessian(x, y, amp=amp, sigma=sigma)
         npt.assert_almost_equal(f_xx, f_xx_sphere, decimal=5)
         npt.assert_almost_equal(f_yy, f_yy_sphere, decimal=5)
         npt.assert_almost_equal(f_xy, f_xy_sphere, decimal=5)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
     def test_density_2d(self):
         x = 1

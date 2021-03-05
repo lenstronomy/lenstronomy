@@ -3,7 +3,9 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.sis_truncate import SIS_truncate
 
 import numpy as np
+import numpy.testing as npt
 import pytest
+
 
 class TestSIS_truncate(object):
     """
@@ -11,7 +13,6 @@ class TestSIS_truncate(object):
     """
     def setup(self):
         self.SIS = SIS_truncate()
-
 
     def test_function(self):
         x = 1
@@ -60,19 +61,20 @@ class TestSIS_truncate(object):
         y = 0
         phi_E = 1.
         r_trunc = 2
-        f_xx, f_yy,f_xy = self.SIS.hessian(x, y, phi_E, r_trunc)
+        f_xx, f_xy, f_yx, f_yy = self.SIS.hessian(x, y, phi_E, r_trunc)
         assert f_xx == 0
         assert f_yy == 1
         assert f_xy == 0
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.SIS.hessian(x, y, phi_E, r_trunc)
         assert values[0][0] == 0.21554175279993265
-        assert values[1][0] == -0.3211145618000168
-        assert values[2][0] == -0.3577708763999663
+        assert values[3][0] == -0.3211145618000168
+        assert values[1][0] == -0.3577708763999663
         assert values[0][1] == -0.43675444679663239
-        assert values[1][1] == 0.06920997883030823
-        assert values[2][1] == -0.18973665961010272
+        assert values[3][1] == 0.06920997883030823
+        assert values[1][1] == -0.18973665961010272
 
 
 if __name__ == '__main__':

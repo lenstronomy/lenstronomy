@@ -51,7 +51,7 @@ class TestNumerics(object):
         int_profile = ProfileIntegrals(lensModel)
         r = 2.
         kappa_num = int_profile.density_2d(r, kwargs, lens_param=True)
-        f_xx, f_yy, f_xy = lensModel.hessian(r, 0, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian(r, 0, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_num, kappa, decimal=2)
         if hasattr(lensModel, 'mass_2d_lens'):

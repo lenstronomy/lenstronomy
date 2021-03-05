@@ -77,9 +77,9 @@ class CoredDensityMST(LensProfileBase):
         :param r_core: core radius of the cored density profile
         :param center_x: x-center of the profile
         :param center_y: y-center of the profile
-        :return: df/dxx, df/dyy, df/dxy
+        :return: df/dxx, df/dxy, df/dyx, df/dyy
         """
         kappa_ext = 1 - lambda_approx
-        f_xx_cd, f_yy_cd, f_xy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
-        f_xx_ms, f_yy_ms, f_xy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
-        return f_xx_cd - f_xx_ms, f_yy_cd - f_yy_ms, f_xy_cd - f_xy_ms
+        f_xx_cd, f_xy_cd, f_yx_cd, f_yy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
+        f_xx_ms, f_xy_ms, f_yx_ms, f_yy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
+        return f_xx_cd - f_xx_ms, f_xy_cd - f_xy_ms, f_yx_cd - f_yx_ms, f_yy_cd - f_yy_ms

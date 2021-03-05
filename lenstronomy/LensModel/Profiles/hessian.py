@@ -65,7 +65,4 @@ class Hessian(LensProfileBase):
         :param dec_0: y/dec position where shear deflection is 0
         :return: f_xx, f_yy, f_xy
         """
-        if f_xy != f_yx:
-            raise ValueError('Hessian components "f_xy"=%s and "f_yx"= %s are not identical to evaluate single lens '
-                             'plane formalism.' % (f_xy, f_yx))
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy

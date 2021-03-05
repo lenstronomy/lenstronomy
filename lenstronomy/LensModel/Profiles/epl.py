@@ -177,7 +177,7 @@ class EPL(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
         # evaluate
-        f__xx, f__yy, f__xy = self.epl_major_axis.hessian(x__, y__, b, t, q)
+        f__xx, f__xy, f__yx, f__yy = self.epl_major_axis.hessian(x__, y__, b, t, q)
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
         gamma1__ = 1./2 * (f__xx - f__yy)
@@ -187,7 +187,7 @@ class EPL(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _theta_E_q_convert(self, theta_E, q):
         """
@@ -310,4 +310,4 @@ class EPLMajorAxis(LensProfileBase):
         f_yy = kappa - gamma_1
         f_xy = gamma_2
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy

@@ -102,7 +102,7 @@ class NFW_ELLIPSE(LensProfileBase):
         :param e2: eccentricity component in y-direction
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        :return: d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, Rs, alpha_Rs, e1, e2, center_x, center_y)
         diff = self._diff
@@ -114,7 +114,7 @@ class NFW_ELLIPSE(LensProfileBase):
         f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, e1=1, e2=0):
         """

@@ -4,17 +4,17 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
-from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConst
 from lenstronomy.Util import util
 
 
-class TestCurvedArcSISMST(object):
+class TestCurvedArcConst(object):
     """
     tests the source model routines
     """
     def setup(self):
         self.arc_sis = CurvedArcSISMST()
-        self.arc_const = CurvedArc()
+        self.arc_const = CurvedArcConst()
 
     def test_function(self):
         kwargs_arc = {'tangential_stretch': 5,
@@ -49,11 +49,13 @@ class TestCurvedArcSISMST(object):
         flux_sis = gauss.surface_brightness(beta_x_sis, beta_y_sis, kwargs_source)
         flux_const = gauss.surface_brightness(beta_x_const, beta_y_const, kwargs_source)
 
-        import matplotlib.pyplot as plt
-        plt.matshow(util.array2image(flux_sis))
-        plt.show()
-        plt.matshow(util.array2image(flux_const))
-        plt.show()
+        npt.assert_almost_equal((flux_const - flux_sis) / np.max(flux_const), 0, decimal=2)
+
+        #import matplotlib.pyplot as plt
+        #plt.matshow(util.array2image(flux_sis))
+        #plt.show()
+        #plt.matshow(util.array2image(flux_const))
+        #plt.show()
 
 
         #plt.matshow(util.array2image(f_y_sis- f_y_const))
@@ -61,7 +63,7 @@ class TestCurvedArcSISMST(object):
         #plt.matshow(util.array2image(f_y_const))
         #plt.show()
         #npt.assert_almost_equal(f_x_const, f_x_sis, decimal=4)
-        npt.assert_almost_equal(f_y_const, f_y_sis, decimal=4)
+        #npt.assert_almost_equal(f_y_const, f_y_sis, decimal=4)
 
     def test_hessian(self):
         kwargs_arc = {'tangential_stretch': 5,

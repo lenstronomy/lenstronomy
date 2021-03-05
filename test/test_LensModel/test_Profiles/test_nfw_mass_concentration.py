@@ -44,12 +44,13 @@ class TestNFWMC(object):
         x, y = 1., 1.
         logM = 12
         concentration = 10
-        f_xx_mc, f_yy_mc, f_xy_mc = self.nfwmc.hessian(x, y, logM, concentration, center_x=0, center_y=0)
+        f_xx_mc, f_xy_mc, f_yx_mc, f_yy_mc = self.nfwmc.hessian(x, y, logM, concentration, center_x=0, center_y=0)
         Rs, alpha_Rs = self.lensCosmo.nfw_physical2angle(10 ** logM, concentration)
-        f_xx, f_yy, f_xy = self.nfw.hessian(x, y, Rs, alpha_Rs, center_x=0, center_y=0)
+        f_xx, f_xy, f_yx, f_yy = self.nfw.hessian(x, y, Rs, alpha_Rs, center_x=0, center_y=0)
         npt.assert_almost_equal(f_xx_mc, f_xx, decimal=8)
         npt.assert_almost_equal(f_yy_mc, f_yy, decimal=8)
         npt.assert_almost_equal(f_xy_mc, f_xy, decimal=8)
+        npt.assert_almost_equal(f_yx_mc, f_yx, decimal=8)
 
     def test_static(self):
         x, y = 1., 1.

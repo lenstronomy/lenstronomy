@@ -78,15 +78,16 @@ class Chameleon(LensProfileBase):
         :param e2: ellipticity parameter
         :param center_x: ra center
         :param center_y: dec center
-        :return: second derivatives of the lensing potential (Hessian: f_xx, f_yy, f_xy)
+        :return: second derivatives of the lensing potential (Hessian: f_xx, f_xy, f_yx, f_yy)
         """
         theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(alpha_1, w_c, w_t, e1, e2)
-        f_xx_1, f_yy_1, f_xy_1 = self._nie_1.hessian(x, y, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
-        f_xx_2, f_yy_2, f_xy_2 = self._nie_2.hessian(x, y, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
+        f_xx_1, f_xy_1, f_yx_1, f_yy_1 = self._nie_1.hessian(x, y, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_xx_2, f_xy_2, f_yx_2, f_yy_2 = self._nie_2.hessian(x, y, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
         f_xx = f_xx_1 - f_xx_2
         f_yy = f_yy_1 - f_yy_2
         f_xy = f_xy_1 - f_xy_2
-        return f_xx, f_yy, f_xy
+        f_yx = f_yx_1 - f_yx_2
+        return f_xx, f_xy, f_yx, f_yy
 
     def param_convert(self, alpha_1, w_c, w_t, e1, e2):
         """
@@ -96,6 +97,8 @@ class Chameleon(LensProfileBase):
         :param alpha_1: deflection angle at 1 (arcseconds) from the center
         :param w_c: see Suyu+2014
         :param w_t: see Suyu+2014
+        :param e1: eccentricity modulus
+        :param ee: eccentricity modulus
         :return:
         """
         if self._static is True:
@@ -232,9 +235,9 @@ class DoubleChameleon(LensProfileBase):
         :param center_y: dec center
         :return: second derivatives of the lensing potential (Hessian: f_xx, f_yy, f_xy)
         """
-        f_xx1, f_yy1, f_xy1 = self._chameleon_1.hessian(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self._chameleon_2.hessian(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
-        return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
+        f_xx1, f_xy1, f_yx1, f_yy1,  = self._chameleon_1.hessian(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_xy2, f_yx2, f_yy2 = self._chameleon_2.hessian(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_xx1 + f_xx2, f_xy1 + f_xy2, f_xy1 + f_xy2, f_yy1 + f_yy2
 
     def set_static(self, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         self._chameleon_1.set_static(alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
@@ -268,7 +271,8 @@ class TripleChameleon(LensProfileBase):
         self._chameleon_3 = Chameleon()
         super(TripleChameleon, self).__init__()
 
-    def _ratio_definition(self, alpha_1, ratio12, ratio13):
+    @staticmethod
+    def _ratio_definition(alpha_1, ratio12, ratio13):
         """
 
         :param alpha_1: deflection angle at 1 arcsecond
@@ -306,8 +310,8 @@ class TripleChameleon(LensProfileBase):
         f_3 = self._chameleon_3.function(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
         return f_1 + f_2 + f_3
 
-    def derivatives(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
-                 center_x=0, center_y=0):
+    def derivatives(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13,
+                    e23, center_x=0, center_y=0):
         """
 
         :param alpha_1:
@@ -332,7 +336,7 @@ class TripleChameleon(LensProfileBase):
         return f_x1 + f_x2 + f_x3, f_y1 + f_y2 + f_y3
 
     def hessian(self, x, y, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
-                 center_x=0, center_y=0):
+                center_x=0, center_y=0):
         """
 
         :param alpha_1:
@@ -351,10 +355,10 @@ class TripleChameleon(LensProfileBase):
         :return:
         """
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
-        f_xx1, f_yy1, f_xy1 = self._chameleon_1.hessian(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self._chameleon_2.hessian(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
-        f_xx3, f_yy3, f_xy3 = self._chameleon_3.hessian(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
-        return f_xx1 + f_xx2 + f_xx3, f_yy1 + f_yy2 + f_yy3, f_xy1 + f_xy2 + f_xy3
+        f_xx1, f_xy1, f_yx1, f_yy1 = self._chameleon_1.hessian(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_xx2, f_xy2, f_yx2, f_yy2 = self._chameleon_2.hessian(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_xx3, f_xy3, f_yx3, f_yy3 = self._chameleon_3.hessian(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_xx1 + f_xx2 + f_xx3, f_xy1 + f_xy2 + f_xy3, f_yx1 + f_yx2 + f_yx3, f_yy1 + f_yy2 + f_yy3
 
     def set_static(self, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
                  center_x=0, center_y=0):
@@ -462,7 +466,7 @@ class DoubleChameleonPointMass(LensProfileBase):
         :param center_y: dec center
         :return:
         """
-        f_xx1, f_yy1, f_xy1 = self.pointMass.hessian(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
-        f_xx2, f_yy2, f_xy2 = self.chameleon.hessian(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
+        f_xx1, f_xy1, f_yx1, f_yy1 = self.pointMass.hessian(x, y, alpha_1 / (1. + 1. / ratio_pointmass), center_x, center_y)
+        f_xx2, f_xy2, f_yx2, f_yy2 = self.chameleon.hessian(x, y, alpha_1 / (1. + ratio_pointmass), ratio_chameleon, w_c1, w_t1,
                                                      e11, e21, w_c2, w_t2, e12, e22, center_x, center_y)
-        return f_xx1 + f_xx2, f_yy1 + f_yy2, f_xy1 + f_xy2
+        return f_xx1 + f_xx2, f_xy1 + f_xy2, f_yx1 + f_yx2, f_yy1 + f_yy2

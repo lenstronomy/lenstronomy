@@ -137,9 +137,9 @@ class CurvedArcSISMST(LensProfileBase):
         theta_E, kappa_ext, center_x_sis, center_y_sis = self.stretch2sis_mst(tangential_stretch,
                                                                           radial_stretch, curvature,
                                                                           direction, center_x, center_y)
-        f_xx_sis, f_yy_sis, f_xy_sis = self._sis.hessian(x, y, theta_E, center_x_sis, center_y_sis)
-        f_xx_mst, f_yy_mst, f_xy_mst = self._mst.hessian(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
-        return lambda_mst * f_xx_sis + f_xx_mst, lambda_mst * f_yy_sis + f_yy_mst, lambda_mst * f_xy_sis + f_xy_mst
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = self._sis.hessian(x, y, theta_E, center_x_sis, center_y_sis)
+        f_xx_mst, f_xy_mst, f_yx_mst, f_yy_mst = self._mst.hessian(x, y, kappa_ext, ra_0=center_x, dec_0=center_y)
+        return lambda_mst * f_xx_sis + f_xx_mst, lambda_mst * f_xy_sis + f_xy_mst, lambda_mst * f_yx_sis + f_yx_mst, lambda_mst * f_yy_sis + f_yy_mst
 
 
 def center_deflector(curvature, direction, center_x, center_y):

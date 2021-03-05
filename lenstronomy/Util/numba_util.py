@@ -1,4 +1,3 @@
-import numba
 import lenstronomy
 import os
 import yaml

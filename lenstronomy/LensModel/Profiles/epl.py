@@ -167,7 +167,7 @@ class EPL(LensProfileBase):
         :param gamma: power law slope
         :param center_x: profile center
         :param center_y: profile center
-        :return: f_xx, f_yy, f_xy
+        :return: f_xx, f_xy, f_yx, f_yy
         """
 
         b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)

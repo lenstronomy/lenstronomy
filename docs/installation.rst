@@ -17,7 +17,7 @@ You can also clone the github repository for development purposes.
 Requirements
 ------------
 
-Make sure the standard python libraries as specified in the `requirements <https://github.com/sibirrer/lenstronomy/blob/master/requirements.txt>`_.
+Make sure the standard python libraries as specified in the `requirements <https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt>`_.
 The standard usage does not require all libraries to be installed, in particluar the different posterior samplers are only required when being used.
 
 In the following, a few specific cases are mentioned that may require special attention in the installation and settings, in particular when it comes
@@ -28,7 +28,7 @@ MPI
 ---
 MPI support is provided for several sampling techniques for parallel computing. A specific version of the library schwimmbad is required
 for the correct support of the moving of the likelihood elements from one processor to another with MPI. Pay attention ot the
-`requirements <https://github.com/sibirrer/lenstronomy/blob/master/requirements.txt>`_.
+`requirements <https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt>`_.
 
 
 NUMBA
@@ -37,7 +37,7 @@ Just-in-time (jit) compilation with numba can provide significant speed-up for c
 There are specific settings for the settings provided as per default, but these may need to be adopted when running on a HPC cluster.
 You can define your own configuration file in your $XDG_CONFIG_HOME/lenstronomy/config.yaml file. E.g. (check your system for the path)
  ~/.conf/lenstronomy/config.yaml, following the format of the
-default configuration which is `here <https://github.com/sibirrer/lenstronomy/blob/master/lenstronomy/Conf/conf_default.yaml>`_.
+default configuration which is `here <https://github.com/sibirrer/lenstronomy/blob/main/lenstronomy/Conf/conf_default.yaml>`_.
 
 
 FASTELL

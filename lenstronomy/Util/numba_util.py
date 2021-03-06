@@ -12,7 +12,13 @@ If on super computer:
 @numba.jit(nopython=True, cache=False, parallel=True)
 """
 
-from xdg.BaseDirectory import xdg_config_home
+# in case the xdg library is installed, the import statement with pyxdg can raise an error
+# to avoid it, we draw back to the ~/.config directory in case this import fails.
+# TODO come up with more permanent solution of path to configuration directory
+try:
+    from xdg.BaseDirectory import xdg_config_home
+except ImportError:
+    xdg_config_home = '~/.config'
 
 user_config_file = os.path.join(xdg_config_home, "lenstronomy", "config.yaml")
 
@@ -65,6 +71,7 @@ def generated_jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fa
 
     return wrapper
 
+
 @generated_jit()
 def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
     """
@@ -76,6 +83,7 @@ def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
         return nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
     else:
         return nan_to_num_single if numba_enabled else nan_to_num_single(x, posinf, neginf, nan)
+
 
 @jit()
 def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
@@ -89,6 +97,7 @@ def nan_to_num_arr(x, posinf=1e10, neginf=-1e10, nan=0.):
             else:
                 x[i]=neginf
     return x
+
 
 @jit()
 def nan_to_num_single(x, posinf=1e10, neginf=-1e10, nan=0.):

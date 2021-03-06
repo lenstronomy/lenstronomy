@@ -18,7 +18,7 @@ lenstronomy - gravitational lensing software package
         :target: https://coveralls.io/github/sibirrer/lenstronomy?branch=main
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg?style=flat
-    :target: https://github.com/sibirrer/lenstronomy/blob/master/LICENSE
+    :target: https://github.com/sibirrer/lenstronomy/blob/main/LICENSE
 
 .. image:: https://img.shields.io/badge/arXiv-1803.09746%20-yellowgreen.svg
     :target: https://arxiv.org/abs/1803.09746

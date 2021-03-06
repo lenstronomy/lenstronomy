@@ -147,8 +147,21 @@ class CurvedArcConst(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, direction)
         # evaluate
-        f__x = alpha * np.cos(y__ * curvature) - alpha
-        f__y = alpha * np.sin(y__ * curvature)
+
+        # move x-coordinate to circle intercept with x-axis
+        if isinstance(x, int) or isinstance(x, float):
+            if abs(y__) > r:
+                f__x, f__y = 0, 0
+            else:
+                f__x, f__y = self._deflection(y__, r, tangential_stretch)
+
+        else:
+            f__x, f__y = np.zeros_like(x__), np.zeros_like(y__)
+            _y__ = y__[y__ <= r]
+            _f__x, _f__y = self._deflection(_y__, r, tangential_stretch)
+            f__x[y__ <= r] = _f__x
+            f__y[y__ <= r] = _f__y
+
         # rotate back
         f_x, f_y = util.rotate(f__x, f__y, -direction)
         return f_x, f_y
@@ -209,3 +222,22 @@ class CurvedArcConst(LensProfileBase):
         return f_xx, f_xy, f_yx, f_yy
         """
         return f_xx, f_xy, f_yx, f_yy
+
+    @staticmethod
+    def _deflection(y, r, tangential_stretch):
+        """
+
+        :param y: off-axis coordinate, require all entries to be <=r !
+        :param r: curvature radius
+        :param tangential_stretch: tangential stretch
+        :return: deflections f_x, f_y
+        """
+
+        x_r = np.sqrt(r ** 2 - y ** 2)
+        f_x = x_r - r
+        # move y-coordinate circle length / tangential stretch up from x-axis
+        phi = np.arcsin(y / r)
+        l = phi * r
+        beta_y = l / tangential_stretch
+        f_y = y - beta_y
+        return f_x, f_y

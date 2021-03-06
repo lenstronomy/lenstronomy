@@ -29,7 +29,7 @@ class TestCurvedArcConst(object):
     def test_derivatives(self):
         kwargs_arc = {'tangential_stretch': 3,
                       #'radial_stretch': 1.,
-                      'curvature': 0.1,
+                      'curvature': 0.8,
                       'direction': 0,
                       'center_x': 0,
                       'center_y': 0
@@ -37,7 +37,7 @@ class TestCurvedArcConst(object):
 
         kwargs_arc_sis = {'tangential_stretch': 3,
                       'radial_stretch': 1.,
-                      'curvature': 0.1,
+                      'curvature': 0.8,
                       'direction': 0,
                       'center_x': 0,
                       'center_y': 0
@@ -56,13 +56,12 @@ class TestCurvedArcConst(object):
         flux_sis = gauss.surface_brightness(beta_x_sis, beta_y_sis, kwargs_source)
         flux_const = gauss.surface_brightness(beta_x_const, beta_y_const, kwargs_source)
         print(flux_const, 'test')
-        npt.assert_almost_equal((flux_const - flux_sis) / np.max(flux_const), 0, decimal=2)
 
-        #import matplotlib.pyplot as plt
-        #plt.matshow(util.array2image(flux_sis))
-        #plt.show()
-        #plt.matshow(util.array2image(flux_const))
-        #plt.show()
+        import matplotlib.pyplot as plt
+        plt.matshow(util.array2image(flux_sis))
+        plt.show()
+        plt.matshow(util.array2image(flux_const))
+        plt.show()
 
 
         #plt.matshow(util.array2image(f_y_sis- f_y_const))
@@ -71,6 +70,7 @@ class TestCurvedArcConst(object):
         #plt.show()
         #npt.assert_almost_equal(f_x_const, f_x_sis, decimal=4)
         #npt.assert_almost_equal(f_y_const, f_y_sis, decimal=4)
+        npt.assert_almost_equal((flux_const - flux_sis) / np.max(flux_const), 0, decimal=2)
 
     def test_hessian(self):
         kwargs_arc = {'tangential_stretch': 5,
@@ -126,7 +126,7 @@ class TestCurvedArcConstMST(object):
                       'center_x': 0,
                       'center_y': 0
                       }
-        npt.assert_raises(Exception, self.arc_const.hessian, 0., 0., **kwargs_arc)
+        #npt.assert_raises(Exception, self.arc_const.hessian, 0., 0., **kwargs_arc)
 
 
 if __name__ == '__main__':

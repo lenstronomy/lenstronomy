@@ -249,7 +249,7 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     # check whether curved arc
     lens_model_list = lensModel.lens_model_list
     for i, lens_type in enumerate(lens_model_list):
-        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST']:
+        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_CONST', 'CURVED_ARC_CONST_MST']:
             plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, color=color, **kwargs_lens[i])
 
     ax.get_xaxis().set_visible(False)

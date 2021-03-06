@@ -357,8 +357,14 @@ class TestNumericsProfile(object):
         kwargs = {'tangential_stretch': 4. , 'direction': 0., 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
         lens_model = ['CURVED_ARC_CONST']
         self.assert_differentials(lens_model, kwargs, potential=False)
-
         kwargs = {'tangential_stretch': 4. , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_curved_arc_const_MST(self):
+        kwargs = {'tangential_stretch': 4. , 'direction': 0., 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC_CONST_MST']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+        kwargs = {'tangential_stretch': 4., 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
         self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_curved_arc_spp(self):

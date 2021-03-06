@@ -28,11 +28,11 @@ Finally add the `lenstronomy` repository as a *remote*. This will allow you to f
 
 ### Create a branch for your new feature
 
-Create a *branch* off the `lenstronomyproject` master branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:
+Create a *branch* off the `lenstronomyproject` main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:
 
   ```bash
   git fetch lenstronomyproject
-  git checkout -b <your-branch-name> lenstronomyproject/master
+  git checkout -b <your-branch-name> lenstronomyproject/main
   ```
 
 ### Hack away!
@@ -63,26 +63,26 @@ When you feel that work on your new feature is complete, you should create a *Pu
   1. Go to [lenstronomy Pull Requests](https://github.com/sibirrer/lenstronomy/pulls)
   2. Click the green **New pull request** button
   3. Click **compare across forks**
-  4. Confirm that the base fork is `sibirrer/lenstronomy` and the base branch is `master`
+  4. Confirm that the base fork is `sibirrer/lenstronomy` and the base branch is `main`
   5. Confirm the head fork is `<your-account>/lenstronomy` and the compare branch is `<your-branch-name>`
   6. Give your pull request a title and fill out the the template for the description
   7. Click the green **Create pull request** button
 
 ### Updating your branch
 
-As you work on your feature, new commits might be made to the `sibirrer/lenstronomy` master branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:
+As you work on your feature, new commits might be made to the `sibirrer/lenstronomy` main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:
 
   - If your pull request has no conflicts, click **Update branch**
   - If your pull request has conflicts, click **Resolve conflicts**, manually resolve the conflicts and click **Mark as resolved**
-  - *merge* the `lenstronomyproject` master branch from the command line:
+  - *merge* the `lenstronomyproject` main branch from the command line:
     ```bash
     git fetch lenstronomyproject
-    git merge lenstronomyproject/master
+    git merge lenstronomyproject/main
     ```
-  - *rebase* your feature branch onto the `lenstronomy` master branch from the command line:
+  - *rebase* your feature branch onto the `lenstronomy` main branch from the command line:
     ```bash
     git fetch lenstronomyproject
-    git rebase lenstronomyproject/master
+    git rebase lenstronomyproject/main
     ```
 
 **Warning**: It is bad practice to *rebase* commits that have already been pushed to a remote such as your fork. Rebasing creates new copies of your commits that can cause the local and remote branches to diverge. `git push --force` will **overwrite** the remote branch with your newly rebased local branch. This is strongly discouraged, particularly when working on a shared branch where you could erase a collaborators commits.
@@ -125,4 +125,4 @@ All public classes, methods and functions require docstrings. You can build docu
 
 For more information see the Astropy guide to [Writing Documentation](https://docs.astropy.org/en/stable/development/docguide.html).
 
-This page is inspired by the Contributions guidelines of the [Skypy project](https://github.com/skypyproject/skypy/blob/master/CONTRIBUTING.md).
+This page is inspired by the Contributions guidelines of the [Skypy project](https://github.com/skypyproject/skypy/blob/main/CONTRIBUTING.md).

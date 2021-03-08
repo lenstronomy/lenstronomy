@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.shear import Shear, ShearGammaPsi
+from lenstronomy.LensModel.Profiles.shear import Shear, ShearGammaPsi, ShearReduced
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Util import param_util
 
@@ -106,6 +106,47 @@ class TestShearGammaPsi(object):
         values = self.shear.hessian(x, y, gamma, psi)
         values_e1e2 = self.shear_e1e2.hessian(x, y, gamma1, gamma2)
         npt.assert_almost_equal(values, values_e1e2, decimal=5)
+
+from lenstronomy.Util import util
+from lenstronomy.LightModel.Profiles.gaussian import GaussianEllipse
+
+
+class TestShearReduced(object):
+
+    def setup(self):
+        self.shear = ShearReduced()
+
+    def test_magnification(self):
+        # test whether magnification is unity
+        x, y = 1, 1
+        f_xx, f_xy, f_yx, f_yy = self.shear.hessian(x, y, gamma1=0.1, gamma2=-0.1)
+        det_A = (1 - f_xx) * (1 - f_yy) - f_xy * f_yx
+        npt.assert_almost_equal(det_A, 1, decimal=8)
+
+    def test_distortions(self):
+        # test whether inverse ellipticity distrotions can be fully described by reduced shear distortions
+
+        # elliptical gaussian
+        x, y = util.make_grid(numPix=10, deltapix=0.1)
+        gauss = GaussianEllipse()
+        shear = ShearReduced()
+
+        flux_round = gauss.function(x, y, amp=1, sigma=0.1, e1=0, e2=0)
+
+        e1, e2, = 0, 0.1
+        f_x, f_y = shear.derivatives(x, y, gamma1=-e1, gamma2=-e2)
+        flux_distorted = gauss.function(x - f_x, y - f_y, amp=1, sigma=0.1, e1=e1, e2=e2)
+        npt.assert_almost_equal(flux_round, flux_distorted, decimal=9)
+
+        e1, e2, = 0.2, 0
+        f_x, f_y = shear.derivatives(x, y, gamma1=-e1, gamma2=-e2)
+        flux_distorted = gauss.function(x - f_x, y - f_y, amp=1, sigma=0.1, e1=e1, e2=e2)
+        npt.assert_almost_equal(flux_round, flux_distorted, decimal=9)
+
+        e1, e2, = -0.2, 0.1
+        f_x, f_y = shear.derivatives(x, y, gamma1=-e1, gamma2=-e2)
+        flux_distorted = gauss.function(x - f_x, y - f_y, amp=1, sigma=0.1, e1=e1, e2=e2)
+        npt.assert_almost_equal(flux_round, flux_distorted, decimal=9)
 
 
 if __name__ == '__main__':

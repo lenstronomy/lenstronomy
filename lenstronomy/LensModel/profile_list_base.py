@@ -3,7 +3,7 @@ from lenstronomy.Util.util import convert_bool_list
 __all__ = ['ProfileListBase']
 
 
-_SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'CONVERGENCE', 'FLEXION',
+_SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
                      'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE', 'NFW', 'NFW_ELLIPSE',
                      'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
@@ -82,6 +82,9 @@ class ProfileListBase(object):
         elif lens_type == 'SHEAR_GAMMA_PSI':
             from lenstronomy.LensModel.Profiles.shear import ShearGammaPsi
             return ShearGammaPsi()
+        elif lens_type == 'SHEAR_REDUCED':
+            from lenstronomy.LensModel.Profiles.shear import ShearReduced
+            return ShearReduced()
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()

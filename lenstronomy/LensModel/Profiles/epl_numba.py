@@ -121,7 +121,7 @@ class EPL_numba(LensProfileBase):
         f_xy = gamma_shear.imag*u
         # Fix the nans if x=y=0 is filled in
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
 @jit()
 def param_transform(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
@@ -155,6 +155,7 @@ def alpha(x, y, b, q, t):
     Omega = omega(phi, t, q)
     alph = (2*b)/(1+q)*nan_to_num((b/R)**t*R/b)*Omega
     return alph
+
 
 @jit(fastmath=True) # Because of the reduction nature of this, relaxing commutativity actually matters a lot (4x speedup).
 def omega(phi, t, q, niter_max=200, tol=1e-16):

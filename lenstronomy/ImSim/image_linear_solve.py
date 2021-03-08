@@ -274,14 +274,14 @@ class ImageLinearFit(ImageModel):
         num_response = self.num_data_evaluate
         A = np.zeros((num_param, num_response))
         n = 0
-        # response of sersic source profile
+        # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        # response of lens light profile
+        # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)

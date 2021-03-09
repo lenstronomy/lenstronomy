@@ -238,6 +238,9 @@ class ProfileListBase(object):
         elif lens_type == 'CURVED_ARC_SIS_MST':
             from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
             return CurvedArcSISMST()
+        elif lens_type == 'CURVED_ARC_DISTORTED':
+            from lenstronomy.LensModel.Profiles.curved_arc_distorted import CurvedArcDistorted
+            return CurvedArcDistorted()
         elif lens_type == 'ARC_PERT':
             from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
             return ArcPerturbations()

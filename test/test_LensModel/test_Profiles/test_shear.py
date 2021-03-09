@@ -4,6 +4,8 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.shear import Shear, ShearGammaPsi, ShearReduced
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.Util import param_util
+from lenstronomy.Util import util
+from lenstronomy.LightModel.Profiles.gaussian import GaussianEllipse
 
 import numpy as np
 import numpy.testing as npt
@@ -106,9 +108,6 @@ class TestShearGammaPsi(object):
         values = self.shear.hessian(x, y, gamma, psi)
         values_e1e2 = self.shear_e1e2.hessian(x, y, gamma1, gamma2)
         npt.assert_almost_equal(values, values_e1e2, decimal=5)
-
-from lenstronomy.Util import util
-from lenstronomy.LightModel.Profiles.gaussian import GaussianEllipse
 
 
 class TestShearReduced(object):

@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from corner.corner import quantile
+from corner import quantile
 import matplotlib.pyplot as plt
 
 from lenstronomy.Util.package_util import exporter

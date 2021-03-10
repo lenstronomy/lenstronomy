@@ -40,16 +40,8 @@ class Interpol(object):
         :param scale: pixel scale (in angular units) of the simulated image
         :return: surface brightness from the model at coordinates (x, y)
         """
-        n = len(np.atleast_1d(x))
         x_, y_ = self.coord2image_pixel(x, y, center_x, center_y, phi_G, scale)
-        if n <= 1 and np.shape(x) == ():
-            f_out = self.image_interp(x_, y_, image)
-            return f_out[0][0] * amp
-        else:
-            f_out = np.zeros(n)
-            for i in range(n):
-                f_out[i] = self.image_interp(x_[i], y_[i], image)
-        return f_out * amp
+        return amp * self.image_interp(x_, y_, image)
 
     def image_interp(self, x, y, image):
         if not hasattr(self, '_image_interp'):
@@ -66,7 +58,7 @@ class Interpol(object):
 
         # y and x must be flipped in call to interpolator
         # (try reversing, the unit tests will fail)
-        return self._image_interp(y, x)
+        return self._image_interp(y, x, grid=False)
 
     def total_flux(self, image, scale, amp=1, center_x=0, center_y=0, phi_G=0):
         """

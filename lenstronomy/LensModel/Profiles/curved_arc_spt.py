@@ -3,10 +3,10 @@ from lenstronomy.LensModel.Profiles.shear import ShearReduced
 from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['CurvedArcDistorted']
+__all__ = ['CurvedArcSPT']
 
 
-class CurvedArcDistorted(LensProfileBase):
+class CurvedArcSPT(LensProfileBase):
     """
     Curved arc model based on SIS+MST with an additional non-linear shear distortions applied on the source coordinates
     around the center.
@@ -23,7 +23,7 @@ class CurvedArcDistorted(LensProfileBase):
     def __init__(self):
         self._curve = CurvedArcSISMST()
         self._distort = ShearReduced()
-        super(CurvedArcDistorted, self).__init__()
+        super(CurvedArcSPT, self).__init__()
 
     def function(self, x, y, tangential_stretch, radial_stretch, curvature, direction, gamma1, gamma2, center_x,
                  center_y):

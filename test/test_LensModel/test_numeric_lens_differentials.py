@@ -382,10 +382,10 @@ class TestNumericsProfile(object):
         lens_model = ['CURVED_ARC_SPP']
         self.assert_differentials(lens_model, kwargs)
 
-    def test_curved_arc_distorted(self):
+    def test_curved_arc_spt(self):
         kwargs = {'tangential_stretch': 4., 'radial_stretch': .9 , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0,
                   'center_y': 0, 'gamma1': 0.1, 'gamma2': -0.2}
-        lens_model = ['CURVED_ARC_DISTORTED']
+        lens_model = ['CURVED_ARC_SPT']
         self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_curved_arc_sis_mst(self):

@@ -55,7 +55,6 @@ class TestCurvedArcConst(object):
         kwargs_source = [{'amp': 1, 'sigma': 0.05, 'center_x': 0, 'center_y': 0}]
         flux_sis = gauss.surface_brightness(beta_x_sis, beta_y_sis, kwargs_source)
         flux_const = gauss.surface_brightness(beta_x_const, beta_y_const, kwargs_source)
-        print(flux_const, 'test')
 
         #import matplotlib.pyplot as plt
         #plt.matshow(util.array2image(flux_sis))

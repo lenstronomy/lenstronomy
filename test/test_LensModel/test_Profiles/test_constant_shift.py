@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+from lenstronomy.LensModel.Profiles.constant_shift import Shift
 
 import numpy as np
 import numpy.testing as npt
@@ -50,10 +50,11 @@ class TestShift(object):
     def test_hessian(self):
         x = np.array([1])
         y = np.array([2])
-        f_xx, f_yy, f_xy = self.shift.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.shift.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0, decimal=5)
         npt.assert_almost_equal(f_yy, 0, decimal=5)
         npt.assert_almost_equal(f_xy, 0, decimal=5)
+        npt.assert_almost_equal(f_yx, 0, decimal=5)
 
 
 if __name__ == '__main__':

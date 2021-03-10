@@ -192,19 +192,19 @@ class Hernquist(LensProfileBase):
         :param Rs: Hernquist radius in units of angle
         :param center_x: x-center of the profile (units of angle)
         :param center_y: y-center of the profile (units of angle)
-        :return: df/dxdx, df/dydy, df/dxdy
+        :return: df/dxdx, df/dxdy, df/dydx, df/dydy
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs, center_x, center_y)
         diff = self._diff
         alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, sigma0, Rs, center_x, center_y)
         alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, sigma0, Rs, center_x, center_y)
 
-        f_xx = (alpha_ra_dx - alpha_ra)/diff
-        f_xy = (alpha_ra_dy - alpha_ra)/diff
-        #f_yx = (alpha_dec_dx - alpha_dec)/diff
-        f_yy = (alpha_dec_dy - alpha_dec)/diff
+        f_xx = (alpha_ra_dx - alpha_ra) / diff
+        f_xy = (alpha_ra_dy - alpha_ra) / diff
+        f_yx = (alpha_dec_dx - alpha_dec) / diff
+        f_yy = (alpha_dec_dy - alpha_dec) / diff
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def rho2sigma(self, rho0, Rs):
         """

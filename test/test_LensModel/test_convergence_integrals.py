@@ -19,7 +19,7 @@ class TestConvergenceIntegrals(object):
         x_grid, y_grid = util.make_grid(numPix=2000, deltapix=deltaPix)
         kwargs_sis = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
 
-        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         f_ = sis.function(x_grid, y_grid, **kwargs_sis)
         f_ = util.array2image(f_)
         kappa = util.array2image((f_xx + f_yy) / 2.)
@@ -40,7 +40,7 @@ class TestConvergenceIntegrals(object):
         high_res_kernel_size = 5
         x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
 
-        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         kappa = util.array2image((f_xx + f_yy) / 2.)
         f_num = convergence_integrals.potential_from_kappa_grid_adaptive(kappa, deltaPix, low_res_factor, high_res_kernel_size)
 
@@ -61,7 +61,7 @@ class TestConvergenceIntegrals(object):
         x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
         kwargs_sis = {'theta_E': 1., 'center_x': 0, 'center_y': 0}
 
-        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         f_x, f_y = sis.derivatives(x_grid, y_grid, **kwargs_sis)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.)
@@ -79,7 +79,7 @@ class TestConvergenceIntegrals(object):
         high_res_kernel_size = 5
         x_grid, y_grid = util.make_grid(numPix=1000, deltapix=deltaPix)
 
-        f_xx, f_yy, _ = sis.hessian(x_grid, y_grid, **kwargs_sis)
+        f_xx, _, _, f_yy = sis.hessian(x_grid, y_grid, **kwargs_sis)
         kappa = util.array2image((f_xx + f_yy) / 2.)
         f_x_num, f_y_num = convergence_integrals.deflection_from_kappa_grid_adaptive(kappa, deltaPix, low_res_factor, high_res_kernel_size)
 
@@ -106,7 +106,7 @@ class TestConvergenceIntegrals(object):
         x_grid2d = util.array2image(x_grid)
         y_grid2d = util.array2image(y_grid)
 
-        f_xx, f_yy, _ = sersic_lens.hessian(x_grid, y_grid, **kwargs_lens)
+        f_xx, _, _, f_yy = sersic_lens.hessian(x_grid, y_grid, **kwargs_lens)
         f_x, f_y = sersic_lens.derivatives(x_grid, y_grid, **kwargs_lens)
         f_x = util.array2image(f_x)
         kappa = util.array2image((f_xx + f_yy) / 2.)

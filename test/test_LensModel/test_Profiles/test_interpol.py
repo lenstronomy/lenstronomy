@@ -21,7 +21,7 @@ class TestInterpol(object):
         kwargs_SIS = {'theta_E': 1., 'center_x': 0.5, 'center_y':-0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         interp_func = Interpol(grid=True)
         interp_func_loop = Interpol(grid=False)
@@ -42,9 +42,9 @@ class TestInterpol(object):
         assert alpha1_interp[1] == alpha1_interp_loop[1]
         # test hessian
         assert interp_func.hessian(1,0) == sis.hessian(1,0, **kwargs_SIS)
-        f_xx_interp, f_yy_interp, f_xy_interp = interp_func.hessian(np.array([0,1,0,1]), np.array([1,1,2,2]))
-        f_xx_interp_loop, f_yy_interp_loop, f_xy_interp_loop = interp_func_loop.hessian(np.array([0, 1, 0, 1]), np.array([1, 1, 2, 2]))
-        f_xx_true, f_yy_true, f_xy_true = sis.hessian(np.array([0,1,0,1]),np.array([1,1,2,2]), **kwargs_SIS)
+        f_xx_interp, f_xy_interp, f_yx_interp, f_yy_interp = interp_func.hessian(np.array([0,1,0,1]), np.array([1,1,2,2]))
+        f_xx_interp_loop, f_xy_interp_loop, f_yx_interp_loop, f_yy_interp_loop = interp_func_loop.hessian(np.array([0, 1, 0, 1]), np.array([1, 1, 2, 2]))
+        f_xx_true, f_xy_true, f_yx_true, f_yy_true = sis.hessian(np.array([0,1,0,1]),np.array([1,1,2,2]), **kwargs_SIS)
         assert f_xx_interp[0] == f_xx_true[0]
         assert f_xx_interp[1] == f_xx_true[1]
         assert f_xy_interp[0] == f_xy_true[0]
@@ -63,7 +63,7 @@ class TestInterpol(object):
         kwargs_SIS = {'theta_E':1., 'center_x': 0.5, 'center_y': -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         interp_func = Interpol(grid=True)
         interp_func.do_interp(x_axes, y_axes, util.array2image(f_sis), util.array2image(f_x_sis), util.array2image(f_y_sis), util.array2image(f_xx_sis), util.array2image(f_yy_sis), util.array2image(f_xy_sis))
@@ -79,7 +79,7 @@ class TestInterpol(object):
         kwargs_SIS = {'theta_E':1., 'center_x': 0.5, 'center_y': -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         interp_func = Interpol()
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis), 'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis), 'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis), 'f_xy': util.array2image(f_xy_sis)}
@@ -106,7 +106,7 @@ class TestInterpol(object):
         kwargs_SIS = {'theta_E':1., 'center_x': 0.5, 'center_y': -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis), 'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis), 'f_xx': util.array2image(f_xx_sis), 'f_yy': util.array2image(f_yy_sis), 'f_xy': util.array2image(f_xy_sis)}
         interp_func = InterpolScaled(grid=False)
@@ -117,13 +117,14 @@ class TestInterpol(object):
         f_ = interp_func.function(x, y, scale_factor=1., **kwargs_interp)
         npt.assert_almost_equal(f_, 1.5811388300841898)
 
-        f_xx, f_yy, f_xy = interp_func.hessian(x, y, scale_factor=1., **kwargs_interp)
+        f_xx, f_xy, f_yx, f_yy = interp_func.hessian(x, y, scale_factor=1., **kwargs_interp)
         npt.assert_almost_equal(f_xx, 0.56920997883030822, decimal=8)
         npt.assert_almost_equal(f_yy, 0.063245553203367583, decimal=8)
         npt.assert_almost_equal(f_xy, -0.18973665961010275, decimal=8)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
         x_grid, y_grid = util.make_grid(10, deltaPix)
-        f_xx, f_yy, f_xy = interp_func.hessian(x_grid, y_grid, scale_factor=1., **kwargs_interp)
+        f_xx, f_xy, f_yx, f_yy = interp_func.hessian(x_grid, y_grid, scale_factor=1., **kwargs_interp)
         npt.assert_almost_equal(f_xx[0], 0, decimal=2)
 
     def test_shift(self):
@@ -135,7 +136,7 @@ class TestInterpol(object):
         kwargs_SIS = {'theta_E': 1., 'center_x': 0.5, 'center_y': -0.5}
         f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx_sis, f_yy_sis, f_xy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis),
                          'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis),
@@ -157,4 +158,4 @@ class TestInterpol(object):
 
 
 if __name__ == '__main__':
-    pytest.main("-k TestSourceModel")
+    pytest.main("-k TestInterpol")

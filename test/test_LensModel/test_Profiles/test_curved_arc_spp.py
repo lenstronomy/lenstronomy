@@ -3,7 +3,7 @@ __author__ = 'sibirrer'
 import numpy as np
 import numpy.testing as npt
 import pytest
-from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.lens_model import LensModel
 
@@ -13,7 +13,7 @@ class TestCurvedArc(object):
     tests the source model routines
     """
     def setup(self):
-        self.model = CurvedArc()
+        self.model = CurvedArcSPP()
         self.spp = SPP()
 
     def test_spp2stretch(self):
@@ -99,7 +99,7 @@ class TestCurvedArc(object):
         npt.assert_almost_equal(f_y_new, f_y - f_y0, decimal=8)
 
     def test_hessian(self):
-        lens = LensModel(lens_model_list=['CURVED_ARC'])
+        lens = LensModel(lens_model_list=['CURVED_ARC_SPP'])
         center_x, center_y = 0, 0
         tangential_stretch = 10
         radial_stretch = 1

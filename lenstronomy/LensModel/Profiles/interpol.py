@@ -104,7 +104,7 @@ class Interpol(LensProfileBase):
 
     def hessian(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None, f_xy=None):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
 
         :param x: x-coordinate (angular position), float or numpy array
         :param y: y-coordinate (angular position), float or numpy array
@@ -116,7 +116,7 @@ class Interpol(LensProfileBase):
         :param f_xx: 2d numpy array of df/dxx, matching the grids in grid_interp_x and grid_interp_y
         :param f_yy: 2d numpy array of df/dyy, matching the grids in grid_interp_x and grid_interp_y
         :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
-        :return: f_xx, f_yy, f_xy at interpolated positions (x, y)
+        :return: f_xx, f_xy, f_yx, f_yy at interpolated positions (x, y)
         """
         n = len(np.atleast_1d(x))
         if n <= 1 and np.shape(x) == ():
@@ -124,7 +124,7 @@ class Interpol(LensProfileBase):
             f_xx_out = self.f_xx_interp(x, y, grid_interp_x, grid_interp_y, f_xx)
             f_yy_out = self.f_yy_interp(x, y, grid_interp_x, grid_interp_y, f_yy)
             f_xy_out = self.f_xy_interp(x, y, grid_interp_x, grid_interp_y, f_xy)
-            return f_xx_out, f_yy_out, f_xy_out
+            return f_xx_out, f_xy_out, f_xy_out, f_yy_out
         else:
             if self._grid and n >= self._min_grid_number:
                 x_, y_ = util.get_axes(x, y)
@@ -141,7 +141,7 @@ class Interpol(LensProfileBase):
                     f_xx_out[i] = self.f_xx_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_xx)
                     f_yy_out[i] = self.f_yy_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_yy)
                     f_xy_out[i] = self.f_xy_interp(x[i], y[i], grid_interp_x, grid_interp_y, f_xy)
-        return f_xx_out, f_yy_out, f_xy_out
+        return f_xx_out, f_xy_out, f_xy_out, f_yy_out
 
     def f_interp(self, x, y, x_grid=None, y_grid=None, f_=None, grid=False):
         if not hasattr(self, '_f_interp'):
@@ -258,8 +258,9 @@ class InterpolScaled(LensProfileBase):
         :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
         :return: second derivatives of the lensing potential f_xx, f_yy, f_xy at position (x, y)
         """
-        f_xx_out, f_yy_out, f_xy_out = self.interp_func.hessian(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
+        f_xx_out, f_xy_out, f_yx_out, f_yy_out = self.interp_func.hessian(x, y, grid_interp_x, grid_interp_y, f_, f_x, f_y, f_xx, f_yy, f_xy)
         f_xx_out *= scale_factor
         f_yy_out *= scale_factor
         f_xy_out *= scale_factor
-        return f_xx_out, f_yy_out, f_xy_out
+        f_yx_out *= scale_factor
+        return f_xx_out, f_xy_out, f_yx_out, f_yy_out

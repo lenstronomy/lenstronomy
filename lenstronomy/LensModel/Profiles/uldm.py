@@ -113,7 +113,7 @@ class Uldm(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -127,7 +127,7 @@ class Uldm(LensProfileBase):
         f_xx = prefactor * (factor1 * x_**2 + factor2 * (y_**2 - x_**2))
         f_yy = prefactor * (factor1 * y_**2 + factor2 * (x_**2 - y_**2))
         f_xy = prefactor * (factor1 * x_ * y_ - factor2 * 2*x_*y_)
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, kappa_0, theta_c):
         """

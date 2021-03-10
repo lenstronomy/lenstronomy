@@ -62,7 +62,7 @@ class TestP_JAFFW(object):
         y = np.array([2])
         sigma0 = 1.
         Ra, Rs = 0.5, 0.8
-        f_xx, f_yy,f_xy = self.profile.hessian(x, y, sigma0, Ra, Rs)
+        f_xx, f_xy, f_yx, f_yy = self.profile.hessian(x, y, sigma0, Ra, Rs)
         assert f_xx[0] == 0.077446121589827679
         assert f_yy[0] == -0.036486601753227141
         assert f_xy[0] == -0.075955148895369876
@@ -70,11 +70,12 @@ class TestP_JAFFW(object):
         y = np.array([2,1,1])
         values = self.profile.hessian(x, y, sigma0, Ra, Rs)
         assert values[0][0] == 0.077446121589827679
-        assert values[1][0] == -0.036486601753227141
-        assert values[2][0] == -0.075955148895369876
+        assert values[3][0] == -0.036486601753227141
+        assert values[1][0] == -0.075955148895369876
         assert values[0][1] == -0.037260794616683197
-        assert values[1][1] == 0.052668405375961035
-        assert values[2][1] == -0.033723449997241584
+        assert values[3][1] == 0.052668405375961035
+        assert values[1][1] == -0.033723449997241584
+        npt.assert_almost_equal(values[1][0], values[2][0], decimal=8)
 
     def test_mass_tot(self):
         rho0 = 1.

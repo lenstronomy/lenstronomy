@@ -69,7 +69,6 @@ class TestElliSLICE(object):
         npt.assert_almost_equal(f_x[0], f_x[1], decimal=5)
         npt.assert_almost_equal(f_y[1], f_y[2], decimal=5)
 
-
     def test_hessian(self):
         x = 0.5
         y = 0.1
@@ -77,16 +76,17 @@ class TestElliSLICE(object):
         b = 1.
         psi = 30 * np.pi / 180.
         sigma_0 = 5.
-        f_xx, f_yy, f_xy = self.ElliSLICE.hessian(x, y, a, b, psi, sigma_0)
+        f_xx, f_xy, f_yx, f_yy = self.ElliSLICE.hessian(x, y, a, b, psi, sigma_0)
         npt.assert_almost_equal((f_xx+f_yy)/2., 5., decimal=6)
         x = np.array([1])
         y = np.array([2])
-        f_xx, f_yy,f_xy = self.ElliSLICE.hessian(x, y, a, b, psi, sigma_0)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=7)
+        f_xx, f_xy, f_yx, f_yy = self.ElliSLICE.hessian(x, y, a, b, psi, sigma_0)
         npt.assert_almost_equal((f_xx+f_yy)/2., 0., decimal=6)
         x = np.array([1,3,0.])
         y = np.array([2,1,0.5])
         values = self.ElliSLICE.hessian(x, y, a, b, psi, sigma_0)
-        npt.assert_almost_equal((values[0][2]+values[1][2])/2., 5., decimal=6)
+        npt.assert_almost_equal((values[0][2]+values[3][2])/2., 5., decimal=6)
 
 
 if __name__ == '__main__':

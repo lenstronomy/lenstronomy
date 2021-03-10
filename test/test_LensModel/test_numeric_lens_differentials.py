@@ -141,6 +141,11 @@ class TestNumericsProfile(object):
         lens_model = ['SHEAR']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_reduce_shear(self):
+        kwargs = {'gamma1': 0.1, 'gamma2': -0.1}
+        lens_model = ['SHEAR_REDUCED']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_hessian(self):
         kwargs = {'f_xx': 0.1, 'f_yy': -0.1, 'f_xy': 0.1, 'f_yx': 0.1}
         lens_model = ['HESSIAN']
@@ -352,16 +357,36 @@ class TestNumericsProfile(object):
     def test_elli_slice(self):
         kwargs = {'a':2., 'b':1., 'psi':90*np.pi/180., 'sigma_0':5., 'center_x':1., 'center_y':0.}
         lens_model = ['ElliSLICE']
-        self.assert_differentials(lens_model,kwargs,potential=True)
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
         kwargs = {'a': 2., 'b': 1., 'psi': 89 * np.pi / 180., 'sigma_0': 5., 'center_x': 1., 'center_y': 0.01}
         lens_model = ['ElliSLICE']
         self.assert_differentials(lens_model, kwargs, potential=True)
 
-    def test_curved_arc(self):
+    def test_curved_arc_const(self):
+        kwargs = {'tangential_stretch': 4. , 'direction': 0., 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC_CONST']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+        kwargs = {'tangential_stretch': 4. , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_curved_arc_const_MST(self):
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': 0.9, 'direction': 0., 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC_CONST_MST']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': 1.1, 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_curved_arc_spp(self):
         kwargs = {'tangential_stretch': 4., 'radial_stretch': .9 , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0, 'center_y': 0}
-        lens_model = ['CURVED_ARC']
+        lens_model = ['CURVED_ARC_SPP']
         self.assert_differentials(lens_model, kwargs)
+
+    def test_curved_arc_spt(self):
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': .9 , 'direction': 0.5, 'curvature': 0.5, 'center_x': 0,
+                  'center_y': 0, 'gamma1': 0.1, 'gamma2': -0.2}
+        lens_model = ['CURVED_ARC_SPT']
+        self.assert_differentials(lens_model, kwargs, potential=False)
 
     def test_curved_arc_sis_mst(self):
         kwargs = {'tangential_stretch': 4., 'radial_stretch': 1 , 'direction': 0.5, 'curvature': 0.2, 'center_x': 0, 'center_y': 0}
@@ -381,6 +406,7 @@ class TestNumericsProfile(object):
         kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
         lens_model = ['SPL_CORE']
         self.assert_differentials(lens_model, kwargs, potential=False)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

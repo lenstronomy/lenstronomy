@@ -76,12 +76,13 @@ class TestChameleon(object):
         theta_E_convert, w_c, w_t, s_scale_1, s_scale_2 = self.chameleon.param_convert(alpha_1=1, w_c=0.5, w_t=1., e1=e1, e2=e2)
         kwargs_1 = {'theta_E': theta_E_convert, 's_scale': s_scale_1, 'e1': e1, 'e2': e2}
         kwargs_2 = {'theta_E': theta_E_convert, 's_scale': s_scale_2, 'e1': e1, 'e2': e2}
-        f_xx, f_yy, f_xy = self.chameleon.hessian(x=x, y=1., **kwargs_light)
-        f_xx_1, f_yy_1, f_xy_1 = self.nie.hessian(x=x, y=1., **kwargs_1)
-        f_xx_2, f_yy_2, f_xy_2 = self.nie.hessian(x=x, y=1., **kwargs_2)
+        f_xx, f_xy, f_yx, f_yy = self.chameleon.hessian(x=x, y=1., **kwargs_light)
+        f_xx_1, f_xy_1, f_yx_1, f_yy_1 = self.nie.hessian(x=x, y=1., **kwargs_1)
+        f_xx_2, f_xy_2, f_yx_2, f_yy_2 = self.nie.hessian(x=x, y=1., **kwargs_2)
         npt.assert_almost_equal(f_xx, (f_xx_1 - f_xx_2), decimal=5)
         npt.assert_almost_equal(f_yy, (f_yy_1 - f_yy_2), decimal=5)
         npt.assert_almost_equal(f_xy, (f_xy_1 - f_xy_2), decimal=5)
+        npt.assert_almost_equal(f_yx, (f_yx_1 - f_yx_2), decimal=5)
 
     def test_static(self):
         x, y = 1., 1.
@@ -173,14 +174,15 @@ class TestDoubleChameleon(object):
 
         kwargs_1 = {'alpha_1': theta_E / (1 + 1./ratio), 'w_c': .5, 'w_t': 1., 'e1': e1, 'e2': e2}
         kwargs_2 = {'alpha_1': theta_E / (1 + ratio), 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
-        f_xx, f_yy, f_xy = doublechameleon.hessian(x=x, y=1., **kwargs_lens)
-        f_xx1, f_yy1, f_xy1 = chameleon.hessian(x=x, y=1., **kwargs_1)
-        f_xx2, f_yy2, f_xy2 = chameleon.hessian(x=x, y=1., **kwargs_2)
+        f_xx, f_xy, f_yx, f_yy = doublechameleon.hessian(x=x, y=1., **kwargs_lens)
+        f_xx1, f_xy1, f_yx1, f_yy1 = chameleon.hessian(x=x, y=1., **kwargs_1)
+        f_xx2, f_xy2, f_yx2, f_yy2 = chameleon.hessian(x=x, y=1., **kwargs_2)
         npt.assert_almost_equal(f_xx, f_xx1 + f_xx2, decimal=8)
         npt.assert_almost_equal(f_yy, f_yy1 + f_yy2, decimal=8)
         npt.assert_almost_equal(f_xy, f_xy1 + f_xy2, decimal=8)
+        npt.assert_almost_equal(f_yx, f_yx1 + f_yx2, decimal=8)
         light = DoubleChameleonLight()
-        f_xx, f_yy, f_xy = doublechameleon.hessian(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = doublechameleon.hessian(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_lens)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_norm = kappa / np.mean(kappa)
         flux = light.function(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_light)
@@ -254,9 +256,10 @@ class TestDoubleChameleonPointMass(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_light = {'alpha_1': 1., 'ratio_pointmass': 3, 'ratio_chameleon': 2, 'w_c1': .5, 'w_t1': 1., 'e11': e1,
                         'e21': e2, 'w_c2': .1, 'w_t2': .5, 'e12': e1, 'e22': e2}
-        f_xx, f_yy, f_xy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
+        f_xx, f_xy, f_yx, f_yy = doublechameleon.hessian(x=1, y=1., **kwargs_light)
         npt.assert_almost_equal(f_xx, 0.0633838122066912, decimal=4)
         npt.assert_almost_equal(f_xy, -0.3986532840628945, decimal=4)
+        npt.assert_almost_equal(f_yx, -0.3986532840628945, decimal=4)
         npt.assert_almost_equal(f_yy, 0.04802318253385707, decimal=4)
 
 
@@ -366,15 +369,16 @@ class TestTripleChameleon(object):
         kwargs_2 = {'alpha_1': amp2, 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
         kwargs_3 = {'alpha_1': amp3, 'w_c': .1, 'w_t': .5, 'e1': e1, 'e2': e2}
 
-        f_xx, f_yy, f_xy = triplechameleon.hessian(x=x, y=1., **kwargs_lens)
-        f_xx1, f_yy1, f_xy1 = chameleon.hessian(x=x, y=1., **kwargs_1)
-        f_xx2, f_yy2, f_xy2 = chameleon.hessian(x=x, y=1., **kwargs_2)
-        f_xx3, f_yy3, f_xy3 = chameleon.hessian(x=x, y=1., **kwargs_3)
+        f_xx, f_xy, f_yx, f_yy = triplechameleon.hessian(x=x, y=1., **kwargs_lens)
+        f_xx1, f_xy1, f_yx1, f_yy1 = chameleon.hessian(x=x, y=1., **kwargs_1)
+        f_xx2, f_xy2, f_yx2, f_yy2 = chameleon.hessian(x=x, y=1., **kwargs_2)
+        f_xx3, f_xy3, f_yx3, f_yy3 = chameleon.hessian(x=x, y=1., **kwargs_3)
         npt.assert_almost_equal(f_xx, f_xx1 + f_xx2 + f_xx3, decimal=8)
         npt.assert_almost_equal(f_yy, f_yy1 + f_yy2 + f_yy3, decimal=8)
         npt.assert_almost_equal(f_xy, f_xy1 + f_xy2 + f_xy3, decimal=8)
+        npt.assert_almost_equal(f_yx, f_yx1 + f_yx2 + f_yx3, decimal=8)
         light = TripleChameleonLight()
-        f_xx, f_yy, f_xy = triplechameleon.hessian(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = triplechameleon.hessian(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_lens)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_norm = kappa / np.mean(kappa)
         flux = light.function(x=np.linspace(0, 1, 10), y=np.zeros(10), **kwargs_light)

@@ -47,7 +47,7 @@ class PolarShapelets(LensProfileBase):
 
     def hessian(self, x, y, coeffs, beta, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         shapelets = self._createShapelet(coeffs)
         r, phi = param_util.cart2polar(x, y, center_x=center_x, center_y=center_y)
@@ -59,7 +59,7 @@ class PolarShapelets(LensProfileBase):
         f_xx = kappa_value + gamma1_value
         f_xy = gamma2_value
         f_yy = kappa_value - gamma1_value
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _createShapelet(self,coeff):
         """

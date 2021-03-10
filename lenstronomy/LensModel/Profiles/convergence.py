@@ -49,7 +49,7 @@ class Convergence(LensProfileBase):
         :param x: x-coordinate
         :param y: y-coordinate
         :param kappa_ext: external convergence
-        :return: second order derivatives f_xx, f_yy, f_xy
+        :return: second order derivatives f_xx, f_xy, f_yx, f_yy
         """
         gamma1 = 0
         gamma2 = 0
@@ -57,4 +57,4 @@ class Convergence(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy

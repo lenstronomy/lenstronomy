@@ -3,7 +3,7 @@ from lenstronomy.Util.util import convert_bool_list
 __all__ = ['ProfileListBase']
 
 
-_SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'CONVERGENCE', 'FLEXION',
+_SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
                      'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE', 'NFW', 'NFW_ELLIPSE',
                      'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
@@ -11,8 +11,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
-                     'DIPOLE', 'CURVED_ARC', 'CURVED_ARC_SIS_MST', 'ARC_PERT', 'coreBURKERT', 'CORED_DENSITY',
-                     'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
+                     'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT', 'ARC_PERT', 'coreBURKERT',
+                     'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM']
 
 
@@ -68,7 +68,7 @@ class ProfileListBase(object):
         """
 
         if lens_type == 'SHIFT':
-            from lenstronomy.LensModel.Profiles.alpha_shift import Shift
+            from lenstronomy.LensModel.Profiles.constant_shift import Shift
             return Shift()
         elif lens_type == 'NIE_POTENTIAL':
             from lenstronomy.LensModel.Profiles.nie_potential import NIE_POTENTIAL
@@ -82,6 +82,9 @@ class ProfileListBase(object):
         elif lens_type == 'SHEAR_GAMMA_PSI':
             from lenstronomy.LensModel.Profiles.shear import ShearGammaPsi
             return ShearGammaPsi()
+        elif lens_type == 'SHEAR_REDUCED':
+            from lenstronomy.LensModel.Profiles.shear import ShearReduced
+            return ShearReduced()
         elif lens_type == 'CONVERGENCE':
             from lenstronomy.LensModel.Profiles.convergence import Convergence
             return Convergence()
@@ -223,12 +226,21 @@ class ProfileListBase(object):
         elif lens_type == 'DIPOLE':
             from lenstronomy.LensModel.Profiles.dipole import Dipole
             return Dipole()
-        elif lens_type == 'CURVED_ARC':
-            from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
-            return CurvedArc()
+        elif lens_type == 'CURVED_ARC_CONST':
+            from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConst
+            return CurvedArcConst()
+        elif lens_type == 'CURVED_ARC_CONST_MST':
+            from lenstronomy.LensModel.Profiles.curved_arc_const import CurvedArcConstMST
+            return CurvedArcConstMST()
+        elif lens_type == 'CURVED_ARC_SPP':
+            from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
+            return CurvedArcSPP()
         elif lens_type == 'CURVED_ARC_SIS_MST':
             from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
             return CurvedArcSISMST()
+        elif lens_type == 'CURVED_ARC_SPT':
+            from lenstronomy.LensModel.Profiles.curved_arc_spt import CurvedArcSPT
+            return CurvedArcSPT()
         elif lens_type == 'ARC_PERT':
             from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
             return ArcPerturbations()

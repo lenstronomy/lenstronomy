@@ -105,7 +105,7 @@ class NFW(LensProfileBase):
         :param alpha_Rs: deflection (angular units) at projected Rs
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -118,7 +118,7 @@ class NFW(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, Rs, rho0):
         """

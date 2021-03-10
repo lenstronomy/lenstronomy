@@ -72,7 +72,7 @@ class PEMD(LensProfileBase):
         :param e2: eccentricity component
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
-        :return: Hessian components f_xx, f_yy, f_xy
+        :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
         return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
 

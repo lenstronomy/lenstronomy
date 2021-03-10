@@ -6,7 +6,7 @@ import pytest
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.Profiles.curved_arc import CurvedArc
+from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
 from lenstronomy.Util import util
 
 
@@ -18,7 +18,7 @@ class TestArcDistortions(object):
         pass
 
     def test_radial_tangential_distortions(self):
-        lens_model_list = ['CURVED_ARC', 'SHEAR', 'FLEXION']
+        lens_model_list = ['CURVED_ARC_SPP', 'SHEAR', 'FLEXION']
         center_x, center_y = 0.01, 0
         curvature = 1./2
         lens = LensModel(lens_model_list=lens_model_list)
@@ -136,14 +136,14 @@ class TestArcDistortions(object):
     def test_curved_arc_estimate(self):
         lens_model_list = ['SPP']
         lens = LensModel(lens_model_list=lens_model_list)
-        arc = LensModel(lens_model_list=['CURVED_ARC'])
+        arc = LensModel(lens_model_list=['CURVED_ARC_SPP'])
         theta_E = 4
         gamma = 2.
         kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'center_x': 0, 'center_y': 0}]
         ext = LensModelExtensions(lensModel=lens)
         x_0, y_0 = 5, 0
         kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
-        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArcSPP.stretch2spp(**kwargs_arc)
         npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
         npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
@@ -157,7 +157,7 @@ class TestArcDistortions(object):
 
         x_0, y_0 = 0., 3
         kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
-        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArcSPP.stretch2spp(**kwargs_arc)
         print(kwargs_arc)
         print(theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc)
         npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
@@ -167,7 +167,7 @@ class TestArcDistortions(object):
 
         x_0, y_0 = -2, -3
         kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
-        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc)
+        theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArcSPP.stretch2spp(**kwargs_arc)
         npt.assert_almost_equal(theta_E_arc, theta_E, decimal=4)
         npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
@@ -186,7 +186,7 @@ class TestArcDistortions(object):
         source_y = 0.05
         x_image, y_image = lensEquationSolver.findBrightImage(source_x, source_y, kwargs_lens, numImages=4,
                                                               min_distance=0.05, search_window=5)
-        arc_model = LensModel(lens_model_list=['CURVED_ARC', 'SHIFT'])
+        arc_model = LensModel(lens_model_list=['CURVED_ARC_SPP', 'SHIFT'])
         for i in range(len(x_image)):
             x0, y0 = x_image[i], y_image[i]
             print(x0, y0, i)
@@ -205,7 +205,7 @@ class TestArcDistortions(object):
             print(gamma1, gamma2)
             npt.assert_almost_equal(gamma1_arc, gamma1, decimal=3)
             npt.assert_almost_equal(gamma2_arc, gamma2, decimal=3)
-            theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArc.stretch2spp(**kwargs_arc_i)
+            theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc = CurvedArcSPP.stretch2spp(**kwargs_arc_i)
             print(theta_E_arc, gamma_arc, center_x_spp_arc, center_y_spp_arc)
             npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
             npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)

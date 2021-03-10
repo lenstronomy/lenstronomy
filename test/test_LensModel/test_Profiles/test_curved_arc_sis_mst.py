@@ -1,12 +1,12 @@
 __author__ = 'sibirrer'
 
-import numpy as np
 import numpy.testing as npt
 import pytest
 from lenstronomy.LensModel.Profiles.curved_arc_sis_mst import CurvedArcSISMST
 from lenstronomy.LensModel.Profiles.sis import SIS
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.lens_model import LensModel
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 
 class TestCurvedArcSISMST(object):
@@ -165,6 +165,27 @@ class TestCurvedArcSISMST(object):
              'center_x': center_x, 'center_y': center_y}]
         mag = lens.magnification(center_x, center_y, kwargs=kwargs_lens)
         npt.assert_almost_equal(mag, tangential_stretch * radial_stretch, decimal=8)
+
+    def test_curved_arc_recovery(self):
+        """
+        test whether the curved arc parameters are satisfied in differential form
+        """
+
+        ext = LensModelExtensions(LensModel(lens_model_list=['CURVED_ARC_SIS_MST']))
+        center_x, center_y = 1, 1.  # test works except at (0,0) where the direction angle is not well defined
+        tangential_stretch = 10.
+        radial_stretch = 1.2
+        curvature, direction = 0.2, 0.5
+        kwargs_lens = [
+            {'tangential_stretch': tangential_stretch, 'radial_stretch': radial_stretch, 'curvature': curvature,
+             'direction': direction, 'center_x': center_x, 'center_y': center_y}]
+
+        kwargs_arc = ext.curved_arc_estimate(center_x, center_y, kwargs_lens)
+        print(kwargs_arc)
+        npt.assert_almost_equal(kwargs_arc['tangential_stretch'], tangential_stretch)
+        npt.assert_almost_equal(kwargs_arc['radial_stretch'], radial_stretch)
+        npt.assert_almost_equal(kwargs_arc['curvature'], curvature)
+        npt.assert_almost_equal(kwargs_arc['direction'], direction)
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 
+
 class TestcBurk(object):
     """
     tests the Gaussian methods
@@ -70,6 +71,7 @@ class TestcBurk(object):
 
         rho0_2 = self.cb._alpha2rho0(alpha_Rs, Rs, r_core)
         npt.assert_almost_equal(rho0, rho0_2)
+
 
 if __name__ == '__main__':
     pytest.main()

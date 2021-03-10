@@ -8,7 +8,7 @@ export, __all__ = exporter()
 @export
 def cart2polar(x, y, center_x=0, center_y=0):
     """
-    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center
+    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lens center
 
     :param x: set of x-coordinates
     :type x: array of size (n)

@@ -46,7 +46,7 @@ class PointMass(LensProfileBase):
         :param x: x-coord (in angles)
         :param y: y-coord (in angles)
         :param theta_E: Einstein radius (in angles)
-        :return: deflection angle (in radian)
+        :return: deflection angle (in angles)
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -66,7 +66,7 @@ class PointMass(LensProfileBase):
         :param x: x-coord (in angles)
         :param y: y-coord (in angles)
         :param theta_E: Einstein radius (in angles)
-        :return: hessian matrix (in radian)
+        :return: hessian matrix (in angles)
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -81,4 +81,4 @@ class PointMass(LensProfileBase):
         f_xx = C * (y_**2-x_**2)/r2**2
         f_yy = C * (x_**2-y_**2)/r2**2
         f_xy = -C * 2*x_*y_/r2**2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy

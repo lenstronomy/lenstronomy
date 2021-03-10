@@ -57,17 +57,18 @@ class TestFlexionfg(object):
     def test_hessian(self):
         x = np.array(1)
         y = np.array(2)
-        f_xx, f_yy, f_xy = self.flex.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.flex.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0.05, decimal=5)
         npt.assert_almost_equal(f_yy, 0.11, decimal=5)
         npt.assert_almost_equal(f_xy, 0.08, decimal=5)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
         x = np.array([1, 3, 4])
         y = np.array([2, 1, 1])
         values = self.flex.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(values[0][0], 0.05, decimal=5)
-        npt.assert_almost_equal(values[1][0], 0.11, decimal=5)
-        npt.assert_almost_equal(values[2][0], 0.08, decimal=5)
+        npt.assert_almost_equal(values[3][0], 0.11, decimal=5)
+        npt.assert_almost_equal(values[1][0], 0.08, decimal=5)
 
     def test_flexion(self):
         x = np.array(0)

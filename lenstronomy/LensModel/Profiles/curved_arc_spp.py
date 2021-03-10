@@ -2,10 +2,10 @@ import numpy as np
 from lenstronomy.LensModel.Profiles.spp import SPP
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['CurvedArc']
+__all__ = ['CurvedArcSPP']
 
 
-class CurvedArc(LensProfileBase):
+class CurvedArcSPP(LensProfileBase):
     """
     lens model that describes a section of a highly magnified deflector region.
     The parameterization is chosen to describe local observables efficient.
@@ -29,7 +29,7 @@ class CurvedArc(LensProfileBase):
 
     def __init__(self):
         self._spp = SPP()
-        super(CurvedArc, self).__init__()
+        super(CurvedArcSPP, self).__init__()
 
     @staticmethod
     def stretch2spp(tangential_stretch, radial_stretch, curvature, direction, center_x, center_y):

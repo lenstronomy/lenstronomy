@@ -263,7 +263,7 @@ class GaussianEllipseKappa(LensProfileBase):
         f_xy = sin_phi * cos_phi * (f_xx_ - f_yy_) \
                + (cos_phi**2 - sin_phi**2) * f_xy_
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
@@ -289,8 +289,7 @@ class GaussianEllipseKappa(LensProfileBase):
         :return: Density :math:`\kappa` for elliptical Gaussian convergence.
         :rtype: ``float``, or ``numpy.array`` with shape = ``x.shape``.
         """
-        f_xx, f_yy, f_xy = self.hessian(x, y, amp, sigma, e1, e2, center_x,
-                                        center_y)
+        f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, amp, sigma, e1, e2, center_x, center_y)
         return (f_xx + f_yy) / 2
 
     @staticmethod

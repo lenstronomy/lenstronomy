@@ -69,20 +69,21 @@ class TestNFW(object):
         Rs = 1.
         rho0 = 1
         alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
-        f_xx, f_yy,f_xy = self.nfw.hessian(x, y, Rs, alpha_Rs)
+        f_xx, f_xy, f_yx, f_yy = self.nfw.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(f_xx[0], 0.40855527280658294, decimal=5)
         npt.assert_almost_equal(f_yy[0], 0.037870368296371637, decimal=5)
         npt.assert_almost_equal(f_xy[0], -0.2471232696734742, decimal=5)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.nfw.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0][0], 0.40855527280658294, decimal=5)
-        npt.assert_almost_equal(values[1][0], 0.037870368296371637, decimal=5)
-        npt.assert_almost_equal(values[2][0], -0.2471232696734742, decimal=5)
+        npt.assert_almost_equal(values[3][0], 0.037870368296371637, decimal=5)
+        npt.assert_almost_equal(values[1][0], -0.2471232696734742, decimal=5)
         npt.assert_almost_equal(values[0][1], -0.046377502475445781, decimal=5)
-        npt.assert_almost_equal(values[1][1], 0.30577812878681554, decimal=5)
-        npt.assert_almost_equal(values[2][1], -0.13205836172334798, decimal=5)
+        npt.assert_almost_equal(values[3][1], 0.30577812878681554, decimal=5)
+        npt.assert_almost_equal(values[1][1], -0.13205836172334798, decimal=5)
 
     def test_mass_3d_lens(self):
         R = 1

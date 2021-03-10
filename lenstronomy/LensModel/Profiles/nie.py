@@ -136,7 +136,7 @@ class NIE(LensProfileBase):
         :param s_scale: smoothing scale
         :param center_x: profile center
         :param center_y: profile center
-        :return: f_xx, f_yy, f_xy
+        :return: f_xx, f_xy, f_yx, f_yy
         """
         b, s, q, phi_G = self.param_conv(theta_E, e1, e2, s_scale)
         # shift
@@ -145,7 +145,7 @@ class NIE(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
         # evaluate
-        f__xx, f__yy, f__xy = self.nie_major_axis.hessian(x__, y__, b, s, q)
+        f__xx, f__xy, _, f__yy = self.nie_major_axis.hessian(x__, y__, b, s, q)
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
         gamma1__ = 1./2 * (f__xx - f__yy)
@@ -155,7 +155,7 @@ class NIE(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _theta_E_q_convert(self, theta_E, q):
         """
@@ -206,7 +206,7 @@ class NIEMajorAxis(LensProfileBase):
 
     def hessian(self, x, y, b, s, q):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, b, s, q)
         diff = self._diff
@@ -215,9 +215,9 @@ class NIEMajorAxis(LensProfileBase):
 
         f_xx = (alpha_ra_dx - alpha_ra) / diff
         f_xy = (alpha_ra_dy - alpha_ra) / diff
-        # f_yx = (alpha_dec_dx - alpha_dec)/diff
+        f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     @staticmethod
     def kappa(x, y, b, s, q):

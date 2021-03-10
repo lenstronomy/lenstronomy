@@ -115,7 +115,7 @@ class TNFW(LensProfileBase):
     def hessian(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
 
         """
-        returns d^2f/dx^2, d^2f/dy^2, d^2f/dxdy of the TNFW potential f
+        returns d^2f/dx^2, d^2f/dxdy, d^2f/dydx, d^2f/dy^2 of the TNFW potential f
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -140,7 +140,7 @@ class TNFW(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, Rs, rho0, r_trunc):
         """

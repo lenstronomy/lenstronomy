@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
-from lenstronomy.LensModel.Profiles.curved_arc import center_deflector
+from lenstronomy.LensModel.Profiles.curved_arc_spp import center_deflector
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Plots import plot_util
 import scipy.ndimage as ndimage
@@ -249,7 +249,8 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     # check whether curved arc
     lens_model_list = lensModel.lens_model_list
     for i, lens_type in enumerate(lens_model_list):
-        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST']:
+        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_CONST', 'CURVED_ARC_CONST_MST',
+                         'CURVED_ARC_SPT']:
             plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, color=color, **kwargs_lens[i])
 
     ax.get_xaxis().set_visible(False)

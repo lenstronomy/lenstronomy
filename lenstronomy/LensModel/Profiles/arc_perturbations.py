@@ -94,9 +94,10 @@ class ArcPerturbations(LensProfileBase):
         f_xx = d_phi_dr2 * dr_dx**2 + d_phi_dr * dr_dxx + d_phi_d_theta2 * d_theta_dx**2 + d_phi_d_theta * d_theta_dxx + 2 * d_phi_dr_dtheta * dr_dx * d_theta_dx
         f_yy = d_phi_dr2 * dr_dy**2 + d_phi_dr * dr_dyy + d_phi_d_theta2 * d_theta_dy**2 + d_phi_d_theta * d_theta_dyy + 2 * d_phi_dr_dtheta * dr_dy * d_theta_dy
         f_xy = d_phi_dr2 * dr_dx * dr_dy + d_phi_dr * dr_dxy + d_phi_d_theta2 * d_theta_dx * d_theta_dy + d_phi_d_theta * d_theta_dxy + d_phi_dr_dtheta * dr_dx * d_theta_dy + d_phi_dr_dtheta * dr_dy * d_theta_dx
-        return f_xx * coeff, f_yy * coeff, f_xy * coeff
+        return f_xx * coeff, f_xy * coeff, f_xy * coeff, f_yy * coeff
 
-    def _phi_r(self, r, d_r):
+    @staticmethod
+    def _phi_r(r, d_r):
         """
 
         :param r: numpy array, radius
@@ -105,7 +106,8 @@ class ArcPerturbations(LensProfileBase):
         """
         return np.cos(r/d_r)
 
-    def _d_phi_r(self, r, d_r):
+    @staticmethod
+    def _d_phi_r(r, d_r):
         """
         radial derivatives
 
@@ -115,7 +117,8 @@ class ArcPerturbations(LensProfileBase):
         """
         return -np.sin(r / d_r) / d_r
 
-    def _d_phi_r2(self, r, d_r):
+    @staticmethod
+    def _d_phi_r2(r, d_r):
         """
         radial second derivatives
 
@@ -125,7 +128,8 @@ class ArcPerturbations(LensProfileBase):
         """
         return -np.cos(r / d_r) / d_r**2
 
-    def _phi_theta(self, theta, d_theta):
+    @staticmethod
+    def _phi_theta(theta, d_theta):
         """
 
         :param theta: numpy array, orientation angle in 2pi convention
@@ -134,7 +138,8 @@ class ArcPerturbations(LensProfileBase):
         """
         return np.cos(theta / d_theta)
 
-    def _d_phi_theta(self, theta, d_theta):
+    @staticmethod
+    def _d_phi_theta(theta, d_theta):
         """
         tangential derivatives
 
@@ -144,7 +149,8 @@ class ArcPerturbations(LensProfileBase):
         """
         return -np.sin(theta / d_theta) / d_theta
 
-    def _d_phi_theta2(self, r, d_theta):
+    @staticmethod
+    def _d_phi_theta2(r, d_theta):
         """
         tangential derivatives
 

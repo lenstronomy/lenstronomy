@@ -44,7 +44,8 @@ class GaussianKappa(LensProfileBase):
         amp2d *= 2 * 1. / (2 * c)
         return num_int * amp2d
 
-    def _num_integral(self, r, c):
+    @staticmethod
+    def _num_integral(r, c):
         """
         numerical integral (1-e^{-c*x^2})/x dx [0..r]
         :param r: radius
@@ -71,7 +72,7 @@ class GaussianKappa(LensProfileBase):
 
     def hessian(self, x, y, amp, sigma, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -87,7 +88,7 @@ class GaussianKappa(LensProfileBase):
         f_xx = -(d_alpha_dr/r + alpha/r**2) * x_**2/r + alpha/r
         f_yy = -(d_alpha_dr/r + alpha/r**2) * y_**2/r + alpha/r
         f_xy = -(d_alpha_dr/r + alpha/r**2) * x_*y_/r
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma):
         """
@@ -205,7 +206,8 @@ class GaussianKappa(LensProfileBase):
         """
         return amp * np.sqrt(np.pi) * np.sqrt(sigma_x * sigma_y * 2)
 
-    def _amp2d_to_3d(self, amp, sigma_x, sigma_y):
+    @staticmethod
+    def _amp2d_to_3d(amp, sigma_x, sigma_y):
         """
         converts 3d density into 2d density parameter
         :param amp:

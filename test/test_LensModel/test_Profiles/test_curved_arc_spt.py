@@ -12,6 +12,18 @@ class TestCurvedArcSPT(object):
         self._curve_spt = CurvedArcSPT()
         self._curve_regular = CurvedArcSISMST()
 
+    def test_function(self):
+        kwargs_arc = {'tangential_stretch': 5,
+                      'radial_stretch': 1,
+                      'curvature': 1. / 10,
+                      'direction': 0,
+                      'center_x': 0,
+                      'center_y': 0,
+                      'gamma1': 0,
+                      'gamma2': 0
+                      }
+        npt.assert_raises(Exception, self._curve_spt.function, 0., 0., **kwargs_arc)
+
     def test_spt_mapping(self):
 
         e1, e2 = 0.1, -0.2

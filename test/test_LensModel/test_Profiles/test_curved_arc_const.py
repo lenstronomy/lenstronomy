@@ -56,20 +56,12 @@ class TestCurvedArcConst(object):
         flux_sis = gauss.surface_brightness(beta_x_sis, beta_y_sis, kwargs_source)
         flux_const = gauss.surface_brightness(beta_x_const, beta_y_const, kwargs_source)
 
-        #import matplotlib.pyplot as plt
-        #plt.matshow(util.array2image(flux_sis))
-        #plt.show()
-        #plt.matshow(util.array2image(flux_const))
-        #plt.show()
-
-
-        #plt.matshow(util.array2image(f_y_sis- f_y_const))
-        #plt.show()
-        #plt.matshow(util.array2image(f_y_const))
-        #plt.show()
-        #npt.assert_almost_equal(f_x_const, f_x_sis, decimal=4)
-        #npt.assert_almost_equal(f_y_const, f_y_sis, decimal=4)
         npt.assert_almost_equal((flux_const - flux_sis) / np.max(flux_const), 0, decimal=2)
+
+        # check for stability outside the defined bounds of curvature
+        f_x_const, f_y_const = self.arc_const.derivatives(x=0, y=1000, **kwargs_arc)
+        npt.assert_almost_equal(f_x_const, 0)
+        npt.assert_almost_equal(f_y_const, 0)
 
     def test_hessian(self):
         kwargs_arc = {'tangential_stretch': 5,

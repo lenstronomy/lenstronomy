@@ -47,6 +47,9 @@ class TestInterpol(object):
         out_shift = interp.function(x=1, y=0, image=image, scale=1., phi_G=0, center_x=1, center_y=0)
         assert out_shift == out
 
+        # function must give a single value when evaluated at a single point
+        assert isinstance(out, float)
+
         # test change of scale without re-doing interpolation
         out = interp.function(x=1., y=0, image=image, scale=1., phi_G=0, center_x=0, center_y=0)
         out_scaled = interp.function(x=2., y=0, image=image, scale=2, phi_G=0, center_x=0, center_y=0)

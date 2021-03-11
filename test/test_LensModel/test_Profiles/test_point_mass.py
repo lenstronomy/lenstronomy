@@ -4,7 +4,9 @@ __author__ = 'sibirrer'
 from lenstronomy.LensModel.Profiles.point_mass import PointMass
 
 import numpy as np
+import numpy.testing as npt
 import pytest
+
 
 class TestSIS(object):
     """
@@ -12,7 +14,6 @@ class TestSIS(object):
     """
     def setup(self):
         self.pointmass = PointMass()
-
 
     def test_function(self):
         x = np.array([0])
@@ -57,7 +58,8 @@ class TestSIS(object):
         x = np.array([1])
         y = np.array([0])
         theta_E = 1.
-        f_xx, f_yy,f_xy = self.pointmass.hessian(x, y, theta_E)
+        f_xx, f_xy, f_yx, f_yy = self.pointmass.hessian(x, y, theta_E)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         assert f_xx[0] == -1
         assert f_yy[0] == 1
         assert f_xy[0] == -0
@@ -65,11 +67,11 @@ class TestSIS(object):
         y = np.array([0,1,1])
         values = self.pointmass.hessian(x, y, theta_E)
         assert values[0][0] == -1
-        assert values[1][0] == 1
-        assert values[2][0] == -0
+        assert values[3][0] == 1
+        assert values[1][0] == -0
         assert values[0][1] == -0.080000000000000002
-        assert values[1][1] == 0.080000000000000002
-        assert values[2][1] == -0.059999999999999998
+        assert values[3][1] == 0.080000000000000002
+        assert values[1][1] == -0.059999999999999998
 
 
 if __name__ == '__main__':

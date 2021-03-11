@@ -60,17 +60,17 @@ class TestGaussian(object):
         sigma_y = 1.
         values = self.Gaussian.hessian( x, y, amp, center_x, center_y, sigma_x, sigma_y)
         assert values[0] == -np.exp(-1./2)
+        assert values[3] == 0.
         assert values[1] == 0.
-        assert values[2] == 0.
         x = np.array([2,3,4])
         y = np.array([1,1,1])
         values = self.Gaussian.hessian( x, y, amp, center_x, center_y, sigma_x, sigma_y)
         assert values[0][0] == 0.
-        assert values[1][0] == -np.exp(-1./2)
-        assert values[2][0] == 0.
+        assert values[3][0] == -np.exp(-1./2)
+        assert values[1][0] == 0.
         assert values[0][1] == 0.40600584970983811
-        assert values[1][1] == -0.1353352832366127
-        assert values[2][1] == 0.
+        assert values[3][1] == -0.1353352832366127
+        assert values[1][1] == 0.
 
 
 class TestGaussianKappa(object):
@@ -100,7 +100,7 @@ class TestGaussianKappa(object):
         center_y = 0.
         sigma = 1.
 
-        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
+        f_xx, f_xy, f_yx, f_yy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_true = self.gaussian.function(x, y, amp, sigma, sigma, center_x, center_y)
         print(kappa_true)
@@ -115,7 +115,7 @@ class TestGaussianKappa(object):
         center_x = 0.
         center_y = 0.
         sigma = 1.
-        f_xx, f_yy, f_xy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
+        f_xx, f_xy, f_yx, f_yy = self.gaussian_kappa.hessian(x, y, amp, sigma, center_x, center_y)
         kappa = 1./2 * (f_xx + f_yy)
         amp_3d = self.gaussian_kappa._amp2d_to_3d(amp, sigma, sigma)
         density_2d = self.gaussian_kappa.density_2d(x, y, amp_3d, sigma, center_x, center_y)

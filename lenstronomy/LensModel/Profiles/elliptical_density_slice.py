@@ -69,7 +69,7 @@ class ElliSLICE (LensProfileBase):
                           else self.pot_ext(x_[i], y_[i], kwargs_slice) for i in range(len(x_))])
             return f
 
-    def derivatives(self,x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
+    def derivatives(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
         """
         lensing deflection angle
 
@@ -98,8 +98,7 @@ class ElliSLICE (LensProfileBase):
                              else self.alpha_ext(x_[i], y_[i], kwargs_slice) for i in range(len(x_))])
             return defl[:, 0], defl[:, 1]
 
-
-    def hessian(self,x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
+    def hessian(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
         """
         lensing second derivatives
 
@@ -114,16 +113,16 @@ class ElliSLICE (LensProfileBase):
 
         diff = 0.000000001
         alpha_ra, alpha_dec = self.derivatives(x, y, a, b, psi, sigma_0, center_x, center_y)
-        alpha_ra_dx, alpha_dec_dx = self.derivatives(x+ diff, y, a, b, psi, sigma_0, center_x, center_y)
-        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y+ diff, a, b, psi, sigma_0, center_x, center_y)
+        alpha_ra_dx, alpha_dec_dx = self.derivatives(x + diff, y, a, b, psi, sigma_0, center_x, center_y)
+        alpha_ra_dy, alpha_dec_dy = self.derivatives(x, y + diff, a, b, psi, sigma_0, center_x, center_y)
 
         f_xx = (alpha_ra_dx - alpha_ra) / diff
         f_xy = (alpha_ra_dy - alpha_ra) / diff
-        # f_yx = (alpha_dec_dx - alpha_dec)/diff
+        f_yx = (alpha_dec_dx - alpha_dec) / diff
         f_yy = (alpha_dec_dy - alpha_dec) / diff
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
-    def sign(self,z):
+    def sign(self, z):
         """
         sign function
 
@@ -137,7 +136,7 @@ class ElliSLICE (LensProfileBase):
         else:
             return -1
 
-    def alpha_in(self,x, y, kwargs_slice):
+    def alpha_in(self, x, y, kwargs_slice):
         """
         deflection angle for (x,y) inside the elliptical slice
 
@@ -153,7 +152,7 @@ class ElliSLICE (LensProfileBase):
         I_in = (z - e * zb * e2ipsi) * sig_0
         return I_in.real, I_in.imag
 
-    def alpha_ext(self,x, y, kwargs_slice):
+    def alpha_ext(self, x, y, kwargs_slice):
         """
         deflection angle for (x,y) outside the elliptical slice
 

@@ -1,6 +1,7 @@
 import numpy as np
 import math
-from corner.corner import quantile
+from corner import quantile
+import matplotlib.pyplot as plt
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -40,8 +41,8 @@ def sqrt(inputArray, scale_min=None, scale_max=None):
 @export
 def text_description(ax, d, text, color='w', backgroundcolor='k',
                      flipped=False, font_size=15):
-    c_vertical = font_size / 10.**2
-    c_horizontal = 1./20
+    c_vertical = 1/15. #+ font_size / d / 10.**2
+    c_horizontal = 1./30
     if flipped:
         ax.text(d - d * c_horizontal, d - d * c_vertical, text, color=color,
                 fontsize=font_size,
@@ -161,3 +162,20 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     if label is not None:
         title = "{0} = {1}".format(label, title)
     return title
+
+
+@export
+def cmap_conf(cmap_string):
+    """
+    configures matplotlib color map
+
+    :param cmap_string: string of cmap name, or cmap instance
+    :return: cmap instance with setting for bad pixels and values below the threshold
+    """
+    if isinstance(cmap_string, str):
+        cmap = plt.get_cmap(cmap_string)
+    else:
+        cmap = cmap_string
+    cmap.set_bad(color='k', alpha=1.)
+    cmap.set_under('k')
+    return cmap

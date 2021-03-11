@@ -86,11 +86,12 @@ class TestCNFWELLIPSE(object):
         phi_G = 0
         r_core = 0.5
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy,f_xy = self.nfw.hessian(x, y, Rs, alpha_Rs, r_core)
-        f_xx_e, f_yy_e, f_xy_e = self.nfw_e.hessian(x, y, Rs, alpha_Rs, r_core, e1, e2)
+        f_xx, f_xy, f_yx, f_yy = self.nfw.hessian(x, y, Rs, alpha_Rs, r_core)
+        f_xx_e, f_xy_e, f_yx_e, f_yy_e = self.nfw_e.hessian(x, y, Rs, alpha_Rs, r_core, e1, e2)
         npt.assert_almost_equal(f_xx[0], f_xx_e[0], decimal=5)
         npt.assert_almost_equal(f_yy[0], f_yy_e[0], decimal=5)
         npt.assert_almost_equal(f_xy[0], f_xy_e[0], decimal=5)
+        npt.assert_almost_equal(f_yx[0], f_yx_e[0], decimal=5)
 
         x = np.array([1,3,4])
         y = np.array([2,1,1])
@@ -99,11 +100,11 @@ class TestCNFWELLIPSE(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         values = self.nfw_e.hessian(x, y, Rs, alpha_Rs, r_core, e1, e2)
         npt.assert_almost_equal(values[0][0], 0.3306510620859626, decimal=5)
-        npt.assert_almost_equal(values[1][0], 0.07493437759187316, decimal=5)
-        npt.assert_almost_equal(values[2][0], -0.1684167189042185, decimal=5)
+        npt.assert_almost_equal(values[3][0], 0.07493437759187316, decimal=5)
+        npt.assert_almost_equal(values[1][0], -0.1684167189042185, decimal=5)
         npt.assert_almost_equal(values[0][1], 0.020280774837289073, decimal=5)
-        npt.assert_almost_equal(values[1][1], 0.3955523575349673, decimal=5)
-        npt.assert_almost_equal(values[2][1], -0.14605247788956888, decimal=5)
+        npt.assert_almost_equal(values[3][1], 0.3955523575349673, decimal=5)
+        npt.assert_almost_equal(values[1][1], -0.14605247788956888, decimal=5)
 
     def test_mass_3d(self):
         Rs = 10.

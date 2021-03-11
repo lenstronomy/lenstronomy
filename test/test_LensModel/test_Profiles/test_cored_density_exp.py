@@ -47,10 +47,11 @@ class TestCoredDensityExp(object):
         r = np.sqrt(x**2 + y**2)
         kappa_0 = 0.12
         theta_c = 6
-        f_xx, f_yy, f_xy = self.model.hessian(x, y, kappa_0, theta_c)
+        f_xx, f_xy, f_yx, f_yy = self.model.hessian(x, y, kappa_0, theta_c)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_direct = self.model.kappa_r(r, kappa_0, theta_c)
         npt.assert_almost_equal(kappa, kappa_direct, decimal=5)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
     def test_mass_3d(self):
         x = np.array([1, 3, 4])

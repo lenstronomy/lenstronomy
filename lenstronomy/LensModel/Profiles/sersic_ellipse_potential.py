@@ -49,7 +49,7 @@ class SersicEllipse(LensProfileBase):
 
     def hessian(self, x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, n_sersic, R_sersic, k_eff, e1, e2, center_x, center_y)
         diff = self._diff
@@ -61,9 +61,10 @@ class SersicEllipse(LensProfileBase):
         f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
-    def _coord_transf(self, x, y, q, phi_G, center_x, center_y):
+    @staticmethod
+    def _coord_transf(x, y, q, phi_G, center_x, center_y):
         """
 
         :param x:

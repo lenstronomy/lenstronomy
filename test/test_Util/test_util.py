@@ -349,9 +349,13 @@ def test_fwhm2sigma():
 def test_points_on_circle():
     radius = 1
     points = 8
-    ra, dec = util.points_on_circle(radius, points)
+    ra, dec = util.points_on_circle(radius, points, connect_ends=True)
     assert ra[0] == 1
     assert dec[0] == 0
+
+    ra_, dec_ = util.points_on_circle(radius, points-1, connect_ends=False)
+    npt.assert_almost_equal(ra[:-1], ra_, decimal=8)
+    npt.assert_almost_equal(dec[:-1], dec_, decimal=8)
 
 
 def test_convert_bool_list():

@@ -1,5 +1,6 @@
 import numpy as np
 
+from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
@@ -7,7 +8,7 @@ export, __all__ = exporter()
 @export
 def cart2polar(x, y, center_x=0, center_y=0):
     """
-    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center
+    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lens center
 
     :param x: set of x-coordinates
     :type x: array of size (n)
@@ -69,6 +70,7 @@ def shear_cartesian2polar(gamma1, gamma2):
 
 
 @export
+@jit()
 def phi_q2_ellipticity(phi, q):
     """
     transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2
@@ -83,6 +85,7 @@ def phi_q2_ellipticity(phi, q):
 
 
 @export
+@jit()
 def ellipticity2phi_q(e1, e2):
     """
     transforms complex ellipticity moduli in orientation angle and axis ratio

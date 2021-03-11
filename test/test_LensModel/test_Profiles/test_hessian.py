@@ -43,10 +43,11 @@ class TestHessian(object):
         x = 1
         y = 2
 
-        f_xx, f_yy, f_xy = self.hessian.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.hessian.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, self.f_xx, decimal=5)
         npt.assert_almost_equal(f_yy, self.f_yy, decimal=5)
         npt.assert_almost_equal(f_xy, self.f_xy, decimal=5)
+        npt.assert_almost_equal(f_yx, self.f_yx, decimal=5)
 
         lensModel = LensModel(['HESSIAN'])
         f_xy_true, f_yx_true = 0.3, 0.2
@@ -56,15 +57,6 @@ class TestHessian(object):
         npt.assert_almost_equal(f_yy, self.f_yy, decimal=9)
         npt.assert_almost_equal(f_xy, f_xy_true, decimal=9)
         npt.assert_almost_equal(f_yx, f_yx_true, decimal=9)
-
-
-class TestRaise(unittest.TestCase):
-
-    def test_raise(self):
-
-        with self.assertRaises(ValueError):
-            hessian = Hessian()
-            hessian.hessian(0, 0, f_xx=0, f_yy=0, f_xy=-1, f_yx=1)
 
 
 if __name__ == '__main__':

@@ -89,19 +89,20 @@ class TestSPEP(object):
         q = 0.9
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy,f_xy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx, f_xy, f_yx, f_yy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_xx[0], 0.46312881977317422, decimal=7)
         npt.assert_almost_equal(f_yy[0], 0.15165326557198552, decimal=7)
         npt.assert_almost_equal(f_xy[0], -0.20956958696323871, decimal=7)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(values[0][0], 0.46312881977317422, decimal=7)
-        npt.assert_almost_equal(values[1][0], 0.15165326557198552, decimal=7)
-        npt.assert_almost_equal(values[2][0], -0.20956958696323871, decimal=7)
+        npt.assert_almost_equal(values[3][0], 0.15165326557198552, decimal=7)
+        npt.assert_almost_equal(values[1][0], -0.20956958696323871, decimal=7)
         npt.assert_almost_equal(values[0][1], 0.070999592014527796, decimal=7)
-        npt.assert_almost_equal(values[1][1], 0.33245358685908111, decimal=7)
-        npt.assert_almost_equal(values[2][1], -0.10270375656049677, decimal=7)
+        npt.assert_almost_equal(values[3][1], 0.33245358685908111, decimal=7)
+        npt.assert_almost_equal(values[1][1], -0.10270375656049677, decimal=7)
 
     def test_spep_sie_conventions(self):
         x = np.array([1., 2., 0.])
@@ -111,12 +112,14 @@ class TestSPEP(object):
         q = 0.9999
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy, f_xy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
-        f_xx_sie, f_yy_sie, f_xy_sie = self.SIE.hessian(x, y, phi_E, e1, e2)
+        f_xx, f_xy, f_yx, f_yy = self.SPEP.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx_sie, f_xy_sie, f_yx_sie, f_yy_sie = self.SIE.hessian(x, y, phi_E, e1, e2)
         npt.assert_almost_equal(f_xx, f_xx_sie, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_sie, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_sie, decimal=4)
+        npt.assert_almost_equal(f_yx, f_yx_sie, decimal=4)
 
 
 if __name__ == '__main__':
-   pytest.main()
+    pytest.main()
+

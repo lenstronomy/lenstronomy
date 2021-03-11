@@ -55,6 +55,13 @@ class TestLensPlot(object):
                               differential_scale=0.0001, smoothing_scale=0.1)
         plt.close()
 
+    def test_curved_arc_illustration(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['CURVED_ARC_SIS_MST'])
+        kwargs_lens = [{'radial_stretch': 1.0466690706465702, 'tangential_stretch': 4.598552192305616, 'curvature': 0.8116297351731543, 'direction': 2.6288852083221323, 'center_x': -1.200866007937402, 'center_y': 0.6829881436542166}]
+        lens_plot.curved_arc_illustration(ax, lensModel, kwargs_lens)
+        plt.close()
+
 
 if __name__ == '__main__':
     pytest.main()

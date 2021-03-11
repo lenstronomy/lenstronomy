@@ -207,7 +207,7 @@ class PJaffe(LensProfileBase):
         :param Rs: transition radius from logarithmic slope -2 to -4 (see class documentation above)
         :param center_x: center of profile
         :param center_y: center of profile
-        :return: f_xx, f_yy, f_xy
+        :return: f_xx, f_xy, f_yx, f_yy
         """
         Ra, Rs = self._sort_ra_rs(Ra, Rs)
         x_ = x - center_x
@@ -228,7 +228,7 @@ class PJaffe(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _f_A20(self, r_a, r_s):
         """

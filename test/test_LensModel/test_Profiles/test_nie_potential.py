@@ -185,11 +185,12 @@ class TestNIE_POTENTIAL(object):
         theta_E_spep     = theta_E_conv*np.sqrt(1-eps)/((1-eps)/(1+eps))**0.25
         
         # compare the non-rotated output
-        f_xx, f_yy, f_xy             = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
-        f_xx_nie, f_yy_nie, f_xy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
+        f_xx, f_xy, f_yx, f_yy = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
+        f_xx_nie, f_xy_nie, f_yx_nie, f_yy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
         npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
+        npt.assert_almost_equal(f_yx, f_yx_nie, decimal=4)
         
         ############
         # rotation 1
@@ -207,11 +208,12 @@ class TestNIE_POTENTIAL(object):
         theta_E_spep     = theta_E_conv*np.sqrt(1-eps)/((1-eps)/(1+eps))**0.25
         
         # compare the rotated output
-        f_xx, f_yy, f_xy             = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
-        f_xx_nie, f_yy_nie, f_xy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
+        f_xx, f_xy, f_yx, f_yy = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
+        f_xx_nie, f_xy_nie, f_yx_nie, f_yy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
         npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
+        npt.assert_almost_equal(f_yx, f_yx_nie, decimal=4)
         
         ############
         # rotation 2
@@ -229,11 +231,12 @@ class TestNIE_POTENTIAL(object):
         theta_E_spep     = theta_E_conv*np.sqrt(1-eps)/((1-eps)/(1+eps))**0.25
         
         # compare the rotated output
-        f_xx, f_yy, f_xy             = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
-        f_xx_nie, f_yy_nie, f_xy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
+        f_xx, f_xy, f_yx, f_yy = self.nie_potential.hessian(x, y, theta_E, theta_c, e1, e2)
+        f_xx_nie, f_xy_nie, f_yx_nie, f_yy_nie = self.spep.hessian(x, y, theta_E_spep, gamma_spep, e1_spep, e2_spep)
         npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
+        npt.assert_almost_equal(f_yx, f_yx_nie, decimal=4)
 
     def test_static(self):
         x, y     = 1., 1.

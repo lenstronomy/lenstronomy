@@ -37,6 +37,7 @@ class SersicUtil(object):
         :return:
         """
         bn = 1.9992*n - 0.3271
+        bn = np.maximum(bn, 0.00001)  # make sure bn is strictly positive as a save guard for very low n_sersic
         return bn
 
     def get_distance_from_center(self, x, y, phi_G, q, center_x, center_y):

@@ -50,13 +50,7 @@ class ModelBandPlot(ModelBand):
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
 
-        if isinstance(cmap_string, str):
-            cmap = plt.get_cmap(cmap_string)
-        else:
-            cmap = cmap_string
-        cmap.set_bad(color='k', alpha=1.)
-        cmap.set_under('k')
-        self._cmap = cmap
+        self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
 
     def _critical_curves(self):

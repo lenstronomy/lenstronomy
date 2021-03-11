@@ -153,7 +153,7 @@ class NIE_POTENTIAL(LensProfileBase):
         x__, y__ = util.rotate(x_, y_, phi_G)
         
         # evaluate
-        f__xx, f__yy, f__xy = self.nie_potential_major_axis.hessian(x__, y__, theta_E_conv, theta_c_conv, eps)
+        f__xx, f__xy, _, f__yy = self.nie_potential_major_axis.hessian(x__, y__, theta_E_conv, theta_c_conv, eps)
         
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
@@ -164,7 +164,7 @@ class NIE_POTENTIAL(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
         
     def _theta_q_convert(self, theta_E, q):
         """
@@ -179,8 +179,7 @@ class NIE_POTENTIAL(LensProfileBase):
         theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) #/ (1+(1-q)/2.)
         return theta_E_new
 
-        
-        
+
 class NIEPotentialMajorAxis(LensProfileBase):
     """
     this class implements the elliptical potential of Eq. (67) of `LECTURES ON GRAVITATIONAL LENSING <https://arxiv.org/pdf/astro-ph/9606001.pdf>`_ 
@@ -210,12 +209,10 @@ class NIEPotentialMajorAxis(LensProfileBase):
 
     def hessian(self, x, y, theta_E, theta_c, eps):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         factor = np.sqrt(theta_c**2+(1-eps)*x**2+(1+eps)*y**2)
         f_xx   = (1-eps)*(theta_E/factor) -(theta_E/factor**3)*(1-eps)**2*x**2
         f_yy   = (1+eps)*(theta_E/factor) -(theta_E/factor**3)*(1+eps)**2*y**2
         f_xy   = -(theta_E/factor**3)*(1-eps**2)*x*y
-        return f_xx, f_yy, f_xy
-    
-  
+        return f_xx, f_xy, f_xy, f_yy

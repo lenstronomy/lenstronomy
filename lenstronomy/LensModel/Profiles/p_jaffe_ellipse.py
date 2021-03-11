@@ -58,7 +58,7 @@ class PJaffe_Ellipse(LensProfileBase):
 
     def hessian(self, x, y, sigma0, Ra, Rs, e1, e2, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Ra, Rs, e1, e2, center_x, center_y)
         diff = self._diff
@@ -67,10 +67,10 @@ class PJaffe_Ellipse(LensProfileBase):
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff
-        #f_yx = (alpha_dec_dx - alpha_dec)/diff
+        f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, r, sigma0, Ra, Rs, e1=0, e2=0):
         """

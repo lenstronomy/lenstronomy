@@ -16,7 +16,8 @@ class MultiPlane(object):
     """
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
-                 observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None):
+                 observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None,
+                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
         """
 
         :param z_source: source redshift for default computation of reduced lensing quantities
@@ -36,10 +37,15 @@ class MultiPlane(object):
 
         if z_source_convention is None:
             z_source_convention = z_source
+        if z_interp_stop is None:
+            z_interp_stop = max(z_source, z_source_convention)
+        if z_interp_stop < max(z_source, z_source_convention):
+            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
                                                 lens_redshift_list=lens_redshift_list, cosmo=cosmo,
                                                 numerical_alpha_class=numerical_alpha_class,
-                                                z_source_convention=z_source_convention)
+                                                z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
+                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp)
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index

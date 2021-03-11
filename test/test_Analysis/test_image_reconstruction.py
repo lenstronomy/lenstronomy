@@ -95,6 +95,8 @@ class TestMultiBandImageReconstruction(object):
         image_model, kwargs_params = multi_band.band_setup(band_index=0)
         model = image_model.image(**kwargs_params)
         npt.assert_almost_equal(model, self.kwargs_data['image_data'], decimal=5)
+        npt.assert_almost_equal(model, multi_band.model_band_list[0].model, decimal=5)
+        npt.assert_almost_equal(multi_band.model_band_list[0].norm_residuals, 0, decimal=5)
 
     def test_bands_compute(self):
         multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]*2

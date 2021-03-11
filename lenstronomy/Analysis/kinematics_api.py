@@ -100,6 +100,8 @@ class KinematicsAPI(object):
                             gamma=None, kappa_ext=0):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
+        This routine uses the galkin_setting() routine for the Galkin configurations (see there what options and input
+        is relevant.
 
         :param kwargs_lens: lens model keyword arguments
         :param kwargs_lens_light: lens light model keyword arguments

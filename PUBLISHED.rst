@@ -27,6 +27,11 @@ Related software publications
 * SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
     *This is the method paper presenting SLITromomy, an improved version of the SLIT algorithm fully implemented and compatible with lenstronomy.*
 
+* deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021 <https://arxiv.org/abs/2102.02830>`_
+    *Software to simulating large datasets for applying deep learning to strong gravitational lensing.*
+
+
+
 
 Measuring the Hubble constant
 -----------------------------
@@ -144,6 +149,11 @@ Quasar-host galaxy decomposition
 * Testing the Evolution of the Correlations between Supermassive Black Holes and their Host Galaxies using Eight Strongly Lensed Quasars; `Ding et al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200513550D/abstract>`_
     *Quasar host galaxy decomposition with lensed quasars.*
 
+* A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
+    *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
+
+
+
 
 Lensing of Gravitational Waves
 ------------------------------
@@ -155,6 +165,9 @@ Lensing of Gravitational Waves
 
 * Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
     *lensing magnificatoin calculations*
+
+* Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
+    *solving the lens equation*
 
 
 

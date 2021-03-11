@@ -67,13 +67,13 @@ class MultiGaussianKappa(LensProfileBase):
         """
         f_xx, f_yy, f_xy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i],
+            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i],
                                                                  sigma=sigma[i], center_x=center_x,
                                                                  center_y=center_y)
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma, scale_factor=1):
         """
@@ -177,12 +177,12 @@ class MultiGaussianKappaEllipse(LensProfileBase):
         """
         f_xx, f_yy, f_xy = np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float), np.zeros_like(x, dtype=float)
         for i in range(len(amp)):
-            f_xx_i, f_yy_i, f_xy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i], sigma=sigma[i], e1=e1, e2=e2,
+            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_kappa.hessian(x, y, amp=scale_factor*amp[i], sigma=sigma[i], e1=e1, e2=e2,
                                                                  center_x=center_x, center_y=center_y)
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, r, amp, sigma, e1, e2, scale_factor=1):
         """

@@ -393,6 +393,11 @@ class TestNumericsProfile(object):
         lens_model = ['CURVED_ARC_SIS_MST']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_curved_arc_tan_diff(self):
+        kwargs = {'tangential_stretch': 4., 'radial_stretch': 1 , 'direction': 0.5, 'dtan_dtan': 0.1, 'curvature': 0.2, 'center_x': 0, 'center_y': 0}
+        lens_model = ['CURVED_ARC_TAN_DIFF']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_splcore(self):
 
         kwargs = {'sigma0': 1., 'gamma': 3, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}

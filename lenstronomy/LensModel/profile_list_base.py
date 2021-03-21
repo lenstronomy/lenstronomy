@@ -11,7 +11,8 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
-                     'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT', 'ARC_PERT', 'coreBURKERT',
+                     'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT',
+                     'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM']
 
@@ -241,6 +242,9 @@ class ProfileListBase(object):
         elif lens_type == 'CURVED_ARC_SPT':
             from lenstronomy.LensModel.Profiles.curved_arc_spt import CurvedArcSPT
             return CurvedArcSPT()
+        elif lens_type == 'CURVED_ARC_TAN_DIFF':
+            from lenstronomy.LensModel.Profiles.curved_arc_tan_diff import CurvedArcTanDiff
+            return CurvedArcTanDiff()
         elif lens_type == 'ARC_PERT':
             from lenstronomy.LensModel.Profiles.arc_perturbations import ArcPerturbations
             return ArcPerturbations()

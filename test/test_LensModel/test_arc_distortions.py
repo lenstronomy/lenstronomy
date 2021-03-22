@@ -7,6 +7,7 @@ from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 from lenstronomy.LensModel.lens_model import LensModel
 from lenstronomy.LensModel.Profiles.curved_arc_spp import CurvedArcSPP
+from lenstronomy.LensModel.Profiles.curved_arc_tan_diff import CurvedArcTanDiff
 from lenstronomy.Util import util
 
 
@@ -172,6 +173,37 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(gamma_arc, gamma, decimal=3)
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
         npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
+
+    def test_curved_arc_estimate_tan_diff(self):
+        lens_model_list = ['SIE']
+        lens = LensModel(lens_model_list=lens_model_list)
+        arc = LensModel(lens_model_list=['CURVED_ARC_TAN_DIFF'])
+        theta_E = 4
+        e1, e2 = 0, -0.1
+        kwargs_lens = [{'theta_E': theta_E, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
+        ext = LensModelExtensions(lensModel=lens)
+        x_0, y_0 = 5, 0.01
+        kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens, tan_diff=True, smoothing_3rd=0.001)
+
+        x, y = util.make_grid(numPix=100, deltapix=0.1)
+        kappa = lens.kappa(x, y, kwargs_lens)
+        kappa_arc = arc.kappa(x, y, [kwargs_arc])
+
+        #import matplotlib.pyplot as plt
+        #plt.matshow(util.array2image(np.log10(kappa_arc)))
+        #plt.show()
+
+        #plt.matshow(util.array2image(np.log10(kappa)))
+        #plt.show()
+
+        arc_tan_diff = CurvedArcTanDiff()
+
+        theta_E_sie, e1_sie, e2_sie, kappa_ext, center_x_sis, center_y_sis = arc_tan_diff.stretch2sie_mst(**kwargs_arc)
+        print(theta_E_sie, e1_sie, e2_sie, center_x_sis, center_y_sis)
+        #TODO this test is relatively imprecise, this may have to do with the inaccuracies of the finite second order differentials
+        npt.assert_almost_equal(e1_sie, e1, decimal=1)
+
+        #npt.assert_almost_equal(kappa_arc, kappa, decimal=1)
 
     def test_arcs_at_image_position(self):
         # lensing quantities

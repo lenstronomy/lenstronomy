@@ -40,7 +40,7 @@ class CurvedArcTanDiff(LensProfileBase):
         :param tangential_stretch: float, stretch of intrinsic source in tangential direction
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction)
+        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
         :param direction: float, angle in radian
         :param center_x: center of source in image plane
         :param center_y: center of source in image plane
@@ -54,7 +54,7 @@ class CurvedArcTanDiff(LensProfileBase):
 
         # translate tangential eigenvalue gradient in lens ellipticity
         #TODO this is only an apprximation which is not sufficiently tested
-        e = abs(2 * dtan_dtan / tangential_stretch**2 / curvature**1) / lambda_mst
+        e = abs(2 * dtan_dtan / tangential_stretch / curvature) / lambda_mst
         q = 1 - (2 * e)
         e = np.minimum(e, 1)
         q = np.sqrt((1 - e) / (1 + e))
@@ -80,7 +80,7 @@ class CurvedArcTanDiff(LensProfileBase):
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction)
+        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
         :param center_x: center of source in image plane
         :param center_y: center of source in image plane
         :return:
@@ -102,7 +102,7 @@ class CurvedArcTanDiff(LensProfileBase):
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction)
+        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
         :param center_x: center of source in image plane
         :param center_y: center of source in image plane
         :return:
@@ -127,7 +127,7 @@ class CurvedArcTanDiff(LensProfileBase):
         :param radial_stretch: float, stretch of intrinsic source in radial direction
         :param curvature: 1/curvature radius
         :param direction: float, angle in radian
-        :param dtan_dtan: d(tangential_stretch) / d(tangential direction)
+        :param dtan_dtan: d(tangential_stretch) / d(tangential direction) / tangential stretch
         :param center_x: center of source in image plane
         :param center_y: center of source in image plane
         :return:

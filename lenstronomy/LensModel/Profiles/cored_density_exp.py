@@ -8,13 +8,14 @@ import lenstronomy.Util.constants as const
 
 __all__ = ['CoredDensityExp']
 
+
 class CoredDensityExp(LensProfileBase):
     """
     this class contains functions concerning an exponential cored density profile,
     namely
 
     ..math::
-        \rho(r) = \rho_0 \exp(- (\theta / \theta_c)^2)
+        \\rho(r) = \\rho_0 \\exp(- (\\theta / \\theta_c)^2)
 
     """
     _s = 0.000001  # numerical limit for minimal radius
@@ -189,7 +190,11 @@ class CoredDensityExp(LensProfileBase):
     def mass_2d(self, R, kappa_0, theta_c):
         """
         mass enclosed a 2d sphere of radius r
-        returns M_2D = 2 \pi \int_0^r dr' r' \int dz \rho(\sqrt(r'^2 + z^2))
+        returns
+
+        .. math::
+            M_{2D} = 2 \\pi \\int_0^r dr' r' \\int dz \\rho(\\sqrt(r'^2 + z^2))
+
         :param kappa_0: central convergence of soliton
         :param theta_c: core radius (in arcsec)
         :return: M_2D (ULDM only)

@@ -61,28 +61,28 @@ class LensModelExtensions(object):
         :param z_source: the source redshift
         :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
         :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
-        be estimated from the source size
+         be estimated from the source size
         :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
-        will be estimated from the source size
+         will be estimated from the source size
         :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
-        the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
-        magnified it will tend to curve out of the resulting ellipse
+         the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
+         magnified it will tend to curve out of the resulting ellipse
         :param tol: tolerance for convergence in the magnification
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
-        will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
+         will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
         :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
-        'DOUBLE_GAUSSIAN'.
+         'DOUBLE_GAUSSIAN'.
         :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-        [arcsec]
+         [arcsec]
         :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-        [arcsec]
+         [arcsec]
         :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-        to the first
+         to the first
         :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-        relative to the first
+         relative to the first
         :param fixed_aperture_size: bool, if True the flux is computed inside a fixed aperture size with radius
-        grid_radius_arcsec
+         grid_radius_arcsec
         :return: an array of image magnifications
         """
 

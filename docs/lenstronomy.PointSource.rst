@@ -1,29 +1,36 @@
-lenstronomy\.PointSource package
-================================
+lenstronomy.PointSource package
+===============================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    lenstronomy.PointSource.Types
 
 Submodules
 ----------
 
-lenstronomy\.PointSource\.point\_source module
-----------------------------------------------
+lenstronomy.PointSource.point\_source module
+--------------------------------------------
 
 .. automodule:: lenstronomy.PointSource.point_source
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.PointSource\.point\_source\_param module
------------------------------------------------------
+lenstronomy.PointSource.point\_source\_cached module
+----------------------------------------------------
 
-.. automodule:: lenstronomy.PointSource.point_source_param
+.. automodule:: lenstronomy.PointSource.point_source_cached
     :members:
     :undoc-members:
     :show-inheritance:
 
-lenstronomy\.PointSource\.point\_source\_types module
------------------------------------------------------
+lenstronomy.PointSource.point\_source\_param module
+---------------------------------------------------
 
-.. automodule:: lenstronomy.PointSource.point_source_types
+.. automodule:: lenstronomy.PointSource.point_source_param
     :members:
     :undoc-members:
     :show-inheritance:

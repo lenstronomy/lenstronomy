@@ -14,25 +14,22 @@ class EPL_numba(LensProfileBase):
     Elliptical Power Law mass profile - computation accelerated with numba
 
     .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
 
-        \kappa(x, y) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)^{\gamma-1}
-
-    with :math:`\theta_{E}` is the (circularized) Einstein radius,
-     :math:`\gamma` is the negative power-law slope of the 3D mass distributions,
-     :math:`q` is the minor/major axis ratio,
-    and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
+    :math:`q` is the minor/major axis ratio,
+    and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
 
     In terms of eccentricities, this profile is defined as
 
     .. math::
-
-        \kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*cos(2*\phi)}} \right)^{\gamma-1}
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
     with :math:`e` is the eccentricity defined as
 
     .. math::
-
-        e = \frac{1-q}{1+q}
+        e = \\frac{1-q}{1+q}
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
@@ -139,6 +136,7 @@ def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
 def alpha(x, y, b, q, t):
     """
     Converts the parameters from lenstronomy definitions (as defined in PEMD) to the definitions of Tessore+(2015)
+
     :param x: x-coordinate (angle)
     :param y: y-coordinate (angle)
     :param theta_E: Einstein radius (angle), pay attention to specific definition!

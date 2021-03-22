@@ -94,9 +94,9 @@ def plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, shift=0., c
 
     :param coords: Coordinates() class instance
     :param line_set_list_x: list of numpy arrays corresponding of different disconnected regions of the line
-    (e.g. caustic or critical curve)
+     (e.g. caustic or critical curve)
     :param line_set_list_y: list of numpy arrays corresponding of different disconnected regions of the line
-    (e.g. caustic or critical curve)
+     (e.g. caustic or critical curve)
     :return: plot with line sets on matplotlib axis
     """
     deltaPix = coords.pixel_width
@@ -112,9 +112,9 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, shift=0., color=
 
     :param coords: Coordinates() class instance
     :param line_set_list_x: numpy arrays corresponding of different disconnected regions of the line
-    (e.g. caustic or critical curve)
+     (e.g. caustic or critical curve)
     :param line_set_list_y: numpy arrays corresponding of different disconnected regions of the line
-    (e.g. caustic or critical curve)
+     (e.g. caustic or critical curve)
     :return: plot with line sets on matplotlib axis
     """
     deltaPix = coords.pixel_width

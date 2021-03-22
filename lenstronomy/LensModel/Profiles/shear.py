@@ -75,9 +75,8 @@ class ShearGammaPsi(LensProfileBase):
     is as follow:
 
     .. math::
-
-        \gamma_1 = \gamma_{ext} \cos(2 \phi_{ext}
-        \gamma_2 = \gamma_{ext} \sin(2 \phi_{ext}
+        \\gamma_1 = \\gamma_{ext} \\cos(2 \\phi_{ext}
+        \\gamma_2 = \\gamma_{ext} \\sin(2 \\phi_{ext}
 
     """
     param_names = ['gamma_ext', 'psi_ext', 'ra_0', 'dec_0']
@@ -117,15 +116,14 @@ class ShearGammaPsi(LensProfileBase):
 
 class ShearReduced(LensProfileBase):
     """
-    reduced shear distortions :math:`\gamma' = \gamma / (1-\kappa)`.
-     This distortion keeps the magnification as unity and, thus, does not change the size of apparent objects.
+    reduced shear distortions :math:`\\gamma' = \\gamma / (1-\\kappa)`.
+    This distortion keeps the magnification as unity and, thus, does not change the size of apparent objects.
     To keep the magnification at unity, it requires
 
     .. math::
+        (1-\\kappa)^2 - \\gamma_1^2 - \\gamma_2^ = 1
 
-        (1-\kappa)^2 - \gamma_1^2 - \gamma_2^ = 1
-
-    Thus, for given pair of reduced shear :math:`(\gamma'_1, \gamma'_2)`, an additional convergence term is calculated
+    Thus, for given pair of reduced shear :math:`(\\gamma'_1, \\gamma'_2)`, an additional convergence term is calculated
     and added to the lensing distortions.
     """
     param_names = ['gamma1', 'gamma2', 'ra_0', 'dec_0']

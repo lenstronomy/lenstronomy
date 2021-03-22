@@ -20,6 +20,7 @@ Contents:
    published
    affiliatedpackages
    history
+   modules
 
 Feedback
 ========

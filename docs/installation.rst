@@ -35,9 +35,11 @@ NUMBA
 -----
 Just-in-time (jit) compilation with numba can provide significant speed-up for certain calculations.
 There are specific settings for the settings provided as per default, but these may need to be adopted when running on a HPC cluster.
-You can define your own configuration file in your $XDG_CONFIG_HOME/lenstronomy/config.yaml file. E.g. (check your system for the path)
- ~/.conf/lenstronomy/config.yaml, following the format of the
-default configuration which is `here <https://github.com/sibirrer/lenstronomy/blob/main/lenstronomy/Conf/conf_default.yaml>`_.
+You can define your own configuration file in your $XDG_CONFIG_HOME/lenstronomy/config.yaml file. E.g. (check your system for the path)::
+
+    $ ~/.conf/lenstronomy/config.yaml
+
+following the format of the default configuration which is `here <https://github.com/sibirrer/lenstronomy/blob/main/lenstronomy/Conf/conf_default.yaml>`_.
 
 
 FASTELL

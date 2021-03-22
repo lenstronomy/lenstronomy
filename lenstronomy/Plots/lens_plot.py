@@ -28,7 +28,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param numPix:
     :param deltaPix:
     :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
-    (might have troubles for the outer caustic (inner critical curve)
+     (might have troubles for the outer caustic (inner critical curve)
     :param with_convergence: boolean, if True, plots the convergence of the deflector
     :return:
     """

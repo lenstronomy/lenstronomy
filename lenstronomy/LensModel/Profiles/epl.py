@@ -14,25 +14,22 @@ class EPL(LensProfileBase):
     Elliptical Power Law mass profile
 
     .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
 
-        \kappa(x, y) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)^{\gamma-1}
-
-    with :math:`\theta_{E}` is the (circularized) Einstein radius,
-     :math:`\gamma` is the negative power-law slope of the 3D mass distributions,
-     :math:`q` is the minor/major axis ratio,
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
+    :math:`q` is the minor/major axis ratio,
     and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
 
     In terms of eccentricities, this profile is defined as
 
     .. math::
-
-        \kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*cos(2*\phi)}} \right)^{\gamma-1}
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
     with :math:`e` is the eccentricity defined as
 
     .. math::
-
-        e = \frac{1-q}{1+q}
+        e = \\frac{1-q}{1+q}
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
@@ -201,8 +198,7 @@ class EPL(LensProfileBase):
         This then follows the convention of the PEMD profile in lenstronomy.
 
         .. math::
-
-            \frac{\theta_E}{theta_{E gravlens}}) = \sqrt{(1+q^2) / (2 q)}
+            \\frac{\\theta_E}{\\theta_{E gravlens}}) = \\sqrt{(1+q^2) / (2 q)}
 
         :param theta_E: Einstein radius in lenstronomy conventions
         :param q: axis ratio minor/major
@@ -218,11 +214,9 @@ class EPLMajorAxis(LensProfileBase):
     elliptical power law.
 
     .. math::
+        \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
 
-        \kappa = (2-t)/2 * \left[\frac{b}{\sqrt{q^2 x^2 + y^2}}\right]^t
-
-
-    where with :math:`t = \gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
+    where with :math:`t = \\gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
     critical radius b, axis ratio q
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819

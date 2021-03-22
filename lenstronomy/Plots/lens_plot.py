@@ -14,7 +14,7 @@ from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
 
-#TODO define coordinate grid beforehand, e.g. kwargs_data
+# TODO define coordinate grid beforehand, e.g. kwargs_data
 
 @export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,

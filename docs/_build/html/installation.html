@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>Installation &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -57,6 +57,41 @@ $ pip install lenstronomy
 </pre></div>
 </div>
 <p>You can also clone the github repository for development purposes.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p>Make sure the standard python libraries as specified in the <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt">requirements</a>.
+The standard usage does not require all libraries to be installed, in particluar the different posterior samplers are only required when being used.</p>
+<p>In the following, a few specific cases are mentioned that may require special attention in the installation and settings, in particular when it comes
+to MPI and HPC applications.</p>
+</div>
+<div class="section" id="mpi">
+<h2>MPI<a class="headerlink" href="#mpi" title="Permalink to this headline">¶</a></h2>
+<p>MPI support is provided for several sampling techniques for parallel computing. A specific version of the library schwimmbad is required
+for the correct support of the moving of the likelihood elements from one processor to another with MPI. Pay attention ot the
+<a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt">requirements</a>.</p>
+</div>
+<div class="section" id="numba">
+<h2>NUMBA<a class="headerlink" href="#numba" title="Permalink to this headline">¶</a></h2>
+<p>Just-in-time (jit) compilation with numba can provide significant speed-up for certain calculations.
+There are specific settings for the settings provided as per default, but these may need to be adopted when running on a HPC cluster.
+You can define your own configuration file in your $XDG_CONFIG_HOME/lenstronomy/config.yaml file. E.g. (check your system for the path):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ~/.conf/lenstronomy/config.yaml
+</pre></div>
+</div>
+<p>following the format of the default configuration which is <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/lenstronomy/Conf/conf_default.yaml">here</a>.</p>
+</div>
+<div class="section" id="fastell">
+<h2>FASTELL<a class="headerlink" href="#fastell" title="Permalink to this headline">¶</a></h2>
+<p>The fastell4py package, originally from Barkana (fastell), is required to run the PEMD (power-law elliptical mass distribution) lens model
+and can be cloned from: <a class="reference external" href="https://github.com/sibirrer/fastell4py">https://github.com/sibirrer/fastell4py</a> (needs a fortran compiler).
+We recommend using the EPL model as it is a pure python version of the same profile.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo apt-get install gfortran
+$ git clone https://github.com/sibirrer/fastell4py.git &lt;desired location&gt;
+$ <span class="nb">cd</span> &lt;desired location&gt;
+$ python setup.py install --user
+</pre></div>
+</div>
+</div>
 </div>
 
 
@@ -65,6 +100,17 @@ $ pip install lenstronomy
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#mpi">MPI</a></li>
+<li><a class="reference internal" href="#numba">NUMBA</a></li>
+<li><a class="reference internal" href="#fastell">FASTELL</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">lenstronomy - gravitational lensing software package</a></p>
@@ -109,7 +155,7 @@ $ pip install lenstronomy
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

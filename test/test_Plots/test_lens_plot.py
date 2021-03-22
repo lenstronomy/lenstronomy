@@ -22,7 +22,11 @@ class TestLensPlot(object):
         lensModel = LensModel(lens_model_list=['SIS'])
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         lens_plot.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
-                                     point_source=True, with_caustics=True)
+                                     point_source=True, with_caustics=True, fast_caustic=False)
+        plt.close()
+
+        lens_plot.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
+                                  point_source=True, with_caustics=True, fast_caustic=True)
         plt.close()
 
     def test_arrival_time_surface(self):

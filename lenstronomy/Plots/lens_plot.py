@@ -242,6 +242,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     return ax
 
 
+@export
 def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color='k'):
     """
 
@@ -265,13 +266,13 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
-    ax.axis('scaled')
-
     # rectangular frame
+    ax.axis('scaled')
 
     # plot coordinate frame and scale
 
 
+@export
 def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
              with_centroid=True, linewidth=1, color='k'):
     """

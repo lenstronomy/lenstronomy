@@ -68,6 +68,11 @@ class TestCurvedArcTanDiff(object):
                        'direction': 0.5, 'dtan_dtan': 0.1, 'center_x': center_x, 'center_y': center_y}
         self._test_curved_arc_recovery(kwargs_lens)
 
+        kwargs_lens = {'tangential_stretch': 2., 'radial_stretch': 1.1,
+                       'curvature': 0.3,
+                       'direction': 0.5, 'dtan_dtan': -0.1, 'center_x': center_x, 'center_y': center_y}
+        self._test_curved_arc_recovery(kwargs_lens)
+
     def _test_in_out_scaling(self):
         # some scaling tests with plots that are going to be ignored
         ext = LensModelExtensions(LensModel(lens_model_list=['CURVED_ARC_TAN_DIFF']))
@@ -135,7 +140,7 @@ class TestCurvedArcTanDiff(object):
         kwargs_arc = ext.curved_arc_estimate(center_x, center_y, [kwargs_arc_init])
         lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = ext.radial_tangential_differentials(center_x, center_y, [kwargs_arc_init])
         print(lambda_tan, dlambda_tan_dtan, kwargs_arc_init['dtan_dtan'])
-        npt.assert_almost_equal(kwargs_arc['tangential_stretch'], kwargs_arc_init['tangential_stretch'], decimal=2)
+        npt.assert_almost_equal(kwargs_arc['tangential_stretch'] / kwargs_arc_init['tangential_stretch'], 1, decimal=3)
         npt.assert_almost_equal(kwargs_arc['radial_stretch'], kwargs_arc_init['radial_stretch'], decimal=3)
         npt.assert_almost_equal(kwargs_arc['curvature'], kwargs_arc_init['curvature'], decimal=3)
         npt.assert_almost_equal(dphi_tan_dtan, kwargs_arc_init['curvature'], decimal=3)

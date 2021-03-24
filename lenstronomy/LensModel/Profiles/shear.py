@@ -144,7 +144,7 @@ class ShearReduced(LensProfileBase):
         :param gamma2: reduced shear
         :return: kappa
         """
-        kappa = 1 - 1./ np.sqrt(1 - gamma1**2 - gamma2**2)
+        kappa = 1 - 1. / np.sqrt(1 - gamma1**2 - gamma2**2)
         gamma1_ = (1-kappa) * gamma1
         gamma2_ = (1-kappa) * gamma2
         return kappa, gamma1_, gamma2_

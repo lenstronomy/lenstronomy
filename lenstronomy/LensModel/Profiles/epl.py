@@ -24,12 +24,17 @@ class EPL(LensProfileBase):
     In terms of eccentricities, this profile is defined as
 
     .. math::
-        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
-    with :math:`e` is the eccentricity defined as
+    with :math:`\\epsilon` is the ellipticity defined as
 
     .. math::
-        e = \\frac{1-q}{1+q}
+        \\epsilon = \\frac{1-q^2}{1+q^2}
+
+    And an Einstein radius :math:`\\theta'_{\\rm E}` related to the definition used is
+
+    .. math::
+        \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,

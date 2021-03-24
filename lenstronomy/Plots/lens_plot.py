@@ -265,6 +265,9 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
+    ax.axis('scaled')
+
+    # rectangular frame
 
     # plot coordinate frame and scale
 

@@ -51,18 +51,20 @@ class CurvedArcTanDiff(LensProfileBase):
         lambda_mst = 1./radial_stretch
         kappa_ext = 1 - lambda_mst
         theta_E = r_curvature * (1. - radial_stretch / tangential_stretch)
+        # analytic relation (see Birrer 2021)
+        dlambda_tan_dr = tangential_stretch / r_curvature * (1 - tangential_stretch / radial_stretch)
 
         # translate tangential eigenvalue gradient in lens ellipticity
-        #TODO this is only an apprximation which is not sufficiently tested
-        e = abs(2 * dtan_dtan / tangential_stretch / curvature) / lambda_mst
-        q = 1 - (2 * e)
-        e = np.minimum(e, 1)
-        q = np.sqrt((1 - e) / (1 + e))
-        q = np.maximum(0.001, q)
-        if dtan_dtan > 0:
-            phi = direction + np.pi / 4
-        else:
+        dtan_dtan_ = dtan_dtan * tangential_stretch
+        epsilon = np.abs(dtan_dtan_ / dlambda_tan_dr)
+        # bound epsilon by (-1, 1)
+        epsilon = np.minimum(epsilon, 1)
+        q = np.sqrt((1 - epsilon) / (1 + epsilon))
+
+        if dtan_dtan_ < 0:
             phi = direction - np.pi / 4
+        else:
+            phi = direction + np.pi / 4
         e1_sie, e2_sie = param_util.phi_q2_ellipticity(phi, q)
 
         # ellipticity adopted Einstein radius to match local tangential and radial stretch

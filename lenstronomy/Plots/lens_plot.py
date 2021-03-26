@@ -274,7 +274,7 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
 
 @export
 def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
-             with_centroid=True, linewidth=1, color='k'):
+             with_centroid=True, linewidth=1, color='k', dtan_dtan=0):
     """
 
     :param ax:

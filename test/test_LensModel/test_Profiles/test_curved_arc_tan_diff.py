@@ -142,8 +142,8 @@ class TestCurvedArcTanDiff(object):
         print(lambda_tan, dlambda_tan_dtan, kwargs_arc_init['dtan_dtan'])
         npt.assert_almost_equal(kwargs_arc['tangential_stretch'] / kwargs_arc_init['tangential_stretch'], 1, decimal=3)
         npt.assert_almost_equal(kwargs_arc['radial_stretch'], kwargs_arc_init['radial_stretch'], decimal=3)
-        npt.assert_almost_equal(kwargs_arc['curvature'], kwargs_arc_init['curvature'], decimal=3)
-        npt.assert_almost_equal(dphi_tan_dtan, kwargs_arc_init['curvature'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['curvature'], kwargs_arc_init['curvature'], decimal=2)
+        npt.assert_almost_equal(dphi_tan_dtan, kwargs_arc_init['curvature'], decimal=2)
         npt.assert_almost_equal(kwargs_arc['direction'], kwargs_arc_init['direction'], decimal=3)
         npt.assert_almost_equal(dlambda_tan_dtan / lambda_tan, kwargs_arc_init['dtan_dtan'], decimal=2)
 

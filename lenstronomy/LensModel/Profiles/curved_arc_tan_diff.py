@@ -29,7 +29,7 @@ class CurvedArcTanDiff(LensProfileBase):
     upper_limit_default = {'tangential_stretch': 100, 'radial_stretch': 5, 'curvature': 100, 'dtan_dtab': 10, 'direction': np.pi, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        self._sie = SIE(NIE=False)
+        self._sie = SIE(NIE=True)
         self._mst = Convergence()
         super(CurvedArcTanDiff, self).__init__()
 

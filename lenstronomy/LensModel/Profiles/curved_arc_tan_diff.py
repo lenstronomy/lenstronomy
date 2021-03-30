@@ -58,7 +58,7 @@ class CurvedArcTanDiff(LensProfileBase):
         dtan_dtan_ = dtan_dtan * tangential_stretch
         epsilon = np.abs(dtan_dtan_ / dlambda_tan_dr)
         # bound epsilon by (-1, 1)
-        epsilon = np.minimum(epsilon, 1)
+        epsilon = np.minimum(epsilon, 0.99999)
         q = np.sqrt((1 - epsilon) / (1 + epsilon))
 
         if dtan_dtan_ < 0:

@@ -19,7 +19,6 @@ class TestCurvedArcTanDiff(object):
         self.sie = SIE()
         self.mst = Convergence()
 
-
     def test_curved_arc_round_recovery(self):
         """
         test whether the curved arc parameters are satisfied in differential form

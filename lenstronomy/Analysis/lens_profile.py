@@ -3,6 +3,7 @@ from lenstronomy.Util import util
 from lenstronomy.Util import mask_util as mask_util
 import lenstronomy.Util.multi_gauss_expansion as mge
 from lenstronomy.Util import analysis_util
+from lenstronomy.LensModel.lens_model_extensions import LensModelExtensions
 
 __all__ = ['LensProfileAnalysis']
 
@@ -80,7 +81,7 @@ class LensProfileAnalysis(object):
 
     def profile_slope(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None, num_points=10):
         """
-        computes the logarithmic power-law slope of a profile
+        computes the logarithmic power-law slope of a profile. ATTENTION: this is not an observable!
 
         :param kwargs_lens: lens model keyword argument list
         :param radius: radius from the center where to compute the logarithmic slope (angular units
@@ -100,6 +101,34 @@ class LensProfileAnalysis(object):
         slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((radius + dr) / radius))
         gamma = -slope + 2
         return gamma
+
+    def mst_invariant_differential(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None,
+                                   num_points=10):
+        """
+        Average of the radial stretch differential in radial direction, divided by the radial stretch factor.
+
+        .. math::
+            \\xi = \\frac{\\partial \\lambda_{\rm rad}}{\\partial r} \\frac{1}{\lambda_{\rm rad}}
+
+        This quantity is invariant under the MST.
+        The specific definition is provided by Birrer 2021. Equivalent (proportianal) definitions are provided by e.g.
+        Kochanek 2020, Sonnenfeld 2018.
+
+        :param kwargs_lens: lens model keyword argument list
+        :param radius: radius from the center where to compute the MST invariant differential
+        :param center_x: center position
+        :param center_y: center position
+        :param model_list_bool: indicate which part of the model to consider
+        :param num_points: number of estimates around the radius
+        :return: xi
+        """
+        center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)
+        x, y = util.points_on_circle(radius, num_points)
+        ext = LensModelExtensions(lensModel=self._lens_model)
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = ext.radial_tangential_differentials(x, y, kwargs_lens, center_x=center_x, center_y=center_y)
+        print(dlambda_rad_drad, lambda_rad)
+        xi = np.mean(dlambda_rad_drad/lambda_rad)
+        return xi
 
     def radial_lens_profile(self, r_list, kwargs_lens, center_x=None, center_y=None, model_bool_list=None):
         """

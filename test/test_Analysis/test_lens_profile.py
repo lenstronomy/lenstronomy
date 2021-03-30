@@ -120,6 +120,20 @@ class TestLensProfileAnalysis(object):
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
 
+    def test_mst_invariant_differential(self):
+        gamma_list = [2, 1.8, 2.2]
+        theta_E_list = [1, 0.5, 2]
+        for gamma in gamma_list:
+            for theta_E in theta_E_list:
+                kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'center_x': 0, 'center_y': 0}]
+                lensModel = LensModel(**{'lens_model_list': ['SPP']})
+                profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+                xi = profileAnalysis.mst_invariant_differential(kwargs_lens, radius=theta_E, center_x=None, center_y=None,
+                                                           model_list_bool=None, num_points=10)
+
+                xi_true = (gamma - 2) / theta_E
+                npt.assert_almost_equal(xi, xi_true, decimal=3)
+
 
 class TestRaise(unittest.TestCase):
 

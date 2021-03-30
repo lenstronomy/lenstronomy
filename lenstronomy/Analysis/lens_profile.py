@@ -126,7 +126,6 @@ class LensProfileAnalysis(object):
         x, y = util.points_on_circle(radius, num_points)
         ext = LensModelExtensions(lensModel=self._lens_model)
         lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = ext.radial_tangential_differentials(x, y, kwargs_lens, center_x=center_x, center_y=center_y)
-        print(dlambda_rad_drad, lambda_rad)
         xi = np.mean(dlambda_rad_drad/lambda_rad)
         return xi
 

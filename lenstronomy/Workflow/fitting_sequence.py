@@ -226,7 +226,7 @@ class FittingSequence(object):
         else:
             initpos = None
 
-        if sampler_type is 'EMCEE':
+        if sampler_type == 'EMCEE':
             n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,

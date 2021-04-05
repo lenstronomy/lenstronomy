@@ -206,6 +206,14 @@ Large scale structure
     *inferring cosmic shear with three strong lenses in the COSMOS field*
 
 
+Lens finding
+------------
+
+* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
+    *simulating training sets for lens searches*
+
+
+
 Others
 ------
 

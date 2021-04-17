@@ -16,16 +16,13 @@ class Sersic(SersicUtil):
     this class contains functions to evaluate an spherical Sersic function
 
     .. math::
-
-        I(R) = I_0 \exp \left[ -b_n (R/R_{\rm Sersic})^{\frac{1}{n}}\right]
+        I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]
 
     with :math:`I_0 = amp`
     and
-    with :math:`b_{n}\approx 1.999\,n-0.327`
+    with :math:`b_{n}\\approx 1.999\,n-0.327`
 
     """
-
-
 
     param_names = ['amp', 'R_sersic', 'n_sersic', 'center_x', 'center_y']
     lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'center_x': -100, 'center_y': -100}
@@ -87,15 +84,13 @@ class CoreSersic(SersicUtil):
     this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004
 
     .. math::
-
-        I(R) = I' \left[1 + (R_b/R)^{\alpha} \right]^{\gamma / \alpha}
-        \exp \left{ -b_n \left[(R^{\alpha} + R_b^{\alpha})/R_e^{\alpha}  \right]^{1 / (n\alpha)}  \right}
+        I(R) = I' \\left[1 + (R_b/R)^{\\alpha} \\right]^{\\gamma / \\alpha}
+        \\exp \\left{ -b_n \\left[(R^{\\alpha} + R_b^{\alpha})/R_e^{\\alpha}  \\right]^{1 / (n\\alpha)}  \\right}
 
     with
 
     .. math::
-
-        I' = I_b 2^{-\gamma/ \alpha} \exp \left[b_n 2^{1 / (n\alpha)} (R_b/R_e)^{1/n}  \right]
+        I' = I_b 2^{-\\gamma/ \\alpha} \exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
 
     where :math:`I_b` is the intensity at the break radius.
 

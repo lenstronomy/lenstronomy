@@ -72,6 +72,9 @@ Measuring the Hubble constant
 * Large-Scale Gravitational Lens Modeling with Bayesian Neural Networks for Accurate and Precise Inference of the Hubble Constant `Park et al. 2020 <https://arxiv.org/abs/2012.00042>`_
     *BBN lens model inference using lenstronomy through `baobab <https://github.com/jiwoncpark/baobab>`_ for training set generation.*
 
+* Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021 <https://arxiv.org/abs/2103.08609>`_
+    *Simulations and models with and without lensed point sources to perform a time-delay cosmography analysis.*
+
 
 
 
@@ -201,6 +204,14 @@ Large scale structure
 
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
+
+
+Lens finding
+------------
+
+* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
+    *simulating training sets for lens searches*
+
 
 
 Others

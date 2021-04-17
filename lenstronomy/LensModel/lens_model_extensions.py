@@ -61,28 +61,28 @@ class LensModelExtensions(object):
         :param z_source: the source redshift
         :param cosmo: (optional) an instance of astropy.cosmology; if not specified, a default cosmology will be used
         :param grid_resolution: the grid resolution in units arcsec/pixel; if not specified, an appropriate value will
-        be estimated from the source size
+         be estimated from the source size
         :param grid_radius_arcsec: (optional) the size of the ray tracing region in arcsec; if not specified, an appropriate value
-        will be estimated from the source size
+         will be estimated from the source size
         :param axis_ratio: the axis ratio of the ellipse used for ray tracing; if axis_ratio = 0, then the eigenvalues
-        the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
-        magnified it will tend to curve out of the resulting ellipse
+         the hessian matrix will be used to estimate an appropriate axis ratio. Be warned: if the image is highly
+         magnified it will tend to curve out of the resulting ellipse
         :param tol: tolerance for convergence in the magnification
         :param step_size: sets the increment for the successively larger ray tracing windows
         :param use_largest_eigenvalue: bool; if True, then the major axis of the ray tracing ellipse region
-        will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
+         will be aligned with the eigenvector corresponding to the largest eigenvalue of the hessian matrix
         :param source_light_model: the model for backgourn source light; currently implemented are 'SINGLE_GAUSSIAN' and
-        'DOUBLE_GAUSSIAN'.
+         'DOUBLE_GAUSSIAN'.
         :param dx: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-        [arcsec]
+         [arcsec]
         :param dy: used with source model 'DOUBLE_GAUSSIAN', the offset of the second source light profile from the first
-        [arcsec]
+         [arcsec]
         :param size_scale: used with source model 'DOUBLE_GAUSSIAN', the size of the second source light profile relative
-        to the first
+         to the first
         :param amp_scale: used with source model 'DOUBLE_GAUSSIAN', the peak brightness of the second source light profile
-        relative to the first
+         relative to the first
         :param fixed_aperture_size: bool, if True the flux is computed inside a fixed aperture size with radius
-        grid_radius_arcsec
+         grid_radius_arcsec
         :return: an array of image magnifications
         """
 
@@ -521,7 +521,7 @@ class LensModelExtensions(object):
 
         return lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan
 
-    def curved_arc_estimate(self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001):
+    def curved_arc_estimate(self, x, y, kwargs_lens, smoothing=None, smoothing_3rd=0.001, tan_diff=False):
         """
         performs the estimation of the curved arc description at a particular position of an arbitrary lens profile
 
@@ -530,6 +530,7 @@ class LensModelExtensions(object):
         :param kwargs_lens: lens model keyword arguments
         :param smoothing: (optional) finite differential of second derivative (radial and tangential stretches)
         :param smoothing_3rd: differential scale for third derivative to estimate the tangential curvature
+        :param tan_diff: boolean, if True, also returns the relative tangential stretch differential in tangential direction
         :return: keyword argument list corresponding to a CURVED_ARC profile at (x, y) given the initial lens model
         """
         radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens, diff=smoothing)
@@ -546,11 +547,15 @@ class LensModelExtensions(object):
             delta = np.sqrt(d_tang1 ** 2 + d_tang2 ** 2)
         curvature = delta / smoothing_3rd
         direction = np.arctan2(v_rad2 * np.sign(v_rad1 * x + v_rad2 * y), v_rad1 * np.sign(v_rad1 * x + v_rad2 * y))
+
         kwargs_arc = {'radial_stretch': radial_stretch,
                       'tangential_stretch': tangential_stretch,
                       'curvature': curvature,
                       'direction': direction,
                       'center_x': x, 'center_y': y}
+        if tan_diff:
+            lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = self.radial_tangential_differentials(x, y, kwargs_lens, center_x=0, center_y=0, smoothing_3rd=smoothing_3rd)
+            kwargs_arc['dtan_dtan'] = dlambda_tan_dtan / lambda_tan
         return kwargs_arc
 
     def tangential_average(self, x, y, kwargs_lens, dr, smoothing=None, num_average=9):

@@ -41,7 +41,7 @@ class FluxRatioLikelihood(object):
         :param kwargs_cosmo:
         :return: log likelihood of the measured flux ratios given a model
         """
-        if self._source_type is 'INF':
+        if self._source_type == 'INF':
             mag = np.abs(self._lens_model_class.magnification(x_pos, y_pos, kwargs_lens))
         else:
             source_sigma = kwargs_cosmo['source_size']

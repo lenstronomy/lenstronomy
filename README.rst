@@ -2,7 +2,8 @@
 lenstronomy - gravitational lensing software package
 ====================================================
 
-.. image:: readme_fig.png
+.. image:: https://github.com/sibirrer/lenstronomy/blob/main/readme_fig.png
+    :target: https://github.com/sibirrer/lenstronomy/blob/main/readme_fig
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: https://badge.fury.io/py/lenstronomy
@@ -116,7 +117,7 @@ If you encounter errors or problems with **lenstronomy**, please let us know!
 
 Contribution
 ------------
-Check out the contributing page `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
+Check out the `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
 and become an author of lenstronomy! A big shutout to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
 
 

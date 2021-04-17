@@ -115,6 +115,12 @@ class TestMultiPatchReconstruction(object):
         self.lens_model_class = lens_model_class
         self.kwargs_lens = kwargs_lens_true
 
+        # test multi_patch with initial pixel grid
+        kwargs_pixel_grid = {'nx': numPix, 'ny': numPix, 'transform_pix2angle': kwargs_data['transform_pix2angle'],
+                             'ra_at_xy_0': kwargs_data['ra_at_xy_0'], 'dec_at_xy_0': kwargs_data['dec_at_xy_0']}
+        multiPatch = MultiPatchReconstruction(multi_band_list, kwargs_model, kwargs_params,
+                                              multi_band_type='joint-linear', kwargs_pixel_grid=kwargs_pixel_grid)
+
     def test_pixel_grid(self):
         pixel_grid = self.multiPatch.pixel_grid_joint
         nx, ny = pixel_grid.num_pixel_axes

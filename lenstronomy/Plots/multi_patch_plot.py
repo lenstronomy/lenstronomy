@@ -12,7 +12,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
     array.
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, multi_band_type='joint-linear',
-                 kwargs_likelihood=None, verbose=True, cmap_string="gist_heat"):
+                 kwargs_likelihood=None, kwargs_pixel_grid=None, verbose=True, cmap_string="gist_heat"):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -23,13 +23,15 @@ class MultiPatchPlot(MultiPatchReconstruction):
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
+        :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid
+         Attention for consistent pixel grid definitions!
         :param verbose: if True (default), computes and prints the total log-likelihood.
         This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         :param cmap_string: string of color map (or cmap matplotlib object)
         """
         MultiPatchReconstruction.__init__(self, multi_band_list, kwargs_model, kwargs_params,
-                                              multi_band_type=multi_band_type, kwargs_likelihood=kwargs_likelihood,
-                                              verbose=verbose)
+                                          multi_band_type=multi_band_type, kwargs_likelihood=kwargs_likelihood,
+                                          kwargs_pixel_grid=kwargs_pixel_grid, verbose=verbose)
         self._image_joint, self._model_joint, self._norm_residuals_joint = self.image_joint()
         self._kappa_joint, self._magnification_joint, self._alpha_x_joint, self._alpha_y_joint = self.lens_model_joint()
 
@@ -103,7 +105,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
         return self._plot(ax, image=self._kappa_joint, coords=self._pixel_grid_joint, log_scale=log_scale, v_min=v_min,
                           v_max=v_max, text=text, colorbar_label=colorbar_label, **kwargs)
 
-    def magnification_plot(self, ax, log_scale=False, v_min=-10, v_max=10, text="Magnification model",
+    def magnification_plot(self, ax, log_scale=False, v_min=-10, v_max=10, text="Magnification",
                            colorbar_label=r"$\det\ (\mathsf{A}^{-1})$", cmap='bwr', white_on_black=False, **kwargs):
         """
         illustrates lensing convergence
@@ -116,7 +118,7 @@ class MultiPatchPlot(MultiPatchReconstruction):
                           v_max=v_max, text=text, colorbar_label=colorbar_label, cmap=cmap,
                           white_on_black=white_on_black, **kwargs)
 
-    def plot_main(self):
+    def plot_main(self, **kwargs):
         """
         print the main plots together in a joint frame
 
@@ -124,12 +126,12 @@ class MultiPatchPlot(MultiPatchReconstruction):
         """
 
         f, axes = plt.subplots(2, 3, figsize=(16, 8))
-        self.data_plot(ax=axes[0, 0])
-        self.model_plot(ax=axes[0, 1], image_names=True)
-        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6)
-        self.source_plot(ax=axes[1, 0], delta_pix=0.01, num_pix=100)
-        self.convergence_plot(ax=axes[1, 1])
-        self.magnification_plot(ax=axes[1, 2])
+        self.data_plot(ax=axes[0, 0], **kwargs)
+        self.model_plot(ax=axes[0, 1], image_names=True, **kwargs)
+        self.normalized_residual_plot(ax=axes[0, 2], v_min=-6, v_max=6, **kwargs)
+        self.source_plot(ax=axes[1, 0], delta_pix=0.01, num_pix=100, **kwargs)
+        self.convergence_plot(ax=axes[1, 1], **kwargs)
+        self.magnification_plot(ax=axes[1, 2], **kwargs)
         f.tight_layout()
         f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
         return f, axes
@@ -173,8 +175,10 @@ class MultiPatchPlot(MultiPatchReconstruction):
 
         if not no_support:
             text_dist = "{:.1f}".format(dist_scale) + '"'
-            plot_util.scale_bar(ax, frame_size, dist=dist_scale, text=text_dist, font_size=font_size, color=text_k)
-            plot_util.text_description(ax, frame_size, text=text, color=text_k, backgroundcolor=bkg_k, font_size=font_size)
+            if 'no_scale_bar' not in kwargs or not kwargs['no_scale_bar']:
+                plot_util.scale_bar(ax, frame_size, dist=dist_scale, text=text_dist, font_size=font_size, color=text_k)
+            if 'no_text' not in kwargs or not kwargs['no_text']:
+                plot_util.text_description(ax, frame_size, text=text, color=text_k, backgroundcolor=bkg_k, font_size=font_size)
 
             if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
                 plot_util.coordinate_arrows(ax, frame_size, coords, color=text_k, arrow_size=arrow_size, font_size=font_size)

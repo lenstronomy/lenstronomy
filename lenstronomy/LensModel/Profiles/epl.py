@@ -14,25 +14,27 @@ class EPL(LensProfileBase):
     Elliptical Power Law mass profile
 
     .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
 
-        \kappa(x, y) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)^{\gamma-1}
-
-    with :math:`\theta_{E}` is the (circularized) Einstein radius,
-     :math:`\gamma` is the negative power-law slope of the 3D mass distributions,
-     :math:`q` is the minor/major axis ratio,
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
+    :math:`q` is the minor/major axis ratio,
     and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
 
     In terms of eccentricities, this profile is defined as
 
     .. math::
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
-        \kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*cos(2*\phi)}} \right)^{\gamma-1}
-
-    with :math:`e` is the eccentricity defined as
+    with :math:`\\epsilon` is the ellipticity defined as
 
     .. math::
+        \\epsilon = \\frac{1-q^2}{1+q^2}
 
-        e = \frac{1-q}{1+q}
+    And an Einstein radius :math:`\\theta'_{\\rm E}` related to the definition used is
+
+    .. math::
+        \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
@@ -41,37 +43,38 @@ class EPL(LensProfileBase):
     A (faster) implementation of the same model using numba is accessible as 'EPL_NUMBA' with the iterative calculation
     scheme.
     """
-    param_names = ['theta_E', 'e1', 'e2', 'gamma', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 10, 'e1': 0.5, 'e2': 0.5, 'gamma': 2, 'center_x': 100, 'center_y': 100}
+    param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
+    lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 10, 'gamma': 2, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
         super(EPL, self).__init__()
 
-    def param_conv(self, theta_E, e1, e2, gamma):
+    def param_conv(self, theta_E, gamma, e1, e2):
         """
         converts parameters as defined in this class to the parameters used in the EPLMajorAxis() class
 
         :param theta_E: Einstein radius as defined in the profile class
+        :param gamma: negative power-law slope
         :param e1: eccentricity modulus
         :param e2: eccentricity modulus
-        :param gamma: negative power-law slope
+
         :return: b, t, q, phi_G
         """
         if self._static is True:
             return self._b_static, self._t_static, self._q_static, self._phi_G_static
-        return self._param_conv(theta_E, e1, e2, gamma)
+        return self._param_conv(theta_E, gamma, e1, e2)
 
-    def _param_conv(self, theta_E, e1, e2, gamma):
+    def _param_conv(self, theta_E, gamma, e1, e2):
         """
         convert parameters from :math:`R = r \sqrt{1 − e*cos(2*phi)}` to
         :math:`R = \sqrt{q^2 x^2 + y^2}`
 
+        :param gamma: power law slope
         :param theta_E: Einstein radius
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: power law slope
         :return: critical radius b, slope t, axis ratio q, orientation angle phi_G
         """
 
@@ -81,21 +84,21 @@ class EPL(LensProfileBase):
         t = gamma - 1
         return b, t, q, phi_G
 
-    def set_static(self, theta_E, e1, e2, gamma, center_x=0, center_y=0):
+    def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
+        :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: power law slope
         :param center_x: profile center
         :param center_y: profile center
         :return: self variables set
         """
         self._static = True
-        self._b_static, self._t_static, self._q_static, self._phi_G_static = self._param_conv(theta_E, e1, e2, gamma)
+        self._b_static, self._t_static, self._q_static, self._phi_G_static = self._param_conv(theta_E, gamma, e1, e2)
 
     def set_dynamic(self):
         """
@@ -112,20 +115,20 @@ class EPL(LensProfileBase):
         if hasattr(self, '_q_static'):
             del self._q_static
 
-    def function(self, x, y, theta_E, e1, e2, gamma, center_x=0, center_y=0):
+    def function(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
+        :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: power law slope
         :param center_x: profile center
         :param center_y: profile center
         :return: lensing potential
         """
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -136,20 +139,20 @@ class EPL(LensProfileBase):
         # rotate back
         return f_
 
-    def derivatives(self, x, y, theta_E, e1, e2, gamma, center_x=0, center_y=0):
+    def derivatives(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
+        :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: power law slope
         :param center_x: profile center
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -161,21 +164,21 @@ class EPL(LensProfileBase):
         f_x, f_y = util.rotate(f__x, f__y, -phi_G)
         return f_x, f_y
 
-    def hessian(self, x, y, theta_E, e1, e2, gamma, center_x=0, center_y=0):
+    def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
         :param x: x-coordinate in image plane
         :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
+        :param gamma: power law slope
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: power law slope
         :param center_x: profile center
         :param center_y: profile center
         :return: f_xx, f_xy, f_yx, f_yy
         """
 
-        b, t, q, phi_G = self.param_conv(theta_E, e1, e2, gamma)
+        b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
         x_ = x - center_x
         y_ = y - center_y
@@ -200,8 +203,7 @@ class EPL(LensProfileBase):
         This then follows the convention of the PEMD profile in lenstronomy.
 
         .. math::
-
-            \frac{\theta_E}{theta_{E gravlens}}) = \sqrt{(1+q^2) / (2 q)}
+            \\frac{\\theta_E}{\\theta_{E gravlens}}) = \\sqrt{(1+q^2) / (2 q)}
 
         :param theta_E: Einstein radius in lenstronomy conventions
         :param q: axis ratio minor/major
@@ -217,11 +219,9 @@ class EPLMajorAxis(LensProfileBase):
     elliptical power law.
 
     .. math::
+        \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
 
-        \kappa = (2-t)/2 * \left[\frac{b}{\sqrt{q^2 x^2 + y^2}}\right]^t
-
-
-    where with :math:`t = \gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
+    where with :math:`t = \\gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
     critical radius b, axis ratio q
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819

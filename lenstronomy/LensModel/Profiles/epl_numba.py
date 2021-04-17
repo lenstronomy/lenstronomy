@@ -14,25 +14,28 @@ class EPL_numba(LensProfileBase):
     Elliptical Power Law mass profile - computation accelerated with numba
 
     .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
 
-        \kappa(x, y) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)^{\gamma-1}
-
-    with :math:`\theta_{E}` is the (circularized) Einstein radius,
-     :math:`\gamma` is the negative power-law slope of the 3D mass distributions,
-     :math:`q` is the minor/major axis ratio,
-    and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
+    :math:`q` is the minor/major axis ratio,
+    and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
 
     In terms of eccentricities, this profile is defined as
 
     .. math::
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
 
-        \kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*cos(2*\phi)}} \right)^{\gamma-1}
-
-    with :math:`e` is the eccentricity defined as
+    with :math:`\\epsilon` is the ellipticity defined as
 
     .. math::
+        \\epsilon = \\frac{1-q^2}{1+q^2}
 
-        e = \frac{1-q}{1+q}
+    And an Einstein radius :math:`\\theta'_{\\rm E}` related to the definition used is
+
+    .. math::
+        \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
+
 
     The mathematical form of the calculation is presented by Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819.
     The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
@@ -50,58 +53,58 @@ class EPL_numba(LensProfileBase):
 
     @staticmethod
     @jit()
-    def function(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
+    def function(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
         """
 
         :param x: x-coordinate (angle)
         :param y: y-coordinate (angle)
         :param theta_E: Einstein radius (angle), pay attention to specific definition!
+        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
         :return: lensing potential
         """
-        z, b, t, q, ang = param_transform(x, y, theta_E, e1, e2, gamma, center_x, center_y)
+        z, b, t, q, ang = param_transform(x, y, theta_E, gamma, e1, e2, center_x, center_y)
         alph = alpha(z.real, z.imag, b, q, t)
         return 1/(2-t)*(z.real*alph.real+z.imag*alph.imag)
 
     @staticmethod
     @jit()
-    def derivatives(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
+    def derivatives(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
         """
 
         :param x: x-coordinate (angle)
         :param y: y-coordinate (angle)
         :param theta_E: Einstein radius (angle), pay attention to specific definition!
+        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
         :return: deflection angles alpha_x, alpha_y
         """
-        z, b, t, q, ang = param_transform(x, y, theta_E, e1, e2, gamma, center_x, center_y)
+        z, b, t, q, ang = param_transform(x, y, theta_E, gamma, e1, e2, center_x, center_y)
         alph = alpha(z.real, z.imag, b, q, t) * np.exp(1j*ang)
         return alph.real, alph.imag
 
     @staticmethod
     @jit()
-    def hessian(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
+    def hessian(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
         """
 
         :param x: x-coordinate (angle)
         :param y: y-coordinate (angle)
         :param theta_E: Einstein radius (angle), pay attention to specific definition!
+        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param e1: eccentricity component
         :param e2: eccentricity component
-        :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
         :return: Hessian components f_xx, f_yy, f_xy
         """
-        z, b, t, q, ang_ell = param_transform(x, y, theta_E, e1, e2, gamma, center_x, center_y)
+        z, b, t, q, ang_ell = param_transform(x, y, theta_E, gamma, e1, e2, center_x, center_y)
         ang = np.angle(z)
         r = np.abs(z)
         zz_ell = z.real*q+1j*z.imag
@@ -124,7 +127,7 @@ class EPL_numba(LensProfileBase):
         return f_xx, f_xy, f_xy, f_yy
 
 @jit()
-def param_transform(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
+def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
     """Converts the parameters from lenstronomy definitions (as defined in PEMD) to the definitions of Tessore+ (2015)"""
     t = gamma-1
     phi_G, q = param_util.ellipticity2phi_q(e1, e2)
@@ -139,6 +142,7 @@ def param_transform(x, y, theta_E, e1, e2, gamma, center_x=0., center_y=0.):
 def alpha(x, y, b, q, t):
     """
     Converts the parameters from lenstronomy definitions (as defined in PEMD) to the definitions of Tessore+(2015)
+
     :param x: x-coordinate (angle)
     :param y: y-coordinate (angle)
     :param theta_E: Einstein radius (angle), pay attention to specific definition!
@@ -164,7 +168,7 @@ def omega(phi, t, q, niter_max=200, tol=1e-16):
     niter = min(niter_max, int(np.log(tol)/np.log(f))+2) # The absolute value of each summand is always less than f, hence this limit for the number of iterations.
     Omega = 1*np.exp(1j*phi)
     fact = -f*np.exp(2j*phi)
-    for n in range(1,niter):
+    for n in range(1, niter):
         omegas += Omega
         Omega *= (2*n-(2-t))/(2*n+(2-t)) * fact
     omegas += Omega

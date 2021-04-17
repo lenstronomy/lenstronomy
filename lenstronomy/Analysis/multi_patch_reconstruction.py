@@ -15,7 +15,7 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
     """
 
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, multi_band_type='joint-linear',
-                 kwargs_likelihood=None, verbose=True):
+                 kwargs_likelihood=None, kwargs_pixel_grid=None, verbose=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -26,6 +26,8 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
             - 'linear-joint': linear amplitudes ae jointly inferred
             - 'single-band': single band
         :param kwargs_likelihood: likelihood keyword arguments as supported by the Likelihood() class
+        :param kwargs_pixel_grid: keyword argument of PixelGrid() class. This is optional and overwrites a minimal grid
+         Attention for consistent pixel grid definitions!
         :param verbose: if True (default), computes and prints the total log-likelihood.
         This can deactivated for speedup purposes (does not run linear inversion again), and reduces the number of prints.
         """
@@ -36,7 +38,10 @@ class MultiPatchReconstruction(MultiBandImageReconstruction):
         MultiBandImageReconstruction.__init__(self, multi_band_list, kwargs_model, kwargs_params,
                                               multi_band_type=multi_band_type, kwargs_likelihood=kwargs_likelihood,
                                               verbose=verbose)
-        self._pixel_grid_joint = self._joint_pixel_grid(multi_band_list)
+        if kwargs_pixel_grid is not None:
+            self._pixel_grid_joint = PixelGrid(**kwargs_pixel_grid)
+        else:
+            self._pixel_grid_joint = self._joint_pixel_grid(multi_band_list)
 
     @property
     def pixel_grid_joint(self):

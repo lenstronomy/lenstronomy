@@ -118,7 +118,7 @@ class PsfFitting(object):
          reads out the overall best fit
         :param verbose: print statements informing about progress of iterative procedure
         :param kwargs_psf_update: keyword arguments providing the settings for a single iteration of the PSF, as being
-        passed to update_psf() method
+         passed to update_psf() method
         :return: keyword argument of PSF constructor for PSF() class with updated PSF
         """
         self._image_model_class.PointSource.set_save_cache(True)

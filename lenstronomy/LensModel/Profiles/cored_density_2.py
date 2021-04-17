@@ -14,10 +14,9 @@ class CoredDensity2(LensProfileBase):
     credits for suggesting this profile goes to Kfir Blum
 
     .. math::
+      \\rho(r) = 2/\\pi * \\Sigma_{\\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
 
-      \rho(r) = 2/\pi * \Sigma_{\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
-
-    This profile drops like an NFW profile as math:`\rho(r)^{-3}`.
+    This profile drops like an NFW profile as math:`\\rho(r)^{-3}`.
 
     """
 

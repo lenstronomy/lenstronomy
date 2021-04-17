@@ -14,12 +14,12 @@ from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
 
-#TODO define coordinate grid beforehand, e.g. kwargs_data
+# TODO define coordinate grid beforehand, e.g. kwargs_data
 
 @export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                    point_source=False, with_caustics=False, coord_center_ra=0, coord_center_dec=0,
-                    coord_inverse=False):
+                    point_source=False, with_caustics=False, with_convergence=True, coord_center_ra=0, coord_center_dec=0,
+                    coord_inverse=False, fast_caustic=False):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -27,6 +27,9 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     :param kwargs_lens:
     :param numPix:
     :param deltaPix:
+    :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
+     (might have troubles for the outer caustic (inner critical curve)
+    :param with_convergence: boolean, if True, plots the convergence of the deflector
     :return:
     """
     kwargs_data = sim_util.data_configure_simple(numPix, deltaPix, center_ra=coord_center_ra, center_dec=coord_center_dec, 
@@ -36,20 +39,24 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     _frame_size = numPix * deltaPix
     x_grid, y_grid = data.pixel_coordinates
     lensModelExt = LensModelExtensions(lensModel)
-    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
-    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
     x_grid1d = util.image2array(x_grid)
     y_grid1d = util.image2array(y_grid)
-    kappa_result = lensModel.kappa(x_grid1d, y_grid1d, kwargs_lens)
-    kappa_result = util.array2image(kappa_result)
-    im = ax.matshow(np.log10(kappa_result), origin='lower', extent=[0, _frame_size, 0, _frame_size], cmap='Greys',
-                    vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+    if with_convergence:
+        kappa_result = lensModel.kappa(x_grid1d, y_grid1d, kwargs_lens)
+        kappa_result = util.array2image(kappa_result)
+        im = ax.matshow(np.log10(kappa_result), origin='lower', extent=[0, _frame_size, 0, _frame_size], cmap='Greys',
+                        vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
-        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
+        if fast_caustic:
+            ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix)
+            plot_util.plot_line_set_list(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
+            plot_util.plot_line_set_list(ax, _coords, ra_crit_list, dec_crit_list, color='r')
+        else:
+            ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
                                                                          start_scale=deltaPix, max_order=10)
-        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
-        plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
+            ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+            plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g')
+            plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r')
     if point_source:
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
@@ -65,6 +72,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
             ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
         x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
         ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*k', markersize=10)
+    ax.set_xlim([0, _frame_size])
+    ax.set_ylim([0, _frame_size])
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
@@ -233,6 +242,7 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     return ax
 
 
+@export
 def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color='k'):
     """
 
@@ -250,18 +260,21 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     lens_model_list = lensModel.lens_model_list
     for i, lens_type in enumerate(lens_model_list):
         if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_CONST', 'CURVED_ARC_CONST_MST',
-                         'CURVED_ARC_SPT']:
+                         'CURVED_ARC_SPT', 'CURVED_ARC_TAN_DIFF']:
             plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, color=color, **kwargs_lens[i])
 
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
+    # rectangular frame
+    ax.axis('scaled')
 
     # plot coordinate frame and scale
 
 
+@export
 def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
-             with_centroid=True, linewidth=1, color='k'):
+             with_centroid=True, linewidth=1, color='k', dtan_dtan=0):
     """
 
     :param ax:

@@ -89,18 +89,38 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set(ax, coords, ra_caustic_list, dec_caustic_list, shift=0., color='g'):
+def plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, shift=0., color='g'):
     """
 
-    :param coords:
-    :return:
+    :param coords: Coordinates() class instance
+    :param line_set_list_x: list of numpy arrays corresponding of different disconnected regions of the line
+     (e.g. caustic or critical curve)
+    :param line_set_list_y: list of numpy arrays corresponding of different disconnected regions of the line
+     (e.g. caustic or critical curve)
+    :return: plot with line sets on matplotlib axis
     """
     deltaPix = coords.pixel_width
-    #for i in range(len(ra_caustic_list)):
-    x_c, y_c = coords.map_coord2pix(ra_caustic_list, dec_caustic_list)
-    ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
+    for i in range(len(line_set_list_x)):
+        x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
+        ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
     return ax
 
+
+@export
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, shift=0., color='g'):
+    """
+
+    :param coords: Coordinates() class instance
+    :param line_set_list_x: numpy arrays corresponding of different disconnected regions of the line
+     (e.g. caustic or critical curve)
+    :param line_set_list_y: numpy arrays corresponding of different disconnected regions of the line
+     (e.g. caustic or critical curve)
+    :return: plot with line sets on matplotlib axis
+    """
+    deltaPix = coords.pixel_width
+    x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
+    ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
+    return ax
 
 @export
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):

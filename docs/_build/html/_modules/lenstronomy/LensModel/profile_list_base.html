@@ -1,0 +1,401 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.profile_list_base &#8212; lenstronomy 1.8.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.profile_list_base</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">import</span> <span class="n">convert_bool_list</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ProfileListBase&#39;</span><span class="p">]</span>
+
+
+<span class="n">_SUPPORTED_MODELS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SHIFT&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;CONST_MAG&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR_GAMMA_PSI&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR_REDUCED&#39;</span><span class="p">,</span> <span class="s1">&#39;CONVERGENCE&#39;</span><span class="p">,</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;FLEXIONFG&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT_MASS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE_SIMPLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;TRIPLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;PEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;EPL&#39;</span><span class="p">,</span> <span class="s1">&#39;EPL_NUMBA&#39;</span><span class="p">,</span> <span class="s1">&#39;SPL_CORE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">,</span> <span class="s1">&#39;CNFW&#39;</span><span class="p">,</span> <span class="s1">&#39;CNFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CTNFW_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_MC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;SERSIC_ELLIPSE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE_KAPPA&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_KAPPA&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;GAUSSIAN_ELLIPSE_KAPPA&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_CONST&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SIS_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SPT&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;CURVED_ARC_TAN_DIFF&#39;</span><span class="p">,</span> <span class="s1">&#39;ARC_PERT&#39;</span><span class="p">,</span> <span class="s1">&#39;coreBURKERT&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_2&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_2_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_EXP&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;CORED_DENSITY_EXP_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;NumericalAlpha&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;HESSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;ElliSLICE&#39;</span><span class="p">,</span> <span class="s1">&#39;ULDM&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ProfileListBase"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.profile_list_base.ProfileListBase">[docs]</a><span class="k">class</span> <span class="nc">ProfileListBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class that manages the list of lens model class instances. This class is applicable for single plane and multi</span>
+<span class="sd">    plane lensing</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param lens_model_list: list of strings with lens model names</span>
+<span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
+<span class="sd">        deflection angles as a lens model. See the documentation in Profiles.numerical_deflections</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_model_instances</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">custom_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
+                                                    <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span>
+                                                    <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_func</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
+
+    <span class="k">def</span> <span class="nf">_load_model_instances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">custom_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                              <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lens_redshift_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lens_redshift_list</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">)</span>
+        <span class="n">func_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">imported_classes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lens_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">):</span>
+            <span class="c1"># those models require a new instance per profile as certain pre-computations are relevant per individual profile</span>
+            <span class="k">if</span> <span class="n">lens_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;NFW_MC&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;TRIPLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span>
+                             <span class="s1">&#39;CTNFW_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE_SIMPLE&#39;</span><span class="p">]:</span>
+                <span class="n">lensmodel_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_import_class</span><span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                     <span class="n">z_source</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">lens_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">imported_classes</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">lensmodel_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_import_class</span><span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">)</span>
+                    <span class="n">imported_classes</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">lens_type</span><span class="p">:</span> <span class="n">lensmodel_class</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">lensmodel_class</span> <span class="o">=</span> <span class="n">imported_classes</span><span class="p">[</span><span class="n">lens_type</span><span class="p">]</span>
+            <span class="n">func_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lensmodel_class</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func_list</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_import_class</span><span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param lens_type: string, lens model type</span>
+<span class="sd">        :param custom_class: custom class</span>
+<span class="sd">        :param z_lens: lens redshift  # currently only used in NFW_MC model as this is redshift dependent</span>
+<span class="sd">        :param z_source: source redshift  # currently only used in NFW_MC model as this is redshift dependent</span>
+<span class="sd">        :return: class instance of the lens model type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHIFT&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.constant_shift</span> <span class="k">import</span> <span class="n">Shift</span>
+            <span class="k">return</span> <span class="n">Shift</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NIE_POTENTIAL&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nie_potential</span> <span class="k">import</span> <span class="n">NIE_POTENTIAL</span>
+            <span class="k">return</span> <span class="n">NIE_POTENTIAL</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CONST_MAG&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.const_mag</span> <span class="k">import</span> <span class="n">ConstMag</span>
+            <span class="k">return</span> <span class="n">ConstMag</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">Shear</span>
+            <span class="k">return</span> <span class="n">Shear</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR_GAMMA_PSI&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">ShearGammaPsi</span>
+            <span class="k">return</span> <span class="n">ShearGammaPsi</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHEAR_REDUCED&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shear</span> <span class="k">import</span> <span class="n">ShearReduced</span>
+            <span class="k">return</span> <span class="n">ShearReduced</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CONVERGENCE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="k">import</span> <span class="n">Convergence</span>
+            <span class="k">return</span> <span class="n">Convergence</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HESSIAN&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hessian</span> <span class="k">import</span> <span class="n">Hessian</span>
+            <span class="k">return</span> <span class="n">Hessian</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.flexion</span> <span class="k">import</span> <span class="n">Flexion</span>
+            <span class="k">return</span> <span class="n">Flexion</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;FLEXIONFG&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.flexionfg</span> <span class="k">import</span> <span class="n">Flexionfg</span>
+            <span class="k">return</span> <span class="n">Flexionfg</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;POINT_MASS&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.point_mass</span> <span class="k">import</span> <span class="n">PointMass</span>
+            <span class="k">return</span> <span class="n">PointMass</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIS&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sis</span> <span class="k">import</span> <span class="n">SIS</span>
+            <span class="k">return</span> <span class="n">SIS</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sis_truncate</span> <span class="k">import</span> <span class="n">SIS_truncate</span>
+            <span class="k">return</span> <span class="n">SIS_truncate</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SIE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sie</span> <span class="k">import</span> <span class="n">SIE</span>
+            <span class="k">return</span> <span class="n">SIE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPP&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spp</span> <span class="k">import</span> <span class="n">SPP</span>
+            <span class="k">return</span> <span class="n">SPP</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NIE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nie</span> <span class="k">import</span> <span class="n">NIE</span>
+            <span class="k">return</span> <span class="n">NIE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NIE_SIMPLE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nie</span> <span class="k">import</span> <span class="n">NIEMajorAxis</span>
+            <span class="k">return</span> <span class="n">NIEMajorAxis</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">Chameleon</span>
+            <span class="k">return</span> <span class="n">Chameleon</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">DoubleChameleon</span>
+            <span class="k">return</span> <span class="n">DoubleChameleon</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;TRIPLE_CHAMELEON&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.chameleon</span> <span class="k">import</span> <span class="n">TripleChameleon</span>
+            <span class="k">return</span> <span class="n">TripleChameleon</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spep</span> <span class="k">import</span> <span class="n">SPEP</span>
+            <span class="k">return</span> <span class="n">SPEP</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;PEMD&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.pemd</span> <span class="k">import</span> <span class="n">PEMD</span>
+            <span class="k">return</span> <span class="n">PEMD</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spemd</span> <span class="k">import</span> <span class="n">SPEMD</span>
+            <span class="k">return</span> <span class="n">SPEMD</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;EPL&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.epl</span> <span class="k">import</span> <span class="n">EPL</span>
+            <span class="k">return</span> <span class="n">EPL</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;EPL_NUMBA&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.epl_numba</span> <span class="k">import</span> <span class="n">EPL_numba</span>
+            <span class="k">return</span> <span class="n">EPL_numba</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SPL_CORE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.splcore</span> <span class="k">import</span> <span class="n">SPLCORE</span>
+            <span class="k">return</span> <span class="n">SPLCORE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw</span> <span class="k">import</span> <span class="n">NFW</span>
+            <span class="k">return</span> <span class="n">NFW</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw_ellipse</span> <span class="k">import</span> <span class="n">NFW_ELLIPSE</span>
+            <span class="k">return</span> <span class="n">NFW_ELLIPSE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="k">import</span> <span class="n">NFWEllipseGaussDec</span>
+            <span class="k">return</span> <span class="n">NFWEllipseGaussDec</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.tnfw</span> <span class="k">import</span> <span class="n">TNFW</span>
+            <span class="k">return</span> <span class="n">TNFW</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CNFW&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cnfw</span> <span class="k">import</span> <span class="n">CNFW</span>
+            <span class="k">return</span> <span class="n">CNFW</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CNFW_ELLIPSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cnfw_ellipse</span> <span class="k">import</span> <span class="n">CNFW_ELLIPSE</span>
+            <span class="k">return</span> <span class="n">CNFW_ELLIPSE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CTNFW_GAUSS_DEC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="k">import</span> <span class="n">CTNFWGaussDec</span>
+            <span class="k">return</span> <span class="n">CTNFWGaussDec</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_MC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw_mass_concentration</span> <span class="k">import</span> <span class="n">NFWMC</span>
+            <span class="k">return</span> <span class="n">NFWMC</span><span class="p">(</span><span class="n">z_lens</span><span class="o">=</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="n">z_source</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic</span> <span class="k">import</span> <span class="n">Sersic</span>
+            <span class="k">return</span> <span class="n">Sersic</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_POTENTIAL&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_ellipse_potential</span> <span class="k">import</span> <span class="n">SersicEllipse</span>
+            <span class="k">return</span> <span class="n">SersicEllipse</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_KAPPA&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_ellipse_kappa</span> <span class="k">import</span> <span class="n">SersicEllipseKappa</span>
+            <span class="k">return</span> <span class="n">SersicEllipseKappa</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SERSIC_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="k">import</span> <span class="n">SersicEllipseGaussDec</span>
+            <span class="k">return</span> <span class="n">SersicEllipseGaussDec</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe</span> <span class="k">import</span> <span class="n">PJaffe</span>
+            <span class="k">return</span> <span class="n">PJaffe</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.p_jaffe_ellipse</span> <span class="k">import</span> <span class="n">PJaffe_Ellipse</span>
+            <span class="k">return</span> <span class="n">PJaffe_Ellipse</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist</span> <span class="k">import</span> <span class="n">Hernquist</span>
+            <span class="k">return</span> <span class="n">Hernquist</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist_ellipse</span> <span class="k">import</span> <span class="n">Hernquist_Ellipse</span>
+            <span class="k">return</span> <span class="n">Hernquist_Ellipse</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_potential</span> <span class="k">import</span> <span class="n">Gaussian</span>
+            <span class="k">return</span> <span class="n">Gaussian</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_KAPPA&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_kappa</span> <span class="k">import</span> <span class="n">GaussianKappa</span>
+            <span class="k">return</span> <span class="n">GaussianKappa</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_KAPPA&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</span> <span class="k">import</span> <span class="n">GaussianEllipseKappa</span>
+            <span class="k">return</span> <span class="n">GaussianEllipseKappa</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_POTENTIAL&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_potential</span> <span class="k">import</span> <span class="n">GaussianEllipsePotential</span>
+            <span class="k">return</span> <span class="n">GaussianEllipsePotential</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multi_gaussian_kappa</span> <span class="k">import</span> <span class="n">MultiGaussianKappa</span>
+            <span class="k">return</span> <span class="n">MultiGaussianKappa</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA_ELLIPSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multi_gaussian_kappa</span> <span class="k">import</span> <span class="n">MultiGaussianKappaEllipse</span>
+            <span class="k">return</span> <span class="n">MultiGaussianKappaEllipse</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.interpol</span> <span class="k">import</span> <span class="n">Interpol</span>
+            <span class="k">return</span> <span class="n">Interpol</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.interpol</span> <span class="k">import</span> <span class="n">InterpolScaled</span>
+            <span class="k">return</span> <span class="n">InterpolScaled</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_polar</span> <span class="k">import</span> <span class="n">PolarShapelets</span>
+            <span class="k">return</span> <span class="n">PolarShapelets</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.shapelet_pot_cartesian</span> <span class="k">import</span> <span class="n">CartShapelets</span>
+            <span class="k">return</span> <span class="n">CartShapelets</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;DIPOLE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.dipole</span> <span class="k">import</span> <span class="n">Dipole</span>
+            <span class="k">return</span> <span class="n">Dipole</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_CONST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_const</span> <span class="k">import</span> <span class="n">CurvedArcConst</span>
+            <span class="k">return</span> <span class="n">CurvedArcConst</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_CONST_MST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_const</span> <span class="k">import</span> <span class="n">CurvedArcConstMST</span>
+            <span class="k">return</span> <span class="n">CurvedArcConstMST</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_SPP&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_spp</span> <span class="k">import</span> <span class="n">CurvedArcSPP</span>
+            <span class="k">return</span> <span class="n">CurvedArcSPP</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_SIS_MST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_sis_mst</span> <span class="k">import</span> <span class="n">CurvedArcSISMST</span>
+            <span class="k">return</span> <span class="n">CurvedArcSISMST</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_SPT&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_spt</span> <span class="k">import</span> <span class="n">CurvedArcSPT</span>
+            <span class="k">return</span> <span class="n">CurvedArcSPT</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CURVED_ARC_TAN_DIFF&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.curved_arc_tan_diff</span> <span class="k">import</span> <span class="n">CurvedArcTanDiff</span>
+            <span class="k">return</span> <span class="n">CurvedArcTanDiff</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;ARC_PERT&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.arc_perturbations</span> <span class="k">import</span> <span class="n">ArcPerturbations</span>
+            <span class="k">return</span> <span class="n">ArcPerturbations</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;coreBURKERT&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.coreBurkert</span> <span class="k">import</span> <span class="n">CoreBurkert</span>
+            <span class="k">return</span> <span class="n">CoreBurkert</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density</span> <span class="k">import</span> <span class="n">CoredDensity</span>
+            <span class="k">return</span> <span class="n">CoredDensity</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_2&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_2</span> <span class="k">import</span> <span class="n">CoredDensity2</span>
+            <span class="k">return</span> <span class="n">CoredDensity2</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_EXP&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_exp</span> <span class="k">import</span> <span class="n">CoredDensityExp</span>
+            <span class="k">return</span> <span class="n">CoredDensityExp</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_MST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_mst</span> <span class="k">import</span> <span class="n">CoredDensityMST</span>
+            <span class="k">return</span> <span class="n">CoredDensityMST</span><span class="p">(</span><span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_2_MST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_mst</span> <span class="k">import</span> <span class="n">CoredDensityMST</span>
+            <span class="k">return</span> <span class="n">CoredDensityMST</span><span class="p">(</span><span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;CORED_DENSITY_2&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_EXP_MST&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_mst</span> <span class="k">import</span> <span class="n">CoredDensityMST</span>
+            <span class="k">return</span> <span class="n">CoredDensityMST</span><span class="p">(</span><span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;CORED_DENSITY_EXP&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NumericalAlpha&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.numerical_deflections</span> <span class="k">import</span> <span class="n">NumericalAlpha</span>
+            <span class="k">return</span> <span class="n">NumericalAlpha</span><span class="p">(</span><span class="n">custom_class</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTIPOLE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multipole</span> <span class="k">import</span> <span class="n">Multipole</span>
+            <span class="k">return</span> <span class="n">Multipole</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;ElliSLICE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.elliptical_density_slice</span> <span class="k">import</span> <span class="n">ElliSLICE</span>
+            <span class="k">return</span> <span class="n">ElliSLICE</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;ULDM&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.uldm</span> <span class="k">import</span> <span class="n">Uldm</span>
+            <span class="k">return</span> <span class="n">Uldm</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> is not a valid lens model. Supported are: </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">lens_type</span><span class="p">,</span> <span class="n">_SUPPORTED_MODELS</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_bool_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns a bool list of the length of the lens models</span>
+<span class="sd">        if k = None: returns bool list with True&#39;s</span>
+<span class="sd">        if k is int, returns bool list with False&#39;s but k&#39;th is True</span>
+<span class="sd">        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True&#39;s in the integers listed and False elsewhere</span>
+<span class="sd">        if k is a boolean list, checks for size to match the numbers of models and returns it</span>
+
+<span class="sd">        :param k: None, int, or list of ints</span>
+<span class="sd">        :return: bool list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">convert_bool_list</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_func</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ProfileListBase.set_static"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.profile_list_base.ProfileListBase.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_list: list of keyword arguments for each profile</span>
+<span class="sd">        :return: kwargs_list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_list</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">kwargs_list</span></div>
+
+<div class="viewcode-block" id="ProfileListBase.set_dynamic"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.profile_list_base.ProfileListBase.set_dynamic">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        frees cache set by static model (if exists) and re-computes all lensing quantities each time a definition is</span>
+<span class="sd">        called assuming different parameters are executed. This is the default mode if not specified as set_static()</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">func_list</span><span class="p">):</span>
+            <span class="n">func</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

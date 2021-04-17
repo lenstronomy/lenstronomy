@@ -175,17 +175,23 @@ class TestCurvedArcSISMST(object):
         center_x, center_y = 1, 1.  # test works except at (0,0) where the direction angle is not well defined
         tangential_stretch = 10.
         radial_stretch = 1.2
-        curvature, direction = 0.2, 0.5
-        kwargs_lens = [
-            {'tangential_stretch': tangential_stretch, 'radial_stretch': radial_stretch, 'curvature': curvature,
-             'direction': direction, 'center_x': center_x, 'center_y': center_y}]
+        curvature, direction = 0.02, 0.5
+        kwargs_lens = {'tangential_stretch': tangential_stretch, 'radial_stretch': radial_stretch,
+                       'curvature': curvature, 'direction': direction, 'center_x': center_x, 'center_y': center_y}
 
-        kwargs_arc = ext.curved_arc_estimate(center_x, center_y, kwargs_lens)
-        print(kwargs_arc)
-        npt.assert_almost_equal(kwargs_arc['tangential_stretch'], tangential_stretch)
-        npt.assert_almost_equal(kwargs_arc['radial_stretch'], radial_stretch)
-        npt.assert_almost_equal(kwargs_arc['curvature'], curvature)
-        npt.assert_almost_equal(kwargs_arc['direction'], direction)
+        self._test_curved_arc_recovery(kwargs_lens)
+
+    def _test_curved_arc_recovery(self, kwargs_arc_init):
+        ext = LensModelExtensions(LensModel(lens_model_list=['CURVED_ARC_SIS_MST']))
+        center_x, center_y = kwargs_arc_init['center_x'], kwargs_arc_init['center_y']
+        kwargs_arc = ext.curved_arc_estimate(center_x, center_y, [kwargs_arc_init])
+        lambda_rad, lambda_tan, orientation_angle, dlambda_tan_dtan, dlambda_tan_drad, dlambda_rad_drad, dlambda_rad_dtan, dphi_tan_dtan, dphi_tan_drad, dphi_rad_drad, dphi_rad_dtan = ext.radial_tangential_differentials(center_x, center_y, [kwargs_arc_init])
+        npt.assert_almost_equal(kwargs_arc['tangential_stretch'], kwargs_arc_init['tangential_stretch'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['radial_stretch'], kwargs_arc_init['radial_stretch'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['curvature'], kwargs_arc_init['curvature'], decimal=3)
+        npt.assert_almost_equal(dphi_tan_dtan, kwargs_arc_init['curvature'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['direction'], kwargs_arc_init['direction'], decimal=3)
+        npt.assert_almost_equal(dlambda_tan_dtan, 0, decimal=3)
 
 
 if __name__ == '__main__':

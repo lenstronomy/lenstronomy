@@ -25,8 +25,8 @@ class TestEPL_numba(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
-        values_nb = self.EPL_numba.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
+        values_nb = self.EPL_numba.function(x, y, phi_E, gamma, e1, e2)
         delta_f = values[0] - values[1]
         delta_f_nb = values_nb[0] - values_nb[1]
         npt.assert_almost_equal(delta_f, delta_f_nb, decimal=10)
@@ -35,8 +35,8 @@ class TestEPL_numba(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
-        values_nb = self.EPL_numba.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
+        values_nb = self.EPL_numba.function(x, y, phi_E, gamma, e1, e2)
         delta_f = values[0] - values[1]
         delta_f_nb = values_nb[0] - values_nb[1]
         npt.assert_almost_equal(delta_f, delta_f_nb, decimal=10)
@@ -45,8 +45,8 @@ class TestEPL_numba(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
-        values_nb = self.EPL_numba.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
+        values_nb = self.EPL_numba.function(x, y, phi_E, gamma, e1, e2)
         delta_f = values[0] - values[1]
         delta_f_nb = values_nb[0] - values_nb[1]
         npt.assert_almost_equal(delta_f, delta_f_nb, decimal=10)
@@ -59,16 +59,16 @@ class TestEPL_numba(object):
         q = 1.
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
-        f_x_nb, f_y_nb = self.EPL_numba.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
+        f_x_nb, f_y_nb = self.EPL_numba.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, f_x_nb, decimal=10)
         npt.assert_almost_equal(f_y, f_y_nb, decimal=10)
 
         q = 0.7
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
-        f_x_nb, f_y_nb = self.EPL_numba.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
+        f_x_nb, f_y_nb = self.EPL_numba.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, f_x_nb, decimal=10)
         npt.assert_almost_equal(f_y, f_y_nb, decimal=10)
 
@@ -80,8 +80,8 @@ class TestEPL_numba(object):
         q = 0.9
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_xy, f_yx, f_yy = self.EPL.hessian(x, y, phi_E, e1, e2, gamma)
-        f_xx_nb, f_xy_nb, f_yx_nb, f_yy_nb = self.EPL_numba.hessian(x, y, phi_E, e1, e2, gamma)
+        f_xx, f_xy, f_yx, f_yy = self.EPL.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx_nb, f_xy_nb, f_yx_nb, f_yy_nb = self.EPL_numba.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_xx, f_xx_nb, decimal=10)
         npt.assert_almost_equal(f_yy, f_yy_nb, decimal=10)
         npt.assert_almost_equal(f_xy, f_xy_nb, decimal=10)
@@ -96,30 +96,30 @@ class TestEPL_numba(object):
 
         x = 0.
         y = 0.
-        f_x, f_y = self.EPL_numba.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL_numba.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 
         x = 0.
         y = 0.
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 
         x = 0.
         y = 0.
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma+0.1)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma+0.1, e1, e2)
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 
         x = 0.
         y = 0.
-        f = self.EPL_numba.function(x, y, phi_E, e1, e2, gamma)
+        f = self.EPL_numba.function(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f, 0.)
 
         x = 0.
         y = 0.
-        f_xx, f_xy, f_yx, f_yy = self.EPL_numba.hessian(x, y, phi_E, e1, e2, gamma)
+        f_xx, f_xy, f_yx, f_yy = self.EPL_numba.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_xx, 1e10, decimal=10)
         npt.assert_almost_equal(f_yy, 0, decimal=10)
         npt.assert_almost_equal(f_xy, 0, decimal=5)  # floating point cancellation, so less precise

@@ -230,3 +230,8 @@ History
 * fast caustic calculation replacing matplotlib with skitlearn
 * multi-patch illustration class and plotting routines
 * updated PSF iteration procedure with more settings
+
+1.8.1 (2020-04-19)
+++++++++++++++++++
+* illustration plots for curved arcs updated
+* documentation of elliptical lens models updated

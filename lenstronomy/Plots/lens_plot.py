@@ -285,7 +285,9 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     :param center_x: center of source in image plane
     :param center_y: center of source in image plane
     :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)
+    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
+    (effectively intrinsic source size)
+    :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
     :return:
     """
     # plot line to centroid
@@ -295,21 +297,15 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
         ax.plot([center_x_spp], [center_y_spp], '*', color=color, alpha=0.5, linewidth=linewidth)
 
     # plot radial stretch to scale
-
     x_r = np.cos(direction) * radial_stretch * stretch_scale
     y_r = np.sin(direction) * radial_stretch * stretch_scale
     ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], '--', color=color, linewidth=linewidth)
-
-    # plot curved tangential stretch
-    #x_t = np.sin(direction) * tangential_stretch / 2 * stretch_scale
-    #y_t = -np.cos(direction) * tangential_stretch / 2 * stretch_scale
 
     # compute angle of size of the tangential stretch
     r = 1. / curvature
 
     # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only plotted once
     tangential_stretch_ = min(tangential_stretch, np.pi * r / stretch_scale)
-
     d_phi = tangential_stretch_ * stretch_scale / r
 
     # linearly interpolate angle around center

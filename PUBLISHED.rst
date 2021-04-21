@@ -187,6 +187,11 @@ Theory papers
 * Unified lensing and kinematic analysis for any elliptical mass profile; `Shajib 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.488.1387S>`_
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*
 
+* Gravitational lensing formalism in a curved arc basis: A continuous description of observables and degeneracies from the weak to the strong lensing regime; `Birrer 2021 <https://arxiv.org/abs/2104.09522>`_
+    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_. *
+
+
+
 
 Simulation products
 -------------------

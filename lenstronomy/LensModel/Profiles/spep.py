@@ -96,10 +96,9 @@ class SPEP(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
 
-
         E = phi_E_new / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
         if E <= 0:
-            return np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+            return np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         # E = phi_E
         eta = float(-gamma+3)
         #xt1 = np.cos(phi_G)*x_shift+np.sin(phi_G)*y_shift

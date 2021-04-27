@@ -15,6 +15,8 @@ applications:
 - `ovejero <https://github.com/swagnercarena/ovejero>`_: Conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.
 - `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with Bayesian neural network lens modeling.
 - `deeplenstronomy <https://github.com/deepskies/deeplenstronomy>`_: Tool for simulating large datasets for applying deep learning to strong gravitational lensing.
+- `pyHalo <https://github.com/dangilman/pyHalo>`_: Tool for rendering full substructure mass distributions for gravitational lensing simulations.
+
 
 These packages come with their own documentation and examples - so check them out!
 

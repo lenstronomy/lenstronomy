@@ -123,10 +123,7 @@ the user and developer base of `lenstronomy` has substantially grown and the sof
 Through the community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
 
-![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
-A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
-Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
-\label{fig:example}](paper_fig.png)
+
 
 
 # Background
@@ -138,7 +135,10 @@ For example, relative time delays of multiply imaged variable sources provided p
 and unresolved flux ratios [@Gilman:2020, @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015, @Shajib:2021slacs], and the magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012, @Cava:2018].
 
 
-
+![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
+A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
+Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
+\label{fig:example}](paper_fig.png)
 
 
 # Statement of need
@@ -157,8 +157,8 @@ Guidance for the user community is provided on multiple levels. First, source co
 # Track-record of applications
 
 `lenstronomy` has been applied in and contributed to more than 30 peer reviewed publications since its first public release in 2018.
-In particular, `lenstronomy` has been used to provide state-of-the-art measurements on real data sets, such as: (i) Hubble constant measurements from three quadruly lensed quasars with Hubble Space Telescope (HST) imaging [@Birrer:2016, @Birrer:2019, @Shajib:2020strides], dynamical modeling in the hierarchical analysis by `@Birrer:2020`, and modeling of lensed supernovae [@Moertsell:2020]; (ii) inference of small scale dark matter properties from detailed studies of both, resolved imaging [@Birrer:2017], and unresolved flux ratio statistics [@Gilman:2020]; (iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [ @Ding:2020; Bennert:2021]; (iv) morphological studies of high-redshift sources in the cluster environment [@Yang:2020, @Yang:2021]; (v) internal structure of galaxies [@Shajib:2020slacs, @Shajib:2021AO]; (vi) measurements of the weak lensing effect imprinted in Einstein rings  [@Birrer:2017cosmos, @Kuhn:2021].
-Among the studies, some of them have applied a pipeline to uniformly analyse dozens of lenses of different types [@Shajib:2019, @Shajib:2020slacs, @Shajib:2021AO], a milestone in moving towards utilizing thousands of lenses in the near future.
+In particular, `lenstronomy` has been used to provide state-of-the-art measurements on real data sets, such as: (i) Hubble constant measurements from three quadruly lensed quasars with Hubble Space Telescope (HST) imaging [@Birrer:2016, @Birrer:2019, @Shajib:2020strides], dynamical modeling in the hierarchical analysis by `@Birrer:2020tdcosmoiv`, and modeling of lensed supernovae [@Moertsell:2020]; (ii) inference of small scale dark matter properties from detailed studies of both, resolved imaging [@Birrer:2017], and unresolved flux ratio statistics [@Gilman:2020]; (iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [ @Ding:2020; Bennert:2021]; (iv) morphological studies of high-redshift sources in the cluster environment [@Yang:2020, @Yang:2021]; (v) internal structure of galaxies [@Shajib:2021slacs, @Shajib:2021AO]; (vi) measurements of the weak lensing effect imprinted in Einstein rings  [@Birrer:2017cosmos, @Kuhn:2021].
+Among the studies, some of them have applied a pipeline to uniformly analyse dozens of lenses of different types [@Shajib:2019, @Shajib:2021slacs, @Shajib:2021AO], a milestone in moving towards utilizing thousands of lenses in the near future.
 
 Beyond analyzing data, many theoretical studies have been conducted using `lenstronomy` to investigate statistical robustness in present and anticipated future analyses [@BirrerTreu:2019; @Millon:2020; @vdVyvere:2020; @Li:2021; @Ding:2021transient], as well as to provide forecasts for anticipated future constraints for different science cases [@Gilman:2019; @Sengul:2020; @BirrerTreu:2021].
 Particularly, three separate teams participated in the blind time-delay lens modeling challenge [@Ding:2021tdlmc] using `lenstronomy`.
@@ -168,8 +168,8 @@ Particularly, three separate teams participated in the blind time-delay lens mod
 
 # Ecosystem of affiliated packages
 
-`lenstronomy` has allowed the community to develop third party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. These open-source [affiliated packages](https://github.com/sibirrer/lenstronomy/blob/1.8.1/AFFILIATEDPACKAGES.rst) effectively create an ecosystem enhancing the capability of `lenstronomy`. They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [SLITronomy](https://github.com/aymgal/SLITronomy)  `[@Joseph:2019; @Galan:2021]`, gravitational wave lensing computations [lensingGW](https://gitlab.com/gpagano/lensinggw) [@Pagano:2020], automatization pipelines for gravitational lensing reconstruction [dolphin](https://github.com/ajshajib/dolphin) [@Shajib:2020slacs], cluster source reconstruction and local perturbative lens modeling
- [lenstruction](https://github.com/ylilan/lenstruction) [@Yang:2020], enhancement in large scale structure imaging survey simulations [DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler) [@LSSTDESC:2020], rendering of sub-halos and line-of-sight halos [pyHalo](https://github.com/dangilman/pyHalo) [@Gilman:2020], and hierarchical analyses to measure the Hubble constant [hierArc](https://github.com/sibirrer/hierarc) [@Birrer:2020] .
+`lenstronomy` has allowed the community to develop third party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. These open-source [affiliated packages](https://github.com/sibirrer/lenstronomy/blob/1.8.1/AFFILIATEDPACKAGES.rst) effectively create an ecosystem enhancing the capability of `lenstronomy`. They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [SLITronomy](https://github.com/aymgal/SLITronomy)  `[@Joseph:2019; @Galan:2021]`, gravitational wave lensing computations [lensingGW](https://gitlab.com/gpagano/lensinggw) [@Pagano:2020], automatization pipelines for gravitational lensing reconstruction [dolphin](https://github.com/ajshajib/dolphin) [@Shajib:2021slacs], cluster source reconstruction and local perturbative lens modeling
+ [lenstruction](https://github.com/ylilan/lenstruction) [@Yang:2020], enhancement in large scale structure imaging survey simulations [DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler) [@LSSTDESC:2021], rendering of sub-halos and line-of-sight halos [pyHalo](https://github.com/dangilman/pyHalo) [@Gilman:2020], and hierarchical analyses to measure the Hubble constant [hierArc](https://github.com/sibirrer/hierarc) [@Birrer:2020tdcosmoiv] .
 With the rise in popularity and the promises in dealing with ever complex data problems with fast deep learning methods, dedicated tools for simulating large datasets for applying such methods to strong gravitational lensing [deeplenstronomy](https://github.com/deepskies/deeplenstronomy)  [@Morgan:2021] and [baobab](https://github.com/jiwoncpark/baobab) [@Park:2021], as well as end-to-end Bayesian Neural Network training and validation packages for Hubble constant measurements [h0rton](https://github.com/jiwoncpark/h0rton)[@Park:2021], and for a hierarchical analysis of galaxy-galaxy lenses [ovejero](https://github.com/swagnercarena/ovejero) [@Wagner-Carena:2021]
  have been developed.
 The affiliated packages make best use of the `lenstronomy` modules without duplicating source code and make it possible to combine aspects of multiple affiliated packages in one single analysis.
@@ -178,7 +178,7 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 # Related software
 
 - `lenstronomy` [Birrer:2015; @lenstronomy1]
-- `PyAutoLens` https://github.com/Jammy2211/PyAutoLens [@Nightingale2018; @Nightingale2021]
+- `PyAutoLens` https://github.com/Jammy2211/PyAutoLens [@Nightingale:2018; @Nightingale:2021]
 - `gravlens` http://www.physics.rutgers.edu/~keeton/gravlens/manual.pdf [@Keeton:2011]
 - `glafic` https://www.slac.stanford.edu/~oguri/glafic/ [@Oguri:2010]
 - `visilens` https://github.com/jspilker/visilens [@spilker16a]

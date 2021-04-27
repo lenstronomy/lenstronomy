@@ -130,11 +130,12 @@ Bottom row from right to left along the red arrow: The inverse problem is solved
 
 # Background
 
-Gravitational lensing displaces the observed positions and distorts the shapes of apparent objects on the sky due to intervening inhomogeneous matter along the line of sight. Strong gravitational lensing describes the regime where the background source, such as a galaxy or quasar, is lensed by a massive foreground object, such as another galaxy or cluster of galaxies, to produce multiple images of itself in a highly distorted manner. Figure \autoref{fig:example} illustrates such a process from the intrinsic galaxy to the data product at hand, including the lensing distortions, effects of the instrument, observational conditions and noise.
+Gravitational lensing displaces the observed positions and distorts the shapes of apparent objects on the sky due to intervening inhomogeneous matter along the line of sight. Strong gravitational lensing describes the regime where the background source, such as a galaxy or quasar, is lensed by a massive foreground object, such as another galaxy or cluster of galaxies, to produce multiple images of itself in a highly distorted manner. 
+The top row of \autoref{fig:example} illustrates such a process from the intrinsic galaxy to the data product at hand, including the lensing distortions, effects of the instrument, observational conditions and noise.
 
 Analyses of strong gravitational lensing have provided a wealth of key insights into cosmology and astrophysics.
-For example, relative time delays of multiply imaged variable sources provided precision measurements on the expansion rate of the Universe [@Wong:2020, @Shajib:2020strides, @Birrer:2020tdcosmoiv]. Small scale distortions in the lensing signal of resolved sources [@Vegetti:2012, @Hezaveh:2016, @Birrer:2017]
-and unresolved flux ratios [@Gilman:2020, @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015, @Shajib:2021slacs], and the magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012, @Cava:2018].
+For example, relative time delays of multiply imaged variable sources provided precision measurements on the expansion rate of the Universe [@Wong:2020; @Shajib:2020strides; @Birrer:2020tdcosmoiv]. Small scale distortions in the lensing signal of resolved sources [@Vegetti:2012; @Hezaveh:2016; @Birrer:2017]
+and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015; @Shajib:2021slacs], and the magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012; @Cava:2018].
 
 
 
@@ -142,7 +143,7 @@ and unresolved flux ratios [@Gilman:2020, @Hsueh:2020] constrain the nature of d
 # Statement of need
 
 Strong lensing studies have significantly enhanced, and sometimes challenged, our current fundamental understanding of the Universe.
-In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging (Rubin, Roman, Euclid observatories) [@LSST, @Roman, @Euclid] and interferometric (SKA; [@SKA]) surveys, the number of discovered lenses of different types is growing by more than an order of magnitude [@Collett:2015, @OM10], providing unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
+In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging (Rubin, Roman, Euclid observatories) [@LSST; @Roman; @Euclid] and interferometric (SKA; @SKA) surveys, the number of discovered lenses of different types is growing by more than an order of magnitude [@Collett:2015; @OM10], providing unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
 It is key that these demanding studies, at present and in the future, are conducted by reliable software and supported by reproducible and open-source analysis products to provide the most compelling and transparent evidence required to further our physical understanding.
 
 The primary design goal of `lenstronomy` is to facilitate scientific investigations into the outstanding and most pressing questions in the cosmology and astrophysics community.
@@ -155,13 +156,23 @@ Guidance for the user community is provided on multiple levels. First, source co
 # Track-record of applications
 
 `lenstronomy` has been applied in and contributed to more than 30 peer reviewed publications since its first public release in 2018.
-In particular, `lenstronomy` has been used to provide state-of-the-art measurements on real data sets, such as: (i) Hubble constant measurements from three quadruly lensed quasars with Hubble Space Telescope (HST) imaging [@Birrer:2016, @Birrer:2019, @Shajib:2020strides], dynamical modeling in the hierarchical analysis by `@Birrer:2020tdcosmoiv`, and modeling of lensed supernovae [@Moertsell:2020]; (ii) inference of small scale dark matter properties from detailed studies of both, resolved imaging [@Birrer:2017], and unresolved flux ratio statistics [@Gilman:2020]; (iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [ @Ding:2020; Bennert:2021]; (iv) morphological studies of high-redshift sources in the cluster environment [@Yang:2020, @Yang:2021]; (v) internal structure of galaxies [@Shajib:2021slacs, @Shajib:2021AO]; (vi) measurements of the weak lensing effect imprinted in Einstein rings  [@Birrer:2017cosmos, @Kuhn:2021].
-Among the studies, some of them have applied a pipeline to uniformly analyse dozens of lenses of different types [@Shajib:2019, @Shajib:2021slacs, @Shajib:2021AO], a milestone in moving towards utilizing thousands of lenses in the near future.
+In particular, `lenstronomy` has been used to provide state-of-the-art measurements on real data sets, such as: 
+(i) Hubble constant measurements from three quadruly lensed quasars with Hubble Space Telescope (HST) imaging [@Birrer:2016; @Birrer:2019; @Shajib:2020strides], 
+dynamical modeling in the hierarchical analysis by @Birrer:2020tdcosmoiv, and modeling of lensed supernovae [@Moertsell:2020]; 
+(ii) inference of small scale dark matter properties from detailed studies of both, resolved imaging [@Birrer:2017], and unresolved flux ratio statistics [@Gilman:2020]; 
+(iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [@Ding:2020; Bennert:2021]; 
+(iv) morphological studies of high-redshift sources in the cluster environment [@Yang:2020; @Yang:2021]; 
+(v) internal structure of galaxies [@Shajib:2021slacs; @Shajib:2021AO]; 
+(vi) measurements of the weak lensing effect imprinted in Einstein rings [@Birrer:2017cosmos; @Kuhn:2021].
+Among the studies, some of them have applied a pipeline to uniformly analyse dozens of lenses of different types [@Shajib:2019; @Shajib:2021slacs; @Shajib:2021AO], 
+a milestone in moving towards utilizing thousands of lenses in the near future.
 
-Beyond analyzing data, many theoretical studies have been conducted using `lenstronomy` to investigate statistical robustness in present and anticipated future analyses [@BirrerTreu:2019; @Millon:2020; @vdVyvere:2020; @Li:2021; @Ding:2021transient], as well as to provide forecasts for anticipated future constraints for different science cases [@Gilman:2019; @Sengul:2020; @BirrerTreu:2021].
+Beyond analyzing data, many theoretical studies have been conducted using `lenstronomy` to investigate statistical robustness in present and anticipated future analyses [@BirrerTreu:2019; @Millon:2020; @vdVyvere:2020; @Li:2021; @Ding:2021transient], 
+as well as to provide forecasts for anticipated future constraints for different science cases [@Gilman:2019; @Sengul:2020; @BirrerTreu:2021].
 Particularly, three separate teams participated in the blind time-delay lens modeling challenge [@Ding:2021tdlmc] using `lenstronomy`.
 
-`lenstronomy` has seen a substantial development and incorporation of innovations and numerical recipes [@Tessore:2015; @Shajib:2019unified; @Joseph:2019; @Galan:2021], and has found applications beyond its original aim due to the robust and high-standard design requirements.
+`lenstronomy` has seen a substantial development and incorporation of innovations and numerical recipes [@Tessore:2015; @Shajib:2019unified; @Joseph:2019; @Galan:2021], 
+and has found applications beyond its original aim due to the robust and high-standard design requirements.
 
 
 # Ecosystem of affiliated packages
@@ -175,7 +186,7 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 
 # Related software
 
-- `lenstronomy` [Birrer:2015; @lenstronomy1]
+- `lenstronomy` [@Birrer:2015; @lenstronomy1]
 - `PyAutoLens` https://github.com/Jammy2211/PyAutoLens [@Nightingale:2018; @Nightingale:2021]
 - `gravlens` http://www.physics.rutgers.edu/~keeton/gravlens/manual.pdf [@Keeton:2011]
 - `glafic` https://www.slac.stanford.edu/~oguri/glafic/ [@Oguri:2010]

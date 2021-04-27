@@ -123,7 +123,10 @@ the user and developer base of `lenstronomy` has substantially grown and the sof
 Through the community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
 
-
+![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
+A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
+Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
+\label{fig:example}](paper_fig.png)
 
 
 # Background
@@ -136,11 +139,6 @@ and unresolved flux ratios [@Gilman:2020, @Hsueh:2020] constrain the nature of d
 
 
 
-
-![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
-A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
-Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
-\label{fig:example}](paper_fig.png)
 
 
 # Statement of need

@@ -123,7 +123,10 @@ Through the community engagement and involvement, `lenstronomy` has become a fou
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
 
 
-
+![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
+A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
+Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
+\label{fig:example}](paper_fig.png)
 
 # Background
 
@@ -134,10 +137,6 @@ For example, relative time delays of multiply imaged variable sources provided p
 and unresolved flux ratios [@Gilman:2020, @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015, @Shajib:2021slacs], and the magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012, @Cava:2018].
 
 
-![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
-A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
-Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
-\label{fig:example}](paper_fig.png)
 
 
 # Statement of need

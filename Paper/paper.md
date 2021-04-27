@@ -7,7 +7,7 @@ tags:
   - image simulations
   - dynamics
 authors:
-  - name: Simon Birrer^[Corresponding author; <sibirrer@stanford.edu>]
+  - name: Simon Birrer
     orcid: 0000-0003-3195-5507
     affiliation: "1, 2"
   - name: Anowar J. Shajib

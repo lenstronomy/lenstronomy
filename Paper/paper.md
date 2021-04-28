@@ -116,9 +116,9 @@ bibliography: paper.bib
 
 # Summary
 
-`lenstronomy` is an Astropy-affiliated [@astropy:2013; astropy:2018] Python package for gravitational lensing simulations and analyses.
-Originally introduced by @lenstronomy1 and based on the linear basis set approach by @Birrer:2015,
-the user and developer base of `lenstronomy` has substantially grown and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
+`lenstronomy` is an Astropy-affiliated [@astropy:2013; @astropy:2018] Python package for gravitational lensing simulations and analyses.
+`lenstronomy` is originally introduced by @lenstronomy1 and is based on the linear basis set approach by @Birrer:2015.
+The user and developer base of `lenstronomy` has since substantially grown and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
 The modular design has allowed the community to incorporate innovative new methods, as well as to develop enhanced software and wrappers with more specific aims on top of the `lenstronomy` API.
 Through the community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
@@ -144,7 +144,7 @@ and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of d
 # Statement of need
 
 Strong lensing studies have significantly enhanced, and sometimes challenged, our current fundamental understanding of the Universe.
-In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging (Rubin, Roman, Euclid observatories) [@LSST; @Roman; @Euclid] and interferometric (SKA; @SKA) surveys, the number of discovered lenses of different types is growing by more than an order of magnitude [@Collett:2015; @OM10], providing unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
+In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging [Rubin, Roman, Euclid observatories; @LSST; @Roman; @Euclid] and interferometric [SKA; @SKA] surveys, the number of discovered lenses of different types is growing by more than an order of magnitude [@Collett:2015; @OM10], providing unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
 It is key that these demanding studies, at present and in the future, are conducted by reliable software and supported by reproducible and open-source analysis products to provide the most compelling and transparent evidence required to further our physical understanding.
 
 The primary design goal of `lenstronomy` is to facilitate scientific investigations into the outstanding and most pressing questions in the cosmology and astrophysics community.

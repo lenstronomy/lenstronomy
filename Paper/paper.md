@@ -81,7 +81,7 @@ affiliations:
    index: 4 
  - name: Department of Astronomy and Astrophysics, University of Toronto, 50 St. George Street, Toronto, ON, M5S 3H4, Canada
    index: 5 
- - name: Institute of Physics, Laboratory of Astrophysics, Ecole Polytechnique F\'ed\'erale de Lausanne (EPFL), Switzerland
+ - name: Institute of Physics, Laboratory of Astrophysics, Ecole Polytechnique Fédérale de Lausanne (EPFL), Switzerland
    index: 6
  - name: Physics Department, University of Wisconsin-Madison, 1150 University Avenue Madison, WI  53706, USA
    index: 7
@@ -93,7 +93,7 @@ affiliations:
    index: 10
  - name: Department of Physics and Astronomy, University College London, Gower Street, London, WC1E 6BT, UK
    index: 11
- - name: STAR Institute, Universit\'e de Li\`ege, Quartier Agora - All\'ee du six Ao\^ut, 19c, B-4000 Li\`ege, Belgium
+ - name: STAR Institute, Université de Liège, Quartier Agora - Allée du six Août, 19c, B-4000 Liège, Belgium
    index: 12
  - name: Kapteyn Astronomical Institute, University of Groningen, PO Box 800, 9700 AV Groningen, the Netherlands
    index: 13
@@ -136,7 +136,7 @@ The top row of \autoref{fig:example} illustrates such a process from the intrins
 
 Analyses of strong gravitational lensing have provided a wealth of key insights into cosmology and astrophysics.
 For example, relative time delays of multiply imaged variable sources provided precision measurements on the expansion rate of the Universe [@Wong:2020; @Shajib:2020strides; @Birrer:2020tdcosmoiv]. Small scale distortions in the lensing signal of resolved sources [@Vegetti:2012; @Hezaveh:2016; @Birrer:2017]
-and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015; @Shajib:2021slacs], and the magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012; @Cava:2018].
+and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015; @Shajib:2021slacs], and the lensing magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012; @Cava:2018].
 
 
 
@@ -144,7 +144,8 @@ and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of d
 # Statement of need
 
 Strong lensing studies have significantly enhanced, and sometimes challenged, our current fundamental understanding of the Universe.
-In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging [Rubin, Roman, Euclid observatories; @LSST; @Roman; @Euclid] and interferometric [SKA; @SKA] surveys, the number of discovered lenses of different types is growing by more than an order of magnitude [@Collett:2015; @OM10], providing unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
+In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging [Rubin, Roman, Euclid observatories; @LSST; @Roman; @Euclid] and interferometric [SKA; @SKA] surveys, the number of discovered lenses of different types will be growing by more than an order of magnitude [@Collett:2015; @OM10].
+Such large samples can provide unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
 It is key that these demanding studies, at present and in the future, are conducted by reliable software and supported by reproducible and open-source analysis products to provide the most compelling and transparent evidence required to further our physical understanding.
 
 The primary design goal of `lenstronomy` is to facilitate scientific investigations into the outstanding and most pressing questions in the cosmology and astrophysics community.
@@ -195,15 +196,16 @@ and for a hierarchical analysis of galaxy-galaxy lenses [[ovejero](https://githu
 The affiliated packages make best use of the `lenstronomy` modules without duplicating source code and make it possible to combine aspects of multiple affiliated packages in one single analysis.
 
 
-# Related software
+# Related open source software
 
 - [`lenstronomy`](https://github.com/sibirrer/lenstronomy) [@Birrer:2015; @lenstronomy1]
 - [`PyAutoLens`](https://github.com/Jammy2211/PyAutoLens) [@Nightingale:2018; @Nightingale:2021]
 - [`gravlens`](http://www.physics.rutgers.edu/~keeton/gravlens/) [@Keeton:2011]
 - [`glafic`](https://www.slac.stanford.edu/~oguri/glafic/) [@Oguri:2010]
 - [`visilens`](https://github.com/jspilker/visilens) [@spilker16a]
-- [`lenstool`](http://projets.lam.fr/projects/lenstool/wiki) [@Jullo:2009]
 - [`PixeLens`](https://www.physik.uzh.ch/~psaha/lens/pixelens.php) [@PixeLens]
+- [`GRALE`](https://github.com/j0r1/GRALE2) [@GRALE]
+- [`lenstool`](http://projets.lam.fr/projects/lenstool/wiki) [@Jullo:2009]
 
 
 

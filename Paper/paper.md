@@ -116,9 +116,10 @@ bibliography: paper.bib
 
 # Summary
 
-`lenstronomy` is an Astropy-affiliated Python package for gravitational lensing simulations and analyses.
-Originally introduced by [@lenstronomy1] and based on the linear basis set approach by [@Birrer:2015],
-the user and developer base of `lenstronomy` has substantially grown and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. The modular design has allowed the community to incorporate innovative new methods, as well as to develop enhanced software and wrappers with more specific aims on top of the `lenstronomy` API.
+`lenstronomy` is an Astropy-affiliated [@astropy:2013; astropy:2018] Python package for gravitational lensing simulations and analyses.
+Originally introduced by @lenstronomy1 and based on the linear basis set approach by @Birrer:2015,
+the user and developer base of `lenstronomy` has substantially grown and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
+The modular design has allowed the community to incorporate innovative new methods, as well as to develop enhanced software and wrappers with more specific aims on top of the `lenstronomy` API.
 Through the community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
 
@@ -171,7 +172,7 @@ Beyond analyzing data, many theoretical studies have been conducted using `lenst
 as well as to provide forecasts for anticipated future constraints for different science cases [@Gilman:2019; @Sengul:2020; @BirrerTreu:2021].
 Particularly, three separate teams participated in the blind time-delay lens modeling challenge [@Ding:2021tdlmc] using `lenstronomy`.
 
-`lenstronomy` has seen a substantial development and incorporation of innovations and numerical recipes [@Tessore:2015; @Shajib:2019unified; @Joseph:2019; @Galan:2021], 
+`lenstronomy` has seen a substantial development and incorporation of innovations and numerical recipes [@Tessore:2015; @Shajib:2019unified; @Joseph:2019; @Galan:2021; @Birrer:2021arcs], 
 and has found applications beyond its original aim due to the robust and high-standard design requirements.
 
 
@@ -201,7 +202,8 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 - [`gravlens`](http://www.physics.rutgers.edu/~keeton/gravlens/) [@Keeton:2011]
 - [`glafic`](https://www.slac.stanford.edu/~oguri/glafic/) [@Oguri:2010]
 - [`visilens`](https://github.com/jspilker/visilens) [@spilker16a]
-- [`lenstool`]( http://projets.lam.fr/projects/lenstool/wiki) [@Jullo:2009]
+- [`lenstool`](http://projets.lam.fr/projects/lenstool/wiki) [@Jullo:2009]
+- [`PixeLens`](https://www.physik.uzh.ch/~psaha/lens/pixelens.php) [@PixeLens]
 
 
 

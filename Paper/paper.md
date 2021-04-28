@@ -109,9 +109,9 @@ affiliations:
    
    
 date: 28 April 2021
+codeRepository: https://github.com/sibirrer/lenstronomy
+license: MIT
 bibliography: paper.bib
-
-
 ---
 
 # Summary
@@ -179,8 +179,8 @@ and has found applications beyond its original aim due to the robust and high-st
 
 `lenstronomy` has allowed the community to develop third party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. 
 These open-source [affiliated packages](https://github.com/sibirrer/lenstronomy/blob/1.8.1/AFFILIATEDPACKAGES.rst) effectively create an ecosystem enhancing the capability of `lenstronomy`. 
-They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms ([SLITronomy](https://github.com/aymgal/SLITronomy); @Joseph:2019, @Galan:2021), 
-gravitational wave lensing computations ([lensingGW](https://gitlab.com/gpagano/lensinggw); @Pagano:2020), 
+They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [[SLITronomy](https://github.com/aymgal/SLITronomy); @Joseph:2019, @Galan:2021], 
+gravitational wave lensing computations [[lensingGW](https://gitlab.com/gpagano/lensinggw); @Pagano:2020], 
 automatization pipelines for gravitational lensing reconstruction ([dolphin](https://github.com/ajshajib/dolphin); @Shajib:2021slacs), 
 cluster source reconstruction and local perturbative lens modeling ([lenstruction](https://github.com/ylilan/lenstruction); @Yang:2020), 
 enhancement in large scale structure imaging survey simulations ([DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler); @LSSTDESC:2021), 
@@ -210,7 +210,7 @@ AG, MM LvdV, DS are supported by COSMICLENS: ERC grant agreement No 787886.
 LT is supported by International Helmholtz-Weizmann Research School for Multimessenger Astronomy.
 MU is supported by KIPAC and the Stanford Summer Research Program.
 MZ is supported by the National Science Foundation of China.
-AA is supported by a Royal Society Wolfson Fellowship
+AA is supported by a Royal Society Wolfson Fellowship.
 
 
 # References

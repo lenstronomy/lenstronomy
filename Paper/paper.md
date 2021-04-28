@@ -179,28 +179,28 @@ and has found applications beyond its original aim due to the robust and high-st
 
 `lenstronomy` has allowed the community to develop third party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. 
 These open-source [affiliated packages](https://github.com/sibirrer/lenstronomy/blob/1.8.1/AFFILIATEDPACKAGES.rst) effectively create an ecosystem enhancing the capability of `lenstronomy`. 
-They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [[SLITronomy](https://github.com/aymgal/SLITronomy); @Joseph:2019, @Galan:2021], 
+They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [[SLITronomy](https://github.com/aymgal/SLITronomy); @Joseph:2019; @Galan:2021], 
 gravitational wave lensing computations [[lensingGW](https://gitlab.com/gpagano/lensinggw); @Pagano:2020], 
-automatization pipelines for gravitational lensing reconstruction ([dolphin](https://github.com/ajshajib/dolphin); @Shajib:2021slacs), 
-cluster source reconstruction and local perturbative lens modeling ([lenstruction](https://github.com/ylilan/lenstruction); @Yang:2020), 
-enhancement in large scale structure imaging survey simulations ([DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler); @LSSTDESC:2021), 
-rendering of sub-halos and line-of-sight halos ([pyHalo](https://github.com/dangilman/pyHalo); @Gilman:2020), 
-and hierarchical analyses to measure the Hubble constant ([hierArc](https://github.com/sibirrer/hierarc); @Birrer:2020tdcosmoiv).
+automatization pipelines for gravitational lensing reconstruction [[dolphin](https://github.com/ajshajib/dolphin); @Shajib:2021slacs], 
+cluster source reconstruction and local perturbative lens modeling [[lenstruction](https://github.com/ylilan/lenstruction); @Yang:2020], 
+enhancement in large scale structure imaging survey simulations [[DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler); @LSSTDESC:2021], 
+rendering of sub-halos and line-of-sight halos [[pyHalo](https://github.com/dangilman/pyHalo); @Gilman:2020], 
+and hierarchical analyses to measure the Hubble constant [[hierArc](https://github.com/sibirrer/hierarc); @Birrer:2020tdcosmoiv].
 With the rise in popularity and the promises in dealing with ever complex data problems with fast deep learning methods, 
-dedicated tools for simulating large datasets for applying such methods to strong gravitational lensing ([deeplenstronomy](https://github.com/deepskies/deeplenstronomy); @Morgan:2021), ([baobab](https://github.com/jiwoncpark/baobab); @Park:2021), 
+dedicated tools for simulating large datasets for applying such methods to strong gravitational lensing [[deeplenstronomy](https://github.com/deepskies/deeplenstronomy); @Morgan:2021], [[baobab](https://github.com/jiwoncpark/baobab); @Park:2021], 
 as well as end-to-end Bayesian Neural Network training and validation packages for Hubble constant measurements ([h0rton](https://github.com/jiwoncpark/h0rton); @Park:2021), 
-and for a hierarchical analysis of galaxy-galaxy lenses ([ovejero](https://github.com/swagnercarena/ovejero); @Wagner-Carena:2021)
+and for a hierarchical analysis of galaxy-galaxy lenses [[ovejero](https://github.com/swagnercarena/ovejero); @Wagner-Carena:2021]
  have been developed.
 The affiliated packages make best use of the `lenstronomy` modules without duplicating source code and make it possible to combine aspects of multiple affiliated packages in one single analysis.
 
 
 # Related software
 
-- `lenstronomy` [@Birrer:2015; @lenstronomy1]
-- `PyAutoLens` https://github.com/Jammy2211/PyAutoLens [@Nightingale:2018; @Nightingale:2021]
-- `gravlens` http://www.physics.rutgers.edu/~keeton/gravlens/manual.pdf [@Keeton:2011]
-- `glafic` https://www.slac.stanford.edu/~oguri/glafic/ [@Oguri:2010]
-- `visilens` https://github.com/jspilker/visilens [@spilker16a]
+- [`lenstronomy`](https://github.com/sibirrer/lenstronomy) [@Birrer:2015; @lenstronomy1]
+- [`PyAutoLens`](https://github.com/Jammy2211/PyAutoLens) [@Nightingale:2018; @Nightingale:2021]
+- [`gravlens`](http://www.physics.rutgers.edu/~keeton/gravlens/manual.pdf) [@Keeton:2011]
+- [`glafic`](https://www.slac.stanford.edu/~oguri/glafic/) [@Oguri:2010]
+- [`visilens`](https://github.com/jspilker/visilens) [@spilker16a]
 
 
 # Acknowledgements

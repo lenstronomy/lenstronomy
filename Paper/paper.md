@@ -160,7 +160,7 @@ In particular, `lenstronomy` has been used to provide state-of-the-art measureme
 (i) Hubble constant measurements from three quadruly lensed quasars with Hubble Space Telescope (HST) imaging [@Birrer:2016; @Birrer:2019; @Shajib:2020strides], 
 dynamical modeling in the hierarchical analysis by @Birrer:2020tdcosmoiv, and modeling of lensed supernovae [@Moertsell:2020]; 
 (ii) inference of small scale dark matter properties from detailed studies of both, resolved imaging [@Birrer:2017], and unresolved flux ratio statistics [@Gilman:2020]; 
-(iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [@Ding:2020; Bennert:2021]; 
+(iii) decomposition of quasar and host galaxy light in both, lensed and unlensed cases [@Ding:2020; @Bennert:2021]; 
 (iv) morphological studies of high-redshift sources in the cluster environment [@Yang:2020; @Yang:2021]; 
 (v) internal structure of galaxies [@Shajib:2021slacs; @Shajib:2021AO]; 
 (vi) measurements of the weak lensing effect imprinted in Einstein rings [@Birrer:2017cosmos; @Kuhn:2021].
@@ -198,9 +198,11 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 
 - [`lenstronomy`](https://github.com/sibirrer/lenstronomy) [@Birrer:2015; @lenstronomy1]
 - [`PyAutoLens`](https://github.com/Jammy2211/PyAutoLens) [@Nightingale:2018; @Nightingale:2021]
-- [`gravlens`](http://www.physics.rutgers.edu/~keeton/gravlens/manual.pdf) [@Keeton:2011]
+- [`gravlens`](http://www.physics.rutgers.edu/~keeton/gravlens/) [@Keeton:2011]
 - [`glafic`](https://www.slac.stanford.edu/~oguri/glafic/) [@Oguri:2010]
 - [`visilens`](https://github.com/jspilker/visilens) [@spilker16a]
+- [`lenstool`]( http://projets.lam.fr/projects/lenstool/wiki) [@Jullo:2009]
+
 
 
 # Acknowledgements

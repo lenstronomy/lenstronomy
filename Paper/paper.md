@@ -190,7 +190,7 @@ rendering of sub-halos and line-of-sight halos [[pyHalo](https://github.com/dang
 and hierarchical analyses to measure the Hubble constant [[hierArc](https://github.com/sibirrer/hierarc); @Birrer:2020tdcosmoiv].
 With the rise in popularity and the promises in dealing with ever complex data problems with fast deep learning methods, 
 dedicated tools for simulating large datasets for applying such methods to strong gravitational lensing [[deeplenstronomy](https://github.com/deepskies/deeplenstronomy); @Morgan:2021], [[baobab](https://github.com/jiwoncpark/baobab); @Park:2021], 
-as well as end-to-end Bayesian Neural Network training and validation packages for Hubble constant measurements ([h0rton](https://github.com/jiwoncpark/h0rton); @Park:2021), 
+as well as end-to-end Bayesian Neural Network training and validation packages for Hubble constant measurements [[h0rton](https://github.com/jiwoncpark/h0rton); @Park:2021], 
 and for a hierarchical analysis of galaxy-galaxy lenses [[ovejero](https://github.com/swagnercarena/ovejero); @Wagner-Carena:2021]
  have been developed.
 The affiliated packages make best use of the `lenstronomy` modules without duplicating source code and make it possible to combine aspects of multiple affiliated packages in one single analysis.

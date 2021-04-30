@@ -212,9 +212,12 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 # Acknowledgements
 
 Support for this work was provided by the National Science Foundation through NSF AST-1716527. 
+DG is supported by NASA HST-GO-15177.
 AG, MM LvdV, DS are supported by COSMICLENS: ERC grant agreement No 787886.
 LT is supported by International Helmholtz-Weizmann Research School for Multimessenger Astronomy.
 MU is supported by KIPAC and the Stanford Summer Research Program.
+XD is supported by NASA HST-GO-15115.
+TS is supported by NASA grant HST-GO-15320 and HST-GO-15652.
 MZ is supported by the National Science Foundation of China.
 AA is supported by a Royal Society Wolfson Fellowship.
 

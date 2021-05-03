@@ -578,3 +578,62 @@ class LensModelExtensions(object):
         dy_r = y + dr_array * v_rad2
         _, tangential_stretch_dr, _, _, _, _ = self.radial_tangential_stretch(dx_r, dy_r, kwargs_lens, diff=smoothing)
         return np.average(tangential_stretch_dr)
+
+    def curved_arc_finite_area(self, x, y, kwargs_lens, dr):
+        """
+        computes an estimated curved arc over a finite extent mimicking the appearance of a finite source with radius dr
+
+        :param x: x-position (float)
+        :param y: y-position (float)
+        :param kwargs_lens: lens model keyword argument list
+        :param dr: radius of finite source
+        :return: keyword arguments of curved arc
+        """
+
+        # estimate curvature centroid as the median around the circle
+
+        # make circle of points around position of interest
+        x_c, y_c = util.points_on_circle(radius=dr, num_points=20, connect_ends=False)
+
+        c_x_list, c_y_list = [], []
+        # loop through curved arc estimate and compute curvature centroid
+        for x_, y_ in zip(x_c, y_c):
+            kwargs_arc_ = self.curved_arc_estimate(x_, y_, kwargs_lens)
+            direction = kwargs_arc_['direction']
+            curvature = kwargs_arc_['curvature']
+            center_x = x_ - np.cos(direction) / curvature
+            center_y = y_ - np.sin(direction) / curvature
+            c_x_list.append(center_x)
+            c_y_list.append(center_y)
+        center_x, center_y = np.median(c_x_list), np.median(c_y_list)
+
+        # compute curvature and direction to the average centroid from the position of interest
+        r = np.sqrt((x - center_x) ** 2 + (y - center_y)**2)
+        curvature = 1 / r
+        direction = np.arctan2(y - center_y, x - center_x)
+
+        # compute average radial stretch as the inverse difference in the source position
+        x_r = x + np.cos(direction) * dr
+        y_r = y + np.sin(direction) * dr
+        x_r_ = x - np.cos(direction) * dr
+        y_r_ = y - np.sin(direction) * dr
+
+        xs_r, ys_r = self._lensModel.ray_shooting(x_r, y_r, kwargs_lens)
+        xs_r_, ys_r_ = self._lensModel.ray_shooting(x_r_, y_r_, kwargs_lens)
+        ds = np.sqrt((xs_r - xs_r_)**2 + (ys_r - ys_r_)**2)
+        radial_stretch = (2 * dr) / ds
+
+        # compute average tangential stretch as the inverse difference in the sosurce position
+        x_t = x - np.sin(direction) * dr
+        y_t = y + np.cos(direction) * dr
+        x_t_ = x + np.sin(direction) * dr
+        y_t_ = y - np.cos(direction) * dr
+
+        xs_t, ys_t = self._lensModel.ray_shooting(x_t, y_t, kwargs_lens)
+        xs_t_, ys_t_ = self._lensModel.ray_shooting(x_t_, y_t_, kwargs_lens)
+        ds = np.sqrt((xs_t - xs_t_) ** 2 + (ys_t - ys_t_) ** 2)
+        tangential_stretch = (2 * dr) / ds
+        kwargs_arc = {'direction': direction, 'radial_stretch': radial_stretch,
+                      'tangential_stretch': tangential_stretch, 'center_x': x, 'center_y': y,
+                      'curvature': curvature}
+        return kwargs_arc

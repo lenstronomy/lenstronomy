@@ -175,6 +175,25 @@ class TestArcDistortions(object):
         npt.assert_almost_equal(center_x_spp_arc, 0, decimal=3)
         npt.assert_almost_equal(center_y_spp_arc, 0, decimal=3)
 
+    def test_curved_arc_finite_area(self):
+        lens_model_list = ['SPP']
+        lens = LensModel(lens_model_list=lens_model_list)
+        arc = LensModel(lens_model_list=['CURVED_ARC_SPP'])
+        theta_E = 4
+        gamma = 2.
+        kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'center_x': 0, 'center_y': 0}]
+        ext = LensModelExtensions(lensModel=lens)
+        x_0, y_0 = 5, 0
+        kwargs_arc = ext.curved_arc_estimate(x_0, y_0, kwargs_lens)
+
+        dr = 0.001
+        kwargs_arc_finite = ext.curved_arc_finite_area(x_0, y_0, kwargs_lens, dr)
+        npt.assert_almost_equal(kwargs_arc['direction'], kwargs_arc_finite['direction'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['radial_stretch'], kwargs_arc_finite['radial_stretch'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['tangential_stretch'], kwargs_arc_finite['tangential_stretch'], decimal=3)
+        npt.assert_almost_equal(kwargs_arc['curvature'], kwargs_arc_finite['curvature'], decimal=3)
+
+
     def test_curved_arc_estimate_tan_diff(self):
         arc_tan_diff = CurvedArcTanDiff()
         lens_model_list = ['SIE']

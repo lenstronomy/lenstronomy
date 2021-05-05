@@ -75,7 +75,7 @@ affiliations:
    index: 1
  - name: SLAC National Accelerator Laboratory, Menlo Park, CA, 94025, USA
    index: 2
- - name: Department of Astronomy & Astrophysics, University of Chicago, Chicago, IL 606374, USA
+ - name: Department of Astronomy & Astrophysics, University of Chicago, Chicago, IL 60637, USA
    index: 3
  - name: Department of Physics and Astronomy, University of California, Los Angeles, CA 90095, USA
    index: 4 
@@ -131,12 +131,12 @@ Bottom row from right to left along the red arrow: The inverse problem is solved
 
 # Background
 
-Gravitational lensing displaces the observed positions and distorts the shapes of apparent objects on the sky due to intervening inhomogeneous matter along the line of sight. Strong gravitational lensing describes the regime where the background source, such as a galaxy or quasar, is lensed by a massive foreground object, such as another galaxy or cluster of galaxies, to produce multiple images of itself in a highly distorted manner. 
+Gravitational lensing displaces the observed positions and distorts the shapes of apparent objects on the sky due to intervening inhomogeneous matter along the line of sight. Strong gravitational lensing describes the regime where the background source, such as a galaxy or quasar, is lensed by a massive foreground object, such as another galaxy or cluster of galaxies, to produce multiple images of the source in a highly distorted manner. 
 The top row of \autoref{fig:example} illustrates such a process from the intrinsic galaxy to the data product at hand, including the lensing distortions, effects of the instrument, observational conditions and noise.
 
 Analyses of strong gravitational lensing have provided a wealth of key insights into cosmology and astrophysics.
 For example, relative time delays of multiply imaged variable sources provided precision measurements on the expansion rate of the Universe [@Wong:2020; @Shajib:2020strides; @Birrer:2020tdcosmoiv]. Small scale distortions in the lensing signal of resolved sources [@Vegetti:2012; @Hezaveh:2016; @Birrer:2017]
-and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015; @Shajib:2021slacs], and the lensing magnification effect provides an otherwise inaccessible angle on the early universe [@Zheng:2012; @Cava:2018].
+and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of dark matter. Combined strong lensing and kinematic observables constrain the formation and evolution of galaxies [@Sonnenfeld:2015; @Shajib:2021slacs], and the lensing magnification effect provides an otherwise inaccessible angle on the early Universe [@Zheng:2012; @Cava:2018].
 
 
 
@@ -144,15 +144,15 @@ and unresolved flux ratios [@Gilman:2020; @Hsueh:2020] constrain the nature of d
 # Statement of need
 
 Strong lensing studies have significantly enhanced, and sometimes challenged, our current fundamental understanding of the Universe.
-In the near future, with the onset of the next generation ground and space-based wide and deep astronomical imaging [Rubin, Roman, Euclid observatories; @LSST; @Roman; @Euclid] and interferometric [SKA; @SKA] surveys, the number of discovered lenses of different types will be growing by more than an order of magnitude [@Collett:2015; @OM10].
+In the near future, with the onset of the next-generation ground and space-based wide and deep astronomical imaging [Rubin, Roman, Euclid observatories; @LSST; @Roman; @Euclid] and interferometric [SKA; @SKA] surveys, the number of discovered lenses of different types will be growing by more than an order of magnitude [@Collett:2015; @OM10].
 Such large samples can provide unprecedented statistical precision to stress-test our current understanding and exploit discovery potential.
 It is key that these demanding studies, at present and in the future, are conducted by reliable software and supported by reproducible and open-source analysis products to provide the most compelling and transparent evidence required to further our physical understanding.
 
 The primary design goal of `lenstronomy` is to facilitate scientific investigations into the outstanding and most pressing questions in the cosmology and astrophysics community.
 `lenstronomy` has been applied throughout its development to the most demanding modeling and inference problems in strong lensing and the software has evolved around the requirements of the scientific applications to facilitate robust analyses. The modular API of the original design of lenstronomy [@lenstronomy1] has accommodated the addition of new features. Code review processes in the development phase have led to additional benefits for the user community at large beyond the specific needs of the developer.
 
-`lenstronomy` provides reliable and well-tested specific functionalities, as well as top-level interfaces which allow for adaptive and innovative usage in control by the scientific investigator.
-Guidance for the user community is provided on multiple levels. First, source code is well documented and provided through [readthedocs.org](http://lenstronomy.readthedocs.org). Second, a set of jupyter notebooks are provided in an [extension repository](https://github.com/sibirrer/lenstronomy_extensions). These notebooks demonstrate simplified example use cases, each notebook individually highlighting different specific functionalities of `lenstronomy`, including a [starting guide notebook](https://github.com/sibirrer/lenstronomy_extensions/blob/v1.8.1/lenstronomy_extensions/Notebooks/starting_guide.ipynb)  to introduce the modular design structure of  `lenstronomy`. Third, end-to-end analysis pipelines of some of the published work are publicly available, providing ‘real-life’ examples at advanced levels.
+`lenstronomy` provides reliable and well-tested specific functionalities, as well as top-level interfaces, which allow for adaptive and innovative usage in control by the scientific investigator.
+Guidance for the user community is provided on multiple levels. First, source code is well documented and provided through [readthedocs.org](http://lenstronomy.readthedocs.org). Second, a set of `jupyter` notebooks are provided in an [extension repository](https://github.com/sibirrer/lenstronomy_extensions). These notebooks demonstrate simplified example use cases, each notebook individually highlighting different specific functionalities of `lenstronomy`, including a [starting guide notebook](https://github.com/sibirrer/lenstronomy_extensions/blob/v1.8.1/lenstronomy_extensions/Notebooks/starting_guide.ipynb)  to introduce the modular design structure of  `lenstronomy`. Third, end-to-end analysis pipelines of some of the published work are publicly available, providing ‘real-life’ examples at advanced levels.
 
 
 # Track-record of applications
@@ -179,16 +179,16 @@ and has found applications beyond its original aim due to the robust and high-st
 
 # Ecosystem of affiliated packages
 
-`lenstronomy` has allowed the community to develop third party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. 
+`lenstronomy` has allowed the community to develop third-party analysis products and software products utilizing its core functionalities to provide more targeted and integrated software solutions for a wide range of scientific analyses. 
 These open-source [affiliated packages](https://github.com/sibirrer/lenstronomy/blob/1.8.1/AFFILIATEDPACKAGES.rst) effectively create an ecosystem enhancing the capability of `lenstronomy`. 
 They provide specified and tested solution for specific scientific investigations, such as plug-ins and direct implementation for innovative source reconstruction algorithms [[SLITronomy](https://github.com/aymgal/SLITronomy); @Joseph:2019; @Galan:2021], 
 gravitational wave lensing computations [[lensingGW](https://gitlab.com/gpagano/lensinggw); @Pagano:2020], 
-automatization pipelines for gravitational lensing reconstruction [[dolphin](https://github.com/ajshajib/dolphin); @Shajib:2021slacs], 
+automated pipelines for gravitational lensing reconstruction [[dolphin](https://github.com/ajshajib/dolphin); @Shajib:2021slacs], 
 cluster source reconstruction and local perturbative lens modeling [[lenstruction](https://github.com/ylilan/lenstruction); @Yang:2020], 
-enhancement in large scale structure imaging survey simulations [[DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler); @LSSTDESC:2021], 
+enhancement in large-scale structure imaging survey simulations [[DESC SLSprinkler](https://github.com/LSSTDESC/SLSprinkler); @LSSTDESC:2021], 
 rendering of sub-halos and line-of-sight halos [[pyHalo](https://github.com/dangilman/pyHalo); @Gilman:2020], 
 and hierarchical analyses to measure the Hubble constant [[hierArc](https://github.com/sibirrer/hierarc); @Birrer:2020tdcosmoiv].
-With the rise in popularity and the promises in dealing with ever complex data problems with fast deep learning methods, 
+With the rise in popularity and the promises in dealing with ever complex data problems with fast deep-learning methods, 
 dedicated tools for simulating large datasets for applying such methods to strong gravitational lensing [[deeplenstronomy](https://github.com/deepskies/deeplenstronomy); @Morgan:2021], [[baobab](https://github.com/jiwoncpark/baobab); @Park:2021], 
 as well as end-to-end Bayesian Neural Network training and validation packages for Hubble constant measurements [[h0rton](https://github.com/jiwoncpark/h0rton); @Park:2021], 
 and for a hierarchical analysis of galaxy-galaxy lenses [[ovejero](https://github.com/swagnercarena/ovejero); @Wagner-Carena:2021]
@@ -212,6 +212,8 @@ The affiliated packages make best use of the `lenstronomy` modules without dupli
 # Acknowledgements
 
 Support for this work was provided by the National Science Foundation through NSF AST-1716527. 
+AJS was supported by NASA through the STScI grant HST-GO-15320 and by a Dissertation Year Fellowship from the UCLA Graduate Division. 
+This research was supported by the U.S. Department of Energy (DOE) Office of Science Distinguished Scientist Fellow Program.
 DG is supported by NASA HST-GO-15177.
 AG, MM LvdV, DS are supported by COSMICLENS: ERC grant agreement No 787886.
 LT is supported by International Helmholtz-Weizmann Research School for Multimessenger Astronomy.
@@ -220,7 +222,7 @@ XD is supported by NASA HST-GO-15115.
 TS is supported by NASA grant HST-GO-15320 and HST-GO-15652.
 MZ is supported by the National Science Foundation of China.
 AA is supported by a Royal Society Wolfson Fellowship.
-We are greatful to the user community for valuable feedback and encouragement in continuing the development.
+We are grateful to the user community for valuable feedback and encouragement in continuing the development.
 
 
 # References

@@ -114,6 +114,11 @@ Dark Matter substructure
 * Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
 
+* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <hhttps://arxiv.org/abs/2105.05259>`_
+    * *
+
+
+
 
 Galaxy formation and evolution
 ------------------------------

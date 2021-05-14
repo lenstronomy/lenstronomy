@@ -28,6 +28,9 @@ lenstronomy - gravitational lensing software package
         :target: http://www.astropy.org
         :alt: Powered by Astropy Badge
 
+.. image:: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589/status.svg
+    :target: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589
+
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
 ``lenstronomy`` finds application for time-delay cosmography and measuring

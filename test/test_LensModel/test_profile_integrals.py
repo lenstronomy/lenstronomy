@@ -309,7 +309,7 @@ class TestNumerics(object):
 
     def test_uldm(self):
         from lenstronomy.LensModel.Profiles.uldm import Uldm as Model
-        kwargs = {'kappa_0': 0.1, 'theta_c': 6.}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 6., 'slope': 7.8}
         self.assert_integrals(Model, kwargs)
         self.assert_lens_integrals(Model, kwargs)
 

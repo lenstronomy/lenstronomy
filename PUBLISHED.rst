@@ -160,6 +160,9 @@ Quasar-host galaxy decomposition
 * A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
     *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
 
+* The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
+    *Quasar-host decomposition of 5000 SDSS quasars*
+
 
 
 

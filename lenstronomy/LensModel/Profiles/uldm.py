@@ -65,16 +65,6 @@ class Uldm(LensProfileBase):
             for i in range(len(x)):
                 integral = np.array([integrate.quad(lambda y: (1 - (1 + y**2)**(3./2 - slope))/y, 0.001, xi)[0] for xi in x])
         return integral
-        #  prefactor = (x**2 +1)**(-slope)/(2* (4* slope**2 - 8*slope + 3 ))
-        #  log_factor = 2 * np.log(x)*(4*slope**2 - 8*slope + 3 )*(x**2 +1)**slope
-        #  hypF = (3 - 2*slope)* np.sqrt(x**2 +1) * (hyp2f1(1, 1 - 2*slope, 2 - 2*slope, -np.sqrt(x**2+1))
-        #          + hyp2f1(1, 1 - 2*slope, 2 - 2*slope, np.sqrt(x**2+1)) )
-        #  hypF = np.real(hypF)
-        #  other = (4*slope*x**2 + 8*slope -2*x**2 -8)* np.sqrt(x**2 + 1)
-        #  return prefactor * (log_factor + hypF + other)
-        #  denominator = 3465*(x**2 +1)**(5.5)
-        #  numerator = 3465*x**10 + 18480*x**8 + 39963*x**6 + 44154*x**4 + 25399*x**2 + 6508
-        #  return np.log(np.sqrt(x**2 +1) + 1) - numerator/denominator
 
     def function(self, x, y, kappa_0, theta_c, slope=8, center_x=0, center_y=0):
         """

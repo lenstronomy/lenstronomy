@@ -56,6 +56,5 @@ class TestPlotUtil(object):
         assert cmap is cmap_update
 
 
-
 if __name__ == '__main__':
     pytest.main()

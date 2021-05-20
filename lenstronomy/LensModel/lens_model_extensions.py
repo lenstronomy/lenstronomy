@@ -263,7 +263,8 @@ class LensModelExtensions(object):
         image = quasar.function(betax, betay, 1., source_sigma, center_x, center_y)
         return util.array2image(image)
 
-    def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
+    def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10, center_x=0,
+                              center_y=0):
         """
 
         :param kwargs_lens: lens model keyword argument list
@@ -271,10 +272,14 @@ class LensModelExtensions(object):
         :param start_scale: float, angular scale on which to start the tiling from (if there are two distinct curves in
          a region, it might only find one.
         :param max_order: int, maximum order in the tiling to compute critical curve triangles
+        :param center_x: float, center of the window to compute critical curves and caustics
+        :param center_y: float, center of the window to compute critical curves and caustics
         :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """
         numPix = int(compute_window / start_scale)
         x_grid_init, y_grid_init = util.make_grid(numPix, deltapix=start_scale, subgrid_res=1)
+        x_grid_init += center_x
+        y_grid_init += center_y
         mag_init = util.array2image(self._lensModel.magnification(x_grid_init, y_grid_init, kwargs_lens))
         x_grid_init = util.array2image(x_grid_init)
         y_grid_init = util.array2image(y_grid_init)
@@ -337,17 +342,21 @@ class LensModelExtensions(object):
                 dec_crit += dec_crit_2
                 return ra_crit, dec_crit
 
-    def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01):
+    def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01, center_x=0, center_y=0):
         """
 
         :param kwargs_lens: lens model kwargs
         :param compute_window: window size in arcsec where the critical curve is computed
         :param grid_scale: numerical grid spacing of the computation of the critical curves
+        :param center_x: float, center of the window to compute critical curves and caustics
+        :param center_y: float, center of the window to compute critical curves and caustics
         :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts
 
         """
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
+        x_grid_high_res += center_x
+        y_grid_high_res += center_y
         mag_high_res = util.array2image(self._lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
 
         ra_crit_list = []
@@ -358,8 +367,8 @@ class LensModelExtensions(object):
         paths = find_contours(1/mag_high_res, 0.)
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
-            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2
-            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2
+            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2 + center_x
+            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2 + center_y
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
             ra_caustics, dec_caustics = self._lensModel.ray_shooting(ra_points, dec_points, kwargs_lens)

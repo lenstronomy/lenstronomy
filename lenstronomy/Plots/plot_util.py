@@ -89,38 +89,60 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, shift=0., color='g'):
+def plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, origin=None, color='g', flipped_x=False):
     """
 
+    :param ax: matplotlib.axis instance
     :param coords: Coordinates() class instance
+    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param line_set_list_x: list of numpy arrays corresponding of different disconnected regions of the line
      (e.g. caustic or critical curve)
     :param line_set_list_y: list of numpy arrays corresponding of different disconnected regions of the line
      (e.g. caustic or critical curve)
+    :param color: string with matplotlib color
+    :param flipped_x: bool, if True, flips x-axis
     :return: plot with line sets on matplotlib axis
     """
-    deltaPix = coords.pixel_width
+    if origin is None:
+        origin = [0, 0]
+    pixel_width = coords.pixel_width
+    pixel_width_x = pixel_width
+    if flipped_x:
+        pixel_width_x = -pixel_width
     for i in range(len(line_set_list_x)):
         x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
-        ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
+        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], ',', color=color)
     return ax
 
 
 @export
-def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, shift=0., color='g'):
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, color='g', flipped_x=False):
     """
+    plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
+    corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
+    of the pixel in accordance with the matplotlib.matshow() routine.
 
+    :param ax: matplotlib.axis instance
     :param coords: Coordinates() class instance
+    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param line_set_list_x: numpy arrays corresponding of different disconnected regions of the line
      (e.g. caustic or critical curve)
     :param line_set_list_y: numpy arrays corresponding of different disconnected regions of the line
      (e.g. caustic or critical curve)
-    :return: plot with line sets on matplotlib axis
+    :param color: string with matplotlib color
+    :param flipped_x: bool, if True, flips x-axis
+    :return: plot with line sets on matplotlib axis in pixel coordinates
     """
-    deltaPix = coords.pixel_width
+    if origin is None:
+        origin = [0, 0]
+    pixel_width = coords.pixel_width
+    pixel_width_x = pixel_width
+    if flipped_x:
+        pixel_width_x = -pixel_width
     x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
-    ax.plot((x_c + 0.5) * (deltaPix) - shift, (y_c + 0.5) * (deltaPix) - shift, ',', color=color)
+    ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], ',', color=color)
     return ax
+
 
 @export
 def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):

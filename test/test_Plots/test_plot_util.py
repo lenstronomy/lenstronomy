@@ -2,7 +2,7 @@ import numpy as np
 import numpy.testing as npt
 import pytest
 import matplotlib.pyplot as plt
-
+from lenstronomy.Data.coord_transforms import Coordinates
 
 import lenstronomy.Plots.plot_util as plot_util
 
@@ -55,6 +55,33 @@ class TestPlotUtil(object):
         cmap_update = plot_util.cmap_conf(cmap_string=cmap)
         assert cmap is cmap_update
 
+    def test_plot_line_set_list(self):
+
+        coords = Coordinates(transform_pix2angle= [[1, 0], [0, 1]], ra_at_xy_0=0, dec_at_xy_0=0)
+        line_set_list_x = [np.linspace(start=0, stop=1, num=10), np.linspace(start=0, stop=1, num=10)]
+        line_set_list_y = [np.linspace(start=0, stop=1, num=10), np.linspace(start=0, stop=1, num=10)]
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = plot_util.plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, color='g', flipped_x=True)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = plot_util.plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, origin=[1, 1], color='g',
+                                     flipped_x=False)
+        plt.close()
+
+    def test_plot_line_set(self):
+
+        coords = Coordinates(transform_pix2angle= [[1, 0], [0, 1]], ra_at_xy_0=0, dec_at_xy_0=0)
+        line_set_x = np.linspace(start=0, stop=1, num=10)
+        line_set_y = np.linspace(start=0, stop=1, num=10)
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=None, color='g', flipped_x=True)
+        plt.close()
+
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=[1, 1], color='g',
+                                     flipped_x=False)
+        plt.close()
 
 if __name__ == '__main__':
     pytest.main()

@@ -196,7 +196,8 @@ Theory papers
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*
 
 * Gravitational lensing formalism in a curved arc basis: A continuous description of observables and degeneracies from the weak to the strong lensing regime; `Birrer 2021 <https://arxiv.org/abs/2104.09522>`_
-    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_. *
+    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_.*
+
 
 
 

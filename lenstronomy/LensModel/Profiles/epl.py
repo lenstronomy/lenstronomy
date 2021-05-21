@@ -222,7 +222,7 @@ class EPLMajorAxis(LensProfileBase):
         \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
 
     where with :math:`t = \\gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
-    critical radius b, axis ratio q
+    critical radius b, axis ratio q.
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819
     """

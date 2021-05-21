@@ -30,10 +30,12 @@ class PJaffe(LensProfileBase):
     .. math::
         \Sigma_0 = \pi \rho_0 \frac{Ra Rs}{Rs + Ra}
 
+
     In the lensing parameterization,
 
     .. math::
         \sigma_0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}
+
 
     """
 

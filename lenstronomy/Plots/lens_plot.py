@@ -304,7 +304,7 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
              with_centroid=True, linewidth=1, color='k', dtan_dtan=0):
     """
 
-    :param ax:
+    :param ax: matplotlib.axes instance
     :param tangential_stretch: float, stretch of intrinsic source in tangential direction
     :param radial_stretch: float, stretch of intrinsic source in radial direction
     :param curvature: 1/curvature radius
@@ -313,7 +313,7 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     :param center_y: center of source in image plane
     :param with_centroid: plots the center of the curvature radius
     :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-    (effectively intrinsic source size)
+     (effectively intrinsic source size)
     :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
     :return:
     """

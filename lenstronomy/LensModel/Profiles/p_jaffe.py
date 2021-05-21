@@ -16,26 +16,24 @@ class PJaffe(LensProfileBase):
     The 3D density distribution is
 
     .. math::
-        \rho(r) = \frac{\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
+        \\rho(r) = \\frac{\\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
 
     with :math:`Rs > Ra`.
 
     The projected density is
 
     .. math::
-        \Sigma(R) = \Sigma_0 \frac{Ra Rs}{Rs-Ra}\left(\frac{1}{\sqrt{Ra^2+R^2}} - \frac{1}{\sqrt{Rs^2+R^2}} \right)
+        \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)
 
     with
 
     .. math::
-        \Sigma_0 = \pi \rho_0 \frac{Ra Rs}{Rs + Ra}
-
+        \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}
 
     In the lensing parameterization,
 
     .. math::
-        \sigma_0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}
-
+        \\sigma_0 = \\frac{\Sigma_0}{\\Sigma_{\\rm crit}}
 
     """
 

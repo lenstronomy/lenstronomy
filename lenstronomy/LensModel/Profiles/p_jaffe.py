@@ -9,30 +9,31 @@ class PJaffe(LensProfileBase):
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
 
-    Module name: 'PJAFFE'
+    Module name: 'PJAFFE';
+
     An alternative name is dPIED.
 
     The 3D density distribution is
 
     .. math::
-        \\rho(r) = \\frac{\\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
+        \rho(r) = \frac{\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
 
     with :math:`Rs > Ra`.
 
     The projected density is
 
     .. math::
-        \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)
+        \Sigma(R) = \Sigma_0 \frac{Ra Rs}{Rs-Ra}\left(\frac{1}{\sqrt{Ra^2+R^2}} - \frac{1}{\sqrt{Rs^2+R^2}} \right)
 
     with
 
     .. math::
-        \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}
+        \Sigma_0 = \pi \rho_0 \frac{Ra Rs}{Rs + Ra}
 
     In the lensing parameterization,
 
     .. math::
-        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
+        \sigma_0 = \frac{\Sigma_0}{\Sigma_{\rm crit}}
 
     """
 
@@ -264,7 +265,8 @@ class PJaffe(LensProfileBase):
         """
         return (Rs + Ra) / Ra / Rs / np.pi * sigma0
 
-    def _sort_ra_rs(self, Ra, Rs):
+    @staticmethod
+    def _sort_ra_rs(Ra, Rs):
         """
         sorts Ra and Rs to make sure Rs > Ra
 

@@ -31,6 +31,8 @@ class CoredDensityMST(LensProfileBase):
             self._profile = CoredDensity2()
         elif profile_type == 'CORED_DENSITY_EXP':
             self._profile = CoredDensityExp()
+        # Due to parameters name conventions/positioning, right now only the free soliton with
+        # the default value of slope = 8 is supported 
         elif profile_type == 'CORED_DENSITY_ULDM':
             self._profile = Uldm()
         else:

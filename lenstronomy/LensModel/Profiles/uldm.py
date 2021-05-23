@@ -4,7 +4,7 @@ __author__ = 'lucateo'
 import numpy as np
 import scipy.interpolate as interp
 from scipy.special import gamma, hyp2f1
-import scipy.integrate as integrate
+from mpmath import hyp3f2
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.constants as const
 __all__ = ['Uldm']
@@ -24,7 +24,9 @@ class Uldm(LensProfileBase):
     the profile, and :math: `a` is a parameter, dependent on :math: `\beta`, chosen such
     that :math: `r_c` indeed corresponds to the radius where the density drops by half.
     For an ULDM soliton profile without contributions to background potential, it
-    turns out that :math: `\beta = 8, a = 0.091`.
+    turns out that :math: `\beta = 8, a = 0.091`. We allow :math: `\beta` to be 
+    different from 8 to model solitons which feel the influence of background 
+    potential (see 2105.xxxxx)
     The profile has, as parameters:
     :param kappa_0: central convergence
     :param theta_c: core radius (in arcseconds)
@@ -47,26 +49,7 @@ class Uldm(LensProfileBase):
         num_factor = gamma(slope) / gamma(slope - 1/2) * a_factor_sqrt / np.sqrt(np.pi)
         return kappa_0 * num_factor / theta_c
 
-    def _lensing_integral(self, x, slope = 8):
-        """
-        The analitic result of the integral entering the computation of the
-        lensing potential, that is
-        ..math::
-
-            \int dy/y (1 - (1 + y^2)^{3/2 - \beta})
-
-        :param x: evaluation point of the integral
-        :param slope: exponent entering the profile
-        :return: result of the antiderivative in x
-        """
-        if np.isscalar(x) == True:
-            integral = integrate.quad(lambda y: (1 - (1 + y**2)**(3./2 - slope))/y, 0.001, x)[0]
-        else:
-            for i in range(len(x)):
-                integral = np.array([integrate.quad(lambda y: (1 - (1 + y**2)**(3./2 - slope))/y, 0.001, xi)[0] for xi in x])
-        return integral
-
-    def function(self, x, y, kappa_0, theta_c, slope=8, center_x=0, center_y=0):
+    def function(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -82,9 +65,13 @@ class Uldm(LensProfileBase):
         r = np.sqrt(x_** 2 + y_** 2)
         r = np.maximum(r, self._s)
         a_factor_sqrt = np.sqrt( (0.5)**(-1./slope) -1)
-        Integral_factor = self._lensing_integral(a_factor_sqrt * r / theta_c, slope)
-        prefactor = 2./(2*slope -3) * kappa_0 * theta_c**2 / a_factor_sqrt**2
-        return prefactor * Integral_factor
+        if np.isscalar(r) == True:
+            hypgeom = float(kappa_0 /2 * r**2 * 
+                hyp3f2(1, 1, slope - 0.5, 2, 2, -(a_factor_sqrt * r /theta_c )**2))
+        else:
+            hypgeom =  np.array([ kappa_0 /2. * r_i**2. *
+                hyp3f2(1, 1, slope - 0.5, 2, 2, -(a_factor_sqrt * r_i / theta_c)**2.) for r_i in r], dtype=float)
+        return hypgeom
 
     def alpha_radial(self, r, kappa_0, theta_c, slope = 8):
         """
@@ -101,7 +88,7 @@ class Uldm(LensProfileBase):
         denominator_factor = (1 + a_factor * r**2/theta_c**2)**(slope - 3./2)
         return prefactor/r * (1 - 1/denominator_factor)
 
-    def derivatives(self, x, y, kappa_0, theta_c, slope=8, center_x=0, center_y=0):
+    def derivatives(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
         """
         returns df/dx and df/dy of the function (lensing potential), which are the deflection angles
 
@@ -122,7 +109,7 @@ class Uldm(LensProfileBase):
         f_y = self.alpha_radial(R, kappa_0, theta_c, slope) * y_ / R
         return f_x, f_y
 
-    def hessian(self, x, y, kappa_0, theta_c, slope=8, center_x=0, center_y=0):
+    def hessian(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
         """
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -190,7 +177,7 @@ class Uldm(LensProfileBase):
         return kappa_0  * (1 + a_factor * (R/theta_c)**2)**(1./2 - slope)
 
 
-    def density_2d(self, x, y, kappa_0, theta_c, slope=8, center_x=0, center_y=0):
+    def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
         """
         projected two dimensional ULDM profile (convergence * \Sigma_crit), but
         given our units convention for rho0, it is basically the convergence

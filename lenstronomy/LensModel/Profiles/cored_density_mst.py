@@ -4,6 +4,7 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.LensModel.Profiles.cored_density import CoredDensity
 from lenstronomy.LensModel.Profiles.cored_density_2 import CoredDensity2
 from lenstronomy.LensModel.Profiles.cored_density_exp import CoredDensityExp
+from lenstronomy.LensModel.Profiles.uldm import Uldm
 from lenstronomy.LensModel.Profiles.convergence import Convergence
 
 __all__ = ['CoredDensityMST']
@@ -12,8 +13,10 @@ __all__ = ['CoredDensityMST']
 class CoredDensityMST(LensProfileBase):
     """
     approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
-    subtracts a mass=sheet that approximates the cored profile in it's center to counter-act (in approximation) this
+    subtracts a mass-sheet that approximates the cored profile in it's center to counter-act (in approximation) this
     model. This allows for better sampling of the mass-sheet transformed quantities that do not have strong covariances.
+    The subtraction of the mass-sheet is done such that the sampler returns the real central convergence of the original
+    model (but be careful, the output of quantities like the Einstein angle of the main deflector are still the not-scaled one). 
     Attention!!! The interpretation of the result is that the mass sheet as 'CONVERGENCE' that is present needs to be
     subtracted in post-processing.
     """
@@ -28,6 +31,8 @@ class CoredDensityMST(LensProfileBase):
             self._profile = CoredDensity2()
         elif profile_type == 'CORED_DENSITY_EXP':
             self._profile = CoredDensityExp()
+        elif profile_type == 'CORED_DENSITY_ULDM':
+            self._profile = Uldm()
         else:
             raise ValueError('profile_type %s not supported for CoredDensityMST instance.' % profile_type)
         self._convergence = Convergence()

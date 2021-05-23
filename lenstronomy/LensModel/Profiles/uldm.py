@@ -32,8 +32,8 @@ class Uldm(LensProfileBase):
     """
     _s = 0.000001  # numerical limit for minimal radius
     param_names = ['kappa_0', 'theta_c', 'slope', 'center_x', 'center_y']
-    lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'slope': 4, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'kappa_0': 1., 'theta_c': 100, 'slope': 20, 'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'slope': 3.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'kappa_0': 1., 'theta_c': 100, 'slope': 10, 'center_x': 100, 'center_y': 100}
 
     def rhotilde(self, kappa_0, theta_c, slope = 8):
         """
@@ -214,9 +214,6 @@ class Uldm(LensProfileBase):
         """
         hypF = np.real(hyp2f1(3./2, slope, 5./2, - x**2))
         return 1./3 * x**3 * hypF
-        #  numerator = x * (3465 * x**12 + 23100 * x**10 + 65373 * x**8 + 101376*x**6 + 92323*x**4 + 48580 * x**2 - 3465)
-        #  denominator = 215040 * (x**2 + 1)**7
-        #  result = 33 * np.arctan(x) / 2048 + numerator/denominator
 
     def mass_3d(self, R, kappa_0, theta_c, slope=8):
         """

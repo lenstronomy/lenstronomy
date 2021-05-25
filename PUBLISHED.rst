@@ -75,6 +75,9 @@ Measuring the Hubble constant
 * Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021 <https://arxiv.org/abs/2103.08609>`_
     *Simulations and models with and without lensed point sources to perform a time-delay cosmography analysis.*
 
+* Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
+    *Investigating the detectability of a cored component with mock imaging modeling and comparison of kinematic modeling.*
+
 
 
 

@@ -16,7 +16,6 @@ class TestCartShapelets(object):
         self.polarShapelets = PolarShapelets()
         self.cartShapelets = CartShapelets()
 
-
     def test_function(self):
         x = np.array([1])
         y = np.array([2])
@@ -80,10 +79,11 @@ class TestCartShapelets(object):
 
         x1 = np.array([1., 2])
         y1 = np.array([1, 1])
-        f_xx, f_yy, f_xy = self.cartShapelets.hessian(x1, y1, **kwargs_lens1)
+        f_xx, f_xy, f_yx, f_yy = self.cartShapelets.hessian(x1, y1, **kwargs_lens1)
         assert f_xx[0] == -1.174101305389919
         assert f_yy[0] == -8.3266726846886741e-17
         assert f_xy[0] == -0.23273424081092231
+        assert f_yx[0] == f_xy[0]
 
 
 if __name__ == '__main__':

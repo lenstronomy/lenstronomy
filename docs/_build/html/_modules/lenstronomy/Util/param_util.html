@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.param_util &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Util.param_util &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,6 +41,7 @@
   <h1>Source code for lenstronomy.Util.param_util</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.numba_util</span> <span class="k">import</span> <span class="n">jit</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
 <span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
@@ -48,7 +49,7 @@
 <div class="viewcode-block" id="cart2polar"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.cart2polar">[docs]</a><span class="nd">@export</span>
 <span class="k">def</span> <span class="nf">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center</span>
+<span class="sd">    transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lens center</span>
 
 <span class="sd">    :param x: set of x-coordinates</span>
 <span class="sd">    :type x: array of size (n)</span>
@@ -110,6 +111,7 @@
 
 
 <div class="viewcode-block" id="phi_q2_ellipticity"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.phi_q2_ellipticity">[docs]</a><span class="nd">@export</span>
+<span class="nd">@jit</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">phi_q2_ellipticity</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2</span>
@@ -124,6 +126,7 @@
 
 
 <div class="viewcode-block" id="ellipticity2phi_q"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.param_util.ellipticity2phi_q">[docs]</a><span class="nd">@export</span>
+<span class="nd">@jit</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    transforms complex ellipticity moduli in orientation angle and axis ratio</span>
@@ -220,7 +223,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

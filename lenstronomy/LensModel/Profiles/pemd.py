@@ -13,9 +13,30 @@ class PEMD(LensProfileBase):
     This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
     to perform the numerical integral using the FASTELL code by Renan Barkana.
 
+    .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)^{\\gamma-1}
 
-    The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
-    (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
+    :math:`q` is the minor/major axis ratio,
+    and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
+
+    In terms of eccentricities, this profile is defined as
+
+    .. math::
+        \\kappa(r) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)^{\\gamma-1}
+
+    with :math:`\\epsilon` is the ellipticity defined as
+
+    .. math::
+        \\epsilon = \\frac{1-q^2}{1+q^2}
+
+    And an Einstein radius :math:`\\theta'_{\\rm E}` related to the definition used is
+
+    .. math::
+        \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
+
+
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
@@ -72,7 +93,7 @@ class PEMD(LensProfileBase):
         :param e2: eccentricity component
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
-        :return: Hessian components f_xx, f_yy, f_xy
+        :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
         return self.spemd_smooth.hessian(x, y, theta_E, gamma, e1, e2, self._s_scale, center_x, center_y)
 

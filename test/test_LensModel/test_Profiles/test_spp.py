@@ -80,16 +80,16 @@ class TestSPEP(object):
         phi_G = 0.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         E = phi_E / (((3-gamma)/2.)**(1./(1-gamma))*np.sqrt(q))
-        f_xx, f_yy,f_xy = self.SPEP.hessian( x, y, E,gamma, e1, e2)
-        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
-        f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, E, gamma)
+        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
+        f_xx_spp, f_xy_spp, f_yx_spp, f_yy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]
         assert f_xy_spep[0] == f_xy_spp[0]
+        assert f_yx_spep[0] == f_yx_spp[0]
         x = np.array([1,3,4])
         y = np.array([2,1,1])
-        f_xx_spep, f_yy_spep, f_xy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
-        f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, E, gamma)
+        f_xx_spep, f_xy_spep, f_yx_spep, f_yy_spep = self.SPEP.hessian(x, y, E, gamma, e1, e2)
+        f_xx_spp, f_xy_spp, f_yx_spp, f_yy_spp = self.SPP.hessian(x, y, E, gamma)
         assert f_xx_spep[0] == f_xx_spp[0]
         assert f_yy_spep[0] == f_yy_spp[0]
         assert f_xy_spep[0] == f_xy_spp[0]
@@ -109,9 +109,9 @@ class TestSPEP(object):
         f_spp = self.SPP.function(x, y, theta_E, gamma)
         f_x_sis, f_y_sis = self.SIS.derivatives(x, y, theta_E)
         f_x_spp, f_y_spp = self.SPP.derivatives(x, y, theta_E, gamma)
-        f_xx_sis, f_yy_sis, f_xy_sis = self.SIS.hessian(x, y, theta_E)
-        f_xx_spp, f_yy_spp, f_xy_spp = self.SPP.hessian(x, y, theta_E, gamma)
-        npt.assert_almost_equal(f_sis[0],f_spp[0], decimal=7)
+        f_xx_sis, f_xy_sis, f_yx_sis, f_yy_sis = self.SIS.hessian(x, y, theta_E)
+        f_xx_spp, f_xy_spp, f_yx_spp, f_yy_spp = self.SPP.hessian(x, y, theta_E, gamma)
+        npt.assert_almost_equal(f_sis[0], f_spp[0], decimal=7)
         npt.assert_almost_equal(f_x_sis[0], f_x_spp[0], decimal=7)
         npt.assert_almost_equal(f_y_sis[0], f_y_spp[0], decimal=7)
         npt.assert_almost_equal(f_xx_sis[0], f_xx_spp[0], decimal=7)

@@ -37,9 +37,9 @@ def moffat_r(r, alpha, beta):
     Moffat profile
 
     :param r: radial coordinate
-    :param alpha:
+    :param alpha: Moffat parameter
     :param beta: exponent
-    :return:
+    :return: Moffat profile
     """
     return 2. * (beta - 1) / alpha ** 2 * (1 + (r/alpha) ** 2) ** (-beta)
 

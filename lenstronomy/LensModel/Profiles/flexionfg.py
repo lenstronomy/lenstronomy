@@ -66,7 +66,8 @@ class Flexionfg(LensProfileBase):
         _g1, _g2, _g3, _g4 = self.transform_fg(F1, F2, G1, G2)
         return self.flexion_cart.hessian(x, y, _g1, _g2, _g3, _g4, ra_0, dec_0)
 
-    def transform_fg(self, F1, F2, G1, G2):
+    @staticmethod
+    def transform_fg(F1, F2, G1, G2):
         """
         basis transform from (F1,F2,G1,G2) to (g1,g2,g3,g4)
         :param f1: F1 flexion, derivative of kappa in x direction
@@ -79,4 +80,4 @@ class Flexionfg(LensProfileBase):
         g2 = (3*F2 + G2) * 0.5
         g3 = (F1 - G1) * 0.5
         g4 = (F2 - G2) * 0.5
-        return g1,g2,g3,g4
+        return g1, g2, g3, g4

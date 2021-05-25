@@ -87,18 +87,19 @@ class TestNIE(object):
         phi_G = 0
         s = 0.0000001
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy, f_xy = self.nie.hessian(x, y, theta_E, e1, e2, s_scale=s)
-        f_xx_spemd, f_yy_spemd, f_xy_spemd = self.sis.hessian(x, y, theta_E)
+        f_xx, f_xy, f_yx, f_yy = self.nie.hessian(x, y, theta_E, e1, e2, s_scale=s)
+        f_xx_spemd, f_xy_spemd, f_yx_spemd, f_yy_spemd = self.sis.hessian(x, y, theta_E)
         npt.assert_almost_equal(f_xx, f_xx_spemd, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_spemd, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_spemd, decimal=4)
+        npt.assert_almost_equal(f_yx, f_yx_spemd, decimal=4)
 
     def test_convergence2surface_brightness(self):
         from lenstronomy.LightModel.Profiles.nie import NIE as NIE_Light
         nie_light = NIE_Light()
         kwargs = {'e1': 0.3, 'e2': -0.05, 's_scale': 0.5}
         x, y = util.make_grid(numPix=10, deltapix=0.1)
-        f_xx, f_yy, f_xy = self.nie.hessian(x, y, theta_E=1, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = self.nie.hessian(x, y, theta_E=1, **kwargs)
         kappa = 1/2. * (f_xx + f_yy)
         flux = nie_light.function(x, y, amp=1, **kwargs)
         npt.assert_almost_equal(kappa/np.sum(kappa), flux/np.sum(flux), decimal=5)
@@ -127,7 +128,7 @@ class TestNIEMajorAxis(object):
         nie = NIEMajorAxis()
         x, y = util.make_grid(numPix=10, deltapix=0.1)
         kwargs = {'b': 1, 's': 0.2, 'q': 0.3}
-        f_xx, f_yy, f_xy = nie.hessian(x, y, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = nie.hessian(x, y, **kwargs)
         kappa_num = 1./2 * (f_xx + f_yy)
         kappa = nie.kappa(x, y, **kwargs)
         npt.assert_almost_equal(kappa_num, kappa, decimal=5)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -923,11 +923,34 @@ times pixel area</p>
 <dt id="lenstronomy.LightModel.Profiles.moffat.Moffat">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.moffat.</code><code class="descname">Moffat</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/moffat.html#Moffat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.moffat.Moffat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>this class contains functions to evaluate a Gaussian function and calculates its derivative and hessian matrix</p>
+<p>this class contains functions to evaluate a Moffat surface brightness profile</p>
+<div class="math notranslate nohighlight">
+\[I(r) = I_0 * (1 + (r/lpha)^2)^{-eta}\]</div>
+<p>with <span class="math notranslate nohighlight">\(I_0 = amp\)</span>.</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.moffat.Moffat.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>alpha</em>, <em>beta</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/moffat.html#Moffat.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.moffat.Moffat.function" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Moffat profile</p>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>alpha</em>, <em>beta</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/moffat.html#Moffat.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.moffat.Moffat.function" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D Moffat profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-position (angle)</li>
+<li><strong>y</strong> – y-position (angle)</li>
+<li><strong>amp</strong> – normalization</li>
+<li><strong>alpha</strong> – scale</li>
+<li><strong>beta</strong> – exponent</li>
+<li><strong>center_x</strong> – x-center</li>
+<li><strong>center_y</strong> – y-center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">surface brightness</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1209,6 +1232,11 @@ radius ‘theta_E’</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains functions to evaluate an spherical Sersic function</p>
+<div class="math notranslate nohighlight">
+\[I(R) = I_0 \exp \left[ -b_n (R/R_{\rm Sersic})^{\frac{1}{n}}\right]\]</div>
+<p>with <span class="math notranslate nohighlight">\(I_0 = amp\)</span>
+and
+with <span class="math notranslate nohighlight">\(b_{n}\approx 1.999\,n-0.327\)</span></p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.Sersic.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
@@ -1307,9 +1335,16 @@ radius ‘theta_E’</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.sersic.</code><code class="descname">CoreSersic</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a></p>
 <p>this class contains the Core-Sersic function introduced by e.g Trujillo et al. 2004</p>
+<div class="math notranslate nohighlight">
+\[I(R) = I' \left[1 + (R_b/R)^{\alpha} \right]^{\gamma / \alpha}
+\exp \left{ -b_n \left[(R^{\alpha} + R_b^{lpha})/R_e^{\alpha}  \right]^{1 / (n\alpha)}  \right}\]</div>
+<p>with</p>
+<div class="math notranslate nohighlight">
+\[I' = I_b 2^{-\gamma/ \alpha} \exp \left[b_n 2^{1 / (n\alpha)} (R_b/R_e)^{1/n}  \right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(I_b\)</span> is the intensity at the break radius.</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>Re</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>R_sersic</em>, <em>Rb</em>, <em>n_sersic</em>, <em>gamma</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>alpha=3.0</em>, <em>max_R_frac=100.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#CoreSersic.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1319,7 +1354,7 @@ radius ‘theta_E’</p>
 <li><strong>y</strong> – </li>
 <li><strong>amp</strong> – surface brightness/amplitude value at the half light radius</li>
 <li><strong>R_sersic</strong> – semi-major axis half light radius</li>
-<li><strong>Re</strong> – “break” core radius</li>
+<li><strong>Rb</strong> – “break” core radius</li>
 <li><strong>n_sersic</strong> – Sersic index</li>
 <li><strong>gamma</strong> – inner power-law exponent</li>
 <li><strong>e1</strong> – eccentricity parameter</li>
@@ -1340,17 +1375,17 @@ radius ‘theta_E’</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'Re': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'Rb': 0, 'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'n_sersic': 0.5}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names">
-<code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'Re', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">param_names</code><em class="property"> = ['amp', 'R_sersic', 'Rb', 'n_sersic', 'gamma', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.sersic.CoreSersic.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'Re': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'Rb': 100, 'amp': 100, 'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 10, 'n_sersic': 8}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.CoreSersic.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1985,7 +2020,7 @@ this should be faster and numerically stable</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

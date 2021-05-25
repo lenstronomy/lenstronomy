@@ -48,7 +48,7 @@ class SIS_truncate(LensProfileBase):
 
     def hessian(self, x, y, theta_E, r_trunc, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         x_shift = x - center_x
         y_shift = y - center_y
@@ -59,7 +59,7 @@ class SIS_truncate(LensProfileBase):
         f_xx = d2r_dx2*dphi_dr + dr_dx**2*d2phi_dr2
         f_yy = d2r_dy2*dphi_dr + dr_dy**2*d2phi_dr2
         f_xy = d2r_dxy*dphi_dr + dr_dx*dr_dy*d2phi_dr2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def _dphi_dr(self, x, y, theta_E, r_trunc):
         """

@@ -79,10 +79,11 @@ class TestCartShapelets(object):
 
         x1 = np.array([1., 2])
         y1 = np.array([1, 1])
-        f_xx, f_yy, f_xy = self.polarShapelets.hessian(x1, y1, **kwargs_lens1)
+        f_xx, f_xy, f_yx, f_yy = self.polarShapelets.hessian(x1, y1, **kwargs_lens1)
         npt.assert_almost_equal(f_xx[0], 0.20755374871029733, decimal=8)
         npt.assert_almost_equal(f_yy[0], 0.20755374871029728, decimal=8)
         npt.assert_almost_equal(f_xy[0], -0.20755374871029739, decimal=8)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
 
 if __name__ == '__main__':

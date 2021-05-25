@@ -1,0 +1,208 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.Cosmo.nfw_param &#8212; lenstronomy 1.8.0 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Cosmo.nfw_param</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NFWParam&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="NFWParam"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam">[docs]</a><span class="k">class</span> <span class="nc">NFWParam</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class which contains a halo model parameters dependent on cosmology for NFW profile</span>
+<span class="sd">    All distances are given in physical units. Mass definitions are relative to 200 crit including redshift evolution.</span>
+<span class="sd">    The redshift evolution is cosmology dependent (dark energy).</span>
+<span class="sd">    The H0 dependence is propagated into the input and return units.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rhoc</span> <span class="o">=</span> <span class="mf">2.77536627e11</span>  <span class="c1"># critical density [h^2 M_sun Mpc^-3]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param cosmo: astropy.cosmology instance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="k">import</span> <span class="n">default_cosmology</span>
+
+        <span class="k">if</span> <span class="n">cosmo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cosmo</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
+
+<div class="viewcode-block" id="NFWParam.rhoc_z"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.rhoc_z">[docs]</a>    <span class="k">def</span> <span class="nf">rhoc_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :return: critical density of the universe at redshift z in physical units [h^2 M_sun Mpc^-3]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rhoc</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span><span class="o">.</span><span class="n">efunc</span><span class="p">(</span><span class="n">z</span><span class="p">))</span> <span class="o">**</span> <span class="mi">2</span></div>
+        <span class="c1">#return self.rhoc*(1+z)**3</span>
+
+<div class="viewcode-block" id="NFWParam.M200"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.M200">[docs]</a>    <span class="k">def</span> <span class="nf">M200</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rs</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        M(R_200) calculation for NFW profile</span>
+
+<span class="sd">        :param rs: scale radius</span>
+<span class="sd">        :type rs: float</span>
+<span class="sd">        :param rho0: density normalization (characteristic density)</span>
+<span class="sd">        :type rho0: float</span>
+<span class="sd">        :param c: concentration</span>
+<span class="sd">        :type c: float [4,40]</span>
+<span class="sd">        :return: M(R_200) density</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">rho0</span> <span class="o">*</span> <span class="n">rs</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="n">c</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">c</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NFWParam.r200_M"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.r200_M">[docs]</a>    <span class="k">def</span> <span class="nf">r200_M</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the radius R_200 crit of a halo of mass M in physical distances M/h</span>
+
+<span class="sd">        :param M: halo mass in M_sun/h</span>
+<span class="sd">        :type M: float or numpy array</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :type z: float</span>
+<span class="sd">        :return: radius R_200 in physical Mpc/h</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">M</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">rhoc_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="mi">200</span><span class="p">))</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="mf">3.</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NFWParam.M_r200"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.M_r200">[docs]</a>    <span class="k">def</span> <span class="nf">M_r200</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r200</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r200: r200 in physical Mpc/h</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :return: M200 in M_sun/h</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rhoc_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="mi">200</span> <span class="o">*</span> <span class="n">r200</span><span class="o">**</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">3.</span></div>
+
+<div class="viewcode-block" id="NFWParam.rho0_c"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.rho0_c">[docs]</a>    <span class="k">def</span> <span class="nf">rho0_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes density normalization as a function of concentration parameter</span>
+
+<span class="sd">        :param c: concentration</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :return: density normalization in h^2/Mpc^3 (physical)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mf">200.</span><span class="o">/</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">rhoc_z</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">c</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">c</span><span class="p">)</span><span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="mf">1.</span><span class="o">+</span><span class="n">c</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NFWParam.c_rho0"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.c_rho0">[docs]</a>    <span class="k">def</span> <span class="nf">c_rho0</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the concentration given density normalization rho_0 in h^2/Mpc^3 (physical) (inverse of function rho0_c)</span>
+<span class="sd">        :param rho0: density normalization in h^2/Mpc^3 (physical)</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :return: concentration parameter c</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_c_rho0_interp&#39;</span><span class="p">):</span>
+            <span class="n">c_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+            <span class="n">rho0_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0_c</span><span class="p">(</span><span class="n">c_array</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">interpolate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_c_rho0_interp</span> <span class="o">=</span> <span class="n">interpolate</span><span class="o">.</span><span class="n">InterpolatedUnivariateSpline</span><span class="p">(</span><span class="n">rho0_array</span><span class="p">,</span> <span class="n">c_array</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_c_rho0_interp</span><span class="p">(</span><span class="n">rho0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NFWParam.c_M_z"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.c_M_z">[docs]</a>    <span class="k">def</span> <span class="nf">c_M_z</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        fitting function of http://moriond.in2p3.fr/J08/proceedings/duffy.pdf for the mass and redshift dependence of</span>
+<span class="sd">        the concentration parameter</span>
+
+<span class="sd">        :param M: halo mass in M_sun/h</span>
+<span class="sd">        :type M: float or numpy array</span>
+<span class="sd">        :param z: redshift</span>
+<span class="sd">        :type z: float &gt;0</span>
+<span class="sd">        :return: concentration parameter as float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># fitted parameter values</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="mf">5.22</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.072</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.42</span>
+        <span class="n">M_pivot</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="mi">10</span><span class="o">**</span><span class="mi">12</span>
+        <span class="k">return</span> <span class="n">A</span><span class="o">*</span><span class="p">(</span><span class="n">M</span><span class="o">/</span><span class="n">M_pivot</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="n">C</span></div>
+
+<div class="viewcode-block" id="NFWParam.nfw_Mz"><a class="viewcode-back" href="../../../lenstronomy.Cosmo.html#lenstronomy.Cosmo.nfw_param.NFWParam.nfw_Mz">[docs]</a>    <span class="k">def</span> <span class="nf">nfw_Mz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns all needed parameter (in physical units modulo h) to draw the profile of the main halo</span>
+<span class="sd">        r200 in physical Mpc/h</span>
+<span class="sd">        rho_s in  h^2/Mpc^3 (physical)</span>
+<span class="sd">        Rs in Mpc/h physical</span>
+<span class="sd">        c unit less</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_M_z</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">r200</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r200_M</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rho0_c</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">Rs</span> <span class="o">=</span> <span class="n">r200</span><span class="o">/</span><span class="n">c</span>
+        <span class="k">return</span> <span class="n">r200</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">Rs</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

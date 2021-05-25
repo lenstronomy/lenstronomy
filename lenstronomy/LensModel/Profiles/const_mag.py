@@ -30,12 +30,12 @@ class ConstMag(LensProfileBase):
         """ 
         
         # positive parity case
-        if (parity== 1): 
+        if parity == 1:
             gamma = (1./mu_t-1./mu_r)*0.5
             kappa = 1 -gamma-1./mu_r
             
         # negative parity case
-        elif (parity== -1): 
+        elif parity == -1:
             gamma = (1./mu_t+1./mu_r)*0.5
             kappa = 1 -gamma+1./mu_r
         else:
@@ -46,7 +46,7 @@ class ConstMag(LensProfileBase):
                 
         x_shift = x - center_x
         y_shift = y - center_y
-        f_      = 1./2. * kappa * (x_shift*x_shift + y_shift*y_shift) + 1./2. * gamma1 * (x_shift*x_shift - y_shift*y_shift)-gamma2*x_shift*y_shift
+        f_ = 1./2. * kappa * (x_shift*x_shift + y_shift*y_shift) + 1./2. * gamma1 * (x_shift*x_shift - y_shift*y_shift)-gamma2*x_shift*y_shift
         
         return f_
 
@@ -115,4 +115,4 @@ class ConstMag(LensProfileBase):
         f_yy = kappa - gamma1
         f_xy = -gamma2
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy

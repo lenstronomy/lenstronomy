@@ -27,9 +27,9 @@ class TestPowerLaw(object):
         kwargs_spp = {'theta_E': 1., 'gamma': 2}
         kwargs_sis = {'theta_E': 1.}
         flux = profile.function(x=x, y=1., **kwargs_light)
-        f_xx, f_yy, f_xy = spp.hessian(x=x, y=1., **kwargs_spp)
+        f_xx, f_xy, f_yx, f_yy = spp.hessian(x=x, y=1., **kwargs_spp)
         kappa_spp = 1/2. * (f_xx + f_yy)
-        f_xx, f_yy, f_xy = sis.hessian(x=x, y=1., **kwargs_sis)
+        f_xx, f_xy, f_yx, f_yy = sis.hessian(x=x, y=1., **kwargs_sis)
         kappa_sis = 1 / 2. * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_sis, kappa_spp, decimal=5)
         npt.assert_almost_equal(flux/flux[0], kappa_sis/kappa_sis[0], decimal=5)

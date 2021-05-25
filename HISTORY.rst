@@ -216,3 +216,22 @@ History
 * fix in multiband reconstruction
 * observational config for ZTF
 * short-hand class imports
+
+
+1.8.0 (2020-03-21)
+++++++++++++++++++
+* EPL numba version
+* numba configuration variables can be set globally with configuration file
+* Series of curved arc models available
+* single plane hessian return all for differentials
+* elliptical density slice lens model
+* vectorized lens and light interpolation models
+* updated installation description
+* fast caustic calculation replacing matplotlib with skitlearn
+* multi-patch illustration class and plotting routines
+* updated PSF iteration procedure with more settings
+
+1.8.1 (2020-04-19)
+++++++++++++++++++
+* illustration plots for curved arcs updated
+* documentation of elliptical lens models updated

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Cosmo package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Cosmo package &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -55,7 +55,7 @@
 <span id="lenstronomy-cosmo-background-module"></span><h2>lenstronomy.Cosmo.background module<a class="headerlink" href="#module-lenstronomy.Cosmo.background" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Cosmo.background.Background">
-<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.background.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>cosmo=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/background.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.background.Background" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Cosmo.background.</code><code class="descname">Background</code><span class="sig-paren">(</span><em>cosmo=None</em>, <em>interp=False</em>, <em>**kwargs_interp</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/background.html#Background"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.background.Background" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to compute cosmological distances</p>
 <dl class="method">
@@ -430,10 +430,22 @@ diameter distances.</p>
 <dl class="method">
 <dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.nfwParam_physical">
 <code class="descname">nfwParam_physical</code><span class="sig-paren">(</span><em>M</em>, <em>c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.nfwParam_physical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.nfwParam_physical" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns the NFW parameters in physical units
-:param M: physical mass in M_sun
-:param c: concentration
-:return:</p>
+<dd><p>returns the NFW parameters in physical units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>M</strong> – physical mass in M_sun</li>
+<li><strong>c</strong> – concentration</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho0, Rs, r200</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -466,7 +478,7 @@ diameter distances.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">M200, r200, Rs_physical, c</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho0, Rs, c, r200, M200</p>
 </td>
 </tr>
 </tbody>
@@ -482,12 +494,12 @@ diameter distances.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> – mass enclosed 200 rho_crit in units of M_sun</li>
+<li><strong>M</strong> – mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)</li>
 <li><strong>c</strong> – NFW concentration parameter (r200/r_s)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">alpha_Rs (observed bending angle at the scale radius, Rs_angle (angle at scale radius) (in units of arcsec)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs (observed bending angle at the scale radius</p>
 </td>
 </tr>
 </tbody>
@@ -566,6 +578,27 @@ when provided a physical mass per physical Mpc^2
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.uldm_angular2phys">
+<code class="descname">uldm_angular2phys</code><span class="sig-paren">(</span><em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.uldm_angular2phys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.uldm_angular2phys" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts the anguar parameters entering the LensModel Uldm() (Ultra Light
+Dark Matter) class in physical masses, i.e. the total soliton mass and the
+mass of the particle
+:param kappa_0: central convergence of profile
+:param theta_c: core radius (in arcseconds)
+:return: m_eV_log10, M_sol_log10, the log10 of the masses, m in eV and M in M_sun</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.Cosmo.lens_cosmo.LensCosmo.uldm_mphys2angular">
+<code class="descname">uldm_mphys2angular</code><span class="sig-paren">(</span><em>m_log10</em>, <em>M_log10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Cosmo/lens_cosmo.html#LensCosmo.uldm_mphys2angular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Cosmo.lens_cosmo.LensCosmo.uldm_mphys2angular" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts physical ULDM mass in the ones, in angular units, that enter
+the LensModel Uldm() class
+:param m_log10: exponent of ULDM mass in eV
+:param M_log10: exponent of soliton mass in M_sun
+:return: kappa_0, theta_c, the central convergence and core radius (in arcseconds)</p>
 </dd></dl>
 
 </dd></dl>
@@ -799,7 +832,7 @@ c unit less</p>
         <li class="right" >
           <a href="lenstronomy.Analysis.html" title="lenstronomy.Analysis package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

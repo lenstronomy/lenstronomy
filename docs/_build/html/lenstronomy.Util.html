@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -224,7 +224,10 @@ image (including fractional pixels).
 <li><strong>additional_images_list</strong> – </li>
 <li><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
 see LensEquationSolver() class for details</li>
-<li><strong>source_deflection_scaling_list</strong> – </li>
+<li><strong>source_deflection_scaling_list</strong> – List of floats for each source ligth model (optional, and only applicable
+for single-plane lensing. The factors re-scale the reduced deflection angles described from the lens model.
+=1 means identical source position as without this option. This option enables multiple source planes.
+The geometric difference between the different source planes needs to be pre-computed and is cosmology dependent.</li>
 <li><strong>source_redshift_list</strong> – </li>
 <li><strong>cosmo</strong> – astropy.cosmology instance</li>
 <li><strong>index_lens_model_list</strong> – </li>
@@ -433,12 +436,12 @@ m = -2.5 x log10(DN / EXPTIME) + ZEROPOINT</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>magnitude</strong> – </li>
-<li><strong>magnitude_zero_point</strong> – </li>
+<li><strong>magnitude</strong> – astronomical magnitude</li>
+<li><strong>magnitude_zero_point</strong> – magnitude zero point (astronomical magnitude with 1 count per second)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">counts per second</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">counts per second of astronomical object</p>
 </td>
 </tr>
 </tbody>
@@ -475,7 +478,7 @@ m = -2.5 x log10(DN / EXPTIME) + ZEROPOINT</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>absolute_magnitude</strong> – absolute magnitude of object</li>
-<li><strong>d_parsec</strong> – distance to object in untis parsec</li>
+<li><strong>d_parsec</strong> – distance to object in units parsec</li>
 </ul>
 </td>
 </tr>
@@ -1391,8 +1394,14 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <span id="lenstronomy-util-numba-util-module"></span><h2>lenstronomy.Util.numba_util module<a class="headerlink" href="#module-lenstronomy.Util.numba_util" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Util.numba_util.jit">
-<code class="descclassname">lenstronomy.Util.numba_util.</code><code class="descname">jit</code><span class="sig-paren">(</span><em>nopython=True</em>, <em>cache=True</em>, <em>parallel=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.jit" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.numba_util.</code><code class="descname">jit</code><span class="sig-paren">(</span><em>nopython=True</em>, <em>cache=True</em>, <em>parallel=False</em>, <em>fastmath=False</em>, <em>error_model='numpy'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.jit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Util.numba_util.generated_jit">
+<code class="descclassname">lenstronomy.Util.numba_util.</code><code class="descname">generated_jit</code><span class="sig-paren">(</span><em>nopython=True</em>, <em>cache=True</em>, <em>parallel=False</em>, <em>fastmath=False</em>, <em>error_model='numpy'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#generated_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.generated_jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type - see the Numba docs for more info</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-lenstronomy.Util.param_util">
@@ -1400,7 +1409,7 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <dl class="function">
 <dt id="lenstronomy.Util.param_util.cart2polar">
 <code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">cart2polar</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#cart2polar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.cart2polar" title="Permalink to this definition">¶</a></dt>
-<dd><p>transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lense center</p>
+<dd><p>transforms cartesian coords [x,y] into polar coords [r,phi] in the frame of the lens center</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1484,9 +1493,9 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 </table>
 </dd></dl>
 
-<dl class="function">
+<dl class="attribute">
 <dt id="lenstronomy.Util.param_util.phi_q2_ellipticity">
-<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">phi_q2_ellipticity</code><span class="sig-paren">(</span><em>phi</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#phi_q2_ellipticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.phi_q2_ellipticity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">phi_q2_ellipticity</code><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#phi_q2_ellipticity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.phi_q2_ellipticity" title="Permalink to this definition">¶</a></dt>
 <dd><p>transforms orientation angle and axis ratio into complex ellipticity moduli e1, e2</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1505,9 +1514,9 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 </table>
 </dd></dl>
 
-<dl class="function">
+<dl class="attribute">
 <dt id="lenstronomy.Util.param_util.ellipticity2phi_q">
-<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">ellipticity2phi_q</code><span class="sig-paren">(</span><em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#ellipticity2phi_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.ellipticity2phi_q" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.param_util.</code><code class="descname">ellipticity2phi_q</code><a class="reference internal" href="_modules/lenstronomy/Util/param_util.html#ellipticity2phi_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.param_util.ellipticity2phi_q" title="Permalink to this definition">¶</a></dt>
 <dd><p>transforms complex ellipticity moduli in orientation angle and axis ratio</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1656,15 +1665,6 @@ This functions gives good error estimates for skewed pdf’s
 </div>
 <div class="section" id="module-lenstronomy.Util.sampling_util">
 <span id="lenstronomy-util-sampling-util-module"></span><h2>lenstronomy.Util.sampling_util module<a class="headerlink" href="#module-lenstronomy.Util.sampling_util" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="lenstronomy.Util.sampling_util.unit2gaussian">
-<code class="descclassname">lenstronomy.Util.sampling_util.</code><code class="descname">unit2gaussian</code><span class="sig-paren">(</span><em>x</em>, <em>mu</em>, <em>sigma</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/sampling_util.html#unit2gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.sampling_util.unit2gaussian" title="Permalink to this definition">¶</a></dt>
-<dd><p>mapping from uniform distribution on unit hypercube
-to truncated gaussian distribution on parameter space, 
-with mean ‘mu’ and std dev ‘sigma’</p>
-<p>from Handley+15, eq. (A9)</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="lenstronomy.Util.sampling_util.unit2uniform">
 <code class="descclassname">lenstronomy.Util.sampling_util.</code><code class="descname">unit2uniform</code><span class="sig-paren">(</span><em>x</em>, <em>vmin</em>, <em>vmax</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/sampling_util.html#unit2uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.sampling_util.unit2uniform" title="Permalink to this definition">¶</a></dt>
@@ -1851,9 +1851,9 @@ precedence goes to key value pairs in latter dicts.</p>
 </table>
 </dd></dl>
 
-<dl class="function">
+<dl class="attribute">
 <dt id="lenstronomy.Util.util.rotate">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">rotate</code><span class="sig-paren">(</span><em>xcoords</em>, <em>ycoords</em>, <em>angle</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.rotate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">rotate</code><a class="reference internal" href="_modules/lenstronomy/Util/util.html#rotate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -2189,16 +2189,17 @@ Give an integers for a square grid, or a 2-length sequence
 
 <dl class="function">
 <dt id="lenstronomy.Util.util.points_on_circle">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">points_on_circle</code><span class="sig-paren">(</span><em>radius</em>, <em>num_points</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#points_on_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.points_on_circle" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">points_on_circle</code><span class="sig-paren">(</span><em>radius</em>, <em>num_points</em>, <em>connect_ends=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#points_on_circle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.points_on_circle" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns a set of uniform points around a circle
 :param radius: radius of the circle
 :param num_points: number of points on the circle
-:return:</p>
+:param connect_ends: boolean, if True, start and end point are the same
+:return: x-coords, y-coords of points on the circle</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="attribute">
 <dt id="lenstronomy.Util.util.neighborSelect">
-<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">neighborSelect</code><span class="sig-paren">(</span><em>a</em>, <em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/util.html#neighborSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.neighborSelect" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.util.</code><code class="descname">neighborSelect</code><a class="reference internal" href="_modules/lenstronomy/Util/util.html#neighborSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.util.neighborSelect" title="Permalink to this definition">¶</a></dt>
 <dd><p>#TODO replace by from scipy.signal import argrelextrema for speed up
 &gt;&gt;&gt; from scipy.signal import argrelextrema
 &gt;&gt;&gt; x = np.array([2, 1, 2, 3, 2, 0, 1, 0])
@@ -2394,7 +2395,7 @@ if k is a boolean list, checks for size to match the numbers of models and retur
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

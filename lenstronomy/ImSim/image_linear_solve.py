@@ -247,14 +247,19 @@ class ImageLinearFit(ImageModel):
                                 kwargs_extinction=None, kwargs_special=None, unconvolved=False):
         """
 
-        return linear response Matrix
+        computes the linear response matrix (m x n), with n being the data size and m being the coefficients
+        The calculation is done by
+        - first (optional) computing differential extinctions)
+        - adding linear components of the lensed source(s)
+        - adding linear components of the unlensed components (i.e. deflector)
+        - adding point soources (can be multiply lensed or stars in the field)
 
-        :param kwargs_lens:
-        :param kwargs_source:
-        :param kwargs_lens_light:
-        :param kwargs_ps:
-        :param unconvolved:
-        :return:
+        :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
+        :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
+        :param kwargs_lens_light: list of keyword arguments corresponding to different lens light surface brightness profiles
+        :param kwargs_ps: keyword arguments corresponding to "other" parameters, such as external shear and point source image positions
+        :param unconvolved: bool, if True, computes components without convolution kernel (will not work for point sources)
+        :return: response matrix (m x n)
         """
         x_grid, y_grid = self.ImageNumerics.coordinates_evaluate
         source_light_response, n_source = self.source_mapping.image_flux_split(x_grid, y_grid, kwargs_lens,
@@ -269,14 +274,14 @@ class ImageLinearFit(ImageModel):
         num_response = self.num_data_evaluate
         A = np.zeros((num_param, num_response))
         n = 0
-        # response of sersic source profile
+        # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
-        # response of lens light profile
+        # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
@@ -343,12 +348,12 @@ class ImageLinearFit(ImageModel):
     def reduced_chi2(self, model, error_map=0):
         """
         returns reduced chi2
-        :param model:
-        :param error_map:
-        :return:
+        :param model: 2d numpy array of a model predicted image
+        :param error_map: same format as model, additional error component (such as PSF errors)
+        :return: reduced chi2
         """
-        chi2 = self.reduced_residuals(model, error_map)
-        return np.sum(chi2**2) / self.num_data_evaluate
+        norm_res = self.reduced_residuals(model, error_map)
+        return np.sum(norm_res**2) / self.num_data_evaluate
 
     @property
     def num_data_evaluate(self):

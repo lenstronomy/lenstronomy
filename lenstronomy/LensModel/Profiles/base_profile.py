@@ -34,7 +34,7 @@ class LensProfileBase(object):
 
     def hessian(self, *args, **kwargs):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
 
         :param x: x-coordinate
         :param y: y-coordinate

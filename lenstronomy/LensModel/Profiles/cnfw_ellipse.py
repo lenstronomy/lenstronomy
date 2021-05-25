@@ -82,7 +82,7 @@ class CNFW_ELLIPSE(LensProfileBase):
         f_yy = dalpha_decdec
         f_xy = dalpha_radec
         f_yx = dalpha_decra
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d_lens(self, R, Rs, alpha_Rs, r_core, e1=0, e2=0):
         """

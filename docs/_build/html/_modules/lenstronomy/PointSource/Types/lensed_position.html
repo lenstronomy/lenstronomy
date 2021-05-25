@@ -1,0 +1,189 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.PointSource.Types.lensed_position &#8212; lenstronomy 1.8.0 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.PointSource.Types.lensed_position</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.PointSource.Types.base_ps</span> <span class="k">import</span> <span class="n">PSBase</span><span class="p">,</span> <span class="n">_expand_to_array</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LensedPositions&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="LensedPositions"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.lensed_position.LensedPositions">[docs]</a><span class="k">class</span> <span class="nc">LensedPositions</span><span class="p">(</span><span class="n">PSBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class of a a lensed point source parameterized as the (multiple) observed image positions</span>
+<span class="sd">    Name within the PointSource module: &#39;LENSED_POSITION&#39;</span>
+<span class="sd">    parameters: ra_image, dec_image, point_amp</span>
+<span class="sd">    If fixed_magnification=True, than &#39;source_amp&#39; is a parameter instead of &#39;point_amp&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):</span>
+    <span class="c1">#    super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,</span>
+    <span class="c1">#                                          additional_image=additional_image)</span>
+
+<div class="viewcode-block" id="LensedPositions.image_position"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.lensed_position.LensedPositions.image_position">[docs]</a>    <span class="k">def</span> <span class="nf">image_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        on-sky image positions</span>
+
+<span class="sd">        :param kwargs_ps: keyword arguments of the point source model</span>
+<span class="sd">        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver</span>
+<span class="sd">        :param magnification_limit: float &gt;0 or None, if float is set and additional images are computed, only those</span>
+<span class="sd">         images will be computed that exceed the lensing magnification (absolute value) limit</span>
+<span class="sd">        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver</span>
+<span class="sd">         see LensEquationSolver() class for details</span>
+<span class="sd">        :return: image positions in x, y as arrays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_additional_image</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs_lens_eqn_solver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">kwargs_lens_eqn_solver</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">ra_source</span><span class="p">,</span> <span class="n">dec_source</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                          <span class="n">magnification_limit</span><span class="o">=</span><span class="n">magnification_limit</span><span class="p">,</span>
+                                                                          <span class="o">**</span><span class="n">kwargs_lens_eqn_solver</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ra_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;ra_image&#39;</span><span class="p">]</span>
+            <span class="n">dec_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ra_image</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dec_image</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensedPositions.source_position"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.lensed_position.LensedPositions.source_position">[docs]</a>    <span class="k">def</span> <span class="nf">source_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        original source position (prior to lensing)</span>
+
+<span class="sd">        :param kwargs_ps: point source keyword arguments</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list (required to ray-trace back in the source plane)</span>
+<span class="sd">        :return: x, y position (as numpy arrays)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ra_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;ra_image&#39;</span><span class="p">]</span>
+        <span class="n">dec_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
+        <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">x_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_source</span><span class="p">)</span>
+        <span class="n">y_source</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">y_source</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_source</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_source</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensedPositions.image_amplitude"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.lensed_position.LensedPositions.image_amplitude">[docs]</a>    <span class="k">def</span> <span class="nf">image_amplitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        image brightness amplitudes</span>
+
+<span class="sd">        :param kwargs_ps: keyword arguments of the point source model</span>
+<span class="sd">        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver</span>
+<span class="sd">        :param x_pos: pre-computed image position (no lens equation solver applied)</span>
+<span class="sd">        :param y_pos: pre-computed image position (no lens equation solver applied)</span>
+<span class="sd">        :param magnification_limit: float &gt;0 or None, if float is set and additional images are computed, only those</span>
+<span class="sd">         images will be computed that exceed the lensing magnification (absolute value) limit</span>
+<span class="sd">        :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver</span>
+<span class="sd">         see LensEquationSolver() class for details</span>
+<span class="sd">        :return: array of image amplitudes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_magnification</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">y_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span> <span class="o">=</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                          <span class="n">magnification_limit</span><span class="o">=</span><span class="n">magnification_limit</span><span class="p">,</span>
+                                                          <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="n">kwargs_lens_eqn_solver</span><span class="p">)</span>
+            <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">point_amp</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;source_amp&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mag</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">point_amp</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">x_pos</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">point_amp</span> <span class="o">=</span> <span class="n">_expand_to_array</span><span class="p">(</span><span class="n">point_amp</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point_amp</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensedPositions.source_amplitude"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.lensed_position.LensedPositions.source_amplitude">[docs]</a>    <span class="k">def</span> <span class="nf">source_amplitude</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        intrinsic brightness amplitude of point source</span>
+<span class="sd">        When brightnesses are defined in magnified on-sky positions, the intrinsic brightness is computed as the mean</span>
+<span class="sd">        in the magnification corrected image position brightnesses.</span>
+
+<span class="sd">        :param kwargs_ps: keyword arguments of the point source model</span>
+<span class="sd">        :param kwargs_lens: keyword argument list of the lens model(s), used when brightness are defined in</span>
+<span class="sd">         magnified on-sky positions</span>
+<span class="sd">        :return: brightness amplitude (as numpy array)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixed_magnification</span><span class="p">:</span>
+            <span class="n">source_amp</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;source_amp&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
+            <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">point_amp</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="s1">&#39;point_amp&#39;</span><span class="p">]</span>
+            <span class="n">source_amp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">point_amp</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">mag</span><span class="p">)))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">source_amp</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

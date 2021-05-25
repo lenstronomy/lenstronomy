@@ -52,7 +52,7 @@ class TestUldm(object):
         kappa_0 = 0.12
         theta_c = 6
         slope = 5.5
-        f_xx, f_yy, f_xy = self.model.hessian(x, y, kappa_0, theta_c, 0, 0, slope)
+        f_xx, f_xy, f_yx, f_yy = self.model.hessian(x, y, kappa_0, theta_c, 0, 0, slope)
         kappa = 1./2 * (f_xx + f_yy)
         kappa_direct = self.model.kappa_r(r, kappa_0, theta_c, slope)
         npt.assert_almost_equal(kappa, kappa_direct, decimal=5)

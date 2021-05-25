@@ -22,7 +22,11 @@ class TestLensPlot(object):
         lensModel = LensModel(lens_model_list=['SIS'])
         kwargs_lens = [{'theta_E': 1., 'center_x': 0, 'center_y': 0}]
         lens_plot.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
-                                     point_source=True, with_caustics=True)
+                                     point_source=True, with_caustics=True, fast_caustic=False)
+        plt.close()
+
+        lens_plot.lens_model_plot(ax, lensModel, kwargs_lens, numPix=10, deltaPix=0.5, sourcePos_x=0, sourcePos_y=0,
+                                  point_source=True, with_caustics=True, fast_caustic=True)
         plt.close()
 
     def test_arrival_time_surface(self):
@@ -53,6 +57,13 @@ class TestLensPlot(object):
 
         lens_plot.distortions(lensModel, kwargs_lens, num_pix=10, delta_pix=0.2, center_ra=0, center_dec=0,
                               differential_scale=0.0001, smoothing_scale=0.1)
+        plt.close()
+
+    def test_curved_arc_illustration(self):
+        f, ax = plt.subplots(1, 1, figsize=(4, 4))
+        lensModel = LensModel(lens_model_list=['CURVED_ARC_SIS_MST'])
+        kwargs_lens = [{'radial_stretch': 1.0466690706465702, 'tangential_stretch': 4.598552192305616, 'curvature': 0.8116297351731543, 'direction': 2.6288852083221323, 'center_x': -1.200866007937402, 'center_y': 0.6829881436542166}]
+        lens_plot.curved_arc_illustration(ax, lensModel, kwargs_lens)
         plt.close()
 
 

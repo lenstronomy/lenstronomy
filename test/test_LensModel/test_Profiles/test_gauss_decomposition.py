@@ -146,13 +146,13 @@ class TestSersicEllipseGaussDec(object):
 
         X, Y = np.meshgrid(x, y)
 
-        f_xx_s, f_yy_s, f_xy_s = self.sersic_sphere.hessian(X, Y,
+        f_xx_s, f_xy_s, f_yx_s, f_yy_s = self.sersic_sphere.hessian(X, Y,
                                                             center_x=center_x,
                                                             center_y=center_y,
                                                             n_sersic=n_sersic,
                                                             R_sersic=R_sersic,
                                                             k_eff=k_eff)
-        f_xx, f_yy, f_xy = self.sersic_gauss.hessian(X, Y, e1=e1, e2=e2,
+        f_xx, f_xy, f_yx, f_yy = self.sersic_gauss.hessian(X, Y, e1=e1, e2=e2,
                                                      center_x=center_x,
                                                      center_y=center_y,
                                                      n_sersic=n_sersic,
@@ -162,6 +162,7 @@ class TestSersicEllipseGaussDec(object):
         npt.assert_almost_equal(f_xx_s, f_xx, decimal=3)
         npt.assert_almost_equal(f_yy_s, f_yy, decimal=3)
         npt.assert_almost_equal(f_xy_s, f_xy, decimal=3)
+        npt.assert_almost_equal(f_xy_s, f_yx_s, decimal=3)
 
     def test_density_2d(self):
         """

@@ -1,15 +1,9 @@
 __author__ = 'sibirrer'
 
-
 import numpy as np
 import numpy.testing as npt
 import pytest
 import lenstronomy.Util.param_util as param_util
-
-try:
-    import fastell4py
-except:
-    print("Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!")
 
 
 class TestSIE(object):
@@ -18,11 +12,11 @@ class TestSIE(object):
         """
         def setup(self):
             from lenstronomy.LensModel.Profiles.sie import SIE
-            from lenstronomy.LensModel.Profiles.pemd import PEMD
+            from lenstronomy.LensModel.Profiles.epl import EPL
             from lenstronomy.LensModel.Profiles.nie import NIE
-            self.sie = SIE(NIE=False, suppress_fastell=True)
+            self.sie = SIE(NIE=False)
             self.sie_nie = SIE(NIE=True)
-            self.spemd = PEMD(suppress_fastell=True)
+            self.epl = EPL()
             self.nie = NIE()
 
         def test_function(self):
@@ -34,7 +28,7 @@ class TestSIE(object):
             e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             values = self.sie.function(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.function(x, y, theta_E, gamma, e1, e2)
+            values_spemd = self.epl.function(x, y, theta_E, gamma, e1, e2)
             assert values == values_spemd
 
             values_nie = self.sie_nie.function(x, y, theta_E, e1, e2)
@@ -51,7 +45,7 @@ class TestSIE(object):
             e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             values = self.sie.derivatives(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.derivatives(x, y, theta_E, gamma, e1, e2)
+            values_spemd = self.epl.derivatives(x, y, theta_E, gamma, e1, e2)
             assert values == values_spemd
 
             values = self.sie_nie.derivatives(x, y, theta_E, e1, e2)
@@ -68,7 +62,7 @@ class TestSIE(object):
             e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
             values = self.sie.hessian(x, y, theta_E, e1, e2)
             gamma = 2
-            values_spemd = self.spemd.hessian(x, y, theta_E, gamma, e1, e2)
+            values_spemd = self.epl.hessian(x, y, theta_E, gamma, e1, e2)
             assert values[0] == values_spemd[0]
 
             values = self.sie_nie.hessian(x, y, theta_E, e1, e2)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Contributing to lenstronomy &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>Contributing to lenstronomy &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -71,11 +71,11 @@
 <span class="pre">git</span> <span class="pre">remote</span> <span class="pre">add</span> <span class="pre">lenstronomyproject</span> <span class="pre">https://github.com/sibirrer/lenstronomy.git</span>
 <span class="pre">`</span></code></div></blockquote>
 <p>### Create a branch for your new feature</p>
-<p>Create a <em>branch</em> off the <cite>lenstronomyproject</cite> master branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:</p>
+<p>Create a <em>branch</em> off the <cite>lenstronomyproject</cite> main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:</p>
 <blockquote>
 <div><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
-<span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">-b</span> <span class="pre">&lt;your-branch-name&gt;</span> <span class="pre">lenstronomyproject/master</span>
+<span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">-b</span> <span class="pre">&lt;your-branch-name&gt;</span> <span class="pre">lenstronomyproject/main</span>
 <span class="pre">`</span></code></div></blockquote>
 <p>### Hack away!</p>
 <p>Write the new code you would like to contribute and <em>commit</em> it to the feature branch on your local repository. Ideally commit small units of work often with clear and descriptive commit messages describing the changes you made. To commit changes to a file:</p>
@@ -101,27 +101,27 @@
 <li>Go to [lenstronomy Pull Requests](<a class="reference external" href="https://github.com/sibirrer/lenstronomy/pulls">https://github.com/sibirrer/lenstronomy/pulls</a>)</li>
 <li>Click the green <strong>New pull request</strong> button</li>
 <li>Click <strong>compare across forks</strong></li>
-<li>Confirm that the base fork is <cite>sibirrer/lenstronomy</cite> and the base branch is <cite>master</cite></li>
+<li>Confirm that the base fork is <cite>sibirrer/lenstronomy</cite> and the base branch is <cite>main</cite></li>
 <li>Confirm the head fork is <cite>&lt;your-account&gt;/lenstronomy</cite> and the compare branch is <cite>&lt;your-branch-name&gt;</cite></li>
 <li>Give your pull request a title and fill out the the template for the description</li>
 <li>Click the green <strong>Create pull request</strong> button</li>
 </ol>
 </div></blockquote>
 <p>### Updating your branch</p>
-<p>As you work on your feature, new commits might be made to the <cite>sibirrer/lenstronomy</cite> master branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:</p>
+<p>As you work on your feature, new commits might be made to the <cite>sibirrer/lenstronomy</cite> main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:</p>
 <blockquote>
 <div><ul class="simple">
 <li>If your pull request has no conflicts, click <strong>Update branch</strong></li>
 <li>If your pull request has conflicts, click <strong>Resolve conflicts</strong>, manually resolve the conflicts and click <strong>Mark as resolved</strong></li>
-<li><em>merge</em> the <cite>lenstronomyproject</cite> master branch from the command line:
+<li><em>merge</em> the <cite>lenstronomyproject</cite> main branch from the command line:
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
-<span class="pre">git</span> <span class="pre">merge</span> <span class="pre">lenstronomyproject/master</span>
+<span class="pre">git</span> <span class="pre">merge</span> <span class="pre">lenstronomyproject/main</span>
 <span class="pre">`</span></code></li>
-<li><em>rebase</em> your feature branch onto the <cite>lenstronomy</cite> master branch from the command line:
+<li><em>rebase</em> your feature branch onto the <cite>lenstronomy</cite> main branch from the command line:
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
-<span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">lenstronomyproject/master</span>
+<span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">lenstronomyproject/main</span>
 <span class="pre">`</span></code></li>
 </ul>
 </div></blockquote>
@@ -163,7 +163,7 @@
 </ul>
 </div></blockquote>
 <p>For more information see the Astropy guide to [Writing Documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/development/docguide.html">https://docs.astropy.org/en/stable/development/docguide.html</a>).</p>
-<p>This page is inspired by the Contributions guidelines of the [Skypy project](<a class="reference external" href="https://github.com/skypyproject/skypy/blob/master/CONTRIBUTING.md">https://github.com/skypyproject/skypy/blob/master/CONTRIBUTING.md</a>).</p>
+<p>This page is inspired by the Contributions guidelines of the [Skypy project](<a class="reference external" href="https://github.com/skypyproject/skypy/blob/main/CONTRIBUTING.md">https://github.com/skypyproject/skypy/blob/main/CONTRIBUTING.md</a>).</p>
 </div>
 </div>
 
@@ -226,7 +226,7 @@
         <li class="right" >
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

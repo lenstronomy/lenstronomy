@@ -25,7 +25,7 @@ class TestEPL(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
         values_nie = self.NIE.function(x, y, phi_E, e1, e2, 0.)
         delta_f = values[0] - values[1]
         delta_f_nie = values_nie[0] - values_nie[1]
@@ -35,7 +35,7 @@ class TestEPL(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
         values_nie = self.NIE.function(x, y, phi_E, e1, e2, 0.)
         delta_f = values[0] - values[1]
         delta_f_nie = values_nie[0] - values_nie[1]
@@ -45,7 +45,7 @@ class TestEPL(object):
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         x = np.array([1., 2])
         y = np.array([2, 0])
-        values = self.EPL.function(x, y, phi_E, e1, e2, gamma)
+        values = self.EPL.function(x, y, phi_E, gamma, e1, e2)
         values_nie = self.NIE.function(x, y, phi_E, e1, e2, 0.)
         delta_f = values[0] - values[1]
         delta_f_nie = values_nie[0] - values_nie[1]
@@ -59,7 +59,7 @@ class TestEPL(object):
         q = 1.
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
         f_x_nie, f_y_nie = self.NIE.derivatives(x, y, phi_E, e1, e2, 0.)
         npt.assert_almost_equal(f_x, f_x_nie, decimal=4)
         npt.assert_almost_equal(f_y, f_y_nie, decimal=4)
@@ -67,7 +67,7 @@ class TestEPL(object):
         q = 0.7
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
         f_x_nie, f_y_nie = self.NIE.derivatives(x, y, phi_E, e1, e2, 0.)
         npt.assert_almost_equal(f_x, f_x_nie, decimal=4)
         npt.assert_almost_equal(f_y, f_y_nie, decimal=4)
@@ -80,11 +80,12 @@ class TestEPL(object):
         q = 0.9
         phi_G = 1.
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy,f_xy = self.EPL.hessian(x, y, phi_E, e1, e2, gamma)
-        f_xx_nie, f_yy_nie, f_xy_nie = self.NIE.hessian(x, y, phi_E, e1, e2, 0.)
+        f_xx, f_xy, f_yx, f_yy = self.EPL.hessian(x, y, phi_E, gamma, e1, e2)
+        f_xx_nie, f_xy_nie, f_yx_nie, f_yy_nie = self.NIE.hessian(x, y, phi_E, e1, e2, 0.)
         npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
     def test_static(self):
         x, y = 1., 1.
@@ -110,15 +111,17 @@ class TestEPL(object):
 
         x = 0.
         y = 0.
-        f_x, f_y = self.EPL.derivatives(x, y, phi_E, e1, e2, gamma)
+        f_x, f_y = self.EPL.derivatives(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_x, 0.)
         npt.assert_almost_equal(f_y, 0.)
 
         x = 0.
         y = 0.
-        f_xx, f_xy, f_yy = self.EPL.hessian(x, y, phi_E, e1, e2, gamma)
+        f_xx, f_xy, f_yx, f_yy = self.EPL.hessian(x, y, phi_E, gamma, e1, e2)
         npt.assert_almost_equal(f_xx, 10**10)
-        npt.assert_almost_equal(f_yy, 0.)
+        npt.assert_almost_equal(f_yy, 10**10)
+        npt.assert_almost_equal(f_xy, 0)
+        npt.assert_almost_equal(f_yx, 0)
 
 
 if __name__ == '__main__':

@@ -60,20 +60,20 @@ class TestMultipole(object):
         npt.assert_almost_equal(f_y[1], -0.006541883, decimal=6)
         npt.assert_almost_equal(f_y[2], 0.001649720, decimal=6)
 
-
     def test_hessian(self):
         x = 1
         y = 2
         m = 4
         a_m = 0.05
         phi_m = 25 * np.pi / 180.
-        f_xx, f_yy, f_xy = self.Multipole.hessian(x, y, m, a_m, phi_m)
+        f_xx, f_xy, f_yx, f_yy = self.Multipole.hessian(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(f_xx, -0.016042338, decimal=6)
         npt.assert_almost_equal(f_yy, -0.004010584, decimal=6)
         npt.assert_almost_equal(f_xy, 0.008021169, decimal=6)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         x = np.array([1])
         y = np.array([2])
-        f_xx, f_yy,f_xy = self.Multipole.hessian(x, y, m, a_m, phi_m)
+        f_xx, f_xy, f_yx, f_yy = self.Multipole.hessian(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(f_xx[0], -0.016042338, decimal=6)
         npt.assert_almost_equal(f_yy[0], -0.004010584, decimal=6)
         npt.assert_almost_equal(f_xy[0], 0.008021169, decimal=6)
@@ -81,11 +81,11 @@ class TestMultipole(object):
         y = np.array([2,1,1])
         values = self.Multipole.hessian(x, y, m, a_m, phi_m)
         npt.assert_almost_equal(values[0][0], -0.016042338, decimal=6)
-        npt.assert_almost_equal(values[1][0], -0.004010584, decimal=6)
-        npt.assert_almost_equal(values[2][0], 0.008021169, decimal=6)
+        npt.assert_almost_equal(values[3][0], -0.004010584, decimal=6)
+        npt.assert_almost_equal(values[1][0], 0.008021169, decimal=6)
         npt.assert_almost_equal(values[0][1], 0.001417956, decimal=6)
-        npt.assert_almost_equal(values[1][1], 0.012761602, decimal=6)
-        npt.assert_almost_equal(values[2][1], -0.004253867, decimal=6)
+        npt.assert_almost_equal(values[3][1], 0.012761602, decimal=6)
+        npt.assert_almost_equal(values[1][1], -0.004253867, decimal=6)
 
 
 if __name__ == '__main__':

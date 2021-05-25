@@ -273,7 +273,7 @@ class ParticleSwarmOptimizer(object):
         """
         best_sort = np.sort([particle.personal_best.fitness for particle in
                              self.swarm])[::-1]
-        mean_fit = np.mean(best_sort[1:math.floor(self.particleCount * p)])
+        mean_fit = np.mean(best_sort[1:int(math.floor(self.particleCount * p))])
         #print( "best %f, mean_fit %f, ration %f"%( self.global_best[0],
         # mean_fit, abs((self.global_best[0]-mean_fit))))
         return abs(self.global_best.fitness - mean_fit) < m

@@ -27,7 +27,7 @@ class TestNIE(object):
         kwargs_light = {'amp': 1., 'e1': e1, 'e2': e2, 's_scale': s}
         kwargs_lens = {'theta_E': 1., 'e1': e1, 'e2': e2, 's_scale': s}
         flux = light.function(x=x, y=1., **kwargs_light)
-        f_xx, f_yy, f_xy = lens.hessian(x=x, y=1., **kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = lens.hessian(x=x, y=1., **kwargs_lens)
         kappa = 1/2. * (f_xx + f_yy)
         npt.assert_almost_equal(flux/flux[-1], kappa/kappa[-1], decimal=4)
 

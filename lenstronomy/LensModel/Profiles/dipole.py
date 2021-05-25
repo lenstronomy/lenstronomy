@@ -4,7 +4,7 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
-__all__ = ['Dipole', 'Dipole_util']
+__all__ = ['Dipole', 'DipoleUtil']
 
 
 class Dipole(LensProfileBase):
@@ -78,10 +78,10 @@ class Dipole(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
 
-class Dipole_util(object):
+class DipoleUtil(object):
     """
     pre-calculation of dipole properties
     """

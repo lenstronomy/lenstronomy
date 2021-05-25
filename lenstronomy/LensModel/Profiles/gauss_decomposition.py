@@ -143,7 +143,7 @@ class GaussianEllipseKappaSet(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Hessian :math:`\partial^2f/\partial x^2`, :math:`\partial^2 f/\partial y^2`, :math:`\partial^2/\partial x\partial y` for elliptical Gaussian convergence.
+        :return: Hessian :math:`\partial^2f/\partial x^2`, :math:`\partial^2/\partial x\partial y`, :math:`\partial^2/\partial y\partial x`, :math:`\partial^2 f/\partial y^2` for elliptical Gaussian convergence.
         :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
         """
         f_xx = np.zeros_like(x, dtype=float)
@@ -151,19 +151,13 @@ class GaussianEllipseKappaSet(LensProfileBase):
         f_xy = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
-            f_xx_i, f_yy_i, f_xy_i = self.gaussian_ellipse_kappa.hessian(
-                                                            x, y,
-                                                            amp=amp[i],
-                                                            sigma=sigma[i],
-                                                            e1=e1,
-                                                            e2=e2,
-                                                            center_x=center_x,
-                                                            center_y=center_y)
+            f_xx_i, f_xy_i, _, f_yy_i = self.gaussian_ellipse_kappa.hessian(x, y, amp=amp[i], sigma=sigma[i], e1=e1,
+                                                                            e2=e2, center_x=center_x, center_y=center_y)
             f_xx += f_xx_i
             f_yy += f_yy_i
             f_xy += f_xy_i
 
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.8.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -102,7 +102,10 @@ as part of the kinematics computation (can be used to ignore substructure, shear
 main deflector potential</li>
 <li><strong>theta_E</strong> – (optional float) estimate of the Einstein radius. If present, does not numerically compute this
 quantity in this routine numerically</li>
+<li><strong>gamma</strong> – local power-law slope at the Einstein radius (optional)</li>
 <li><strong>kwargs_mge</strong> – keyword arguments that go into the MGE decomposition routine</li>
+<li><strong>analytic_kinematics</strong> – bool, if True, solves the Jeans equation analytically for the
+power-law mass profile with Hernquist light profile</li>
 </ul>
 </td>
 </tr>
@@ -134,6 +137,8 @@ deflector light.</li>
 <li><strong>Hernquist_approx</strong> – boolean, if True replaces the actual light profile(s) with a Hernquist model with
 matched half-light radius.</li>
 <li><strong>kwargs_mge</strong> – keyword arguments that go into the MGE decomposition routine</li>
+<li><strong>analytic_kinematics</strong> – bool, if True, solves the Jeans equation analytically for the
+power-law mass profile with Hernquist light profile and adjust the settings accordingly</li>
 </ul>
 </td>
 </tr>
@@ -197,7 +202,9 @@ ATTENTION: This may not be accurate for your specific problem!</li>
 <dl class="method">
 <dt id="lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion">
 <code class="descname">velocity_dispersion</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>kwargs_lens_light</em>, <em>kwargs_anisotropy</em>, <em>r_eff=None</em>, <em>theta_E=None</em>, <em>gamma=None</em>, <em>kappa_ext=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/kinematics_api.html#KinematicsAPI.velocity_dispersion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI.velocity_dispersion" title="Permalink to this definition">¶</a></dt>
-<dd><p>API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]</p>
+<dd><p>API for both, analytic and numerical JAM to compute the velocity dispersion [km/s]
+This routine uses the galkin_setting() routine for the Galkin configurations (see there what options and input
+is relevant.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -262,8 +269,10 @@ an Osipkov and Merritt (‘OM’) stellar anisotropy distribution.</p>
 <li><strong>kwargs_anisotropy</strong> – stellar anisotropy keyword arguments</li>
 <li><strong>r_eff</strong> – projected half-light radius of the stellar light associated with the deflector galaxy, optional,
 if set to None will be computed in this function with default settings that may not be accurate.</li>
-<li><strong>num_kin_sampling</strong> – int, number of draws from a kinematic prediction of a LOS</li>
-<li><strong>num_psf_sampling</strong> – int, number of displacements/render from a spectra to be displaced on the IFU</li>
+<li><strong>theta_E</strong> – circularized Einstein radius, optional, if not provided will either be computed in this
+function with default settings or not required</li>
+<li><strong>gamma</strong> – power-law slope at the Einstein radius, optional</li>
+<li><strong>kappa_ext</strong> – external convergence</li>
 </ul>
 </td>
 </tr>
@@ -894,7 +903,7 @@ if set to None will be computed in this function with default settings that may 
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

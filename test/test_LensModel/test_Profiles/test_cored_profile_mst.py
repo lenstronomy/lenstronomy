@@ -47,13 +47,13 @@ class TestMassSheet(object):
     def test_hessian(self):
         x = np.array([0.01, 1])
         y = np.array([0, 0])
-        f_xx, f_yy, f_xy = self.profile1.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.profile1.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0, decimal=3)  # test to demand that the profile is (almost) zero
-        f_xx, f_yy, f_xy = self.profile2.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.profile2.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0, decimal=3)  # test to demand that the profile is (almost) zero
-        f_xx, f_yy, f_xy = self.profile3.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.profile3.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0, decimal=3)  # test to demand that the profile is (almost) zero
-        f_xx, f_yy, f_xy = self.profile4.hessian(x, y, **self.kwargs_lens)
+        f_xx, f_xy, f_yx, f_yy = self.profile4.hessian(x, y, **self.kwargs_lens)
         npt.assert_almost_equal(f_xx, 0, decimal=3)  # test to demand that the profile is (almost) zero
 
 

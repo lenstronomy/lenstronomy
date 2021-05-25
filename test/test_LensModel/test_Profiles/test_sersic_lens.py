@@ -112,24 +112,26 @@ class TestSersic(object):
         n_sersic = 2.
         R_sersic = 1.
         k_eff = 0.2
-        f_xx, f_yy,f_xy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
+        f_xx, f_xy, f_yx, f_yy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
         assert f_xx[0] == 0.1123170666045793
         npt.assert_almost_equal(f_yy[0], -0.047414082641598576, decimal=10)
         npt.assert_almost_equal(f_xy[0], -0.10648743283078525 , decimal=10)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=5)
         x = np.array([1,3,4])
         y = np.array([2,1,1])
         values = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
         assert values[0][0] == 0.1123170666045793
-        npt.assert_almost_equal(values[1][0], -0.047414082641598576, decimal=10)
-        npt.assert_almost_equal(values[2][0], -0.10648743283078525 , decimal=10)
+        npt.assert_almost_equal(values[3][0], -0.047414082641598576, decimal=10)
+        npt.assert_almost_equal(values[1][0], -0.10648743283078525 , decimal=10)
         npt.assert_almost_equal(values[0][1], -0.053273787681591328, decimal=10)
-        npt.assert_almost_equal(values[1][1], 0.076243427402007985, decimal=10)
-        npt.assert_almost_equal(values[2][1], -0.048568955656349749, decimal=10)
+        npt.assert_almost_equal(values[3][1], 0.076243427402007985, decimal=10)
+        npt.assert_almost_equal(values[1][1], -0.048568955656349749, decimal=10)
 
-        f_xx2, f_yy2, f_xy2 = self.sersic_2.hessian(x, y, n_sersic, R_sersic, k_eff, 0.0000001, 0)
+        f_xx2, f_xy2, f_yx2, f_yy2 = self.sersic_2.hessian(x, y, n_sersic, R_sersic, k_eff, 0.0000001, 0)
         npt.assert_almost_equal(f_xx2, values[0])
-        npt.assert_almost_equal(f_yy2, values[1], decimal=6)
-        npt.assert_almost_equal(f_xy2, values[2], decimal=6)
+        npt.assert_almost_equal(f_yy2, values[3], decimal=6)
+        npt.assert_almost_equal(f_xy2, values[1], decimal=6)
+        npt.assert_almost_equal(f_yx2, values[2], decimal=6)
 
     def test_alpha_abs(self):
         x = 1.
@@ -171,13 +173,13 @@ class TestSersic(object):
         n_sersic = 4.5
         R_sersic = 2.5
         k_eff = 0.8
-        f_xx1, f_yy1, f_xy1 = self.sersic.hessian(x1, y1, n_sersic, R_sersic, k_eff)
-        f_xx2, f_yy2, f_xy2 = self.sersic.hessian(x2, y2, n_sersic, R_sersic, k_eff)
+        f_xx1, f_xy1, f_yx1, f_yy1 = self.sersic.hessian(x1, y1, n_sersic, R_sersic, k_eff)
+        f_xx2, f_xy2, f_yx2, f_yy2 = self.sersic.hessian(x2, y2, n_sersic, R_sersic, k_eff)
         kappa_1 = (f_xx1 + f_yy1) / 2
         kappa_2 = (f_xx2 + f_yy2) / 2
         npt.assert_almost_equal(kappa_1, kappa_2, decimal=10)
-        A_1 = (1 - f_xx1) * (1 - f_yy1) - f_xy1**2
-        A_2 = (1 - f_xx2) * (1 - f_yy2) - f_xy2 ** 2
+        A_1 = (1 - f_xx1) * (1 - f_yy1) - f_xy1 * f_yx1
+        A_2 = (1 - f_xx2) * (1 - f_yy2) - f_xy2 * f_yx2
         npt.assert_almost_equal(A_1, A_2, decimal=10)
 
     def test_convergernce(self):
@@ -190,7 +192,7 @@ class TestSersic(object):
         n_sersic = 4.5
         R_sersic = 2.5
         k_eff = 0.2
-        f_xx, f_yy, f_xy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
+        f_xx, f_xy, f_yx, f_yy = self.sersic.hessian(x, y, n_sersic, R_sersic, k_eff)
         kappa = (f_xx + f_yy) / 2.
         assert kappa[0] > 0
         flux = self.sersic_light.function(x, y, amp=1., R_sersic=R_sersic, n_sersic=n_sersic)
@@ -203,7 +205,7 @@ class TestSersic(object):
         e1, e2 = 0.4, 0.
         q = ellipticity2phi_q(e1, e2)[1]
         kappa_ellipse = self.sersic_2.projected_mass(xvalues, 0, q, n_sersic, R_sersic, k_eff)
-        fxx, fyy, _ = self.sersic_2.hessian(xvalues, 0, n_sersic, R_sersic, k_eff, e1, e2)
+        fxx, _, _, fyy = self.sersic_2.hessian(xvalues, 0, n_sersic, R_sersic, k_eff, e1, e2)
 
         npt.assert_almost_equal(kappa_ellipse, 0.5*(fxx + fyy), decimal=5)
 
@@ -213,6 +215,7 @@ class TestSersic(object):
         k, bn = self.sersic.k_bn(n, Re)
         Re_new = self.sersic.k_Re(n, k)
         assert Re == Re_new
+
 
 if __name__ == '__main__':
     pytest.main()

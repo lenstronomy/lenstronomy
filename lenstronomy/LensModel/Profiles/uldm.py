@@ -26,7 +26,7 @@ class Uldm(LensProfileBase):
     For an ULDM soliton profile without contributions to background potential, it
     turns out that :math: `\beta = 8, a = 0.091`. We allow :math: `\beta` to be 
     different from 8 to model solitons which feel the influence of background 
-    potential (see 2105.xxxxx)
+    potential (see 2105.10873)
     The profile has, as parameters:
     :param kappa_0: central convergence
     :param theta_c: core radius (in arcseconds)

@@ -89,5 +89,4 @@ class CoredDensityMST(LensProfileBase):
         kappa_ext = 1 - lambda_approx
         f_xx_cd, f_xy_cd, f_yx_cd, f_yy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
         f_xx_ms, f_xy_ms, f_yx_ms, f_yy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
-        return f_xx_cd - f_xx_ms, f_xy_cd - f_xy_ms, f_yx_cd - f_yx_ms, f_yy_cd - f_yy_ms
         return (f_xx_cd - f_xx_ms)/lambda_approx, (f_xy_cd - f_xy_ms)/lambda_approx, (f_yx_cd - f_yx_ms)/lambda_approx, (f_yy_cd - f_yy_ms)/lambda_approx 

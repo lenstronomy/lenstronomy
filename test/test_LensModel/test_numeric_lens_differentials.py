@@ -309,22 +309,22 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_cored_density_mst(self):
-        kwargs = {'lambda_approx': 1.1, 'r_core': 20}
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY_MST']
         self.assert_differentials(lens_model, kwargs)
 
     def test_cored_density_2_mst(self):
-        kwargs = {'lambda_approx': 1.1, 'r_core': 20}
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY_2_MST']
         self.assert_differentials(lens_model, kwargs)
 
     def test_cored_density_exp_mst(self):
-        kwargs = {'lambda_approx': 1.1, 'r_core': 20}
+        kwargs = {'lambda_approx': 1.1, 'r_core': 8}
         lens_model = ['CORED_DENSITY_EXP_MST']
         self.assert_differentials(lens_model, kwargs)
 
     def test_cored_density_uldm_mst(self):
-        kwargs = {'lambda_approx': 0.9, 'r_core': 20}
+        kwargs = {'lambda_approx': 0.9, 'r_core': 8}
         lens_model = ['CORED_DENSITY_ULDM_MST']
         self.assert_differentials(lens_model, kwargs)
 

@@ -323,8 +323,13 @@ class TestNumericsProfile(object):
         lens_model = ['CORED_DENSITY_EXP_MST']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_cored_density_uldm_mst(self):
+        kwargs = {'lambda_approx': 0.9, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_ULDM_MST']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_uldm(self):
-        kwargs = {'kappa_0': 0.1, 'theta_c': 8}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 5, 'slope': 7.5}
         lens_model = ['ULDM']
         self.assert_differentials(lens_model, kwargs)
 

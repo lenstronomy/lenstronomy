@@ -17,14 +17,16 @@ class Uldm(LensProfileBase):
 
     .. math::
 
-        \rho = \rho_0 (1 + a(r/r_c)^2)^{-\beta}
+        \\rho = \\rho_0 (1 + a(\\theta/\\theta_c)^2)^{-\\beta}
 
-    where :math:`r_c` is the core radius, corresponding to the radius where the
-    density drops by half its central value, :math: `\beta` is the slope of
-    the profile, and :math: `a` is a parameter, dependent on :math: `\beta`, chosen such
-    that :math: `r_c` indeed corresponds to the radius where the density drops by half.
+    where :math:`\\theta_c` is the core radius, corresponding to the radius where the
+    density drops by half its central value, :math: `\\beta` is the slope (called just slope 
+    in the parameters of this model), :math: `\\rho_0 = \\kappa_0 \\Sigma_c/D_lens`,
+    and :math: `a` is a parameter, dependent on :math: `\\beta`, chosen such
+    that :math: `\\theta_c` indeed corresponds to the radius where the density drops by half
+    (simple math gives :math: `a = 0.5^{-1/\\beta} - 1` ).
     For an ULDM soliton profile without contributions to background potential, it
-    turns out that :math: `\beta = 8, a = 0.091`. We allow :math: `\beta` to be 
+    turns out that :math: `\\beta = 8, a = 0.091`. We allow :math: `\\beta` to be 
     different from 8 to model solitons which feel the influence of background 
     potential (see 2105.10873)
     The profile has, as parameters:
@@ -37,7 +39,7 @@ class Uldm(LensProfileBase):
     lower_limit_default = {'kappa_0': 0, 'theta_c': 0, 'slope': 3.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'kappa_0': 1., 'theta_c': 100, 'slope': 10, 'center_x': 100, 'center_y': 100}
 
-    def rhotilde(self, kappa_0, theta_c, slope = 8):
+    def rhotilde(self, kappa_0, theta_c, slope=8):
         """
         Computes the central density in angular units
         :param kappa_0: central convergence of profile
@@ -73,7 +75,7 @@ class Uldm(LensProfileBase):
                 hyp3f2(1, 1, slope - 0.5, 2, 2, -(a_factor_sqrt * r_i / theta_c)**2.) for r_i in r], dtype=float)
         return hypgeom
 
-    def alpha_radial(self, r, kappa_0, theta_c, slope = 8):
+    def alpha_radial(self, r, kappa_0, theta_c, slope=8):
         """
         returns the radial part of the deflection angle
 
@@ -138,7 +140,7 @@ class Uldm(LensProfileBase):
     def density(self, R, kappa_0, theta_c, slope=8):
         """
         three dimensional ULDM profile in angular units
-        (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        (rho0_physical = rho0_angular Sigma_crit / D_lens)
         :param R: radius of interest
         :param kappa_0: central convergence of profile
         :param theta_c: core radius (in arcsec)
@@ -179,7 +181,7 @@ class Uldm(LensProfileBase):
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x=0, center_y=0, slope=8):
         """
-        projected two dimensional ULDM profile (convergence * \Sigma_crit), but
+        projected two dimensional ULDM profile (convergence * Sigma_crit), but
         given our units convention for rho0, it is basically the convergence
 
         :param R: radius of interest

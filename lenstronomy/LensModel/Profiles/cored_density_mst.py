@@ -52,10 +52,10 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: lensing potential correction
         """
-        kappa_ext = 1 - lambda_approx
+        kappa_ext = (1 - lambda_approx)/lambda_approx
         f_cored_density = self._profile.function(x, y, kappa_ext, r_core, center_x, center_y)
         f_ms = self._convergence.function(x, y, kappa_ext, center_x, center_y)
-        return (f_cored_density - f_ms)/lambda_approx
+        return f_cored_density - f_ms
 
     def derivatives(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
         """
@@ -69,10 +69,10 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: alpha_x, alpha_y
         """
-        kappa_ext = 1 - lambda_approx
+        kappa_ext = (1 - lambda_approx)/lambda_approx
         f_x_cd, f_y_cd = self._profile.derivatives(x, y, kappa_ext, r_core, center_x, center_y)
         f_x_ms, f_y_ms = self._convergence.derivatives(x, y, kappa_ext, center_x, center_y)
-        return (f_x_cd - f_x_ms)/lambda_approx, (f_y_cd - f_y_ms)/lambda_approx
+        return f_x_cd - f_x_ms, f_y_cd - f_y_ms
 
     def hessian(self, x, y, lambda_approx, r_core, center_x=0, center_y=0):
         """
@@ -86,7 +86,7 @@ class CoredDensityMST(LensProfileBase):
         :param center_y: y-center of the profile
         :return: df/dxx, df/dxy, df/dyx, df/dyy
         """
-        kappa_ext = 1 - lambda_approx
+        kappa_ext = (1 - lambda_approx)/lambda_approx
         f_xx_cd, f_xy_cd, f_yx_cd, f_yy_cd = self._profile.hessian(x, y, kappa_ext, r_core, center_x, center_y)
         f_xx_ms, f_xy_ms, f_yx_ms, f_yy_ms = self._convergence.hessian(x, y, kappa_ext, center_x, center_y)
-        return (f_xx_cd - f_xx_ms)/lambda_approx, (f_xy_cd - f_xy_ms)/lambda_approx, (f_yx_cd - f_yx_ms)/lambda_approx, (f_yy_cd - f_yy_ms)/lambda_approx 
+        return f_xx_cd - f_xx_ms, f_xy_cd - f_xy_ms, f_yx_cd - f_yx_ms, f_yy_cd - f_yy_ms 

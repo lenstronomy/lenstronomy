@@ -222,6 +222,39 @@ class LensCosmo(object):
         theta_r200 = r200 / self.dd / const.arcsec
         return theta_r200
 
+    def jeans_physical2angle(self, M, c, sigma_v, halo_age):
+        """
+        converts the physical mass, concentration, and velocity-weighted cross
+        section of an isothermal SIDM halo halo into lensing parameters.
+
+        :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)
+        :param c: NFW concentration parameter (r200/r_s)
+        :param sigma_v: velocity-weighted cross section, <\sigma v>, in (cm^2 / g)*(km/s)
+        :param halo_age: age of the halo, in Gyr
+
+        :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs (observed bending angle at the scale radius
+        """
+        rho0, Rs, r200 = self.nfwParam_physical(M, c)
+        Rs_angle = Rs / self.dd / const.arcsec
+        reduced_rho0 = (rho0 / self.sigma_crit) * self.dd * const.arcsec
+
+        from astropy import units as u
+        from lenstronomy.LensModel.Profiles.jeans_iso import _jeans_soln
+        # Need a conversion factor
+        factor = (
+            1 * u.Unit('g / solMass') * u.Unit('Mpc / cm')**2 * u.Unit('Mpc / km')
+            * u.Unit('s / Gyr')
+        ).to(1).value
+
+        density_ratio = factor / (rho0 * halo_age * sigma_v)
+        if density_ratio > 1000:
+            return Rs_angle, 0.0, 1.0, 1.0, reduced_rho0
+
+        a = _jeans_soln.solve_nfw(density_ratio)
+        b, c = _jeans_soln.solve_jeans_boundary(a)
+
+        return Rs_angle, a, b, c, reduced_rho0
+
     def sis_theta_E2sigma_v(self, theta_E):
         """
         converts the lensing Einstein radius into a physical velocity dispersion

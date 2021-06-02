@@ -285,6 +285,9 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
+        elif lens_type == 'JEANS_ISO':
+            from lenstronomy.LensModel.Profiles.jeans_iso import SIDMJeans
+            return SIDMJeans()
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
 

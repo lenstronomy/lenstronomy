@@ -4,8 +4,8 @@ __author__ = 'sibirrer'
 # the potential therefore is its integral
 
 import numpy as np
-import warnings
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.LensModel.Profiles.nfw import NFW
 
 __all__ = ['TNFW']
 
@@ -17,6 +17,7 @@ class TNFW(LensProfileBase):
     relation are: R_200 = c * Rs
 
     """
+    profile_name = 'TNFW'
     param_names = ['Rs', 'alpha_Rs', 'r_trunc', 'center_x', 'center_y']
     lower_limit_default = {'Rs': 0, 'alpha_Rs': 0, 'r_trunc': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'Rs': 100, 'alpha_Rs': 10, 'r_trunc': 100, 'center_x': 100, 'center_y': 100}
@@ -24,7 +25,6 @@ class TNFW(LensProfileBase):
     def __init__(self):
         """
 
-        :param interpol: bool, if True, interpolates the functions F(), g() and h()
         """
         self._s = 0.001
         super(LensProfileBase, self).__init__()
@@ -36,13 +36,12 @@ class TNFW(LensProfileBase):
         :param y: angular position
         :param Rs: angular turn over point
         :param alpha_Rs: deflection at Rs
+        :param r_trunc: truncation radius
         :param center_x: center of halo
         :param center_y: center of halo
-        :return:
+        :return: lensing potential
         """
-        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        #if Rs < 0.0001:
-        #    Rs = 0.0001
+        rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
@@ -51,7 +50,7 @@ class TNFW(LensProfileBase):
 
         return f_
 
-    def L(self, x, tau):
+    def _L(self, x, tau):
         """
         Logarithm that appears frequently
         :param x: r/Rs
@@ -88,7 +87,7 @@ class TNFW(LensProfileBase):
             else:
                 return (x ** 2 - 1) ** -.5 * np.arctan((x ** 2 - 1) ** .5)
 
-    def derivatives(self, x, y, Rs=None, alpha_Rs=None, r_trunc=None, center_x=0, center_y=0):
+    def derivatives(self, x, y, Rs, alpha_Rs, r_trunc, center_x=0, center_y=0):
 
         """
         returns df/dx and df/dy of the function (integral of TNFW), which are the deflection angles
@@ -102,9 +101,7 @@ class TNFW(LensProfileBase):
         :param center_y: center of halo (in angular units)
         :return: deflection angle in x, deflection angle in y
         """
-        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        #if Rs < 0.0000001:
-        #    Rs = 0.0000001
+        rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
@@ -127,9 +124,7 @@ class TNFW(LensProfileBase):
         :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
         """
 
-        rho0_input = self._alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        #if Rs < 0.0001:
-        #    Rs = 0.0001
+        rho0_input = self.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
@@ -142,32 +137,33 @@ class TNFW(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def density(self, R, Rs, rho0, r_trunc):
+    @staticmethod
+    def density(r, Rs, rho0, r_trunc):
         """
-        three dimenstional truncated NFW profile
+        three dimensional truncated NFW profile
 
-        :param R: radius of interest
-        :type R: float/numpy array
+        :param r: radius of interest
+        :type r: float/numpy array
         :param Rs: scale radius
-        :type Rs: float
-        :param rho0: density normalization (characteristic density)
-        :type rho0: float
-        :return: rho(R) density
+        :type Rs: float > 0
+        :param r_trunc: truncation radius (angular units)
+        :type r_trunc: float > 0
+        :return: rho(r) density
         """
-        return (r_trunc ** 2 * (r_trunc ** 2 + R ** 2) ** -1) * rho0 / (R / Rs * (1 + R / Rs) ** 2)
+        return (r_trunc ** 2 * (r_trunc ** 2 + r ** 2) ** -1) * rho0 / (r / Rs * (1 + r / Rs) ** 2)
 
     def density_2d(self, x, y, Rs, rho0, r_trunc, center_x=0, center_y=0):
         """
         projected two dimensional NFW profile (kappa*Sigma_crit)
 
-        :param R: radius of interest
+        :param R: projected radius of interest
         :type R: float/numpy array
         :param Rs: scale radius
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
+        :param r_trunc: truncation radius (angular units)
+        :type r_trunc: float > 0
         :return: Epsilon(R) projected density at radius R
         """
         x_ = x - center_x
@@ -178,17 +174,18 @@ class TNFW(LensProfileBase):
         Fx = self._F(x, tau)
         return 2 * rho0 * Rs * Fx
 
-    def mass_3d(self, R, Rs, rho0, r_trunc):
+    def mass_3d(self, r, Rs, rho0, r_trunc):
         """
         mass enclosed a 3d sphere or radius r
 
-        :param r:
-        :param Ra:
-        :param Rs:
-        :return:
+        :param r: 3d radius
+        :param Rs: scale radius
+        :param rho0: density normalization (characteristic density)
+        :param r_trunc: truncation radius (angular units)
+        :return: M(<r)
         """
 
-        x = R * Rs ** -1
+        x = r * Rs ** -1
         x = np.maximum(x, self._s)
         func = (r_trunc ** 2 * (-2 * x * (1 + r_trunc ** 2) + 4 * (1 + x) * r_trunc * np.arctan(x / r_trunc) -
                                 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs) + 2 * (1 + x) * (-1 + r_trunc ** 2) * np.log(Rs * (1 + x)) +
@@ -200,7 +197,7 @@ class TNFW(LensProfileBase):
 
     def nfwPot(self, R, Rs, rho0, r_trunc):
         """
-        lensing potential of NFW profile
+        lensing potential of truncated NFW profile
 
         :param R: radius of interest
         :type R: float/numpy array
@@ -208,7 +205,9 @@ class TNFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :return: Epsilon(R) projected density at radius R
+        :param r_trunc: truncation radius (angular units)
+        :type r_trunc: float > 0
+        :return: lensing potential
         """
         x = R / Rs
         x = np.maximum(x, self._s)
@@ -226,18 +225,13 @@ class TNFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
+        :param r_trunc: truncation radius (angular units)
+        :type r_trunc: float > 0
         :param axis: projection to either x- or y-axis
         :type axis: same as R
-        :return: Epsilon(R) projected density at radius R
+        :return:
         """
         R = np.maximum(R, self._s * Rs)
-        #if isinstance(R, int) or isinstance(R, float):
-        #    R = max(R, 0.00001)
-        #else:
-        #    R[R <= 0.00001] = 0.00001
-
         x = R / Rs
         x = np.maximum(x, self._s)
         tau = float(r_trunc) / Rs
@@ -256,39 +250,29 @@ class TNFW(LensProfileBase):
         :type Rs: float
         :param rho0: density normalization (characteristic density)
         :type rho0: float
-        :param r200: radius of (sub)halo
-        :type r200: float>0
+        :param r_trunc: truncation radius (angular units)
+        :type r_trunc: float > 0
         :param axis: projection to either x- or y-axis
         :type axis: same as R
-        :return: Epsilon(R) projected density at radius R
+        :return:
         """
-        c = 0.000001
-        #if isinstance(R, int) or isinstance(R, float):
-        #    R = max(R, c)
-        #else:
-        #    R[R <= c] = c
         R = np.maximum(R, self._s * Rs)
         x = R / Rs
-        #x = np.maximum(x, self._s)
-        #R = np.maximum(R, self._s * Rs)
-
         tau = float(r_trunc) * Rs ** -1
-
         gx = self._g(x, tau)
         Fx = self._F(x, tau)
-
-        a = 2*rho0*Rs*(2*gx/x**2 - Fx)  # /x #2*rho0*Rs*(2*gx/x**2 - Fx)*axis/x
-
+        a = 2*rho0*Rs*(2*gx/x**2 - Fx)
         return a * (ax_y ** 2 - ax_x ** 2) / R ** 2, -a * 2 * (ax_x * ax_y) / R ** 2
 
     def mass_2d(self, R, Rs, rho0, r_trunc):
-
         """
-        analytic solution of the projection integral
-        (convergence)
+        analytic solution of the projection integral (convergence)
 
-        :param x: R/Rs
-        :type x: float >0
+        :param R: projected radius
+        :param Rs: scale radius
+        :param rho0: density normalization (characteristic density)
+        :param r_trunc: truncation radius (angular units)
+        :return: mass enclosed 2d projected cylinder
         """
 
         x = R / Rs
@@ -303,11 +287,10 @@ class TNFW(LensProfileBase):
         analytic solution of the projection integral
         (convergence)
 
-        :param x: R/Rs
-        :type x: float >0
+        :param X: R/Rs
+        :type X: float >0
         """
         t2 = tau ** 2
-        #Fx = self.F(X)
         X = np.maximum(X, self._s )
         _F = self.F(X)
         a = t2*(t2+1)**-2
@@ -323,11 +306,12 @@ class TNFW(LensProfileBase):
             else:
                 b = (t2+1)*(X**2-1)**-1*(1-_F)
         else:
-            raise ValueError("The variable type is not compatible with the function, please use float, int or ndarray's.")
+            raise ValueError("The variable type is not compatible with the function, please use float,"
+                             " int or ndarray's.")
 
         c = 2*_F
         d = -np.pi*(t2+X**2)**-0.5
-        e = (t2-1)*(tau*(t2+X**2)**0.5)**-1*self.L(X,tau)
+        e = (t2-1)*(tau*(t2+X**2)**0.5)**-1*self._L(X, tau)
         result = a * (b + c + d + e)
 
         return result
@@ -342,7 +326,7 @@ class TNFW(LensProfileBase):
         x = np.maximum(x, self._s)
         return tau ** 2 * (tau ** 2 + 1) ** -2 * (
                 (tau ** 2 + 1 + 2 * (x ** 2 - 1)) * self.F(x) + tau * np.pi + (tau ** 2 - 1) * np.log(tau) +
-                np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self.L(x, tau) * (tau ** 2 - 1) * tau ** -1))
+                np.sqrt(tau ** 2 + x ** 2) * (-np.pi + self._L(x, tau) * (tau ** 2 - 1) * tau ** -1))
 
     @staticmethod
     def _cos_function(x):
@@ -379,7 +363,7 @@ class TNFW(LensProfileBase):
 
         u = x ** 2
         t2 = tau ** 2
-        Lx = self.L(x, tau)
+        Lx = self._L(x, tau)
         Fx = self.F(x)
 
         return (t2 + 1) ** -2 * (
@@ -400,21 +384,24 @@ class TNFW(LensProfileBase):
                             tau - np.pi) * np.log(
                     tau * 2)))
 
-    def _alpha2rho0(self, alpha_Rs, Rs):
+    @staticmethod
+    def alpha2rho0(alpha_Rs, Rs):
         """
         convert angle at Rs into rho0; neglects the truncation
-        """
-        rho0 = alpha_Rs / (4. * Rs ** 2 * (1. + np.log(1. / 2.)))
-        return rho0
 
-    def _rho02alpha(self, rho0, Rs):
+        :param alpha_Rs: deflection angle at RS
+        :param Rs: scale radius
+        :return: density normalization (characteristic density)
         """
-        neglects the truncation
+        return NFW.alpha2rho0(alpha_Rs, Rs)
 
-        convert rho0 to angle at Rs
-        :param rho0:
-        :param Rs:
-        :return:
+    @staticmethod
+    def rho02alpha(rho0, Rs):
         """
-        alpha_Rs = rho0 * (4 * Rs ** 2 * (1 + np.log(1. / 2.)))
-        return alpha_Rs
+        convert rho0 to angle at Rs; neglects the truncation
+
+        :param rho0: density normalization (characteristic density)
+        :param Rs: scale radius
+        :return: deflection angle at RS
+        """
+        return NFW.rho02alpha(rho0, Rs)

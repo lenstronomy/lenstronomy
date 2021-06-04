@@ -109,8 +109,8 @@ class TestTNFW(object):
 
         rho0, Rs = 1, 2
 
-        trs = self.tnfw._rho02alpha(rho0, Rs)
-        rho_out = self.tnfw._alpha2rho0(trs, Rs)
+        trs = self.tnfw.rho02alpha(rho0, Rs)
+        rho_out = self.tnfw.alpha2rho0(trs, Rs)
 
         npt.assert_almost_equal(rho0, rho_out)
 

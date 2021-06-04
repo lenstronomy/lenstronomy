@@ -45,8 +45,8 @@ class EPL_numba(LensProfileBase):
     is accessible as 'EPL' not requiring numba.
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 1., 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 100, 'gamma': 3., 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         super().__init__()

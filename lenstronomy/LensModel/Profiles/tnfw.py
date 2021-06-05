@@ -66,8 +66,9 @@ class TNFW(LensProfileBase):
         :param x: r/Rs
         :return:
         """
-        x = np.maximum(x, self._s)
+
         if isinstance(x, np.ndarray):
+            x = np.maximum(x, self._s)
             nfwvals = np.zeros_like(x)
             inds1 = np.where(x < 1)
             inds2 = np.where(x > 1)
@@ -78,6 +79,7 @@ class TNFW(LensProfileBase):
             return nfwvals
 
         elif isinstance(x, float) or isinstance(x, int):
+            x = np.maximum(x, 0)
             if x == 1:
                 return 1
             elif x == 0:
@@ -346,7 +348,7 @@ class TNFW(LensProfileBase):
                 out = np.arccos(1 / x) ** 2
 
         else:
-            raise Exception('x data type '+type(x)+' not recognized.')
+            raise Exception('x data type %s not recognized.' % x)
 
         return out
 

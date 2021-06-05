@@ -48,8 +48,9 @@ class TNFW_ELLIPSE(LensProfileBase):
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         R_ = np.sqrt(x_**2 + y_**2)
         rho0_input = self.tnfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
+        Rs = np.maximum(Rs, 0.0000001)
+        #if Rs < 0.0000001:
+        #    Rs = 0.0000001
         f_ = self.tnfw.nfwPot(R_, Rs, rho0_input, r_trunc)
         return f_
 
@@ -76,8 +77,9 @@ class TNFW_ELLIPSE(LensProfileBase):
         e = abs(1 - q)
         R_ = np.sqrt(x_ ** 2 + y_ ** 2)
         rho0_input = self.tnfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
+        Rs = np.maximum(Rs, 0.0000001)
+        #if Rs < 0.0000001:
+        #    Rs = 0.0000001
         f_x_prim, f_y_prim = self.tnfw.nfwAlpha(R_, Rs, rho0_input, r_trunc, x_, y_)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)

@@ -146,6 +146,15 @@ class TestTNFW(object):
         for value in f_tnfw:
             npt.assert_(value == 1)
 
+    def test_F_function_at_zero(self):
+        f_tnfw = self.tnfw.F(0)
+        npt.assert_almost_equal(f_tnfw, 0, decimal=8)
+
+    def test__cos_function(self):
+        # test private _cos_function function for raise
+        x = 3 +6j
+        npt.assert_raises(Exception, self.tnfw._cos_function, x)
+
 
 if __name__ == '__main__':
     pytest.main()

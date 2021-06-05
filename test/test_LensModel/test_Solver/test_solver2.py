@@ -70,7 +70,7 @@ class TestSolver(object):
         gamma = 1.9
         Rs = 0.1
         nfw = NFW()
-        alpha_Rs = nfw._rho02alpha(1., Rs)
+        alpha_Rs = nfw.rho02alpha(1., Rs)
         phi_G, q = 0.5, 0.8
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
         kwargs_lens = [{'theta_E': 1., 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0.1, 'center_y': -0.1},

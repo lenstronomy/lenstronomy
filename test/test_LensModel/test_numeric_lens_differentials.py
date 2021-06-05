@@ -180,6 +180,18 @@ class TestNumericsProfile(object):
         lens_model = ['TNFW']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_tnfw_ellipse(self):
+        lens_model = ['TNFW_ELLIPSE']
+
+        kwargs = {'alpha_Rs': .1, 'Rs': 1., 'r_trunc': 7, 'e1': 0, 'e2': 0}
+        self.assert_differentials(lens_model, kwargs)
+
+        kwargs = {'alpha_Rs': .1, 'Rs': 1., 'r_trunc': 7, 'e1': 0.1, 'e2': -0.02}
+        self.assert_differentials(lens_model, kwargs)
+
+        kwargs = {'Rs': .5, 'alpha_Rs': 1., 'r_trunc': 100, 'e1': 0.1, 'e2': -0.02}
+        self.assert_differentials(lens_model, kwargs)
+
     def test_nfw_ellipse(self):
         kwargs = {'alpha_Rs': .1, 'Rs': 5., 'e1': 0.04, 'e2': -0.04}
         lens_model = ['NFW_ELLIPSE']

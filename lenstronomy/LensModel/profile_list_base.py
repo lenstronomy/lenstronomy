@@ -5,8 +5,9 @@ __all__ = ['ProfileListBase']
 
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
-                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE', 'NFW', 'NFW_ELLIPSE',
-                     'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
+                     'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'TNFW_ELLIPSE',
+                     'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
                      'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
@@ -159,6 +160,9 @@ class ProfileListBase(object):
         elif lens_type == 'TNFW':
             from lenstronomy.LensModel.Profiles.tnfw import TNFW
             return TNFW()
+        elif lens_type == 'TNFW_ELLIPSE':
+            from lenstronomy.LensModel.Profiles.tnfw_ellipse import TNFW_ELLIPSE
+            return TNFW_ELLIPSE()
         elif lens_type == 'CNFW':
             from lenstronomy.LensModel.Profiles.cnfw import CNFW
             return CNFW()

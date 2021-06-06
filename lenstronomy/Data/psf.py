@@ -22,6 +22,7 @@ class PSF(object):
         :param truncation: float, Gaussian truncation (in units of sigma), only required for 'GAUSSIAN' model
         :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
+         (if not normalized, will be normalized)
         :param psf_error_map: uncertainty in the PSF model. Same shape as point source kernel.
         This error will be added to the pixel error around the position of point sources as follows:
         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2

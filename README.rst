@@ -2,8 +2,6 @@
 lenstronomy - gravitational lensing software package
 ====================================================
 
-.. image:: https://github.com/sibirrer/lenstronomy/blob/main/readme_fig.png
-    :target: https://github.com/sibirrer/lenstronomy/blob/main/readme_fig
 
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: https://badge.fury.io/py/lenstronomy
@@ -30,6 +28,10 @@ lenstronomy - gravitational lensing software package
 
 .. image:: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589/status.svg
     :target: https://joss.theoj.org/papers/6a562375312c9a9e4466912a16f27589
+
+.. image:: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/readme_fig.png
+    :target: https://raw.githubusercontent.com/sibirrer/lenstronomy/main/docs/figures/readme_fig.png
+
 
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
 `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.

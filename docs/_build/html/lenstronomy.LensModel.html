@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel package &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.LensModel package &#8212; lenstronomy 1.8.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -622,7 +622,7 @@ different positions but must not be used with different lens model parameters!</
 <p>class with extension routines not part of the LensModel core routines</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics">
-<code class="descname">critical_curve_caustics</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>compute_window=5</em>, <em>grid_scale=0.01</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_caustics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics" title="Permalink to this definition">¶</a></dt>
+<code class="descname">critical_curve_caustics</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>compute_window=5</em>, <em>grid_scale=0.01</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_caustics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_caustics" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -631,6 +631,8 @@ different positions but must not be used with different lens model parameters!</
 <li><strong>kwargs_lens</strong> – lens model kwargs</li>
 <li><strong>compute_window</strong> – window size in arcsec where the critical curve is computed</li>
 <li><strong>grid_scale</strong> – numerical grid spacing of the computation of the critical curves</li>
+<li><strong>center_x</strong> – float, center of the window to compute critical curves and caustics</li>
+<li><strong>center_y</strong> – float, center of the window to compute critical curves and caustics</li>
 </ul>
 </td>
 </tr>
@@ -643,7 +645,7 @@ different positions but must not be used with different lens model parameters!</
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_tiling">
-<code class="descname">critical_curve_tiling</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>compute_window=5</em>, <em>start_scale=0.5</em>, <em>max_order=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_tiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_tiling" title="Permalink to this definition">¶</a></dt>
+<code class="descname">critical_curve_tiling</code><span class="sig-paren">(</span><em>kwargs_lens</em>, <em>compute_window=5</em>, <em>start_scale=0.5</em>, <em>max_order=10</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.critical_curve_tiling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.critical_curve_tiling" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -654,6 +656,8 @@ different positions but must not be used with different lens model parameters!</
 <li><strong>start_scale</strong> – float, angular scale on which to start the tiling from (if there are two distinct curves in
 a region, it might only find one.</li>
 <li><strong>max_order</strong> – int, maximum order in the tiling to compute critical curve triangles</li>
+<li><strong>center_x</strong> – float, center of the window to compute critical curves and caustics</li>
+<li><strong>center_y</strong> – float, center of the window to compute critical curves and caustics</li>
 </ul>
 </td>
 </tr>
@@ -683,6 +687,29 @@ a region, it might only find one.</li>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">keyword argument list corresponding to a CURVED_ARC profile at (x, y) given the initial lens model</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.curved_arc_finite_area">
+<code class="descname">curved_arc_finite_area</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kwargs_lens</em>, <em>dr</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_model_extensions.html#LensModelExtensions.curved_arc_finite_area"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.curved_arc_finite_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes an estimated curved arc over a finite extent mimicking the appearance of a finite source with radius dr</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x-position (float)</li>
+<li><strong>y</strong> – y-position (float)</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>dr</strong> – radius of finite source</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">keyword arguments of curved arc</p>
 </td>
 </tr>
 </tbody>
@@ -1625,7 +1652,7 @@ grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

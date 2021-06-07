@@ -108,10 +108,10 @@ class LensProfileAnalysis(object):
         Average of the radial stretch differential in radial direction, divided by the radial stretch factor.
 
         .. math::
-            \\xi = \\frac{\\partial \\lambda_{\rm rad}}{\\partial r} \\frac{1}{\lambda_{\rm rad}}
+            \\xi = \\frac{\\partial \\lambda_{\\rm rad}}{\\partial r} \\frac{1}{\\lambda_{\\rm rad}}
 
         This quantity is invariant under the MST.
-        The specific definition is provided by Birrer 2021. Equivalent (proportianal) definitions are provided by e.g.
+        The specific definition is provided by Birrer 2021. Equivalent (proportional) definitions are provided by e.g.
         Kochanek 2020, Sonnenfeld 2018.
 
         :param kwargs_lens: lens model keyword argument list

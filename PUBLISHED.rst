@@ -75,6 +75,9 @@ Measuring the Hubble constant
 * Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021 <https://arxiv.org/abs/2103.08609>`_
     *Simulations and models with and without lensed point sources to perform a time-delay cosmography analysis.*
 
+* Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
+    *Investigating the detectability of a cored component with mock imaging modeling and comparison of kinematic modeling.*
+
 
 
 
@@ -113,6 +116,11 @@ Dark Matter substructure
 
 * Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
+
+* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <hhttps://arxiv.org/abs/2105.05259>`_
+    * *
+
+
 
 
 Galaxy formation and evolution
@@ -155,6 +163,9 @@ Quasar-host galaxy decomposition
 * A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
     *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
 
+* The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
+    *Quasar-host decomposition of 5000 SDSS quasars*
+
 
 
 
@@ -188,7 +199,8 @@ Theory papers
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*
 
 * Gravitational lensing formalism in a curved arc basis: A continuous description of observables and degeneracies from the weak to the strong lensing regime; `Birrer 2021 <https://arxiv.org/abs/2104.09522>`_
-    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_. *
+    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_.*
+
 
 
 

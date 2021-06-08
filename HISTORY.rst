@@ -235,3 +235,12 @@ History
 ++++++++++++++++++
 * illustration plots for curved arcs updated
 * documentation of elliptical lens models updated
+
+
+1.8.2 (2020-06-08)
+++++++++++++++++++
+* JOSS paper added
+* improved testing documentation and tox compatibility
+* TNFW_ELLIPSE lens model implemented
+* ULDM lens model implemented
+

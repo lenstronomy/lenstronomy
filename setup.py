@@ -52,7 +52,7 @@ setup(
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
     url='https://github.com/sibirrer/lenstronomy',
-    download_url='https://github.com/sibirrer/lenstronomy/archive/1.8.1.tar.gz',
+    download_url='https://github.com/sibirrer/lenstronomy/archive/1.8.2.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,

@@ -105,7 +105,7 @@ Multiple affiliated packages that make use of lenstronomy can be found `here <ht
 Mailing list and Slack channel
 ------------------------------
 
-You can join the **lenstronomy** mailing list by signing up on the
+You can join the ``lenstronomy`` mailing list by signing up on the
 `google groups page <https://groups.google.com/forum/#!forum/lenstronomy>`_.
 
 
@@ -116,14 +116,14 @@ We also have a `Slack channel <https://lenstronomers.slack.com>`_ for the commun
 Please send me an `email <sibirrer@gmail.com>`_ such that I can add you to the channel.
 
 
-If you encounter errors or problems with **lenstronomy**, please let us know!
+If you encounter errors or problems with ``lenstronomy``, please let us know!
 
 
 
 Contribution
 ------------
 Check out the `contributing page <https://lenstronomy.readthedocs.io/en/latest/contributing.html>`_
-and become an author of lenstronomy! A big shutout to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
+and become an author of ``lenstronomy``! A big shutout to the current `list of contributors and developers <https://lenstronomy.readthedocs.io/en/latest/authors.html>`_!
 
 
 
@@ -141,8 +141,10 @@ We provide some examples where a real galaxy has been lensed and then been recon
 
 Attribution
 -----------
-The design concept of ``lenstronomy`` are reported in `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.
-Please cite this paper when you use lenstronomy in a publication and link to `https://github.com/sibirrer/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
+The design concept of ``lenstronomy`` is reported by `Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_.
+The current JOSS software publication is presented by `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_.
+Please cite these two publications when you use lenstronomy in a publication and link to `https://github.com/sibirrer/lenstronomy <https://github.com/sibirrer/lenstronomy>`_.
 Please also cite `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
-when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction. Please make sure to cite also
-the relevant work that was implemented in ``lenstronomy``, as described in the release paper.
+when you make use of the ``lenstronomy`` work-flow or the Shapelet source reconstruction and make sure to cite also
+the relevant work that was implemented in ``lenstronomy``, as described in the release paper and the documentation.
+Don't hesitate to reach out to the developers if you have questions!

@@ -117,22 +117,22 @@ bibliography: paper.bib
 # Summary
 
 `lenstronomy` is an Astropy-affiliated [@astropy:2013; @astropy:2018] Python package for gravitational lensing simulations and analyses.
-`lenstronomy` is originally introduced by @lenstronomy1 and is based on the linear basis set approach by @Birrer:2015.
-The user and developer base of `lenstronomy` has since substantially grown and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
+`lenstronomy` was introduced by @lenstronomy1 and is based on the linear basis set approach by @Birrer:2015.
+The user and developer base of `lenstronomy` has substantially grown since then, and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
 The modular design has allowed the community to incorporate innovative new methods, as well as to develop enhanced software and wrappers with more specific aims on top of the `lenstronomy` API.
-Through the community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
+Through community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.
 
 
 ![Illustration of the strong gravitational lensing phenomenology and the capabilities of lenstronomy in performing realistic simulations as well as reconstructing lensing and source properties from a given data set. Top row from left to right along the green arrow:
-A galaxy is lensed around a foreground massive object, becomes highly distorted and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation) and are subject to noise.
+A galaxy is lensed around a foreground massive object, becomes highly distorted, and has components appearing multiple times. Observations of this phenomena are limited in resolution (convolution), depending on the detector (pixelation), and are subject to noise.
 Bottom row from right to left along the red arrow: The inverse problem is solved with a linear basis set in the source morphology maximizing the likelihood of the model given the data.
 \label{fig:example}](paper_fig.png)
 
 # Background
 
 Gravitational lensing displaces the observed positions and distorts the shapes of apparent objects on the sky due to intervening inhomogeneous matter along the line of sight. Strong gravitational lensing describes the regime where the background source, such as a galaxy or quasar, is lensed by a massive foreground object, such as another galaxy or cluster of galaxies, to produce multiple images of the source in a highly distorted manner. 
-The top row of \autoref{fig:example} illustrates such a process from the intrinsic galaxy to the data product at hand, including the lensing distortions, effects of the instrument, observational conditions and noise.
+The top row of \autoref{fig:example} illustrates such a process from the intrinsic galaxy to the data product at hand, including the lensing distortions, effects of the instrument, observational conditions, and noise.
 
 Analyses of strong gravitational lensing have provided a wealth of key insights into cosmology and astrophysics.
 For example, relative time delays of multiply imaged variable sources provided precision measurements on the expansion rate of the Universe [@Wong:2020; @Shajib:2020strides; @Birrer:2020tdcosmoiv]. Small scale distortions in the lensing signal of resolved sources [@Vegetti:2012; @Hezaveh:2016; @Birrer:2017]

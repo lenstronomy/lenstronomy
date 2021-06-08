@@ -118,7 +118,7 @@ bibliography: paper.bib
 
 `lenstronomy` is an Astropy-affiliated [@astropy:2013; @astropy:2018] Python package for gravitational lensing simulations and analyses.
 `lenstronomy` was introduced by @lenstronomy1 and is based on the linear basis set approach by @Birrer:2015.
-The user and developer base of `lenstronomy` has substantially grown since thenm, and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
+The user and developer base of `lenstronomy` has substantially grown since then, and the software has become an integral part of a wide range of recent analyses, such as measuring the Hubble constant with time-delay strong lensing or constraining the nature of dark matter from resolved and unresolved small scale lensing distortion statistics. 
 The modular design has allowed the community to incorporate innovative new methods, as well as to develop enhanced software and wrappers with more specific aims on top of the `lenstronomy` API.
 Through community engagement and involvement, `lenstronomy` has become a foundation of an ecosystem of affiliated packages extending the original scope of the software and proving its robustness and applicability
 at the forefront of the strong gravitational lensing community in an open source and reproducible manner.

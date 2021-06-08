@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots.plot_util &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.Plots.plot_util &#8212; lenstronomy 1.8.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -130,38 +130,60 @@
 
 
 <div class="viewcode-block" id="plot_line_set_list"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.plot_util.plot_line_set_list">[docs]</a><span class="nd">@export</span>
-<span class="k">def</span> <span class="nf">plot_line_set_list</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_line_set_list</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">    :param ax: matplotlib.axis instance</span>
 <span class="sd">    :param coords: Coordinates() class instance</span>
+<span class="sd">    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels</span>
 <span class="sd">    :param line_set_list_x: list of numpy arrays corresponding of different disconnected regions of the line</span>
 <span class="sd">     (e.g. caustic or critical curve)</span>
 <span class="sd">    :param line_set_list_y: list of numpy arrays corresponding of different disconnected regions of the line</span>
 <span class="sd">     (e.g. caustic or critical curve)</span>
+<span class="sd">    :param color: string with matplotlib color</span>
+<span class="sd">    :param flipped_x: bool, if True, flips x-axis</span>
 <span class="sd">    :return: plot with line sets on matplotlib axis</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deltaPix</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">pixel_width</span>
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">pixel_width</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">pixel_width</span>
+    <span class="n">pixel_width_x</span> <span class="o">=</span> <span class="n">pixel_width</span>
+    <span class="k">if</span> <span class="n">flipped_x</span><span class="p">:</span>
+        <span class="n">pixel_width_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">pixel_width</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">)):</span>
         <span class="n">x_c</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">line_set_list_y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">deltaPix</span><span class="p">)</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">deltaPix</span><span class="p">)</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
 <div class="viewcode-block" id="plot_line_set"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.plot_util.plot_line_set">[docs]</a><span class="nd">@export</span>
-<span class="k">def</span> <span class="nf">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left</span>
+<span class="sd">    corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center</span>
+<span class="sd">    of the pixel in accordance with the matplotlib.matshow() routine.</span>
 
+<span class="sd">    :param ax: matplotlib.axis instance</span>
 <span class="sd">    :param coords: Coordinates() class instance</span>
+<span class="sd">    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels</span>
 <span class="sd">    :param line_set_list_x: numpy arrays corresponding of different disconnected regions of the line</span>
 <span class="sd">     (e.g. caustic or critical curve)</span>
 <span class="sd">    :param line_set_list_y: numpy arrays corresponding of different disconnected regions of the line</span>
 <span class="sd">     (e.g. caustic or critical curve)</span>
-<span class="sd">    :return: plot with line sets on matplotlib axis</span>
+<span class="sd">    :param color: string with matplotlib color</span>
+<span class="sd">    :param flipped_x: bool, if True, flips x-axis</span>
+<span class="sd">    :return: plot with line sets on matplotlib axis in pixel coordinates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deltaPix</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">pixel_width</span>
+    <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">pixel_width</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">pixel_width</span>
+    <span class="n">pixel_width_x</span> <span class="o">=</span> <span class="n">pixel_width</span>
+    <span class="k">if</span> <span class="n">flipped_x</span><span class="p">:</span>
+        <span class="n">pixel_width_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">pixel_width</span>
     <span class="n">x_c</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">deltaPix</span><span class="p">)</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">deltaPix</span><span class="p">)</span> <span class="o">-</span> <span class="n">shift</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
+
 
 <div class="viewcode-block" id="image_position_plot"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.plot_util.image_position_plot">[docs]</a><span class="nd">@export</span>
 <span class="k">def</span> <span class="nf">image_position_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">image_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -272,7 +294,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

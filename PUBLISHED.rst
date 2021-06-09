@@ -12,7 +12,10 @@ Core lenstronomy methodology and software publications
 ------------------------------------------------------
 
 * lenstronomy: Multi-purpose gravitational lens modelling software package; `Birrer & Amara 2018 <https://ui.adsabs.harvard.edu/abs/2018PDU....22..189B>`_
-    *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and gives some use cases.*
+    *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and highlights some use cases.*
+
+* lenstronomy II: A gravitational lensing software ecosystem; `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_
+    *JOSS software publication. Please cite this paper whenever you make use of lenstronomy.*
 
 * Gravitational Lens Modeling with Basis Sets; `Birrer et al. 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
     *This is the method paper lenstronomy is primary based on. Please cite this paper whenever you publish results with lenstronomy by using Shapelet basis sets and/or the PSO and MCMC chain.*

@@ -56,8 +56,8 @@ class TestGalkin(object):
         lin_I_R = np.zeros_like(R)
         log_I_R = np.zeros_like(R)
         for i in range(len(R)):
-            lin_I_R[i] = galkin_linear.numerics._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
-            log_I_R[i] = galkin_log.numerics._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            lin_I_R[i], _ = galkin_linear.numerics._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            log_I_R[i], _ = galkin_log.numerics._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
         print(log_I_R/lin_I_R)
         for i in range(len(R)):
             npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)
@@ -65,8 +65,8 @@ class TestGalkin(object):
     def test_log_vs_linear_integral(self):
         """
         here we test logarithmic vs linear integral in an end-to-end fashion.
-        We do not demand the highest level of precsions here!!!
-        We are using the luminosity-weighted velocitydispersion integration calculation in this test.
+        We do not demand the highest level of precisions here!!!
+        We are using the luminosity-weighted velocity dispersion integration calculation in this test.
         """
 
         # light profile

@@ -38,7 +38,7 @@ class LightProfile(object):
         if not hasattr(self, '_f_light_3d') or new_compute is True:
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate), self._interp_grid_num)
             light_3d_array = self.light_model.light_3d(r_array, kwargs_list)
-            light_3d_array[light_3d_array < 10 ** (-100)] = 10 ** (-100)
+            light_3d_array[light_3d_array < 10 ** (-1000)] = 10 ** (-1000)
             f = interp1d(np.log(r_array), np.log(light_3d_array), fill_value=(np.log(light_3d_array[0]), -1000),
                          bounds_error=False)  # "extrapolate"
             self._f_light_3d = f

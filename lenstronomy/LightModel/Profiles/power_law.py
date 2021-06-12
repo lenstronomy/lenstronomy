@@ -8,7 +8,7 @@ __all__ = ['PowerLaw']
 
 class PowerLaw(object):
     """
-    class for power-law elliptical mass distribution
+    class for power-law elliptical light distribution
 
     """
     param_names = ['amp', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
@@ -43,7 +43,7 @@ class PowerLaw(object):
         sigma = amp * a ** ((1. - gamma)/2.)
         return sigma
 
-    def light_3d(self, r, amp, gamma, e1, e2):
+    def light_3d(self, r, amp, gamma, e1=0, e2=0):
         """
 
         :param r:

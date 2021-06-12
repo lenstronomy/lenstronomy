@@ -8,6 +8,7 @@ from lenstronomy.GalKin.light_profile import LightProfile
 from lenstronomy.Analysis.light_profile import LightProfileAnalysis
 from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.GalKin import velocity_util
+import scipy.integrate as integrate
 
 
 class TestLightProfile(object):
@@ -139,6 +140,28 @@ class TestLightProfile(object):
         light_3d_exact = lightProfile.light_3d(r, kwargs_profile)
         for i in range(len(r)):
             npt.assert_almost_equal(light_3d[i]/light_3d_exact[i], 1, decimal=3)
+
+    def test_light_2d_finite(self):
+        interpol_grid_num = 5000
+        max_interpolate = 10
+        min_interpolate = 0.0001
+        lightProfile = LightProfile(profile_list=['HERNQUIST'], interpol_grid_num=interpol_grid_num,
+                                    max_interpolate=max_interpolate, min_interpolate=min_interpolate)
+        kwargs_profile = [{'amp': 1., 'Rs': 1.}]
+
+        # check whether projected light integral is the same as analytic expression
+        R = 1.
+
+        I_R = lightProfile.light_2d_finite(R, kwargs_profile)
+        out = integrate.quad(lambda x: lightProfile.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_profile),
+                             min_interpolate, np.sqrt(max_interpolate ** 2 - R ** 2))
+        l_R_quad = out[0] * 2
+
+        npt.assert_almost_equal(l_R_quad / I_R, 1, decimal=2)
+
+        l_R = lightProfile.light_2d(R, kwargs_profile)
+        npt.assert_almost_equal(l_R / I_R, 1, decimal=2)
+
 
     def test_del_cache(self):
         lightProfile = LightProfile(profile_list=['HERNQUIST'])

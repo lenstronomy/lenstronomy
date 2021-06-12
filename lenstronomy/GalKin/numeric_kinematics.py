@@ -14,7 +14,7 @@ __all__ = ['NumericKinematics']
 class NumericKinematics(Anisotropy):
 
     def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=1000, log_integration=True, max_integrate=1000,
-                 min_integrate=0.0001, lum_weight_int_method=False):
+                 min_integrate=0.0001, max_light_draw=None, lum_weight_int_method=False):
         """
         What we need:
         - max projected R to have ACCURATE I_R_sigma values
@@ -22,8 +22,10 @@ class NumericKinematics(Anisotropy):
 
         :param interpol_grid_num: number of interpolation bins for integrand and interpolated functions
         :param log_integration: bool, if True, performs the numerical integral in log space distance (adviced)
+         (only applies for lum_weight_int_method=True)
         :param max_integrate: maximum radius (in arc seconds) of the Jeans equation integral
          (assumes zero tracer particles outside this radius)
+        :param max_light_draw: float; (optional) if set, draws up to this radius, else uses max_interpolate value
         :param lum_weight_int_method: bool, luminosity weighted dispersion integral to calculate LOS projected Jean's
          solution. ATTENTION: currently less accurate than 3d solution
         :param min_integrate:
@@ -37,8 +39,11 @@ class NumericKinematics(Anisotropy):
         self._min_integrate = min_integrate  # min integration (and interpolation) in units of arcsecs
         self._max_interpolate = max_integrate  # we chose to set the interpolation range to the integration range
         self._min_interpolate = min_integrate  # we chose to set the interpolation range to the integration range
+        if max_light_draw is None:
+            max_light_draw = max_integrate / 2.
         self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
-                                         max_interpolate=max_integrate, min_interpolate=min_integrate)
+                                         max_interpolate=max_integrate, min_interpolate=min_integrate,
+                                         max_draw=max_light_draw)
         Anisotropy.__init__(self, anisotropy_type=anisotropy_model)
         self.cosmo = Cosmo(**kwargs_cosmo)
         self._mass_profile = SinglePlane(mass_profile_list)
@@ -112,7 +117,8 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: sigma_r**2
         """
-        l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        # l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        l_r = self.lightProfile.light_3d(r, kwargs_light)
         f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
         return 1 / f_r / l_r * self._jeans_solution_integral(r, kwargs_mass, kwargs_light, kwargs_anisotropy) * const.G / (const.arcsec * self.cosmo.dd * const.Mpc)
 
@@ -186,21 +192,20 @@ class NumericKinematics(Anisotropy):
         R = max(R, self._min_integrate)
         max_integrate = self._max_integrate  # make sure the integration of the Jeans equation is performed further out than the interpolation
         if self._log_int is True:
-            min_log = np.log10(R+0.001)
+            min_log = np.log10(R)
             max_log = np.log10(max_integrate)
-            r_array = np.logspace(min_log, max_log, self._interp_grid_num)
+            dlogr = (max_log - min_log) / (self._interp_grid_num - 1)
+            r_array = np.logspace(min_log + dlogr / 2., max_log + dlogr / 2., self._interp_grid_num)
             dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
-            IR_sigma2_, IR_ = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            IR_sigma2_ = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array
-            IR_dr = IR_ * dlog_r * r_array
         else:
-            r_array = np.linspace(R+0.001, max_integrate, self._interp_grid_num)
+            r_array = np.linspace(R, max_integrate, self._interp_grid_num)
             dr = r_array[2] - r_array[1]
-            IR_sigma2_, IR_ = self._integrand_A15(r_array, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            IR_sigma2_ = self._integrand_A15(r_array + dr / 2., R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             IR_sigma2_dr = IR_sigma2_ * dr
-            IR_dr = IR_ * dr
         IR_sigma2 = np.sum(IR_sigma2_dr) # integral from angle to physical scales
-        IR = np.sum(IR_dr)
+        IR = self.lightProfile.light_2d_finite(R, kwargs_light)
         return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc), IR
 
     def _I_R_sigma2_interp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
@@ -237,13 +242,14 @@ class NumericKinematics(Anisotropy):
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
             We refer to the Anisotropy() class for details on the parameters.
-        :return: integrand, light intensity l(r)
+        :return: integrand
         """
         k_r = self.K(r, R, **kwargs_anisotropy)
-        l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        #l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        l_r = self.lightProfile.light_3d(r, kwargs_light)
         m_r = self._mass_3d_interp(r, kwargs_mass)
         out = k_r * l_r * m_r / r
-        return out, l_r
+        return out
 
     def _jeans_solution_integral(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
@@ -254,7 +260,7 @@ class NumericKinematics(Anisotropy):
         :param kwargs_light: light profile keyword arguments
         :param kwargs_anisotropy: anisotropy keyword arguments
         :return: interpolated solution of the Jeans integral
-         (copped values at large radius as they become numerically inaccurate)
+        (copped values at large radius as they become numerically inaccurate)
         """
         if not hasattr(self, '_interp_jeans_integral'):
             min_log = np.log10(self._min_integrate)

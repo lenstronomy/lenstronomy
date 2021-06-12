@@ -4,6 +4,8 @@ Tests for `Galkin` module.
 import pytest
 import numpy as np
 import numpy.testing as npt
+from lenstronomy.Util import constants as const
+import scipy.integrate as integrate
 
 from lenstronomy.GalKin.numeric_kinematics import NumericKinematics
 from lenstronomy.GalKin.analytic_kinematics import AnalyticKinematics
@@ -108,12 +110,146 @@ class TestMassProfile(object):
                 sigma_s2_full_num = numeric_kin.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
                 npt.assert_almost_equal(sigma_s2_full_num/sigma_s2_analytic, 1, decimal=2)
 
+    def test_I_R_sigma_s2(self):
+        light_profile_list = ['HERNQUIST']
+        r_eff = 1
+        Rs = 0.551 * r_eff
+        kwargs_light = [{'Rs': Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        # 0.551 *
+        # mass profile
+        mass_profile_list = ['SPP']
+        theta_E = 1.2
+        gamma = 1.95
+        kwargs_mass = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = 'OM'
+        r_ani = 0.5
+        kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
+
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+        kwargs_numerics = {'interpol_grid_num': 4000, 'log_integration': True,
+                           'max_integrate': 100, 'min_integrate': 0.0001, 'max_light_draw': 50}
+
+        kwargs_model = {'mass_profile_list': mass_profile_list,
+                        'light_profile_list': light_profile_list,
+                        'anisotropy_model': anisotropy_type}
+        numeric_kin = NumericKinematics(kwargs_model, kwargs_cosmo, **kwargs_numerics)
+
+        # check whether projected light integral is the same as analytic expression
+        R = 1
+        I_R_sigma2, I_R = numeric_kin._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        out = integrate.quad(lambda x: numeric_kin.lightProfile.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_light), kwargs_numerics['min_integrate'],
+                        np.sqrt(kwargs_numerics['max_integrate']**2 - R**2))
+        l_R_quad = out[0] * 2
+        npt.assert_almost_equal(l_R_quad / I_R, 1, decimal=2)
+
+        l_R = numeric_kin.lightProfile.light_2d(R, kwargs_light)
+        npt.assert_almost_equal(l_R / I_R, 1, decimal=2)
+
+    def test_log_linear_integral(self):
+        # light profile
+        light_profile_list = ['HERNQUIST']
+        Rs = .5
+        kwargs_light = [{'Rs':  Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        # 0.551 *
+        # mass profile
+        mass_profile_list = ['SPP']
+        theta_E = 1.2
+        gamma = 2.
+        kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = 'OM'
+        r_ani = 2.
+        kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
+
+        # aperture as slit
+        aperture_type = 'slit'
+
+        psf_fwhm = 0.7  # Gaussian FWHM psf
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+        kwargs_numerics_linear = {'interpol_grid_num': 2000, 'log_integration': False,
+                           'max_integrate': 10, 'min_integrate': 0.001}
+        kwargs_numerics_log = {'interpol_grid_num': 2000, 'log_integration': True,
+                           'max_integrate': 10, 'min_integrate': 0.001}
+        kwargs_aperture = {'width': 1, 'length': 1., 'aperture_type': aperture_type}
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+        kwargs_model = {'mass_profile_list': mass_profile_list,
+                        'light_profile_list': light_profile_list,
+                        'anisotropy_model': anisotropy_type}
+
+        numerics_linear = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
+        numerics_log = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
+        R = np.linspace(0.05, 1, 100)
+
+        lin_I_R = np.zeros_like(R)
+        log_I_R = np.zeros_like(R)
+        for i in range(len(R)):
+            lin_I_R[i], _ = numerics_linear._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+            log_I_R[i], _ = numerics_log._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+        for i in range(len(R)):
+            npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)
+
+    def test_power_law_test(self):
+        # tests a isotropic velocity anisotropy on a singular isothermal sphere with the same tracer particle distribution
+        # This should result in a constant velocity dispersion as a function of radius, analytically known
+
+        # set up power-law light profile
+        light_model = ['POWER_LAW']
+        kwargs_light = [{'gamma': 2, 'amp': 1, 'e1': 0, 'e2': 0}]
+
+        lens_model = ['SIS']
+        kwargs_mass = [{'theta_E': 1}]
+
+        anisotropy_type = 'isotropic'
+        kwargs_anisotropy = {}
+        kwargs_model = {'mass_profile_list': lens_model,
+                        'light_profile_list': light_model,
+                        'anisotropy_model': anisotropy_type}
+        kwargs_numerics = {'interpol_grid_num': 2000, 'log_integration': True,
+                                  'max_integrate': 1000, 'min_integrate': 0.0001}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+
+        # compute analytic velocity dispersion of SIS profile
+
+        v_sigma_c2 = kwargs_mass[0]['theta_E'] * const.arcsec / (4 * np.pi) * kwargs_cosmo['d_s'] / kwargs_cosmo['d_ds']
+        v_sigma_true = np.sqrt(v_sigma_c2) * const.c / 1000
+
+        numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        R = 2
+        I_R_sigma2, I_R = numerics._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy={})
+        sigma_v = np.sqrt(I_R_sigma2 / I_R) / 1000
+        print(sigma_v, v_sigma_true)
+        npt.assert_almost_equal(sigma_v / v_sigma_true, 1, decimal=2)
+
+        # plot as radial distance of projected dispersion
+        r_array = np.logspace(start=-2, stop=1, num=100)
+
+        sigma_array = np.zeros_like(r_array)
+        for i, R in enumerate(r_array):
+            I_R_sigma2, I_R = numerics._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma_array[i] = np.sqrt(I_R_sigma2 / I_R) / 1000
+
+        #import matplotlib.pyplot as plt
+        #plt.semilogx(r_array, sigma_array)
+        #plt.hlines(v_sigma_true, xmin=r_array[0], xmax=r_array[-1])
+        #plt.show()
+
+        npt.assert_almost_equal(sigma_array / v_sigma_true, 1, decimal=2)
+
+        # and here we test the 3d radial velocity dispersion solution
+        sigma_array = np.zeros_like(r_array)
+        R_test = 0
+        for i, r in enumerate(r_array):
+            sigma_s2 = numerics.sigma_s2_full(r, R_test, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma_array[i] = np.sqrt(sigma_s2) / 1000
+        npt.assert_almost_equal(sigma_array / v_sigma_true, 1, decimal=2)
+
     def test_delete_cache(self):
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
-        kwargs_numerics = {'interpol_grid_num': 500, 'log_integration': True,
-                           'max_integrate': 100}
-
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': 1}
+        kwargs_numerics = {'interpol_grid_num': 2000, 'log_integration': True,
+                           'max_integrate': 1000, 'min_integrate': 0.0001}
         kwargs_model = {'mass_profile_list': [],
                         'light_profile_list': [],
                         'anisotropy_model': 'const'}

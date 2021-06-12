@@ -82,7 +82,7 @@ class NumericKinematics(Anisotropy):
         # this could lead to an under-prediction of the velocity dispersion
         # so we ask the function _I_R_sigma2() to also return the numerical l(r)
         #I_R_sigma2, I_R = self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        I_R_sigma2, I_R = self._I_R_sigma2(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2, I_R = self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         #I_R = self.lightProfile.light_2d(R, kwargs_light)
         return np.nan_to_num(I_R_sigma2 / I_R)
 

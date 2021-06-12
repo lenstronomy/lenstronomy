@@ -245,6 +245,16 @@ class TestMassProfile(object):
         # We do not test the linear integral as it is not as accurate!!!
         #npt.assert_almost_equal(I_R_simga_numerics_lin / I_R_simga_quad, 1, decimal=2)
 
+
+        # here we test the interpolation
+        numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+        R = 1
+        I_R_sigma2_interp, I_R_interp = numerics._I_R_sigma2_interp(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
+        I_R_sigma2, I_R = numerics._I_R_sigma2(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
+        npt.assert_almost_equal(I_R_sigma2_interp / I_R_sigma2, 1, decimal=4)
+        npt.assert_almost_equal(I_R_interp / I_R, 1, decimal=4)
+
+
     def test_power_law_test(self):
         # tests a isotropic velocity anisotropy on a singular isothermal sphere with the same tracer particle distribution
         # This should result in a constant velocity dispersion as a function of radius, analytically known

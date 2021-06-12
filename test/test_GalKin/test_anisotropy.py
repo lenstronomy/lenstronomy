@@ -46,6 +46,10 @@ class TestAnisotropy(object):
         k = anisoClass.K(self._r_array, self._R_array, **kwargs)
         npt.assert_almost_equal(k[0], 0.95827704196894481, decimal=5)
 
+        R = 0.1
+        k = anisoClass.K(R, R, **kwargs)
+        npt.assert_almost_equal(k, 0, decimal=5)
+
     def test_beta(self):
         r = 2.
 

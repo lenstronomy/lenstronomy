@@ -164,32 +164,86 @@ class TestMassProfile(object):
         r_ani = 2.
         kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
 
-        # aperture as slit
-        aperture_type = 'slit'
-
-        psf_fwhm = 0.7  # Gaussian FWHM psf
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics_linear = {'interpol_grid_num': 2000, 'log_integration': False,
                            'max_integrate': 10, 'min_integrate': 0.001}
-        kwargs_numerics_log = {'interpol_grid_num': 2000, 'log_integration': True,
+        kwargs_numerics_log = {'interpol_grid_num': 1000, 'log_integration': True,
                            'max_integrate': 10, 'min_integrate': 0.001}
-        kwargs_aperture = {'width': 1, 'length': 1., 'aperture_type': aperture_type}
-        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
         kwargs_model = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list,
                         'anisotropy_model': anisotropy_type}
 
         numerics_linear = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_linear)
         numerics_log = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_log)
-        R = np.linspace(0.05, 1, 100)
+        R = np.logspace(-2, 0, 100)
 
         lin_I_R = np.zeros_like(R)
         log_I_R = np.zeros_like(R)
         for i in range(len(R)):
             lin_I_R[i], _ = numerics_linear._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
             log_I_R[i], _ = numerics_log._I_R_sigma2(R[i], kwargs_profile, kwargs_light, kwargs_anisotropy)
+
+        #import matplotlib.pyplot as plt
+        #plt.semilogx(R, lin_I_R / log_I_R, 'r', label='lin /log integrate')
+        #plt.legend()
+        #plt.show()
+
+        R_ = 1
+        r_array = np.logspace(start=np.log10(R_+0.001), stop=1, num=100)
+        integrad_a15 = numerics_linear._integrand_A15(r_array, R_, kwargs_profile, kwargs_light, kwargs_anisotropy)
+        #plt.loglog(r_array, integrad_a15)
+        #plt.show()
+
         for i in range(len(R)):
             npt.assert_almost_equal(log_I_R[i] / lin_I_R[i], 1, decimal=2)
+
+        #assert 1 == 0
+
+    def test_I_R_sigma(self):
+        """
+        test numerical integral against quad integrator
+        :return:
+        """
+        light_profile_list = ['HERNQUIST']
+        Rs = .5
+        kwargs_light = [{'Rs': Rs, 'amp': 1.}]  # effective half light radius (2d projected) in arcsec
+        # 0.551 *
+        # mass profile
+        mass_profile_list = ['SPP']
+        theta_E = 1.2
+        gamma = 2.
+        kwargs_profile = [{'theta_E': theta_E, 'gamma': gamma}]  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = 'OM'
+        r_ani = 2.
+        kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
+
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+        kwargs_numerics = {'interpol_grid_num': 2000, 'log_integration': True,
+                                  'max_integrate': 1000, 'min_integrate': 0.0001}
+
+        kwargs_model = {'mass_profile_list': mass_profile_list,
+                        'light_profile_list': light_profile_list,
+                        'anisotropy_model': anisotropy_type}
+
+        numerics = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics)
+
+        R = 0.1
+        out = integrate.quad(lambda x: numerics._integrand_A15(x, R, kwargs_profile, kwargs_light, kwargs_anisotropy),
+                             R, kwargs_numerics['max_integrate'])
+
+        I_R_sigma_quad = out[0] * 2 * const.G / (const.arcsec * kwargs_cosmo['d_d'] * const.Mpc)
+        I_R_sigma_numerics_log, _ = numerics._I_R_sigma2(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
+
+        kwargs_numerics_lin = {'interpol_grid_num': 2000, 'log_integration': False,
+                           'max_integrate': 1000, 'min_integrate': 0.0001}
+        numerics_lin = NumericKinematics(kwargs_model=kwargs_model, kwargs_cosmo=kwargs_cosmo, **kwargs_numerics_lin)
+        I_R_simga_numerics_lin, _ = numerics_lin._I_R_sigma2(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
+        npt.assert_almost_equal(I_R_sigma_numerics_log / I_R_sigma_quad, 1, decimal=2)
+
+        # We do not test the linear integral as it is not as accurate!!!
+        #npt.assert_almost_equal(I_R_simga_numerics_lin / I_R_simga_quad, 1, decimal=2)
 
     def test_power_law_test(self):
         # tests a isotropic velocity anisotropy on a singular isothermal sphere with the same tracer particle distribution
@@ -245,6 +299,27 @@ class TestMassProfile(object):
             sigma_s2 = numerics.sigma_s2_full(r, R_test, kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma_array[i] = np.sqrt(sigma_s2) / 1000
         npt.assert_almost_equal(sigma_array / v_sigma_true, 1, decimal=2)
+
+    def test_integrand_a15(self):
+        """
+        test the integrand for OM model and see whether the shape requires a special form of the integrator
+
+        :return:
+        """
+        light_model = ['HERNQUIST']
+        kwargs_light = [{'gamma': 2, 'amp': 1, 'e1': 0, 'e2': 0}]
+
+        lens_model = ['SIS']
+        kwargs_mass = [{'theta_E': 1}]
+
+        anisotropy_type = 'isotropic'
+        kwargs_anisotropy = {}
+        kwargs_model = {'mass_profile_list': lens_model,
+                        'light_profile_list': light_model,
+                        'anisotropy_model': anisotropy_type}
+        kwargs_numerics = {'interpol_grid_num': 2000, 'log_integration': True,
+                           'max_integrate': 1000, 'min_integrate': 0.0001}
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
     def test_delete_cache(self):
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}

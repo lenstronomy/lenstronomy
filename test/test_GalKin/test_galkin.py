@@ -117,13 +117,13 @@ class TestGalkin(object):
         npt.assert_almost_equal(sigma_v_num_3d/sigma_v_analytic, 1, decimal=2)
 
         # 2d projected integral calculation
-        kwargs_numerics = {'interpol_grid_num': 2000, 'max_integrate': 1000, 'min_integrate': 0.0001,
+        kwargs_numerics = {'interpol_grid_num': 1000, 'max_integrate': 1000, 'min_integrate': 0.000001,
                            'lum_weight_int_method': True, 'log_integration': True}
         galkin_num_log_proj = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                 kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics, analytic_kinematics=False)
         sigma_v_num_log_proj = galkin_num_log_proj.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000)
 
-        kwargs_numerics = {'interpol_grid_num': 2000, 'max_integrate': 1000, 'min_integrate': 0.0001,
+        kwargs_numerics = {'interpol_grid_num': 10000, 'max_integrate': 1000, 'min_integrate': 0.0001,
                            'lum_weight_int_method': True, 'log_integration': False}
         galkin_num_lin_proj = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,
                                      kwargs_cosmo=kwargs_cosmo, kwargs_numerics=kwargs_numerics,
@@ -131,7 +131,7 @@ class TestGalkin(object):
         sigma_v_num_lin_proj = galkin_num_lin_proj.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy,
                                                               sampling_number=1000)
 
-        print(sigma_v_num_log_proj / sigma_v_analytic, sigma_v_num_lin_proj / sigma_v_analytic)
+        print(sigma_v_num_log_proj / sigma_v_analytic, sigma_v_num_lin_proj / sigma_v_analytic, 'log proj, lin proj')
 
         # TODO: these tests need to pass at 1% accuracy!!! Currently only at the few percent level.
         # there is a difference in the way the integrals are computed - so room for improvements.
@@ -315,7 +315,7 @@ class TestGalkin(object):
         psf_fwhm = 1.  # Gaussian FWHM psf
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
         kwargs_numerics_3d = {'interpol_grid_num': 2000, 'log_integration': True,
-                           'max_integrate': 1000, 'min_integrate': 0.001, 'lum_weight_int_method': False
+                           'max_integrate': 1000, 'min_integrate': 0.00001, 'lum_weight_int_method': False
                            }
         kwargs_model = {'mass_profile_list': mass_profile_list,
                         'light_profile_list': light_profile_list,
@@ -326,7 +326,7 @@ class TestGalkin(object):
         sigma_v = galkin.dispersion(kwargs_profile, kwargs_light, kwargs_anisotropy, sampling_number=1000)
 
         kwargs_numerics_2d = {'interpol_grid_num': 2000, 'log_integration': True,
-                              'max_integrate': 1000, 'min_integrate': 0.0001, 'lum_weight_int_method': True
+                              'max_integrate': 1000, 'min_integrate': 0.00001, 'lum_weight_int_method': True
                               }
 
         galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=kwargs_aperture, kwargs_psf=kwargs_psf,

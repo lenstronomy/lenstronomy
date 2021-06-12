@@ -58,7 +58,7 @@ class NumericKinematics(Anisotropy):
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
-            We refer to the Anisotropy() class for details on the parameters.
+         We refer to the Anisotropy() class for details on the parameters.
         :return: line-of-sight projected velocity dispersion at projected radius R
         """
         if self._lum_weight_int_method is True:
@@ -283,11 +283,11 @@ class NumericKinematics(Anisotropy):
         integrand of A1 (in log space) in Mamon&Lokas 2005 to calculate the Jeans equation numerically
         f(s) l(s) M(s) / s^2
 
-        :param r:
-        :param kwargs_mass:
-        :param kwargs_light:
-        :param kwargs_anisotropy:
-        :return:
+        :param r: 3d radius
+        :param kwargs_mass: mass model keyword arguments
+        :param kwargs_light: light model keyword arguments
+        :param kwargs_anisotropy: anisotropy model keyword argument
+        :return: integrand value
         """
         f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
         l_r = self.lightProfile.light_3d_interp(r, kwargs_light)

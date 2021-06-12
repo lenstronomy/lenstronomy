@@ -208,7 +208,7 @@ class LightProfile(object):
                 if i == 0:
                     cum_sum[i] = 0
                 else:
-                    sum += self.light_3d(r, kwargs_list) * r * r**2  # 1x r for the log spacing and r**2 for the shell area
+                    sum += self.light_3d(r, kwargs_list) * r * r**2
                     cum_sum[i] = copy.deepcopy(sum)
             cum_sum_norm = cum_sum/cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))

@@ -186,6 +186,9 @@ Lensing of Gravitational Waves
 * Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
     *solving the lens equation*
 
+* Beyond the detector horizon: Forecasting gravitational-wave strong lensing; `Renske et al. 2021 <https://arxiv.org/abs/2106.06303>`_
+    *computing image positions, time delays and magnifications for gravitational wave forecasting*
+
 
 
 

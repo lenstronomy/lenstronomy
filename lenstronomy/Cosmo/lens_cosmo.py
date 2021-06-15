@@ -2,10 +2,12 @@ __author__ = 'sibirrer'
 
 # this file contains a class to convert lensing and physical units
 
+from astropy import units as u
 import numpy as np
 import lenstronomy.Util.constants as const
 from lenstronomy.Cosmo.background import Background
 from lenstronomy.Cosmo.nfw_param import NFWParam
+from lenstronomy.LensModel.Profiles.jeans_iso import _jeans_soln
 
 __all__ = ['LensCosmo']
 
@@ -224,22 +226,26 @@ class LensCosmo(object):
 
     def jeans_physical2angle(self, M, c, sigma_v, halo_age):
         """
-        converts the physical mass, concentration, and velocity-weighted cross
-        section of an isothermal SIDM halo halo into lensing parameters.
+        Converts the physical to lensing parameters for the JEANS_ISO
+        self-interacting dark matter model.
+
 
         :param M: mass enclosed 200 rho_crit in units of M_sun (physical units, meaning no little h)
         :param c: NFW concentration parameter (r200/r_s)
         :param sigma_v: velocity-weighted cross section, <\sigma v>, in (cm^2 / g)*(km/s)
         :param halo_age: age of the halo, in Gyr
 
-        :return: Rs_angle (angle at scale radius) (in units of arcsec), alpha_Rs (observed bending angle at the scale radius
+        :return: 5-tuple of Jeans parameters as follows
+                 Rs_angle (angle of scale radius) (in units of arcsec),
+                 alpha (transision radius relative to Rs) (unitless),
+                 beta (Jeans scale radius relative to Rs) (unitless),
+                 gamma (Jeans central density relative to NFW rho0) (unitless),
+                 rho0 (NFW rho0 in angular units)
         """
         rho0, Rs, r200 = self.nfwParam_physical(M, c)
         Rs_angle = Rs / self.dd / const.arcsec
         reduced_rho0 = (rho0 / self.sigma_crit) * self.dd * const.arcsec
 
-        from astropy import units as u
-        from lenstronomy.LensModel.Profiles.jeans_iso import _jeans_soln
         # Need a conversion factor
         factor = (
             1 * u.Unit('g / solMass') * u.Unit('Mpc / cm')**2 * u.Unit('Mpc / km')

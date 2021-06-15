@@ -268,6 +268,14 @@ lenstronomy.LensModel.Profiles.interpol module
     :undoc-members:
     :show-inheritance:
 
+lenstronomy.LensModel.Profiles.jeans_iso module
+----------------------------------------------
+
+.. automodule:: lenstronomy.LensModel.Profiles.jeans_iso
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 lenstronomy.LensModel.Profiles.multi\_gaussian\_kappa module
 ------------------------------------------------------------
 

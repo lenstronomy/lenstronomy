@@ -35,6 +35,36 @@ class _JeansSolutionInterp:
     '''
     Solves the Jeans method differential equation, and boundary conditions
     between the isothermal core and NFW exterior.
+
+    Closely follows Robertson 2021:
+    https://ui.adsabs.harvard.edu/abs/2021MNRAS.501.4610R/abstract
+
+    The density of an isothermal gas under gravity follows the Jeans equation,
+    given by eqn. 8 in Robertson 2021
+
+    .. math::
+        \\sigma_0^2 \\nabla^2 \\log \\rho = - 4 \\pi G \\rho
+
+    Here we assume only dark matter, but baryonic contributions can be added to
+    \\rho as well.
+
+    Robertson 2021 use the following change of variables:
+
+    .. math::
+        y = \\log(\\rho/\\rho_0)
+        r_0^2 = \\sigma_0^2/4\\pi G \\rho_0
+        x = r/r_0
+
+    And the equation becomes:
+
+    .. math:
+        d^2y/dx^2 + (2/x) (dy/dx) + exp(y) = 0
+
+    The two boundary conditions are that:
+
+    1) The density is continuous between the isothermal core and NFW exterior
+    2) The total mass contained in the isothermal core is the same as it would
+    be for an NFW
     '''
 
     def _solve_jeans_function(self):
@@ -262,7 +292,11 @@ _jeans_soln = _JeansSolutionInterp()
 
 class SIDMJeans(LensProfileBase):
     '''
-    TODO docs
+    Lensing profile for isothermal Jeans modeling of self-interacting dark matter halos,
+    as explained thoroughly in Robertson 2021: https://ui.adsabs.harvard.edu/abs/2021MNRAS.501.4610R/abstract
+
+    Use the function :meth:`lenstronomy.Cosmo.lens_cosmo.LensCosmo.jeans_physical2angle` to
+    convert physical quantities to the lensing parameters.
     '''
 
     # Rs = NFW Scale radius
@@ -389,10 +423,15 @@ class SIDMJeans(LensProfileBase):
         """
         lensing potential
 
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param kwargs: keywords of the profile
-        :return: raise as definition is not defined
+        :param x: x-coordinate, arcsec
+        :param y: y-coordinate, arcsec
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
+        :return: the lensing potential at x and y
         """
         _x = x - center_x
         _y = y - center_y
@@ -416,10 +455,15 @@ class SIDMJeans(LensProfileBase):
         """
         deflection angles
 
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param kwargs: keywords of the profile
-        :return: raise as definition is not defined
+        :param x: x-coordinate, arcsec
+        :param y: y-coordinate, arcsec
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
+        :return: x-deflections, y-deflections
         """
         _x = x - center_x
         _y = y - center_y
@@ -448,9 +492,14 @@ class SIDMJeans(LensProfileBase):
         """
         returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
 
-        :param x: x-coordinate
-        :param y: y-coordinate
-        :param kwargs: keywords of the profile
+        :param x: x-coordinate, arcsec
+        :param y: y-coordinate, arcsec
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
         :return: raise as definition is not defined
         """
         raise NotImplementedError
@@ -460,8 +509,14 @@ class SIDMJeans(LensProfileBase):
         computes the density at 3d radius r given lens model parameterization.
         The integral in the LOS projection of this quantity results in the convergence quantity.
 
-        :param kwargs: keywords of the profile
-        :return: raise as definition is not defined
+        :param radius: radii at which to compute density, numpy array or scalar
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
+        :return: 3D density in angular units, same shape as radius
         """
         x = radius / Rs
         unitless_density = _jeans_soln.unitless_jeans_profile(
@@ -473,12 +528,20 @@ class SIDMJeans(LensProfileBase):
         """
         Convergence at a grid of (x, y)
 
+        :param x: x-coordinate, arcsec
+        :param y: y-coordinate, arcsec
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
+        :return: convergence, numpy array or scalar of same shape as x&y
         """
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_**2 + y_**2)
         projection = self._convergence_sidm(R, Rs, alpha, beta, gamma, rho0)
-        # return rho0*Rs*projection
         return projection
 
     def mass_3d_lens(self, radius, Rs, alpha, beta, gamma, rho0):
@@ -486,13 +549,20 @@ class SIDMJeans(LensProfileBase):
         mass enclosed a 3d sphere or radius r given a lens parameterization with angular units
         For this profile those are identical.
 
-        :param kwargs: keywords of the profile
+        :param radius: radii at which to compute mass, angular units
+        :param Rs: NFW scale radius, arcsec
+        :param alpha: isothermal/NFW transition radius relative to Rs
+        :param beta: isothermal scale radius r0 relative to Rs
+        :param gamma: core density relative to rho0
+        :param rho0: NFW density, angular units
+
         :return: raise as definition is not defined
         """
         x = radius / Rs
         if x < alpha:
             unitless_density = _jeans_soln.enclosed_mass_3d(x / beta)
         else:
+            # TODO
             raise NotImplementedError
 
         return rho0 * Rs**3 * unitless_density

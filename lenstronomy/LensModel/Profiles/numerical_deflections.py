@@ -22,14 +22,15 @@ class NumericalAlpha(LensProfileBase):
 
         Code example:
 
-        custom_class = CustomLensingClass()
-        alpha_x, alpha_y = custom_class(x, y, **kwargs)
+        >>> custom_class = CustomLensingClass()
+        >>> alpha_x, alpha_y = custom_class(x, y, **kwargs)
         
         or equivalently:
 
-        lens_model_list = ['NumericalAlpha']
-        lens_model = LensModel(lens_model_list, numerical_alpha_class=custom_class)
-        alpha_x, alpha_y = lens_model.alpha(x, y, **kwargs)
+        >>> from lenstronomy.LensModel.lens_model import LensModel
+        >>> lens_model_list = ['NumericalAlpha']
+        >>> lens_model = LensModel(lens_model_list, numerical_alpha_class=custom_class)
+        >>>> alpha_x, alpha_y = lens_model.alpha(x, y, **kwargs)
         """
 
         self._custom_lens_class = custom_class

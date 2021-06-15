@@ -9,9 +9,10 @@ class NumericalAlpha(LensProfileBase):
 
     """
     This class allows one to incorporate any lens profile into the usage framework of lenstronomy. When creating the
-    instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where CustomClass is a class
-    with a call method that returns the x/y deflection angles. This allows one to numerically compute and interpolate
-    deflection angles for profiles with no analytic solution for the lensing properties of the density profile.
+    instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where
+    CustomClass is a class with a call method that returns the x/y deflection angles. This allows one to numerically
+    compute and interpolate deflection angles for potentially very complex mass profiles, and then use the results with
+    lenstronomy without having to heavily modify the existing structure of the software.
 
     """
     def __init__(self, custom_class):
@@ -19,13 +20,18 @@ class NumericalAlpha(LensProfileBase):
         """
         :param custom_class: a user-defined class that has a __call___ method that returns deflection angles
 
-        custom_class = CustomLensingClass()
-        Example:
-        alpha_x, alpha_y = custom_class(x, y, **kwargs)
+        Code example:
 
-        Note that the class should be instantiated before passing it into lenstronomy
-        """
+        custom_class = CustomLensingClass()
+        alpha_x, alpha_y = custom_class(x, y, **kwargs)
         
+        or equivalently:
+
+        lens_model_list = ['NumericalAlpha']
+        lens_model = LensModel(lens_model_list, numerical_alpha_class=custom_class)
+        alpha_x, alpha_y = lens_model.alpha(x, y, **kwargs)
+        """
+
         self._custom_lens_class = custom_class
         super(NumericalAlpha, self).__init__()
 

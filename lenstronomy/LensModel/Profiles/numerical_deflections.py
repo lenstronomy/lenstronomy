@@ -1,10 +1,5 @@
 __author__ = 'dgilman'
 
-# this file contains a class to compute lensing quantities with a pre-computed grid of deflection angles, up to
-# a normalization factor. The user passes in a pointer to this pre-computed grid, and the lensing funcitons
-# interpolate it to compute deflection angles and the hessian
-
-import numpy as np
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 __all__ = ['NumericalAlpha']
@@ -12,53 +7,26 @@ __all__ = ['NumericalAlpha']
 
 class NumericalAlpha(LensProfileBase):
 
+    """
+    This class allows one to incorporate any lens profile into the usage framework of lenstronomy. When creating the
+    instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where CustomClass is a class
+    with a call method that returns the x/y deflection angles. This allows one to numerically compute and interpolate
+    deflection angles for profiles with no analytic solution for the lensing properties of the density profile.
+
+    """
     def __init__(self, custom_class):
 
         """
-        :param custom_class: a user-defined class that contains the following attributes
+        :param custom_class: a user-defined class that has a __call___ method that returns deflection angles
 
-        1) custom_class.deflections: a numpy array of length N; stores pre-computed deflection angles
-        2) custom_class.params: numpy array shape (N,P), where P is the number of parameters
+        custom_class = CustomLensingClass()
+        Example:
+        alpha_x, alpha_y = custom_class(x, y, **kwargs)
 
-        custom_class should also contain a call method:
-
-        custom_class(x, y, **args)
-        - converts an (x,y) coordinate, and the specific function arguments, into a deflection angle
-
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-        Example: For a cored cNFW profile
-
-        class CustomClass(object):
-
-            def __init__(self, deflection_array, x_nfw, beta)
-
-                self.deflections = deflection_array
-                self.params = np.column_stack((x_nfw, beta))
-                self.param_names = ['x', 'beta']
-
-            def __call__(x, y, Rs, r_core, norm):
-
-                R = np.sqrt(x ** 2 + y ** 2)
-
-                X = R * Rs ** -1
-                beta = r_core * Rs ** -1
-
-                defangle = interpolate(X, beta)
-
-                return norm*defangle
-
-            def interpolate(x_nfw, beta):
-                The user should code up a way to interpolate between values
-                return ~some interpolating function(x_nfw, beta)~
-
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        Note: This returns an *** un-normalized deflection angle ***
-        It is up to the user to rescale the results according to whatever normalization is appropriate
-
+        Note that the class should be instantiated before passing it into lenstronomy
         """
-
-        self._interp = custom_class
+        
+        self._custom_lens_class = custom_class
         super(NumericalAlpha, self).__init__()
 
     def function(self, x, y,center_x = 0, center_y = 0, **kwargs):
@@ -68,22 +36,30 @@ class NumericalAlpha(LensProfileBase):
     def derivatives(self, x, y, center_x=0, center_y=0, **kwargs):
 
         """
-        returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table
-        """
 
-        assert 'norm' in kwargs.keys(), "key word arguments must contain 'norm', " \
-                                        "the normalization of deflection angle in units of arcsec."
+        :param x: x coordinate [arcsec]
+        :param y: x coordinate [arcsec]
+        :param center_x: deflector x center [arcsec]
+        :param center_y: deflector y center [arcsec]
+        :param kwargs: keyword arguments for the custom profile
+        :return:
+        """
 
         x_ = x - center_x
         y_ = y - center_y
-        f_x, f_y = self._interp(x_, y_, **kwargs)
+        f_x, f_y = self._custom_lens_class(x_, y_, **kwargs)
 
         return f_x, f_y
 
     def hessian(self, x, y, center_x=0, center_y=0, **kwargs):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-        (un-normalized!!!) interpolated from the numerical deflection table
+        Returns the components of the hessian matrix
+        :param x: x coordinate [arcsec]
+        :param y: y coordinate [arcsec]
+        :param center_x: the deflector x coordinate
+        :param center_y: the deflector y coordinate
+        :param kwargs: keyword arguments for the profile
+        :return: the derivatives of the deflection angles that make up the hessian matrix
         """
 
         diff = 1e-6

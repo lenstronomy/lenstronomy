@@ -51,7 +51,9 @@ class NumericKinematics(Anisotropy):
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        returns unweighted los velocity dispersion for a specified projected radius
+        returns unweighted los velocity dispersion for a specified 3d and projected radius
+        (if lum_weight_int_method=True then the 3d radius is not required and the function directly performs the
+        luminosity weighted integral in projection at R)
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
@@ -68,7 +70,7 @@ class NumericKinematics(Anisotropy):
 
     def sigma_s2_project_int(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        returns unweighted los velocity dispersion for a specified projected radius
+        returns luminosity-weighted los velocity dispersion for a specified projected radius R (ignores 3d radius r)
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
@@ -88,7 +90,7 @@ class NumericKinematics(Anisotropy):
 
     def sigma_s2_full(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        returns unweighted los velocity dispersion for a specified projected radius
+        returns unweighted los velocity dispersion for a specified 3d radius r at projected radius R
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)

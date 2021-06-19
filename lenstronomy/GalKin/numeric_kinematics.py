@@ -40,7 +40,7 @@ class NumericKinematics(Anisotropy):
         self._max_interpolate = max_integrate  # we chose to set the interpolation range to the integration range
         self._min_interpolate = min_integrate  # we chose to set the interpolation range to the integration range
         if max_light_draw is None:
-            max_light_draw = max_integrate # / 2.
+            max_light_draw = max_integrate / 10.  # make sure the actual solution for the kinematics is only computed way inside the integral
         self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
                                          max_interpolate=max_integrate, min_interpolate=min_integrate,
                                          max_draw=max_light_draw)
@@ -158,6 +158,7 @@ class NumericKinematics(Anisotropy):
         """
         r = self.lightProfile.draw_light_3d(kwargs_light, n=1)[0]
         R, x, y = util.project2d_random(r)
+        #R = np.maximum(R, self._min_integrate)
 
         # this code is a remnant of the 2d-only rendering
         # (can be used when accurate luminosity-weighted integrated velocity dispersion predictions are made)
@@ -192,7 +193,7 @@ class NumericKinematics(Anisotropy):
             We refer to the Anisotropy() class for details on the parameters.
         :return: integral of A15 in Mamon&Lokas 2005
         """
-        R_ = max(R, self._min_integrate)
+        R = max(R, self._min_integrate)
         max_integrate = self._max_integrate  # make sure the integration of the Jeans equation is performed further out than the interpolation
         #if False:
         #    # linear integral near R
@@ -237,6 +238,7 @@ class NumericKinematics(Anisotropy):
         :param kwargs_anisotropy: stellar anisotropy keyword arguments
         :return:
         """
+        R = np.maximum(R, self._min_integrate)
         if not hasattr(self, '_interp_I_R_sigma2'):
             min_log = np.log10(self._min_integrate)
             max_log = np.log10(self._max_integrate)
@@ -310,7 +312,7 @@ class NumericKinematics(Anisotropy):
         :return: integrand value
         """
         f_r = self.anisotropy_solution(r, **kwargs_anisotropy)
-        l_r = self.lightProfile.light_3d_interp(r, kwargs_light)
+        l_r = self.lightProfile.light_3d(r, kwargs_light)
         m_r = self._mass_3d_interp(r, kwargs_mass)
         out = f_r * l_r * m_r / r**2
         return out

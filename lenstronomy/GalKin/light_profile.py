@@ -98,23 +98,21 @@ class LightProfile(object):
             self._kwargs_light_circularized = kwargs_list_new
         return self._kwargs_light_circularized
 
-    def light_2d_finite(self, R, kwargs_list):
+    def _light_2d_finite_single(self, R, kwargs_list):
         """
         projected light profile (integrated to FINITE 3d boundaries from the max_interpolate)
+        for a single float number of R
 
-        :param R: projected 2d radius (between min_interpolate and max_interpolate
+        :param R: projected 2d radius (between min_interpolate and max_interpolate)
         :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
         :return: projected surface brightness
         """
-
-        # call circularization
-        kwargs_circ = self._circularize_kwargs(kwargs_list)
 
         # here we perform a logarithmic integral
         stop = np.log10(np.maximum(np.sqrt(self._max_interpolate**2 - R**2), self._min_interpolate + 0.00001))
         x = np.logspace(start=np.log10(self._min_interpolate), stop=stop, num=self._interp_grid_num)
         r_array = np.sqrt(x**2 + R**2)
-        flux_r = self.light_3d(r_array, kwargs_circ)
+        flux_r = self.light_3d(r_array, kwargs_list)
         dlog_r = (np.log10(x[2]) - np.log10(x[1])) * np.log(10)
         flux_r *= dlog_r * x
 
@@ -135,6 +133,25 @@ class LightProfile(object):
         #print(out_1, out, 'test')
         #flux_R = out[0]
         return flux_R * 2  # integral in both directions
+
+    def light_2d_finite(self, R, kwargs_list):
+        """
+        projected light profile (integrated to FINITE 3d boundaries from the max_interpolate)
+
+        :param R: projected 2d radius (between min_interpolate and max_interpolate
+        :param kwargs_list: list of keyword arguments of light profiles (see LightModule)
+        :return: projected surface brightness
+        """
+
+        kwargs_circ = self._circularize_kwargs(kwargs_list)
+        n = len(np.atleast_1d(R))
+        if n <= 1:
+            return self._light_2d_finite_single(R, kwargs_list)
+        else:
+            light_2d = np.zeros(n)
+            for i, R_i in enumerate(R):
+                light_2d[i] = self._light_2d_finite_single(R_i, kwargs_list)
+            return light_2d
 
     def draw_light_2d_linear(self, kwargs_list, n=1, new_compute=False):
         """
@@ -202,14 +219,16 @@ class LightProfile(object):
         """
         if not hasattr(self, '_light_3d_cdf_log') or new_compute is True:
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_draw), self._interp_grid_num)
+            dlog_r = np.log10(r_array[1]) - np.log10(r_array[0])
+            r_array_int = np.logspace(np.log10(self._min_interpolate) + dlog_r / 2, np.log10(self._max_draw) + dlog_r / 2, self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
             sum = 0
-            for i, r in enumerate(r_array):
-                if i == 0:
-                    cum_sum[i] = 0
-                else:
-                    sum += self.light_3d(r, kwargs_list) * r * r**2
-                    cum_sum[i] = copy.deepcopy(sum)
+            for i, r in enumerate(r_array_int[:-1]):
+                #if i == 0:
+                #    cum_sum[i] = 0
+                #else:
+                    sum += self.light_3d(r, kwargs_list) * r**2 * (r_array[i+1] - r_array[i])# * r
+                    cum_sum[i+1] = copy.deepcopy(sum)
             cum_sum_norm = cum_sum/cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))
             self._light_3d_cdf_log = f

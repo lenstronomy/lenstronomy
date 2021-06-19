@@ -146,11 +146,11 @@ class LightProfile(object):
         kwargs_circ = self._circularize_kwargs(kwargs_list)
         n = len(np.atleast_1d(R))
         if n <= 1:
-            return self._light_2d_finite_single(R, kwargs_list)
+            return self._light_2d_finite_single(R, kwargs_circ)
         else:
             light_2d = np.zeros(n)
             for i, R_i in enumerate(R):
-                light_2d[i] = self._light_2d_finite_single(R_i, kwargs_list)
+                light_2d[i] = self._light_2d_finite_single(R_i, kwargs_circ)
             return light_2d
 
     def draw_light_2d_linear(self, kwargs_list, n=1, new_compute=False):

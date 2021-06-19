@@ -251,8 +251,8 @@ class TestMassProfile(object):
         R = 1
         I_R_sigma2_interp, I_R_interp = numerics._I_R_sigma2_interp(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
         I_R_sigma2, I_R = numerics._I_R_sigma2(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
-        npt.assert_almost_equal(I_R_sigma2_interp / I_R_sigma2, 1, decimal=4)
-        npt.assert_almost_equal(I_R_interp / I_R, 1, decimal=4)
+        npt.assert_almost_equal(I_R_sigma2_interp / I_R_sigma2, 1, decimal=3)
+        npt.assert_almost_equal(I_R_interp / I_R, 1, decimal=3)
 
     def test_power_law_test(self):
         # tests a isotropic velocity anisotropy on a singular isothermal sphere with the same tracer particle distribution

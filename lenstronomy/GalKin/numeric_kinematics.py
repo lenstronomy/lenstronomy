@@ -64,15 +64,14 @@ class NumericKinematics(Anisotropy):
         :return: weighted line-of-sight projected velocity dispersion at projected radius R with weights I
         """
         if self._lum_weight_int_method is True:
-            return self.sigma_s2_project(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            return self.sigma_s2_project(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         else:
             return self.sigma_s2_r(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy), 1
 
-    def sigma_s2_project(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def sigma_s2_project(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         returns luminosity-weighted los velocity dispersion for a specified projected radius R and weight
 
-        :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
         :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
@@ -158,13 +157,6 @@ class NumericKinematics(Anisotropy):
         """
         r = self.lightProfile.draw_light_3d(kwargs_light, n=1)[0]
         R, x, y = util.project2d_random(r)
-        #R = np.maximum(R, self._min_integrate)
-
-        # this code is a remnant of the 2d-only rendering
-        # (can be used when accurate luminosity-weighted integrated velocity dispersion predictions are made)
-        # R = self.lightProfile.draw_light_2d(kwargs_light, n=1)[0]
-        # x, y = util.draw_xy(R)
-        # r = None
         return r, R, x, y
 
     def delete_cache(self):
@@ -242,7 +234,7 @@ class NumericKinematics(Anisotropy):
         if not hasattr(self, '_interp_I_R_sigma2'):
             min_log = np.log10(self._min_integrate)
             max_log = np.log10(self._max_integrate)
-            R_array = np.logspace(min_log, max_log, self._interp_grid_num)
+            R_array = np.logspace(min_log, max_log, self._interp_grid_num)  # self._interp_grid_num
             I_R_sigma2_array = []
             I_R_array = []
             for R_i in R_array:

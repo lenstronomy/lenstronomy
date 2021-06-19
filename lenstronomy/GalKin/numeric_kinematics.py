@@ -61,16 +61,16 @@ class NumericKinematics(Anisotropy):
         :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
         :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
          We refer to the Anisotropy() class for details on the parameters.
-        :return: line-of-sight projected velocity dispersion at projected radius R
+        :return: weighted line-of-sight projected velocity dispersion at projected radius R with weights I
         """
         if self._lum_weight_int_method is True:
-            return self.sigma_s2_project_int(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            return self.sigma_s2_project(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         else:
-            return self.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            return self.sigma_s2_r(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy), 1
 
-    def sigma_s2_project_int(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def sigma_s2_project(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        returns luminosity-weighted los velocity dispersion for a specified projected radius R (ignores 3d radius r)
+        returns luminosity-weighted los velocity dispersion for a specified projected radius R and weight
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
@@ -86,9 +86,9 @@ class NumericKinematics(Anisotropy):
         #I_R_sigma2, I_R = self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         I_R_sigma2, I_R = self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         #I_R = self.lightProfile.light_2d(R, kwargs_light)
-        return np.nan_to_num(I_R_sigma2 / I_R)
+        return I_R_sigma2 / I_R, 1
 
-    def sigma_s2_full(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+    def sigma_s2_r(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         returns unweighted los velocity dispersion for a specified 3d radius r at projected radius R
 

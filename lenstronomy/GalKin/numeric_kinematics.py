@@ -14,7 +14,7 @@ __all__ = ['NumericKinematics']
 class NumericKinematics(Anisotropy):
 
     def __init__(self, kwargs_model, kwargs_cosmo, interpol_grid_num=1000, log_integration=True, max_integrate=1000,
-                 min_integrate=0.0001, max_light_draw=None, lum_weight_int_method=False):
+                 min_integrate=0.0001, max_light_draw=None, lum_weight_int_method=True):
         """
         What we need:
         - max projected R to have ACCURATE I_R_sigma values
@@ -40,7 +40,7 @@ class NumericKinematics(Anisotropy):
         self._max_interpolate = max_integrate  # we chose to set the interpolation range to the integration range
         self._min_interpolate = min_integrate  # we chose to set the interpolation range to the integration range
         if max_light_draw is None:
-            max_light_draw = max_integrate / 10.  # make sure the actual solution for the kinematics is only computed way inside the integral
+            max_light_draw = max_integrate  # make sure the actual solution for the kinematics is only computed way inside the integral
         self.lightProfile = LightProfile(light_profile_list, interpol_grid_num=interpol_grid_num,
                                          max_interpolate=max_integrate, min_interpolate=min_integrate,
                                          max_draw=max_light_draw)
@@ -329,8 +329,6 @@ class NumericKinematics(Anisotropy):
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_interpolate), self._interp_grid_num)
             mass_3d_array = self.mass_3d(r_array, kwargs)
             mass_3d_array[mass_3d_array < 10. ** (-100)] = 10. ** (-100)
-            #mass_dim_array = mass_3d_array * const.arcsec ** 2 * self.cosmo.dd * self.cosmo.ds \
-            #                 / self.cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
             self._log_mass_3d = interp1d(np.log(r_array), np.log(mass_3d_array/r_array),
                                          fill_value=(np.log(mass_3d_array[0] / r_array[0]), -1000), bounds_error=False)
         return np.exp(self._log_mass_3d(np.log(r))) * np.minimum(r, self._max_interpolate)

@@ -133,5 +133,4 @@ class Galkin(GalkinModel, GalkinObservation):
             if bool is True:
                 break
         sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        print(np.sqrt(sigma2_R) / 1000, r, R)
         return sigma2_R

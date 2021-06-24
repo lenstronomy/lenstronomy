@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data.psf &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Data.psf &#8212; lenstronomy 1.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -63,6 +63,7 @@
 <span class="sd">        :param truncation: float, Gaussian truncation (in units of sigma), only required for &#39;GAUSSIAN&#39; model</span>
 <span class="sd">        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)</span>
 <span class="sd">        :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source</span>
+<span class="sd">         (if not normalized, will be normalized)</span>
 <span class="sd">        :param psf_error_map: uncertainty in the PSF model. Same shape as point source kernel.</span>
 <span class="sd">        This error will be added to the pixel error around the position of point sources as follows:</span>
 <span class="sd">        sigma^2_i += &#39;psf_error_map&#39;_j * (point_source_flux_i)**2</span>
@@ -229,7 +230,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

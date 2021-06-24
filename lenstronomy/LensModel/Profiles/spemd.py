@@ -117,7 +117,7 @@ class SPEMD(LensProfileBase):
         :param s_scale: smoothing scale in the center of the profile
         :param center_x: x-position of lens center
         :param center_y: y-position of lens center
-        :return: Hessian components f_xx, f_yy, f_xy
+        :return: Hessian components f_xx, f_xy, f_yx, f_yy
         """
         x1, x2, q_fastell, gam, s2, q, phi_G = self.param_transform(x, y, theta_E, gamma, e1, e2, s_scale, center_x, center_y)
         compute_bool = self._parameter_constraints(q_fastell, gam, s2, q)
@@ -142,7 +142,7 @@ class SPEMD(LensProfileBase):
         f_xx = kappa + gamma1
         f_yy = kappa - gamma1
         f_xy = gamma2
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def param_transform(self, x, y, theta_E, gamma, e1, e2, s_scale, center_x=0, center_y=0):
         """

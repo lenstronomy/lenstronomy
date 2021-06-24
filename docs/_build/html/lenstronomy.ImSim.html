@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.ImSim package &#8212; lenstronomy 1.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -403,7 +403,7 @@ components and applies a punishment in the likelihood if so.</li>
 <dl class="method">
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.linear_response_matrix">
 <code class="descname">linear_response_matrix</code><span class="sig-paren">(</span><em>kwargs_lens=None</em>, <em>kwargs_source=None</em>, <em>kwargs_lens_light=None</em>, <em>kwargs_ps=None</em>, <em>kwargs_extinction=None</em>, <em>kwargs_special=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.linear_response_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.linear_response_matrix" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the linear response matrix (m x n), with n beeing the data size and m being the coefficients</p>
+<dd><p>computes the linear response matrix (m x n), with n being the data size and m being the coefficients</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -471,9 +471,9 @@ components and applies a punishment in the likelihood if so.</li>
 <dt id="lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_chi2">
 <code class="descname">reduced_chi2</code><span class="sig-paren">(</span><em>model</em>, <em>error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/image_linear_solve.html#ImageLinearFit.reduced_chi2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.image_linear_solve.ImageLinearFit.reduced_chi2" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns reduced chi2
-:param model:
-:param error_map:
-:return:</p>
+:param model: 2d numpy array of a model predicted image
+:param error_map: same format as model, additional error component (such as PSF errors)
+:return: reduced chi2</p>
 </dd></dl>
 
 <dl class="method">
@@ -778,7 +778,7 @@ such as their number of pixels, scale, and center coordinates (fixed to the orig
         <li class="right" >
           <a href="lenstronomy.GalKin.html" title="lenstronomy.GalKin package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

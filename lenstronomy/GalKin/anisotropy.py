@@ -227,7 +227,7 @@ class OsipkovMerritt(object):
 
     def K(self, r, R, r_ani):
         """
-        equation A16 im Mamon & Lokas for Osipkov&Merrit anisotropy
+        equation A16 im Mamon & Lokas 2005 for Osipkov&Merrit anisotropy
 
         :param r: 3d radius
         :param R: projected 2d radius
@@ -237,8 +237,7 @@ class OsipkovMerritt(object):
         u = r / R
         ua = r_ani / R
         k = (ua ** 2 + 1. / 2) / (ua ** 2 + 1) ** (3. / 2) * (u ** 2 + ua ** 2) / u * np.arctan(
-            np.sqrt((u ** 2 - 1) / (ua ** 2 + 1))) \
-            - 1. / 2 / (ua ** 2 + 1) * np.sqrt(1 - 1. / u ** 2)
+            np.sqrt((u ** 2 - 1) / (ua ** 2 + 1))) - 1. / 2 / (ua ** 2 + 1) * np.sqrt(1 - 1. / u ** 2)
         return k
 
     @staticmethod
@@ -252,7 +251,8 @@ class OsipkovMerritt(object):
         """
         return r**2/(r_ani**2 + r**2)
 
-    def anisotropy_solution(self, r, r_ani):
+    @staticmethod
+    def anisotropy_solution(r, r_ani):
         """
         the solution to
         d ln(f)/ d ln(r) = 2 beta(r)

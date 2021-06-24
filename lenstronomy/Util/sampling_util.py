@@ -72,6 +72,7 @@ def cube2args_gaussian(cube, lowers, uppers, means, sigmas, num_dims, copy=False
     cube[:] = stats.truncnorm.ppf(cube_ if copy else cube, a=a, b=b, loc=means, scale=sigmas)
     return cube
 
+
 @export
 def scale_limits(lowers, uppers, scale):
     if not isinstance(lowers, np.ndarray):

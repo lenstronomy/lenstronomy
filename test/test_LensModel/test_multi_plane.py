@@ -24,7 +24,7 @@ class TestMultiPlane(object):
         kwargs_lens = [{'theta_E': 1}]
         redshift_list = [0.5]
         lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list,
-                                    lens_redshift_list=redshift_list)
+                                    lens_redshift_list=redshift_list, z_interp_stop=3, cosmo_interp=True)
         alpha_x, alpha_y = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
         lensModelMutli.update_source_redshift(z_source=z_source)
         alpha_x_new, alpha_y_new = lensModelMutli.alpha(1, 0, kwargs_lens=kwargs_lens)
@@ -367,6 +367,10 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             lens = MultiPlane(z_source_convention=1, z_source=1, lens_model_list=['SIS', 'SIS'], lens_redshift_list=[0.5, 0.8])
             lens._check_raise(k=[1])
+
+        with self.assertRaises(ValueError):
+            lens_model = LensModel(lens_model_list=['SIS'], multi_plane=True, z_source=1, z_source_convention=1,
+                                   cosmo_interp=True, z_interp_stop=0.5)
 
 
 if __name__ == '__main__':

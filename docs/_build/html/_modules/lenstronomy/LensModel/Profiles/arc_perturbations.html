@@ -1,0 +1,244 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.LensModel.Profiles.arc_perturbations &#8212; lenstronomy 1.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Profiles.arc_perturbations</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">derivative_util</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ArcPerturbations&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="ArcPerturbations"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.arc_perturbations.ArcPerturbations">[docs]</a><span class="k">class</span> <span class="nc">ArcPerturbations</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    uses radial and tangential fourier modes within a specific range in both directions to perturb a lensing potential</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ArcPerturbations</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_2_pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">2</span>
+
+<div class="viewcode-block" id="ArcPerturbations.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.arc_perturbations.ArcPerturbations.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">d_r</span><span class="p">,</span> <span class="n">d_phi</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param coeff: float, amplitude of basis</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :param d_phi: period of tangential sinusoidal in radian</span>
+<span class="sd">        :param center_x: center of rotation for tangential basis</span>
+<span class="sd">        :param center_y: center of rotation for tangential basis</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">phi</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="n">dphi_</span> <span class="o">=</span> <span class="n">d_phi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_2_pi</span>
+        <span class="n">phi_r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span>
+        <span class="n">phi_theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_theta</span><span class="p">(</span><span class="n">phi</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">phi_r</span> <span class="o">*</span> <span class="n">phi_theta</span> <span class="o">*</span> <span class="n">coeff</span></div>
+
+<div class="viewcode-block" id="ArcPerturbations.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.arc_perturbations.ArcPerturbations.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">d_r</span><span class="p">,</span> <span class="n">d_phi</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param coeff: float, amplitude of basis</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :param d_phi: period of tangential sinusoidal in radian</span>
+<span class="sd">        :param center_x: center of rotation for tangential basis</span>
+<span class="sd">        :param center_y: center of rotation for tangential basis</span>
+<span class="sd">        :return: f_x, f_y</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="n">dphi_</span> <span class="o">=</span> <span class="n">d_phi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_2_pi</span>
+        <span class="n">d_phi_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span>
+        <span class="n">d_phi_d_theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">dr_dx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_r_dx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">dr_dy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_r_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="n">d_phi_dr</span> <span class="o">*</span> <span class="n">dr_dx</span> <span class="o">+</span> <span class="n">d_phi_d_theta</span> <span class="o">*</span> <span class="n">d_theta_dx</span>
+        <span class="n">f_y</span> <span class="o">=</span> <span class="n">d_phi_dr</span> <span class="o">*</span> <span class="n">dr_dy</span> <span class="o">+</span> <span class="n">d_phi_d_theta</span> <span class="o">*</span> <span class="n">d_theta_dy</span>
+        <span class="k">return</span> <span class="n">f_x</span> <span class="o">*</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">*</span> <span class="n">coeff</span></div>
+
+<div class="viewcode-block" id="ArcPerturbations.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.arc_perturbations.ArcPerturbations.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">d_r</span><span class="p">,</span> <span class="n">d_phi</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate</span>
+<span class="sd">        :param y: y-coordinate</span>
+<span class="sd">        :param coeff: float, amplitude of basis</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :param d_phi: period of tangential sinusoidal in radian</span>
+<span class="sd">        :param center_x: center of rotation for tangential basis</span>
+<span class="sd">        :param center_y: center of rotation for tangential basis</span>
+<span class="sd">        :return: f_xx, f_yy, f_xy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">r</span><span class="p">,</span> <span class="n">theta</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">cart2polar</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="n">dphi_</span> <span class="o">=</span> <span class="n">d_phi</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_2_pi</span>
+
+        <span class="n">d_phi_dr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span>
+        <span class="n">d_phi_dr2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span>
+        <span class="n">d_phi_d_theta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span>
+        <span class="n">d_phi_d_theta2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_theta2</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span>
+        <span class="n">d_phi_dr_dtheta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_d_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">dphi_</span><span class="p">)</span>
+        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">dr_dx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_r_dx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">dr_dy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_r_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">dr_dxx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_x_diffr_dx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">dr_dxy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_x_diffr_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">dr_dyy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_y_diffr_dy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dxx</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dxx</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dyy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dyy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+        <span class="n">d_theta_dxy</span> <span class="o">=</span> <span class="n">derivative_util</span><span class="o">.</span><span class="n">d_phi_dxy</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
+
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">d_phi_dr2</span> <span class="o">*</span> <span class="n">dr_dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d_phi_dr</span> <span class="o">*</span> <span class="n">dr_dxx</span> <span class="o">+</span> <span class="n">d_phi_d_theta2</span> <span class="o">*</span> <span class="n">d_theta_dx</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d_phi_d_theta</span> <span class="o">*</span> <span class="n">d_theta_dxx</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">d_phi_dr_dtheta</span> <span class="o">*</span> <span class="n">dr_dx</span> <span class="o">*</span> <span class="n">d_theta_dx</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">d_phi_dr2</span> <span class="o">*</span> <span class="n">dr_dy</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d_phi_dr</span> <span class="o">*</span> <span class="n">dr_dyy</span> <span class="o">+</span> <span class="n">d_phi_d_theta2</span> <span class="o">*</span> <span class="n">d_theta_dy</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">d_phi_d_theta</span> <span class="o">*</span> <span class="n">d_theta_dyy</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">d_phi_dr_dtheta</span> <span class="o">*</span> <span class="n">dr_dy</span> <span class="o">*</span> <span class="n">d_theta_dy</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">d_phi_dr2</span> <span class="o">*</span> <span class="n">dr_dx</span> <span class="o">*</span> <span class="n">dr_dy</span> <span class="o">+</span> <span class="n">d_phi_dr</span> <span class="o">*</span> <span class="n">dr_dxy</span> <span class="o">+</span> <span class="n">d_phi_d_theta2</span> <span class="o">*</span> <span class="n">d_theta_dx</span> <span class="o">*</span> <span class="n">d_theta_dy</span> <span class="o">+</span> <span class="n">d_phi_d_theta</span> <span class="o">*</span> <span class="n">d_theta_dxy</span> <span class="o">+</span> <span class="n">d_phi_dr_dtheta</span> <span class="o">*</span> <span class="n">dr_dx</span> <span class="o">*</span> <span class="n">d_theta_dy</span> <span class="o">+</span> <span class="n">d_phi_dr_dtheta</span> <span class="o">*</span> <span class="n">dr_dy</span> <span class="o">*</span> <span class="n">d_theta_dx</span>
+        <span class="k">return</span> <span class="n">f_xx</span> <span class="o">*</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">*</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">f_xy</span> <span class="o">*</span> <span class="n">coeff</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">*</span> <span class="n">coeff</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r: numpy array, radius</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :return: radial component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">d_r</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_d_phi_r</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        radial derivatives</span>
+
+<span class="sd">        :param r: numpy array, radius</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :return: radial component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_r</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_d_phi_r2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_r</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        radial second derivatives</span>
+
+<span class="sd">        :param r: numpy array, radius</span>
+<span class="sd">        :param d_r: period of radial sinusoidal in units of angle</span>
+<span class="sd">        :return: radial component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">d_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_r</span><span class="o">**</span><span class="mi">2</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">d_theta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param theta: numpy array, orientation angle in 2pi convention</span>
+<span class="sd">        :param d_theta: period of tangential sinusoidal in radian</span>
+<span class="sd">        :return: tangential component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">d_theta</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_d_phi_theta</span><span class="p">(</span><span class="n">theta</span><span class="p">,</span> <span class="n">d_theta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tangential derivatives</span>
+
+<span class="sd">        :param theta: numpy array, angle</span>
+<span class="sd">        :param d_theta: period of tangential sinusoidal in radian</span>
+<span class="sd">        :return: tangential component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span> <span class="o">/</span> <span class="n">d_theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_theta</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_d_phi_theta2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d_theta</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tangential derivatives</span>
+
+<span class="sd">        :param r: numpy array, radius</span>
+<span class="sd">        :param d_theta: period of tangential sinusoidal in radian</span>
+<span class="sd">        :return: tangential component of the potential</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="n">d_theta</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_theta</span><span class="o">**</span><span class="mi">2</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

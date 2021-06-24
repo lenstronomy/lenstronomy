@@ -37,6 +37,7 @@ Contributors (alphabetic)
 * Nicolas Tessore `ntessore <https://github.com/ntessore/>`_
 * Madison Ueland `mueland <https://github.com/mueland/>`_
 * Lyne Van de Vyvere `LyneVdV <https://github.com/LyneVdV/>`_
+* Sebastian Wagner-Carena `swagnercarena <https://github.com/swagnercarena>`_
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_

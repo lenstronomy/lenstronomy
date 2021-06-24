@@ -1,0 +1,348 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.ImSim.Numerics.grid &#8212; lenstronomy 1.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.ImSim.Numerics.grid</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">image_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Data.coord_transforms</span> <span class="k">import</span> <span class="n">Coordinates1D</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="AdaptiveGrid"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">AdaptiveGrid</span><span class="p">(</span><span class="n">Coordinates1D</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    manages a super-sampled grid on the partial image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">supersampling_indexes</span><span class="p">,</span>
+                 <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param nx: number of pixels in x-axis</span>
+<span class="sd">        :param ny: number of pixels in y-axis</span>
+<span class="sd">        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate</span>
+<span class="sd">        :param ra_at_xy_0: ra coordinate at pixel (0,0)</span>
+<span class="sd">        :param dec_at_xy_0: dec coordinate at pixel (0,0)</span>
+<span class="sd">        :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled</span>
+<span class="sd">        :param supersampling_factor: int, factor (per axis) of super-sampling</span>
+<span class="sd">        :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated</span>
+<span class="sd">        (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AdaptiveGrid</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_grid</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flux_evaluate_indexes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flux_evaluate_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="n">supersampled_indexes1d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">supersampling_indexes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_indexes1d</span> <span class="o">=</span> <span class="p">(</span><span class="n">supersampled_indexes1d</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">flux_evaluate_indexes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_low_res_indexes1d</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">supersampled_indexes1d</span><span class="p">))</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">flux_evaluate_indexes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span> <span class="o">=</span> <span class="n">supersampling_factor</span> <span class="o">*</span> <span class="n">supersampling_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_low_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_low_res_indexes1d</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_low_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_low_res_indexes1d</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_low_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_low_res</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coordinates_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: 1d array of all coordinates being evaluated to perform the image computation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ra_low</span><span class="p">,</span> <span class="n">dec_low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_low_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_low_res</span>
+        <span class="n">ra_high</span><span class="p">,</span> <span class="n">dec_high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_coordinates</span>
+        <span class="n">ra_joint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ra_low</span><span class="p">,</span> <span class="n">ra_high</span><span class="p">)</span>
+        <span class="n">dec_joint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dec_low</span><span class="p">,</span> <span class="n">dec_high</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ra_joint</span><span class="p">,</span> <span class="n">dec_joint</span>
+
+<div class="viewcode-block" id="AdaptiveGrid.flux_array2image_low_high"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high">[docs]</a>    <span class="k">def</span> <span class="nf">flux_array2image_low_high</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flux_array</span><span class="p">,</span> <span class="n">high_res_return</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order</span>
+<span class="sd">        :param high_res_return: bool, if True also returns the high resolution image</span>
+<span class="sd">         (needs more computation and is only needed when convolution is performed on the supersampling level)</span>
+<span class="sd">        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">low_res_values</span> <span class="o">=</span> <span class="n">flux_array</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_low_res</span><span class="p">]</span>
+        <span class="n">high_res_values</span> <span class="o">=</span> <span class="n">flux_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_low_res</span><span class="p">:]</span>
+        <span class="n">image_low_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_merge_low_high_res</span><span class="p">(</span><span class="n">low_res_values</span><span class="p">,</span> <span class="n">high_res_values</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">high_res_return</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">image_high_res_partial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_high_res_image</span><span class="p">(</span><span class="n">high_res_values</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_high_res_partial</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res_partial</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_high_res_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: 1d arrays of subpixel grid coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_x_sub_grid&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subpixel_coordinates</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_high_res</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_high_res</span>
+
+    <span class="k">def</span> <span class="nf">_merge_low_high_res</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">low_res_values</span><span class="p">,</span> <span class="n">supersampled_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        adds/overwrites the supersampled values on the image</span>
+
+<span class="sd">        :param low_res_values: 1d array of image with low resolution</span>
+<span class="sd">        :param supersampled_values: values of the supersampled sub-pixels</span>
+<span class="sd">        :return: 2d image</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">)</span>
+        <span class="n">array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_low_res_indexes1d</span><span class="p">]</span> <span class="o">=</span> <span class="n">low_res_values</span>
+        <span class="n">array_low_res_partial</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_average_subgrid</span><span class="p">(</span><span class="n">supersampled_values</span><span class="p">)</span>
+        <span class="n">array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_high_res_indexes1d</span><span class="p">]</span> <span class="o">=</span> <span class="n">array_low_res_partial</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_high_res_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supersampled_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param supersampled_values: 1d array of supersampled values corresponding to coordinates</span>
+<span class="sd">        :return: 2d array of supersampled image (zeros outside supersampled frame)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">high_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">))</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">):</span>
+                <span class="n">selected</span> <span class="o">=</span> <span class="n">supersampled_values</span><span class="p">[</span><span class="n">count</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">]</span>
+                <span class="n">high_res</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="n">j</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array2image_subset</span><span class="p">(</span>
+                    <span class="n">selected</span><span class="p">)</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">high_res</span>
+
+    <span class="k">def</span> <span class="nf">_subpixel_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: 1d arrays of subpixel grid coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x_grid_select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_high_res_indexes1d</span><span class="p">]</span>
+        <span class="n">y_grid_select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_high_res_indexes1d</span><span class="p">]</span>
+        <span class="n">x_sub_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_grid_select</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">)</span>
+        <span class="n">y_sub_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_grid_select</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">):</span>
+                <span class="n">x_ij</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">+</span> <span class="n">j</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">y_ij</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">+</span> <span class="n">i</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">delta_ra</span><span class="p">,</span> <span class="n">delta_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_pix2coord</span><span class="p">(</span><span class="n">x_ij</span><span class="p">,</span> <span class="n">y_ij</span><span class="p">)</span>
+                <span class="n">delta_ra0</span><span class="p">,</span> <span class="n">delta_dec_0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_pix2coord</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">x_sub_grid</span><span class="p">[</span><span class="n">count</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_grid_select</span> <span class="o">+</span> <span class="n">delta_ra</span> <span class="o">-</span> <span class="n">delta_ra0</span>
+                <span class="n">y_sub_grid</span><span class="p">[</span><span class="n">count</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_grid_select</span> <span class="o">+</span> <span class="n">delta_dec</span> <span class="o">-</span> <span class="n">delta_dec_0</span>
+                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_high_res</span> <span class="o">=</span> <span class="n">x_sub_grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_y_high_res</span> <span class="o">=</span> <span class="n">y_sub_grid</span>
+
+    <span class="k">def</span> <span class="nf">_average_subgrid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subgrid_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        averages the values over a pixel</span>
+
+<span class="sd">        :param subgrid_values: values (e.g. flux) of subgrid coordinates</span>
+<span class="sd">        :return: 1d array of size of the supersampled pixels</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">values_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">subgrid_values</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_sub</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">values_2d</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_array2image_subset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices</span>
+<span class="sd">        :param array: 1d array</span>
+<span class="sd">        :return: 2d array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">grid1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span><span class="p">)</span>
+        <span class="n">grid1d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_high_res_indexes1d</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="n">grid2d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">grid1d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid2d</span></div>
+
+
+<div class="viewcode-block" id="RegularGrid"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.grid.RegularGrid">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">RegularGrid</span><span class="p">(</span><span class="n">Coordinates1D</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    manages a super-sampled grid on the partial image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param nx: number of pixels in x-axis</span>
+<span class="sd">        :param ny: number of pixels in y-axis</span>
+<span class="sd">        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate</span>
+<span class="sd">        :param ra_at_xy_0: ra coordinate at pixel (0,0)</span>
+<span class="sd">        :param dec_at_xy_0: dec coordinate at pixel (0,0)</span>
+<span class="sd">        :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled</span>
+<span class="sd">        :param supersampling_factor: int, factor (per axis) of super-sampling</span>
+<span class="sd">        :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated</span>
+<span class="sd">        (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">RegularGrid</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">transform_pix2angle</span><span class="p">,</span> <span class="n">ra_at_xy_0</span><span class="p">,</span> <span class="n">dec_at_xy_0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">=</span> <span class="n">ny</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coordinate_grid</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flux_evaluate_indexes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">flux_evaluate_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">flux_evaluate_indexes</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">flux_evaluate_indexes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_indexes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_subgrid_index</span><span class="p">(</span><span class="n">flux_evaluate_indexes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span><span class="p">)</span>
+
+        <span class="n">x_grid_sub</span><span class="p">,</span> <span class="n">y_grid_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_subgrid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_x_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ra_subgrid</span> <span class="o">=</span> <span class="n">x_grid_sub</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_indexes</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dec_subgrid</span> <span class="o">=</span> <span class="n">y_grid_sub</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_indexes</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">coordinates_evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: 1d array of all coordinates being evaluated to perform the image computation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_subgrid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_subgrid</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">grid_points_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        effective spacing between coordinate points, after supersampling</span>
+<span class="sd">        :return: sqrt(pixel_area)/supersampling_factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pixel_width</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_grid_points_axes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        effective number of points along each axes, after supersampling</span>
+<span class="sd">        :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supersampling_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: factor (per axis) of super-sampling relative to a pixel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span>
+
+<div class="viewcode-block" id="RegularGrid.flux_array2image_low_high"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.grid.RegularGrid.flux_array2image_low_high">[docs]</a>    <span class="k">def</span> <span class="nf">flux_array2image_low_high</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flux_array</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param flux_array: 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order</span>
+<span class="sd">        :return: 2d array, 2d array, corresponding to (partial) images in low and high resolution (to be convolved)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_array2image</span><span class="p">(</span><span class="n">flux_array</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">image_high_res</span> <span class="o">=</span> <span class="n">image</span>
+            <span class="n">image_low_res</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">re_size</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">image_high_res</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">image_low_res</span> <span class="o">=</span> <span class="n">image</span>
+        <span class="k">return</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span></div>
+
+    <span class="k">def</span> <span class="nf">_subgrid_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param idex_mask: 1d array of mask of data</span>
+<span class="sd">        :param subgrid_res: subgrid resolution</span>
+<span class="sd">        :return: 1d array of equivalent mask in subgrid resolution</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">,</span> <span class="n">nx</span><span class="o">=</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="o">=</span><span class="n">ny</span><span class="o">*</span><span class="n">subgrid_res</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">idex_sub</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">idex_sub</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">idex_sub</span>
+
+    <span class="k">def</span> <span class="nf">_array2image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">array</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices</span>
+
+<span class="sd">        :param array: 1d array</span>
+<span class="sd">        :param idex_mask: 1d array of length nx*ny</span>
+<span class="sd">        :param nx: x-axis of 2d grid</span>
+<span class="sd">        :param ny: y-axis of 2d grid</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span>
+        <span class="n">grid1d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span><span class="p">))</span>
+        <span class="n">grid1d</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_indexes</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span>
+        <span class="n">grid2d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">grid1d</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grid2d</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

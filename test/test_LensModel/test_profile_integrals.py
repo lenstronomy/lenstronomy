@@ -51,7 +51,7 @@ class TestNumerics(object):
         int_profile = ProfileIntegrals(lensModel)
         r = 2.
         kappa_num = int_profile.density_2d(r, kwargs, lens_param=True)
-        f_xx, f_yy, f_xy = lensModel.hessian(r, 0, **kwargs)
+        f_xx, f_xy, f_yx, f_yy = lensModel.hessian(r, 0, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_num, kappa, decimal=2)
         if hasattr(lensModel, 'mass_2d_lens'):
@@ -111,7 +111,7 @@ class TestNumerics(object):
         lensModel = Model()
         alpha_Rs = 1.
         Rs = 2.
-        rho0 = lensModel._alpha2rho0(alpha_Rs, Rs)
+        rho0 = lensModel.alpha2rho0(alpha_Rs, Rs)
         kwargs_lens = {'alpha_Rs': alpha_Rs, 'Rs': Rs}
         kwargs_density = {'rho0': rho0, 'Rs': Rs}
         r = 2.
@@ -309,8 +309,26 @@ class TestNumerics(object):
 
     def test_uldm(self):
         from lenstronomy.LensModel.Profiles.uldm import Uldm as Model
-        kwargs = {'kappa_0': 0.1, 'theta_c': 6.}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 6., 'slope': 7.8}
         self.assert_integrals(Model, kwargs)
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_splcore(self):
+
+        from lenstronomy.LensModel.Profiles.splcore import SPLCORE as Model
+        kwargs = {'rho0': 1., 'gamma': 3, 'r_core': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 3, 'r_core': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'rho0': 1., 'gamma': 2, 'r_core': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 2, 'r_core': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
+        kwargs = {'rho0': 1., 'gamma': 2.5, 'r_core': 0.1}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1}
         self.assert_lens_integrals(Model, kwargs)
 
 

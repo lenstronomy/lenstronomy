@@ -232,5 +232,13 @@ class TestLensModelExtensions(object):
                                                 grid_number=100, shape="GAUSSIAN")
         assert len(image) == 100
 
+    def test_tangential_average(self):
+        lens_model_list = ['SIS']
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        lensModelExtensions = LensModelExtensions(lensModel=lensModel)
+        tang_stretch_ave = lensModelExtensions.tangential_average(x=1.1, y=0, kwargs_lens=[{'theta_E': 1, 'center_x': 0, 'center_y': 0}], dr=1, smoothing=None, num_average=9)
+        npt.assert_almost_equal(tang_stretch_ave, -2.525501464097973, decimal=6)
+
+
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -1,0 +1,325 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>lenstronomy.GalKin.aperture_types &#8212; lenstronomy 1.8.2 documentation</title>
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.GalKin.aperture_types</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Slit"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Slit">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Slit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Slit aperture description</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param length: length of slit</span>
+<span class="sd">        :param width: width of slit</span>
+<span class="sd">        :param center_ra: center of slit</span>
+<span class="sd">        :param center_dec: center of slit</span>
+<span class="sd">        :param angle: orientation angle of slit, angle=0 corresponds length in RA direction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width</span> <span class="o">=</span> <span class="n">width</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span> <span class="o">=</span> <span class="n">center_ra</span><span class="p">,</span> <span class="n">center_dec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span> <span class="o">=</span> <span class="n">angle</span>
+
+<div class="viewcode-block" id="Slit.aperture_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Slit.aperture_select">[docs]</a>    <span class="k">def</span> <span class="nf">aperture_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param ra: angular coordinate of photon/ray</span>
+<span class="sd">        :param dec: angular coordinate of photon/ray</span>
+<span class="sd">        :return: bool, True if photon/ray is within the slit, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">slit_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">),</span> <span class="mi">0</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of segments with separate measurements of the velocity dispersion</span>
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="slit_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.slit_select">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">slit_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param ra: angular coordinate of photon/ray</span>
+<span class="sd">    :param dec: angular coordinate of photon/ray</span>
+<span class="sd">    :param length: length of slit</span>
+<span class="sd">    :param width: width of slit</span>
+<span class="sd">    :param center_ra: center of slit</span>
+<span class="sd">    :param center_dec: center of slit</span>
+<span class="sd">    :param angle: orientation angle of slit, angle=0 corresponds length in RA direction</span>
+<span class="sd">    :return: bool, True if photon/ray is within the slit, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra_</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">center_ra</span>
+    <span class="n">dec_</span> <span class="o">=</span> <span class="n">dec</span> <span class="o">-</span> <span class="n">center_dec</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">ra_</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">dec_</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">ra_</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">dec_</span>
+
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">length</span> <span class="o">/</span> <span class="mf">2.</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">width</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Frame"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Frame">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Frame</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    rectangular box with a hole in the middle (also rectangular), effectively a frame</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">width_outer</span><span class="p">,</span> <span class="n">width_inner</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param width_outer: width of box to the outer parts</span>
+<span class="sd">        :param width_inner: width of inner removed box</span>
+<span class="sd">        :param center_ra: center of slit</span>
+<span class="sd">        :param center_dec: center of slit</span>
+<span class="sd">        :param angle: orientation angle of slit, angle=0 corresponds length in RA direction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width_outer</span> <span class="o">=</span> <span class="n">width_outer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_width_inner</span> <span class="o">=</span> <span class="n">width_inner</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span> <span class="o">=</span> <span class="n">center_ra</span><span class="p">,</span> <span class="n">center_dec</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span> <span class="o">=</span> <span class="n">angle</span>
+
+<div class="viewcode-block" id="Frame.aperture_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Frame.aperture_select">[docs]</a>    <span class="k">def</span> <span class="nf">aperture_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param ra: angular coordinate of photon/ray</span>
+<span class="sd">        :param dec: angular coordinate of photon/ray</span>
+<span class="sd">        :return: bool, True if photon/ray is within the slit, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">frame_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width_outer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_width_inner</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_angle</span><span class="p">),</span> <span class="mi">0</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of segments with separate measurements of the velocity dispersion</span>
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="frame_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.frame_select">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">frame_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">width_outer</span><span class="p">,</span> <span class="n">width_inner</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param ra: angular coordinate of photon/ray</span>
+<span class="sd">    :param dec: angular coordinate of photon/ray</span>
+<span class="sd">    :param width_outer: width of box to the outer parts</span>
+<span class="sd">    :param width_inner: width of inner removed box</span>
+<span class="sd">    :param center_ra: center of slit</span>
+<span class="sd">    :param center_dec: center of slit</span>
+<span class="sd">    :param angle: orientation angle of slit, angle=0 corresponds length in RA direction</span>
+<span class="sd">    :return: bool, True if photon/ray is within the box with a hole, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ra_</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">center_ra</span>
+    <span class="n">dec_</span> <span class="o">=</span> <span class="n">dec</span> <span class="o">-</span> <span class="n">center_dec</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">ra_</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">dec_</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">ra_</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span> <span class="o">*</span> <span class="n">dec_</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">width_outer</span> <span class="o">/</span> <span class="mf">2.</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">width_outer</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">width_inner</span> <span class="o">/</span> <span class="mf">2.</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">width_inner</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Shell"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Shell">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">Shell</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shell aperture</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_in</span><span class="p">,</span> <span class="n">r_out</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r_in: innermost radius to be selected</span>
+<span class="sd">        :param r_out: outermost radius to be selected</span>
+<span class="sd">        :param center_ra: center of the sphere</span>
+<span class="sd">        :param center_dec: center of the sphere</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_out</span> <span class="o">=</span> <span class="n">r_in</span><span class="p">,</span> <span class="n">r_out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span> <span class="o">=</span> <span class="n">center_ra</span><span class="p">,</span> <span class="n">center_dec</span>
+
+<div class="viewcode-block" id="Shell.aperture_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.Shell.aperture_select">[docs]</a>    <span class="k">def</span> <span class="nf">aperture_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param ra: angular coordinate of photon/ray</span>
+<span class="sd">        :param dec: angular coordinate of photon/ray</span>
+<span class="sd">        :return: bool, True if photon/ray is within the slit, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">shell_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span><span class="p">),</span> <span class="mi">0</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of segments with separate measurements of the velocity dispersion</span>
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="shell_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.shell_select">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">shell_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">r_in</span><span class="p">,</span> <span class="n">r_out</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param ra: angular coordinate of photon/ray</span>
+<span class="sd">    :param dec: angular coordinate of photon/ray</span>
+<span class="sd">    :param r_in: innermost radius to be selected</span>
+<span class="sd">    :param r_out: outermost radius to be selected</span>
+<span class="sd">    :param center_ra: center of the sphere</span>
+<span class="sd">    :param center_dec: center of the sphere</span>
+<span class="sd">    :return: boolean, True if within the radial range, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">center_ra</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">dec</span> <span class="o">-</span> <span class="n">center_dec</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">R</span> <span class="o">&gt;=</span> <span class="n">r_in</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">R</span> <span class="o">&lt;</span> <span class="n">r_out</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="IFUShells"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.IFUShells">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">IFUShells</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    class for an Integral Field Unit spectrograph with azimuthal shells where the kinematics are measured</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r_bins</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param r_bins: array of radial bins to average the dispersion spectra in ascending order.</span>
+<span class="sd">        It starts with the inner-most edge to the outermost edge.</span>
+<span class="sd">        :param center_ra: center of the sphere</span>
+<span class="sd">        :param center_dec: center of the sphere</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_r_bins</span> <span class="o">=</span> <span class="n">r_bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span> <span class="o">=</span> <span class="n">center_ra</span><span class="p">,</span> <span class="n">center_dec</span>
+
+<div class="viewcode-block" id="IFUShells.aperture_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.IFUShells.aperture_select">[docs]</a>    <span class="k">def</span> <span class="nf">aperture_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param ra: angular coordinate of photon/ray</span>
+<span class="sd">        :param dec: angular coordinate of photon/ray</span>
+<span class="sd">        :return: bool, True if photon/ray is within the slit, False otherwise, index of shell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">shell_ifu_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_ra</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_center_dec</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_segments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        number of segments with separate measurements of the velocity dispersion</span>
+<span class="sd">        :return: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_r_bins</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span></div>
+
+
+<div class="viewcode-block" id="shell_ifu_select"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.aperture_types.shell_ifu_select">[docs]</a><span class="nd">@export</span>
+<span class="k">def</span> <span class="nf">shell_ifu_select</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">r_bin</span><span class="p">,</span> <span class="n">center_ra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_dec</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :param ra: angular coordinate of photon/ray</span>
+<span class="sd">    :param dec: angular coordinate of photon/ray</span>
+<span class="sd">    :param r_bin: array of radial bins to average the dispersion spectra in ascending order.</span>
+<span class="sd">        It starts with the inner-most edge to the outermost edge.</span>
+<span class="sd">    :param center_ra: center of the sphere</span>
+<span class="sd">    :param center_dec: center of the sphere</span>
+<span class="sd">    :return: boolean, True if within the radial range, False otherwise</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ra</span> <span class="o">-</span> <span class="n">center_ra</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">dec</span> <span class="o">-</span> <span class="n">center_dec</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_bin</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">R</span> <span class="o">&gt;=</span> <span class="n">r_bin</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="ow">and</span> <span class="p">(</span><span class="n">R</span> <span class="o">&lt;</span> <span class="n">r_bin</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">i</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+    </div>
+  </body>
+</html>

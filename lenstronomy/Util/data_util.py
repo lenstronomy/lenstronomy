@@ -45,9 +45,9 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     length EXPTIME is therefore:
     m = -2.5 x log10(DN / EXPTIME) + ZEROPOINT
 
-    :param magnitude:
-    :param magnitude_zero_point:
-    :return: counts per second
+    :param magnitude: astronomical magnitude
+    :param magnitude_zero_point: magnitude zero point (astronomical magnitude with 1 count per second)
+    :return: counts per second of astronomical object
     """
     delta_M = magnitude - magnitude_zero_point
     counts = 10**(-delta_M/2.5)
@@ -73,7 +73,7 @@ def absolute2apparent_magnitude(absolute_magnitude, d_parsec):
     converts absolute to apparent magnitudes
 
     :param absolute_magnitude: absolute magnitude of object
-    :param d_parsec: distance to object in untis parsec
+    :param d_parsec: distance to object in units parsec
     :return: apparent magnitude
     """
     m_apparent = 5.8 * (np.log10(d_parsec) - 1) + absolute_magnitude

@@ -80,17 +80,18 @@ class TestTNFW(object):
         x = np.linspace(0.1 * Rs, 5 * Rs, 100)
         y = np.linspace(0.2, 1, 100)
 
-        xxt, yyt, xyt = self.tnfw.hessian(x, y, Rs, alpha_Rs, r_trunc)
-        xx, yy, xy = self.nfw.hessian(x, y, Rs, alpha_Rs)
+        xxt, xyt, yxt, yyt = self.tnfw.hessian(x, y, Rs, alpha_Rs, r_trunc)
+        xx, xy, yx, yy = self.nfw.hessian(x, y, Rs, alpha_Rs)
 
         np.testing.assert_almost_equal(xy, xyt, 4)
         np.testing.assert_almost_equal(yy, yyt, 4)
         np.testing.assert_almost_equal(xy, xyt, 4)
+        np.testing.assert_almost_equal(yxt, xyt, 8)
 
         Rs = 0.2
         r_trunc = 5
-        xxt, yyt, xyt = self.tnfw.hessian(Rs, 0, Rs, alpha_Rs, r_trunc)
-        xxt_delta, yyt_delta, xyt_delta = self.tnfw.hessian(Rs+0.000001, 0, Rs, alpha_Rs, r_trunc)
+        xxt, xyt, yxt, yyt = self.tnfw.hessian(Rs, 0, Rs, alpha_Rs, r_trunc)
+        xxt_delta, xyt_delta, yxt_delta, yyt_delta = self.tnfw.hessian(Rs+0.000001, 0, Rs, alpha_Rs, r_trunc)
         npt.assert_almost_equal(xxt, xxt_delta, decimal=6)
 
     def test_density_2d(self):
@@ -108,8 +109,8 @@ class TestTNFW(object):
 
         rho0, Rs = 1, 2
 
-        trs = self.tnfw._rho02alpha(rho0, Rs)
-        rho_out = self.tnfw._alpha2rho0(trs, Rs)
+        trs = self.tnfw.rho02alpha(rho0, Rs)
+        rho_out = self.tnfw.alpha2rho0(trs, Rs)
 
         npt.assert_almost_equal(rho0, rho_out)
 
@@ -131,7 +132,7 @@ class TestTNFW(object):
         f_xx_approx = (x_def_t_deltax - x_def_t) * diff ** -1
         f_yy_approx = (y_def_t_deltay - y_def_t) * diff ** -1
         f_xy_approx = (x_def_t_deltay - y_def_t) * diff ** -1
-        numerical = [f_xx_approx,f_yy_approx,f_xy_approx]
+        numerical = [f_xx_approx, f_xy_approx, f_xy_approx, f_yy_approx]
 
         for (approx,true) in zip(numerical,actual):
             npt.assert_almost_equal(approx,true)
@@ -144,6 +145,16 @@ class TestTNFW(object):
         f_tnfw = f_tnfw.ravel()
         for value in f_tnfw:
             npt.assert_(value == 1)
+
+    def test_F_function_at_zero(self):
+        f_tnfw = self.tnfw.F(0)
+        npt.assert_almost_equal(f_tnfw, 0, decimal=8)
+
+    def test__cos_function(self):
+        # test private _cos_function function for raise
+        x = 3 +6j
+        npt.assert_raises(Exception, self.tnfw._cos_function, x)
+
 
 if __name__ == '__main__':
     pytest.main()

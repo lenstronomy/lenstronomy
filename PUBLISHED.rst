@@ -12,7 +12,10 @@ Core lenstronomy methodology and software publications
 ------------------------------------------------------
 
 * lenstronomy: Multi-purpose gravitational lens modelling software package; `Birrer & Amara 2018 <https://ui.adsabs.harvard.edu/abs/2018PDU....22..189B>`_
-    *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and gives some use cases.*
+    *This is the lenstronomy software paper. Please cite this paper whenever you make use of lenstronomy. The paper gives a design overview and highlights some use cases.*
+
+* lenstronomy II: A gravitational lensing software ecosystem; `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_
+    *JOSS software publication. Please cite this paper whenever you make use of lenstronomy.*
 
 * Gravitational Lens Modeling with Basis Sets; `Birrer et al. 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_
     *This is the method paper lenstronomy is primary based on. Please cite this paper whenever you publish results with lenstronomy by using Shapelet basis sets and/or the PSO and MCMC chain.*
@@ -26,6 +29,11 @@ Related software publications
 
 * SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
     *This is the method paper presenting SLITromomy, an improved version of the SLIT algorithm fully implemented and compatible with lenstronomy.*
+
+* deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021 <https://arxiv.org/abs/2102.02830>`_
+    *Software to simulating large datasets for applying deep learning to strong gravitational lensing.*
+
+
 
 
 Measuring the Hubble constant
@@ -67,6 +75,12 @@ Measuring the Hubble constant
 * Large-Scale Gravitational Lens Modeling with Bayesian Neural Networks for Accurate and Precise Inference of the Hubble Constant `Park et al. 2020 <https://arxiv.org/abs/2012.00042>`_
     *BBN lens model inference using lenstronomy through `baobab <https://github.com/jiwoncpark/baobab>`_ for training set generation.*
 
+* Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021 <https://arxiv.org/abs/2103.08609>`_
+    *Simulations and models with and without lensed point sources to perform a time-delay cosmography analysis.*
+
+* Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
+    *Investigating the detectability of a cored component with mock imaging modeling and comparison of kinematic modeling.*
+
 
 
 
@@ -105,6 +119,11 @@ Dark Matter substructure
 
 * Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
+
+* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <hhttps://arxiv.org/abs/2105.05259>`_
+    * *
+
+
 
 
 Galaxy formation and evolution
@@ -147,6 +166,9 @@ Quasar-host galaxy decomposition
 * A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
     *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
 
+* The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
+    *Quasar-host decomposition of 5000 SDSS quasars*
+
 
 
 
@@ -164,6 +186,9 @@ Lensing of Gravitational Waves
 * Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
     *solving the lens equation*
 
+* Beyond the detector horizon: Forecasting gravitational-wave strong lensing; `Renske et al. 2021 <https://arxiv.org/abs/2106.06303>`_
+    *computing image positions, time delays and magnifications for gravitational wave forecasting*
+
 
 
 
@@ -178,6 +203,12 @@ Theory papers
 
 * Unified lensing and kinematic analysis for any elliptical mass profile; `Shajib 2019 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.488.1387S>`_
     *Provides a methodology to generalize the multi-Gaussian expansion to general elliptical mass and light profiles*
+
+* Gravitational lensing formalism in a curved arc basis: A continuous description of observables and degeneracies from the weak to the strong lensing regime; `Birrer 2021 <https://arxiv.org/abs/2104.09522>`_
+    *Lensing formalism with curved arc distortion formalism. Link to code repository `here <https://github.com/sibirrer/curved_arcs>`_.*
+
+
+
 
 
 Simulation products
@@ -196,6 +227,14 @@ Large scale structure
 
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
+
+
+Lens finding
+------------
+
+* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
+    *simulating training sets for lens searches*
+
 
 
 Others

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 1.8.2 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,7 +51,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to deal with the light distribution</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_list</span><span class="p">,</span> <span class="n">interpol_grid_num</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">max_interpolate</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">min_interpolate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_list</span><span class="p">,</span> <span class="n">interpol_grid_num</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span> <span class="n">max_interpolate</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">min_interpolate</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param profile_list:</span>
@@ -80,7 +80,8 @@
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">light_3d_array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span>
             <span class="n">light_3d_array</span><span class="p">[</span><span class="n">light_3d_array</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span>
-            <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">light_3d_array</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="s2">&quot;extrapolate&quot;</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">light_3d_array</span><span class="p">),</span> <span class="n">fill_value</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">light_3d_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="o">-</span><span class="mi">1000</span><span class="p">),</span>
+                         <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># &quot;extrapolate&quot;</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span> <span class="o">=</span> <span class="n">f</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span><span class="p">)))</span></div>
 
@@ -91,16 +92,18 @@
 <span class="sd">        :param kwargs_list:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#TODO make sure averaging is done azimuthally</span>
-        <span class="n">kwargs_list_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">)</span>
-        <span class="n">kwargs_list_new</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="n">kwargs_list_copy</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">if</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]})</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">kwargs_list_new</span><span class="p">)</span></div>
+        <span class="c1"># TODO make sure averaging is done azimuthally</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kwargs_light_circularized&#39;</span><span class="p">):</span>
+            <span class="n">kwargs_list_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">)</span>
+            <span class="n">kwargs_list_new</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">kwargs</span> <span class="ow">in</span> <span class="n">kwargs_list_copy</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s1">&#39;e1&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">if</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_light_circularized</span> <span class="o">=</span> <span class="n">kwargs_list_new</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_model</span><span class="o">.</span><span class="n">surface_brightness</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_light_circularized</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LightProfile.draw_light_2d_linear"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.draw_light_2d_linear">[docs]</a>    <span class="k">def</span> <span class="nf">draw_light_2d_linear</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_compute</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">r_eff</span><span class="o">=</span><span class="mf">1.</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -128,8 +131,10 @@
 <div class="viewcode-block" id="LightProfile.draw_light_2d"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.draw_light_2d">[docs]</a>    <span class="k">def</span> <span class="nf">draw_light_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_compute</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        constructs the CDF and draws from it random realizations of projected radii R</span>
-<span class="sd">        :param kwargs_list:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kwargs_list: light model keyword argument list</span>
+<span class="sd">        :param n: int, number of draws per functino call</span>
+<span class="sd">        :param new_compute: re-computes the interpolated CDF</span>
+<span class="sd">        :return: realization of projected radius following the distribution of the light model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_cdf_log&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
@@ -148,6 +153,31 @@
         <span class="n">r_log_draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_light_cdf_log</span><span class="p">(</span><span class="n">cdf_draw</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">r_log_draw</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="LightProfile.draw_light_3d"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.draw_light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">draw_light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">new_compute</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        constructs the CDF and draws from it random realizations of 3D radii r</span>
+<span class="sd">        :param kwargs_list: light model keyword argument list</span>
+<span class="sd">        :param n: int, number of draws per functino call</span>
+<span class="sd">        :param new_compute: re-computes the interpolated CDF</span>
+<span class="sd">        :return: realization of projected radius following the distribution of the light model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_3d_cdf_log&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_interpolate</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
+            <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
+            <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_array</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span>  <span class="c1"># 1x r for the log spacing and r**2 for the shell area</span>
+                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+            <span class="n">cum_sum_norm</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="o">/</span><span class="n">cum_sum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cum_sum_norm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_light_3d_cdf_log</span> <span class="o">=</span> <span class="n">f</span>
+        <span class="n">cdf_draw</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">r_log_draw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_light_3d_cdf_log</span><span class="p">(</span><span class="n">cdf_draw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">r_log_draw</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="LightProfile.delete_cache"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.delete_cache">[docs]</a>    <span class="k">def</span> <span class="nf">delete_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        deletes cached interpolation function of the CDF for a specific light profile</span>
@@ -159,7 +189,9 @@
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_cdf&#39;</span><span class="p">):</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_light_cdf</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_f_light_3d&#39;</span><span class="p">):</span>
-            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span></div></div>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_light_3d</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kwargs_light_circularized&#39;</span><span class="p">):</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_light_circularized</span></div></div>
 </pre></div>
 
           </div>
@@ -192,7 +224,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -35,13 +35,9 @@ class Hernquist_Ellipse(LensProfileBase):
         """
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        #x_shift = x - center_x
-        #y_shift = y - center_y
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
         e = abs(1 - q)
-        #x_ = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
-        #y_ = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
 
         f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
         f_x_prim *= np.sqrt(1 - e)
@@ -52,7 +48,7 @@ class Hernquist_Ellipse(LensProfileBase):
 
     def hessian(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
         """
-        returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         alpha_ra, alpha_dec = self.derivatives(x, y, sigma0, Rs, e1, e2, center_x, center_y)
         diff = self._diff
@@ -61,9 +57,9 @@ class Hernquist_Ellipse(LensProfileBase):
 
         f_xx = (alpha_ra_dx - alpha_ra)/diff
         f_xy = (alpha_ra_dy - alpha_ra)/diff
-        #f_yx = (alpha_dec_dx - alpha_dec)/diff
+        f_yx = (alpha_dec_dx - alpha_dec)/diff
         f_yy = (alpha_dec_dy - alpha_dec)/diff
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_yx, f_yy
 
     def density(self, r, rho0, Rs, e1=0, e2=0):
         """

@@ -242,13 +242,13 @@ class TestCONST_MAG(object):
         
         phi_G = np.pi
         
-        f_xx, f_yy, f_xy = self.const_mag.hessian(x, y, mu_r, mu_t, parity, phi_G)
+        f_xx, f_xy, f_yx, f_yy = self.const_mag.hessian(x, y, mu_r, mu_t, parity, phi_G)
         
         # rotate
         x__, y__ = util.rotate(x, y, phi_G)
         
         # evaluate
-        f__xx, f__yy, f__xy = self.const_mag.hessian(x__, y__, mu_r, mu_t, parity, 0.0)
+        f__xx, f__xy, f__yx, f__yy = self.const_mag.hessian(x__, y__, mu_r, mu_t, parity, 0.0)
         
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
@@ -264,6 +264,7 @@ class TestCONST_MAG(object):
         npt.assert_almost_equal(f_xx, f_xx_rot, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_rot, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_rot, decimal=4)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
         
         ############
         # rotation 2
@@ -271,13 +272,13 @@ class TestCONST_MAG(object):
         
         phi_G = np.pi/3.
         
-        f_xx, f_yy, f_xy = self.const_mag.hessian(x, y, mu_r, mu_t, parity, phi_G)
+        f_xx, f_xy, f_yx, f_yy = self.const_mag.hessian(x, y, mu_r, mu_t, parity, phi_G)
         
         # rotate
         x__, y__ = util.rotate(x, y, phi_G)
         
         # evaluate
-        f__xx, f__yy, f__xy = self.const_mag.hessian(x__, y__, mu_r, mu_t, parity, 0.0)
+        f__xx, f__xy, f__yx, f__yy = self.const_mag.hessian(x__, y__, mu_r, mu_t, parity, 0.0)
         
         # rotate back
         kappa = 1./2 * (f__xx + f__yy)
@@ -293,6 +294,7 @@ class TestCONST_MAG(object):
         npt.assert_almost_equal(f_xx, f_xx_rot, decimal=4)
         npt.assert_almost_equal(f_yy, f_yy_rot, decimal=4)
         npt.assert_almost_equal(f_xy, f_xy_rot, decimal=4)
+        npt.assert_almost_equal(f_yx, f_xy_rot, decimal=4)
         
         
 if __name__ == '__main__':

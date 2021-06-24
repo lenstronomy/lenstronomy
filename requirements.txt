@@ -9,11 +9,12 @@ numba>=0.43.1
 future
 dynesty
 pymultinest
-pypolychord
 nestcheck
-corner
+corner>=2.2.1
 h5py
 scikit-image
+pyyaml
+pyxdg
 
 #schwimmbad==0.3.0
 -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad

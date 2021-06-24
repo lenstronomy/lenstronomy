@@ -63,7 +63,7 @@ class TestLensProfileAnalysis(object):
         kwargs_SIS = {'theta_E': 1., 'center_x': center_x, 'center_y': center_y}
         f_ = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
         f_x, f_y = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
-        f_xx, f_yy, f_xy = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_xx, f_xy, f_yx, f_yy = sis.hessian(x_grid_interp, y_grid_interp, **kwargs_SIS)
         x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
         kwargs_interpol = [{'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_),
                            'f_x': util.array2image(f_x), 'f_y': util.array2image(f_y), 'f_xx': util.array2image(f_xx),
@@ -95,7 +95,7 @@ class TestLensProfileAnalysis(object):
         model = MultiGaussianKappa()
         x = np.logspace(-2, 0.5, 10) + 0.5
         y = np.zeros_like(x) - 0.1
-        f_xx, f_yy, fxy = model.hessian(x, y, amplitudes, sigmas, center_x=0.5, center_y=-0.1)
+        f_xx, fxy, fyx, f_yy = model.hessian(x, y, amplitudes, sigmas, center_x=0.5, center_y=-0.1)
         kappa_mge = (f_xx + f_yy) / 2
         kappa_true = lensAnalysis._lens_model.kappa(x, y, kwargs_lens)
         print(kappa_true/kappa_mge)
@@ -119,6 +119,42 @@ class TestLensProfileAnalysis(object):
         center_x_out, center_y_out = profileAnalysis.convergence_peak(kwargs_lens)
         npt.assert_almost_equal(center_x_out, center_x, 2)
         npt.assert_almost_equal(center_y_out, center_y, 2)
+
+    def test_mst_invariant_differential(self):
+
+        # testing with a SPP profile
+        lensModel = LensModel(**{'lens_model_list': ['SPP']})
+        profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+        gamma_list = [2, 1.8, 2.2]
+        theta_E_list = [1, 0.5, 2]
+        for gamma in gamma_list:
+            for theta_E in theta_E_list:
+                kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'center_x': 0, 'center_y': 0}]
+                xi = profileAnalysis.mst_invariant_differential(kwargs_lens, radius=theta_E, center_x=None,
+                                                                center_y=None, model_list_bool=None, num_points=10)
+
+                xi_true = (gamma - 2) / theta_E
+                npt.assert_almost_equal(xi, xi_true, decimal=3)
+
+        # it should also work in the elliptical regime
+        lensModel = LensModel(**{'lens_model_list': ['EPL']})
+        profileAnalysis = LensProfileAnalysis(lens_model=lensModel)
+        gamma_list = [2, 1.8, 2.2]
+        theta_E_list = [1, 0.5, 2]
+        q_list = [1, 0.9, 0.8, 0.7]
+        for gamma in gamma_list:
+            for theta_E in theta_E_list:
+                    for q in q_list:
+                        e1, e2 = param_util.phi_q2_ellipticity(phi=0, q=q)
+                        kwargs_lens = [{'theta_E': theta_E, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}]
+
+                        theta_E_prime = np.sqrt(2 * q / (1 + q ** 2)) * theta_E
+                        xi = profileAnalysis.mst_invariant_differential(kwargs_lens, radius=theta_E_prime, center_x=None,
+                                                                        center_y=None,
+                                                                        model_list_bool=None, num_points=10)
+                        print(theta_E, gamma, q, 'test')
+                        xi_true = (gamma - 2) / theta_E_prime
+                        npt.assert_almost_equal(xi, xi_true, decimal=2)
 
 
 class TestRaise(unittest.TestCase):

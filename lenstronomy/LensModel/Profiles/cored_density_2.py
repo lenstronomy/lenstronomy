@@ -14,10 +14,9 @@ class CoredDensity2(LensProfileBase):
     credits for suggesting this profile goes to Kfir Blum
 
     .. math::
+      \\rho(r) = 2/\\pi * \\Sigma_{\\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
 
-      \rho(r) = 2/\pi * \Sigma_{\rm crit} R_c^2 * (R_c^2 + r^2)^{-3/2}
-
-    This profile drops like an NFW profile as math:`\rho(r)^{-3}`.
+    This profile drops like an NFW profile as math:`\\rho(r)^{-3}`.
 
     """
 
@@ -93,7 +92,7 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :param center_x: center of the profile
         :param center_y: center of the profile
-        :return: Hessian df/dxdx, df/dydy, df/dxdy at position (x, y)
+        :return: Hessian df/dxdx, df/dxdy, df/dydx, df/dydy at position (x, y)
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -106,7 +105,7 @@ class CoredDensity2(LensProfileBase):
         f_xx = d_alpha_dr * dr_dx * x_ / r + alpha * calc_util.d_x_diffr_dx(x_, y_)
         f_yy = d_alpha_dr * dr_dy * y_ / r + alpha * calc_util.d_y_diffr_dy(x_, y_)
         f_xy = d_alpha_dr * dr_dy * x_ / r + alpha * calc_util.d_x_diffr_dy(x_, y_)
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     @staticmethod
     def alpha_r(r, sigma0, r_core):

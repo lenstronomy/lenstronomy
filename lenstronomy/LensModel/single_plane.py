@@ -104,18 +104,18 @@ class SinglePlane(ProfileListBase):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
         if isinstance(k, int):
-            f_xx, f_yy, f_xy = self.func_list[k].hessian(x, y, **kwargs[k])
-            return f_xx, f_xy, f_xy, f_yy
+            f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs[k])
+            return f_xx, f_xy, f_yx, f_yy
 
         bool_list = self._bool_list(k)
-        f_xx, f_yy, f_xy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        f_xx, f_xy, f_yx, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                f_xx_i, f_yy_i, f_xy_i = func.hessian(x, y, **kwargs[i])
+                f_xx_i, f_xy_i, f_yx_i, f_yy_i = func.hessian(x, y, **kwargs[i])
                 f_xx += f_xx_i
-                f_yy += f_yy_i
                 f_xy += f_xy_i
-        f_yx = f_xy
+                f_yx += f_yx_i
+                f_yy += f_yy_i
         return f_xx, f_xy, f_yx, f_yy
 
     def mass_3d(self, r, kwargs, bool_list=None):

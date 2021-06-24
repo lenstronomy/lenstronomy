@@ -8,13 +8,14 @@ import lenstronomy.Util.constants as const
 
 __all__ = ['CoredDensityExp']
 
+
 class CoredDensityExp(LensProfileBase):
     """
     this class contains functions concerning an exponential cored density profile,
     namely
 
     ..math::
-        \rho(r) = \rho_0 \exp(- (\theta / \theta_c)^2)
+        \\rho(r) = \\rho_0 \\exp(- (\\theta / \\theta_c)^2)
 
     """
     _s = 0.000001  # numerical limit for minimal radius
@@ -49,7 +50,8 @@ class CoredDensityExp(LensProfileBase):
         function = kappa_0 * theta_c**2 * Integral_factor
         return function
 
-    def alpha_radial(self, r, kappa_0, theta_c):
+    @staticmethod
+    def alpha_radial(r, kappa_0, theta_c):
         """
         returns the radial part of the deflection angle
         :param x: angular position (normally in units of arc seconds)
@@ -90,7 +92,7 @@ class CoredDensityExp(LensProfileBase):
         :param theta_c: core radius (in arcsec)
         :param center_x: center of halo (in angular units)
         :param center_y: center of halo (in angular units)
-        :return: Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
+        :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         x_ = x - center_x
         y_ = y - center_y
@@ -103,12 +105,12 @@ class CoredDensityExp(LensProfileBase):
         f_xx = prefactor * ( factor1 * (y_**2 - x_**2) + factor2 * x_**2 )
         f_yy = prefactor * ( factor1 * (x_**2 - y_**2) + factor2 * y_**2 )
         f_xy = prefactor * ( - factor1 * 2 * x_ * y_ + factor2 *x_*y_ )
-        return f_xx, f_yy, f_xy
+        return f_xx, f_xy, f_xy, f_yy
 
     def density(self, R, kappa_0, theta_c):
         """
         three dimensional density profile in angular units
-        (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        (rho0_physical = rho0_angular Sigma_crit / D_lens)
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -146,7 +148,7 @@ class CoredDensityExp(LensProfileBase):
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x = 0, center_y = 0):
         """
-        projected two dimensional ULDM profile (convergence * \Sigma_crit), but given our
+        projected two dimensional ULDM profile (convergence * Sigma_crit), but given our
         units convention for rho0, it is basically the convergence
 
         :param x: angular position (normally in units of arc seconds)
@@ -160,7 +162,8 @@ class CoredDensityExp(LensProfileBase):
         R = np.sqrt(x_**2 + y_**2)
         return self.kappa_r(R, kappa_0, theta_c)
 
-    def mass_3d(self, R, kappa_0, theta_c):
+    @staticmethod
+    def mass_3d( R, kappa_0, theta_c):
         """
         mass enclosed a 3d sphere or radius r
         :param kappa_0: central convergence of profile
@@ -187,7 +190,11 @@ class CoredDensityExp(LensProfileBase):
     def mass_2d(self, R, kappa_0, theta_c):
         """
         mass enclosed a 2d sphere of radius r
-        returns M_2D = 2 \pi \int_0^r dr' r' \int dz \rho(\sqrt(r'^2 + z^2))
+        returns
+
+        .. math::
+            M_{2D} = 2 \\pi \\int_0^r dr' r' \\int dz \\rho(\\sqrt(r'^2 + z^2))
+
         :param kappa_0: central convergence of soliton
         :param theta_c: core radius (in arcsec)
         :return: M_2D (ULDM only)

@@ -82,16 +82,18 @@ class TestSPEMD(object):
         phi_G = 1.
         s_scale = 0.001
         e1, e2 = param_util.phi_q2_ellipticity(phi_G, q)
-        f_xx, f_yy,f_xy = self.SPEMD.hessian(x, y, phi_E, gamma, e1, e2, s_scale)
+        f_xx, f_xy, f_yx, f_yy = self.SPEMD.hessian(x, y, phi_E, gamma, e1, e2, s_scale)
         if fastell4py_bool:
-            f_xx_nie, f_yy_nie, f_xy_nie = self.NIE.hessian(x, y, phi_E, e1, e2, s_scale)
+            f_xx_nie, f_xy_nie, f_yx_nie, f_yy_nie = self.NIE.hessian(x, y, phi_E, e1, e2, s_scale)
             npt.assert_almost_equal(f_xx, f_xx_nie, decimal=4)
             npt.assert_almost_equal(f_yy, f_yy_nie, decimal=4)
             npt.assert_almost_equal(f_xy, f_xy_nie, decimal=4)
+            npt.assert_almost_equal(f_yx, f_yx_nie, decimal=4)
         else:
             npt.assert_almost_equal(f_xx, 0, decimal=7)
             npt.assert_almost_equal(f_yy, 0, decimal=7)
             npt.assert_almost_equal(f_xy, 0, decimal=7)
+        npt.assert_almost_equal(f_xy, f_yx, decimal=8)
 
     def test_bounds(self):
         compute_bool = self.SPEMD._parameter_constraints(q_fastell=-1, gam=-1, s2=-1, q=-1)

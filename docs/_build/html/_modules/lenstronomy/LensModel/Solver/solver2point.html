@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.solver2point &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.LensModel.Solver.solver2point &#8212; lenstronomy 1.8.2 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -86,11 +86,13 @@
 
 <div class="viewcode-block" id="Solver2Point.constraint_lensmodel"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.solver2point.Solver2Point.constraint_lensmodel">[docs]</a>    <span class="k">def</span> <span class="nf">constraint_lensmodel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">1.49012e-12</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        constrains lens model parameters by demanding the solution to match the image positions to a single source</span>
+<span class="sd">        position</span>
 
 <span class="sd">        :param x_pos: list of image positions (x-axis)</span>
 <span class="sd">        :param y_pos: list of image position (y-axis)</span>
-<span class="sd">        :param init: initial parameters</span>
 <span class="sd">        :param kwargs_list: list of lens model kwargs</span>
+<span class="sd">        :param xtol: tolerance level of solution when to stop the non-linear solver</span>
 <span class="sd">        :return: updated lens model that satisfies the lens equation for the point sources</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_list</span><span class="p">)</span>
@@ -124,7 +126,8 @@
         <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">beta_y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">beta_y</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">y</span> <span class="o">-</span> <span class="n">a</span>
 
-    <span class="k">def</span> <span class="nf">_subtract_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">y_sub</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_subtract_constraint</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">y_sub</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x_pos:</span>
@@ -180,6 +183,7 @@
     <span class="k">def</span> <span class="nf">_extract_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        inverse of _update_kwargs</span>
+
 <span class="sd">        :param kwargs_list:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -273,7 +277,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

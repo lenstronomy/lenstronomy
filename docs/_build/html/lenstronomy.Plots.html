@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots package &#8212; lenstronomy 1.7.0 documentation</title>
+    <title>lenstronomy.Plots package &#8212; lenstronomy 1.8.2 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -117,17 +117,29 @@ This routine is an example and more tests might be appropriate to analyse a spec
 <span id="lenstronomy-plots-lens-plot-module"></span><h2>lenstronomy.Plots.lens_plot module<a class="headerlink" href="#module-lenstronomy.Plots.lens_plot" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Plots.lens_plot.lens_model_plot">
-<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>with_convergence=True</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em>, <em>fast_caustic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>plots a lens model (convergence) and the critical curves and caustics</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
-<li><strong>numPix</strong> – </li>
-<li><strong>deltaPix</strong> – </li>
+<li><strong>ax</strong> – matplotlib axis instance</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>numPix</strong> – total nnumber of pixels (for convergence map)</li>
+<li><strong>deltaPix</strong> – width of pixel (total frame size is deltaPix x numPix)</li>
+<li><strong>sourcePos_x</strong> – float, x-position of point source (image positions computed by the lens equation)</li>
+<li><strong>sourcePos_y</strong> – float, y-position of point source (image positions computed by the lens equation)</li>
+<li><strong>point_source</strong> – bool, if True, illustrates and computes the image positions of the point source</li>
+<li><strong>with_caustics</strong> – bool, if True, illustrates the critical curve and caustics of the system</li>
+<li><strong>with_convergence</strong> – bool, if True, illustrates the convergence map</li>
+<li><strong>coord_center_ra</strong> – float, x-coordinate of the center of the frame</li>
+<li><strong>coord_center_dec</strong> – float, y-coordinate of the center of the frame</li>
+<li><strong>coord_inverse</strong> – bool, if True, inverts the x-coordinates to go from right-to-left
+(effectively the RA definition)</li>
+<li><strong>fast_caustic</strong> – boolean, if True, uses faster but less precise caustic calculation
+(might have troubles for the outer caustic (inner critical curve)</li>
+<li><strong>with_convergence</strong> – boolean, if True, plots the convergence of the deflector</li>
 </ul>
 </td>
 </tr>
@@ -180,6 +192,59 @@ This routine is an example and more tests might be appropriate to analyse a spec
 <li><strong>sourcePos_x</strong> – </li>
 <li><strong>sourcePos_y</strong> – </li>
 <li><strong>with_caustics</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Plots.lens_plot.curved_arc_illustration">
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">curved_arc_illustration</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>with_centroid=True</em>, <em>stretch_scale=0.1</em>, <em>color='k'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#curved_arc_illustration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.curved_arc_illustration" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – matplotlib axis instance</li>
+<li><strong>lensModel</strong> – LensModel() instance</li>
+<li><strong>kwargs_lens</strong> – list of lens model keyword arguments (only those of CURVED_ARC considered</li>
+<li><strong>with_centroid</strong> – plots the center of the curvature radius</li>
+<li><strong>stretch_scale</strong> – float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)</li>
+<li><strong>color</strong> – string, matplotlib color for plot</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Plots.lens_plot.plot_arc">
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">plot_arc</code><span class="sig-paren">(</span><em>ax</em>, <em>tangential_stretch</em>, <em>radial_stretch</em>, <em>curvature</em>, <em>direction</em>, <em>center_x</em>, <em>center_y</em>, <em>stretch_scale=0.1</em>, <em>with_centroid=True</em>, <em>linewidth=1</em>, <em>color='k'</em>, <em>dtan_dtan=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#plot_arc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.plot_arc" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – matplotlib.axes instance</li>
+<li><strong>tangential_stretch</strong> – float, stretch of intrinsic source in tangential direction</li>
+<li><strong>radial_stretch</strong> – float, stretch of intrinsic source in radial direction</li>
+<li><strong>curvature</strong> – 1/curvature radius</li>
+<li><strong>direction</strong> – float, angle in radian</li>
+<li><strong>center_x</strong> – center of source in image plane</li>
+<li><strong>center_y</strong> – center of source in image plane</li>
+<li><strong>with_centroid</strong> – plots the center of the curvature radius</li>
+<li><strong>stretch_scale</strong> – float, relative scale of banana to the tangential and radial stretches
+(effectively intrinsic source size)</li>
+<li><strong>dtan_dtan</strong> – tangential eigenvector differential in tangential direction (not implemented yet as illustration)</li>
 </ul>
 </td>
 </tr>
@@ -903,15 +968,57 @@ of the output of the FittingSequence results.</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Plots.plot_util.plot_line_set">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_caustic_list</em>, <em>dec_caustic_list</em>, <em>shift=0.0</em>, <em>color='g'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Plots.plot_util.plot_line_set_list">
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set_list</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>color='g'</em>, <em>flipped_x=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set_list" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – matplotlib.axis instance</li>
+<li><strong>coords</strong> – Coordinates() class instance</li>
+<li><strong>origin</strong> – [x0, y0], lower left pixel coordinate in the frame of the pixels</li>
+<li><strong>line_set_list_x</strong> – list of numpy arrays corresponding of different disconnected regions of the line
+(e.g. caustic or critical curve)</li>
+<li><strong>line_set_list_y</strong> – list of numpy arrays corresponding of different disconnected regions of the line
+(e.g. caustic or critical curve)</li>
+<li><strong>color</strong> – string with matplotlib color</li>
+<li><strong>flipped_x</strong> – bool, if True, flips x-axis</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot with line sets on matplotlib axis</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Plots.plot_util.plot_line_set">
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>color='g'</em>, <em>flipped_x=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
+corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
+of the pixel in accordance with the matplotlib.matshow() routine.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ax</strong> – matplotlib.axis instance</li>
+<li><strong>coords</strong> – Coordinates() class instance</li>
+<li><strong>origin</strong> – [x0, y0], lower left pixel coordinate in the frame of the pixels</li>
+<li><strong>line_set_list_x</strong> – numpy arrays corresponding of different disconnected regions of the line
+(e.g. caustic or critical curve)</li>
+<li><strong>line_set_list_y</strong> – numpy arrays corresponding of different disconnected regions of the line
+(e.g. caustic or critical curve)</li>
+<li><strong>color</strong> – string with matplotlib color</li>
+<li><strong>flipped_x</strong> – bool, if True, flips x-axis</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot with line sets on matplotlib axis in pixel coordinates</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -976,6 +1083,22 @@ of the output of the FittingSequence results.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">string with mean pm quartile</p>
 </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Plots.plot_util.cmap_conf">
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">cmap_conf</code><span class="sig-paren">(</span><em>cmap_string</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#cmap_conf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.cmap_conf" title="Permalink to this definition">¶</a></dt>
+<dd><p>configures matplotlib color map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cmap_string</strong> – string of cmap name, or cmap instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">cmap instance with setting for bad pixels and values below the threshold</td>
 </tr>
 </tbody>
 </table>
@@ -1051,7 +1174,7 @@ of the output of the FittingSequence results.</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.7.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

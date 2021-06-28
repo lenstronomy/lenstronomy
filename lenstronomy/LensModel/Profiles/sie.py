@@ -7,6 +7,29 @@ __all__ = ['SIE']
 class SIE(LensProfileBase):
     """
     class for singular isothermal ellipsoid (SIS with ellipticity)
+
+    .. math::
+        \\kappa(x, y) = \\frac{1}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q}} \\right)
+
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`q` is the minor/major axis ratio,
+    and :math:`x` and :math:`y` are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.
+
+    In terms of eccentricities, this profile is defined as
+
+    .. math::
+        \\kappa(r) = \\frac{1}{2} \\left(\\frac{\\theta'_{E}}{r \\sqrt{1 − e*\\cos(2*\\phi)}} \\right)
+
+    with :math:`\\epsilon` is the ellipticity defined as
+
+    .. math::
+        \\epsilon = \\frac{1-q^2}{1+q^2}
+
+    And an Einstein radius :math:`\\theta'_{\\rm E}` related to the definition used is
+
+    .. math::
+        \\left(\\frac{\\theta'_{\\rm E}}{\\theta_{\\rm E}}\\right)^{2} = \\frac{2q}{1+q^2}.
+
     """
     param_names = ['theta_E', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}

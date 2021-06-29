@@ -10,8 +10,17 @@ class SersicUtil(object):
 
     _s = 0.00001
 
-    def __init__(self, smoothing=_s):
+    def __init__(self, smoothing=_s, sersic_major_axis=False):
+        """
+
+        :param smoothing: smoothing scale of the innermost part of the profile (for numerical reasons)
+        :param sersic_major_axis: boolean; if True, defines the half-light radius of the Sersic light profile along
+         the semi-major axis (which is the Galfit convention)
+         if False, uses the product average of semi-major and semi-minor axis as the convention
+         (default definition for all light profiles in lenstronomy other than the Sersic profile)
+        """
         self._smoothing = smoothing
+        self._sersic_major_axis = sersic_major_axis
 
     def k_bn(self, n, Re):
         """
@@ -151,21 +160,15 @@ class SersicUtil(object):
         bn = self.b_n(n_sersic)
         return I_eff * r_eff**2 * 2 * np.pi * n_sersic * np.exp(bn) / bn**(2*n_sersic) * scipy.special.gamma(2*n_sersic)
 
-    def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, Re=None, gamma=None, center_x=None, center_y=None,
-                   alpha=None):
+    def total_flux(self, amp, R_sersic, n_sersic, e1=0, e2=0, **kwargs):
         """
         computes analytical integral to compute total flux of the Sersic profile
 
         :param amp: amplitude parameter in Sersic function (surface brightness at R_sersic
         :param R_sersic: half-light radius in semi-major axis
-        :param Re: Cored Sersic function parameter (optional)
         :param n_sersic: Sersic index
-        :param gamma: Cored Sersic function parameter (optional)
         :param e1: eccentricity
         :param e2: eccentricity
-        :param center_x: profile center (ignored)
-        :param center_y: profile center (ignored)
-        :param alpha: Cored Sersic function parameter (optional)
         :return: Analytic integral of the total flux of the Sersic profile
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)

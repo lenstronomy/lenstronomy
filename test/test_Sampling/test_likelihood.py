@@ -30,7 +30,7 @@ class TestLikelihoodModule(object):
 
         kwargs_model = {'lens_model_list': ['SPEP'],
                         'lens_light_model_list': ['SERSIC'],
-                        'source_light_model_list': ['SERSIC_ELLIPSE'],
+                        'source_light_model_list': ['SERSIC'],
                         'point_source_model_list': ['SOURCE_POSITION'],
                         'fixed_magnification_list': [True]}
 
@@ -45,8 +45,7 @@ class TestLikelihoodModule(object):
         self.kwargs_lens = [kwargs_spep]
         kwargs_sersic = {'amp': 1/0.05**2., 'R_sersic': 0.1, 'n_sersic': 2, 'center_x': 0, 'center_y': 0}
         # 'SERSIC_ELLIPSE': elliptical Sersic profile
-        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0,
-                                 'e1': 0.1, 'e2': 0.1}
+        kwargs_sersic_ellipse = {'amp': 1., 'R_sersic': .6, 'n_sersic': 3, 'center_x': 0, 'center_y': 0}
 
         self.kwargs_lens_light = [kwargs_sersic]
         self.kwargs_source = [kwargs_sersic_ellipse]
@@ -129,7 +128,7 @@ class TestLikelihoodModule(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL = likelihood.logL(args, verbose=True)
-        npt.assert_almost_equal(logL, -3080.29, decimal=-1)
+        npt.assert_almost_equal(logL, -3097.189103539873, decimal=-1)
 
     def test_check_bounds(self):
         penalty, bound_hit = self.Likelihood.check_bounds(args=[0, 1], lowerLimit=[1, 0], upperLimit=[2, 2],

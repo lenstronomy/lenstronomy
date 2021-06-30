@@ -49,25 +49,31 @@ class SersicUtil(object):
         bn = np.maximum(bn, 0.00001)  # make sure bn is strictly positive as a save guard for very low n_sersic
         return bn
 
-    def get_distance_from_center(self, x, y, phi_G, q, center_x, center_y):
+    def get_distance_from_center(self, x, y, e1, e2, center_x, center_y):
         """
         Get the distance from the center of Sersic, accounting for orientation and axis ratio
         :param x:
         :param y:
-        :param phi_G: orientation angle in rad
-        :param q: axis ratio
+        :param e1: eccentricity
+        :param e2: eccentricity
         :param center_x: center x of sersic
         :param center_y: center y of sersic
         """
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        xt1 = cos_phi*x_shift+sin_phi*y_shift
-        xt2 = -sin_phi*x_shift+cos_phi*y_shift
-        xt2difq2 = xt2/(q*q)
-        R = np.sqrt(xt1*xt1+xt2*xt2difq2)
-        return R
+
+        if self._sersic_major_axis:
+            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+            x_shift = x - center_x
+            y_shift = y - center_y
+            cos_phi = np.cos(phi_G)
+            sin_phi = np.sin(phi_G)
+            xt1 = cos_phi*x_shift+sin_phi*y_shift
+            xt2 = -sin_phi*x_shift+cos_phi*y_shift
+            xt2difq2 = xt2/(q*q)
+            r = np.sqrt(xt1*xt1+xt2*xt2difq2)
+        else:
+            x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
+            r = np.sqrt(x_**2 + y_**2)
+        return r
 
     def _x_reduced(self, x, y, n_sersic, r_eff, center_x, center_y):
         """
@@ -171,9 +177,12 @@ class SersicUtil(object):
         :param e2: eccentricity
         :return: Analytic integral of the total flux of the Sersic profile
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         # compute product average half-light radius
-        r_eff = R_sersic * np.sqrt(q)
+        if self._sersic_major_axis:
+            phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+            r_eff = R_sersic * np.sqrt(q)  # translate semi-major axis R_eff into product averaged definition for circularization
+        else:
+            r_eff = R_sersic
         return self._total_flux(r_eff=r_eff, I_eff=amp, n_sersic=n_sersic)
 
     def _R_stable(self, R):

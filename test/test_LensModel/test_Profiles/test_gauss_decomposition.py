@@ -17,8 +17,8 @@ class TestSersicEllipseGaussDec(object):
     """
     def setup(self):
         self.sersic_gauss = SersicEllipseGaussDec()
-        self.sersic_light = SersicElliptic(sersic_major_axis=True)
-        self.sersic_sphere = Sersic(sersic_major_axis=True)
+        self.sersic_light = SersicElliptic(sersic_major_axis=False)
+        self.sersic_sphere = Sersic(sersic_major_axis=False)
 
     def test_function(self):
         """
@@ -202,9 +202,6 @@ class TestSersicEllipseGaussDec(object):
 
         print(np.abs(sersic_analytic - sersic_gauss) / np.sqrt(sersic_analytic))
 
-        import matplotlib.pyplot as plt
-        plt.matshow(sersic_analytic - sersic_gauss, origin='lower')
-        plt.show()
         assert np.all(np.abs(sersic_analytic - sersic_gauss) / np.sqrt(sersic_analytic) * 100. < 1.)
 
     def test_gauss_decompose_sersic(self):

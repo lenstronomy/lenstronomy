@@ -21,13 +21,13 @@ class Ellipsoid(object):
 
         :param x:
         :param y:
-        :param amp:
-        :param radius:
-        :param e1:
-        :param e2:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param amp: surface brightness within the ellipsoid
+        :param radius: radius (product average of semi-major and semi-minor axis) of the ellipsoid
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: center
+        :param center_y: center
+        :return: surface brightness
         """
         x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         r2 = x_**2 + y_**2

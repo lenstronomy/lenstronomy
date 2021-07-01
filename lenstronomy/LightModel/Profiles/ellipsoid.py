@@ -12,9 +12,9 @@ class Ellipsoid(object):
     class for an universal surface brightness within an ellipsoid
     """
     def __init__(self):
-        self.param_names = ['amp', 'radius', 'center_x', 'center_y']
-        self.lower_limit_default = {'amp': 0, 'radius': 0, 'center_x': -100, 'center_y': -100}
-        self.upper_limit_default = {'amp': 1000, 'radius': 100, 'center_x': 100, 'center_y': 100}
+        self.param_names = ['amp', 'radius', 'e1', 'e2', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'radius': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'radius': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, radius, e1, e2, center_x, center_y):
         """

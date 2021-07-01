@@ -23,7 +23,7 @@ else:
 
 with open(conf_file) as file:
     # The FullLoader parameter handles the conversion from YAML
-    # scalar values to Python the dictionary format
+    # scalar values to the Python the dictionary format
     conf = yaml.safe_load(file)
     #conf = yaml.load(file, Loader=yaml.FullLoader)
     numba_conf = conf['numba']
@@ -42,7 +42,7 @@ def numba_conf():
     """
     with open(conf_file) as file:
         # The FullLoader parameter handles the conversion from YAML
-        # scalar values to Python the dictionary format
+        # scalar values to the Python the dictionary format
         conf = yaml.safe_load(file)
         # conf = yaml.load(file, Loader=yaml.FullLoader)
         numba_conf = conf['numba']

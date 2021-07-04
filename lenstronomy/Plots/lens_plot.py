@@ -192,9 +192,9 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
                          letter_font_size=20):
     """
 
-    :param ax:
-    :param lensModel:
-    :param kwargs_lens:
+    :param ax: matplotlib axis instance
+    :param lens_model: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list
     :param numPix:
     :param deltaPix:
     :param sourcePos_x:
@@ -260,8 +260,6 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     return ax
 
 
-
-
 @export
 def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color='k'):
     """
@@ -272,7 +270,7 @@ def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stre
     :param with_centroid: plots the center of the curvature radius
     :param stretch_scale: float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)
     :param color: string, matplotlib color for plot
-    :return:
+    :return: matplotlib axis instance
     """
 
     # loop through lens models
@@ -342,8 +340,10 @@ def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, cente
     x_c = r_c * np.cos(phi_c) + center_x_spp
     y_c = r_c * np.sin(phi_c) + center_y_spp
     ax.plot(x_c, y_c, '-', color=color, linewidth=linewidth)
+    return ax
 
     # TODO add different colors for each quarter to identify parities
+
 
 @export
 def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0, center_dec=0,

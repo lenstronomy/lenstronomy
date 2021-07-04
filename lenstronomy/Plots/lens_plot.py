@@ -19,7 +19,7 @@ export, __all__ = exporter()
 @export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                     point_source=False, with_caustics=False, with_convergence=True, coord_center_ra=0,
-                    coord_center_dec=0, coord_inverse=False, fast_caustic=False):
+                    coord_center_dec=0, coord_inverse=False, fast_caustic=False, **kwargs):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -46,54 +46,25 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     data = ImageData(**kwargs_data)
     _coords = data
     _frame_size = numPix * deltaPix
-    x_grid, y_grid = data.pixel_coordinates
+
     ra0, dec0 = data.radec_at_xy_0
-    origin = [ra0, dec0]
     if coord_inverse:
         extent = [ra0, ra0 - _frame_size, dec0, dec0 + _frame_size]
-        delta_pix_x = - deltaPix
     else:
         extent = [ra0, ra0 + _frame_size, dec0, dec0 + _frame_size]
-        delta_pix_x = deltaPix
-    lensModelExt = LensModelExtensions(lensModel)
-    x_grid1d = util.image2array(x_grid)
-    y_grid1d = util.image2array(y_grid)
+
     if with_convergence:
-        kappa_result = lensModel.kappa(x_grid1d, y_grid1d, kwargs_lens)
-        kappa_result = util.array2image(kappa_result)
-        im = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap='Greys',
-                        vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+        kwargs_convergence = kwargs.get('kwargs_convergence', {})
+        convergence_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens, extent=extent,
+                         **kwargs_convergence)
     if with_caustics is True:
-        if fast_caustic:
-            ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix, center_x=coord_center_ra, center_y=coord_center_dec)
-            plot_util.plot_line_set_list(ax, _coords, ra_caustic_list, dec_caustic_list, color='g', origin=origin,
-                                         flipped_x=coord_inverse)
-            plot_util.plot_line_set_list(ax, _coords, ra_crit_list, dec_crit_list, color='r', origin=origin,
-                                         flipped_x=coord_inverse)
-        else:
-            ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
-                                                                         start_scale=deltaPix, max_order=10, center_x=coord_center_ra, center_y=coord_center_dec)
-            ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-            plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, color='g', origin=origin,
-                                    flipped_x=coord_inverse)
-            plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, color='r', origin=origin,
-                                    flipped_x=coord_inverse)
+        kwargs_caustics = kwargs.get('kwargs_caustics', {})
+        caustics_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens, fast_caustic=fast_caustic,
+                      coord_inverse=coord_inverse, **kwargs_caustics)
     if point_source:
-        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-        solver = LensEquationSolver(lensModel)
-        theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
-                                                             min_distance=deltaPix, search_window=deltaPix*numPix,
-                                                             x_center=coord_center_ra, y_center=coord_center_dec)
-        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
-        x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
-        for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
-            y_ = (y_image[i] + 0.5) * deltaPix + origin[1]
-            ax.plot(x_, y_, 'dk', markersize=4*(1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
-            ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
-        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
-        ax.plot((x_source + 0.5) * delta_pix_x + origin[0], (y_source + 0.5) * deltaPix + origin[1], '*k', markersize=10)
+        kwargs_point_source = kwargs.get('kwargs_point_source', {})
+        point_source_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens,
+                          source_x=sourcePos_x, source_y=sourcePos_y, **kwargs_point_source)
     if coord_inverse:
         ax.set_xlim([ra0, ra0 - _frame_size])
     else:
@@ -103,6 +74,275 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     #ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
     return ax
+
+
+def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=-1, vmax=1, cmap='Greys', **kwargs):
+    """
+    plot convergence
+
+    :param ax: matplotlib axis instance
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param lens_model: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list
+    :param extent: [[min, max] [min, max]] of frame
+    :param vmin: matplotlib vmin
+    :param vmax: matplotlib vmax
+    :param cmap: matplotlib cmap
+    :param kwargs: keyword arguments for matshow
+    :return: matplotlib axis instance with convergence plot
+    """
+    x_grid, y_grid = pixel_grid.pixel_coordinates
+    x_grid1d = util.image2array(x_grid)
+    y_grid1d = util.image2array(y_grid)
+    kappa_result = lens_model.kappa(x_grid1d, y_grid1d, kwargs_lens)
+    kappa_result = util.array2image(kappa_result)
+    im = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap=cmap,
+                    vmin=vmin, vmax=vmax, **kwargs)
+    return ax
+
+
+def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, coord_inverse=False, color_crit='r',
+                  color_caustic='g', **kwargs):
+    """
+
+    :param ax: matplotlib axis instance
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param lens_model: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list
+    :param fast_caustic: boolean, if True, uses faster but less precise caustic calculation
+     (might have troubles for the outer caustic (inner critical curve)
+    :param coord_inverse: bool, if True, inverts the x-coordinates to go from right-to-left
+     (effectively the RA definition)
+    :param color_crit: string, color of critical curve
+    :param color_caustic: string, color of caustic curve
+    :param kwargs: keyword arguments for plotting curves
+    :return: updated matplotlib axis instance
+    """
+    lens_model_ext = LensModelExtensions(lens_model)
+    pixel_width = pixel_grid.pixel_width
+    frame_size = np.max(pixel_grid.width)
+    coord_center_ra, coord_center_dec = pixel_grid.center
+    ra0, dec0 = pixel_grid.radec_at_xy_0
+    origin = [ra0, dec0]
+    if fast_caustic:
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lens_model_ext.critical_curve_caustics(
+            kwargs_lens, compute_window=frame_size, grid_scale=pixel_width, center_x=coord_center_ra,
+            center_y=coord_center_dec)
+    else:
+        ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(kwargs_lens, compute_window=frame_size,
+                                                                         start_scale=pixel_width, max_order=10,
+                                                                         center_x=coord_center_ra,
+                                                                         center_y=coord_center_dec)
+        ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+    plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
+                            flipped_x=coord_inverse, **kwargs)
+    plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
+                            flipped_x=coord_inverse, **kwargs)
+    return ax
+
+
+def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_y, **kwargs):
+    """
+    plots and illustrates images of a point source
+    The plotting routine orders the image labels according to the arrival time and illustrates a diamond shape of the
+    size of the magnification. The coordinates are chosen in pixel coordinates
+
+    :param ax: matplotlib axis instance
+    :param pixel_grid: lenstronomy PixelGrid() instance (or class with inheritance of PixelGrid()
+    :param lens_model: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list
+    :param source_x: x-position of source
+    :param source_y: y-position of source
+    :param kwargs: additional plotting keyword arguments
+    :return: matplotlib axis instance with figure
+    """
+    from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+    solver = LensEquationSolver(lens_model)
+    x_center, y_center = pixel_grid.center
+    delta_pix = pixel_grid.pixel_width
+    ra0, dec0 = pixel_grid.radec_at_xy_0
+    tranform = pixel_grid.transform_angle2pix
+    if np.linalg.det(tranform) < 0:  # if coordiate transform has negative parity (#TODO temporary fix)
+        delta_pix_x = -delta_pix
+    else:
+        delta_pix_x = delta_pix
+    origin = [ra0, dec0]
+
+    theta_x, theta_y = solver.image_position_from_source(source_x, source_y, kwargs_lens,
+                                                         search_window=np.max(pixel_grid.width), x_center=x_center,
+                                                         y_center=y_center, min_distance=pixel_grid.pixel_width)
+    mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
+
+    #ax = plot_util.image_position_plot(ax=ax, coords=pixel_grid, ra_image=theta_x, dec_image=theta_y, color='w', image_name_list=None)
+    x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
+    abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+    for i in range(len(x_image)):
+        x_ = (x_image[i] + 0.5) * delta_pix_x + origin[0]
+        y_ = (y_image[i] + 0.5) * delta_pix + origin[1]
+        ax.plot(x_, y_, 'dk', markersize=4 * (1 + np.log(np.abs(mag_images[i]))), alpha=0.5)
+        ax.text(x_, y_, abc_list[i], fontsize=20, color='k')
+    x_source, y_source = pixel_grid.map_coord2pix(source_x, source_y)
+    ax.plot((x_source + 0.5) * delta_pix_x + origin[0], (y_source + 0.5) * delta_pix + origin[1], '*k', markersize=10)
+    return ax
+
+
+@export
+def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
+                         letter_font_size=20):
+    """
+
+    :param ax: matplotlib axis instance
+    :param lens_model: LensModel() class instance
+    :param kwargs_lens: lens model keyword argument list
+    :param numPix:
+    :param deltaPix:
+    :param sourcePos_x:
+    :param sourcePos_y:
+    :param with_caustics:
+    :return:
+    """
+    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
+    data = ImageData(**kwargs_data)
+    ra0, dec0 = data.radec_at_xy_0
+    origin = [ra0, dec0]
+    _frame_size = numPix * deltaPix
+    _coords = data
+    x_grid, y_grid = data.pixel_coordinates
+    lensModelExt = LensModelExtensions(lensModel)
+    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
+    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
+    x_grid1d = util.image2array(x_grid)
+    y_grid1d = util.image2array(y_grid)
+    fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y)
+    fermat_surface = util.array2image(fermat_surface)
+
+        #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
+    if with_caustics is True:
+        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
+                                                                             start_scale=deltaPix/5, max_order=10)
+        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, origin=origin, color='g')
+        plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, origin=origin, color='r')
+    if point_source is True:
+        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
+        solver = LensEquationSolver(lensModel)
+        theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
+                                                                 min_distance=deltaPix, search_window=deltaPix*numPix)
+
+        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=np.sort(fermat_pot_images), **kwargs_contours)
+        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
+        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
+            y_ = (y_image[i] + 0.5) * deltaPix - _frame_size/2
+            if image_color_list is None:
+                color = 'k'
+            else:
+                color = image_color_list[i]
+            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
+            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
+        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
+        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
+    else:
+        vmin = np.min(fermat_surface)
+        vmax = np.max(fermat_surface)
+        levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
+        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+                        levels=levels, **kwargs_contours)
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    return ax
+
+
+@export
+def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color='k'):
+    """
+
+    :param ax: matplotlib axis instance
+    :param lensModel: LensModel() instance
+    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
+    :param with_centroid: plots the center of the curvature radius
+    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)
+    :param color: string, matplotlib color for plot
+    :return: matplotlib axis instance
+    """
+
+    # loop through lens models
+    # check whether curved arc
+    lens_model_list = lensModel.lens_model_list
+    for i, lens_type in enumerate(lens_model_list):
+        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_CONST', 'CURVED_ARC_CONST_MST',
+                         'CURVED_ARC_SPT', 'CURVED_ARC_TAN_DIFF']:
+            plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, color=color, **kwargs_lens[i])
+
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+    ax.autoscale(False)
+    # rectangular frame
+    ax.axis('scaled')
+
+    # plot coordinate frame and scale
+
+
+@export
+def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
+             with_centroid=True, linewidth=1, color='k', dtan_dtan=0):
+    """
+
+    :param ax: matplotlib.axes instance
+    :param tangential_stretch: float, stretch of intrinsic source in tangential direction
+    :param radial_stretch: float, stretch of intrinsic source in radial direction
+    :param curvature: 1/curvature radius
+    :param direction: float, angle in radian
+    :param center_x: center of source in image plane
+    :param center_y: center of source in image plane
+    :param with_centroid: plots the center of the curvature radius
+    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
+     (effectively intrinsic source size)
+    :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
+    :return:
+    """
+    # plot line to centroid
+    center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
+    if with_centroid:
+        ax.plot([center_x, center_x_spp], [center_y, center_y_spp], '--', color=color, alpha=0.5, linewidth=linewidth)
+        ax.plot([center_x_spp], [center_y_spp], '*', color=color, alpha=0.5, linewidth=linewidth)
+
+    # plot radial stretch to scale
+    x_r = np.cos(direction) * radial_stretch * stretch_scale
+    y_r = np.sin(direction) * radial_stretch * stretch_scale
+    ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], '--', color=color, linewidth=linewidth)
+
+    # compute angle of size of the tangential stretch
+    r = 1. / curvature
+
+    # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only plotted once
+    tangential_stretch_ = min(tangential_stretch, np.pi * r / stretch_scale)
+    d_phi = tangential_stretch_ * stretch_scale / r
+
+    # linearly interpolate angle around center
+    phi = np.linspace(-1, 1, 50) * d_phi + direction
+    # plot points on circle
+    x_curve = r * np.cos(phi) + center_x_spp
+    y_curve = r * np.sin(phi) + center_y_spp
+    ax.plot(x_curve, y_curve, '--', color=color, linewidth=linewidth)
+
+    # make round circle with start point to end to close the circle
+    r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=200)
+    r_c = radial_stretch * r_c + r
+    phi_c = t_c * tangential_stretch_ / r_c + direction
+    x_c = r_c * np.cos(phi_c) + center_x_spp
+    y_c = r_c * np.sin(phi_c) + center_y_spp
+    ax.plot(x_c, y_c, '-', color=color, linewidth=linewidth)
+    return ax
+
+    # TODO add different colors for each quarter to identify parities
 
 
 @export
@@ -193,162 +433,3 @@ def distortions(lensModel, kwargs_lens, num_pix=100, delta_pix=0.05, center_ra=0
     _plot_frame(axes[2, 3], dphi_rad_dtan2d, vmin=0, vmax=20, text_string='dphi_rad_dtan')
 
     return f, axes
-
-
-@export
-def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
-                         letter_font_size=20):
-    """
-
-    :param ax:
-    :param lensModel:
-    :param kwargs_lens:
-    :param numPix:
-    :param deltaPix:
-    :param sourcePos_x:
-    :param sourcePos_y:
-    :param with_caustics:
-    :return:
-    """
-    kwargs_data = sim_util.data_configure_simple(numPix, deltaPix)
-    data = ImageData(**kwargs_data)
-    ra0, dec0 = data.radec_at_xy_0
-    origin = [ra0, dec0]
-    _frame_size = numPix * deltaPix
-    _coords = data
-    x_grid, y_grid = data.pixel_coordinates
-    lensModelExt = LensModelExtensions(lensModel)
-    #ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lensModelExt.critical_curve_caustics(
-    #    kwargs_lens, compute_window=_frame_size, grid_scale=deltaPix/2.)
-    x_grid1d = util.image2array(x_grid)
-    y_grid1d = util.image2array(y_grid)
-    fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y)
-    fermat_surface = util.array2image(fermat_surface)
-
-        #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
-    if with_caustics is True:
-        ra_crit_list, dec_crit_list = lensModelExt.critical_curve_tiling(kwargs_lens, compute_window=_frame_size,
-                                                                             start_scale=deltaPix/5, max_order=10)
-        ra_caustic_list, dec_caustic_list = lensModel.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        plot_util.plot_line_set(ax, _coords, ra_caustic_list, dec_caustic_list, origin=origin, color='g')
-        plot_util.plot_line_set(ax, _coords, ra_crit_list, dec_crit_list, origin=origin, color='r')
-    if point_source is True:
-        from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
-        solver = LensEquationSolver(lensModel)
-        theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
-                                                                 min_distance=deltaPix, search_window=deltaPix*numPix)
-
-        fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
-        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
-                        levels=np.sort(fermat_pot_images), **kwargs_contours)
-        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
-        x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
-        abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
-
-        for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * deltaPix - _frame_size/2
-            y_ = (y_image[i] + 0.5) * deltaPix - _frame_size/2
-            if image_color_list is None:
-                color = 'k'
-            else:
-                color = image_color_list[i]
-            ax.plot(x_, y_, 'x', markersize=10, alpha=1, color=color)  # markersize=8*(1 + np.log(np.abs(mag_images[i])))
-            ax.text(x_ + deltaPix, y_ + deltaPix, abc_list[i], fontsize=letter_font_size, color='k')
-        x_source, y_source = _coords.map_coord2pix(sourcePos_x, sourcePos_y)
-        ax.plot((x_source + 0.5) * deltaPix - _frame_size/2, (y_source + 0.5) * deltaPix - _frame_size/2, '*k', markersize=20)
-    else:
-        vmin = np.min(fermat_surface)
-        vmax = np.max(fermat_surface)
-        levels = np.linspace(start=vmin, stop=vmax, num=n_levels)
-        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
-                        levels=levels, **kwargs_contours)
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    return ax
-
-
-@export
-def curved_arc_illustration(ax, lensModel, kwargs_lens, with_centroid=True, stretch_scale=0.1, color='k'):
-    """
-
-    :param ax: matplotlib axis instance
-    :param lensModel: LensModel() instance
-    :param kwargs_lens: list of lens model keyword arguments (only those of CURVED_ARC considered
-    :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches (effectively intrinsic source size)
-    :param color: string, matplotlib color for plot
-    :return:
-    """
-
-    # loop through lens models
-    # check whether curved arc
-    lens_model_list = lensModel.lens_model_list
-    for i, lens_type in enumerate(lens_model_list):
-        if lens_type in ['CURVED_ARC', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_CONST', 'CURVED_ARC_CONST_MST',
-                         'CURVED_ARC_SPT', 'CURVED_ARC_TAN_DIFF']:
-            plot_arc(ax, with_centroid=with_centroid, stretch_scale=stretch_scale, color=color, **kwargs_lens[i])
-
-    ax.get_xaxis().set_visible(False)
-    ax.get_yaxis().set_visible(False)
-    ax.autoscale(False)
-    # rectangular frame
-    ax.axis('scaled')
-
-    # plot coordinate frame and scale
-
-
-@export
-def plot_arc(ax, tangential_stretch, radial_stretch, curvature, direction, center_x, center_y, stretch_scale=0.1,
-             with_centroid=True, linewidth=1, color='k', dtan_dtan=0):
-    """
-
-    :param ax: matplotlib.axes instance
-    :param tangential_stretch: float, stretch of intrinsic source in tangential direction
-    :param radial_stretch: float, stretch of intrinsic source in radial direction
-    :param curvature: 1/curvature radius
-    :param direction: float, angle in radian
-    :param center_x: center of source in image plane
-    :param center_y: center of source in image plane
-    :param with_centroid: plots the center of the curvature radius
-    :param stretch_scale: float, relative scale of banana to the tangential and radial stretches
-     (effectively intrinsic source size)
-    :param dtan_dtan: tangential eigenvector differential in tangential direction (not implemented yet as illustration)
-    :return:
-    """
-    # plot line to centroid
-    center_x_spp, center_y_spp = center_deflector(curvature, direction, center_x, center_y)
-    if with_centroid:
-        ax.plot([center_x, center_x_spp], [center_y, center_y_spp], '--', color=color, alpha=0.5, linewidth=linewidth)
-        ax.plot([center_x_spp], [center_y_spp], '*', color=color, alpha=0.5, linewidth=linewidth)
-
-    # plot radial stretch to scale
-    x_r = np.cos(direction) * radial_stretch * stretch_scale
-    y_r = np.sin(direction) * radial_stretch * stretch_scale
-    ax.plot([center_x - x_r, center_x + x_r], [center_y - y_r, center_y + y_r], '--', color=color, linewidth=linewidth)
-
-    # compute angle of size of the tangential stretch
-    r = 1. / curvature
-
-    # make sure tangential stretch * stretch_scale is not larger than r * 2pi such that the full circle is only plotted once
-    tangential_stretch_ = min(tangential_stretch, np.pi * r / stretch_scale)
-    d_phi = tangential_stretch_ * stretch_scale / r
-
-    # linearly interpolate angle around center
-    phi = np.linspace(-1, 1, 50) * d_phi + direction
-    # plot points on circle
-    x_curve = r * np.cos(phi) + center_x_spp
-    y_curve = r * np.sin(phi) + center_y_spp
-    ax.plot(x_curve, y_curve, '--', color=color, linewidth=linewidth)
-
-    # make round circle with start point to end to close the circle
-    r_c, t_c = util.points_on_circle(radius=stretch_scale, num_points=200)
-    r_c = radial_stretch * r_c + r
-    phi_c = t_c * tangential_stretch_ / r_c + direction
-    x_c = r_c * np.cos(phi_c) + center_x_spp
-    y_c = r_c * np.sin(phi_c) + center_y_spp
-    ax.plot(x_c, y_c, '-', color=color, linewidth=linewidth)
-
-    # TODO add different colors for each quarter to identify parities
-

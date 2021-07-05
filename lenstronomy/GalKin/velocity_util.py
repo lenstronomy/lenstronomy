@@ -99,25 +99,6 @@ def draw_cdf_Y(beta):
 
 
 @export
-def project2d_random_old(r):
-    """
-    draws a random projection from radius r in 2d and 1d
-    :param r: 3d radius
-    :return: R, x, y
-    """
-    size = len(np.atleast_1d(r))
-    if size == 1:
-        size = None
-    phi = np.random.uniform(0, 2*np.pi, size=size)
-    theta = np.random.uniform(0, np.pi, size=size)
-    x = r * np.sin(theta) * np.cos(phi)
-    y = r * np.sin(theta) * np.sin(phi)
-    z = r * np.cos(theta)
-    R = np.sqrt(x**2 + z**2)
-    return R, x, y
-
-
-@export
 def project2d_random(r):
     """
     draws a random projection from radius r in 2d and 1d

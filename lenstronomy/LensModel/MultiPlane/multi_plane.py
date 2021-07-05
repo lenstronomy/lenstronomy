@@ -1,6 +1,6 @@
 import numpy as np
 from copy import deepcopy
-from lenstronomy.LensModel.multi_plane_base import MultiPlaneBase
+from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()

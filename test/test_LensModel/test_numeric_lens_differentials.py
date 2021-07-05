@@ -151,7 +151,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_mass_sheet(self):
-        kwargs = {'kappa_ext': 0.1}
+        kwargs = {'kappa': 0.1}
         lens_model = ['CONVERGENCE']
         self.assert_differentials(lens_model, kwargs)
 

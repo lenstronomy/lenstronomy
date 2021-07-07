@@ -60,7 +60,8 @@ class Image2SourceMapping(object):
                 self._T_ij_end_list = []
                 for i, index_source in enumerate(self._sorted_source_redshift_index):
                     z_stop = self._source_redshift_list[index_source]
-                    T_ij_start, T_ij_end = self._lensModel.lens_model.transverse_distance_start_stop(z_start, z_stop, include_z_start=False)
+                    T_ij_start, T_ij_end = self._lensModel.lens_model.transverse_distance_start_stop(z_start, z_stop,
+                                                                                                     include_z_start=False)
                     self._T_ij_start_list.append(T_ij_start)
                     self._T_ij_end_list.append(T_ij_end)
                     z_start = z_stop

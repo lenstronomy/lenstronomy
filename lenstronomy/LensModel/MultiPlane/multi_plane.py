@@ -95,7 +95,7 @@ class MultiPlane(object):
 
         :param theta_x: angle in x-direction on the image
         :param theta_y: angle in y-direction on the image
-        :param kwargs_lens:
+        :param kwargs_lens: lens model keyword argument list
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
         """

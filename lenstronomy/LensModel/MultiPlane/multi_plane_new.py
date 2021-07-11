@@ -8,6 +8,37 @@ __all__ = ['MultiPlaneBaseRatios']
 class MultiPlaneBaseRatios(ProfileListBase):
 
     """
+    The general multi-plane lensing equation can be written as
+
+    .. math::
+        \\beta_{k} = \\theta - \\sum_{i=0}^{N} \\frac{D_{ik}}{D_{k}} \\hat{\\alpha}_i(\\beta_i)
+
+    with :math:`D_{ik}` is the angular diameter distance when looking at redshift k seen from redshift i,
+    :math:`D_{k}` is the angular diameter distance when looking at redshift k seen from current time (z=0),
+    :math:`\\hat{\\alpha}{\\beta_i}` is the physical deflection at deflector i, and
+    :math:`\\theta` is the angle as seen on the sky.
+
+    In co-moving coordinates
+
+    .. math::
+        x_{c} = (1 + z) x
+
+    with :math:`x is a physical coordinate`, and with transverse comoving distance
+
+    .. math::
+        T = (1 + z) D
+
+    we can write the multi-plane equation recursively as
+
+    .. math::
+        x_{c}^{i+1} = x_{c}^{i} - T_{i+1, i} \\left( \\theta + \sum_{j=1}^{i} \\hat{\\alpha_j(x_{c}^j)} \\right)
+
+
+    In terms of on-sky angles, the same equation reads
+    .. math::
+        \\beta^{i+1} = \\beta^{i} \\frac{T_{i}}{T_{i+1}} - \\left( \\theta + \sum_{j=1}^{i} \\hat{\\alpha_j(x_{c}^j)} \\right)
+
+
     Multi-plane lensing class with the input being transverse comoving distances relative to a pivot redshift,
     meaning :math:`T_{ij}/T_{z {\rm pivot}}`
 

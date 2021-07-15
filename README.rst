@@ -34,9 +34,9 @@ lenstronomy - gravitational lensing software package
 
 
 ``lenstronomy`` is a multi-purpose package to model strong gravitational lenses. The software package is presented in
-`Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
+`Birrer & Amara 2018 <https://arxiv.org/abs/1803.09746v1>`_ and `Birrer et al. 2021 <https://joss.theoj.org/papers/10.21105/joss.03283>`_ , and is based on `Birrer et al 2015 <http://adsabs.harvard.edu/abs/2015ApJ...813..102B>`_.
 ``lenstronomy`` finds application for time-delay cosmography and measuring
-the expansion rate of the universe, for quantifying lensing substructure to infer dark matter properties, morphological quantification of galaxies,
+the expansion rate of the Universe, for quantifying lensing substructure to infer dark matter properties, morphological quantification of galaxies,
 quasar-host galaxy decomposition and much more.
 A (incomplete) list of publications making use of lenstronomy can be found `at this link <https://github.com/sibirrer/lenstronomy/blob/main/PUBLISHED.rst>`_.
 
@@ -67,6 +67,10 @@ Getting started
 The `starting guide jupyter notebook <https://github.com/sibirrer/lenstronomy_extensions/blob/main/lenstronomy_extensions/Notebooks/starting_guide.ipynb>`_
 leads through the main modules and design features of ``lenstronomy``. The modular design of ``lenstronomy`` allows the
 user to directly access a lot of tools and each module can also be used as stand-alone packages.
+
+If you are new to gravitational lensing, check out the `mini lecture series <https://github.com/sibirrer/strong_lensing_lectures>`_ giving an introduction to gravitational lensing
+with interactive Jupyter notebooks in the cloud.
+
 
 
 Example notebooks

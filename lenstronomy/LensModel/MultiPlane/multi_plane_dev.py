@@ -70,7 +70,6 @@ class MultiPlaneBaseRatios(ProfileListBase):
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
          models. If None, 'z_source' is used.
-        :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
          (see documentation in Profiles/numerical_alpha)
 
@@ -186,6 +185,7 @@ class MultiPlaneBaseRatios(ProfileListBase):
          deflector is at z_start
         :return: T_ij_start, T_ij_end
         """
+        # TODO: these need to be replaced
         z_lens_last = z_start
         first_deflector = True
         T_ij_start = None
@@ -240,6 +240,7 @@ class MultiPlaneBaseRatios(ProfileListBase):
 
                 dt_grav += dt_grav_new
                 z_lens_last = z_lens
+        # TODO: first and last distance need to be cognicent and perhaps not fully free
         if T_ij_end is None:
             T_ij_end = self._cosmo_bkg.T_xy(z_lens_last, z_stop)
         T_ij = T_ij_end
@@ -323,6 +324,7 @@ class MultiPlaneBaseRatios(ProfileListBase):
         :return: gravitational time-delay in units of days
         """
         D_dt = self._cosmo_bkg.ddt(z_lens, z_source)
+        # TODO: find effective time-delay distance from the input distance ratios and the absolute scale
         delay_days = const.delay_arcsec2days(potential, D_dt)
         return delay_days
 

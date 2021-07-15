@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots package &#8212; lenstronomy 1.8.2 documentation</title>
+    <title>lenstronomy.Plots package &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -117,7 +117,7 @@ This routine is an example and more tests might be appropriate to analyse a spec
 <span id="lenstronomy-plots-lens-plot-module"></span><h2>lenstronomy.Plots.lens_plot module<a class="headerlink" href="#module-lenstronomy.Plots.lens_plot" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Plots.lens_plot.lens_model_plot">
-<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>with_convergence=True</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em>, <em>fast_caustic=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>with_convergence=True</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em>, <em>fast_caustic=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>plots a lens model (convergence) and the critical curves and caustics</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -151,32 +151,6 @@ This routine is an example and more tests might be appropriate to analyse a spec
 </dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Plots.lens_plot.distortions">
-<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">distortions</code><span class="sig-paren">(</span><em>lensModel</em>, <em>kwargs_lens</em>, <em>num_pix=100</em>, <em>delta_pix=0.05</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>differential_scale=0.0001</em>, <em>smoothing_scale=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#distortions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.distortions" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lensModel</strong> – LensModel instance</li>
-<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
-<li><strong>num_pix</strong> – number of pixels per axis</li>
-<li><strong>delta_pix</strong> – pixel scale per axis</li>
-<li><strong>center_ra</strong> – center of the grid</li>
-<li><strong>center_dec</strong> – center of the grid</li>
-<li><strong>differential_scale</strong> – scale of the finite derivative length in units of angles</li>
-<li><strong>smoothing_scale</strong> – float or None, Gaussian FWHM of a smoothing kernel applied before plotting</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib instance with different panels</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="lenstronomy.Plots.lens_plot.arrival_time_surface">
 <code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">arrival_time_surface</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>with_caustics=False</em>, <em>point_source=False</em>, <em>n_levels=10</em>, <em>kwargs_contours={}</em>, <em>image_color_list=None</em>, <em>letter_font_size=20</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#arrival_time_surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.arrival_time_surface" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -184,9 +158,9 @@ This routine is an example and more tests might be appropriate to analyse a spec
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>lensModel</strong> – </li>
-<li><strong>kwargs_lens</strong> – </li>
+<li><strong>ax</strong> – matplotlib axis instance</li>
+<li><strong>lens_model</strong> – LensModel() class instance</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
 <li><strong>numPix</strong> – </li>
 <li><strong>deltaPix</strong> – </li>
 <li><strong>sourcePos_x</strong> – </li>
@@ -219,7 +193,7 @@ This routine is an example and more tests might be appropriate to analyse a spec
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib axis instance</p>
 </td>
 </tr>
 </tbody>
@@ -249,6 +223,32 @@ This routine is an example and more tests might be appropriate to analyse a spec
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="lenstronomy.Plots.lens_plot.distortions">
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">distortions</code><span class="sig-paren">(</span><em>lensModel</em>, <em>kwargs_lens</em>, <em>num_pix=100</em>, <em>delta_pix=0.05</em>, <em>center_ra=0</em>, <em>center_dec=0</em>, <em>differential_scale=0.0001</em>, <em>smoothing_scale=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#distortions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.distortions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lensModel</strong> – LensModel instance</li>
+<li><strong>kwargs_lens</strong> – lens model keyword argument list</li>
+<li><strong>num_pix</strong> – number of pixels per axis</li>
+<li><strong>delta_pix</strong> – pixel scale per axis</li>
+<li><strong>center_ra</strong> – center of the grid</li>
+<li><strong>center_dec</strong> – center of the grid</li>
+<li><strong>differential_scale</strong> – scale of the finite derivative length in units of angles</li>
+<li><strong>smoothing_scale</strong> – float or None, Gaussian FWHM of a smoothing kernel applied before plotting</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib instance with different panels</p>
 </td>
 </tr>
 </tbody>
@@ -968,35 +968,8 @@ of the output of the FittingSequence results.</p>
 <dd></dd></dl>
 
 <dl class="function">
-<dt id="lenstronomy.Plots.plot_util.plot_line_set_list">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set_list</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>color='g'</em>, <em>flipped_x=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set_list" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – matplotlib.axis instance</li>
-<li><strong>coords</strong> – Coordinates() class instance</li>
-<li><strong>origin</strong> – [x0, y0], lower left pixel coordinate in the frame of the pixels</li>
-<li><strong>line_set_list_x</strong> – list of numpy arrays corresponding of different disconnected regions of the line
-(e.g. caustic or critical curve)</li>
-<li><strong>line_set_list_y</strong> – list of numpy arrays corresponding of different disconnected regions of the line
-(e.g. caustic or critical curve)</li>
-<li><strong>color</strong> – string with matplotlib color</li>
-<li><strong>flipped_x</strong> – bool, if True, flips x-axis</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">plot with line sets on matplotlib axis</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
 <dt id="lenstronomy.Plots.plot_util.plot_line_set">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>color='g'</em>, <em>flipped_x=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>flipped_x=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
 corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
 of the pixel in accordance with the matplotlib.matshow() routine.</p>
@@ -1026,19 +999,24 @@ of the pixel in accordance with the matplotlib.matshow() routine.</p>
 
 <dl class="function">
 <dt id="lenstronomy.Plots.plot_util.image_position_plot">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">image_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_image</em>, <em>dec_image</em>, <em>color='w'</em>, <em>image_name_list=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#image_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.image_position_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">image_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_image</em>, <em>dec_image</em>, <em>color='w'</em>, <em>image_name_list=None</em>, <em>origin=None</em>, <em>flipped_x=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#image_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.image_position_plot" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>coords</strong> – </li>
-<li><strong>kwargs_else</strong> – </li>
+<li><strong>ax</strong> – matplotlib axis instance</li>
+<li><strong>coords</strong> – Coordinates() class instance or inherited class (such as PixelGrid(), or Data())</li>
+<li><strong>ra_image</strong> – Ra/x-coordinates of image positions (list of arrays in angular units)</li>
+<li><strong>dec_image</strong> – Dec/y-coordinates of image positions (list of arrays in angular units)</li>
+<li><strong>color</strong> – color of ticks and text</li>
+<li><strong>image_name_list</strong> – list of strings for names of the images in the same order as the positions</li>
+<li><strong>origin</strong> – [x0, y0], lower left pixel coordinate in the frame of the pixels</li>
+<li><strong>flipped_x</strong> – bool, if True, flips x-axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib axis instance with images plotted on</p>
 </td>
 </tr>
 </tbody>
@@ -1047,19 +1025,22 @@ of the pixel in accordance with the matplotlib.matshow() routine.</p>
 
 <dl class="function">
 <dt id="lenstronomy.Plots.plot_util.source_position_plot">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">source_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_pos</em>, <em>dec_pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#source_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.source_position_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">source_position_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>ra_source</em>, <em>dec_source</em>, <em>marker='*'</em>, <em>markersize=10</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#source_position_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.source_position_plot" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> – </li>
-<li><strong>coords</strong> – </li>
-<li><strong>kwargs_source</strong> – </li>
+<li><strong>ax</strong> – matplotlib axis instance</li>
+<li><strong>coords</strong> – Coordinates() class instance or inherited class (such as PixelGrid(), or Data())</li>
+<li><strong>ra_source</strong> – list of source position in angular units</li>
+<li><strong>dec_source</strong> – list of source position in angular units</li>
+<li><strong>marker</strong> – marker style for matplotlib</li>
+<li><strong>markersize</strong> – marker size for matplotlib</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib axis instance with images plotted on</p>
 </td>
 </tr>
 </tbody>
@@ -1174,7 +1155,7 @@ of the pixel in accordance with the matplotlib.matshow() routine.</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

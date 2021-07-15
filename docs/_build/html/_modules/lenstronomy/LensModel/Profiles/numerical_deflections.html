@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.numerical_deflections &#8212; lenstronomy 1.8.2 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.numerical_deflections &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -41,11 +41,6 @@
   <h1>Source code for lenstronomy.LensModel.Profiles.numerical_deflections</h1><div class="highlight"><pre>
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;dgilman&#39;</span>
 
-<span class="c1"># this file contains a class to compute lensing quantities with a pre-computed grid of deflection angles, up to</span>
-<span class="c1"># a normalization factor. The user passes in a pointer to this pre-computed grid, and the lensing funcitons</span>
-<span class="c1"># interpolate it to compute deflection angles and the hessian</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NumericalAlpha&#39;</span><span class="p">]</span>
@@ -53,53 +48,33 @@
 
 <div class="viewcode-block" id="NumericalAlpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha">[docs]</a><span class="k">class</span> <span class="nc">NumericalAlpha</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
 
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class allows one to incorporate any lens profile into the usage framework of lenstronomy. When creating the</span>
+<span class="sd">    instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where</span>
+<span class="sd">    CustomClass is a class with a call method that returns the x/y deflection angles. This allows one to numerically</span>
+<span class="sd">    compute and interpolate deflection angles for potentially very complex mass profiles, and then use the results with</span>
+<span class="sd">    lenstronomy without having to heavily modify the existing structure of the software.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_class</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        :param custom_class: a user-defined class that contains the following attributes</span>
+<span class="sd">        :param custom_class: a user-defined class that has a __call___ method that returns deflection angles</span>
 
-<span class="sd">        1) custom_class.deflections: a numpy array of length N; stores pre-computed deflection angles</span>
-<span class="sd">        2) custom_class.params: numpy array shape (N,P), where P is the number of parameters</span>
+<span class="sd">        Code example:</span>
 
-<span class="sd">        custom_class should also contain a call method:</span>
+<span class="sd">        &gt;&gt;&gt; custom_class = CustomLensingClass()</span>
+<span class="sd">        &gt;&gt;&gt; alpha_x, alpha_y = custom_class(x, y, **kwargs)</span>
+<span class="sd">        </span>
+<span class="sd">        or equivalently:</span>
 
-<span class="sd">        custom_class(x, y, **args)</span>
-<span class="sd">        - converts an (x,y) coordinate, and the specific function arguments, into a deflection angle</span>
-
-<span class="sd">        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-
-<span class="sd">        Example: For a cored cNFW profile</span>
-
-<span class="sd">        class CustomClass(object):</span>
-
-<span class="sd">            def __init__(self, deflection_array, x_nfw, beta)</span>
-
-<span class="sd">                self.deflections = deflection_array</span>
-<span class="sd">                self.params = np.column_stack((x_nfw, beta))</span>
-<span class="sd">                self.param_names = [&#39;x&#39;, &#39;beta&#39;]</span>
-
-<span class="sd">            def __call__(x, y, Rs, r_core, norm):</span>
-
-<span class="sd">                R = np.sqrt(x ** 2 + y ** 2)</span>
-
-<span class="sd">                X = R * Rs ** -1</span>
-<span class="sd">                beta = r_core * Rs ** -1</span>
-
-<span class="sd">                defangle = interpolate(X, beta)</span>
-
-<span class="sd">                return norm*defangle</span>
-
-<span class="sd">            def interpolate(x_nfw, beta):</span>
-<span class="sd">                The user should code up a way to interpolate between values</span>
-<span class="sd">                return ~some interpolating function(x_nfw, beta)~</span>
-
-<span class="sd">        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
-<span class="sd">        Note: This returns an *** un-normalized deflection angle ***</span>
-<span class="sd">        It is up to the user to rescale the results according to whatever normalization is appropriate</span>
-
+<span class="sd">        &gt;&gt;&gt; from lenstronomy.LensModel.lens_model import LensModel</span>
+<span class="sd">        &gt;&gt;&gt; lens_model_list = [&#39;NumericalAlpha&#39;]</span>
+<span class="sd">        &gt;&gt;&gt; lens_model = LensModel(lens_model_list, numerical_alpha_class=custom_class)</span>
+<span class="sd">        &gt;&gt;&gt;&gt; alpha_x, alpha_y = lens_model.alpha(x, y, **kwargs)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span> <span class="o">=</span> <span class="n">custom_class</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custom_lens_class</span> <span class="o">=</span> <span class="n">custom_class</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">NumericalAlpha</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="NumericalAlpha.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span><span class="n">center_x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -109,22 +84,30 @@
 <div class="viewcode-block" id="NumericalAlpha.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">assert</span> <span class="s1">&#39;norm&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="s2">&quot;key word arguments must contain &#39;norm&#39;, &quot;</span> \
-                                        <span class="s2">&quot;the normalization of deflection angle in units of arcsec.&quot;</span>
+<span class="sd">        :param x: x coordinate [arcsec]</span>
+<span class="sd">        :param y: x coordinate [arcsec]</span>
+<span class="sd">        :param center_x: deflector x center [arcsec]</span>
+<span class="sd">        :param center_y: deflector y center [arcsec]</span>
+<span class="sd">        :param kwargs: keyword arguments for the custom profile</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custom_lens_class</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
 <div class="viewcode-block" id="NumericalAlpha.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2</span>
-<span class="sd">        (un-normalized!!!) interpolated from the numerical deflection table</span>
+<span class="sd">        Returns the components of the hessian matrix</span>
+<span class="sd">        :param x: x coordinate [arcsec]</span>
+<span class="sd">        :param y: y coordinate [arcsec]</span>
+<span class="sd">        :param center_x: the deflector x coordinate</span>
+<span class="sd">        :param center_y: the deflector y coordinate</span>
+<span class="sd">        :param kwargs: keyword arguments for the profile</span>
+<span class="sd">        :return: the derivatives of the deflection angles that make up the hessian matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">diff</span> <span class="o">=</span> <span class="mf">1e-6</span>
@@ -177,7 +160,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

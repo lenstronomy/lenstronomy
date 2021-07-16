@@ -19,7 +19,7 @@ export, __all__ = exporter()
 @export
 def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
                     point_source=False, with_caustics=False, with_convergence=True, coord_center_ra=0,
-                    coord_center_dec=0, coord_inverse=False, fast_caustic=False, **kwargs):
+                    coord_center_dec=0, coord_inverse=False, fast_caustic=True, **kwargs):
     """
     plots a lens model (convergence) and the critical curves and caustics
 
@@ -102,7 +102,7 @@ def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=
 
 
 def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, coord_inverse=False, color_crit='r',
-                  color_caustic='g', **kwargs):
+                  color_caustic='g', *args, **kwargs):
     """
 
     :param ax: matplotlib axis instance
@@ -134,10 +134,12 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
                                                                          center_x=coord_center_ra,
                                                                          center_y=coord_center_dec)
         ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
+        #ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
+        #ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
-                            flipped_x=coord_inverse, **kwargs)
+                            flipped_x=coord_inverse, *args, **kwargs)
     plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
-                            flipped_x=coord_inverse, **kwargs)
+                            flipped_x=coord_inverse, *args, **kwargs)
     return ax
 
 

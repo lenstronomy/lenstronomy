@@ -126,8 +126,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_gausian_ellipse_kappa(self):
-        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x':
-            0., 'center_y': 0.}
+        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
         lens_model = ['GAUSSIAN_ELLIPSE_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
@@ -152,7 +151,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_mass_sheet(self):
-        kwargs = {'kappa_ext': 0.1}
+        kwargs = {'kappa': 0.1}
         lens_model = ['CONVERGENCE']
         self.assert_differentials(lens_model, kwargs)
 

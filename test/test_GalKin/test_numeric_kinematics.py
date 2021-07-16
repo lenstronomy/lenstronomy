@@ -106,8 +106,8 @@ class TestMassProfile(object):
         r_list = np.logspace(-2, 1, 10)
         for r in r_list:
             for R in np.linspace(start=0, stop=r, num=5):
-                sigma_s2_analytic = analytic_kin.sigma_s2(r, R, {'theta_E': theta_E, 'gamma': gamma}, {'r_eff': r_eff}, kwargs_anisotropy)
-                sigma_s2_full_num = numeric_kin.sigma_s2_full(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+                sigma_s2_analytic, I_R = analytic_kin.sigma_s2(r, R, {'theta_E': theta_E, 'gamma': gamma}, {'r_eff': r_eff}, kwargs_anisotropy)
+                sigma_s2_full_num = numeric_kin.sigma_s2_r(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
                 npt.assert_almost_equal(sigma_s2_full_num/sigma_s2_analytic, 1, decimal=2)
 
     def test_I_R_sigma_s2(self):
@@ -251,9 +251,8 @@ class TestMassProfile(object):
         R = 1
         I_R_sigma2_interp, I_R_interp = numerics._I_R_sigma2_interp(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
         I_R_sigma2, I_R = numerics._I_R_sigma2(R, kwargs_profile, kwargs_light, kwargs_anisotropy)
-        npt.assert_almost_equal(I_R_sigma2_interp / I_R_sigma2, 1, decimal=4)
-        npt.assert_almost_equal(I_R_interp / I_R, 1, decimal=4)
-
+        npt.assert_almost_equal(I_R_sigma2_interp / I_R_sigma2, 1, decimal=3)
+        npt.assert_almost_equal(I_R_interp / I_R, 1, decimal=3)
 
     def test_power_law_test(self):
         # tests a isotropic velocity anisotropy on a singular isothermal sphere with the same tracer particle distribution
@@ -306,30 +305,9 @@ class TestMassProfile(object):
         sigma_array = np.zeros_like(r_array)
         R_test = 0
         for i, r in enumerate(r_array):
-            sigma_s2 = numerics.sigma_s2_full(r, R_test, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma_s2 = numerics.sigma_s2_r(r, R_test, kwargs_mass, kwargs_light, kwargs_anisotropy)
             sigma_array[i] = np.sqrt(sigma_s2) / 1000
         npt.assert_almost_equal(sigma_array / v_sigma_true, 1, decimal=2)
-
-    def test_integrand_a15(self):
-        """
-        test the integrand for OM model and see whether the shape requires a special form of the integrator
-
-        :return:
-        """
-        light_model = ['HERNQUIST']
-        kwargs_light = [{'gamma': 2, 'amp': 1, 'e1': 0, 'e2': 0}]
-
-        lens_model = ['SIS']
-        kwargs_mass = [{'theta_E': 1}]
-
-        anisotropy_type = 'isotropic'
-        kwargs_anisotropy = {}
-        kwargs_model = {'mass_profile_list': lens_model,
-                        'light_profile_list': light_model,
-                        'anisotropy_model': anisotropy_type}
-        kwargs_numerics = {'interpol_grid_num': 2000, 'log_integration': True,
-                           'max_integrate': 1000, 'min_integrate': 0.0001}
-        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
 
     def test_delete_cache(self):
         kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}

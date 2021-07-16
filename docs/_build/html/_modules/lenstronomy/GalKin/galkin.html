@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.GalKin.galkin &#8212; lenstronomy 1.8.2 documentation</title>
+    <title>lenstronomy.GalKin.galkin &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -112,11 +112,13 @@
 <span class="sd">        :param sampling_number: int, number of spectral sampling of the light distribution</span>
 <span class="sd">        :return: integrated LOS velocity dispersion in units [km/s]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sigma2_R_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">sigma2_IR_sum</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">IR_sum</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">sampling_number</span><span class="p">):</span>
-            <span class="n">sigma2_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_one_sigma2</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
-            <span class="n">sigma2_R_sum</span> <span class="o">+=</span> <span class="n">sigma2_R</span>
-        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma2_R_sum</span> <span class="o">/</span> <span class="n">sampling_number</span>
+            <span class="n">sigma2_IR</span><span class="p">,</span> <span class="n">IR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_one_sigma2</span><span class="p">(</span><span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+            <span class="n">sigma2_IR_sum</span> <span class="o">+=</span> <span class="n">sigma2_IR</span>
+            <span class="n">IR_sum</span> <span class="o">+=</span> <span class="n">IR</span>
+        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma2_IR_sum</span> <span class="o">/</span> <span class="n">IR_sum</span>
         <span class="c1"># apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">delete_cache</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_s2_average</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.</span>  <span class="c1"># in units of km/s</span></div>
@@ -139,20 +141,20 @@
         <span class="c1"># compute average in each segment</span>
         <span class="c1"># return value per segment</span>
         <span class="n">num_segments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_segments</span>
-        <span class="n">sigma2_R_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_segments</span><span class="p">)</span>
+        <span class="n">sigma2_IR_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_segments</span><span class="p">)</span>
         <span class="n">count_draws</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_segments</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_kin_sampling</span><span class="p">):</span>
             <span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">draw_light</span><span class="p">(</span><span class="n">kwargs_light</span><span class="p">)</span>
-            <span class="n">sigma2_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+            <span class="n">sigma2_IR</span><span class="p">,</span> <span class="n">IR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_psf_sampling</span><span class="p">):</span>
                 <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">displace_psf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
                 <span class="nb">bool</span><span class="p">,</span> <span class="n">ifu_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="n">sigma2_R_sum</span><span class="p">[</span><span class="n">ifu_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sigma2_R</span>
-                    <span class="n">count_draws</span><span class="p">[</span><span class="n">ifu_index</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">sigma2_IR_sum</span><span class="p">[</span><span class="n">ifu_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">sigma2_IR</span>
+                    <span class="n">count_draws</span><span class="p">[</span><span class="n">ifu_index</span><span class="p">]</span> <span class="o">+=</span> <span class="n">IR</span>
 
-        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma2_R_sum</span> <span class="o">/</span> <span class="n">count_draws</span>
+        <span class="n">sigma_s2_average</span> <span class="o">=</span> <span class="n">sigma2_IR_sum</span> <span class="o">/</span> <span class="n">count_draws</span>
         <span class="c1"># apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">delete_cache</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sigma_s2_average</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1000.</span>  <span class="c1"># in units of km/s</span></div>
@@ -173,8 +175,8 @@
             <span class="nb">bool</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aperture_select</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="k">break</span>
-        <span class="n">sigma2_R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">sigma2_R</span></div>
+        <span class="n">sigma2_IR</span><span class="p">,</span> <span class="n">IR</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numerics</span><span class="o">.</span><span class="n">sigma_s2</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_mass</span><span class="p">,</span> <span class="n">kwargs_light</span><span class="p">,</span> <span class="n">kwargs_anisotropy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sigma2_IR</span><span class="p">,</span> <span class="n">IR</span></div>
 </pre></div>
 
           </div>
@@ -207,7 +209,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

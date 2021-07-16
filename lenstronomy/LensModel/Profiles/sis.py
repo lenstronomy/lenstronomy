@@ -9,6 +9,14 @@ __all__ = ['SIS']
 class SIS(LensProfileBase):
     """
     this class contains the function and the derivatives of the Singular Isothermal Sphere
+
+
+    .. math::
+        \\kappa(x, y) = \\frac{1}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{x^2 + y^2}} \\right)
+
+    with :math:`\\theta_{E}` is the Einstein radius,
+
+
     """
     param_names = ['theta_E', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'center_x': -100, 'center_y': -100}

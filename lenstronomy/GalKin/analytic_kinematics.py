@@ -85,7 +85,7 @@ class AnalyticKinematics(Anisotropy):
 
     def sigma_s2(self, r, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
-        returns unweighted los velocity dispersion for a specified projected radius
+        returns unweighted los velocity dispersion for a specified projected radius, with weight 1
 
         :param r: 3d radius (not needed for this calculation)
         :param R: 2d projected radius (in angular units of arcsec)
@@ -96,7 +96,7 @@ class AnalyticKinematics(Anisotropy):
         :return: line-of-sight projected velocity dispersion at projected radius R from 3d radius r
         """
         a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass, kwargs_light, kwargs_anisotropy)
-        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma)
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma), 1
 
     def sigma_r2(self, r, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

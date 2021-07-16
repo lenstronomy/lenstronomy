@@ -83,8 +83,8 @@ class GaussianEllipseKappa(LensProfileBase):
         # formulae given in Shajib (2019).
         amp_ = amp / (2 * np.pi * sigma**2)
 
-        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
-        sigma_ = sigma * q
+        # converting ellipticity definition from q*x^2 + y^2/q to q^2*x^2 + y^2
+        sigma_ = sigma * np.sqrt(q)  # * q
 
         x_shift = x - center_x
         y_shift = y - center_y
@@ -168,8 +168,8 @@ class GaussianEllipseKappa(LensProfileBase):
         # formulae given in Shajib (2019).
         amp_ = amp / (2 * np.pi * sigma**2)
 
-        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
-        sigma_ = sigma * q
+        # converting ellipticity definition from q*x^2 + y^2/q to q^2*x^2 + y^2
+        sigma_ = sigma * np.sqrt(q)  # * q
 
         x_shift = x - center_x
         y_shift = y - center_y
@@ -229,8 +229,8 @@ class GaussianEllipseKappa(LensProfileBase):
         # formulae given in Shajib (2019).
         amp_ = amp / (2 * np.pi * sigma**2)
 
-        # converting ellipticity definition from x^2 + y^2/q^2 to q^2*x^2 + y^2
-        sigma_ = sigma * q
+        # converting ellipticity definition from q*x^2 + y^2/q to q^2*x^2 + y^2
+        sigma_ = sigma * np.sqrt(q)  # * q
 
         x_shift = x - center_x
         y_shift = y - center_y

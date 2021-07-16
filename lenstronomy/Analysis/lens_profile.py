@@ -70,14 +70,14 @@ class LensProfileAnalysis(object):
         :param ra_pos: RA position where to compute the external effect
         :param dec_pos: DEC position where to compute the external effect
         :param model_list_bool: boolean list indicating which models effect to be added to the estimate
-        :return: alpha_x, alpha_y, kappa_ext, shear1, shear2
+        :return: alpha_x, alpha_y, kappa, shear1, shear2
         """
         f_x, f_y = self._lens_model.alpha(ra_pos, dec_pos, kwargs_lens, k=model_list_bool)
         f_xx, f_xy, f_yx, f_yy = self._lens_model.hessian(ra_pos, dec_pos, kwargs_lens, k=model_list_bool)
-        kappa_ext = (f_xx + f_yy)/2.
+        kappa = (f_xx + f_yy)/2.
         shear1 = 1./2 * (f_xx - f_yy)
         shear2 = f_xy
-        return f_x, f_y, kappa_ext, shear1, shear2
+        return f_x, f_y, kappa, shear1, shear2
 
     def profile_slope(self, kwargs_lens, radius, center_x=None, center_y=None, model_list_bool=None, num_points=10):
         """

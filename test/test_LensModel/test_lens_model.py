@@ -41,7 +41,7 @@ class TestLensModel(object):
     def test_kappa(self):
         lensModel = LensModel(lens_model_list=['CONVERGENCE'])
         kappa_ext = 0.5
-        kwargs = [{'kappa_ext': kappa_ext}]
+        kwargs = [{'kappa': kappa_ext}]
         output = lensModel.kappa(x=1., y=1., kwargs=kwargs)
         assert output == kappa_ext
 

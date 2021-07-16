@@ -108,12 +108,16 @@ def project2d_random(r):
     size = len(np.atleast_1d(r))
     if size == 1:
         size = None
-    phi = np.random.uniform(0, 2*np.pi, size=size)
-    theta = np.random.uniform(0, np.pi, size=size)
-    x = r * np.sin(theta) * np.cos(phi)
-    y = r * np.sin(theta) * np.sin(phi)
+    u1 = np.random.uniform(0, 1, size=size)
+    u2 = np.random.uniform(0, 1, size=size)
+    l = np.arccos(2*u1 -1) - np.pi / 2
+    phi = 2 * np.pi * u2
+    x = r * np.cos(l) * np.cos(phi)
+    y = r * np.cos(l) * np.sin(phi)
+    z = r * np.sin(l)
     R = np.sqrt(x**2 + y**2)
     return R, x, y
+
 
 
 @export

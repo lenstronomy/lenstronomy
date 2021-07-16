@@ -244,3 +244,10 @@ History
 * TNFW_ELLIPSE lens model implemented
 * ULDM lens model implemented
 
+
+1.9.0 (2020-07-15)
+++++++++++++++++++
+* re-defined half light radius in Sersic profile
+* re-named parameter in 'CONVERGENCE' profile
+* improved numerics in Galkin
+* configuration import design changed

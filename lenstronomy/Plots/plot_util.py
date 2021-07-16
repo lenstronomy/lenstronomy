@@ -89,34 +89,7 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set_list(ax, coords, line_set_list_x, line_set_list_y, origin=None, color='g', flipped_x=False):
-    """
-
-    :param ax: matplotlib.axis instance
-    :param coords: Coordinates() class instance
-    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
-    :param line_set_list_x: list of numpy arrays corresponding of different disconnected regions of the line
-     (e.g. caustic or critical curve)
-    :param line_set_list_y: list of numpy arrays corresponding of different disconnected regions of the line
-     (e.g. caustic or critical curve)
-    :param color: string with matplotlib color
-    :param flipped_x: bool, if True, flips x-axis
-    :return: plot with line sets on matplotlib axis
-    """
-    if origin is None:
-        origin = [0, 0]
-    pixel_width = coords.pixel_width
-    pixel_width_x = pixel_width
-    if flipped_x:
-        pixel_width_x = -pixel_width
-    for i in range(len(line_set_list_x)):
-        x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
-        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], ',', color=color)
-    return ax
-
-
-@export
-def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, color='g', flipped_x=False):
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, *args, **kwargs):
     """
     plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
     corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
@@ -139,48 +112,72 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, col
     pixel_width_x = pixel_width
     if flipped_x:
         pixel_width_x = -pixel_width
-    x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
-    ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], ',', color=color)
+    if isinstance(line_set_list_x, list):
+        for i in range(len(line_set_list_x)):
+            x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
+            ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
+    else:
+        x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
+        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
     return ax
 
 
 @export
-def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None):
+def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None, origin=None, flipped_x=False):
     """
 
-    :param ax:
-    :param coords:
-    :param kwargs_else:
-    :return:
+    :param ax: matplotlib axis instance
+    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
+    :param ra_image: Ra/x-coordinates of image positions (list of arrays in angular units)
+    :param dec_image: Dec/y-coordinates of image positions (list of arrays in angular units)
+    :param color: color of ticks and text
+    :param image_name_list: list of strings for names of the images in the same order as the positions
+    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
+    :param flipped_x: bool, if True, flips x-axis
+    :return: matplotlib axis instance with images plotted on
     """
-    deltaPix = coords.pixel_width
-    if len(ra_image) > 0:
-        if len(ra_image[0]) > 0:
-            x_image, y_image = coords.map_coord2pix(ra_image[0], dec_image[0])
-            if image_name_list is None:
-                image_name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
-            for i in range(len(x_image)):
-                x_ = (x_image[i] + 0.5) * deltaPix
-                y_ = (y_image[i] + 0.5) * deltaPix
-                ax.plot(x_, y_, 'or')
-                ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
+    if origin is None:
+        origin = [0, 0]
+    pixel_width = coords.pixel_width
+    pixel_width_x = pixel_width
+    if flipped_x:
+        pixel_width_x = -pixel_width
+    if image_name_list is None:
+        image_name_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']
+
+    if not isinstance(ra_image, list):
+        ra_image_, dec_image_ = [ra_image], [dec_image]
+    else:
+        ra_image_, dec_image_ = ra_image, dec_image
+    for ra, dec in zip(ra_image_, dec_image_):
+        x_image, y_image = coords.map_coord2pix(ra, dec)
+
+        for i in range(len(x_image)):
+            x_ = (x_image[i] + 0.5) * pixel_width_x + origin[0]
+            y_ = (y_image[i] + 0.5) * pixel_width + origin[1]
+            ax.plot(x_, y_, 'o', color=color)
+            ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
     return ax
 
 
 @export
-def source_position_plot(ax, coords, ra_pos, dec_pos):
+def source_position_plot(ax, coords, ra_source, dec_source, marker='*', markersize=10, **kwargs):
     """
 
-    :param ax:
-    :param coords:
-    :param kwargs_source:
-    :return:
+    :param ax: matplotlib axis instance
+    :param coords: Coordinates() class instance or inherited class (such as PixelGrid(), or Data())
+    :param ra_source: list of source position in angular units
+    :param dec_source: list of source position in angular units
+    :param marker: marker style for matplotlib
+    :param markersize: marker size for matplotlib
+    :return: matplotlib axis instance with images plotted on
     """
-    deltaPix = coords.pixel_width
-    if len(ra_pos) > 0:
-        for ra, dec in zip(ra_pos, dec_pos):
+    delta_pix = coords.pixel_width
+    if len(ra_source) > 0:
+        for ra, dec in zip(ra_source, dec_source):
             x_source, y_source = coords.map_coord2pix(ra, dec)
-            ax.plot((x_source + 0.5) * deltaPix, (y_source + 0.5) * deltaPix, '*', markersize=10)
+            ax.plot((x_source + 0.5) * delta_pix, (y_source + 0.5) * delta_pix, marker=marker, markersize=markersize,
+                    **kwargs)
     return ax
 
 

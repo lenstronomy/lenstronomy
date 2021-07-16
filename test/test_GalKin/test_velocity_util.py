@@ -62,13 +62,17 @@ class TestVelocityUtil(object):
         R, x, y = velocity_util.project2d_random(r=r)
         assert R <= r
 
-        r = np.linspace(0, 10, 100)
+        num = 100000
+        r = np.ones(num)
         R, x, y = velocity_util.project2d_random(r=r)
-        assert len(R) == 100
-
-
-
-
+        assert len(R) == num
+        #import matplotlib.pyplot as plt
+        #bins = np.linspace(0., 1, 100)
+        #hist, bins_hist = np.histogram(R, bins=bins, density=True)
+        #bins_plot = (bins_hist[1:] + bins_hist[:-1]) / 2.
+        #plt.plot(bins_plot, hist, label='regular')
+        #plt.legend()
+        #plt.show()
 
 
 if __name__ == '__main__':

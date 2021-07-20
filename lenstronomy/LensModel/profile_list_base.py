@@ -2,7 +2,6 @@ from lenstronomy.Util.util import convert_bool_list
 
 __all__ = ['ProfileListBase']
 
-
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
                      'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
@@ -16,7 +15,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM',
-                     'CORED_DENSITY_ULDM_MST']
+                     'CORED_DENSITY_ULDM_MST', 'COMPOSITE']
 
 
 class ProfileListBase(object):
@@ -59,8 +58,7 @@ class ProfileListBase(object):
             func_list.append(lensmodel_class)
         return func_list
 
-    @staticmethod
-    def _import_class(lens_type, custom_class, z_lens=None, z_source=None):
+    def _import_class(self, lens_type, custom_class, z_lens=None, z_source=None):
         """
 
         :param lens_type: string, lens model type
@@ -290,8 +288,23 @@ class ProfileListBase(object):
         elif lens_type == 'CORED_DENSITY_ULDM_MST':
             from lenstronomy.LensModel.Profiles.cored_density_mst import CoredDensityMST
             return CoredDensityMST(profile_type='CORED_DENSITY_ULDM')
+        elif lens_type[0:10] == 'COMPOSITE_':
+            profile_class_1, profile_class_2 = self._parse_composite_profile(lens_type[10:], custom_class, z_lens, z_source)
+            from lenstronomy.LensModel.Profiles.composite import CompositeProfile
+            return CompositeProfile(profile_class_1, profile_class_2)
         else:
             raise ValueError('%s is not a valid lens model. Supported are: %s.' % (lens_type, _SUPPORTED_MODELS))
+
+    def _parse_composite_profile(self, profile_names, custom_class, z_lens, z_source):
+
+        ## find the double underscore
+        double_underscore_index = profile_names.find('__')
+
+        profile_name_1 = profile_names[0:double_underscore_index]
+        profile_name_2 = profile_names[double_underscore_index+2:]
+        profile_1 = self._load_model_instances([profile_name_1], custom_class, z_lens, z_source)
+        profile_2 = self._load_model_instances([profile_name_2], custom_class, z_lens, z_source)
+        return profile_1, profile_2
 
     def _bool_list(self, k=None):
         """

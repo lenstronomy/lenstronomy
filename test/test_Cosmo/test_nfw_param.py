@@ -57,7 +57,7 @@ class TestLensCosmo(object):
 
         from colossus.cosmology import cosmology as cosmology_colossus
         from colossus.halo.profile_nfw import NFWProfile
-        colossus_kwargs = {'H0': 70, 'Om0': 0.285, 'Ob0': 0.05, 'ns': 0.96, 'sigma8': 0.82}
+        colossus_kwargs = {'H0': 70, 'Om0': 0.285, 'Ob0': 0.05, 'ns': 0.96, 'sigma8': 0.82, 'persistence': ''}
         colossus = cosmology_colossus.setCosmology('custom', colossus_kwargs)
 
         m200 = 10 ** 8

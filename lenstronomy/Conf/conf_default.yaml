@@ -9,3 +9,8 @@ numba:
   error_model: 'numpy' # This avoids ZeroDivisionErrors and instead makes numba return nans (with a one-time warning)
   fastmath: False # Disabled by default because it changes nans to poison values which could lead to incorrect results
                   # for functions that can return nans, but useful for some functions.
+
+conventions:
+
+  sersic_major_axis: False  # if True, defines the half-light radius of the Sersic light profile along the semi-major axis (which is the Galfit convention)
+                            # if False, uses the product average of semi-major and semi-minor axis as the convention (default definition for all light profiles in lenstronomy other than the Sersic profile)

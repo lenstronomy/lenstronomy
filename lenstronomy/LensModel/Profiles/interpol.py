@@ -118,6 +118,24 @@ class Interpol(LensProfileBase):
         :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y
         :return: f_xx, f_xy, f_yx, f_yy at interpolated positions (x, y)
         """
+        if not (hasattr(self, '_f_xx_interp')) and (f_xx is None or f_yy is None or f_xy is None):
+            diff = 0.000001
+            alpha_ra_pp, alpha_dec_pp = self.derivatives(x + diff / 2, y + diff / 2, grid_interp_x=grid_interp_x,
+                                                         grid_interp_y=grid_interp_y, f_=f_, f_x=f_x, f_y=f_y)
+            alpha_ra_pn, alpha_dec_pn = self.derivatives(x + diff / 2, y - diff / 2, grid_interp_x=grid_interp_x,
+                                                         grid_interp_y=grid_interp_y, f_=f_, f_x=f_x, f_y=f_y)
+
+            alpha_ra_np, alpha_dec_np = self.derivatives(x - diff / 2, y + diff / 2, grid_interp_x=grid_interp_x,
+                                                         grid_interp_y=grid_interp_y, f_=f_, f_x=f_x, f_y=f_y)
+            alpha_ra_nn, alpha_dec_nn = self.derivatives(x - diff / 2, y - diff / 2, grid_interp_x=grid_interp_x,
+                                                         grid_interp_y=grid_interp_y, f_=f_, f_x=f_x, f_y=f_y)
+
+            f_xx_out = (alpha_ra_pp - alpha_ra_np + alpha_ra_pn - alpha_ra_nn) / diff / 2
+            f_xy_out = (alpha_ra_pp - alpha_ra_pn + alpha_ra_np - alpha_ra_nn) / diff / 2
+            f_yx_out = (alpha_dec_pp - alpha_dec_np + alpha_dec_pn - alpha_dec_nn) / diff / 2
+            f_yy_out = (alpha_dec_pp - alpha_dec_pn + alpha_dec_np - alpha_dec_nn) / diff / 2
+            return f_xx_out, f_xy_out, f_yx_out, f_yy_out
+
         n = len(np.atleast_1d(x))
         if n <= 1 and np.shape(x) == ():
         #if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) <= 1:

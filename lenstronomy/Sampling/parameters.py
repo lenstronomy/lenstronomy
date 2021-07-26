@@ -316,7 +316,7 @@ class Param(object):
         :param kwargs_ps: point source model keyword argument list
         :param kwargs_special: special keyword arguments
         :param kwargs_extinction: extinction model keyword argument list
-        :return: tuple of parameters
+        :return: numpy array of parameters
         """
 
         args = self.lensParams.setParams(kwargs_lens)
@@ -325,7 +325,7 @@ class Param(object):
         args += self.pointSourceParams.setParams(kwargs_ps)
         args += self.specialParams.set_params(kwargs_special)
         args += self.extinctionParams.setParams(kwargs_extinction)
-        return args
+        return np.array(args, dtype=float)
 
     def param_limits(self):
         """

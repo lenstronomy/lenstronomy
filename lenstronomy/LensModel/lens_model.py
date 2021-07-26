@@ -1,7 +1,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.multi_plane import MultiPlane
+from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
 

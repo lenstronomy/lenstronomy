@@ -230,3 +230,24 @@ History
 * fast caustic calculation replacing matplotlib with skitlearn
 * multi-patch illustration class and plotting routines
 * updated PSF iteration procedure with more settings
+
+1.8.1 (2020-04-19)
+++++++++++++++++++
+* illustration plots for curved arcs updated
+* documentation of elliptical lens models updated
+
+
+1.8.2 (2020-06-08)
+++++++++++++++++++
+* JOSS paper added
+* improved testing documentation and tox compatibility
+* TNFW_ELLIPSE lens model implemented
+* ULDM lens model implemented
+
+
+1.9.0 (2020-07-15)
+++++++++++++++++++
+* re-defined half light radius in Sersic profile
+* re-named parameter in 'CONVERGENCE' profile
+* improved numerics in Galkin
+* configuration import design changed

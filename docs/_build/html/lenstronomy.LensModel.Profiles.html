@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles package &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.LensModel.QuadOptimizer package" href="lenstronomy.LensModel.QuadOptimizer.html" />
-    <link rel="prev" title="lenstronomy.LensModel.LightConeSim package" href="lenstronomy.LensModel.LightConeSim.html" /> 
+    <link rel="prev" title="lenstronomy.LensModel.MultiPlane package" href="lenstronomy.LensModel.MultiPlane.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -34,9 +34,9 @@
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.LensModel.LightConeSim.html" title="lenstronomy.LensModel.LightConeSim package"
+          <a href="lenstronomy.LensModel.MultiPlane.html" title="lenstronomy.LensModel.MultiPlane package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
       </ul>
@@ -1343,7 +1343,7 @@ Convergence and shear are computed according to <a class="reference external" hr
 <p>a single mass sheet (external convergence)</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.derivatives" title="Permalink to this definition">¶</a></dt>
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>deflection angle</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1352,7 +1352,7 @@ Convergence and shear are computed according to <a class="reference external" hr
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – x-coordinate</li>
 <li><strong>y</strong> – y-coordinate</li>
-<li><strong>kappa_ext</strong> – external convergence</li>
+<li><strong>kappa</strong> – (external) convergence</li>
 </ul>
 </td>
 </tr>
@@ -1365,7 +1365,7 @@ Convergence and shear are computed according to <a class="reference external" hr
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.function" title="Permalink to this definition">¶</a></dt>
 <dd><p>lensing potential</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1374,7 +1374,7 @@ Convergence and shear are computed according to <a class="reference external" hr
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – x-coordinate</li>
 <li><strong>y</strong> – y-coordinate</li>
-<li><strong>kappa_ext</strong> – external convergence</li>
+<li><strong>kappa</strong> – (external) convergence</li>
 </ul>
 </td>
 </tr>
@@ -1387,7 +1387,7 @@ Convergence and shear are computed according to <a class="reference external" hr
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_ext</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa</em>, <em>ra_0=0</em>, <em>dec_0=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/convergence.html#Convergence.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hessian matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1396,7 +1396,9 @@ Convergence and shear are computed according to <a class="reference external" hr
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – x-coordinate</li>
 <li><strong>y</strong> – y-coordinate</li>
-<li><strong>kappa_ext</strong> – external convergence</li>
+<li><strong>kappa</strong> – external convergence</li>
+<li><strong>ra_0</strong> – zero point of polynomial expansion (no deflection added)</li>
+<li><strong>dec_0</strong> – zero point of polynomial expansion (no deflection added)</li>
 </ul>
 </td>
 </tr>
@@ -1409,17 +1411,22 @@ Convergence and shear are computed according to <a class="reference external" hr
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'dec_0': -100, 'kappa_ext': -10, 'ra_0': -100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'dec_0': -100, 'kappa': -10, 'ra_0': -100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.model_name">
+<code class="descname">model_name</code><em class="property"> = 'CONVERGENCE'</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.model_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.param_names">
-<code class="descname">param_names</code><em class="property"> = ['kappa_ext', 'ra_0', 'dec_0']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.param_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">param_names</code><em class="property"> = ['kappa', 'ra_0', 'dec_0']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'kappa_ext': 10, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'dec_0': 100, 'kappa': 10, 'ra_0': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.convergence.Convergence.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -2550,8 +2557,10 @@ returns</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.cored_density_mst.</code><code class="descname">CoredDensityMST</code><span class="sig-paren">(</span><em>profile_type='CORED_DENSITY'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/cored_density_mst.html#CoredDensityMST"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.cored_density_mst.CoredDensityMST" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>approximate mass-sheet transform of a density core. This routine takes the parameters of the density core and
-subtracts a mass=sheet that approximates the cored profile in it’s center to counter-act (in approximation) this
+subtracts a mass-sheet that approximates the cored profile in it’s center to counter-act (in approximation) this
 model. This allows for better sampling of the mass-sheet transformed quantities that do not have strong covariances.
+The subtraction of the mass-sheet is done such that the sampler returns the real central convergence of the original
+model (but be careful, the output of quantities like the Einstein angle of the main deflector are still the not-scaled one). 
 Attention!!! The interpretation of the result is that the mass sheet as ‘CONVERGENCE’ that is present needs to be
 subtracted in post-processing.</p>
 <dl class="method">
@@ -3677,10 +3686,13 @@ Elliptical Power Law mass profile</p>
 and <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.</p>
 <p>In terms of eccentricities, this profile is defined as</p>
 <div class="math notranslate nohighlight">
-\[\kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)^{\gamma-1}\]</div>
-<p>with <span class="math notranslate nohighlight">\(e\)</span> is the eccentricity defined as</p>
+\[\kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta'_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)^{\gamma-1}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\epsilon\)</span> is the ellipticity defined as</p>
 <div class="math notranslate nohighlight">
-\[e = \frac{1-q}{1+q}\]</div>
+\[\epsilon = \frac{1-q^2}{1+q^2}\]</div>
+<p>And an Einstein radius <span class="math notranslate nohighlight">\(\theta'_{\rm E}\)</span> related to the definition used is</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{\theta'_{\rm E}}{\theta_{\rm E}}\right)^{2} = \frac{2q}{1+q^2}.\]</div>
 <p>The mathematical form of the calculation is presented by Tessore &amp; Metcalf (2015), <a class="reference external" href="https://arxiv.org/abs/1507.01819">https://arxiv.org/abs/1507.01819</a>.
 The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
 converging in few iterations to high precision and accuracy.</p>
@@ -3766,7 +3778,7 @@ scheme.</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.epl.EPL.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 0, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl.EPL.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1.5, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl.EPL.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -3838,7 +3850,7 @@ scheme.</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.epl.EPL.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 2, 'theta_E': 10}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl.EPL.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 2.5, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl.EPL.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -3852,7 +3864,7 @@ elliptical power law.</p>
 <div class="math notranslate nohighlight">
 \[\kappa = (2-t)/2 * \left[\frac{b}{\sqrt{q^2 x^2 + y^2}}\right]^t\]</div>
 <p>where with <span class="math notranslate nohighlight">\(t = \gamma - 1\)</span> (from EPL class) being the projected power-law slope of the convergence profile,
-critical radius b, axis ratio q</p>
+critical radius b, axis ratio q.</p>
 <p>Tessore &amp; Metcalf (2015), <a class="reference external" href="https://arxiv.org/abs/1507.01819">https://arxiv.org/abs/1507.01819</a></p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.epl.EPLMajorAxis.derivatives">
@@ -3950,10 +3962,13 @@ Elliptical Power Law mass profile - computation accelerated with numba</p>
 and <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are defined in a coordinate system aligned with the major and minor axis of the lens.</p>
 <p>In terms of eccentricities, this profile is defined as</p>
 <div class="math notranslate nohighlight">
-\[\kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)^{\gamma-1}\]</div>
-<p>with <span class="math notranslate nohighlight">\(e\)</span> is the eccentricity defined as</p>
+\[\kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta'_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)^{\gamma-1}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\epsilon\)</span> is the ellipticity defined as</p>
 <div class="math notranslate nohighlight">
-\[e = \frac{1-q}{1+q}\]</div>
+\[\epsilon = \frac{1-q^2}{1+q^2}\]</div>
+<p>And an Einstein radius <span class="math notranslate nohighlight">\(\theta'_{\rm E}\)</span> related to the definition used is</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{\theta'_{\rm E}}{\theta_{\rm E}}\right)^{2} = \frac{2q}{1+q^2}.\]</div>
 <p>The mathematical form of the calculation is presented by Tessore &amp; Metcalf (2015), <a class="reference external" href="https://arxiv.org/abs/1507.01819">https://arxiv.org/abs/1507.01819</a>.
 The current implementation is using hyperbolic functions. The paper presents an iterative calculation scheme,
 converging in few iterations to high precision and accuracy.</p>
@@ -4039,7 +4054,7 @@ is accessible as ‘EPL’ not requiring numba.</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1.0, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 'gamma': 1.5, 'theta_E': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -4049,7 +4064,7 @@ is accessible as ‘EPL’ not requiring numba.</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 3.0, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'e1': 0.5, 'e2': 0.5, 'gamma': 2.5, 'theta_E': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.epl_numba.EPL_numba.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -6837,6 +6852,27 @@ for a specific redshift configuration and cosmological model, you can find routi
 </table>
 </dd></dl>
 
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.nfw.NFW.alpha2rho0">
+<em class="property">static </em><code class="descname">alpha2rho0</code><span class="sig-paren">(</span><em>alpha_Rs</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.alpha2rho0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.alpha2rho0" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert angle at Rs into rho0</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>alpha_Rs</strong> – deflection angle at RS</li>
+<li><strong>Rs</strong> – scale radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">density normalization (characteristic density)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.density">
 <code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.density" title="Permalink to this definition">¶</a></dt>
@@ -6962,7 +6998,7 @@ The integral in the LOS projection of this quantity results in the convergence q
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>float &gt;0</em>) – R/Rs</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
 </tr>
@@ -6978,9 +7014,9 @@ The integral in the LOS projection of this quantity results in the convergence q
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>float &gt;0</em>) – R/Rs</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">h(X)</td>
 </tr>
 </tbody>
 </table>
@@ -7018,31 +7054,56 @@ The integral in the LOS projection of this quantity results in the convergence q
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.mass_2d">
 <code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.mass_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>mass enclosed a 3d sphere or radius r
-:param r:
-:param Ra:
-:param Rs:
-:return:</p>
+<dd><p>mass enclosed a 2d cylinder or projected radius R
+:param R: projected radius
+:param Rs: scale radius
+:param rho0: density normalization (characteristic density)
+:return: mass in cylinder</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>mass enclosed a 3d sphere or radius r
-:param r:
-:param Rs:
-:param rho0:
-:return:</p>
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>Rs</em>, <em>rho0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>Rs</strong> – scale radius</li>
+<li><strong>rho0</strong> – density normalization (characteristic density)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">M(&lt;r)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d_lens">
 <code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>Rs</em>, <em>alpha_Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
-<dd><p>mass enclosed a 3d sphere or radius r
-:param R:
-:param Rs:
-:param alpha_Rs:
-:return:</p>
+<dd><p>mass enclosed a 3d sphere or radius r.
+This function takes as input the lensing parameterization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>Rs</strong> – scale radius</li>
+<li><strong>alpha_Rs</strong> – deflection (angular units) at projected Rs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">M(&lt;r)</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -7120,6 +7181,32 @@ The integral in the LOS projection of this quantity results in the convergence q
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.param_names">
 <code class="descname">param_names</code><em class="property"> = ['Rs', 'alpha_Rs', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.nfw.NFW.profile_name">
+<code class="descname">profile_name</code><em class="property"> = 'NFW'</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.profile_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.nfw.NFW.rho02alpha">
+<em class="property">static </em><code class="descname">rho02alpha</code><span class="sig-paren">(</span><em>rho0</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nfw.html#NFW.rho02alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw.NFW.rho02alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert rho0 to angle at Rs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rho0</strong> – density normalization (characteristic density)</li>
+<li><strong>Rs</strong> – scale radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angle at RS</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.nfw.NFW.upper_limit_default">
@@ -7276,6 +7363,11 @@ the calculation is performed as a numerical differential from the deflection fie
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.param_names">
 <code class="descname">param_names</code><em class="property"> = ['Rs', 'alpha_Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.profile_name">
+<code class="descname">profile_name</code><em class="property"> = 'NFW_ELLIPSE'</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nfw_ellipse.NFW_ELLIPSE.profile_name" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -7842,10 +7934,32 @@ to find the ellipticity bounds</p>
 <dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.numerical_deflections.</code><code class="descname">NumericalAlpha</code><span class="sig-paren">(</span><em>custom_class</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
+<p>This class allows one to incorporate any lens profile into the usage framework of lenstronomy. When creating the
+instance of LensModel with this lens profile, you must pass in numerical_alpha_class = CustomClass(), where
+CustomClass is a class with a call method that returns the x/y deflection angles. This allows one to numerically
+compute and interpolate deflection angles for potentially very complex mass profiles, and then use the results with
+lenstronomy without having to heavily modify the existing structure of the software.</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.derivatives" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns df/dx and df/dy (un-normalized!!!) interpolated from the numerical deflection table</p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – x coordinate [arcsec]</li>
+<li><strong>y</strong> – x coordinate [arcsec]</li>
+<li><strong>center_x</strong> – deflector x center [arcsec]</li>
+<li><strong>center_y</strong> – deflector y center [arcsec]</li>
+<li><strong>kwargs</strong> – keyword arguments for the custom profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -7873,8 +7987,13 @@ to find the ellipticity bounds</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.hessian">
 <code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/numerical_deflections.html#NumericalAlpha.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.numerical_deflections.NumericalAlpha.hessian" title="Permalink to this definition">¶</a></dt>
-<dd><p>returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
-(un-normalized!!!) interpolated from the numerical deflection table</p>
+<dd><p>Returns the components of the hessian matrix
+:param x: x coordinate [arcsec]
+:param y: y coordinate [arcsec]
+:param center_x: the deflector x coordinate
+:param center_y: the deflector y coordinate
+:param kwargs: keyword arguments for the profile
+:return: the derivatives of the deflection angles that make up the hessian matrix</p>
 </dd></dl>
 
 </dd></dl>
@@ -7888,8 +8007,8 @@ to find the ellipticity bounds</p>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
 based on Eliasdottir (2007) <a class="reference external" href="https://arxiv.org/pdf/0710.5636.pdf">https://arxiv.org/pdf/0710.5636.pdf</a> Appendix A</p>
-<p>Module name: ‘PJAFFE’
-An alternative name is dPIED.</p>
+<p>Module name: ‘PJAFFE’;</p>
+<p>An alternative name is dPIED.</p>
 <p>The 3D density distribution is</p>
 <div class="math notranslate nohighlight">
 \[\rho(r) = \frac{\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}\]</div>
@@ -8283,8 +8402,21 @@ An alternative name is dPIED.</p>
 <p>class for power law ellipse mass density profile.
 This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
 to perform the numerical integral using the FASTELL code by Renan Barkana.</p>
-<p>The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
-(theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]</p>
+<div class="math notranslate nohighlight">
+\[\kappa(x, y) = \frac{3-\gamma}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)^{\gamma-1}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\theta_{E}\)</span> is the (circularized) Einstein radius,
+<span class="math notranslate nohighlight">\(\gamma\)</span> is the negative power-law slope of the 3D mass distributions,
+<span class="math notranslate nohighlight">\(q\)</span> is the minor/major axis ratio,
+and <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are defined in a coordinate system aligned with the major and minor axis of the lens.</p>
+<p>In terms of eccentricities, this profile is defined as</p>
+<div class="math notranslate nohighlight">
+\[\kappa(r) = \frac{3-\gamma}{2} \left(\frac{\theta'_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)^{\gamma-1}\]</div>
+<p>with <span class="math notranslate nohighlight">\(\epsilon\)</span> is the ellipticity defined as</p>
+<div class="math notranslate nohighlight">
+\[\epsilon = \frac{1-q^2}{1+q^2}\]</div>
+<p>And an Einstein radius <span class="math notranslate nohighlight">\(\theta'_{\rm E}\)</span> related to the definition used is</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{\theta'_{\rm E}}{\theta_{\rm E}}\right)^{2} = \frac{2q}{1+q^2}.\]</div>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.pemd.PEMD.density_lens">
 <code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>gamma</em>, <em>e1=None</em>, <em>e2=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/pemd.html#PEMD.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.pemd.PEMD.density_lens" title="Permalink to this definition">¶</a></dt>
@@ -8510,7 +8642,7 @@ The integral in the LOS projection of this quantity results in the convergence q
 <span id="lenstronomy-lensmodel-profiles-sersic-module"></span><h2>lenstronomy.LensModel.Profiles.sersic module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.sersic.Sersic">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic.</code><code class="descname">Sersic</code><span class="sig-paren">(</span><em>smoothing=1e-05</em>, <em>sersic_major_axis=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic.html#Sersic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic.Sersic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil</span></code></a>, <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>this class contains functions to evaluate a Sersic mass profile: <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0311559.pdf">https://arxiv.org/pdf/astro-ph/0311559.pdf</a></p>
 <dl class="method">
@@ -8697,7 +8829,7 @@ with the ellipticity introduced in the convergence (not the potential).</p>
 <span id="lenstronomy-lensmodel-profiles-sersic-utils-module"></span><h2>lenstronomy.LensModel.Profiles.sersic_utils module<a class="headerlink" href="#module-lenstronomy.LensModel.Profiles.sersic_utils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_utils.</code><code class="descname">SersicUtil</code><span class="sig-paren">(</span><em>smoothing=1e-05</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sersic_utils.</code><code class="descname">SersicUtil</code><span class="sig-paren">(</span><em>smoothing=1e-05</em>, <em>sersic_major_axis=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.alpha_abs">
@@ -8767,12 +8899,12 @@ Prugniel &amp; Simien (1997)
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center">
-<code class="descname">get_distance_from_center</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>phi_G</em>, <em>q</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.get_distance_from_center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_distance_from_center</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>e1</em>, <em>e2</em>, <em>center_x</em>, <em>center_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.get_distance_from_center"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the distance from the center of Sersic, accounting for orientation and axis ratio
 :param x:
 :param y:
-:param phi_G: orientation angle in rad
-:param q: axis ratio
+:param e1: eccentricity
+:param e2: eccentricity
 :param center_x: center x of sersic
 :param center_y: center y of sersic</p>
 </dd></dl>
@@ -8790,7 +8922,7 @@ Prugniel &amp; Simien (1997)
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux">
-<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1=0</em>, <em>e2=0</em>, <em>Re=None</em>, <em>gamma=None</em>, <em>center_x=None</em>, <em>center_y=None</em>, <em>alpha=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux" title="Permalink to this definition">¶</a></dt>
+<code class="descname">total_flux</code><span class="sig-paren">(</span><em>amp</em>, <em>R_sersic</em>, <em>n_sersic</em>, <em>e1=0</em>, <em>e2=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sersic_utils.html#SersicUtil.total_flux"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes analytical integral to compute total flux of the Sersic profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -8799,14 +8931,9 @@ Prugniel &amp; Simien (1997)
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>amp</strong> – amplitude parameter in Sersic function (surface brightness at R_sersic</li>
 <li><strong>R_sersic</strong> – half-light radius in semi-major axis</li>
-<li><strong>Re</strong> – Cored Sersic function parameter (optional)</li>
 <li><strong>n_sersic</strong> – Sersic index</li>
-<li><strong>gamma</strong> – Cored Sersic function parameter (optional)</li>
 <li><strong>e1</strong> – eccentricity</li>
 <li><strong>e2</strong> – eccentricity</li>
-<li><strong>center_x</strong> – profile center (ignored)</li>
-<li><strong>center_y</strong> – profile center (ignored)</li>
-<li><strong>alpha</strong> – Cored Sersic function parameter (optional)</li>
 </ul>
 </td>
 </tr>
@@ -9298,6 +9425,20 @@ and added to the lensing distortions.</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sie.</code><code class="descname">SIE</code><span class="sig-paren">(</span><em>NIE=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sie.html#SIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sie.SIE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class for singular isothermal ellipsoid (SIS with ellipticity)</p>
+<div class="math notranslate nohighlight">
+\[\kappa(x, y) = \frac{1}{2} \left(\frac{\theta_{E}}{\sqrt{q x^2 + y^2/q}} \right)\]</div>
+<p>with <span class="math notranslate nohighlight">\(\theta_{E}\)</span> is the (circularized) Einstein radius,
+<span class="math notranslate nohighlight">\(q\)</span> is the minor/major axis ratio,
+and <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> are defined in a coordinate sys- tem aligned with the major and minor axis of the lens.</p>
+<p>In terms of eccentricities, this profile is defined as</p>
+<div class="math notranslate nohighlight">
+\[\kappa(r) = \frac{1}{2} \left(\frac{\theta'_{E}}{r \sqrt{1 − e*\cos(2*\phi)}} \right)\]</div>
+<p>with <span class="math notranslate nohighlight">\(\epsilon\)</span> is the ellipticity defined as</p>
+<div class="math notranslate nohighlight">
+\[\epsilon = \frac{1-q^2}{1+q^2}\]</div>
+<p>And an Einstein radius <span class="math notranslate nohighlight">\(\theta'_{\rm E}\)</span> related to the definition used is</p>
+<div class="math notranslate nohighlight">
+\[\left(\frac{\theta'_{\rm E}}{\theta_{\rm E}}\right)^{2} = \frac{2q}{1+q^2}.\]</div>
 <dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.sie.SIE.density">
 <em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sie.html#SIE.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sie.SIE.density" title="Permalink to this definition">¶</a></dt>
@@ -9526,6 +9667,9 @@ The integral in the LOS projection of this quantity results in the convergence q
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.sis.</code><code class="descname">SIS</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sis.html#SIS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sis.SIS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>this class contains the function and the derivatives of the Singular Isothermal Sphere</p>
+<div class="math notranslate nohighlight">
+\[\kappa(x, y) = \frac{1}{2} \left(\frac{\theta_{E}}{\sqrt{x^2 + y^2}} \right)\]</div>
+<p>with <span class="math notranslate nohighlight">\(\theta_{E}\)</span> is the Einstein radius,</p>
 <dl class="staticmethod">
 <dt id="lenstronomy.LensModel.Profiles.sis.SIS.density">
 <em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>rho0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/sis.html#SIS.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.sis.SIS.density" title="Permalink to this definition">¶</a></dt>
@@ -10524,31 +10668,43 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 :return:</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.L">
-<code class="descname">L</code><span class="sig-paren">(</span><em>x</em>, <em>tau</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.L"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.L" title="Permalink to this definition">¶</a></dt>
-<dd><p>Logarithm that appears frequently
-:param x: r/Rs
-:param tau: t/Rs
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density" title="Permalink to this definition">¶</a></dt>
-<dd><p>three dimenstional truncated NFW profile</p>
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.alpha2rho0">
+<em class="property">static </em><code class="descname">alpha2rho0</code><span class="sig-paren">(</span><em>alpha_Rs</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.alpha2rho0"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.alpha2rho0" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert angle at Rs into rho0; neglects the truncation</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
-<li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
-<li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>alpha_Rs</strong> – deflection angle at RS</li>
+<li><strong>Rs</strong> – scale radius</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho(R) density</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">density normalization (characteristic density)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.density">
+<em class="property">static </em><code class="descname">density</code><span class="sig-paren">(</span><em>r</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>three dimensional truncated NFW profile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>Rs</strong> (<em>float &gt; 0</em>) – scale radius</li>
+<li><strong>r_trunc</strong> (<em>float &gt; 0</em>) – truncation radius (angular units)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">rho(r) density</p>
 </td>
 </tr>
 </tbody>
@@ -10564,10 +10720,10 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>R</strong> (<em>float/numpy array</em>) – projected radius of interest</li>
 <li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
 <li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
-<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>r_trunc</strong> (<em>float &gt; 0</em>) – truncation radius (angular units)</li>
 </ul>
 </td>
 </tr>
@@ -10580,7 +10736,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs=None</em>, <em>alpha_Rs=None</em>, <em>r_trunc=None</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives" title="Permalink to this definition">¶</a></dt>
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>Rs</em>, <em>alpha_Rs</em>, <em>r_trunc</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns df/dx and df/dy of the function (integral of TNFW), which are the deflection angles</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -10616,12 +10772,13 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><strong>y</strong> – angular position</li>
 <li><strong>Rs</strong> – angular turn over point</li>
 <li><strong>alpha_Rs</strong> – deflection at Rs</li>
+<li><strong>r_trunc</strong> – truncation radius</li>
 <li><strong>center_x</strong> – center of halo</li>
 <li><strong>center_y</strong> – center of halo</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential</p>
 </td>
 </tr>
 </tbody>
@@ -10662,13 +10819,21 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_2d">
 <code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>analytic solution of the projection integral
-(convergence)</p>
+<dd><p>analytic solution of the projection integral (convergence)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float &gt;0</em>) – R/Rs</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>R</strong> – projected radius</li>
+<li><strong>Rs</strong> – scale radius</li>
+<li><strong>rho0</strong> – density normalization (characteristic density)</li>
+<li><strong>r_trunc</strong> – truncation radius (angular units)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 2d projected cylinder</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -10676,20 +10841,21 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>r</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 3d sphere or radius r</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>r</strong> – </li>
-<li><strong>Ra</strong> – </li>
-<li><strong>Rs</strong> – </li>
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>Rs</strong> – scale radius</li>
+<li><strong>rho0</strong> – density normalization (characteristic density)</li>
+<li><strong>r_trunc</strong> – truncation radius (angular units)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">M(&lt;r)</p>
 </td>
 </tr>
 </tbody>
@@ -10708,12 +10874,12 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
 <li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
 <li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
-<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>r_trunc</strong> (<em>float &gt; 0</em>) – truncation radius (angular units)</li>
 <li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -10732,12 +10898,12 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
 <li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
 <li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
-<li><strong>r200</strong> (<em>float&gt;0</em>) – radius of (sub)halo</li>
+<li><strong>r_trunc</strong> (<em>float &gt; 0</em>) – truncation radius (angular units)</li>
 <li><strong>axis</strong> (<em>same as R</em>) – projection to either x- or y-axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -10747,7 +10913,7 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot">
 <code class="descname">nfwPot</code><span class="sig-paren">(</span><em>R</em>, <em>Rs</em>, <em>rho0</em>, <em>r_trunc</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.nfwPot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.nfwPot" title="Permalink to this definition">¶</a></dt>
-<dd><p>lensing potential of NFW profile</p>
+<dd><p>lensing potential of truncated NFW profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -10756,10 +10922,11 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
 <li><strong>Rs</strong> (<em>float</em>) – scale radius</li>
 <li><strong>rho0</strong> (<em>float</em>) – density normalization (characteristic density)</li>
+<li><strong>r_trunc</strong> (<em>float &gt; 0</em>) – truncation radius (angular units)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Epsilon(R) projected density at radius R</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">lensing potential</p>
 </td>
 </tr>
 </tbody>
@@ -10770,6 +10937,32 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.param_names">
 <code class="descname">param_names</code><em class="property"> = ['Rs', 'alpha_Rs', 'r_trunc', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.profile_name">
+<code class="descname">profile_name</code><em class="property"> = 'TNFW'</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.profile_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.rho02alpha">
+<em class="property">static </em><code class="descname">rho02alpha</code><span class="sig-paren">(</span><em>rho0</em>, <em>Rs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/tnfw.html#TNFW.rho02alpha"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.tnfw.TNFW.rho02alpha" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert rho0 to angle at Rs; neglects the truncation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>rho0</strong> – density normalization (characteristic density)</li>
+<li><strong>Rs</strong> – scale radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deflection angle at RS</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.tnfw.TNFW.upper_limit_default">
@@ -10785,23 +10978,27 @@ The integral in projected in units of angles (i.e. arc seconds) results in the c
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.uldm.</code><code class="descname">Uldm</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
-<blockquote>
-<div><p>This class contains functions concerning the ULDM soliton density profile,
+<p>This class contains functions concerning the ULDM soliton density profile,
 whose good approximation is (see for example <a class="reference external" href="https://arxiv.org/pdf/1406.6586.pdf">https://arxiv.org/pdf/1406.6586.pdf</a> )</p>
 <div class="math notranslate nohighlight">
-\[\]</div>
-</div></blockquote>
-<p>ho = 
-ho_0 (1 + 0.091(r/r_c)^2)^{-8}</p>
-<blockquote>
-<div>where <span class="math notranslate nohighlight">\(r_c\)</span> is the core radius, corresponding to the radius where the
-density drops by half its central value
-it has, as parameters:
+\[\rho = \rho_0 (1 + a(\theta/\theta_c)^2)^{-\beta}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\theta_c\)</span> is the core radius, corresponding to the radius where the
+density drops by half its central value, :math: <cite>beta</cite> is the slope (called just slope 
+in the parameters of this model), :math: <cite>rho_0 = kappa_0 Sigma_c/D_lens</cite>,
+and :math: <cite>a</cite> is a parameter, dependent on :math: <cite>beta</cite>, chosen such
+that :math: <cite>theta_c</cite> indeed corresponds to the radius where the density drops by half
+(simple math gives :math: <cite>a = 0.5^{-1/beta} - 1</cite> ).
+For an ULDM soliton profile without contributions to background potential, it
+turns out that :math: <cite>beta = 8, a = 0.091</cite>. We allow :math: <cite>beta</cite> to be 
+different from 8 to model solitons which feel the influence of background 
+potential (see 2105.10873)
+The profile has, as parameters:
 :param kappa_0: central convergence
-:param theta_c: core radius (in arcseconds)</div></blockquote>
+:param theta_c: core radius (in arcseconds)
+:param slope: exponent entering the profile, default value is 8</p>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.alpha_radial">
-<code class="descname">alpha_radial</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.alpha_radial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.alpha_radial" title="Permalink to this definition">¶</a></dt>
+<code class="descname">alpha_radial</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.alpha_radial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.alpha_radial" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the radial part of the deflection angle</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -10810,6 +11007,7 @@ it has, as parameters:
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 <li><strong>r</strong> – radius where the deflection angle is computed</li>
 </ul>
 </td>
@@ -10823,18 +11021,19 @@ it has, as parameters:
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.density">
-<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density" title="Permalink to this definition">¶</a></dt>
+<code class="descname">density</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density" title="Permalink to this definition">¶</a></dt>
 <dd><p>three dimensional ULDM profile in angular units
 (rho0_physical = rho0_angular Sigma_crit / D_lens)
 :param R: radius of interest
 :param kappa_0: central convergence of profile
 :param theta_c: core radius (in arcsec)
+:param slope: exponent entering the profile
 :return: rho(R) density in angular units</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.density_2d">
-<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density_2d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">density_2d</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>projected two dimensional ULDM profile (convergence * Sigma_crit), but
 given our units convention for rho0, it is basically the convergence</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -10842,9 +11041,10 @@ given our units convention for rho0, it is basically the convergence</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>R</strong> (<em>float/numpy array</em>) – radius of interest</li>
+<li><strong>R</strong> – radius of interest</li>
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 </ul>
 </td>
 </tr>
@@ -10857,7 +11057,7 @@ given our units convention for rho0, it is basically the convergence</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.density_lens">
-<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density_lens" title="Permalink to this definition">¶</a></dt>
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.density_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the density at 3d radius r given lens model parameterization.
 The integral in the LOS projection of this quantity results in the
 convergence quantity.</p>
@@ -10869,6 +11069,7 @@ convergence quantity.</p>
 <li><strong>r</strong> – 3d radius</li>
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 </ul>
 </td>
 </tr>
@@ -10881,7 +11082,7 @@ convergence quantity.</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.derivatives">
-<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.derivatives" title="Permalink to this definition">¶</a></dt>
+<code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns df/dx and df/dy of the function (lensing potential), which are the deflection angles</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -10892,6 +11093,7 @@ convergence quantity.</p>
 <li><strong>y</strong> – angular position (normally in units of arc seconds)</li>
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 <li><strong>center_x</strong> – center of halo (in angular units)</li>
 <li><strong>center_y</strong> – center of halo (in angular units)</li>
 </ul>
@@ -10906,7 +11108,7 @@ convergence quantity.</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.function">
-<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.function" title="Permalink to this definition">¶</a></dt>
+<code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.function" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -10916,6 +11118,7 @@ convergence quantity.</p>
 <li><strong>y</strong> – angular position (normally in units of arc seconds)</li>
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 <li><strong>center_x</strong> – center of halo (in angular units)</li>
 <li><strong>center_y</strong> – center of halo (in angular units)</li>
 </ul>
@@ -10930,7 +11133,7 @@ convergence quantity.</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.hessian">
-<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.hessian" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hessian</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>center_x=0</em>, <em>center_y=0</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.hessian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.hessian" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -10940,6 +11143,7 @@ convergence quantity.</p>
 <li><strong>y</strong> – angular position (normally in units of arc seconds)</li>
 <li><strong>kappa_0</strong> – central convergence of profile</li>
 <li><strong>theta_c</strong> – core radius (in arcsec)</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 <li><strong>center_x</strong> – center of halo (in angular units)</li>
 <li><strong>center_y</strong> – center of halo (in angular units)</li>
 </ul>
@@ -10954,7 +11158,7 @@ convergence quantity.</p>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.kappa_r">
-<code class="descname">kappa_r</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.kappa_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.kappa_r" title="Permalink to this definition">¶</a></dt>
+<code class="descname">kappa_r</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.kappa_r"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.kappa_r" title="Permalink to this definition">¶</a></dt>
 <dd><p>convergence of the cored density profile. This routine is also for testing</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -10964,6 +11168,7 @@ convergence quantity.</p>
 <li><strong>R</strong> – radius (angular scale)</li>
 <li><strong>kappa_0</strong> – convergence in the core</li>
 <li><strong>theta_c</strong> – core radius</li>
+<li><strong>slope</strong> – exponent entering the profile</li>
 </ul>
 </td>
 </tr>
@@ -10976,57 +11181,60 @@ convergence quantity.</p>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.lower_limit_default">
-<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'kappa_0': 0, 'theta_c': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lower_limit_default</code><em class="property"> = {'center_x': -100, 'center_y': -100, 'kappa_0': 0, 'slope': 3.5, 'theta_c': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.mass_2d">
-<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_2d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mass_2d</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 2d sphere or radius r
 :param R: radius over which the mass is computed
 :param kappa_0: central convergence of profile
 :param theta_c: core radius (in arcsec)
+:param slope: exponent entering the profile
 :return: mass enclosed in 2d sphere</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d">
-<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mass_3d</code><span class="sig-paren">(</span><em>R</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 3d sphere or radius r
 :param R: radius in arcseconds
 :param kappa_0: central convergence of profile
 :param theta_c: core radius (in arcsec)
+:param slope: exponent entering the profile
 :return: mass of soliton in angular units</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d_lens">
-<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>mass enclosed a 3d sphere or radius r
-:param R:
+:param r: radius over which the mass is computed
 :param kappa_0: central convergence of profile
 :param theta_c: core radius (in arcsec)
-:param rho0: central density in angular units
-:return: mass</p>
+:param slope: exponent entering the profile
+:return: mass enclosed in 3D ball</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.param_names">
-<code class="descname">param_names</code><em class="property"> = ['kappa_0', 'theta_c', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.param_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">param_names</code><em class="property"> = ['kappa_0', 'theta_c', 'slope', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.rhotilde">
-<code class="descname">rhotilde</code><span class="sig-paren">(</span><em>kappa_0</em>, <em>theta_c</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.rhotilde"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.rhotilde" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rhotilde</code><span class="sig-paren">(</span><em>kappa_0</em>, <em>theta_c</em>, <em>slope=8</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/uldm.html#Uldm.rhotilde"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.rhotilde" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the central density in angular units
 :param kappa_0: central convergence of profile
 :param theta_c: core radius (in arcsec)
+:param slope: exponent entering the profile
 :return: central density in 1/arcsec</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.uldm.Uldm.upper_limit_default">
-<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'kappa_0': 1.0, 'theta_c': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<code class="descname">upper_limit_default</code><em class="property"> = {'center_x': 100, 'center_y': 100, 'kappa_0': 1.0, 'slope': 10, 'theta_c': 100}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.uldm.Uldm.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -11115,8 +11323,8 @@ convergence quantity.</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.LensModel.LightConeSim.html"
-                        title="previous chapter">lenstronomy.LensModel.LightConeSim package</a></p>
+  <p class="topless"><a href="lenstronomy.LensModel.MultiPlane.html"
+                        title="previous chapter">lenstronomy.LensModel.MultiPlane package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="lenstronomy.LensModel.QuadOptimizer.html"
                         title="next chapter">lenstronomy.LensModel.QuadOptimizer package</a></p>
@@ -11156,9 +11364,9 @@ convergence quantity.</p>
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              >next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.LensModel.LightConeSim.html" title="lenstronomy.LensModel.LightConeSim package"
+          <a href="lenstronomy.LensModel.MultiPlane.html" title="lenstronomy.LensModel.MultiPlane package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
       </ul>

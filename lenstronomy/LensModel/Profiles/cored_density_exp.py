@@ -110,7 +110,7 @@ class CoredDensityExp(LensProfileBase):
     def density(self, R, kappa_0, theta_c):
         """
         three dimensional density profile in angular units
-        (rho0_physical = rho0_angular \Sigma_crit / D_lens)
+        (rho0_physical = rho0_angular Sigma_crit / D_lens)
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)
@@ -148,7 +148,7 @@ class CoredDensityExp(LensProfileBase):
 
     def density_2d(self, x, y, kappa_0, theta_c, center_x = 0, center_y = 0):
         """
-        projected two dimensional ULDM profile (convergence * \Sigma_crit), but given our
+        projected two dimensional ULDM profile (convergence * Sigma_crit), but given our
         units convention for rho0, it is basically the convergence
 
         :param x: angular position (normally in units of arc seconds)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.sersic_utils &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.sersic_utils &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -51,8 +51,17 @@
 
     <span class="n">_s</span> <span class="o">=</span> <span class="mf">0.00001</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="n">_s</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smoothing</span><span class="o">=</span><span class="n">_s</span><span class="p">,</span> <span class="n">sersic_major_axis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param smoothing: smoothing scale of the innermost part of the profile (for numerical reasons)</span>
+<span class="sd">        :param sersic_major_axis: boolean; if True, defines the half-light radius of the Sersic light profile along</span>
+<span class="sd">         the semi-major axis (which is the Galfit convention)</span>
+<span class="sd">         if False, uses the product average of semi-major and semi-minor axis as the convention</span>
+<span class="sd">         (default definition for all light profiles in lenstronomy other than the Sersic profile)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_smoothing</span> <span class="o">=</span> <span class="n">smoothing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sersic_major_axis</span> <span class="o">=</span> <span class="n">sersic_major_axis</span>
 
 <div class="viewcode-block" id="SersicUtil.k_bn"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.k_bn">[docs]</a>    <span class="k">def</span> <span class="nf">k_bn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">Re</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -81,25 +90,31 @@
         <span class="n">bn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">bn</span><span class="p">,</span> <span class="mf">0.00001</span><span class="p">)</span>  <span class="c1"># make sure bn is strictly positive as a save guard for very low n_sersic</span>
         <span class="k">return</span> <span class="n">bn</span></div>
 
-<div class="viewcode-block" id="SersicUtil.get_distance_from_center"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance_from_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="SersicUtil.get_distance_from_center"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.get_distance_from_center">[docs]</a>    <span class="k">def</span> <span class="nf">get_distance_from_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get the distance from the center of Sersic, accounting for orientation and axis ratio</span>
 <span class="sd">        :param x:</span>
 <span class="sd">        :param y:</span>
-<span class="sd">        :param phi_G: orientation angle in rad</span>
-<span class="sd">        :param q: axis ratio</span>
+<span class="sd">        :param e1: eccentricity</span>
+<span class="sd">        :param e2: eccentricity</span>
 <span class="sd">        :param center_x: center x of sersic</span>
 <span class="sd">        :param center_y: center y of sersic</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
-        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
-        <span class="n">xt1</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
-        <span class="n">xt2</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
-        <span class="n">xt2difq2</span> <span class="o">=</span> <span class="n">xt2</span><span class="o">/</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xt1</span><span class="o">*</span><span class="n">xt1</span><span class="o">+</span><span class="n">xt2</span><span class="o">*</span><span class="n">xt2difq2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">R</span></div>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sersic_major_axis</span><span class="p">:</span>
+            <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+            <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
+            <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+            <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+            <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
+            <span class="n">xt1</span> <span class="o">=</span> <span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span>
+            <span class="n">xt2</span> <span class="o">=</span> <span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span>
+            <span class="n">xt2difq2</span> <span class="o">=</span> <span class="n">xt2</span><span class="o">/</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">xt1</span><span class="o">*</span><span class="n">xt1</span><span class="o">+</span><span class="n">xt2</span><span class="o">*</span><span class="n">xt2difq2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">transform_e1e2_product_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">r</span></div>
 
     <span class="k">def</span> <span class="nf">_x_reduced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">r_eff</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -192,26 +207,23 @@
         <span class="n">bn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_n</span><span class="p">(</span><span class="n">n_sersic</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">I_eff</span> <span class="o">*</span> <span class="n">r_eff</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">n_sersic</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">bn</span><span class="p">)</span> <span class="o">/</span> <span class="n">bn</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n_sersic</span><span class="p">)</span> <span class="o">*</span> <span class="n">scipy</span><span class="o">.</span><span class="n">special</span><span class="o">.</span><span class="n">gamma</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">n_sersic</span><span class="p">)</span>
 
-<div class="viewcode-block" id="SersicUtil.total_flux"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux">[docs]</a>    <span class="k">def</span> <span class="nf">total_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">Re</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SersicUtil.total_flux"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.sersic_utils.SersicUtil.total_flux">[docs]</a>    <span class="k">def</span> <span class="nf">total_flux</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes analytical integral to compute total flux of the Sersic profile</span>
 
 <span class="sd">        :param amp: amplitude parameter in Sersic function (surface brightness at R_sersic</span>
 <span class="sd">        :param R_sersic: half-light radius in semi-major axis</span>
-<span class="sd">        :param Re: Cored Sersic function parameter (optional)</span>
 <span class="sd">        :param n_sersic: Sersic index</span>
-<span class="sd">        :param gamma: Cored Sersic function parameter (optional)</span>
 <span class="sd">        :param e1: eccentricity</span>
 <span class="sd">        :param e2: eccentricity</span>
-<span class="sd">        :param center_x: profile center (ignored)</span>
-<span class="sd">        :param center_y: profile center (ignored)</span>
-<span class="sd">        :param alpha: Cored Sersic function parameter (optional)</span>
 <span class="sd">        :return: Analytic integral of the total flux of the Sersic profile</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
         <span class="c1"># compute product average half-light radius</span>
-        <span class="n">r_eff</span> <span class="o">=</span> <span class="n">R_sersic</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sersic_major_axis</span><span class="p">:</span>
+            <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
+            <span class="n">r_eff</span> <span class="o">=</span> <span class="n">R_sersic</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>  <span class="c1"># translate semi-major axis R_eff into product averaged definition for circularization</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">r_eff</span> <span class="o">=</span> <span class="n">R_sersic</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_flux</span><span class="p">(</span><span class="n">r_eff</span><span class="o">=</span><span class="n">r_eff</span><span class="p">,</span> <span class="n">I_eff</span><span class="o">=</span><span class="n">amp</span><span class="p">,</span> <span class="n">n_sersic</span><span class="o">=</span><span class="n">n_sersic</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_R_stable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
@@ -281,7 +293,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

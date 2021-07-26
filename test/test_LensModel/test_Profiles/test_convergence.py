@@ -14,13 +14,13 @@ class TestConvergence(object):
     """
     def setup(self):
         self.profile = Convergence()
-        self.kwargs_lens = {'kappa_ext': 0.1}
+        self.kwargs_lens = {'kappa': 0.1}
 
     def test_function(self):
         x = np.array([1])
         y = np.array([0])
         values = self.profile.function(x, y, **self.kwargs_lens)
-        npt.assert_almost_equal(values[0], self.kwargs_lens['kappa_ext']/2, decimal=5)
+        npt.assert_almost_equal(values[0], self.kwargs_lens['kappa']/2, decimal=5)
         x = np.array([0])
         y = np.array([0])
         values = self.profile.function(x, y, **self.kwargs_lens)

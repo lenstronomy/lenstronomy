@@ -109,8 +109,8 @@ class TestTNFW(object):
 
         rho0, Rs = 1, 2
 
-        trs = self.tnfw._rho02alpha(rho0, Rs)
-        rho_out = self.tnfw._alpha2rho0(trs, Rs)
+        trs = self.tnfw.rho02alpha(rho0, Rs)
+        rho_out = self.tnfw.alpha2rho0(trs, Rs)
 
         npt.assert_almost_equal(rho0, rho_out)
 
@@ -145,6 +145,15 @@ class TestTNFW(object):
         f_tnfw = f_tnfw.ravel()
         for value in f_tnfw:
             npt.assert_(value == 1)
+
+    def test_F_function_at_zero(self):
+        f_tnfw = self.tnfw.F(0)
+        npt.assert_almost_equal(f_tnfw, 0, decimal=8)
+
+    def test__cos_function(self):
+        # test private _cos_function function for raise
+        x = 3 +6j
+        npt.assert_raises(Exception, self.tnfw._cos_function, x)
 
 
 if __name__ == '__main__':

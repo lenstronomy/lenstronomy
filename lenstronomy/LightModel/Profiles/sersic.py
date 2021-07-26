@@ -41,7 +41,7 @@ class Sersic(SersicUtil):
         :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
         :return: Sersic profile value at (x, y)
         """
-        R = self.get_distance_from_center(x, y, phi_G=0.0, q=1.0, center_x=center_x, center_y=center_y)
+        R = self.get_distance_from_center(x, y, e1=0, e2=0, center_x=center_x, center_y=center_y)
         result = self._r_sersic(R, R_sersic, n_sersic, max_R_frac)
         return amp * result
 
@@ -72,8 +72,7 @@ class SersicElliptic(SersicUtil):
         """
 
         R_sersic = np.maximum(0, R_sersic)
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        R = self.get_distance_from_center(x, y, phi_G, q, center_x, center_y)
+        R = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         result = self._r_sersic(R, R_sersic, n_sersic, max_R_frac)
         return amp * result
 
@@ -120,8 +119,7 @@ class CoreSersic(SersicUtil):
         :return: Cored Sersic profile value at (x, y)
         """
         #TODO max_R_frac not implemented
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        R_ = self.get_distance_from_center(x, y, phi_G, q, center_x, center_y)
+        R_ = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         R = self._R_stable(R_)
         bn = self.b_n(n_sersic)
         result = amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * np.exp(-bn * (((R ** alpha + Rb ** alpha) / R_sersic ** alpha) ** (1. / (alpha * n_sersic)) - 1.))

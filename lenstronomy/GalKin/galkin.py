@@ -71,11 +71,13 @@ class Galkin(GalkinModel, GalkinObservation):
         :param sampling_number: int, number of spectral sampling of the light distribution
         :return: integrated LOS velocity dispersion in units [km/s]
         """
-        sigma2_R_sum = 0
+        sigma2_IR_sum = 0
+        IR_sum = 0
         for i in range(0, sampling_number):
-            sigma2_R = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
-            sigma2_R_sum += sigma2_R
-        sigma_s2_average = sigma2_R_sum / sampling_number
+            sigma2_IR, IR = self._draw_one_sigma2(kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma2_IR_sum += sigma2_IR
+            IR_sum += IR
+        sigma_s2_average = sigma2_IR_sum / IR_sum
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
@@ -98,20 +100,20 @@ class Galkin(GalkinModel, GalkinObservation):
         # compute average in each segment
         # return value per segment
         num_segments = self.num_segments
-        sigma2_R_sum = np.zeros(num_segments)
+        sigma2_IR_sum = np.zeros(num_segments)
         count_draws = np.zeros(num_segments)
 
         for i in range(0, num_kin_sampling):
             r, R, x, y = self.numerics.draw_light(kwargs_light)
-            sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+            sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
                 bool, ifu_index = self.aperture_select(x_, y_)
                 if bool is True:
-                    sigma2_R_sum[ifu_index] += sigma2_R
-                    count_draws[ifu_index] += 1
+                    sigma2_IR_sum[ifu_index] += sigma2_IR
+                    count_draws[ifu_index] += IR
 
-        sigma_s2_average = sigma2_R_sum / count_draws
+        sigma_s2_average = sigma2_IR_sum / count_draws
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
@@ -132,5 +134,5 @@ class Galkin(GalkinModel, GalkinObservation):
             bool, _ = self.aperture_select(x_, y_)
             if bool is True:
                 break
-        sigma2_R = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
-        return sigma2_R
+        sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        return sigma2_IR, IR

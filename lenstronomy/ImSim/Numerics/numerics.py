@@ -33,7 +33,7 @@ class Numerics(PointSourceRendering):
         convolution)
         :param supersampled_indexes: 2d boolean array (only used in mode='adaptive') of pixels to be supersampled (in
         surface brightness and if supersampling_convolution=True also in convolution)
-        :param compute_indexes: 2d boolean array (only used in mode='adaptive'), marks pixel that the resonse after
+        :param compute_indexes: 2d boolean array (only used in mode='adaptive'), marks pixel that the response after
         convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
         consistency.
         :param point_source_supersampling_factor: super-sampling resolution of the point source placing

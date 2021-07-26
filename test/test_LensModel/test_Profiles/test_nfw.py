@@ -21,14 +21,14 @@ class TestNFW(object):
         y = np.array([2])
         Rs = 1.
         rho0 = 1
-        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
         values = self.nfw.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0], 2.4764530888727556, decimal=5)
         x = np.array([0])
         y = np.array([0])
         Rs = 1.
         rho0 = 1
-        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
         values = self.nfw.function(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(values[0], 0, decimal=4)
 
@@ -68,7 +68,7 @@ class TestNFW(object):
         y = np.array([2])
         Rs = 1.
         rho0 = 1
-        alpha_Rs = self.nfw._rho02alpha(rho0, Rs)
+        alpha_Rs = self.nfw.rho02alpha(rho0, Rs)
         f_xx, f_xy, f_yx, f_yy = self.nfw.hessian(x, y, Rs, alpha_Rs)
         npt.assert_almost_equal(f_xx[0], 0.40855527280658294, decimal=5)
         npt.assert_almost_equal(f_yy[0], 0.037870368296371637, decimal=5)
@@ -128,14 +128,14 @@ class TestMassAngleConversion(object):
         assert alpha1 == 1.
 
     def test_convertAngle2rho(self):
-        rho0 = self.nfw._alpha2rho0(alpha_Rs=1., Rs=1.)
+        rho0 = self.nfw.alpha2rho0(alpha_Rs=1., Rs=1.)
         assert rho0 == 0.81472283831773229
 
     def test_convertrho02angle(self):
         alpha_Rs_in = 1.5
         Rs = 1.5
-        rho0 = self.nfw._alpha2rho0(alpha_Rs=alpha_Rs_in, Rs=Rs)
-        alpha_Rs_out = self.nfw._rho02alpha(rho0, Rs)
+        rho0 = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs_in, Rs=Rs)
+        alpha_Rs_out = self.nfw.rho02alpha(rho0, Rs)
         assert alpha_Rs_in == alpha_Rs_out
 
 

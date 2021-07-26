@@ -44,8 +44,8 @@ class EPL(LensProfileBase):
     scheme.
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'theta_E': 10, 'gamma': 2, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'theta_E': 0, 'gamma': 1.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
@@ -222,7 +222,7 @@ class EPLMajorAxis(LensProfileBase):
         \\kappa = (2-t)/2 * \\left[\\frac{b}{\\sqrt{q^2 x^2 + y^2}}\\right]^t
 
     where with :math:`t = \\gamma - 1` (from EPL class) being the projected power-law slope of the convergence profile,
-    critical radius b, axis ratio q
+    critical radius b, axis ratio q.
 
     Tessore & Metcalf (2015), https://arxiv.org/abs/1507.01819
     """

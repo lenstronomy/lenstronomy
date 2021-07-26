@@ -111,7 +111,7 @@ class TestNumerics(object):
         lensModel = Model()
         alpha_Rs = 1.
         Rs = 2.
-        rho0 = lensModel._alpha2rho0(alpha_Rs, Rs)
+        rho0 = lensModel.alpha2rho0(alpha_Rs, Rs)
         kwargs_lens = {'alpha_Rs': alpha_Rs, 'Rs': Rs}
         kwargs_density = {'rho0': rho0, 'Rs': Rs}
         r = 2.
@@ -309,7 +309,7 @@ class TestNumerics(object):
 
     def test_uldm(self):
         from lenstronomy.LensModel.Profiles.uldm import Uldm as Model
-        kwargs = {'kappa_0': 0.1, 'theta_c': 6.}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 6., 'slope': 7.8}
         self.assert_integrals(Model, kwargs)
         self.assert_lens_integrals(Model, kwargs)
 

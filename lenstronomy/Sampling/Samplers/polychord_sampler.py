@@ -25,7 +25,7 @@ class DyPolyChordSampler(NestedSampler):
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
                  output_dir=None, output_basename='-',
                  resume_dyn_run=False,
-                 polychord_settings={},
+                 polychord_settings=None,
                  remove_output_dir=False, use_mpi=False): #, num_mpi_procs=1):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
@@ -51,7 +51,8 @@ class DyPolyChordSampler(NestedSampler):
         #     mpi_str = 'mpirun -np {}'.format(num_mpi_procs)
         # else:
         #     mpi_str = None
-
+        if polychord_settings == None:
+            polychord_settings = {}
         self._use_mpi = use_mpi
 
         self._output_dir= output_dir
@@ -178,7 +179,6 @@ class DyPolyChordSampler(NestedSampler):
             return samples, means, logZ, logZ_err, logL, ns_run
         else:
             sys.exit(0)
-            return None
 
     def _get_equal_weight_samples(self):
         """

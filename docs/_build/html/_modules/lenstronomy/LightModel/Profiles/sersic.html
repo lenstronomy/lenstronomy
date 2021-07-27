@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.sersic &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.sersic &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -82,7 +82,7 @@
 <span class="sd">        :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)</span>
 <span class="sd">        :return: Sersic profile value at (x, y)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">phi_G</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_sersic</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">max_R_frac</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">result</span></div></div>
 
@@ -113,8 +113,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">R_sersic</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">)</span>
-        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_sersic</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">R_sersic</span><span class="p">,</span> <span class="n">n_sersic</span><span class="p">,</span> <span class="n">max_R_frac</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">result</span></div></div>
 
@@ -161,8 +160,7 @@
 <span class="sd">        :return: Cored Sersic profile value at (x, y)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#TODO max_R_frac not implemented</span>
-        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="n">R_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">R_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_distance_from_center</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R_stable</span><span class="p">(</span><span class="n">R_</span><span class="p">)</span>
         <span class="n">bn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_n</span><span class="p">(</span><span class="n">n_sersic</span><span class="p">)</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="p">(</span><span class="n">Rb</span> <span class="o">/</span> <span class="n">R</span><span class="p">)</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">gamma</span> <span class="o">/</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">bn</span> <span class="o">*</span> <span class="p">(((</span><span class="n">R</span> <span class="o">**</span> <span class="n">alpha</span> <span class="o">+</span> <span class="n">Rb</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">/</span> <span class="n">R_sersic</span> <span class="o">**</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">n_sersic</span><span class="p">))</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">))</span>
@@ -199,7 +197,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

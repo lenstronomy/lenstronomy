@@ -4,6 +4,9 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.Util.util import convert_bool_list
+from lenstronomy.Conf import config_loader
+convention_conf = config_loader.conventions_conf()
+sersic_major_axis_conf = convention_conf.get('sersic_major_axis', False)
 
 __all__ = ['LightModelBase']
 
@@ -48,7 +51,7 @@ class LightModelBase(object):
                 self.func_list.append(Sersic(smoothing=smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
-                self.func_list.append(SersicElliptic(smoothing=smoothing))
+                self.func_list.append(SersicElliptic(smoothing=smoothing, sersic_major_axis=sersic_major_axis_conf))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
                 self.func_list.append(CoreSersic(smoothing=smoothing))

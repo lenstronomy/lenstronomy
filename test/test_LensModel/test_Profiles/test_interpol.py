@@ -97,6 +97,26 @@ class TestInterpol(object):
         f_true = sis.derivatives(x, y, **kwargs_SIS)
         npt.assert_almost_equal(f_, f_true, decimal=10)
 
+    def test_hessian_finite_differential(self):
+        numPix = 101
+        deltaPix = 0.1
+        x_grid_interp, y_grid_interp = util.make_grid(numPix, deltaPix)
+        sis = SIS()
+        kwargs_SIS = {'theta_E': 1., 'center_x': 0.5, 'center_y': -0.5}
+        f_sis = sis.function(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        f_x_sis, f_y_sis = sis.derivatives(x_grid_interp, y_grid_interp, **kwargs_SIS)
+        x_axes, y_axes = util.get_axes(x_grid_interp, y_grid_interp)
+        interp_func = Interpol()
+        kwargs_interp = {'grid_interp_x': x_axes, 'grid_interp_y': y_axes, 'f_': util.array2image(f_sis),
+                         'f_x': util.array2image(f_x_sis), 'f_y': util.array2image(f_y_sis)}
+        x, y = 1., 0.
+        f_xx, f_xy, f_yx, f_yy = interp_func.hessian(x, y, **kwargs_interp)
+        f_xx_true, f_xy_true, f_yx_true, f_yy_true = sis.hessian(x, y, **kwargs_SIS)
+        npt.assert_almost_equal(f_xx, f_xx_true, decimal=1)
+        npt.assert_almost_equal(f_xy, f_xy_true, decimal=1)
+        npt.assert_almost_equal(f_yx, f_yx_true, decimal=1)
+        npt.assert_almost_equal(f_yy, f_yy_true, decimal=1)
+
     def test_interp_func_scaled(self):
 
         numPix = 101

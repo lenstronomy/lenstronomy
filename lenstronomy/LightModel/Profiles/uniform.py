@@ -5,7 +5,8 @@ __all__ = ['Uniform']
 
 class Uniform(object):
     """
-    class for Gaussian light profile
+    uniform light profile. This profile can also compensate for an inaccurate background subtraction.
+    name for profile: 'UNIFORM'
     """
     param_names = ['amp']
     lower_limit_default = {'amp': -100}
@@ -17,13 +18,8 @@ class Uniform(object):
     def function(self, x, y, amp):
         """
 
-        :param x:
-        :param y:
-        :param sigma0:
-        :param a:
-        :param s:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param x: x-coordinate
+        :param y: y-coordinate
+        :return: constant flux
         """
         return np.ones_like(x) * amp

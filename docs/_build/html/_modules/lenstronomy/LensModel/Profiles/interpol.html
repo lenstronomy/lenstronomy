@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.interpol &#8212; lenstronomy 1.8.0 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.interpol &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -159,6 +159,24 @@
 <span class="sd">        :param f_xy: 2d numpy array of df/dxy, matching the grids in grid_interp_x and grid_interp_y</span>
 <span class="sd">        :return: f_xx, f_xy, f_yx, f_yy at interpolated positions (x, y)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_f_xx_interp&#39;</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="n">f_xx</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f_yy</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">f_xy</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="n">diff</span> <span class="o">=</span> <span class="mf">0.000001</span>
+            <span class="n">alpha_ra_pp</span><span class="p">,</span> <span class="n">alpha_dec_pp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">grid_interp_x</span><span class="o">=</span><span class="n">grid_interp_x</span><span class="p">,</span>
+                                                         <span class="n">grid_interp_y</span><span class="o">=</span><span class="n">grid_interp_y</span><span class="p">,</span> <span class="n">f_</span><span class="o">=</span><span class="n">f_</span><span class="p">,</span> <span class="n">f_x</span><span class="o">=</span><span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span><span class="o">=</span><span class="n">f_y</span><span class="p">)</span>
+            <span class="n">alpha_ra_pn</span><span class="p">,</span> <span class="n">alpha_dec_pn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">grid_interp_x</span><span class="o">=</span><span class="n">grid_interp_x</span><span class="p">,</span>
+                                                         <span class="n">grid_interp_y</span><span class="o">=</span><span class="n">grid_interp_y</span><span class="p">,</span> <span class="n">f_</span><span class="o">=</span><span class="n">f_</span><span class="p">,</span> <span class="n">f_x</span><span class="o">=</span><span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span><span class="o">=</span><span class="n">f_y</span><span class="p">)</span>
+
+            <span class="n">alpha_ra_np</span><span class="p">,</span> <span class="n">alpha_dec_np</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">grid_interp_x</span><span class="o">=</span><span class="n">grid_interp_x</span><span class="p">,</span>
+                                                         <span class="n">grid_interp_y</span><span class="o">=</span><span class="n">grid_interp_y</span><span class="p">,</span> <span class="n">f_</span><span class="o">=</span><span class="n">f_</span><span class="p">,</span> <span class="n">f_x</span><span class="o">=</span><span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span><span class="o">=</span><span class="n">f_y</span><span class="p">)</span>
+            <span class="n">alpha_ra_nn</span><span class="p">,</span> <span class="n">alpha_dec_nn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">grid_interp_x</span><span class="o">=</span><span class="n">grid_interp_x</span><span class="p">,</span>
+                                                         <span class="n">grid_interp_y</span><span class="o">=</span><span class="n">grid_interp_y</span><span class="p">,</span> <span class="n">f_</span><span class="o">=</span><span class="n">f_</span><span class="p">,</span> <span class="n">f_x</span><span class="o">=</span><span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span><span class="o">=</span><span class="n">f_y</span><span class="p">)</span>
+
+            <span class="n">f_xx_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_pp</span> <span class="o">-</span> <span class="n">alpha_ra_np</span> <span class="o">+</span> <span class="n">alpha_ra_pn</span> <span class="o">-</span> <span class="n">alpha_ra_nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">f_xy_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_pp</span> <span class="o">-</span> <span class="n">alpha_ra_pn</span> <span class="o">+</span> <span class="n">alpha_ra_np</span> <span class="o">-</span> <span class="n">alpha_ra_nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">f_yx_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_pp</span> <span class="o">-</span> <span class="n">alpha_dec_np</span> <span class="o">+</span> <span class="n">alpha_dec_pn</span> <span class="o">-</span> <span class="n">alpha_dec_nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="n">f_yy_out</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_pp</span> <span class="o">-</span> <span class="n">alpha_dec_pn</span> <span class="o">+</span> <span class="n">alpha_dec_np</span> <span class="o">-</span> <span class="n">alpha_dec_nn</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span> <span class="o">/</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="n">f_xx_out</span><span class="p">,</span> <span class="n">f_xy_out</span><span class="p">,</span> <span class="n">f_yx_out</span><span class="p">,</span> <span class="n">f_yy_out</span>
+
         <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">atleast_1d</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="p">():</span>
         <span class="c1">#if type(x) == float or type(x) == int or type(x) == type(np.float64(1)) or len(x) &lt;= 1:</span>
@@ -337,7 +355,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.8.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -263,7 +263,8 @@ class LensModelExtensions(object):
         image = quasar.function(betax, betay, 1., source_sigma, center_x, center_y)
         return util.array2image(image)
 
-    def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10):
+    def critical_curve_tiling(self, kwargs_lens, compute_window=5, start_scale=0.5, max_order=10, center_x=0,
+                              center_y=0):
         """
 
         :param kwargs_lens: lens model keyword argument list
@@ -271,10 +272,14 @@ class LensModelExtensions(object):
         :param start_scale: float, angular scale on which to start the tiling from (if there are two distinct curves in
          a region, it might only find one.
         :param max_order: int, maximum order in the tiling to compute critical curve triangles
+        :param center_x: float, center of the window to compute critical curves and caustics
+        :param center_y: float, center of the window to compute critical curves and caustics
         :return: list of positions representing coordinates of the critical curve (in RA and DEC)
         """
         numPix = int(compute_window / start_scale)
         x_grid_init, y_grid_init = util.make_grid(numPix, deltapix=start_scale, subgrid_res=1)
+        x_grid_init += center_x
+        y_grid_init += center_y
         mag_init = util.array2image(self._lensModel.magnification(x_grid_init, y_grid_init, kwargs_lens))
         x_grid_init = util.array2image(x_grid_init)
         y_grid_init = util.array2image(y_grid_init)
@@ -337,17 +342,21 @@ class LensModelExtensions(object):
                 dec_crit += dec_crit_2
                 return ra_crit, dec_crit
 
-    def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01):
+    def critical_curve_caustics(self, kwargs_lens, compute_window=5, grid_scale=0.01, center_x=0, center_y=0):
         """
 
         :param kwargs_lens: lens model kwargs
         :param compute_window: window size in arcsec where the critical curve is computed
         :param grid_scale: numerical grid spacing of the computation of the critical curves
+        :param center_x: float, center of the window to compute critical curves and caustics
+        :param center_y: float, center of the window to compute critical curves and caustics
         :return: lists of ra and dec arrays corresponding to different disconnected critical curves and their caustic counterparts
 
         """
         numPix = int(compute_window / grid_scale)
         x_grid_high_res, y_grid_high_res = util.make_grid(numPix, deltapix=grid_scale, subgrid_res=1)
+        x_grid_high_res += center_x
+        y_grid_high_res += center_y
         mag_high_res = util.array2image(self._lensModel.magnification(x_grid_high_res, y_grid_high_res, kwargs_lens))
 
         ra_crit_list = []
@@ -358,8 +367,8 @@ class LensModelExtensions(object):
         paths = find_contours(1/mag_high_res, 0.)
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
-            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2
-            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2
+            ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2 + center_x
+            dec_points = v[:, 0] * grid_scale - grid_scale * (numPix-1)/2 + center_y
             ra_crit_list.append(ra_points)
             dec_crit_list.append(dec_points)
             ra_caustics, dec_caustics = self._lensModel.ray_shooting(ra_points, dec_points, kwargs_lens)
@@ -578,3 +587,62 @@ class LensModelExtensions(object):
         dy_r = y + dr_array * v_rad2
         _, tangential_stretch_dr, _, _, _, _ = self.radial_tangential_stretch(dx_r, dy_r, kwargs_lens, diff=smoothing)
         return np.average(tangential_stretch_dr)
+
+    def curved_arc_finite_area(self, x, y, kwargs_lens, dr):
+        """
+        computes an estimated curved arc over a finite extent mimicking the appearance of a finite source with radius dr
+
+        :param x: x-position (float)
+        :param y: y-position (float)
+        :param kwargs_lens: lens model keyword argument list
+        :param dr: radius of finite source
+        :return: keyword arguments of curved arc
+        """
+
+        # estimate curvature centroid as the median around the circle
+
+        # make circle of points around position of interest
+        x_c, y_c = util.points_on_circle(radius=dr, num_points=20, connect_ends=False)
+
+        c_x_list, c_y_list = [], []
+        # loop through curved arc estimate and compute curvature centroid
+        for x_, y_ in zip(x_c, y_c):
+            kwargs_arc_ = self.curved_arc_estimate(x_, y_, kwargs_lens)
+            direction = kwargs_arc_['direction']
+            curvature = kwargs_arc_['curvature']
+            center_x = x_ - np.cos(direction) / curvature
+            center_y = y_ - np.sin(direction) / curvature
+            c_x_list.append(center_x)
+            c_y_list.append(center_y)
+        center_x, center_y = np.median(c_x_list), np.median(c_y_list)
+
+        # compute curvature and direction to the average centroid from the position of interest
+        r = np.sqrt((x - center_x) ** 2 + (y - center_y)**2)
+        curvature = 1 / r
+        direction = np.arctan2(y - center_y, x - center_x)
+
+        # compute average radial stretch as the inverse difference in the source position
+        x_r = x + np.cos(direction) * dr
+        y_r = y + np.sin(direction) * dr
+        x_r_ = x - np.cos(direction) * dr
+        y_r_ = y - np.sin(direction) * dr
+
+        xs_r, ys_r = self._lensModel.ray_shooting(x_r, y_r, kwargs_lens)
+        xs_r_, ys_r_ = self._lensModel.ray_shooting(x_r_, y_r_, kwargs_lens)
+        ds = np.sqrt((xs_r - xs_r_)**2 + (ys_r - ys_r_)**2)
+        radial_stretch = (2 * dr) / ds
+
+        # compute average tangential stretch as the inverse difference in the sosurce position
+        x_t = x - np.sin(direction) * dr
+        y_t = y + np.cos(direction) * dr
+        x_t_ = x + np.sin(direction) * dr
+        y_t_ = y - np.cos(direction) * dr
+
+        xs_t, ys_t = self._lensModel.ray_shooting(x_t, y_t, kwargs_lens)
+        xs_t_, ys_t_ = self._lensModel.ray_shooting(x_t_, y_t_, kwargs_lens)
+        ds = np.sqrt((xs_t - xs_t_) ** 2 + (ys_t - ys_t_) ** 2)
+        tangential_stretch = (2 * dr) / ds
+        kwargs_arc = {'direction': direction, 'radial_stretch': radial_stretch,
+                      'tangential_stretch': tangential_stretch, 'center_x': x, 'center_y': y,
+                      'curvature': curvature}
+        return kwargs_arc

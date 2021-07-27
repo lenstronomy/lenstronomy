@@ -35,13 +35,9 @@ class Hernquist_Ellipse(LensProfileBase):
         """
         x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        #x_shift = x - center_x
-        #y_shift = y - center_y
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
         e = abs(1 - q)
-        #x_ = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
-        #y_ = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
 
         f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
         f_x_prim *= np.sqrt(1 - e)

@@ -4,10 +4,10 @@ import numpy.testing as npt
 import numpy as np
 import pytest
 import unittest
-from lenstronomy.LensModel.multi_plane import MultiPlane
-from lenstronomy.LensModel.multi_plane_base import MultiPlaneBase
+from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
+from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 from lenstronomy.LensModel.lens_model import LensModel
-from lenstronomy.LensModel.multi_plane import LensedLocation, PhysicalLocation
+from lenstronomy.LensModel.MultiPlane.multi_plane import LensedLocation, PhysicalLocation
 import lenstronomy.Util.constants as const
 
 

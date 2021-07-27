@@ -18,7 +18,7 @@ Requirements
 ------------
 
 Make sure the standard python libraries as specified in the `requirements <https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt>`_.
-The standard usage does not require all libraries to be installed, in particluar the different posterior samplers are only required when being used.
+The standard usage does not require all libraries to be installed, in particular the different posterior samplers are only required when being used.
 
 In the following, a few specific cases are mentioned that may require special attention in the installation and settings, in particular when it comes
 to MPI and HPC applications.
@@ -54,3 +54,24 @@ We recommend using the EPL model as it is a pure python version of the same prof
     $ git clone https://github.com/sibirrer/fastell4py.git <desired location>
     $ cd <desired location>
     $ python setup.py install --user
+
+
+Check installation by running tests
+-----------------------------------
+
+You can check your installation with pytest::
+
+    $ cd <lenstronomy_repo>
+    $ py.test
+
+Or you can run a partial test with::
+
+    $ cd <lenstronomy_repo>
+    $ py.test/test/test_LensModel/
+
+You can also run the tests with tox in a virtual environment with::
+
+    $ cd <lenstronomy_repo>
+    $ tox
+
+Note: tox might have trouble with the PyMultiNest installation and the cmake part of it.

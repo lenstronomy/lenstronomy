@@ -126,8 +126,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_gausian_ellipse_kappa(self):
-        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x':
-            0., 'center_y': 0.}
+        kwargs = {'amp': 1., 'sigma': 1., 'e1': 0.1, 'e2': -0.1, 'center_x': 0., 'center_y': 0.}
         lens_model = ['GAUSSIAN_ELLIPSE_KAPPA']
         self.assert_differentials(lens_model, kwargs)
 
@@ -152,7 +151,7 @@ class TestNumericsProfile(object):
         self.assert_differentials(lens_model, kwargs)
 
     def test_mass_sheet(self):
-        kwargs = {'kappa_ext': 0.1}
+        kwargs = {'kappa': 0.1}
         lens_model = ['CONVERGENCE']
         self.assert_differentials(lens_model, kwargs)
 
@@ -178,6 +177,18 @@ class TestNumericsProfile(object):
 
         kwargs = {'Rs': 2., 'alpha_Rs': 1., 'r_trunc': 7}
         lens_model = ['TNFW']
+        self.assert_differentials(lens_model, kwargs)
+
+    def test_tnfw_ellipse(self):
+        lens_model = ['TNFW_ELLIPSE']
+
+        kwargs = {'alpha_Rs': .1, 'Rs': 1., 'r_trunc': 7, 'e1': 0, 'e2': 0}
+        self.assert_differentials(lens_model, kwargs)
+
+        kwargs = {'alpha_Rs': .1, 'Rs': 1., 'r_trunc': 7, 'e1': 0.1, 'e2': -0.02}
+        self.assert_differentials(lens_model, kwargs)
+
+        kwargs = {'Rs': .5, 'alpha_Rs': 1., 'r_trunc': 100, 'e1': 0.1, 'e2': -0.02}
         self.assert_differentials(lens_model, kwargs)
 
     def test_nfw_ellipse(self):
@@ -323,8 +334,13 @@ class TestNumericsProfile(object):
         lens_model = ['CORED_DENSITY_EXP_MST']
         self.assert_differentials(lens_model, kwargs)
 
+    def test_cored_density_uldm_mst(self):
+        kwargs = {'lambda_approx': 0.9, 'r_core': 8}
+        lens_model = ['CORED_DENSITY_ULDM_MST']
+        self.assert_differentials(lens_model, kwargs)
+
     def test_uldm(self):
-        kwargs = {'kappa_0': 0.1, 'theta_c': 8}
+        kwargs = {'kappa_0': 0.1, 'theta_c': 5, 'slope': 7.5}
         lens_model = ['ULDM']
         self.assert_differentials(lens_model, kwargs)
 

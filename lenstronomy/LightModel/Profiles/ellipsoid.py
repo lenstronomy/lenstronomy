@@ -12,22 +12,22 @@ class Ellipsoid(object):
     class for an universal surface brightness within an ellipsoid
     """
     def __init__(self):
-        self.param_names = ['amp', 'radius', 'center_x', 'center_y']
-        self.lower_limit_default = {'amp': 0, 'radius': 0, 'center_x': -100, 'center_y': -100}
-        self.upper_limit_default = {'amp': 1000, 'radius': 100, 'center_x': 100, 'center_y': 100}
+        self.param_names = ['amp', 'radius', 'e1', 'e2', 'center_x', 'center_y']
+        self.lower_limit_default = {'amp': 0, 'radius': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
+        self.upper_limit_default = {'amp': 1000, 'radius': 100, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def function(self, x, y, amp, radius, e1, e2, center_x, center_y):
         """
 
         :param x:
         :param y:
-        :param amp:
-        :param radius:
-        :param e1:
-        :param e2:
-        :param center_x:
-        :param center_y:
-        :return:
+        :param amp: surface brightness within the ellipsoid
+        :param radius: radius (product average of semi-major and semi-minor axis) of the ellipsoid
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: center
+        :param center_y: center
+        :return: surface brightness
         """
         x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
         r2 = x_**2 + y_**2

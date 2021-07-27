@@ -1,4 +1,4 @@
-numpy>=1.13
+numpy>=1.17
 astropy>=2.0
 scipy>=0.19.1
 mpmath
@@ -9,7 +9,6 @@ numba>=0.43.1
 future
 dynesty
 pymultinest
-pypolychord
 nestcheck
 corner>=2.2.1
 h5py

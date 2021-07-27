@@ -9,7 +9,8 @@ class PJaffe(LensProfileBase):
     class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
     based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
 
-    Module name: 'PJAFFE'
+    Module name: 'PJAFFE';
+
     An alternative name is dPIED.
 
     The 3D density distribution is
@@ -32,7 +33,7 @@ class PJaffe(LensProfileBase):
     In the lensing parameterization,
 
     .. math::
-        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
+        \\sigma_0 = \\frac{\Sigma_0}{\\Sigma_{\\rm crit}}
 
     """
 
@@ -264,7 +265,8 @@ class PJaffe(LensProfileBase):
         """
         return (Rs + Ra) / Ra / Rs / np.pi * sigma0
 
-    def _sort_ra_rs(self, Ra, Rs):
+    @staticmethod
+    def _sort_ra_rs(Ra, Rs):
         """
         sorts Ra and Rs to make sure Rs > Ra
 

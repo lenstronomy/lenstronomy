@@ -1,0 +1,87 @@
+__author__ = "abstractlegwear"
+
+import numpy as np
+import lenstronomy.Util.util as util
+import lenstronomy.Util.constants as const
+from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.Cosmo.lens_cosmo import LensCosmo
+
+__all__ = ["CosmicString"]
+
+class CosmicString(LensProfileBase):
+
+    def __init__(self, z_lens, z_source, cosmo=None):
+        if cosmo is None:
+            from astropy.cosmology import FlatLambdaCDM
+            cosmo = FlatLambdaCDM(H0=70, Om0=0.3, Ob0=0.05)
+        self._lens_cosmo = LensCosmo(z_lens=z_lens, z_source=z_source, cosmo=cosmo)
+        self.dds = _lens_cosmo.dds  # lens to source mpc
+        self.ds = _lens_cosmo.ds  # observer to source mpc
+        self.dd = _lens_cosmo.dd  # observer to lens mpc
+
+    def function(self, x, y):
+        # lensing potential
+        return np.zeros_like(x)
+
+    def derivatives(self, x, y, mu, theta, center_x = 0, center_y = 0):
+        # reduced deflection angle
+
+        """
+        :param x: image's angular position (normally in arc seconds)
+        :param y: image's angular position (normally in arc seconds)
+        :param mu: linear density of string
+        :param theta: angle of string (east to north) with a limit of [0, pi] since [0, 2pi] is redundant
+        :param center_x: center of string (in angular units)
+        :param center_y: center of string (in angular units)
+        :param length: to be added, length of string
+        :return: reduced deflection angle (complex coordinate x and y)
+        """
+        x_ = x - center_x
+        y_ = y - center_y
+
+        # rotate ccw by pi/2 - theta to make string vertical
+
+        x__, y__ = util.rotate(x_, y_, np.pi/2 - theta)
+
+        # then find whether on right or left of string, on string, or outside of einstein strip
+        # s is the einstein strip's bound for the image (not for the source!)
+
+        s = 2 * alpha_hat(mu) * (self.ds - self.dd) + alpha_reduced(mu)
+
+        if x > s or x < -1 * s or x == 0:
+            side = 0
+        elif x__ > 0:
+            side = 1
+        elif x__ < 0:
+            side = -1
+
+
+        # side = 1 if right or -1 if left, 0 if outside of strip or on string (not sure if this is right)
+
+        psi = abs(theta - np.pi / 2)  # look in notes for psi
+
+        alpha_x = side * alpha_reduced(mu) * np.cos(psi)
+
+        # alpha_x is always + if on right and - if on left
+        # alpha_y changes based on side and theta
+
+        if theta < 90:  
+            alpha_y = -1 * side * alpha_reduced(mu) * np.sin(psi)
+        elif theta > 90: 
+            alpha_y = side * alpha_reduced(mu) * np.sin(psi)
+        elif theta == 90: 
+            alpha_y = 0
+
+        return alpha_x, alpha_y
+
+    def hessian(self, x, y):
+        f_xx, f_xy, f_yx, f_yy = 0, 0, 0, 0
+        return f_xx, f_xy, f_yx, f_yy
+
+    def alpha_hat(self, mu):
+        # physical deflection angle
+        return 4 * np.pi * const.G * mu / const.c ** 2
+
+    def alpha_reduced(self, mu):
+        # reduced deflection angle
+        return self.alpha_hat(mu) * (self.dds) / self.ds

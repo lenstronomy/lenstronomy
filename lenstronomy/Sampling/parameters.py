@@ -57,7 +57,11 @@ class Param(object):
     Alternatively to the format of the linking of parameters with IDENTICAL names as listed above as:
     [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
     the following format of the arguments are supported to join parameters with DIFFERENT names:
-    [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]
+    [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]\
+
+    Log10 sampling of the lens parameters :
+    'log_sampling_lens': [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+    Sample the log10 of the lens model parameters.
 
 
     """
@@ -75,7 +79,8 @@ class Param(object):
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0):
+                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
+                 log_sampling_lens=[]):
         """
 
         :param kwargs_model:
@@ -127,6 +132,7 @@ class Param(object):
         :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
+        :param log_sampling_lens:
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -169,6 +175,11 @@ class Param(object):
         self._joint_lens_with_light = joint_lens_with_light
         self._joint_lens_with_source_light = joint_lens_with_source_light
         self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
+
+        self._log_sampling_lens = log_sampling_lens
+        kwargs_logsampling_lens = [[] for i in range(len(self._lens_model_list))]
+        kwargs_logsampling_lens = self._update_log_sampling(kwargs_logsampling_lens, log_sampling_lens)
+
         for param_list in self._joint_source_with_point_source:
             if len(param_list) == 2:
                 param_list.append(['center_x', 'center_y'])
@@ -225,7 +236,9 @@ class Param(object):
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
                                                             self._joint_lens_light_with_point_source)
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated,
+                                    kwargs_logsampling=kwargs_logsampling_lens,
+                                    num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
         self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
@@ -460,6 +473,22 @@ class Param(object):
         return kwargs_list_2
 
     @staticmethod
+    def _update_log_sampling(kwargs_logsampling_lens, log_sampling_lens):
+        """
+
+        :param kwargs_logsampling_lens: list of list of parameters to sample in log10
+        :param log_sampling_lens: [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]
+        :return: updated kwargs_logsampling_lens
+        """
+        for setting in log_sampling_lens:
+            i_1, param_list = setting
+            if type(param_list) == list:
+                kwargs_logsampling_lens[i_1] = param_list
+            else:
+                raise TypeError("Bad format for constraint setting: got %s" % param_list)
+        return kwargs_logsampling_lens
+
+    @staticmethod
     def _fix_joint_param(kwargs_list_2, joint_setting_list):
         """
 
@@ -605,3 +634,6 @@ class Param(object):
         print("Number of non-linear parameters being sampled: ", num)
         print("Parameters being sampled: ", param_list)
         print("Number of linear parameters being solved for: ", num_linear)
+        print("===================")
+        print("The log10 of following parameters is being sampled:")
+        print("Lens:", self.lensParams.kwargs_logsampling)

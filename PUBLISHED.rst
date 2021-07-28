@@ -81,6 +81,8 @@ Measuring the Hubble constant
 * Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
     *Investigating the detectability of a cored component with mock imaging modeling and comparison of kinematic modeling.*
 
+* The Hubble constant from strongly lensed supernovae with standardizable magnifications `Birrer et al. 2021 <https://arxiv.org/abs/2107.12385>`_
+    *Methodology and forecast to use standardizable magnifications to break the mass-sheet degeneracy and hierarchically measure H0.*
 
 
 

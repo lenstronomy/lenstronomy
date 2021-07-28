@@ -84,6 +84,9 @@ Measuring the Hubble constant
 * The Hubble constant from strongly lensed supernovae with standardizable magnifications `Birrer et al. 2021 <https://arxiv.org/abs/2107.12385>`_
     *Methodology and forecast to use standardizable magnifications to break the mass-sheet degeneracy and hierarchically measure H0.*
 
+* AI-driven spatio-temporal engine for finding gravitationally lensed supernovae `Ramanah et al. 2021 <https://arxiv.org/abs/2107.12399>`_
+    *Simulated images with time series of lensed supernovae.*
+
 
 
 Dark Matter substructure

@@ -175,13 +175,14 @@ class ModelBandPlot(ModelBand):
 
     def normalized_residual_plot(self, ax, v_min=-6, v_max=6, font_size=15, text="Normalized Residuals",
                                  colorbar_label=r'(f${}_{\rm model}$ - f${}_{\rm data}$)/$\sigma$',
-                                 no_arrow=False, color_bar = True, **kwargs):
+                                 no_arrow=False, color_bar=True, **kwargs):
         """
 
         :param ax:
         :param v_min:
         :param v_max:
         :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
+        :param color_bar: Option to display the color bar
         :return:
         """
         if not 'cmap' in kwargs:

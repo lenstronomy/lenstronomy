@@ -437,7 +437,7 @@ class FittingSequence(object):
         self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
-        self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit,change_lens_lower_limit,
+        self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
                                           change_lens_upper_limit)
         return 0
 

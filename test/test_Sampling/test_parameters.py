@@ -240,6 +240,23 @@ class TestParam(object):
         kwargs_ps_out = kwargs_return['kwargs_ps']
         assert kwargs_lens_light_out[0]['center_x'] == kwargs_ps_out[0]['ra_image']
 
+    def test_logsampling(self):
+        kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
+                        'point_source_model_list': ['LENSED_POSITION'],
+                        'lens_light_model_list': ['SERSIC']}
+        kwargs_constraints = {'log_sampling_lens': [[0, ['theta_E']]]}
+
+        kwargs_lens = [{'theta_E': 0.1, 'center_x': 0, 'center_y': 0}]
+        kwargs_source = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 1, 'center_y': 1}]
+        kwargs_lens_light = [{'amp': 1, 'n_sersic': 2, 'R_sersic': 0.3, 'center_x': 0.2, 'center_y': 0.2}]
+        kwargs_ps = [{'ra_image': [0.5], 'dec_image': [0.5]}]
+        param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
+        args = param.kwargs2args(kwargs_lens=kwargs_lens, kwargs_source=kwargs_source, kwargs_lens_light=kwargs_lens_light, kwargs_ps=kwargs_ps)
+        kwargs_return = param.args2kwargs(args)
+        kwargs_lens_out = kwargs_return['kwargs_lens']
+        assert args[0] == -1
+        assert kwargs_lens_out[0]['theta_E'] == 0.1
+
     def test_with_solver(self):
         kwargs_model = {'lens_model_list': ['SPEP'], 'source_light_model_list': ['SERSIC'],
                         'point_source_model_list': ['LENSED_POSITION']}

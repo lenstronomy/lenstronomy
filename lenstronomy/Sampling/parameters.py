@@ -132,7 +132,7 @@ class Param(object):
         :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
-        :param log_sampling_lens:
+        :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -485,7 +485,8 @@ class Param(object):
             if type(param_list) == list:
                 kwargs_logsampling_lens[i_1] = param_list
             else:
-                raise TypeError("Bad format for constraint setting: got %s" % param_list)
+                raise TypeError(
+                    "Bad format for constraint setting: got %s. This should be in the format [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
         return kwargs_logsampling_lens
 
     @staticmethod

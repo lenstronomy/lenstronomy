@@ -65,7 +65,7 @@ class Chameleon(object):
 @export
 class DoubleChameleon(object):
     """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+    class of the double Chameleon model. See Dutton+2011, Suyu+2014 for the single Chameleon model.
 
     """
     param_names = ['amp', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']
@@ -98,6 +98,28 @@ class DoubleChameleon(object):
         """
         f_1 = self.chameleon.function(x, y, amp / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
         f_2 = self.chameleon.function(x, y, amp / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2
+
+    def light_3d(self, r, amp, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param amp:
+        :param ratio: ratio of first to second amplitude of Chameleon surface brightness
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return: 3d light density at radius r
+        """
+        f_1 = self.chameleon.light_3d(r, amp / (1. + 1./ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.light_3d(r, amp / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_1 + f_2
 
 
@@ -139,6 +161,10 @@ class TripleChameleon(object):
         :param w_t2:
         :param e12:
         :param e22:
+        :param w_c3:
+        :param w_t3:
+        :param e13:
+        :param e23:
         :param center_x:
         :param center_y:
         :return:
@@ -148,5 +174,37 @@ class TripleChameleon(object):
         amp3 = amp1 / ratio13
         f_1 = self.chameleon.function(x, y, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
         f_2 = self.chameleon.function(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
-        f_3 = self.chameleon.function(x, y, amp3, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_3 = self.chameleon.function(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_1 + f_2 + f_3
+
+    def light_3d(self, r, amp, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param r: 3d light radius
+        :param amp:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplitude
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param w_c3:
+        :param w_t3:
+        :param e13:
+        :param e23:
+        :param center_x:
+        :param center_y:
+        :return:
+        """
+        amp1 = amp / (1. + 1./ratio12 + 1./ratio13)
+        amp2 = amp1 / ratio12
+        amp3 = amp1 / ratio13
+        f_1 = self.chameleon.light_3d(r, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self.chameleon.light_3d(r, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_3 = self.chameleon.light_3d(r, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
         return f_1 + f_2 + f_3

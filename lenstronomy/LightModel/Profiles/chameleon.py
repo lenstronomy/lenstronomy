@@ -9,7 +9,7 @@ export, __all__ = exporter()
 @export
 class Chameleon(object):
     """
-    class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile
+    class of the Chameleon model (See Dutton+ 2011, Suyu+2014) an elliptical truncated double isothermal profile
 
     """
     param_names = ['amp', 'w_c', 'w_t', 'e1', 'e2', 'center_x', 'center_y']
@@ -38,6 +38,26 @@ class Chameleon(object):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         flux1 = self.nie.function(x, y, 1, e1, e2, s_scale_1, center_x, center_y)
         flux2 = self.nie.function(x, y, 1, e1, e2, s_scale_2, center_x, center_y)
+        flux = amp_new / (1. + q) * (flux1 - flux2)
+        return flux
+
+    def light_3d(self, r, amp, w_c, w_t, e1, e2, center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param w_c:
+        :param w_t:
+        :param amp: amplitude of first power-law flux
+        :param e1: eccentricity parameter
+        :param e2: eccentricity parameter
+        :param center_x: center
+        :param center_y: center
+        :return: 3d flux of chameleon profile at radius r
+        """
+        amp_new, w_c, w_t, s_scale_1, s_scale_2 = self._chameleonLens.param_convert(amp, w_c, w_t, e1, e2)
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        flux1 = self.nie.light_3d(r, 1, e1, e2, s_scale_1, center_x, center_y)
+        flux2 = self.nie.light_3d(r, 1, e1, e2, s_scale_2, center_x, center_y)
         flux = amp_new / (1. + q) * (flux1 - flux2)
         return flux
 

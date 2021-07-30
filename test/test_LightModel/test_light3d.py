@@ -48,6 +48,11 @@ class TestNumerics(object):
         kwargs = {'amp': 2, 's_scale': 1., 'e1': 0, 'e2': 0}
         self.assert_integrals(Model, kwargs)
 
+    def test_chameleon(self):
+        from lenstronomy.LightModel.Profiles.chameleon import Chameleon as Model
+        kwargs = {'amp': 2, 'w_c': 1, 'w_t': 2, 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

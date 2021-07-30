@@ -2,6 +2,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 import numpy.testing as npt
+import unittest
 import pytest
 
 from lenstronomy.Sampling.parameters import Param
@@ -299,6 +300,16 @@ class TestParam(object):
                                  kwargs_fixed_lens_light=kwargs_fixed_lens_light, kwargs_fixed_ps=kwargs_fixed_ps,
                                  kwargs_fixed_special=kwargs_fixed_cosmo, **kwargs_param)
         self.param_class.print_setting()
+
+class TestRaise(unittest.TestCase):
+
+    def test_raise(self):
+        kwargs_model = {'lens_model_list': ['SIS'], 'source_light_model_list': ['SERSIC'],
+                        'point_source_model_list': ['LENSED_POSITION'],
+                        'lens_light_model_list': ['SERSIC']}
+        kwargs_constraints = {'log_sampling_lens': [[0, {'theta_E'}]]} # wrong type, dict instead of list
+        with self.assertRaises(TypeError):
+            param = Param(kwargs_model=kwargs_model, **kwargs_constraints)
 
 
 if __name__ == '__main__':

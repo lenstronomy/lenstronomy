@@ -176,6 +176,7 @@ class Param(object):
         self._joint_lens_with_source_light = joint_lens_with_source_light
         self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
 
+        # Set up the parameters being sampled in log space in a similar way than the parameters being fixed.
         self._log_sampling_lens = log_sampling_lens
         kwargs_logsampling_lens = [[] for i in range(len(self._lens_model_list))]
         kwargs_logsampling_lens = self._update_log_sampling(kwargs_logsampling_lens, log_sampling_lens)
@@ -475,7 +476,7 @@ class Param(object):
     @staticmethod
     def _update_log_sampling(kwargs_logsampling_lens, log_sampling_lens):
         """
-
+        Update the list of parameters being sampled in log-space
         :param kwargs_logsampling_lens: list of list of parameters to sample in log10
         :param log_sampling_lens: [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]
         :return: updated kwargs_logsampling_lens

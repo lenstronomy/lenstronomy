@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+import numpy as np
 
 __all__ = ['LensParam']
 
@@ -7,8 +8,8 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, num_images=0,
-                 solver_type='NONE', num_shapelet_lens=0):
+    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+                 num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
         :param kwargs_options:
@@ -35,12 +36,16 @@ class LensParam(object):
 
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
+        if kwargs_logsampling is None :
+            kwargs_logsampling = [[] for i in range(len(self.model_list))]
+        self.kwargs_logsampling = kwargs_logsampling
 
     def getParams(self, args, i):
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
+            kwargs_logsampling = self.kwargs_logsampling[k]
             param_names = self._param_name_list[k]
             for name in param_names:
                 if not name in kwargs_fixed:
@@ -77,6 +82,10 @@ class LensParam(object):
                         i += 1
                 else:
                     kwargs[name] = kwargs_fixed[name]
+
+                if name in kwargs_logsampling and not name in kwargs_fixed:
+                    kwargs[name] = 10**(kwargs[name])
+
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
@@ -90,6 +99,7 @@ class LensParam(object):
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
+            kwargs_logsampling = self.kwargs_logsampling[k]
 
             param_names = self._param_name_list[k]
             for name in param_names:
@@ -116,7 +126,10 @@ class LensParam(object):
                     #    else:
                     #        pass
                     else:
-                        args.append(kwargs[name])
+                        if name in kwargs_logsampling:
+                            args.append(np.log10(kwargs[name]))
+                        else:
+                            args.append(kwargs[name])
         return args
 
     def num_param(self):

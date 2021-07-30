@@ -38,3 +38,30 @@ class NIE(LightProfileBase):
         s = s_scale * np.sqrt((1 + q ** 2) / (2 * q ** 2))
         f_ = amp/2. * (q**2 * (s**2 + x__**2) + y__**2)**(-1./2)
         return f_
+
+    def light_3d(self, r, amp, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+        3d light distribution (in spherical regime)
+
+        :param r: 3d radius
+        :param amp: surface brightness normalization
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param s_scale: smoothing scale (square averaged of minor and major axis)
+        :param center_x: center of profile
+        :param center_y: center of profile
+        :return: light density at 3d radius
+        """
+        rho = self._amp2rho(amp)
+        return rho / (r**2 + s_scale**2)
+
+    def _amp2rho(self, amp):
+        """
+        converts surface brightness normalization 'amp' into 3d density normalization rho
+
+        :param amp:
+        :return: rho
+        """
+        factor = np.pi
+        return amp / 2 / factor
+

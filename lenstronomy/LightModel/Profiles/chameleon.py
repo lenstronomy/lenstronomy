@@ -25,12 +25,11 @@ class Chameleon(object):
 
         :param x: ra-coordinate
         :param y: dec-coordinate
+        :param w_c:
+        :param w_t:
         :param amp: amplitude of first power-law flux
-        :param flux_ratio: ratio of amplitudes of first to second power-law profile
-        :param gamma1: power-law slope
-        :param gamma2: power-law slope
-        :param e1: ellipticity parameter
-        :param e2: ellipticity parameter
+        :param e1: eccentricity parameter
+        :param e2: eccentricity parameter
         :param center_x: center
         :param center_y: center
         :return: flux of chameleon profile
@@ -111,7 +110,7 @@ class TripleChameleon(object):
 
         :param amp:
         :param ratio12: ratio of first to second amplitude
-        :param ratio13: ratio of first to third amplidute
+        :param ratio13: ratio of first to third amplitude
         :param w_c1:
         :param w_t1:
         :param e11:

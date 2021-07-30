@@ -41,6 +41,13 @@ class TestNumerics(object):
         kwargs = {'amp': 2, 'gamma': 2, 'e1': 0, 'e2': 0}
         self.assert_integrals(Model, kwargs)
 
+    def test_nie(self):
+        from lenstronomy.LightModel.Profiles.nie import NIE as Model
+        kwargs = {'amp': 2, 's_scale': 0.001, 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'amp': 2, 's_scale': 1., 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

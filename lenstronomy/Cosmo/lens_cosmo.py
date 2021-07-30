@@ -167,6 +167,22 @@ class LensCosmo(object):
         """
         D_dt = self.ddt * const.Mpc
         return dt * const.c * const.day_s / D_dt / const.arcsec ** 2
+    
+    def cs_mu2alpha_hat(self, mu):
+        """
+        physical deflection angle for a cosmic string
+        
+        :param mu: linear density in mass / distance
+        """
+        return 4 * np.pi * const.G * mu / const.c ** 2
+    
+    def cs_alpha_hat2alpha_reduced(self, mu):
+        """
+        reduced deflection angle for a cosmic string
+        
+        :param mu: linear density in mass / distance
+        """
+        return self.alpha_hat(mu) * self.dds / self.ds
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):
         """

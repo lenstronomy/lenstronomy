@@ -190,17 +190,23 @@ class UpdateManager(object):
         kwargs_likelihood_updated = self.kwargs_likelihood.update(kwargs_likelihood)
         return kwargs_model_updated, kwargs_constraints_updated, kwargs_likelihood_updated
 
-    def update_limits(self, change_source_lower_limit=None, change_source_upper_limit=None):
+    def update_limits(self, change_source_lower_limit=None, change_source_upper_limit=None,
+                      change_lens_lower_limit=None, change_lens_upper_limit=None,):
         """
         updates the limits (lower and upper) of the update manager instance
 
         :param change_source_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
         :return: updates internal state of lower and upper limits accessible from outside
         """
         if not change_source_lower_limit is None:
             self._source_lower = self._update_limit(change_source_lower_limit, self._source_lower)
         if not change_source_upper_limit is None:
             self._source_upper = self._update_limit(change_source_upper_limit, self._source_upper)
+        if not change_lens_lower_limit is None:
+            self._lens_lower = self._update_limit(change_lens_lower_limit, self._lens_lower)
+        if not change_lens_upper_limit is None:
+            self._lens_upper = self._update_limit(change_lens_upper_limit, self._lens_upper)
 
     @staticmethod
     def _update_limit(change_limit, kwargs_limit_previous):

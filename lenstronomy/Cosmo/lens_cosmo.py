@@ -170,19 +170,24 @@ class LensCosmo(object):
     
     def cs_mu2alpha_hat(self, mu):
         """
-        physical deflection angle for a cosmic string
+        converts mu to physical deflection angle for a cosmic string perpendicular to the line of sight 
         
-        :param mu: linear density in mass / distance
+        :param mu: linear density in kg/m
+        :return: physical deflection angle in units of arcsec for a cosmic string perpendicular to the line of sight 
         """
-        return 4 * np.pi * const.G * mu / const.c ** 2
+        alpha_hat_rad = 4 * np.pi * const.G * mu / const.c ** 2
+        alpha_hat_arcsec = alpha_hat_rad * 3600 * 180 / np.pi
+        return alpha_hat_arcsec
     
-    def cs_alpha_hat2alpha_reduced(self, mu):
+    def cs_mu2alpha_reduced(self, mu):
         """
-        reduced deflection angle for a cosmic string
+        converts mu to reduced deflection angle for a cosmic string perpendicular to the line of sight 
         
-        :param mu: linear density in mass / distance
+        :param mu: linear density in units of kg/m
+        :return: reduced deflection angle in units of arcsec 
         """
-        return self.alpha_hat(mu) * self.dds / self.ds
+        alpha_reduced = self.alpha_hat(mu) * self.dds / self.ds
+        return alpha_reduced
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):
         """

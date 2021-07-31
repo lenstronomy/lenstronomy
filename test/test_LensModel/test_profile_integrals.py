@@ -72,6 +72,7 @@ class TestNumerics(object):
                 pass
             mass_3d = lensModel.mass_3d_lens(r, **kwargs)
             mass_3d_num = int_profile.mass_enclosed_3d(r, kwargs_profile=kwargs, lens_param=True)
+            print(mass_3d, mass_3d_num, 'test num')
             npt.assert_almost_equal(mass_3d / mass_3d_num, 1, decimal=2)
 
     def test_PJaffe(self):
@@ -347,7 +348,12 @@ class TestNumerics(object):
 
     def test_nie(self):
         from lenstronomy.LensModel.Profiles.nie import NIE as Model
-        kwargs = {'theta_E': 1., 's_scale': 0.3, 'e1': 0., 'e2': 0}
+        kwargs = {'theta_E': 0.7, 's_scale': 0.3, 'e1': 0., 'e2': 0}
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_chameleon(self):
+        from lenstronomy.LensModel.Profiles.chameleon import Chameleon as Model
+        kwargs = {'alpha_1': 100., 'w_c': .1, 'w_t': 2., 'e1': 0., 'e2': 0}
         self.assert_lens_integrals(Model, kwargs)
 
 

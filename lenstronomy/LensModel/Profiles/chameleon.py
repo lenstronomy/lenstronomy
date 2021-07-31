@@ -89,6 +89,46 @@ class Chameleon(LensProfileBase):
         f_yx = f_yx_1 - f_yx_2
         return f_xx, f_xy, f_yx, f_yy
 
+    def density_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
+        """
+        spherical average density as a function of 3d radius
+
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param w_c: see Suyu+2014
+        :param w_t: see Suyu+2014
+        :param e1: ellipticity parameter
+        :param e2: ellipticity parameter
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: matter density at 3d radius r
+        """
+        theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(alpha_1, w_c, w_t, e1, e2)
+        f_1 = self._nie_1.density_lens(r, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_2 = self._nie_2.density_lens(r, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
+        f_ = f_1 - f_2
+        return f_
+
+    def mass_3d_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
+        """
+        mass enclosed 3d radius
+
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param w_c: see Suyu+2014
+        :param w_t: see Suyu+2014
+        :param e1: ellipticity parameter
+        :param e2: ellipticity parameter
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: mass enclosed 3d radius r
+        """
+        theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(alpha_1, w_c, w_t, e1, e2)
+        m_1 = self._nie_1.mass_3d_lens(r, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        m_2 = self._nie_2.mass_3d_lens(r, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
+        m_ = m_1 - m_2
+        return m_
+
     def param_convert(self, alpha_1, w_c, w_t, e1, e2):
         """
         convert the parameter alpha_1 (deflection angle one arcsecond from the center) into the
@@ -122,8 +162,11 @@ class Chameleon(LensProfileBase):
     def set_static(self, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
 
-        :param logM:
-        :param concentration:
+        :param alpha_1:
+        :param w_c:
+        :param w_t:
+        :param e1:
+        :param e2:
         :param center_x:
         :param center_y:
         :return:

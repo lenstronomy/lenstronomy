@@ -116,7 +116,7 @@ class NIE(LensProfileBase):
         :return: 3d mass density at 3d radius r
         """
         # kappa=1/2 at Einstein radius
-        rho0 = 1 / 2 * theta_E**2 / np.pi
+        rho0 = 1 / 2 * theta_E / np.pi
         return rho0 / (r**2 + s_scale**2)
 
     def mass_3d_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
@@ -132,7 +132,7 @@ class NIE(LensProfileBase):
         :param center_y: profile center
         :return: 3d mass density at 3d radius r
         """
-        rho0 = 1 / 2 * theta_E ** 2 / np.pi
+        rho0 = 1 / 2 * theta_E / np.pi
         return rho0 * 4 * np.pi * (r - s_scale * np.arctan(r/s_scale))
 
     def param_conv(self, theta_E, e1, e2, s_scale):

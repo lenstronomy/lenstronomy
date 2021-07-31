@@ -447,6 +447,58 @@ class TripleChameleon(LensProfileBase):
         f_xx3, f_xy3, f_yx3, f_yy3 = self._chameleon_3.hessian(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
         return f_xx1 + f_xx2 + f_xx3, f_xy1 + f_xy2 + f_xy3, f_yx1 + f_yx2 + f_yx3, f_yy1 + f_yy2 + f_yy3
 
+    def density_lens(self, r, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplitude
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return: density at radius r (spherical average)
+        """
+        amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
+        f_1 = self._chameleon_1.density_lens(r, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self._chameleon_2.density_lens(r, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_3 = self._chameleon_3.density_lens(r, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_1 + f_2 + f_3
+
+    def mass_3d_lens(self, r, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplitude
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return: mass enclosed 3d radius
+        """
+        amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
+        m_1 = self._chameleon_1.mass_3d_lens(r, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        m_2 = self._chameleon_2.mass_3d_lens(r, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        m_3 = self._chameleon_3.mass_3d_lens(r, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return m_1 + m_2 + m_3
+
     def set_static(self, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
                  center_x=0, center_y=0):
         amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)

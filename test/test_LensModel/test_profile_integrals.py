@@ -361,6 +361,12 @@ class TestNumerics(object):
                   'w_c2': 0.5, 'w_t2': 2, 'e12': 0, 'e22': 0}
         self.assert_lens_integrals(Model, kwargs)
 
+        from lenstronomy.LensModel.Profiles.chameleon import TripleChameleon as Model
+        kwargs = {'alpha_1': 2., 'ratio12': 2, 'ratio13': 0.2, 'w_c1': 0.2, 'w_t1': 1, 'e11': 0, 'e21': 0,
+                  'w_c2': 0.5, 'w_t2': 2, 'e12': 0, 'e22': 0,
+                  'w_c3': 2, 'w_t3': 5, 'e13': 0, 'e23': 0}
+        self.assert_lens_integrals(Model, kwargs)
+
 
     """
     def test_sis(self):

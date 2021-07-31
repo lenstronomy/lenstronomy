@@ -102,6 +102,39 @@ class NIE(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
+    def density_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+        3d mass density at 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+
+        :param r: 3d radius
+        :param theta_E: Einstein radius
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param s_scale: smoothing scale
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: 3d mass density at 3d radius r
+        """
+        # kappa=1/2 at Einstein radius
+        rho0 = 1 / 2 * theta_E / np.pi
+        return rho0 / (r**2 + s_scale**2)
+
+    def mass_3d_lens(self, r, theta_E, e1, e2, s_scale, center_x=0, center_y=0):
+        """
+        mass enclosed a 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.
+
+        :param r: 3d radius
+        :param theta_E: Einstein radius
+        :param e1: eccentricity component
+        :param e2: eccentricity component
+        :param s_scale: smoothing scale
+        :param center_x: profile center
+        :param center_y: profile center
+        :return: 3d mass density at 3d radius r
+        """
+        rho0 = 1 / 2 * theta_E / np.pi
+        return rho0 * 4 * np.pi * (r - s_scale * np.arctan(r/s_scale))
+
     def param_conv(self, theta_E, e1, e2, s_scale):
         if self._static is True:
             return self._b_static, self._s_static, self._q_static, self._phi_G_static
@@ -121,7 +154,7 @@ class NIE(LensProfileBase):
         """
 
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E_conv = self._theta_E_q_convert(theta_E, q)
+        theta_E_conv = self._theta_E_prod_average2major_axis(theta_E, q)
         b = theta_E_conv * np.sqrt((1 + q**2)/2)
         s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
         return b, s, q, phi_G
@@ -157,18 +190,23 @@ class NIE(LensProfileBase):
         if hasattr(self, '_q_static'):
             del self._q_static
 
-    def _theta_E_q_convert(self, theta_E, q):
+    @staticmethod
+    def _theta_E_prod_average2major_axis(theta_E, q):
         """
-        converts a spherical averaged Einstein radius to an elliptical (major axis) Einstein radius.
-        This then follows the convention of the SPEMD profile in lenstronomy.
-        (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+        Converts a product averaged Einstein radius (of semi-minor and semi-major axis) to a major axis Einstein radius
+        for an Isothermal ellipse.
+        The standard lenstronomy conventions are product averaged Einstein radii while other codes
+        (such as e.g. gravlens) use the semi-major axis convention.
 
-        :param theta_E: Einstein radius in lenstronomy conventions
+        .. math::
+          \\frac{\\theta_{E, prod ave}}{\\theta_{E, major}} = \\sqrt{(1+q^2) / (2 q) }
+
+        :param theta_E: Einstein radius in lenstronomy conventions (product average of major and minor axes)
         :param q: axis ratio minor/major
-        :return: theta_E in convention of kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
+        :return: theta_E in convention of kappa= b *(q^2(s^2 + x^2) + y^2􏰉)^{−1/2} (major axis)
         """
-        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q))) #/ (1+(1-q)/2.)
-        return theta_E_new
+        theta_E_major_axis = theta_E / (np.sqrt((1.+q**2) / (2. * q)))
+        return theta_E_major_axis
 
 
 class NIEMajorAxis(LensProfileBase):
@@ -177,7 +215,7 @@ class NIEMajorAxis(LensProfileBase):
     See Keeton and Kochanek 1998, https://arxiv.org/pdf/astro-ph/9705194.pdf
 
     .. math::
-        \kappa =  b *(q2(s2 + x2) + y2􏰉)^{−1/2}`
+        \\kappa =  b * (q2(s2 + x2) + y2􏰉)^{−1/2}`
 
     """
 

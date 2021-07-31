@@ -55,10 +55,24 @@ class TestNumerics(object):
         kappa = 1./2 * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_num, kappa, decimal=2)
         if hasattr(lensModel, 'mass_2d_lens'):
+            try:
+                del kwargs['center_x']
+                del kwargs['center_y']
+            except:
+                pass
             mass_2d = lensModel.mass_2d_lens(r, **kwargs)
             alpha_x, alpha_y = lensModel.derivatives(r, 0, **kwargs)
             alpha = np.sqrt(alpha_x**2 + alpha_y**2)
             npt.assert_almost_equal(alpha, mass_2d/ r / np.pi, decimal=5)
+        if hasattr(lensModel, 'mass_3d_lens'):
+            try:
+                del kwargs['center_x']
+                del kwargs['center_y']
+            except:
+                pass
+            mass_3d = lensModel.mass_3d_lens(r, **kwargs)
+            mass_3d_num = int_profile.mass_enclosed_3d(r, kwargs_profile=kwargs, lens_param=True)
+            npt.assert_almost_equal(mass_3d / mass_3d_num, 1, decimal=2)
 
     def test_PJaffe(self):
         kwargs = {'rho0': 1., 'Ra': 0.2, 'Rs': 2.}
@@ -329,6 +343,11 @@ class TestNumerics(object):
         kwargs = {'rho0': 1., 'gamma': 2.5, 'r_core': 0.1}
         self.assert_integrals(Model, kwargs)
         kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1}
+        self.assert_lens_integrals(Model, kwargs)
+
+    def test_nie(self):
+        from lenstronomy.LensModel.Profiles.nie import NIE as Model
+        kwargs = {'theta_E': 1., 's_scale': 0.3, 'e1': 0., 'e2': 0}
         self.assert_lens_integrals(Model, kwargs)
 
 

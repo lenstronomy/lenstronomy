@@ -282,6 +282,50 @@ class DoubleChameleon(LensProfileBase):
         f_xx2, f_xy2, f_yx2, f_yy2 = self._chameleon_2.hessian(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_xy1 + f_xy2, f_xy1 + f_xy2, f_yy1 + f_yy2
 
+    def density_lens(self, r, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
+        :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile
+        :param e11: ellipticity parameter for first profile
+        :param e21: ellipticity parameter for first profile
+        :param w_c2: Suyu+2014 for second profile
+        :param w_t2: Suyu+2014 for second profile
+        :param e12: ellipticity parameter for second profile
+        :param e22: ellipticity parameter for second profile
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: 3d density at radius r
+        """
+
+        f_1 = self._chameleon_1.density_lens(r, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self._chameleon_2.density_lens(r, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2
+
+    def mass_3d_lens(self, r, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
+        :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile
+        :param e11: ellipticity parameter for first profile
+        :param e21: ellipticity parameter for first profile
+        :param w_c2: Suyu+2014 for second profile
+        :param w_t2: Suyu+2014 for second profile
+        :param e12: ellipticity parameter for second profile
+        :param e22: ellipticity parameter for second profile
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: mass enclosed 3d radius
+        """
+
+        m_1 = self._chameleon_1.mass_3d_lens(r, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        m_2 = self._chameleon_2.mass_3d_lens(r, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return m_1 + m_2
+
     def set_static(self, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         self._chameleon_1.set_static(alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
         self._chameleon_2.set_static(alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)

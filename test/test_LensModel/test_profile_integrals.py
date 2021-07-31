@@ -353,7 +353,12 @@ class TestNumerics(object):
 
     def test_chameleon(self):
         from lenstronomy.LensModel.Profiles.chameleon import Chameleon as Model
-        kwargs = {'alpha_1': 100., 'w_c': .1, 'w_t': 2., 'e1': 0., 'e2': 0}
+        kwargs = {'alpha_1': 2., 'w_c': .1, 'w_t': 2., 'e1': 0., 'e2': 0}
+        self.assert_lens_integrals(Model, kwargs)
+
+        from lenstronomy.LensModel.Profiles.chameleon import DoubleChameleon as Model
+        kwargs = {'alpha_1': 2., 'ratio': 2, 'w_c1': 0.2, 'w_t1': 1, 'e11': 0, 'e21': 0,
+                  'w_c2': 0.5, 'w_t2': 2, 'e12': 0, 'e22': 0}
         self.assert_lens_integrals(Model, kwargs)
 
 

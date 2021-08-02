@@ -136,9 +136,10 @@ class LightModelBase(object):
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 kwargs = {k: v for k, v in kwargs_list_standard[i].items() if not k in ['center_x', 'center_y']}
-                if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
+                if self.profile_type_list[i] in ['DOUBLE_CHAMELEON', 'CHAMELEON', 'HERNQUIST', 
+						     'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
                                                      'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
-                                                     'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW']:
+                                                     'MULTI_GAUSSIAN_ELLIPSE', 'NIE', 'POWER_LAW', 'TRIPLE_CHAMELEON']:
                     flux += func.light_3d(r, **kwargs)
                 else:
                     raise ValueError('Light model %s does not support a 3d light distribution!'

@@ -23,6 +23,7 @@ Contributors (alphabetic)
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Kevin Fusshoeller
+* Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_

@@ -107,6 +107,16 @@ class TestLensCosmo(object):
 
         a = self.lensCosmo.a_z(z=1)
         npt.assert_almost_equal(a, 0.5)
+        
+    def test_cs_mu2alpha_hat(self):
+        mu = 4.04e20
+        alpha_hat = self.lensCosmo.cs_mu2alpha_hat(mu)
+        npt.assert_almost_equal(alpha_hat, 0.7775901436186862, decimal=8)
+        
+    def test_cs_mu2alpha_reduced(self):
+        mu = 4.04e20
+        alpha_reduced = self.lensCosmo.cs_mu2alpha_reduced(mu)
+        npt.assert_almost_equal(alpha_reduced, 0.43653099458832717, decimal=8)
 
 
 if __name__ == '__main__':

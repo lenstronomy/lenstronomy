@@ -83,7 +83,7 @@ class Param(object):
                  log_sampling_lens=[]):
         """
 
-        :param kwargs_model:
+        :param kwargs_model: keyword arguments to describe all model components used in class_creator.create_class_instances()
         :param kwargs_fixed_lens:
         :param kwargs_fixed_source:
         :param kwargs_fixed_lens_light:

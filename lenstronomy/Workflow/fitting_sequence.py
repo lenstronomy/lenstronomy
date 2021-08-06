@@ -24,10 +24,20 @@ class FittingSequence(object):
         """
 
         :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
-        :param kwargs_model:
-        :param kwargs_constraints: keyword arguments of the Param() Class to handle parameter constraints during the sampling
-        :param kwargs_likelihood:
-        :param kwargs_params:
+        :param kwargs_model: keyword arguments to describe all model components used in
+         class_creator.create_class_instances()
+        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
+         sampling (except upper and lower limits and sampling input mean and width)
+        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
+         likelihood
+        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
+         The argument is organized as:
+         'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'lens_light_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
@@ -52,7 +62,8 @@ class FittingSequence(object):
     def fit_sequence(self, fitting_list):
         """
 
-        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and kwargs being the arguments passed to this option
+        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and
+         kwargs being the arguments passed to this option
         :return: fitting results
         """
         chain_list = []
@@ -103,8 +114,8 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'psf_iteration', "
-                                 "'restart', 'update_settings' or ""'align_images'" % fitting_type)
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
+                                 "'psf_iteration', 'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -155,7 +166,7 @@ class FittingSequence(object):
     def param_class(self):
         """
 
-        :return: Param() class instance reflecting the current state of Fittingsequence
+        :return: Param() class instance reflecting the current state of FittingSequence
         """
         return self._updateManager.param_class
 
@@ -163,7 +174,7 @@ class FittingSequence(object):
     def likelihoodModule(self):
         """
 
-        :return: Likelihood() class instance reflecting the current state of Fittingsequence
+        :return: Likelihood() class instance reflecting the current state of FittingSequence
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
@@ -382,9 +393,8 @@ class FittingSequence(object):
         :param n_iterations: number of iterations in the optimization process
         :param lowerLimit: lower limit of relative shift
         :param upperLimit: upper limit of relative shift
-        :param verbose: bool, print statements
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
-        :return:
+        :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood

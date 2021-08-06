@@ -13,6 +13,24 @@ class MultiBandUpdateManager(UpdateManager):
     frame/image for more convenient use of the FittingSequence.
     """
     def __init__(self, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, num_bands=0):
+        """
+
+        :param kwargs_model: keyword arguments to describe all model components used in
+         class_creator.create_class_instances()
+        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
+         sampling (except upper and lower limits and sampling input mean and width)
+        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
+         likelihood
+        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
+         The argument is organized as:
+         'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'lens_light_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+        :param num_bands: integer, number of image bands
+        """
         super(MultiBandUpdateManager, self).__init__(kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params)
         kwargs_lens_fixed_init, _, _, _, _, _ = self.fixed_kwargs
         self._kwargs_lens_fixed_init = copy.deepcopy(kwargs_lens_fixed_init)
@@ -54,7 +72,7 @@ class MultiBandUpdateManager(UpdateManager):
         #TODO check for overlapping models for more automated fixing of parameters
 
         :param free_bands: boolean list of length of the imaging bands, True indicates that the lens model is being fitted for
-        :return:
+        :return: None
         """
         undo_frame_list = []
         fix_frame_list = []

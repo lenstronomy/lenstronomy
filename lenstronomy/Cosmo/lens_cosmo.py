@@ -186,7 +186,7 @@ class LensCosmo(object):
         :param mu: linear density in units of kg/m
         :return: reduced deflection angle in units of arcsec 
         """
-        alpha_reduced = self.alpha_hat(mu) * self.dds / self.ds
+        alpha_reduced = self.cs_mu2alpha_hat(mu) * self.dds / self.ds
         return alpha_reduced
 
     def nfw_angle2physical(self, Rs_angle, alpha_Rs):

@@ -71,21 +71,21 @@ class TestParam(object):
                                 kwargs_fixed=self.kwargs, type='source_light', linear_solver=False)
 
     def test_get_setParams(self):
-        args = self.param.setParams(self.kwargs)
-        kwargs_new, _ = self.param.getParams(args, i=0)
-        args_new = self.param.setParams(kwargs_new)
+        args = self.param.set_params(self.kwargs)
+        kwargs_new, _ = self.param.get_params(args, i=0)
+        args_new = self.param.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-        args = self.param_fixed.setParams(self.kwargs)
-        kwargs_new, _ = self.param_fixed.getParams(args, i=0)
-        args_new = self.param_fixed.setParams(kwargs_new)
+        args = self.param_fixed.set_params(self.kwargs)
+        kwargs_new, _ = self.param_fixed.get_params(args, i=0)
+        args_new = self.param_fixed.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-        args = self.param_linear.setParams(self.kwargs)
-        kwargs_new, _ = self.param_linear.getParams(args, i=0)
-        args_new = self.param_linear.setParams(kwargs_new)
+        args = self.param_linear.set_params(self.kwargs)
+        kwargs_new, _ = self.param_linear.get_params(args, i=0)
+        args_new = self.param_linear.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
@@ -118,27 +118,27 @@ class TestRaise(unittest.TestCase):
             lighModel = LightParam(light_model_list=['WRONG'], kwargs_fixed=[{}])
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['MULTI_GAUSSIAN'], kwargs_fixed=[{}])
-            lighModel.setParams(kwargs_list=[{'amp': 1, 'sigma': 1}])
+            lighModel.set_params(kwargs_list=[{'amp': 1, 'sigma': 1}])
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
             lighModel.num_param()
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SHAPELETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.getParams(args=[], i=0)
+            lighModel.get_params(args=[], i=0)
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['MULTI_GAUSSIAN'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.getParams(args=[1, 1, 1, 1], i=0)
+            lighModel.get_params(args=[1, 1, 1, 1], i=0)
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.getParams(args=[1], i=0)
+            lighModel.get_params(args=[1], i=0)
         with self.assertRaises(ValueError):
             # no fixed params provided 
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.setParams(kwargs_list=[{'amp': np.ones((3*20**2))}])
+            lighModel.set_params(kwargs_list=[{'amp': np.ones((3 * 20 ** 2))}])
         with self.assertRaises(ValueError):
             # missing fixed params
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'n_scales': 3}], linear_solver=False)
-            lighModel.setParams(kwargs_list=[{'amp': np.ones((3*20**2))}])
+            lighModel.set_params(kwargs_list=[{'amp': np.ones((3 * 20 ** 2))}])
         with self.assertRaises(ValueError):
             # missing fixed params
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'n_scales': 3}], linear_solver=False)
@@ -147,21 +147,21 @@ class TestRaise(unittest.TestCase):
             # missing fixed params
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'amp': np.ones((3*20**2))}],
                                    linear_solver=False)
-            lighModel.setParams([{'n_scales': 3}])
+            lighModel.set_params([{'n_scales': 3}])
 
         with self.assertRaises(ValueError):
             # missing fixed params 'n_pixels'
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.setParams([{'n_scales': 3}])
+            lighModel.set_params([{'n_scales': 3}])
 
             # missing fixed params 'n_scales'
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{}], linear_solver=False)
-            lighModel.setParams([{'n_pixels': 3}])
+            lighModel.set_params([{'n_pixels': 3}])
 
         with self.assertRaises(ValueError):
             lighModel = LightParam(light_model_list=['SLIT_STARLETS'], kwargs_fixed=[{'amp': np.ones((3 * 20 ** 2))}],
                                    linear_solver=False)
-            lighModel.setParams([{'n_scales': 3}])
+            lighModel.set_params([{'n_scales': 3}])
 
 
 if __name__ == '__main__':

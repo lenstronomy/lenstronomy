@@ -219,7 +219,7 @@ class Param(object):
                                          num_images=self._num_images)
 
         source_model_list = self._source_light_model_list
-        if (len(source_model_list) != 1 or source_model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']):
+        if len(source_model_list != 1 or source_model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']):
             # source_grid_offset only defined for source profiles compatible with pixel-based solver
             source_grid_offset = False
 
@@ -283,12 +283,12 @@ class Param(object):
         """
         i = 0
         args = np.atleast_1d(args)
-        kwargs_lens, i = self.lensParams.getParams(args, i)
-        kwargs_source, i = self.souceParams.getParams(args, i)
-        kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
+        kwargs_lens, i = self.lensParams.get_params(args, i)
+        kwargs_source, i = self.souceParams.get_params(args, i)
+        kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
         kwargs_ps, i = self.pointSourceParams.getParams(args, i)
         kwargs_special, i = self.specialParams.get_params(args, i)
-        kwargs_extinction, i = self.extinctionParams.getParams(args, i)
+        kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
@@ -333,12 +333,12 @@ class Param(object):
         :return: numpy array of parameters
         """
 
-        args = self.lensParams.setParams(kwargs_lens)
-        args += self.souceParams.setParams(kwargs_source)
-        args += self.lensLightParams.setParams(kwargs_lens_light)
+        args = self.lensParams.set_params(kwargs_lens)
+        args += self.souceParams.set_params(kwargs_source)
+        args += self.lensLightParams.set_params(kwargs_lens_light)
         args += self.pointSourceParams.setParams(kwargs_ps)
         args += self.specialParams.set_params(kwargs_special)
-        args += self.extinctionParams.setParams(kwargs_extinction)
+        args += self.extinctionParams.set_params(kwargs_extinction)
         return np.array(args, dtype=float)
 
     def param_limits(self):
@@ -363,7 +363,7 @@ class Param(object):
     def num_param(self):
         """
 
-        :return: number of parameters involved (int)
+        :return: number of parameters involved (int), list of parameter names
         """
         num, name_list = self.lensParams.num_param()
         _num, _list = self.souceParams.num_param()

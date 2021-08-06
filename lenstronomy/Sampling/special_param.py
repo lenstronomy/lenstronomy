@@ -190,7 +190,7 @@ class SpecialParam(object):
     def num_param(self):
         """
 
-        :return: integer, number of free parameters sampled (and managed) by this class
+        :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
         """
         num = 0
         string_list = []

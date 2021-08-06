@@ -82,7 +82,7 @@ class CosmicString(LensProfileBase):
                 if x__[i] > 0:
                     side[i] = 1
                 elif x__[i] < 0:
-                    side[i] = -1          
+                    side[i] = -1
             
         # side = 1 if right or -1 if left, 0 if outside of strip or on string (not sure if this is right)
         
@@ -93,12 +93,15 @@ class CosmicString(LensProfileBase):
         # alpha_x is always + if on right and - if on left
         # alpha_y changes based on side and theta
         
-        if theta < 90:  
+        if theta < np.pi/2:  
             alpha_y = -1 * side * alpha * np.sin(psi)
-        elif theta > 90: 
+        elif theta > np.pi/2: 
             alpha_y = side * alpha * np.sin(psi)
-        elif theta == 90: # when string is vertical alpha_y = 0
-            alpha_y = 0
+        elif theta == np.pi/2: # when string is vertical alpha_y = 0
+            if isinstance(y, int) or isinstance(y, float):
+                alpha_y = 0
+            else:
+                alpha_y = np.zeros_like(y)
             
         return alpha_x, alpha_y
     

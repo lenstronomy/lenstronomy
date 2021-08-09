@@ -126,10 +126,11 @@ class LinearBasis(LightModelBase):
     def update_linear(self, param, i, kwargs_list):
         """
 
-        :param param:
-        :param i:
-        :param kwargs_list:
-        :return:
+        :param param: array of linear amplitude coefficients in the order of the linear minimization of the ImSim module
+        :param i: index of first coefficient to start reading out the linear parameters associated with the model
+         components of this class
+        :param kwargs_list: list of keyword arguments of the model components
+        :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
         """
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',

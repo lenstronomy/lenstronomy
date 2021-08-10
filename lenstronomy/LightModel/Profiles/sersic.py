@@ -61,7 +61,7 @@ class SersicElliptic(SersicUtil):
         :param x:
         :param y:
         :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: semi-major axis half light radius
+        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
         :param n_sersic: Sersic index
         :param e1: eccentricity parameter
         :param e2: eccentricity parameter
@@ -106,7 +106,7 @@ class CoreSersic(SersicUtil):
         :param x:
         :param y:
         :param amp: surface brightness/amplitude value at the half light radius
-        :param R_sersic: semi-major axis half light radius
+        :param R_sersic: half light radius (either semi-major axis or product average of semi-major and semi-minor axis)
         :param Rb: "break" core radius
         :param n_sersic: Sersic index
         :param gamma: inner power-law exponent

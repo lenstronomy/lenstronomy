@@ -22,14 +22,19 @@ class LightModelBase(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.001):
+    def __init__(self, light_model_list, smoothing=0.001, sersic_major_axis=None):
         """
 
         :param light_model_list: list of light models
         :param smoothing: smoothing factor for certain models (deprecated)
+        :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
+         half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
+         convention in the lenstronomy yaml setting (which by default is =False)
         """
         self.profile_type_list = light_model_list
         self.func_list = []
+        if sersic_major_axis is None:
+            sersic_major_axis = sersic_major_axis_conf
         for profile_type in light_model_list:
             if profile_type == 'GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -51,10 +56,10 @@ class LightModelBase(object):
                 self.func_list.append(Sersic(smoothing=smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
-                self.func_list.append(SersicElliptic(smoothing=smoothing, sersic_major_axis=sersic_major_axis_conf))
+                self.func_list.append(SersicElliptic(smoothing=smoothing, sersic_major_axis=sersic_major_axis))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
-                self.func_list.append(CoreSersic(smoothing=smoothing))
+                self.func_list.append(CoreSersic(smoothing=smoothing, sersic_major_axis=sersic_major_axis))
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())

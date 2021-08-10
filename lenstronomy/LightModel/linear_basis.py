@@ -13,13 +13,12 @@ class LinearBasis(LightModelBase):
     class to handle source and lens light models
     """
 
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, **kwargs):
         """
 
-        :param light_model_list:
-        :param smoothing:
+        :param kwargs: keyword arguments for LightModelBase class
         """
-        super(LinearBasis, self).__init__(light_model_list=light_model_list, smoothing=smoothing)
+        super(LinearBasis, self).__init__(**kwargs)
 
     @property
     def param_name_list(self):

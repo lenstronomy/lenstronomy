@@ -32,7 +32,8 @@ class Numerics(PointSourceRendering):
         ray-shooting). Pixels marked as False will be assigned a flux value of zero (or ignored in the adaptive
         convolution)
         :param supersampled_indexes: 2d boolean array (only used in mode='adaptive') of pixels to be supersampled (in
-        surface brightness and if supersampling_convolution=True also in convolution)
+        surface brightness and if supersampling_convolution=True also in convolution). All other pixels not set to =True
+        will not be super-sampled.
         :param compute_indexes: 2d boolean array (only used in mode='adaptive'), marks pixel that the response after
         convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for
         consistency.

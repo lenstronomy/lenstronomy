@@ -144,11 +144,10 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, likelihood_mask=None):
     """
 
-    :param kwargs_data:
-    :param kwargs_psf:
-    :param kwargs_model:
-    :param kwargs_model_indexes:
-    :return:
+    :param kwargs_data: ImageData keyword arguments
+    :param kwargs_psf: PSF keyword arguments
+    :param kwargs_model: model keyword arguments
+    :return: ImageLinearFit() instance
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)

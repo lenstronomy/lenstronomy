@@ -26,6 +26,20 @@ Finally add the `lenstronomy` repository as a *remote*. This will allow you to f
   git remote add lenstronomyproject https://github.com/sibirrer/lenstronomy.git
   ```
 
+### Install your local lenstronomy version
+
+To enable that your new code gets accessible by python also outside of the development environment, 
+make sure all previous versions of lenstronomy are uninstalled and then install your version of lenstronomy (aka add the software to the python path)
+
+  ```bash
+  cd lenstronomy
+  python setup.py develop --user
+  ```
+
+Alternatively, create virtual environments for the development (recommended for advanced usage with multiple branches).
+
+
+
 ### Create a branch for your new feature
 
 Create a *branch* off the `lenstronomyproject` main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:

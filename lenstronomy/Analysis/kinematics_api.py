@@ -275,8 +275,7 @@ class KinematicsAPI(object):
             else:
                 center_x, center_y = None, None
             mass_r = self._lensMassProfile.radial_lens_profile(r_array, kwargs_lens, center_x=center_x,
-                                                                            center_y=center_y,
-                                                                            model_bool_list=model_kinematics_bool)
+                                                               center_y=center_y, model_bool_list=model_kinematics_bool)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=kwargs_mge.get('n_comp', 20))
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]

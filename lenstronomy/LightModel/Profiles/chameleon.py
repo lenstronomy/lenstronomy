@@ -1,7 +1,5 @@
 from lenstronomy.LightModel.Profiles.nie import NIE
 from lenstronomy.LensModel.Profiles.chameleon import Chameleon as ChameleonLens
-import lenstronomy.Util.param_util as param_util
-
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
@@ -35,10 +33,9 @@ class Chameleon(object):
         :return: flux of chameleon profile
         """
         amp_new, w_c, w_t, s_scale_1, s_scale_2 = self._chameleonLens.param_convert(amp, w_c, w_t, e1, e2)
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         flux1 = self.nie.function(x, y, 1, e1, e2, s_scale_1, center_x, center_y)
         flux2 = self.nie.function(x, y, 1, e1, e2, s_scale_2, center_x, center_y)
-        flux = amp_new / (1. + q) * (flux1 - flux2)
+        flux = amp_new * (flux1 - flux2)
         return flux
 
     def light_3d(self, r, amp, w_c, w_t, e1, e2, center_x=0, center_y=0):
@@ -55,10 +52,9 @@ class Chameleon(object):
         :return: 3d flux of chameleon profile at radius r
         """
         amp_new, w_c, w_t, s_scale_1, s_scale_2 = self._chameleonLens.param_convert(amp, w_c, w_t, e1, e2)
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         flux1 = self.nie.light_3d(r, 1, e1, e2, s_scale_1, center_x, center_y)
         flux2 = self.nie.light_3d(r, 1, e1, e2, s_scale_2, center_x, center_y)
-        flux = amp_new / (1. + q) * (flux1 - flux2)
+        flux = amp_new * (flux1 - flux2)
         return flux
 
 

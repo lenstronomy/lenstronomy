@@ -156,7 +156,8 @@ class NIE(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         theta_E_conv = self._theta_E_prod_average2major_axis(theta_E, q)
         b = theta_E_conv * np.sqrt((1 + q**2)/2)
-        s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
+        s = s_scale / np.sqrt(q)
+        #s = s_scale * np.sqrt((1 + q**2) / (2*q**2))
         return b, s, q, phi_G
 
     def set_static(self, theta_E, e1, e2, s_scale, center_x=0, center_y=0):

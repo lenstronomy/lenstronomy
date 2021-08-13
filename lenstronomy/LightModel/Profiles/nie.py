@@ -29,15 +29,19 @@ class NIE(LightProfileBase):
         :param center_y: center of profile
         :return: surface brightness of NIE profile
         """
-
-        x_ = x - center_x
-        y_ = y - center_y
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        # rotate
-        x__, y__ = util.rotate(x_, y_, phi_G)
         s = s_scale * np.sqrt((1 + q ** 2) / (2 * q ** 2))
-        f_ = amp/2. * (q**2 * (s**2 + x__**2) + y__**2)**(-1./2)
+        x__, y__ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x, center_y)
+        f_ = amp / 2. * (s_scale**2 + x__ ** 2 + y__ ** 2) ** (-1. / 2)
         return f_
+        #x_ = x - center_x
+        #y_ = y - center_y
+        #phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        # rotate
+        #x__, y__ = util.rotate(x_, y_, phi_G)
+        #s = s_scale * np.sqrt((1 + q ** 2) / (2 * q ** 2))
+        #f_ = amp/2. * (q**2 * (s**2 + x__**2) + y__**2)**(-1./2) * np.sqrt(q)
+        #return f_
 
     def light_3d(self, r, amp, e1, e2, s_scale, center_x=0, center_y=0):
         """

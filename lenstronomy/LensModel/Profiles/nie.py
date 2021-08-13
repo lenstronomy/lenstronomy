@@ -11,7 +11,10 @@ __all__ = ['NIE', 'NIEMajorAxis']
 class NIE(LensProfileBase):
     """
     Non-singular isothermal ellipsoid
-    kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2
+
+    .. math::
+     \\kappa = \\theta_E/2 \\left[s_{scale} + qx^2 + y^2/q]−1/2
+
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}

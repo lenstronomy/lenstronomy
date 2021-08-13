@@ -10,7 +10,7 @@ __all__ = ['NIE', 'NIEMajorAxis']
 
 class NIE(LensProfileBase):
     """
-    Non-singular isothermal ellipsoid
+    Non-singular isothermal ellipsoid (NIE)
 
     .. math::
      \\kappa = \\theta_E/2 \\left[s_{scale} + qx^2 + y^2/q]−1/2

@@ -30,8 +30,6 @@ class TestNIE(object):
         flux = light.function(x=x, y=y, **kwargs_light)
         f_xx, f_xy, f_yx, f_yy = lens.hessian(x=x, y=y, **kwargs_lens)
         kappa = 1/2. * (f_xx + f_yy)
-        #flux2d = util.array2image(flux)
-        #kappa2d = util.array2image(kappa)
 
         npt.assert_almost_equal(flux/flux[-1], kappa/kappa[-1], decimal=3)
 

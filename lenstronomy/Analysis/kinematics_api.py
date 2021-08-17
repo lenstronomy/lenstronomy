@@ -331,7 +331,7 @@ class KinematicsAPI(object):
                 if kwargs_mge is None:
                     raise ValueError('kwargs_mge must be provided to compute the MGE')
                 amps, sigmas, center_x, center_y = self._lensLightProfile.multi_gaussian_decomposition(
-                    kwargs_lens_light, model_bool_list=model_kinematics_bool, **kwargs_mge)
+                    kwargs_lens_light, model_bool_list=model_kinematics_bool, r_h=r_eff, **kwargs_mge)
                 light_profile_list = ['MULTI_GAUSSIAN']
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light

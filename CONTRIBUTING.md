@@ -64,8 +64,10 @@ Write the new code you would like to contribute and *commit* it to the feature b
   git push origin <your-branch-name>
   ```
 
+
 **Note:** The first time you *push* a feature branch you will probably need to use `--set-upstream origin` to link to your remote fork:
 
+  
   ```bash
   git push --set-upstream origin <your-branch-name>
   ```
@@ -120,7 +122,7 @@ Before your pull request can be merged into the codebase, it will be reviewed by
 - lenstronomy is compatible with Python>=3.5 (see [setup.cfg](setup.cfg)). lenstronomy *does not* support backwards compatibility with Python 2.x; `six`, `__future__` and `2to3` should not be used.
 - All contributions should follow the [PEP8 Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/). We recommend using [flake8](https://flake8.pycqa.org/) to check your code for PEP8 compliance.
 - Importing lenstronomy should only depend on having [NumPy](https://www.numpy.org), [SciPy](https://www.scipy.org/) and [Astropy](https://www.astropy.org/) installed.
-- Code is grouped into submodules e.g. [LensModel](lenstronomy/LensModel), [LightModel](lenstronomy/LightModel) and [ImSim](lenstronomy/ImSim). There is also a [utils](lenstronomy/Utils) submodule for general utility functions.
+- Code is grouped into submodules e.g. [LensModel](lenstronomy/LensModel), [LightModel](lenstronomy/LightModel) and [ImSim](lenstronomy/ImSim). There is also a [Util](lenstronomy/Util) submodule for general utility functions.
 - For more information see the [Astropy Coding Guidelines](http://docs.astropy.org/en/latest/development/codeguide.html)
 
 ### Unit Tests

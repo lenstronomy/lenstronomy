@@ -22,6 +22,7 @@ class ProfileIntegrals(object):
     def mass_enclosed_3d(self, r, kwargs_profile, lens_param=False):
         """
         computes the mass enclosed within a sphere of radius r
+
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention

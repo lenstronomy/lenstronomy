@@ -920,13 +920,28 @@ grid_radius_arcsec</li>
 <span id="lenstronomy-lensmodel-lens-param-module"></span><h2>lenstronomy.LensModel.lens_param module<a class="headerlink" href="#module-lenstronomy.LensModel.lens_param" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LensModel.lens_param.LensParam">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_param.</code><code class="descname">LensParam</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_fixed</em>, <em>kwargs_lower=None</em>, <em>kwargs_upper=None</em>, <em>num_images=0</em>, <em>solver_type='NONE'</em>, <em>num_shapelet_lens=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.lens_param.</code><code class="descname">LensParam</code><span class="sig-paren">(</span><em>lens_model_list</em>, <em>kwargs_fixed</em>, <em>kwargs_lower=None</em>, <em>kwargs_upper=None</em>, <em>kwargs_logsampling=None</em>, <em>num_images=0</em>, <em>solver_type='NONE'</em>, <em>num_shapelet_lens=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle the lens model parameter</p>
 <dl class="method">
-<dt id="lenstronomy.LensModel.lens_param.LensParam.getParams">
-<code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam.getParams" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="lenstronomy.LensModel.lens_param.LensParam.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>args</strong> – tuple of individual floats of sampling argument</li>
+<li><strong>i</strong> – integer, index at the beginning of the tuple for read out to keyword argument convention</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">kwargs_list, index at the end of read out of this model component</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.lens_param.LensParam.num_param">
@@ -935,22 +950,22 @@ grid_radius_arcsec</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">integer, number of free parameters being sampled from the lens model components</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LensModel.lens_param.LensParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam.setParams" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.lens_param.LensParam.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/lens_param.html#LensParam.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.lens_param.LensParam.set_params" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_list</strong> – keyword argument list of lens model components</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple of arguments (floats) that are being sampled</td>
 </tr>
 </tbody>
 </table>
@@ -1371,11 +1386,25 @@ deflector is at z_start</li>
 
 <dl class="method">
 <dt id="lenstronomy.LensModel.profile_integrals.ProfileIntegrals.mass_enclosed_3d">
-<code class="descname">mass_enclosed_3d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/profile_integrals.html#ProfileIntegrals.mass_enclosed_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.profile_integrals.ProfileIntegrals.mass_enclosed_3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the mass enclosed within a sphere of radius r
-:param r: radius (arcsec)
-:param kwargs_profile: keyword argument list with lens model parameters
-:return: 3d mass enclosed of r</p>
+<code class="descname">mass_enclosed_3d</code><span class="sig-paren">(</span><em>r</em>, <em>kwargs_profile</em>, <em>lens_param=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/profile_integrals.html#ProfileIntegrals.mass_enclosed_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.profile_integrals.ProfileIntegrals.mass_enclosed_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>computes the mass enclosed within a sphere of radius r</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – radius (arcsec)</li>
+<li><strong>kwargs_profile</strong> – keyword argument list with lens model parameters</li>
+<li><strong>lens_param</strong> – boolean, if True uses the lens model parameterization in computing the 3d density convention
+and the return is the convergence</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d mass enclosed of r</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

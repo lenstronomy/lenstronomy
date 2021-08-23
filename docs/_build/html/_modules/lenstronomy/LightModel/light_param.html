@@ -84,7 +84,7 @@
     <span class="k">def</span> <span class="nf">param_name_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span>
 
-<div class="viewcode-block" id="LightParam.getParams"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="LightParam.get_params"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.get_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param args: list of floats corresponding ot the arguments being sampled</span>
@@ -135,7 +135,7 @@
             <span class="n">kwargs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">i</span></div>
 
-<div class="viewcode-block" id="LightParam.setParams"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+<div class="viewcode-block" id="LightParam.set_params"><a class="viewcode-back" href="../../../lenstronomy.LightModel.html#lenstronomy.LightModel.light_param.LightParam.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_list: list of keyword arguments of the light profile (free parameter as well as optionally the</span>

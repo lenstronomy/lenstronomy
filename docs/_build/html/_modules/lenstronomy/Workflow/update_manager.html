@@ -55,10 +55,20 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_likelihood</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs_model:</span>
-<span class="sd">        :param kwargs_constraints:</span>
-<span class="sd">        :param kwargs_likelihood:</span>
-<span class="sd">        :param kwargs_params:</span>
+<span class="sd">        :param kwargs_model: keyword arguments to describe all model components used in</span>
+<span class="sd">         class_creator.create_class_instances()</span>
+<span class="sd">        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the</span>
+<span class="sd">         sampling (except upper and lower limits and sampling input mean and width)</span>
+<span class="sd">        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the</span>
+<span class="sd">         likelihood</span>
+<span class="sd">        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.</span>
+<span class="sd">         The argument is organized as:</span>
+<span class="sd">         &#39;lens_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;source_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;lens_light_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;point_source_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;extinction_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;special&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span> <span class="o">=</span> <span class="n">kwargs_model</span>
@@ -102,12 +112,20 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">init_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: keyword arguments for all model components of the initial mean model proposition in the sampling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_init</span><span class="p">,</span> <span class="s1">&#39;kwargs_source&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_init</span><span class="p">,</span>
                 <span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_init</span><span class="p">,</span> <span class="s1">&#39;kwargs_ps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_init</span><span class="p">,</span>
                 <span class="s1">&#39;kwargs_special&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_special_init</span><span class="p">,</span> <span class="s1">&#39;kwargs_extinction&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extinction_init</span><span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">sigma_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return: keyword arguments for all model components of the initial 1-sigma width proposition in the sampling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_sigma</span><span class="p">,</span> <span class="s1">&#39;kwargs_source&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_sigma</span><span class="p">,</span>
                 <span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_light_sigma</span><span class="p">,</span> <span class="s1">&#39;kwargs_ps&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ps_sigma</span><span class="p">,</span>
                 <span class="s1">&#39;kwargs_special&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_special_sigma</span><span class="p">,</span> <span class="s1">&#39;kwargs_extinction&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_extinction_sigma</span><span class="p">}</span>
@@ -141,6 +159,14 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span>
 
 <div class="viewcode-block" id="UpdateManager.best_fit"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.best_fit">[docs]</a>    <span class="k">def</span> <span class="nf">best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        best fit (max likelihood) position for all the model parameters</span>
+
+<span class="sd">        :param bijective: boolean, if True, returns the parameters in the argument of the sampling that might deviate</span>
+<span class="sd">         from the convention of the ImSim module. For example, if parameterized in the image position, the parameters</span>
+<span class="sd">         remain in the image plane rather than being mapped to the source plane.</span>
+<span class="sd">        :return: kwargs_result with all the keyword arguments of the best fit for the model components</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lens_temp</span><span class="p">,</span> <span class="n">source_temp</span><span class="p">,</span> <span class="n">lens_light_temp</span><span class="p">,</span> <span class="n">ps_temp</span><span class="p">,</span> <span class="n">special_temp</span><span class="p">,</span> <span class="n">extinction_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span><span class="p">[</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">],</span> \
                                                                          <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span><span class="p">[</span><span class="s1">&#39;kwargs_source&#39;</span><span class="p">],</span> \
                                                                          <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span><span class="p">[</span><span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">],</span> \
@@ -174,16 +200,12 @@
 <div class="viewcode-block" id="UpdateManager.update_param_value"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_param_value">[docs]</a>    <span class="k">def</span> <span class="nf">update_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="p">[],</span> <span class="n">source</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a model parameter to a specific value.</span>
+
 <span class="sd">        :param lens: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
-<span class="sd">        :type lens:</span>
 <span class="sd">        :param source: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
-<span class="sd">        :type source:</span>
 <span class="sd">        :param lens_light: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
-<span class="sd">        :type lens_light:</span>
 <span class="sd">        :param ps: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
-<span class="sd">        :type ps:</span>
 <span class="sd">        :return: 0, the value of the param is overwritten</span>
-<span class="sd">        :rtype:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">items</span><span class="p">,</span> <span class="n">kwargs_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">lens</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">lens_light</span><span class="p">,</span> <span class="n">ps</span><span class="p">],</span>
             <span class="p">[</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_source&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_ps&#39;</span><span class="p">]):</span>
@@ -198,6 +220,9 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">param_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        creating instance of lenstronomy Param() class. It uses the keyword arguments in self.kwargs_constraints as</span>
+<span class="sd">        __init__() arguments, as well as self.kwargs_model, and the set of kwargs_fixed___, kwargs_lower___,</span>
+<span class="sd">        kwargs_upper___ arguments for lens, lens_light, source, point source, extinction and special parameters.</span>
 
 <span class="sd">        :return: instance of the Param class with the recent options and bounds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -221,27 +246,36 @@
 <span class="sd">        updates the options by overwriting the kwargs with the new ones being added/changed</span>
 <span class="sd">        WARNING: some updates may not be valid depending on the model options. Use carefully!</span>
 
-<span class="sd">        :param kwargs_model:</span>
+<span class="sd">        :param kwargs_model: keyword arguments to describe all model components used in</span>
+<span class="sd">         class_creator.create_class_instances() that are updated from previous arguments</span>
 <span class="sd">        :param kwargs_constraints:</span>
 <span class="sd">        :param kwargs_likelihood:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: kwargs_model, kwargs_constraints, kwargs_likelihood</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_model_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">)</span>
         <span class="n">kwargs_constraints_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_constraints</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_constraints</span><span class="p">)</span>
         <span class="n">kwargs_likelihood_updated</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_likelihood</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_likelihood</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kwargs_model_updated</span><span class="p">,</span> <span class="n">kwargs_constraints_updated</span><span class="p">,</span> <span class="n">kwargs_likelihood_updated</span></div>
 
-<div class="viewcode-block" id="UpdateManager.update_limits"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_limits">[docs]</a>    <span class="k">def</span> <span class="nf">update_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_source_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="UpdateManager.update_limits"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_limits">[docs]</a>    <span class="k">def</span> <span class="nf">update_limits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change_source_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">change_lens_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_lens_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        updates the limits (lower and upper) of the update manager instance</span>
 
 <span class="sd">        :param change_source_lower_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
+<span class="sd">        :param change_lens_lower_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
+<span class="sd">        :param change_source_upper_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
+<span class="sd">        :param change_lens_upper_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
 <span class="sd">        :return: updates internal state of lower and upper limits accessible from outside</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_lower_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_upper_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_lens_lower_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_lens_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_lens_upper_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_lens_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_update_limit</span><span class="p">(</span><span class="n">change_limit</span><span class="p">,</span> <span class="n">kwargs_limit_previous</span><span class="p">):</span>
@@ -264,13 +298,20 @@
                      <span class="n">special_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">source_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
                      <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">special_remove_fixed</span><span class="o">=</span><span class="p">[]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        adds the values of the keyword arguments that are stated in the _add_fixed to the existing fixed arguments.</span>
+<span class="sd">        adds or removes the values of the keyword arguments that are stated in the _add_fixed to the existing fixed</span>
+<span class="sd">        arguments. convention for input arguments are:</span>
+<span class="sd">        [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...], [value1, value2, ... (optional)], [], ...]</span>
 
-<span class="sd">        :param lens_add_fixed:</span>
-<span class="sd">        :param source_add_fixed:</span>
-<span class="sd">        :param lens_light_add_fixed:</span>
-<span class="sd">        :param ps_add_fixed:</span>
-<span class="sd">        :param special_add_fixed:</span>
+<span class="sd">        :param lens_add_fixed: added fixed parameter in lens model</span>
+<span class="sd">        :param source_add_fixed: added fixed parameter in source model</span>
+<span class="sd">        :param lens_light_add_fixed: added fixed parameter in lens light model</span>
+<span class="sd">        :param ps_add_fixed: added fixed parameter in point source model</span>
+<span class="sd">        :param special_add_fixed: added fixed parameter in special model</span>
+<span class="sd">        :param lens_remove_fixed: remove fixed parameter in lens model</span>
+<span class="sd">        :param source_remove_fixed: remove fixed parameter in source model</span>
+<span class="sd">        :param lens_light_remove_fixed: remove fixed parameter in lens light model</span>
+<span class="sd">        :param ps_remove_fixed: remove fixed parameter in point source model</span>
+<span class="sd">        :param special_remove_fixed: remove fixed parameter in special model</span>
 <span class="sd">        :return: updated kwargs fixed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lens_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_fixed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span><span class="p">[</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_fixed</span><span class="p">,</span> <span class="n">lens_add_fixed</span><span class="p">)</span>
@@ -300,7 +341,7 @@
 <span class="sd">        :param kwargs_model: model parameters</span>
 <span class="sd">        :param kwargs_fixed: parameters that are held fixed (even before)</span>
 <span class="sd">        :param add_fixed: additional fixed parameters [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...], [value1, value2, ... (optional)], [], ...]</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: updated kwargs_fixed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1">#fixed_kwargs = copy.deepcopy(kwargs_fixed)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">add_fixed</span><span class="p">)):</span>
@@ -322,7 +363,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_fixed: fixed parameters (before)</span>
-<span class="sd">        :param remove_fixed: list of parameters to be removed from the fixed list and initialized by the valuye of kwargs_model [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [], ...]</span>
+<span class="sd">        :param remove_fixed: list of parameters to be removed from the fixed list and initialized by the valuye of</span>
+<span class="sd">         kwargs_model [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [], ...]</span>
 <span class="sd">        :return: updated kwargs fixed parameters</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">remove_fixed</span><span class="p">)):</span>
@@ -339,7 +381,7 @@
 <span class="sd">        constraint by the fitting of a sub-set of the images.</span>
 
 <span class="sd">        :param image_index: index</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>

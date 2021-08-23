@@ -286,6 +286,33 @@ position where to evaluate the lens model</p>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
 <dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.Chameleon.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>w_c</em>, <em>w_t</em>, <em>e1=0</em>, <em>e2=0</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#Chameleon.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.Chameleon.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>spherical average density as a function of 3d radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – deflection angle at 1 (arcseconds) from the center</li>
+<li><strong>w_c</strong> – see Suyu+2014</li>
+<li><strong>w_t</strong> – see Suyu+2014</li>
+<li><strong>e1</strong> – ellipticity parameter</li>
+<li><strong>e2</strong> – ellipticity parameter</li>
+<li><strong>center_x</strong> – ra center</li>
+<li><strong>center_y</strong> – dec center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matter density at 3d radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.Chameleon.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_1</em>, <em>w_c</em>, <em>w_t</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#Chameleon.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.Chameleon.derivatives" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
@@ -372,6 +399,33 @@ position where to evaluate the lens model</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.Chameleon.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>w_c</em>, <em>w_t</em>, <em>e1=0</em>, <em>e2=0</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#Chameleon.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.Chameleon.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed 3d radius</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – deflection angle at 1 (arcseconds) from the center</li>
+<li><strong>w_c</strong> – see Suyu+2014</li>
+<li><strong>w_t</strong> – see Suyu+2014</li>
+<li><strong>e1</strong> – ellipticity parameter</li>
+<li><strong>e2</strong> – ellipticity parameter</li>
+<li><strong>center_x</strong> – ra center</li>
+<li><strong>center_y</strong> – dec center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 3d radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.Chameleon.param_convert">
 <code class="descname">param_convert</code><span class="sig-paren">(</span><em>alpha_1</em>, <em>w_c</em>, <em>w_t</em>, <em>e1</em>, <em>e2</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#Chameleon.param_convert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.Chameleon.param_convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert the parameter alpha_1 (deflection angle one arcsecond from the center) into the
@@ -422,8 +476,11 @@ position where to evaluate the lens model</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>logM</strong> – </li>
-<li><strong>concentration</strong> – </li>
+<li><strong>alpha_1</strong> – </li>
+<li><strong>w_c</strong> – </li>
+<li><strong>w_t</strong> – </li>
+<li><strong>e1</strong> – </li>
+<li><strong>e2</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
 </ul>
@@ -448,6 +505,37 @@ position where to evaluate the lens model</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.chameleon.</code><code class="descname">DoubleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleon.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – deflection angle at 1 (arcseconds) from the center</li>
+<li><strong>ratio</strong> – ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile</li>
+<li><strong>w_c1</strong> – Suyu+2014 for first profile</li>
+<li><strong>w_t1</strong> – Suyu+2014 for first profile</li>
+<li><strong>e11</strong> – ellipticity parameter for first profile</li>
+<li><strong>e21</strong> – ellipticity parameter for first profile</li>
+<li><strong>w_c2</strong> – Suyu+2014 for second profile</li>
+<li><strong>w_t2</strong> – Suyu+2014 for second profile</li>
+<li><strong>e12</strong> – ellipticity parameter for second profile</li>
+<li><strong>e22</strong> – ellipticity parameter for second profile</li>
+<li><strong>center_x</strong> – ra center</li>
+<li><strong>center_y</strong> – dec center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d density at radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_1</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleon.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -549,6 +637,37 @@ position where to evaluate the lens model</p>
 <code class="descname">lower_limit_default</code><em class="property"> = {'alpha_1': 0, 'center_x': -100, 'center_y': -100, 'e11': -0.8, 'e12': -0.8, 'e21': -0.8, 'e22': -0.8, 'ratio': 0, 'w_c1': 0, 'w_c2': 0, 'w_t1': 0, 'w_t2': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#DoubleChameleon.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – deflection angle at 1 (arcseconds) from the center</li>
+<li><strong>ratio</strong> – ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile</li>
+<li><strong>w_c1</strong> – Suyu+2014 for first profile</li>
+<li><strong>w_t1</strong> – Suyu+2014 for first profile</li>
+<li><strong>e11</strong> – ellipticity parameter for first profile</li>
+<li><strong>e21</strong> – ellipticity parameter for first profile</li>
+<li><strong>w_c2</strong> – Suyu+2014 for second profile</li>
+<li><strong>w_t2</strong> – Suyu+2014 for second profile</li>
+<li><strong>e12</strong> – ellipticity parameter for second profile</li>
+<li><strong>e22</strong> – ellipticity parameter for second profile</li>
+<li><strong>center_x</strong> – ra center</li>
+<li><strong>center_y</strong> – dec center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 3d radius</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.param_names">
 <code class="descname">param_names</code><em class="property"> = ['alpha_1', 'ratio', 'w_c1', 'w_t1', 'e11', 'e21', 'w_c2', 'w_t2', 'e12', 'e22', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.DoubleChameleon.param_names" title="Permalink to this definition">¶</a></dt>
@@ -596,6 +715,38 @@ position where to evaluate the lens model</p>
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.chameleon.</code><code class="descname">TripleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#TripleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
 <p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>ratio12</em>, <em>ratio13</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>w_c3</em>, <em>w_t3</em>, <em>e13</em>, <em>e23</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#TripleChameleon.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – </li>
+<li><strong>ratio12</strong> – ratio of first to second amplitude</li>
+<li><strong>ratio13</strong> – ratio of first to third amplitude</li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">density at radius r (spherical average)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>alpha_1</em>, <em>ratio12</em>, <em>ratio13</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>w_c3</em>, <em>w_t3</em>, <em>e13</em>, <em>e23</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#TripleChameleon.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -693,6 +844,38 @@ position where to evaluate the lens model</p>
 <dt id="lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.lower_limit_default">
 <code class="descname">lower_limit_default</code><em class="property"> = {'alpha_1': 0, 'center_x': -100, 'center_y': -100, 'e11': -0.8, 'e12': -0.8, 'e13': -0.8, 'e21': -0.8, 'e22': -0.8, 'e23': -0.8, 'ratio12': 0, 'ratio13': 0, 'w_c1': 0, 'w_c2': 0, 'w_c3': 0, 'w_t1': 0, 'w_t2': 0, 'w_t3': 0}</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>alpha_1</em>, <em>ratio12</em>, <em>ratio13</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>w_c3</em>, <em>w_t3</em>, <em>e13</em>, <em>e23</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/chameleon.html#TripleChameleon.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>alpha_1</strong> – </li>
+<li><strong>ratio12</strong> – ratio of first to second amplitude</li>
+<li><strong>ratio13</strong> – ratio of first to third amplitude</li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">mass enclosed 3d radius</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.param_names">
@@ -5999,6 +6182,28 @@ Same as mass_2d but with input normalization in units of projected density
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.hernquist_ellipse.Hernquist_Ellipse.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>sigma0</em>, <em>Rs</em>, <em>e1=0</em>, <em>e2=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/hernquist_ellipse.html#Hernquist_Ellipse.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.hernquist_ellipse.Hernquist_Ellipse.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d sphere or radius r in lensing parameterization</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3-d radius within the mass is integrated (same distance units as density definition)</li>
+<li><strong>sigma0</strong> – rho0 * Rs (units of projected density)</li>
+<li><strong>Rs</strong> – Hernquist radius</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">enclosed mass</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="lenstronomy.LensModel.Profiles.hernquist_ellipse.Hernquist_Ellipse.param_names">
 <code class="descname">param_names</code><em class="property"> = ['sigma0', 'Rs', 'e1', 'e2', 'center_x', 'center_y']</em><a class="headerlink" href="#lenstronomy.LensModel.Profiles.hernquist_ellipse.Hernquist_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
@@ -7513,8 +7718,35 @@ recommended to use the default NFW lensing profile parameterized in reduced defl
 <dt id="lenstronomy.LensModel.Profiles.nie.NIE">
 <em class="property">class </em><code class="descclassname">lenstronomy.LensModel.Profiles.nie.</code><code class="descname">NIE</code><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.Profiles.base_profile.LensProfileBase" title="lenstronomy.LensModel.Profiles.base_profile.LensProfileBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.Profiles.base_profile.LensProfileBase</span></code></a></p>
-<p>Non-singular isothermal ellipsoid
-kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2</p>
+<p>Non-singular isothermal ellipsoid (NIE)</p>
+<div class="math notranslate nohighlight">
+\[\kappa = \theta_E/2 \left[s_{scale} + qx^2 + y^2/q]−1/2\]</div>
+<dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.nie.NIE.density_lens">
+<code class="descname">density_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIE.density_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIE.density_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>3d mass density at 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>theta_E</strong> – Einstein radius</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>s_scale</strong> – smoothing scale</li>
+<li><strong>center_x</strong> – profile center</li>
+<li><strong>center_y</strong> – profile center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d mass density at 3d radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nie.NIE.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>theta_E</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIE.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIE.derivatives" title="Permalink to this definition">¶</a></dt>
@@ -7599,6 +7831,32 @@ kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="lenstronomy.LensModel.Profiles.nie.NIE.mass_3d_lens">
+<code class="descname">mass_3d_lens</code><span class="sig-paren">(</span><em>r</em>, <em>theta_E</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIE.mass_3d_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIE.mass_3d_lens" title="Permalink to this definition">¶</a></dt>
+<dd><p>mass enclosed a 3d radius r. This function assumes spherical symmetry/ignoring the eccentricity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>theta_E</strong> – Einstein radius</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>s_scale</strong> – smoothing scale</li>
+<li><strong>center_x</strong> – profile center</li>
+<li><strong>center_y</strong> – profile center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d mass density at 3d radius r</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nie.NIE.param_conv">
 <code class="descname">param_conv</code><span class="sig-paren">(</span><em>theta_E</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIE.param_conv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIE.param_conv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -7661,7 +7919,7 @@ kappa = theta_E/2 [s2IE + r2(1 − e * cos(2*phi)]−1/2</p>
 <p>This class contains the function and the derivatives of the non-singular isothermal ellipse.
 See Keeton and Kochanek 1998, <a class="reference external" href="https://arxiv.org/pdf/astro-ph/9705194.pdf">https://arxiv.org/pdf/astro-ph/9705194.pdf</a></p>
 <div class="math notranslate nohighlight">
-\[\kappa =  b *(q2(s2 + x2) + y2􏰉)^{−1/2}`\]</div>
+\[\kappa =  b * (q2(s2 + x2) + y2􏰉)^{−1/2}`\]</div>
 <dl class="method">
 <dt id="lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.derivatives">
 <code class="descname">derivatives</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>b</em>, <em>s</em>, <em>q</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Profiles/nie.html#NIEMajorAxis.derivatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Profiles.nie.NIEMajorAxis.derivatives" title="Permalink to this definition">¶</a></dt>

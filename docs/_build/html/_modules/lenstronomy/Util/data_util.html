@@ -58,9 +58,10 @@
 <span class="sd">    :return: estimated Gaussian noise sqrt(variance)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">exposure_time_tot</span> <span class="o">=</span> <span class="n">num_exposures</span> <span class="o">*</span> <span class="n">exposure_time</span>
-    <span class="n">readout_noise_tot</span> <span class="o">=</span> <span class="n">num_exposures</span> <span class="o">*</span> <span class="n">readout_noise</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">readout_noise_tot</span> <span class="o">=</span> <span class="n">num_exposures</span> <span class="o">*</span> <span class="n">readout_noise</span> <span class="o">**</span> <span class="mi">2</span>  <span class="c1"># square of readout noise</span>
     <span class="n">sky_per_pixel</span> <span class="o">=</span> <span class="n">sky_brightness</span> <span class="o">*</span> <span class="n">pixel_scale</span> <span class="o">**</span> <span class="mi">2</span>
-    <span class="n">sigma_bkg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">readout_noise_tot</span> <span class="o">+</span> <span class="n">exposure_time_tot</span> <span class="o">*</span> <span class="n">sky_per_pixel</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="n">exposure_time_tot</span>
+    <span class="n">sky_brightness_tot</span> <span class="o">=</span> <span class="n">exposure_time_tot</span> <span class="o">*</span> <span class="n">sky_per_pixel</span>
+    <span class="n">sigma_bkg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">readout_noise_tot</span> <span class="o">+</span> <span class="n">sky_brightness_tot</span><span class="p">)</span> <span class="o">/</span> <span class="n">exposure_time_tot</span>
     <span class="k">return</span> <span class="n">sigma_bkg</span></div>
 
 

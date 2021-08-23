@@ -40,6 +40,7 @@
             
   <h1>Source code for lenstronomy.LensModel.lens_param</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.single_plane</span> <span class="k">import</span> <span class="n">SinglePlane</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LensParam&#39;</span><span class="p">]</span>
 
@@ -48,12 +49,21 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle the lens model parameter</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_images</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">num_shapelet_lens</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_logsampling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">num_images</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">num_shapelet_lens</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs_options:</span>
-<span class="sd">        :param kwargs_fixed:</span>
+<span class="sd">        :param lens_model_list: list of strings of lens model names</span>
+<span class="sd">        :param kwargs_fixed: list of keyword arguments for model parameters to be held fixed</span>
+<span class="sd">        :param kwargs_lower: list of keyword arguments of the lower bounds of the model parameters</span>
+<span class="sd">        :param kwargs_upper: list of keyword arguments of the upper bounds of the model parameters</span>
+<span class="sd">        :param kwargs_logsampling: list of keyword arguments of parameters to be sampled in log10 space</span>
+<span class="sd">        :param num_images: number of images to be constrained by a non-linear solver</span>
+<span class="sd">         (only relevant when shapelet potential functions are used)</span>
+<span class="sd">        :param solver_type: string, type of non-linear solver</span>
+<span class="sd">         (only relevant in this class when &#39;SHAPELETS&#39; is the solver type)</span>
+<span class="sd">        :param num_shapelet_lens: integer, number of shapelets in the lensing potential</span>
+<span class="sd">         (only relevant when &#39;SHAPELET&#39; lens model is used)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed</span>
@@ -76,12 +86,22 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">lower_limit</span> <span class="o">=</span> <span class="n">kwargs_lower</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">upper_limit</span> <span class="o">=</span> <span class="n">kwargs_upper</span>
+        <span class="k">if</span> <span class="n">kwargs_logsampling</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">))]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="n">kwargs_logsampling</span>
 
-<div class="viewcode-block" id="LensParam.getParams"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.getParams">[docs]</a>    <span class="k">def</span> <span class="nf">getParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="LensParam.get_params"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.get_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param args: tuple of individual floats of sampling argument</span>
+<span class="sd">        :param i: integer, index at the beginning of the tuple for read out to keyword argument convention</span>
+<span class="sd">        :return: kwargs_list, index at the end of read out of this model component</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_logsampling</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
@@ -118,19 +138,24 @@
                         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_logsampling</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+
             <span class="n">kwargs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kwargs_list</span><span class="p">,</span> <span class="n">i</span></div>
 
-<div class="viewcode-block" id="LensParam.setParams"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.setParams">[docs]</a>    <span class="k">def</span> <span class="nf">setParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
+<div class="viewcode-block" id="LensParam.set_params"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param kwargs:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kwargs_list: keyword argument list of lens model components</span>
+<span class="sd">        :return: tuple of arguments (floats) that are being sampled</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">):</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_logsampling</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 
             <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
@@ -157,13 +182,16 @@
                     <span class="c1">#    else:</span>
                     <span class="c1">#        pass</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_logsampling</span><span class="p">:</span>
+                            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
         <span class="k">return</span> <span class="n">args</span></div>
 
 <div class="viewcode-block" id="LensParam.num_param"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam.num_param">[docs]</a>    <span class="k">def</span> <span class="nf">num_param</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :return:</span>
+<span class="sd">        :return: integer, number of free parameters being sampled from the lens model components</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="nb">list</span> <span class="o">=</span> <span class="p">[]</span>

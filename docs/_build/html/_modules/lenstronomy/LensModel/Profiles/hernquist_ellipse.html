@@ -170,7 +170,18 @@
 <span class="sd">        :param Rs: Hernquist radius</span>
 <span class="sd">        :return: enclosed mass</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">rho0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hernquist_Ellipse.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.hernquist_ellipse.Hernquist_Ellipse.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        mass enclosed a 3d sphere or radius r in lensing parameterization</span>
+
+<span class="sd">        :param r: 3-d radius within the mass is integrated (same distance units as density definition)</span>
+<span class="sd">        :param sigma0: rho0 * Rs (units of projected density)</span>
+<span class="sd">        :param Rs: Hernquist radius</span>
+<span class="sd">        :return: enclosed mass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

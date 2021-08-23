@@ -164,7 +164,7 @@ ImageModel(), Multiband(), MultiExposure()
 <span id="lenstronomy-sampling-parameters-module"></span><h2>lenstronomy.Sampling.parameters module<a class="headerlink" href="#module-lenstronomy.Sampling.parameters" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.Sampling.parameters.Param">
-<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_special=None</em>, <em>kwargs_fixed_extinction=None</em>, <em>kwargs_lower_lens=None</em>, <em>kwargs_lower_source=None</em>, <em>kwargs_lower_lens_light=None</em>, <em>kwargs_lower_ps=None</em>, <em>kwargs_lower_special=None</em>, <em>kwargs_lower_extinction=None</em>, <em>kwargs_upper_lens=None</em>, <em>kwargs_upper_source=None</em>, <em>kwargs_upper_lens_light=None</em>, <em>kwargs_upper_ps=None</em>, <em>kwargs_upper_special=None</em>, <em>kwargs_upper_extinction=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>joint_lens_with_lens=[]</em>, <em>joint_lens_light_with_lens_light=[]</em>, <em>joint_source_with_source=[]</em>, <em>joint_lens_with_light=[]</em>, <em>joint_source_with_point_source=[]</em>, <em>joint_lens_light_with_point_source=[]</em>, <em>joint_extinction_with_lens_light=[]</em>, <em>joint_lens_with_source_light=[]</em>, <em>mass_scaling_list=None</em>, <em>point_source_offset=False</em>, <em>num_point_source_list=None</em>, <em>image_plane_source_list=None</em>, <em>solver_type='NONE'</em>, <em>Ddt_sampling=None</em>, <em>source_size=False</em>, <em>num_tau0=0</em>, <em>lens_redshift_sampling_indexes=None</em>, <em>source_redshift_sampling_indexes=None</em>, <em>source_grid_offset=False</em>, <em>num_shapelet_lens=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.Sampling.parameters.</code><code class="descname">Param</code><span class="sig-paren">(</span><em>kwargs_model</em>, <em>kwargs_fixed_lens=None</em>, <em>kwargs_fixed_source=None</em>, <em>kwargs_fixed_lens_light=None</em>, <em>kwargs_fixed_ps=None</em>, <em>kwargs_fixed_special=None</em>, <em>kwargs_fixed_extinction=None</em>, <em>kwargs_lower_lens=None</em>, <em>kwargs_lower_source=None</em>, <em>kwargs_lower_lens_light=None</em>, <em>kwargs_lower_ps=None</em>, <em>kwargs_lower_special=None</em>, <em>kwargs_lower_extinction=None</em>, <em>kwargs_upper_lens=None</em>, <em>kwargs_upper_source=None</em>, <em>kwargs_upper_lens_light=None</em>, <em>kwargs_upper_ps=None</em>, <em>kwargs_upper_special=None</em>, <em>kwargs_upper_extinction=None</em>, <em>kwargs_lens_init=None</em>, <em>linear_solver=True</em>, <em>joint_lens_with_lens=[]</em>, <em>joint_lens_light_with_lens_light=[]</em>, <em>joint_source_with_source=[]</em>, <em>joint_lens_with_light=[]</em>, <em>joint_source_with_point_source=[]</em>, <em>joint_lens_light_with_point_source=[]</em>, <em>joint_extinction_with_lens_light=[]</em>, <em>joint_lens_with_source_light=[]</em>, <em>mass_scaling_list=None</em>, <em>point_source_offset=False</em>, <em>num_point_source_list=None</em>, <em>image_plane_source_list=None</em>, <em>solver_type='NONE'</em>, <em>Ddt_sampling=None</em>, <em>source_size=False</em>, <em>num_tau0=0</em>, <em>lens_redshift_sampling_indexes=None</em>, <em>source_redshift_sampling_indexes=None</em>, <em>source_grid_offset=False</em>, <em>num_shapelet_lens=0</em>, <em>log_sampling_lens=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class that handles the parameter constraints. In particular when different model profiles share joint constraints.</p>
 <p>Options between same model classes:</p>
@@ -194,7 +194,10 @@ joint parameter between lens model and source light model. Samples light model p
 <p>Alternatively to the format of the linking of parameters with IDENTICAL names as listed above as:
 [[i_1, k_2, [‘param_name1’, ‘param_name2’, …]], […], …]
 the following format of the arguments are supported to join parameters with DIFFERENT names:
-[[i_1, k_2, {‘param_old1’: ‘param_new1’, ‘ra_0’: ‘center_x’}], […], …]</p>
+[[i_1, k_2, {‘param_old1’: ‘param_new1’, ‘ra_0’: ‘center_x’}], […], …]
+Log10 sampling of the lens parameters :
+‘log_sampling_lens’: [[i_lens, [‘param_name1’, ‘param_name2’, …]], […], …],
+Sample the log10 of the lens model parameters.</p>
 <dl class="method">
 <dt id="lenstronomy.Sampling.parameters.Param.args2kwargs">
 <code class="descname">args2kwargs</code><span class="sig-paren">(</span><em>args</em>, <em>bijective=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/parameters.html#Param.args2kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.parameters.Param.args2kwargs" title="Permalink to this definition">¶</a></dt>
@@ -269,7 +272,7 @@ ray-traced back to the source plane).</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of parameters involved (int)</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of parameters involved (int), list of parameter names</td>
 </tr>
 </tbody>
 </table>
@@ -493,7 +496,7 @@ These includes cosmology relevant parameters, astrometric errors and overall sca
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">integer, number of free parameters sampled (and managed) by this class</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)</td>
 </tr>
 </tbody>
 </table>

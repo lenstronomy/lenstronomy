@@ -65,10 +65,20 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule</span>
-<span class="sd">        :param kwargs_model:</span>
-<span class="sd">        :param kwargs_constraints: keyword arguments of the Param() Class to handle parameter constraints during the sampling</span>
-<span class="sd">        :param kwargs_likelihood:</span>
-<span class="sd">        :param kwargs_params:</span>
+<span class="sd">        :param kwargs_model: keyword arguments to describe all model components used in</span>
+<span class="sd">         class_creator.create_class_instances()</span>
+<span class="sd">        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the</span>
+<span class="sd">         sampling (except upper and lower limits and sampling input mean and width)</span>
+<span class="sd">        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the</span>
+<span class="sd">         likelihood</span>
+<span class="sd">        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.</span>
+<span class="sd">         The argument is organized as:</span>
+<span class="sd">         &#39;lens_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;source_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;lens_light_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;point_source_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;extinction_model&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
+<span class="sd">         &#39;special&#39;: [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]</span>
 <span class="sd">        :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where</span>
 <span class="sd">        possible</span>
 <span class="sd">        :param verbose: bool, if True prints temporary results and indicators of the fitting process</span>
@@ -93,7 +103,8 @@
 <div class="viewcode-block" id="FittingSequence.fit_sequence"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">[docs]</a>    <span class="k">def</span> <span class="nf">fit_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitting_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param fitting_list: list of [[&#39;string&#39;, {kwargs}], ..] with &#39;string being the specific fitting option and kwargs being the arguments passed to this option</span>
+<span class="sd">        :param fitting_list: list of [[&#39;string&#39;, {kwargs}], ..] with &#39;string being the specific fitting option and</span>
+<span class="sd">         kwargs being the arguments passed to this option</span>
 <span class="sd">        :return: fitting results</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chain_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -144,8 +155,8 @@
                 <span class="n">chain_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ns_output</span><span class="p">)</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fitting_sequence </span><span class="si">%s</span><span class="s2"> is not supported. Please use: &#39;PSO&#39;, &#39;SIMPLEX&#39;, &#39;MCMC&#39;, &#39;psf_iteration&#39;, &quot;</span>
-                                 <span class="s2">&quot;&#39;restart&#39;, &#39;update_settings&#39; or &quot;&quot;&#39;align_images&#39;&quot;</span> <span class="o">%</span> <span class="n">fitting_type</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;fitting_sequence </span><span class="si">%s</span><span class="s2"> is not supported. Please use: &#39;PSO&#39;, &#39;SIMPLEX&#39;, &#39;MCMC&#39;, &quot;</span>
+                                 <span class="s2">&quot;&#39;psf_iteration&#39;, &#39;restart&#39;, &#39;update_settings&#39; or &quot;&quot;&#39;align_images&#39;&quot;</span> <span class="o">%</span> <span class="n">fitting_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">chain_list</span></div>
 
 <div class="viewcode-block" id="FittingSequence.best_fit"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit">[docs]</a>    <span class="k">def</span> <span class="nf">best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -196,7 +207,7 @@
     <span class="k">def</span> <span class="nf">param_class</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :return: Param() class instance reflecting the current state of Fittingsequence</span>
+<span class="sd">        :return: Param() class instance reflecting the current state of FittingSequence</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">param_class</span>
 
@@ -204,7 +215,7 @@
     <span class="k">def</span> <span class="nf">likelihoodModule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :return: Likelihood() class instance reflecting the current state of Fittingsequence</span>
+<span class="sd">        :return: Likelihood() class instance reflecting the current state of FittingSequence</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_model</span>
         <span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_likelihood</span>
@@ -423,9 +434,8 @@
 <span class="sd">        :param n_iterations: number of iterations in the optimization process</span>
 <span class="sd">        :param lowerLimit: lower limit of relative shift</span>
 <span class="sd">        :param upperLimit: upper limit of relative shift</span>
-<span class="sd">        :param verbose: bool, print statements</span>
 <span class="sd">        :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :return: 0, updated coordinate system for the band(s)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_model</span>
         <span class="n">kwargs_likelihood</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">kwargs_likelihood</span>
@@ -450,9 +460,11 @@
         <span class="k">return</span> <span class="mi">0</span></div>
 
 <div class="viewcode-block" id="FittingSequence.update_settings"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_settings">[docs]</a>    <span class="k">def</span> <span class="nf">update_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_constraints</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_likelihood</span><span class="o">=</span><span class="p">{},</span> <span class="n">lens_add_fixed</span><span class="o">=</span><span class="p">[],</span>
-                     <span class="n">source_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
-                     <span class="n">source_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
-                        <span class="n">change_source_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                        <span class="n">source_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_add_fixed</span><span class="o">=</span><span class="p">[],</span>
+                        <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
+                        <span class="n">source_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">cosmo_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
+                        <span class="n">change_source_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">change_lens_lower_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">change_lens_upper_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        updates lenstronomy settings &quot;on the fly&quot;</span>
 
@@ -469,13 +481,15 @@
 <span class="sd">        :param lens_light_remove_fixed: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
 <span class="sd">        :param ps_remove_fixed: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
 <span class="sd">        :param cosmo_remove_fixed: [&#39;param1&#39;, &#39;param2&#39;,...]</span>
+<span class="sd">        :param change_lens_lower_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
 <span class="sd">        :return: 0, the settings are overwritten for the next fitting step to come</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_options</span><span class="p">(</span><span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_constraints</span><span class="p">,</span> <span class="n">kwargs_likelihood</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_fixed</span><span class="p">(</span><span class="n">lens_add_fixed</span><span class="p">,</span> <span class="n">source_add_fixed</span><span class="p">,</span> <span class="n">lens_light_add_fixed</span><span class="p">,</span>
                                          <span class="n">ps_add_fixed</span><span class="p">,</span> <span class="n">cosmo_add_fixed</span><span class="p">,</span> <span class="n">lens_remove_fixed</span><span class="p">,</span> <span class="n">source_remove_fixed</span><span class="p">,</span>
                                          <span class="n">lens_light_remove_fixed</span><span class="p">,</span> <span class="n">ps_remove_fixed</span><span class="p">,</span> <span class="n">cosmo_remove_fixed</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_limits</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">update_limits</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="n">change_source_upper_limit</span><span class="p">,</span> <span class="n">change_lens_lower_limit</span><span class="p">,</span>
+                                          <span class="n">change_lens_upper_limit</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
 <div class="viewcode-block" id="FittingSequence.set_param_value"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

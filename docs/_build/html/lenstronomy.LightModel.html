@@ -80,9 +80,9 @@
 <span id="lenstronomy-lightmodel-light-model-module"></span><h2>lenstronomy.LightModel.light_model module<a class="headerlink" href="#module-lenstronomy.LightModel.light_model" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="lenstronomy.LightModel.light_model.LightModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">LightModel</code><span class="sig-paren">(</span><em>light_model_list</em>, <em>deflection_scaling_list=None</em>, <em>source_redshift_list=None</em>, <em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">LightModel</code><span class="sig-paren">(</span><em>light_model_list</em>, <em>deflection_scaling_list=None</em>, <em>source_redshift_list=None</em>, <em>smoothing=0.001</em>, <em>sersic_major_axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LightModel.linear_basis.LinearBasis</span></code></p>
-<p>class to handle extended surface brightness profiels (for e.g. source and lens light)</p>
+<p>class to handle extended surface brightness profiles (for e.g. source and lens light)</p>
 <p>all profiles come with a surface_brightness parameterization (in units per square angle and independent of
 the pixel scale).
 The parameter ‘amp’ is the linear scaling parameter of surface brightness.
@@ -101,8 +101,8 @@ conventions of this module given a magnitude zero point.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class manages the parameters corresponding to the LightModel() module. Also manages linear parameter handling.</p>
 <dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.getParams">
-<code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.getParams" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LightModel.light_param.LightParam.get_params">
+<code class="descname">get_params</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.get_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -153,8 +153,8 @@ this class</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LightModel.light_param.LightParam.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.set_params" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

@@ -18,6 +18,7 @@ class MultiPlaneBase(ProfileListBase):
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
                  numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
         """
+        A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list

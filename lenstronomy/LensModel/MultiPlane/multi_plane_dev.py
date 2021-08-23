@@ -55,8 +55,9 @@ class MultiPlaneBaseRatios(ProfileListBase):
     .. math::
         \\alpha(\\theta_1, \\theta_2) = \\frac{D_{\rm s}}{D_{\rm ds}}\\hat{\\alpha}(\\theta_1, \\theta_2)
 
-    An absolute distance anchor of the lensing configuration is provided by the transverse comivoing distance to the
-    pivot redshift :math:`T_{z {\rm pivot}}`. The quantity is only required when evaluating e.g. a time-delay or absolute scale.
+    An absolute distance anchor of the lensing configuration is provided by the transverse comoving distance to the
+    pivot redshift :math:`T_{z {\rm pivot}}`. The quantity is only required when evaluating e.g. a time-delay or
+    absolute scale.
     The deflection angles on the sky are not impacted by the normalization of :math:`T_{z {\rm pivot}}`.
 
 

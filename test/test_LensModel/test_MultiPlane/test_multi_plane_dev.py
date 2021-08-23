@@ -60,7 +60,7 @@ class TestMultiPlane(object):
         from astropy.cosmology import FlatLambdaCDM, LambdaCDM
 
         # test flat LCDM
-        cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.2)
         lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list,
                                     lens_redshift_list=redshift_list, cosmo=cosmo)
         lensModel = LensModel(lens_model_list=lens_model_list, cosmo=cosmo)

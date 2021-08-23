@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.numba_util &#8212; lenstronomy 1.8.2 documentation</title>
+    <title>lenstronomy.Util.numba_util &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -39,10 +39,8 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.Util.numba_util</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">lenstronomy</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Conf</span> <span class="k">import</span> <span class="n">config_loader</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">From pyautolens:</span>
@@ -53,35 +51,13 @@
 <span class="sd">@numba.jit(nopython=True, cache=False, parallel=True)</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># in case the xdg library is installed, the import statement with pyxdg can raise an error</span>
-<span class="c1"># to avoid it, we draw back to the ~/.config directory in case this import fails.</span>
-<span class="c1"># TODO come up with more permanent solution of path to configuration directory</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">xdg.BaseDirectory</span> <span class="k">import</span> <span class="n">xdg_config_home</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">xdg_config_home</span> <span class="o">=</span> <span class="s1">&#39;~/.config&#39;</span>
-
-<span class="n">user_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">xdg_config_home</span><span class="p">,</span> <span class="s2">&quot;lenstronomy&quot;</span><span class="p">,</span> <span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span>
-
-<span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">lenstronomy</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
-<span class="n">default_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;Conf&#39;</span><span class="p">,</span> <span class="s1">&#39;conf_default.yaml&#39;</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">user_config_file</span> <span class="p">):</span>
-    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">user_config_file</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">default_config_file</span>
-
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-    <span class="c1"># The FullLoader parameter handles the conversion from YAML</span>
-    <span class="c1"># scalar values to Python the dictionary format</span>
-    <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">FullLoader</span><span class="p">)</span>
-    <span class="n">numba_conf</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;numba&#39;</span><span class="p">]</span>
-    <span class="n">nopython</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
-    <span class="n">cache</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">]</span>
-    <span class="n">parallel</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
-    <span class="n">numba_enabled</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;enable&#39;</span><span class="p">]</span>
-    <span class="n">fastmath</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;fastmath&#39;</span><span class="p">]</span>
-    <span class="n">error_model</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;error_model&#39;</span><span class="p">]</span>
+<span class="n">numba_conf</span> <span class="o">=</span> <span class="n">config_loader</span><span class="o">.</span><span class="n">numba_conf</span><span class="p">()</span>
+<span class="n">nopython</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
+<span class="n">cache</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">]</span>
+<span class="n">parallel</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
+<span class="n">numba_enabled</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;enable&#39;</span><span class="p">]</span>
+<span class="n">fastmath</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;fastmath&#39;</span><span class="p">]</span>
+<span class="n">error_model</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;error_model&#39;</span><span class="p">]</span>
 
 <span class="k">if</span> <span class="n">numba_enabled</span><span class="p">:</span>
     <span class="k">try</span><span class="p">:</span>
@@ -184,7 +160,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

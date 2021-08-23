@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Data.coord_transforms &#8212; lenstronomy 1.8.2 documentation</title>
+    <title>lenstronomy.Data.coord_transforms &#8212; lenstronomy 1.9.0 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -137,7 +137,8 @@
 <div class="viewcode-block" id="Coordinates.coordinate_grid"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">[docs]</a>    <span class="k">def</span> <span class="nf">coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param numPix: number of pixels per axis</span>
+<span class="sd">        :param nx: number of pixels in x-direction</span>
+<span class="sd">        :param ny: number of pixels in y-direction</span>
 <span class="sd">        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
@@ -148,7 +149,7 @@
 <div class="viewcode-block" id="Coordinates.shift_coordinate_system"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_system">[docs]</a>    <span class="k">def</span> <span class="nf">shift_coordinate_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_shift</span><span class="p">,</span> <span class="n">y_shift</span><span class="p">,</span> <span class="n">pixel_unit</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        shifts the coordinate system</span>
-<span class="sd">        :param x_shif: shift in x (or RA)</span>
+<span class="sd">        :param x_shift: shift in x (or RA)</span>
 <span class="sd">        :param y_shift: shift in y (or DEC)</span>
 <span class="sd">        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC</span>
 <span class="sd">        :return: updated data class with change in coordinate system</span>
@@ -159,7 +160,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        shifts the coordinate system</span>
-<span class="sd">        :param x_shif: shift in x (or RA)</span>
+<span class="sd">        :param x_shift: shift in x (or RA)</span>
 <span class="sd">        :param y_shift: shift in y (or DEC)</span>
 <span class="sd">        :param pixel_unit: bool, if True, units of pixels in input, otherwise RA/DEC</span>
 <span class="sd">        :return: updated data class with change in coordinate system</span>
@@ -185,7 +186,8 @@
 <div class="viewcode-block" id="Coordinates1D.coordinate_grid"><a class="viewcode-back" href="../../../lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates1D.coordinate_grid">[docs]</a>    <span class="k">def</span> <span class="nf">coordinate_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param numPix: number of pixels per axis</span>
+<span class="sd">        :param nx: number of pixels in x-direction</span>
+<span class="sd">        :param ny: number of pixels in y-direction</span>
 <span class="sd">        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
@@ -222,7 +224,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.8.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

@@ -137,7 +137,7 @@ class LensProfileAnalysis(object):
         :param center_y: center of the profile
         :param kwargs_lens: lens parameter keyword argument list
         :param model_bool_list: bool list or None, indicating which profiles to sum over
-        :return: flux amplitudes at r_list radii spherically averaged
+        :return: flux amplitudes at r_list radii azimuthally averaged
         """
         center_x, center_y = analysis_util.profile_center(kwargs_lens, center_x, center_y)
         kappa_list = []

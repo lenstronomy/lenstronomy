@@ -12,6 +12,7 @@ export, __all__ = exporter()
 
 @export
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
+                           kwargs_interp=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
                            flux_from_point_source_list=None,
@@ -29,6 +30,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param lens_redshift_list:
     :param multi_plane:
+    :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+     See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
     :param source_light_model_list:
     :param lens_light_model_list:
@@ -84,7 +87,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
-                                 observed_convention_index=observed_convention_index_i)
+                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list

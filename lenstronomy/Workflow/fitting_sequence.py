@@ -225,12 +225,13 @@ class FittingSequence(object):
         kwargs_sigma = self._updateManager.sigma_kwargs
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
+        if n_walkers is None:
+            n_walkers = num_param * walkerRatio
         # run MCMC
         if not init_samples is None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
-                n_walkers = num_param * walkerRatio
                 idxs = np.random.choice(len(init_samples), n_walkers)
                 initpos = init_samples[idxs]
             else:
@@ -239,8 +240,6 @@ class FittingSequence(object):
             initpos = None
 
         if sampler_type == 'EMCEE':
-            if n_walkers is None:
-                n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
                                                   backup_filename=backup_filename, start_from_backup=start_from_backup)

@@ -385,6 +385,14 @@ def test_convert_bool_list():
     assert bool_list[0] is False
 
 
+def test_area():
+    r = 1
+    x_, y_ = util.points_on_circle(radius=r, connect_ends=True, num_points=1000)
+    vs = np.dstack([x_, y_])[0]
+    a = util.area(vs)
+    npt.assert_almost_equal(a, np.pi * r**2, decimal=3)
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

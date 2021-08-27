@@ -305,7 +305,7 @@ class LensModelExtensions(object):
 
     def caustic_area(self, kwargs_lens, kwargs_caustic_num, index_vertices=0):
         """
-        computes the area within a caustic curve
+        computes the area inside a connected caustic curve
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_caustic_num: keyword arguments for the numerical calculation of the caustics, as input of

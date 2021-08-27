@@ -251,3 +251,9 @@ History
 * re-named parameter in 'CONVERGENCE' profile
 * improved numerics in Galkin
 * configuration import design changed
+
+
+1.9.1 (2020-08-27)
+++++++++++++++++++
+* re-defined amplitude normalization in NIE and CHAMELEON light profiles
+* bug fix in sky brightness errors (SimulationAPI)

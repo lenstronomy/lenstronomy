@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles.nie &#8212; lenstronomy 1.9.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.nie &#8212; lenstronomy 1.9.1 documentation</title>
     <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -70,15 +70,46 @@
 <span class="sd">        :param center_y: center of profile</span>
 <span class="sd">        :return: surface brightness of NIE profile</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="c1"># rotate</span>
-        <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">phi_G</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="n">s_scale</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
-        <span class="n">f_</span> <span class="o">=</span> <span class="n">amp</span><span class="o">/</span><span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">s</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x__</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">y__</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">f_</span></div></div>
+        <span class="n">x__</span><span class="p">,</span> <span class="n">y__</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">transform_e1e2_product_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">f_</span> <span class="o">=</span> <span class="n">amp</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">*</span> <span class="p">(</span><span class="n">s_scale</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x__</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y__</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f_</span></div>
+        <span class="c1">#x_ = x - center_x</span>
+        <span class="c1">#y_ = y - center_y</span>
+        <span class="c1">#phi_G, q = param_util.ellipticity2phi_q(e1, e2)</span>
+        <span class="c1"># rotate</span>
+        <span class="c1">#x__, y__ = util.rotate(x_, y_, phi_G)</span>
+        <span class="c1">#s = s_scale * np.sqrt((1 + q ** 2) / (2 * q ** 2))</span>
+        <span class="c1">#f_ = amp/2. * (q**2 * (s**2 + x__**2) + y__**2)**(-1./2) * np.sqrt(q)</span>
+        <span class="c1">#return f_</span>
+
+<div class="viewcode-block" id="NIE.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.nie.NIE.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">s_scale</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        3d light distribution (in spherical regime)</span>
+
+<span class="sd">        :param r: 3d radius</span>
+<span class="sd">        :param amp: surface brightness normalization</span>
+<span class="sd">        :param e1: eccentricity component</span>
+<span class="sd">        :param e2: eccentricity component</span>
+<span class="sd">        :param s_scale: smoothing scale (square averaged of minor and major axis)</span>
+<span class="sd">        :param center_x: center of profile</span>
+<span class="sd">        :param center_y: center of profile</span>
+<span class="sd">        :return: light density at 3d radius</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rho</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_amp2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rho</span> <span class="o">/</span> <span class="p">(</span><span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">s_scale</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_amp2rho</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        converts surface brightness normalization &#39;amp&#39; into 3d density normalization rho</span>
+
+<span class="sd">        :param amp:</span>
+<span class="sd">        :return: rho</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="k">return</span> <span class="n">amp</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">factor</span></div>
+
 </pre></div>
 
           </div>
@@ -111,7 +142,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

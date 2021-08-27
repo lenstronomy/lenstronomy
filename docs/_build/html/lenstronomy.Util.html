@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util package &#8212; lenstronomy 1.9.0 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 1.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -203,7 +203,7 @@ image (including fractional pixels).
 <span id="lenstronomy-util-class-creator-module"></span><h2>lenstronomy.Util.class_creator module<a class="headerlink" href="#module-lenstronomy.Util.class_creator" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Util.class_creator.create_class_instances">
-<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_class_instances</code><span class="sig-paren">(</span><em>lens_model_list=[]</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>multi_plane=False</em>, <em>observed_convention_index=None</em>, <em>source_light_model_list=[]</em>, <em>lens_light_model_list=[]</em>, <em>point_source_model_list=[]</em>, <em>fixed_magnification_list=None</em>, <em>flux_from_point_source_list=None</em>, <em>additional_images_list=None</em>, <em>kwargs_lens_eqn_solver=None</em>, <em>source_deflection_scaling_list=None</em>, <em>source_redshift_list=None</em>, <em>cosmo=None</em>, <em>index_lens_model_list=None</em>, <em>index_source_light_model_list=None</em>, <em>index_lens_light_model_list=None</em>, <em>index_point_source_model_list=None</em>, <em>optical_depth_model_list=[]</em>, <em>index_optical_depth_model_list=None</em>, <em>band_index=0</em>, <em>tau0_index_list=None</em>, <em>all_models=False</em>, <em>point_source_magnification_limit=None</em>, <em>surface_brightness_smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_class_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_class_instances" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Util.class_creator.</code><code class="descname">create_class_instances</code><span class="sig-paren">(</span><em>lens_model_list=[]</em>, <em>z_lens=None</em>, <em>z_source=None</em>, <em>lens_redshift_list=None</em>, <em>kwargs_interp=None</em>, <em>multi_plane=False</em>, <em>observed_convention_index=None</em>, <em>source_light_model_list=[]</em>, <em>lens_light_model_list=[]</em>, <em>point_source_model_list=[]</em>, <em>fixed_magnification_list=None</em>, <em>flux_from_point_source_list=None</em>, <em>additional_images_list=None</em>, <em>kwargs_lens_eqn_solver=None</em>, <em>source_deflection_scaling_list=None</em>, <em>source_redshift_list=None</em>, <em>cosmo=None</em>, <em>index_lens_model_list=None</em>, <em>index_source_light_model_list=None</em>, <em>index_lens_light_model_list=None</em>, <em>index_point_source_model_list=None</em>, <em>optical_depth_model_list=[]</em>, <em>index_optical_depth_model_list=None</em>, <em>band_index=0</em>, <em>tau0_index_list=None</em>, <em>all_models=False</em>, <em>point_source_magnification_limit=None</em>, <em>surface_brightness_smoothing=0.001</em>, <em>sersic_major_axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_class_instances"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_class_instances" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -214,6 +214,8 @@ image (including fractional pixels).
 <li><strong>z_source</strong> – redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.</li>
 <li><strong>lens_redshift_list</strong> – </li>
 <li><strong>multi_plane</strong> – </li>
+<li><strong>kwargs_interp</strong> – interpolation keyword arguments specifying the numerics.
+See description in the Interpolate() class. Only applicable for ‘INTERPOL’ and ‘INTERPOL_SCALED’ models.</li>
 <li><strong>observed_convention_index</strong> – </li>
 <li><strong>source_light_model_list</strong> – </li>
 <li><strong>lens_light_model_list</strong> – </li>
@@ -242,6 +244,9 @@ The geometric difference between the different source planes needs to be pre-com
 <li><strong>point_source_magnification_limit</strong> – float &gt;0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification</li>
 <li><strong>surface_brightness_smoothing</strong> – float, smoothing scale of light profile (minimal distance to the center of a profile)
 this can help to avoid inaccuracies in the very center of a cuspy light profile</li>
+<li><strong>sersic_major_axis</strong> – boolean or None, if True, uses the semi-major axis as the definition of the Sersic
+half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
+convention in the lenstronomy yaml setting (which by default is =False)</li>
 </ul>
 </td>
 </tr>
@@ -260,14 +265,13 @@ this can help to avoid inaccuracies in the very center of a cuspy light profile<
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kwargs_data</strong> – </li>
-<li><strong>kwargs_psf</strong> – </li>
-<li><strong>kwargs_model</strong> – </li>
-<li><strong>kwargs_model_indexes</strong> – </li>
+<li><strong>kwargs_data</strong> – ImageData keyword arguments</li>
+<li><strong>kwargs_psf</strong> – PSF keyword arguments</li>
+<li><strong>kwargs_model</strong> – model keyword arguments</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">ImageLinearFit() instance</p>
 </td>
 </tr>
 </tbody>
@@ -2395,7 +2399,7 @@ if k is a boolean list, checks for size to match the numbers of models and retur
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

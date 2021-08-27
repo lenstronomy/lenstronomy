@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots.model_band_plot &#8212; lenstronomy 1.9.0 documentation</title>
+    <title>lenstronomy.Plots.model_band_plot &#8212; lenstronomy 1.9.1 documentation</title>
     <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
@@ -28,7 +28,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -216,13 +216,14 @@
 
 <div class="viewcode-block" id="ModelBandPlot.normalized_residual_plot"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot">[docs]</a>    <span class="k">def</span> <span class="nf">normalized_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">v_min</span><span class="o">=-</span><span class="mi">6</span><span class="p">,</span> <span class="n">v_max</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="s2">&quot;Normalized Residuals&quot;</span><span class="p">,</span>
                                  <span class="n">colorbar_label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;(f$</span><span class="si">{}</span><span class="s1">_{\rm model}$ - f$</span><span class="si">{}</span><span class="s1">_{\rm data}$)/$\sigma$&#39;</span><span class="p">,</span>
-                                 <span class="n">no_arrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                                 <span class="n">no_arrow</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">color_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param ax:</span>
 <span class="sd">        :param v_min:</span>
 <span class="sd">        :param v_max:</span>
 <span class="sd">        :param kwargs: kwargs to send to matplotlib.pyplot.matshow()</span>
+<span class="sd">        :param color_bar: Option to display the color bar</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;cmap&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
@@ -240,11 +241,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">no_arrow</span><span class="p">:</span>
             <span class="n">plot_util</span><span class="o">.</span><span class="n">coordinate_arrows</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_frame_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coords</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span>
                               <span class="n">arrow_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arrow_size</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
-        <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
-        <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;5%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
-        <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
-        <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">colorbar_label</span><span class="p">,</span>
-                     <span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">color_bar</span> <span class="p">:</span>
+            <span class="n">divider</span> <span class="o">=</span> <span class="n">make_axes_locatable</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>
+            <span class="n">cax</span> <span class="o">=</span> <span class="n">divider</span><span class="o">.</span><span class="n">append_axes</span><span class="p">(</span><span class="s2">&quot;right&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="s2">&quot;5%&quot;</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">cax</span><span class="o">=</span><span class="n">cax</span><span class="p">)</span>
+            <span class="n">cb</span><span class="o">.</span><span class="n">set_label</span><span class="p">(</span><span class="n">colorbar_label</span><span class="p">,</span>
+                         <span class="n">fontsize</span><span class="o">=</span><span class="n">font_size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ax</span></div>
 
 <div class="viewcode-block" id="ModelBandPlot.absolute_residual_plot"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.model_band_plot.ModelBandPlot.absolute_residual_plot">[docs]</a>    <span class="k">def</span> <span class="nf">absolute_residual_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">v_min</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">v_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
@@ -678,7 +680,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>

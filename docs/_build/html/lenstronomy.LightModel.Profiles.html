@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.9.0 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li> 
       </ul>
@@ -58,7 +58,7 @@
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">Chameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<p>class of the Chameleon model (See Dutton+ 2011, Suyu+2014) an elliptical truncated double isothermal profile</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>w_c</em>, <em>w_t</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.function" title="Permalink to this definition">¶</a></dt>
@@ -69,18 +69,43 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – ra-coordinate</li>
 <li><strong>y</strong> – dec-coordinate</li>
+<li><strong>w_c</strong> – </li>
+<li><strong>w_t</strong> – </li>
 <li><strong>amp</strong> – amplitude of first power-law flux</li>
-<li><strong>flux_ratio</strong> – ratio of amplitudes of first to second power-law profile</li>
-<li><strong>gamma1</strong> – power-law slope</li>
-<li><strong>gamma2</strong> – power-law slope</li>
-<li><strong>e1</strong> – ellipticity parameter</li>
-<li><strong>e2</strong> – ellipticity parameter</li>
+<li><strong>e1</strong> – eccentricity parameter</li>
+<li><strong>e2</strong> – eccentricity parameter</li>
 <li><strong>center_x</strong> – center</li>
 <li><strong>center_y</strong> – center</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">flux of chameleon profile</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.Chameleon.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>w_c</em>, <em>w_t</em>, <em>e1</em>, <em>e2</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#Chameleon.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.Chameleon.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>w_c</strong> – </li>
+<li><strong>w_t</strong> – </li>
+<li><strong>amp</strong> – amplitude of first power-law flux</li>
+<li><strong>e1</strong> – eccentricity parameter</li>
+<li><strong>e2</strong> – eccentricity parameter</li>
+<li><strong>center_x</strong> – center</li>
+<li><strong>center_y</strong> – center</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d flux of chameleon profile at radius r</p>
 </td>
 </tr>
 </tbody>
@@ -108,7 +133,7 @@
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon">
 <em class="property">class </em><code class="descclassname">lenstronomy.LightModel.Profiles.chameleon.</code><code class="descname">DoubleChameleon</code><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>class of the Chameleon model (See Suyu+2014) an elliptical truncated double isothermal profile</p>
+<p>class of the double Chameleon model. See Dutton+2011, Suyu+2014 for the single Chameleon model.</p>
 <dl class="method">
 <dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.function">
 <code class="descname">function</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>amp</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon.function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.function" title="Permalink to this definition">¶</a></dt>
@@ -133,6 +158,37 @@
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>ratio</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#DoubleChameleon.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.DoubleChameleon.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>amp</strong> – </li>
+<li><strong>ratio</strong> – ratio of first to second amplitude of Chameleon surface brightness</li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">3d light density at radius r</p>
 </td>
 </tr>
 </tbody>
@@ -171,7 +227,7 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>amp</strong> – </li>
 <li><strong>ratio12</strong> – ratio of first to second amplitude</li>
-<li><strong>ratio13</strong> – ratio of first to third amplidute</li>
+<li><strong>ratio13</strong> – ratio of first to third amplitude</li>
 <li><strong>w_c1</strong> – </li>
 <li><strong>w_t1</strong> – </li>
 <li><strong>e11</strong> – </li>
@@ -180,6 +236,46 @@
 <li><strong>w_t2</strong> – </li>
 <li><strong>e12</strong> – </li>
 <li><strong>e22</strong> – </li>
+<li><strong>w_c3</strong> – </li>
+<li><strong>w_t3</strong> – </li>
+<li><strong>e13</strong> – </li>
+<li><strong>e23</strong> – </li>
+<li><strong>center_x</strong> – </li>
+<li><strong>center_y</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>ratio12</em>, <em>ratio13</em>, <em>w_c1</em>, <em>w_t1</em>, <em>e11</em>, <em>e21</em>, <em>w_c2</em>, <em>w_t2</em>, <em>e12</em>, <em>e22</em>, <em>w_c3</em>, <em>w_t3</em>, <em>e13</em>, <em>e23</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/chameleon.html#TripleChameleon.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.chameleon.TripleChameleon.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d light radius</li>
+<li><strong>amp</strong> – </li>
+<li><strong>ratio12</strong> – ratio of first to second amplitude</li>
+<li><strong>ratio13</strong> – ratio of first to third amplitude</li>
+<li><strong>w_c1</strong> – </li>
+<li><strong>w_t1</strong> – </li>
+<li><strong>e11</strong> – </li>
+<li><strong>e21</strong> – </li>
+<li><strong>w_c2</strong> – </li>
+<li><strong>w_t2</strong> – </li>
+<li><strong>e12</strong> – </li>
+<li><strong>e22</strong> – </li>
+<li><strong>w_c3</strong> – </li>
+<li><strong>w_t3</strong> – </li>
+<li><strong>e13</strong> – </li>
+<li><strong>e23</strong> – </li>
 <li><strong>center_x</strong> – </li>
 <li><strong>center_y</strong> – </li>
 </ul>
@@ -991,6 +1087,32 @@ radius ‘theta_E’</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="lenstronomy.LightModel.Profiles.nie.NIE.light_3d">
+<code class="descname">light_3d</code><span class="sig-paren">(</span><em>r</em>, <em>amp</em>, <em>e1</em>, <em>e2</em>, <em>s_scale</em>, <em>center_x=0</em>, <em>center_y=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/nie.html#NIE.light_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.light_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>3d light distribution (in spherical regime)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>r</strong> – 3d radius</li>
+<li><strong>amp</strong> – surface brightness normalization</li>
+<li><strong>e1</strong> – eccentricity component</li>
+<li><strong>e2</strong> – eccentricity component</li>
+<li><strong>s_scale</strong> – smoothing scale (square averaged of minor and major axis)</li>
+<li><strong>center_x</strong> – center of profile</li>
+<li><strong>center_y</strong> – center of profile</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">light density at 3d radius</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="lenstronomy.LightModel.Profiles.nie.NIE.lower_limit_default">
 <code class="descname">lower_limit_default</code><em class="property"> = {'amp': 0, 'center_x': -100, 'center_y': -100, 'e1': -0.5, 'e2': -0.5, 's_scale': 0}</em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.nie.NIE.lower_limit_default" title="Permalink to this definition">¶</a></dt>
@@ -1296,7 +1418,7 @@ with <span class="math notranslate nohighlight">\(b_{n}\approx 1.999\,n-0.327\)<
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
 <li><strong>amp</strong> – surface brightness/amplitude value at the half light radius</li>
-<li><strong>R_sersic</strong> – semi-major axis half light radius</li>
+<li><strong>R_sersic</strong> – half light radius (either semi-major axis or product average of semi-major and semi-minor axis)</li>
 <li><strong>n_sersic</strong> – Sersic index</li>
 <li><strong>e1</strong> – eccentricity parameter</li>
 <li><strong>e2</strong> – eccentricity parameter</li>
@@ -1353,7 +1475,7 @@ with <span class="math notranslate nohighlight">\(b_{n}\approx 1.999\,n-0.327\)<
 <li><strong>x</strong> – </li>
 <li><strong>y</strong> – </li>
 <li><strong>amp</strong> – surface brightness/amplitude value at the half light radius</li>
-<li><strong>R_sersic</strong> – semi-major axis half light radius</li>
+<li><strong>R_sersic</strong> – half light radius (either semi-major axis or product average of semi-major and semi-minor axis)</li>
 <li><strong>Rb</strong> – “break” core radius</li>
 <li><strong>n_sersic</strong> – Sersic index</li>
 <li><strong>gamma</strong> – inner power-law exponent</li>
@@ -2016,7 +2138,7 @@ name for profile: ‘UNIFORM’</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li> 
       </ul>

@@ -239,6 +239,17 @@ class TestLensModelExtensions(object):
         tang_stretch_ave = lensModelExtensions.tangential_average(x=1.1, y=0, kwargs_lens=[{'theta_E': 1, 'center_x': 0, 'center_y': 0}], dr=1, smoothing=None, num_average=9)
         npt.assert_almost_equal(tang_stretch_ave, -2.525501464097973, decimal=6)
 
+    def test_caustic_area(self):
+        lens_model_list = ['SIE']
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        lensModelExtensions = LensModelExtensions(lensModel=lensModel)
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.2, 'e2': 0, 'center_x': 0, 'center_y': 0}]
+        kwargs_caustic_num = {'compute_window': 3, 'grid_scale': 0.005, 'center_x': 0, 'center_y': 0}
+
+        area = lensModelExtensions.caustic_area(kwargs_lens=kwargs_lens, kwargs_caustic_num=kwargs_caustic_num,
+                                                index_vertices=0)
+        npt.assert_almost_equal(area, 0.08445866728739478, decimal=3)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

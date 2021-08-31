@@ -12,7 +12,8 @@ class TimeDelayLikelihood(object):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
-        :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured
+        :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured. Alternatively
+        a full covariance matrix that describes the likelihood.
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
         time delays are imposed on

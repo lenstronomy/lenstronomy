@@ -50,6 +50,8 @@ class FluxRatioLikelihood(object):
                                                                    grid_number=self._gird_number,
                                                                    polar_grid=self._polar_grid,
                                                                    aspect_ratio=self._aspect_ratio)
+        if len(mag)-1 != len(self._flux_ratios):
+            return -10**15
         mag_ratio = mag[1:] / mag[0]
         return self._logL(mag_ratio)
 
@@ -62,8 +64,15 @@ class FluxRatioLikelihood(object):
         """
         if not np.isfinite(flux_ratios).any():
             return -10 ** 15
-        dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
-        logL = -np.sum(dist)
+        if len(flux_ratios) != len(self._flux_ratios):
+            return -10 ** 15
+        if self._flux_ratio_errors.ndim <= 1:
+            dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
+            logL = -np.sum(dist)
+        elif self._flux_ratio_errors.ndim == 2:
+            # Assume covariance matrix is in ln units!
+            D = np.log(flux_ratios) - np.log(self._flux_ratios)
+            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D # TODO: only calculate the inverse once
         if not np.isfinite(logL):
             return -10 ** 15
         return logL

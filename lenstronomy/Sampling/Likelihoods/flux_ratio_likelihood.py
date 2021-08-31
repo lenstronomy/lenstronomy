@@ -67,8 +67,6 @@ class FluxRatioLikelihood(object):
         """
         if not np.isfinite(flux_ratios).any():
             return -10 ** 15
-        if len(flux_ratios) != len(self._flux_ratios):
-            return -10 ** 15
         if self._flux_ratio_errors.ndim <= 1:
             dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
             logL = -np.sum(dist)

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Plots package &#8212; lenstronomy 1.9.0 documentation</title>
+    <title>lenstronomy.Plots package &#8212; lenstronomy 1.9.1 documentation</title>
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
       </ul>
     </div>  
@@ -117,7 +117,7 @@ This routine is an example and more tests might be appropriate to analyse a spec
 <span id="lenstronomy-plots-lens-plot-module"></span><h2>lenstronomy.Plots.lens_plot module<a class="headerlink" href="#module-lenstronomy.Plots.lens_plot" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="lenstronomy.Plots.lens_plot.lens_model_plot">
-<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>with_convergence=True</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em>, <em>fast_caustic=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.lens_plot.</code><code class="descname">lens_model_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>lensModel</em>, <em>kwargs_lens</em>, <em>numPix=500</em>, <em>deltaPix=0.01</em>, <em>sourcePos_x=0</em>, <em>sourcePos_y=0</em>, <em>point_source=False</em>, <em>with_caustics=False</em>, <em>with_convergence=True</em>, <em>coord_center_ra=0</em>, <em>coord_center_dec=0</em>, <em>coord_inverse=False</em>, <em>fast_caustic=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/lens_plot.html#lens_model_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.lens_plot.lens_model_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>plots a lens model (convergence) and the critical curves and caustics</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -442,7 +442,7 @@ elements of the covariance matrix of the inversion of the basis set to be propag
 
 <dl class="method">
 <dt id="lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot">
-<code class="descname">normalized_residual_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=-6</em>, <em>v_max=6</em>, <em>font_size=15</em>, <em>text='Normalized Residuals'</em>, <em>colorbar_label='(f${}_{\\rm model}$ - f${}_{\\rm data}$)/$\\sigma$'</em>, <em>no_arrow=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/model_band_plot.html#ModelBandPlot.normalized_residual_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">normalized_residual_plot</code><span class="sig-paren">(</span><em>ax</em>, <em>v_min=-6</em>, <em>v_max=6</em>, <em>font_size=15</em>, <em>text='Normalized Residuals'</em>, <em>colorbar_label='(f${}_{\\rm model}$ - f${}_{\\rm data}$)/$\\sigma$'</em>, <em>no_arrow=False</em>, <em>color_bar=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/model_band_plot.html#ModelBandPlot.normalized_residual_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.model_band_plot.ModelBandPlot.normalized_residual_plot" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -452,6 +452,7 @@ elements of the covariance matrix of the inversion of the basis set to be propag
 <li><strong>v_min</strong> – </li>
 <li><strong>v_max</strong> – </li>
 <li><strong>kwargs</strong> – kwargs to send to matplotlib.pyplot.matshow()</li>
+<li><strong>color_bar</strong> – Option to display the color bar</li>
 </ul>
 </td>
 </tr>
@@ -969,7 +970,7 @@ of the output of the FittingSequence results.</p>
 
 <dl class="function">
 <dt id="lenstronomy.Plots.plot_util.plot_line_set">
-<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>flipped_x=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">lenstronomy.Plots.plot_util.</code><code class="descname">plot_line_set</code><span class="sig-paren">(</span><em>ax</em>, <em>coords</em>, <em>line_set_list_x</em>, <em>line_set_list_y</em>, <em>origin=None</em>, <em>flipped_x=False</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Plots/plot_util.html#plot_line_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Plots.plot_util.plot_line_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
 corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
 of the pixel in accordance with the matplotlib.matshow() routine.</p>
@@ -1155,7 +1156,7 @@ of the pixel in accordance with the matplotlib.matshow() routine.</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
       </ul>
     </div>

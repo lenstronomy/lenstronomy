@@ -303,6 +303,32 @@ class LensModelExtensions(object):
                 dec_crit_list += dec_crit  # list addition
         return np.array(ra_crit_list), np.array(dec_crit_list)
 
+    def caustic_area(self, kwargs_lens, kwargs_caustic_num, index_vertices=0):
+        """
+        computes the area inside a connected caustic curve
+
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_caustic_num: keyword arguments for the numerical calculation of the caustics, as input of
+         self.critical_curve_caustics()
+        :param index_vertices: integer, index of connected vortex from the output of self.critical_curve_caustics()
+         of disconnected curves.
+        :return: area within the caustic curve selected
+        """
+
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = self.critical_curve_caustics(kwargs_lens,
+                                                                                                      **kwargs_caustic_num)
+
+        # select specific vortex
+        ra_caustic_inner = ra_caustic_list[index_vertices]
+        dec_caustic_inner = dec_caustic_list[index_vertices]
+
+        # merge RA DEC to vertices
+        C = np.dstack([ra_caustic_inner, dec_caustic_inner])[0]
+
+        # compute area
+        a = util.area(C)
+        return a
+
     def _tiling_crit(self, edge1, edge2, edge_90, max_order, kwargs_lens):
         """
         tiles a rectangular triangle and compares the signs of the magnification

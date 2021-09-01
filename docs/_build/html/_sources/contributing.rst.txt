@@ -2,4 +2,4 @@
 Contributing to lenstronomy
 ===========================
 
-.. mdinclude:: ../CONTRIBUTING.md
+.. include:: ../CONTRIBUTING.md

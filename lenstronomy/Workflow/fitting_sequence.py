@@ -199,14 +199,15 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
+    def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
         """
         MCMC routine
 
         :param n_burn: number of burn in iterations (will not be saved)
         :param n_run: number of MCMC iterations that are saved
         :param walkerRatio: ratio of walkers/number of free parameters
+        :param n_walkers: integer, number of walkers of emcee (optional, if set, overwrites the walkerRatio input
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
@@ -224,12 +225,13 @@ class FittingSequence(object):
         kwargs_sigma = self._updateManager.sigma_kwargs
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
+        if n_walkers is None:
+            n_walkers = num_param * walkerRatio
         # run MCMC
         if not init_samples is None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
-                n_walkers = num_param * walkerRatio
                 idxs = np.random.choice(len(init_samples), n_walkers)
                 initpos = init_samples[idxs]
             else:
@@ -238,7 +240,6 @@ class FittingSequence(object):
             initpos = None
 
         if sampler_type == 'EMCEE':
-            n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
                                                   backup_filename=backup_filename, start_from_backup=start_from_backup)

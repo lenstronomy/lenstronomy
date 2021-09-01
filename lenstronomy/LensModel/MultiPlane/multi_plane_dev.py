@@ -28,7 +28,7 @@ class MultiPlaneBaseRatios(ProfileListBase):
     .. math::
         T = (1 + z) D
 
-    we can write the multi-plane equation recursively as
+    we can write the multi-plane equation in a flat background metric recursively as
 
     .. math::
         x_{c}^{i+1} = x_{c}^{i} - T_{i+1, i} \\left( \\theta + \sum_{j=1}^{i} \\hat{\\alpha_j(x_{c}^j)} \\right)

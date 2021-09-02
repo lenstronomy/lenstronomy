@@ -51,6 +51,8 @@ class Image2SourceMapping(object):
                 raise ValueError("redshift of source_redshift_list have to be smaler or equal to the one specified in "
                                  "the lens model.")
             else:
+                # TODO: this part is not necessary needed in this class. It facilitates the calculation by avoiding
+                # multiple evaluation of angular diameter distances as integrals
                 self._bkg_cosmo = Background(lensModel.cosmo)
                 self._sorted_source_redshift_index = self._index_ordering(self._source_redshift_list)
                 self._T0z_list = []

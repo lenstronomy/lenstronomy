@@ -5,7 +5,7 @@ __all__ = ['ProfileListBase']
 
 _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMMA_PSI', 'SHEAR_REDUCED', 'CONVERGENCE', 'FLEXION',
                      'FLEXIONFG', 'POINT_MASS', 'SIS', 'SIS_TRUNCATED', 'SIE', 'SPP', 'NIE', 'NIE_SIMPLE', 'CHAMELEON',
-                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_NUMBA', 'SPL_CORE',
+                     'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'SPEP', 'PEMD', 'SPEMD', 'EPL', 'EPL_SHEARED', 'EPL_NUMBA', 'SPL_CORE',
                      'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
@@ -24,30 +24,24 @@ class ProfileListBase(object):
     class that manages the list of lens model class instances. This class is applicable for single plane and multi
     plane lensing
     """
-    def __init__(self, lens_model_list, numerical_alpha_class=None, lens_redshift_list=None, z_source_convention=None,
-                 kwargs_interp=None):
+    def __init__(self, lens_model_list, numerical_alpha_class=None, lens_redshift_list=None, z_source_convention=None):
         """
 
         :param lens_model_list: list of strings with lens model names
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         deflection angles as a lens model. See the documentation in Profiles.numerical_deflections
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         """
 
         self.func_list = self._load_model_instances(lens_model_list, custom_class=numerical_alpha_class,
                                                     lens_redshift_list=lens_redshift_list,
-                                                    z_source_convention=z_source_convention,
-                                                    kwargs_interp=kwargs_interp)
+                                                    z_source_convention=z_source_convention)
         self._num_func = len(self.func_list)
         self._model_list = lens_model_list
 
     def _load_model_instances(self, lens_model_list, custom_class=None, lens_redshift_list=None,
-                              z_source_convention=None, kwargs_interp=None):
+                              z_source_convention=None):
         if lens_redshift_list is None:
             lens_redshift_list = [None] * len(lens_model_list)
-        if kwargs_interp is None:
-            kwargs_interp = {}
         func_list = []
         imported_classes = {}
         for i, lens_type in enumerate(lens_model_list):
@@ -55,10 +49,10 @@ class ProfileListBase(object):
             if lens_type in ['NFW_MC', 'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'NFW_ELLIPSE_GAUSS_DEC',
                              'CTNFW_GAUSS_DEC', 'INTERPOL', 'INTERPOL_SCALED', 'NIE', 'NIE_SIMPLE']:
                 lensmodel_class = self._import_class(lens_type, custom_class, z_lens=lens_redshift_list[i],
-                                                     z_source=z_source_convention, kwargs_interp=kwargs_interp)
+                                                     z_source=z_source_convention)
             else:
                 if lens_type not in imported_classes.keys():
-                    lensmodel_class = self._import_class(lens_type, custom_class, kwargs_interp=kwargs_interp)
+                    lensmodel_class = self._import_class(lens_type, custom_class)
                     imported_classes.update({lens_type: lensmodel_class})
                 else:
                     lensmodel_class = imported_classes[lens_type]
@@ -66,15 +60,13 @@ class ProfileListBase(object):
         return func_list
 
     @staticmethod
-    def _import_class(lens_type, custom_class, kwargs_interp, z_lens=None, z_source=None):
+    def _import_class(lens_type, custom_class, z_lens=None, z_source=None):
         """
 
         :param lens_type: string, lens model type
         :param custom_class: custom class
         :param z_lens: lens redshift  # currently only used in NFW_MC model as this is redshift dependent
         :param z_source: source redshift  # currently only used in NFW_MC model as this is redshift dependent
-        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
-         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :return: class instance of the lens model type
         """
 
@@ -150,6 +142,9 @@ class ProfileListBase(object):
         elif lens_type == 'EPL':
             from lenstronomy.LensModel.Profiles.epl import EPL
             return EPL()
+        elif lens_type == 'EPL_SHEARED':
+            from lenstronomy.LensModel.Profiles.epl import EPL_SHEARED
+            return EPL_SHEARED()
         elif lens_type == 'EPL_NUMBA':
             from lenstronomy.LensModel.Profiles.epl_numba import EPL_numba
             return EPL_numba()
@@ -227,10 +222,10 @@ class ProfileListBase(object):
             return MultiGaussianKappaEllipse()
         elif lens_type == 'INTERPOL':
             from lenstronomy.LensModel.Profiles.interpol import Interpol
-            return Interpol(**kwargs_interp)
+            return Interpol()
         elif lens_type == 'INTERPOL_SCALED':
             from lenstronomy.LensModel.Profiles.interpol import InterpolScaled
-            return InterpolScaled(**kwargs_interp)
+            return InterpolScaled()
         elif lens_type == 'SHAPELETS_POLAR':
             from lenstronomy.LensModel.Profiles.shapelet_pot_polar import PolarShapelets
             return PolarShapelets()

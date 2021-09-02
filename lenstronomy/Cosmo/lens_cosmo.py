@@ -211,12 +211,12 @@ class LensCosmo(object):
         Rs = r200/c
         return rho0, Rs, r200
 
-    def nfw_M_theta_vir(self, M):
+    def nfw_M_theta_r200(self, M):
         """
-        returns virial radius in angular units of arc seconds on the sky
+        returns r200 radius in angular units of arc seconds on the sky
 
         :param M: physical mass in M_sun
-        :return: angle (in arc seconds) of the virial radius
+        :return: angle (in arc seconds) of the r200 radius
         """
         r200 = self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h  # physical radius r200
         theta_r200 = r200 / self.dd / const.arcsec

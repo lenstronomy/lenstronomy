@@ -1,7 +1,7 @@
 __author__ = 'sibirrer'
 
 
-from lenstronomy.LensModel.Profiles.nfw_vir_trunc import NFWVirTrunc
+from lenstronomy.LensModel.Profiles.nfw_r200_trunc import NFWVirTrunc
 from lenstronomy.Util import util
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 

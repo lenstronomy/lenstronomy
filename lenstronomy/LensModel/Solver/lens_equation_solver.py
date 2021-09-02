@@ -2,6 +2,8 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from scipy.optimize import minimize
+from lenstronomy.Util.param_util import ellipticity2phi_q
+from lenstronomy.Analysis.epl_shear_solver import solve_lenseq_pemd
 
 __all__ = ['LensEquationSolver']
 
@@ -54,7 +56,7 @@ class LensEquationSolver(object):
                 y_solve.append(result.x[1])
 
         x_mins, y_mins = image_util.findOverlap(x_solve, y_solve, precision_limit)
-        if arrival_time_sort is True:
+        if arrival_time_sort:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         self.lensModel.set_dynamic()
         return x_mins, y_mins
@@ -105,7 +107,33 @@ class LensEquationSolver(object):
             
         return x_mins, y_mins, delta_map, pixel_width
 
-    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
+    def image_position_analytical(self, x, y, kwargs_lens, arrival_time_sort=True, kwargs_solver=None, magnification_limit=None, **kwargs):
+        lens_model_list = list(self.lensModel.lens_model_list)
+        if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
+            raise ValueError("Only SIE or PEMD (+shear) supported in the analytical solver for now")
+        if kwargs_solver is None:
+            kwargs_solver = {}
+
+        x_mins, y_mins = solve_lenseq_pemd((x, y), kwargs_lens, **kwargs_solver)
+        if arrival_time_sort:
+            x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
+        if magnification_limit is not None:
+            mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
+            x_mins = x_mins[mag >= magnification_limit]
+            y_mins = y_mins[mag >= magnification_limit]
+        return x_mins, y_mins
+
+    def image_position_from_source(self, *args, solver='lenstronomy', **kwargs):
+        if solver=='lenstronomy':
+            return self.image_position_lenstronomy(*args, **kwargs)
+        if solver=='analytical':
+            return self.image_position_analytical(*args, **kwargs)
+        if solver=='stochastic':
+            return self.image_position_stochastic(*args, **kwargs)
+        raise ValueError(f"{solver} is not a valid solver.")
+
+
+    def image_position_lenstronomy(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
                                    non_linear=False, magnification_limit=None):
@@ -135,22 +163,23 @@ class LensEquationSolver(object):
         # find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and
         # pixel width
         x_mins, y_mins, delta_map, pixel_width = self.candidate_solutions(sourcePos_x, sourcePos_y, kwargs_lens, min_distance, search_window, verbose, x_center, y_center)
-        if verbose is True:
+        if verbose:
             print("There are %s regions identified that could contain a solution of the lens equation" % len(x_mins))
         if len(x_mins) < 1:
             return x_mins, y_mins
-        if initial_guess_cut is True:
+        if initial_guess_cut:
             mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
             mag[mag < 1] = 1
             x_mins = x_mins[delta_map <= min_distance*mag*5]
             y_mins = y_mins[delta_map <= min_distance*mag*5]
-            if verbose is True:
+            if verbose:
                 print("The number of regions that meet the plausibility criteria are %s" % len(x_mins))
         x_mins = np.append(x_mins, np.random.uniform(low=-search_window/2+x_center, high=search_window/2+x_center,
                                                      size=num_random))
         y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center,
                                                      high=search_window / 2 + y_center, size=num_random))
         # iterative solving of the lens equation for the selected grid points
+        #print("Candidates:", x_mins.shape, y_mins.shape)
         x_mins, y_mins, solver_precision = self._find_gradient_decent(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
                                                                       precision_limit, num_iter_max, verbose=verbose,
                                                                       min_distance=min_distance, non_linear=non_linear)
@@ -159,7 +188,7 @@ class LensEquationSolver(object):
         y_mins = y_mins[solver_precision <= precision_limit]
         # find redundant solutions within the min_distance criterion
         x_mins, y_mins = image_util.findOverlap(x_mins, y_mins, min_distance)
-        if arrival_time_sort is True:
+        if arrival_time_sort:
             x_mins, y_mins = self.sort_arrival_times(x_mins, y_mins, kwargs_lens)
         if magnification_limit is not None:
             mag = np.abs(self.lensModel.magnification(x_mins, y_mins, kwargs_lens))
@@ -195,7 +224,7 @@ class LensEquationSolver(object):
             x_guess, y_guess, delta, l = self._solve_single_proposal(x_min[i], y_min[i], sourcePos_x, sourcePos_y,
                                                                      kwargs_lens, precision_limit, num_iter_max,
                                                                      max_step=min_distance, non_linear=non_linear)
-            if verbose is True:
+            if verbose:
                 print("Solution found for region %s with required precision at iteration %s" % (i, l))
             x_mins[i] = x_guess
             y_mins[i] = y_guess
@@ -219,7 +248,7 @@ class LensEquationSolver(object):
         :return: x_position, y_position, error in the source plane, steps required (for gradient decent)
         """
         l = 0
-        if non_linear is True:
+        if non_linear:
             xinitial = np.array([x_guess, y_guess])
             result = minimize(self._root, xinitial, args=(kwargs_lens, source_x, source_y), tol=precision_limit ** 2,
                               method='Nelder-Mead')
@@ -318,7 +347,7 @@ class LensEquationSolver(object):
         mag_list = np.array(mag_list)
         x_mins_sorted = util.selectBest(x_mins, mag_list, numImages)
         y_mins_sorted = util.selectBest(y_mins, mag_list, numImages)
-        if arrival_time_sort is True:
+        if arrival_time_sort:
             x_mins_sorted, y_mins_sorted = self.sort_arrival_times(x_mins_sorted, y_mins_sorted, kwargs_lens)
         return x_mins_sorted, y_mins_sorted
 
@@ -338,7 +367,7 @@ class LensEquationSolver(object):
 
         if len(x_mins) <= 1:
             return x_mins, y_mins
-        if self.lensModel.multi_plane is True:
+        if self.lensModel.multi_plane:
             arrival_time = self.lensModel.arrival_time(x_mins, y_mins, kwargs_lens)
         else:
             fermat_pot = self.lensModel.fermat_potential(x_mins, y_mins, kwargs_lens)

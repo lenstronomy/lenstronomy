@@ -47,7 +47,7 @@ class TestFastRayShooting(object):
 
         x_fore, y_fore, alpha_x_fore, alpha_y_fore = fast_rayshooting._ray_shooting_fast_foreground()
         xtrue, ytrue, alpha_xtrue, alpha_ytrue = self.lensModel.lens_model.\
-            ray_shooting_partial(np.zeros_like(x_image_true), np.zeros_like(y_image_true), x_image_true, y_image_true, 0.,
+            ray_shooting_partial_comoving(np.zeros_like(x_image_true), np.zeros_like(y_image_true), x_image_true, y_image_true, 0.,
                                  self.zlens, self.kwargs_epl)
 
         npt.assert_almost_equal(x_fore, xtrue)
@@ -84,6 +84,7 @@ class TestFastRayShooting(object):
         logL_true = -0.5 * chi_square_total
         npt.assert_almost_equal(logL, logL_true)
         npt.assert_almost_equal(chi_square_total, chi_square_source)
+
 
 if __name__ == '__main__':
     pytest.main()

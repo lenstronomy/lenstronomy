@@ -76,8 +76,8 @@ class MultiPlaneBase(ProfileListBase):
             self._T_z_list.append(T_z)
             z_before = z_lens
 
-    def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False, T_ij_start=None, T_ij_end=None):
+    def ray_shooting_partial_comoving(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                                      include_z_start=False, T_ij_start=None, T_ij_end=None):
         """
         ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y)
         at redshift z_start and then backwards to redshift z_stop
@@ -133,6 +133,40 @@ class MultiPlaneBase(ProfileListBase):
             delta_T = T_ij_end
         x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
         return x, y, alpha_x, alpha_y
+
+    def ray_shooting_partial(self, theta_x, theta_y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
+                             include_z_start=False, T_ij_start=None, T_ij_end=None):
+        """
+        ray-tracing through parts of the coin, starting with (x,y) in angular units as seen on the sky without lensing
+         and angles (alpha_x, alpha_y) as seen at redshift z_start and then backwards to redshift z_stop
+
+        :param theta_x: angular position on the sky [arcsec]
+        :param theta_y: angular position on the sky [arcsec]
+        :param alpha_x: ray angle at z_start [arcsec]
+        :param alpha_y: ray angle at z_start [arcsec]
+        :param z_start: redshift of start of computation
+        :param z_stop: redshift where output is computed
+        :param kwargs_lens: lens model keyword argument list
+        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as
+         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed always!
+         This can lead to duplications in the computation of deflection angles.
+        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.
+         If not set, will compute the distance each time this function gets executed.
+        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
+         If not set, will compute the distance each time this function gets executed.
+        :return: angular position and angles at redshift z_stop
+        """
+        T_z_start = self._cosmo_bkg.T_xy(0, z_start)
+        x = np.array(theta_x, dtype=float) * T_z_start
+        y = np.array(theta_y, dtype=float) * T_z_start
+
+        x, y, alpha_x, alpha_y = self.ray_shooting_partial_comoving(x, y, alpha_x, alpha_y, z_start, z_stop,
+                                                                    kwargs_lens, include_z_start=include_z_start,
+                                                                    T_ij_start=T_ij_start, T_ij_end=T_ij_end)
+        T_z_stop = self._cosmo_bkg.T_xy(0, z_stop)
+        beta_x = x / T_z_stop
+        beta_y = y / T_z_stop
+        return beta_x, beta_y, alpha_x, alpha_y
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """

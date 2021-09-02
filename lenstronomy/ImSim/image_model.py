@@ -126,8 +126,8 @@ class ImageModel(object):
                                                        kwargs_special=kwargs_special,
                                                        unconvolved=unconvolved, de_lensed=de_lensed, k=k)
 
-    def _source_surface_brightness_analytical(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
-                                              unconvolved=False, de_lensed=False, k=None):
+    def _source_surface_brightness_analytical(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None,
+                                              kwargs_special=None, unconvolved=False, de_lensed=False, k=None):
         """
 
         computes the source surface brightness distribution
@@ -239,7 +239,8 @@ class ImageModel(object):
         return point_source_image
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True,
+              point_source_add=True):
         """
 
         make an image with a realisation of linear parameter values "param"

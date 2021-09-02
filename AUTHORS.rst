@@ -22,6 +22,7 @@ Contributors (alphabetic)
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
+* Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Felix A. Kuhn

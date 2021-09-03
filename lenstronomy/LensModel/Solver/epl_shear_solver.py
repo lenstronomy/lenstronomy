@@ -15,11 +15,7 @@ def alpha_epl_shear(x, y, b, q, t=1, gamma1=0, gamma2=0, Omega=None):
 @jit()
 def one_dim_lens_eq_calcs(args, phi):
     """Calculates intermediate quantities that are needed for several of the subsequent functions"""
-    if len(args) == 7:
-        b, t, y1, y2, q, gamma1, gamma2 = args
-    else:
-        b, t, y1, y2, q = args
-        gamma1 = gamma2 = 0.
+    b, t, y1, y2, q, gamma1, gamma2 = args
     y = (y1+y2*1j)
 
     rhat = 1/(1-gamma1**2-gamma2**2)*(
@@ -95,48 +91,34 @@ def ell_to_pol(rell, theta, q):
     return r, phi
 
 @jit()
-def getphi(thpl, args, edge_fix=True):
+def getphi(thpl, args):
     """
     Finds all roots to both versions the 1-dimensional lens equation in phi, by doing a grid search for sign changes on
     the supplied thpl. In the case of extrema, refine at the relevant location.
     :param thpl: What points to calculate the equation on use for detecting sign changes
     :param args: Parameters to be passed to the lens equation
-    :param edge_fix: Also check for sign changes at the edges (if thpl spans all angles)
     :return: an array containing all roots
     """
     y, y_notsmooth = one_dim_lens_eq_both(thpl, args)
     num_phi = len(thpl)
     roots = []
     for i in range(num_phi-1):
-        if y[i]==0. or y_notsmooth[i]==0.:
-            roots.append(thpl[i])
-
-        if y[i+1]*y[i]<0:
+        if y[i+1]*y[i]<=0:
             roots.append(brentq_inline(one_dim_lens_eq, thpl[i], thpl[i+1], args=args)%(2*np.pi))
-        elif y_notsmooth[i+1]*y_notsmooth[i]<0:
+        elif y_notsmooth[i+1]*y_notsmooth[i]<=0:
             roots.append(brentq_inline(one_dim_lens_eq_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
-    if edge_fix and y[-1]*y[0]<0:
-        roots.append(brentq_inline(one_dim_lens_eq, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
-    elif edge_fix and y_notsmooth[-1]*y_notsmooth[0]<0:
-        roots.append(brentq_inline(one_dim_lens_eq_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
 
     for i in range(1,num_phi+1):
-        if y.ndim!=1:
-            break
         y1 = y[i-1]
         y2 = y[i%num_phi]
         y3 = y[(i+1)%num_phi]
         y1n = y_notsmooth[(i-1)%num_phi]
         y2n = y_notsmooth[(i)%num_phi]
         y3n = y_notsmooth[(i+1)%num_phi]
-        if (y3-y2)*(y2-y1)<0 or (y3n-y2n)*(y2n-y1n)<0:
-            if y3*y2<0 or y1*y2<0:
+        if (y3-y2)*(y2-y1)<=0 or (y3n-y2n)*(y2n-y1n)<=0:
+            if y3*y2<=0 or y1*y2<=0:
                 continue
-            if edge_fix and i>num_phi-2:
-                x1 = circle_edge_fix(thpl[(i-1)%num_phi])
-                x2 = circle_edge_fix(thpl[(i)%num_phi])
-                x3 = circle_edge_fix(thpl[(i + 1)%num_phi])
-            elif not edge_fix and i>num_phi-2:
+            if i>num_phi-2:
                 continue
             else:
                 x1 = thpl[i - 1]
@@ -147,54 +129,21 @@ def getphi(thpl, args, edge_fix=True):
             xmin_ns = min_approx(x1,x2,x3,y1n, y2n,y3n)
             ymin = one_dim_lens_eq(xmin, args)
             ymin_ns = one_dim_lens_eq_unsmooth(xmin_ns, args)
-            if ymin==0.:
-                roots.append(xmin)
-                roots.append(xmin)
-            elif ymin*y2 < 0 and x2<xmin <x3:
+            if ymin*y2 <= 0 and x2 <= xmin <=x3:
                 roots.append(brentq_inline(one_dim_lens_eq, x2, xmin, args=args)%(2*np.pi))
                 roots.append(brentq_inline(one_dim_lens_eq, xmin, x3, args=args)%(2*np.pi))
-            elif ymin*y2 < 0 and x1 < xmin < x2:
+            elif ymin*y2 <= 0 and x1 <= xmin <= x2:
                 roots.append(brentq_inline(one_dim_lens_eq, x1, xmin, args=args)%(2*np.pi))
                 roots.append(brentq_inline(one_dim_lens_eq, xmin, x2, args=args)%(2*np.pi))
-            elif ymin_ns ==0:
-                roots.append(xmin)
-                roots.append(xmin)
-            elif ymin_ns * y2n <0 and x2<xmin_ns<x3:
+            elif ymin_ns * y2n <=0 and x2 <= xmin_ns<=x3:
                 roots.append(brentq_inline(one_dim_lens_eq_unsmooth, x2, xmin_ns, args=args)%(2*np.pi))
                 roots.append(brentq_inline(one_dim_lens_eq_unsmooth, xmin_ns, x3, args=args)%(2*np.pi))
-            elif ymin_ns*y2n < 0 and x1 < xmin_ns < x2:
+            elif ymin_ns*y2n <= 0 and x1 <= xmin_ns <= x2:
                 roots.append(brentq_inline(one_dim_lens_eq_unsmooth, x1, xmin_ns, args=args)%(2*np.pi))
                 roots.append(brentq_inline(one_dim_lens_eq_unsmooth, xmin_ns, x2, args=args)%(2*np.pi))
 
 
     return np.array(roots)
-
-@jit()
-def getphi_many(thpl, args_all, edge_fix=True):
-    """Finds all roots to both versions of the one-dimensional lens equations, in the case of multiple source positions
-    at once. No refinement at maxima is implemented, so a higher resolution is needed."""
-    ys, ys_notsmooth = one_dim_lens_eq_both(thpl, args_all)
-    num_phi = len(thpl)
-    all_roots = []
-    for j, (y,y_notsmooth) in enumerate(zip(ys,ys_notsmooth)):
-        roots = []
-        args = (args_all[0], args_all[1], args_all[2][j, 0], args_all[3][j, 0], *args_all[4:])
-        for i in range(num_phi-1):
-            if y[i]==0. or y_notsmooth[i]==0.:
-                roots.append(thpl[i])
-
-            if y[i+1]*y[i]<0:
-                roots.append(brentq_inline(one_dim_lens_eq, thpl[i], thpl[i+1], args=args)%(2*np.pi))
-            elif y_notsmooth[i+1]*y_notsmooth[i]<0:
-                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
-        if edge_fix and y[-1]*y[0]<0:
-            roots.append(brentq_inline(one_dim_lens_eq, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
-        elif edge_fix and y_notsmooth[-1]*y_notsmooth[0]<0:
-            roots.append(brentq_inline(one_dim_lens_eq_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
-        all_roots.append(roots)
-
-    return all_roots
-
 
 
 def geomlinspace(a,b,N):
@@ -206,29 +155,17 @@ def geomlinspace(a,b,N):
 
 def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False):
     """Solve the lens equation, where the arguments have been properly rotated to the major-axis"""
-    if len(args) == 7:
-        b, t, y1, y2, q, gamma1, gamma2 = args
-    else:
-        b, t, y1, y2, q = args
-        gamma1 = gamma2 = 0.
-    if np.asarray(y1).ndim ==0:
-        p1 = np.arctan2(y2*(1-gamma1)+gamma2*y1, y1*(1+gamma1)+gamma2*y2)
-    else:
-        p1 = np.pi/2
+    b, t, y1, y2, q, gamma1, gamma2 = args
+    p1 = np.arctan2(y2*(1-gamma1)+gamma2*y1, y1*(1+gamma1)+gamma2*y2)
     int_points = [p1]
     geom = geomlinspace(1e-4,0.1,Nmeas_extra)
 
-    thpl = np.sort(np.concatenate((np.linspace(-np.pi/(Nmeas-3),np.pi*(1+1/(Nmeas-3)), Nmeas),
+    thpl = np.sort(np.concatenate((np.linspace(0.,np.pi, Nmeas),
                                    *[i%np.pi-geom for i in int_points],
                                    *[i%np.pi+geom for i in int_points],
                                    )))
-    many = np.asarray(y1).ndim !=0
-    if not many:
-        the = getphi(thpl, (b, t, y1, y2, q, gamma1, gamma2), edge_fix=False)
-        thetas = np.concatenate((the, the + np.pi))
-    else:
-        thetaas = getphi_many(thpl, (b, t, y1, y2, q, gamma1, gamma2), edge_fix=False)
-        thetas  = [np.concatenate((t, np.array(t)+np.pi)) for t in thetaas]
+    the = getphi(thpl, (b, t, y1, y2, q, gamma1, gamma2))
+    thetas = np.concatenate((the, the + np.pi))
     if make_diagplot:
         from matplotlib import pyplot as plt
         ys_sm, ys = one_dim_lens_eq_both(thpl, (b, t, y1, y2, q, gamma1, gamma2))
@@ -242,20 +179,12 @@ def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False
         for th in thetas:
             plt.axvline(th, color='purple')
         plt.axvline(p1%np.pi, color='red')
-        # plt.plot(thpl[1:-1], (ys[2:]-ys[1:-1])*(ys[1:-1]-ys[:-2]), marker='.')
         plt.show()
-    if not many:
-        Rs = np.array([getr(theta, (b, t, y1, y2, q, gamma1, gamma2)) for theta in thetas])
-        stuff = np.array(pol_to_cart(Rs[Rs > 0], thetas[Rs > 0]))
-        diff = -y1-y2*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2)
-        goodones = np.abs(diff) < 1e-8
-        return findOverlap(*stuff[:, goodones], 1e-8)
-    else:
-        Rs_all= [getr(thetas[i], (b, t, y1[i,0], y2[i,0], q, gamma1, gamma2)) for i in range(len(thetas))]
-        stuff = [np.array(pol_to_cart(Rs[Rs > 0], theta[Rs > 0])) for theta, Rs in zip(thetas, Rs_all)]
-        diff = [-y1[i]-y2[i]*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2) for i, stuff in enumerate(stuff)]
-        goodones = [np.abs(d) < 1e-8 for d in diff]
-        return [findOverlap(*stuff[:, g], 1e-8) for stuff,g in zip(stuff, goodones)]
+    Rs = np.array([getr(theta, (b, t, y1, y2, q, gamma1, gamma2)) for theta in thetas])
+    stuff = np.array(pol_to_cart(Rs[Rs > 0], thetas[Rs > 0]))
+    diff = -y1-y2*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2)
+    goodones = np.abs(diff) < 1e-8
+    return findOverlap(*stuff[:, goodones], 1e-8)
 
 def check_center(kwargs_lens):
     """Checks if the shear-at-center convention is properly used."""
@@ -315,7 +244,8 @@ def caustics_epl_shear(kwargs_lens, num_th=500, maginf=0, sourceplane=True, retu
     :param num_th: resolution.
     :param maginf: the outer critical curve for t>1 will be replaced with the curve where the inverse magnification is maginf
     :param sourceplane: if True (default), ray-shoot the calculated critical curves to the source plane
-    :param return_which: options 'quad', 'double', 'caustic' and 'cut' and None (in that case: return
+    :param return_which: options 'quad' (boundary of area within which there are 4 images), 'double' (boundary of area within which there are 2 images),
+     'caustic' (the diamond caustic) and 'cut' (the cut, if it exists, that is if t<2, else, if t>2, returns the caustic) and None (in that case: return quad, caustic, cut)
     :return: (2,N) array if return_which set, else a tuple of (caustic, cut, quad)
     """
     e1, e2 = kwargs_lens[0]['e1'], kwargs_lens[0]['e2']

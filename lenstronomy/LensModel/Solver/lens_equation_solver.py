@@ -127,8 +127,6 @@ class LensEquationSolver(object):
         lens_model_list = list(self.lensModel.lens_model_list)
         if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
             raise ValueError("Only SIE or PEMD (+shear) supported in the analytical solver for now")
-        if kwargs_solver is None:
-            kwargs_solver = {}
 
         x_mins, y_mins = solve_lenseq_pemd((x, y), kwargs_lens, **kwargs_solver)
         if arrival_time_sort:

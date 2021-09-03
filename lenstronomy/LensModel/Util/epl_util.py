@@ -69,6 +69,28 @@ def pol_to_cart(r, th):
     return (r*np.cos(th), r*np.sin(th))
 
 @jit()
+def pol_to_ell(r, theta, q):
+    """Converts from polar to elliptical coordinates"""
+    phi = np.arctan2(np.sin(theta), np.cos(theta)*q)
+    rell = r*np.sqrt(q**2*np.cos(theta)**2+np.sin(theta)**2)
+    return rell, phi
+
+
+@jit()
+def ell_to_pol(rell, theta, q):
+    """Converts from elliptical to polar coordinates"""
+    phi = np.arctan2(np.sin(theta)*q, np.cos(theta))
+    r = rell*np.sqrt(1/q**2*np.cos(theta)**2+np.sin(theta)**2)
+    return r, phi
+
+
+def geomlinspace(a,b,N):
+    """Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a, with the same spacing as the
+    geomspace would have at a"""
+    delta = a*((b/a)**(1/(N-1))-1)
+    return np.concatenate((np.linspace(0,a,int(a/delta), endpoint=False), np.geomspace(a,b,N)))
+
+@jit()
 def solvequadeq(a,b,c):
     """
     Solves a quadratic equation. Care is taken for the numerics, see also https://en.wikipedia.org/wiki/Loss_of_significance

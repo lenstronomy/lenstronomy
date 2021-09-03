@@ -4,7 +4,6 @@ import numpy as np
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util.numba_util import jit, nan_to_num
-from scipy.special import hyp2f1
 
 __all__ = ['EPL_numba']
 

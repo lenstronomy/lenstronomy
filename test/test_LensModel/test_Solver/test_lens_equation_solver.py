@@ -167,9 +167,8 @@ class TestLensEquationSolver(object):
         xpl, ypl = np.linspace(-1, 1, N), np.linspace(-1, 1, N)
         xgr, ygr = np.meshgrid(xpl, ypl, indexing='ij')
         xf, yf = xgr.flatten(), ygr.flatten()
-        from tqdm.contrib import tzip
         sols = [leqs.image_position_from_source(x, y , kwargs, solver='analytical')
-                for x, y in tzip(xf, yf)]
+                for x, y in zip(xf, yf)]
         numsols = np.array([len(p[0]) for p in sols])
 
         from matplotlib.path import Path

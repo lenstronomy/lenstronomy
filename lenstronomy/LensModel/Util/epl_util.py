@@ -5,46 +5,85 @@ from lenstronomy.Util.numba_util import jit
 
 @jit()
 def min_approx(x1,x2,x3,y1,y2,y3):
-    # Get the x-value of the minimum of the parabola through the points (x1,y1), ...
+    """
+    Get the x-value of the minimum of the parabola through the points (x1,y1), ...
+    :param x1: x-coordinate point 1
+    :param x2: x-coordinate point 2
+    :param x3: x-coordinate point 3
+    :param y1: y-coordinate point 1
+    :param y2: y-coordinate point 2
+    :param y3: y-coordinate point 3
+    :return: x-location of the minimum
+    """
+    #
     div = (2.*(x3*(y1 - y2) + x1*(y2 - y3) + x2*(-y1 + y3)))
     return (x3**2*(y1 - y2) + x1**2*(y2 - y3) + x2**2*(-y1 + y3))/div
 
 @jit()
 def rotmat(th):
-    """Calculates the rotation matrix for an angle th"""
+    """
+    Calculates the rotation matrix
+    :param th: angle
+    :return: rotation matrix
+    """
     return np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
 
 @jit()
 def cdot(a, b):
-    """Calculates some complex dot-product that simplifies the math"""
+    """
+    Calculates some complex dot-product that simplifies the math
+    :param a: complex number
+    :param b: complex number
+    :return: dot-product
+    """
     return a.real*b.real + a.imag*b.imag
 
 @jit()
 def ps(x, p):
-    """A regularized power-law that gets rid of singularities"""
+    """
+    A regularized power-law that gets rid of singularities, abs(x)**p*sign(x)
+    :param x: x
+    :param p: p
+    :return:
+    """
     return np.abs(x)**p*np.sign(x)
 
 @jit()
 def cart_to_pol(x, y):
-    """Convert from cartesian to polar"""
+    """
+    Convert from cartesian to polar
+    :param x: x-coordinate
+    :param y: y-coordinate
+    :return: tuple of (r, theta)
+    """
     return (np.sqrt(x**2+y**2), np.arctan2(y,x)%(2*np.pi))
 
 @jit()
 def pol_to_cart(r, th):
-    """Convert from polar to cartesian"""
+    """
+    Convert from polar to cartesian
+    :param r: r-coordinate
+    :param th: theta-coordinate
+    :return: tuple of (x,y)
+    """
     return (r*np.cos(th), r*np.sin(th))
 
 @jit()
 def solvequadeq(a,b,c):
-    """Solves a quadratic equation. Care is taken for the numerics"""
-    # https://en.wikipedia.org/wiki/Loss_of_significance
+    """
+    Solves a quadratic equation. Care is taken for the numerics, see also https://en.wikipedia.org/wiki/Loss_of_significance
+    :param a: a
+    :param b: b
+    :param c: c
+    :return: tuple of two solutions
+    """
     sD=(b**2-4*a*c)**0.5
     x1=(-b-np.sign(b)*sD)/(2*a)
     x2=2*c/(-b-np.sign(b)*sD)
     return np.where(b!=0,np.where(a!=0,x1,-c/b),-(-c/a)**0.5), \
             np.where(b!=0,np.where(a!=0,x2,-c/b+1e-8),+(-c/a)**0.5)
 
-def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100, args=(), verbose=False):
+def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100, args=()):
     """
     A numba-compatible implementation of brentq (largely copied from scipy.optimize.brentq).
     Unfortunately, the scipy verison is not compatible with numba, hence this reimplementation :(
@@ -70,12 +109,8 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
     if fpre*fcur>0:
         raise ValueError('Signs are not different')
     if fpre == 0:
-        if verbose:
-            print(funcalls)
         return xpre
     if fcur == 0:
-        if verbose:
-            print(funcalls)
         return xcur
     iterations = 0
     for i in range(maxiter):
@@ -96,8 +131,6 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
         delta = (xtol + rtol*abs(xcur))/2
         sbis = (xblk - xcur)/2
         if fcur == 0 or abs(sbis) < delta:
-            if verbose:
-                print(funcalls)
             return xcur
 
         if abs(spre) > delta and abs(fcur) < abs(fpre):
@@ -128,8 +161,6 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
         fcur = f(xcur, args)
         funcalls += 1
     
-    if verbose:
-        print(funcalls)
     return xcur
 
 brentq_inline = jit(inline='always')(brentq_nojit)

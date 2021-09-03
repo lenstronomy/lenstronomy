@@ -153,7 +153,7 @@ def geomlinspace(a,b,N):
     return np.concatenate((np.linspace(0,a,int(a/delta), endpoint=False), np.geomspace(a,b,N)))
 
 
-def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False):
+def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50):
     """Solve the lens equation, where the arguments have been properly rotated to the major-axis"""
     b, t, y1, y2, q, gamma1, gamma2 = args
     p1 = np.arctan2(y2*(1-gamma1)+gamma2*y1, y1*(1+gamma1)+gamma2*y2)
@@ -166,20 +166,6 @@ def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False
                                    )))
     the = getphi(thpl, (b, t, y1, y2, q, gamma1, gamma2))
     thetas = np.concatenate((the, the + np.pi))
-    if make_diagplot:
-        from matplotlib import pyplot as plt
-        ys_sm, ys = one_dim_lens_eq_both(thpl, (b, t, y1, y2, q, gamma1, gamma2))
-        xmins = np.array(
-            [min_approx(*thpl[i:i+3], *ys[i:i+3]) for i in range(len(thpl)-3) if (ys[i+2]-ys[i+1])*(ys[i+1]-ys[i]) < 0])
-        ymins, ymins2 = one_dim_lens_eq_both(xmins, (b, t, y1, y2, q, gamma1, gamma2))
-        plt.figure()
-        plt.plot(thpl, ys, marker='.')
-        plt.plot(xmins, ymins, marker='o')
-        plt.plot(xmins, ymins2, marker='o')
-        for th in thetas:
-            plt.axvline(th, color='purple')
-        plt.axvline(p1%np.pi, color='red')
-        plt.show()
     Rs = np.array([getr(theta, (b, t, y1, y2, q, gamma1, gamma2)) for theta in thetas])
     stuff = np.array(pol_to_cart(Rs[Rs > 0], thetas[Rs > 0]))
     diff = -y1-y2*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2)
@@ -192,14 +178,13 @@ def check_center(kwargs_lens):
         raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0). "
                          "This can be ensured by supplying a dictionary-style joint_setting_list to the model.")
 
-def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, make_diagplot=False):
+def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80):
     """
     Solves the lens equation using a semi-analytical recipe.
     :param pos_: The source plane position (shape (2,)), or the source plane positions (shape (2,N)) for which to solve the lens equation 
     :param kwargs_lens: List of kwargs in lenstronomy style, following ['EPL', 'SHEAR'] format
     :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
     :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
-    :param make_diagplot: Make a plot (for debugging purposes).
     :return: The lens plane positions.
     Note: generally the (demagnified) central image will also be included.
     """
@@ -221,18 +206,11 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, make_diagplo
     rotfact = np.exp(-1j*theta_ell)
     gamma *= rotfact**2
     p *= rotfact
-    many = np.asarray(pos[0]).ndim > 0
     res = solvelenseq_majoraxis((b, t, p.real, p.imag, q,
-                                 gamma.real, gamma.imag), Nmeas=Nmeas, Nmeas_extra=Nmeas_extra,
-                                make_diagplot=make_diagplot)
-    if not many:
-        xsol, ysol = res
-        x = np.array([(xs+1j*ys)/rotfact+cen for xs, ys in zip(xsol, ysol)])
-        return x.real, x.imag
-    else:
-        xx = [[(xs+1j*ys)/rotfact+cen for xs, ys in zip(xsol, ysol)] for xsol, ysol in res]
-        return [[x.real for x in a] for a in xx], [[x.imag for x in a] for a in xx]
-        #return [[(x.real, x.imag) for x in a] for a in xx]
+                                 gamma.real, gamma.imag), Nmeas=Nmeas, Nmeas_extra=Nmeas_extra)
+    xsol, ysol = res
+    x = np.array([(xs+1j*ys)/rotfact+cen for xs, ys in zip(xsol, ysol)])
+    return x.real, x.imag
 
 
 def caustics_epl_shear(kwargs_lens, num_th=500, maginf=0, sourceplane=True, return_which=None):

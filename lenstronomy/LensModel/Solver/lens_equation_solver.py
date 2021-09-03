@@ -182,7 +182,7 @@ class LensEquationSolver(object):
         :param y_center: float, center of the window to search for point sources
         :param num_random: int, number of random positions within the search window to be added to be starting
          positions for the gradient decent solver
-        :param non_linear: bool, /if True applies a non-linear solver not dependent on Hessian computation
+        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
         :param magnification_limit: None or float, if set will only return image positions that have an
          abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle

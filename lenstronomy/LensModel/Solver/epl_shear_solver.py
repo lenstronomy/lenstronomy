@@ -1,7 +1,7 @@
 __author__ = 'ewoudwempe'
 
 import numpy as np
-from lenstronomy.LensModel.Util.epl_util import min_approx, circle_edge_fix, pol_to_cart, cart_to_pol, cdot, ps, rotmat, solvequadeq, brentq_inline
+from lenstronomy.LensModel.Util.epl_util import min_approx, pol_to_cart, cart_to_pol, cdot, ps, rotmat, solvequadeq, brentq_inline
 from lenstronomy.Util.image_util import findOverlap
 from lenstronomy.LensModel.Profiles.epl_numba import alpha, omega
 from lenstronomy.Util.numba_util import jit

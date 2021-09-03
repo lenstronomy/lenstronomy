@@ -112,7 +112,7 @@ class EPL_numba(LensProfileBase):
         phi = np.angle(zz_ell)
 
         #u = np.minimum(nan_to_num((b/R)**t),1e100)
-        u = np.fmin((b/R)**t, 1e15)               # I remove all factors of (b/R)**t to only have to remove nans once.
+        u = np.fmin((b/R)**t, 1e10)               # I remove all factors of (b/R)**t to only have to remove nans once.
                                                   # The np.fmin is a regularisation near R=0, to avoid overflows
                                                   # in the magnification calculations
         kappa = (2-t)/2
@@ -176,9 +176,3 @@ def omega(phi, t, q, niter_max=200, tol=1e-16):
         Omega *= (2*n-(2-t))/(2*n+(2-t)) * fact
     omegas += Omega
     return omegas
-
-def omega_scipy(phi, t, q):
-    """A slower, but simpler version of omega, for testing purposes"""
-    f = (1-q)/(1+q)
-    #print((1,t/2,2-t/2,-f*np.exp(2j*phi)))
-    return np.exp(1j*phi)*hyp2f1(1,t/2,2-t/2,-f*np.exp(2j*phi))

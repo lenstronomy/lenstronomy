@@ -145,8 +145,6 @@ class TestLensEquationSolver(object):
         for x, y in zip(x_pos_ls, y_pos_ls):  # Check if it found all solutions lenstronomy found
             assert np.sqrt((x-x_pos)**2+(y-y_pos)**2).min() < 1e-8
 
-
-
     def test_caustics(self):
         lm = LensModel(['EPL_NUMBA', 'SHEAR'])
         leqs = LensEquationSolver(lm)
@@ -212,8 +210,6 @@ class TestLensEquationSolver(object):
         lensEquationSolver = LensEquationSolver(lensModel)
         kwargs_lens = [{'theta_E': 1., 'gamma': 2.2, 'center_x': 0.0, 'center_y': 0.0, 'e1': 0.01, 'e2': 0.05},
                        {'gamma1': -0.04, 'gamma2': -0.1, 'ra_0': 0.0, 'dec_0': 0.0}]
-
-        lensEquationSolver.image_position_from_source(0.1, 0., kwargs_lens, solver='analytical', make_diagplot=True)
 
         with pytest.raises(ValueError):
             lensEquationSolver.image_position_from_source(0.1, 0., kwargs_lens, solver='nonexisting')

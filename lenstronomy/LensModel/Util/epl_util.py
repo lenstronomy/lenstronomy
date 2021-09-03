@@ -15,11 +15,6 @@ def rotmat(th):
     return np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
 
 @jit()
-def circle_edge_fix(x):
-    """Make sure there are no discontinuities in the angle near an angle x=0"""
-    return (x-3)%(2*np.pi)+3
-
-@jit()
 def cdot(a, b):
     """Calculates some complex dot-product that simplifies the math"""
     return a.real*b.real + a.imag*b.imag
@@ -137,5 +132,4 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
         print(funcalls)
     return xcur
 
-brentq = jit()(brentq_nojit)
 brentq_inline = jit(inline='always')(brentq_nojit)

@@ -6,15 +6,15 @@ from lenstronomy.Util.image_util import findOverlap
 from lenstronomy.LensModel.Profiles.epl_numba import alpha, omega
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.param_util import ellipticity2phi_q, phi_q2_ellipticity, shear_cartesian2polar, shear_polar2cartesian
-from scipy.special import hyp2f1
 
 @jit()
 def alpha_epl_shear(x, y, b, q, t=1, gamma1=0, gamma2=0, Omega=None):
-    """ The complex deflection of EPL+SHEAR """
+    """The complex deflection of EPL+SHEAR"""
     return alpha(x, y, b, q, t=t, Omega=Omega) + (gamma1 * x + gamma2*y) +1j * (gamma2*x -gamma1*y)
 
 @jit()
-def lenseqtop_calcs(args, phi):
+def one_dim_lens_eq_calcs(args, phi):
+    """Calculates intermediate quantities that are needed for several of the subsequent functions"""
     if len(args) == 7:
         b, t, y1, y2, q, gamma1, gamma2 = args
     else:
@@ -42,24 +42,27 @@ def lenseqtop_calcs(args, phi):
     return Omega, const, phiell, q, r, rhat, t, b, thetahat, y
 
 @jit()
-def lenseqtop_both(phi, args):
-    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = lenseqtop_calcs(args, phi)
+def one_dim_lens_eq_both(phi, args):
+    """Calculates and returns simultaneously both the smooth and the not-smooth 1-dimensional lens equation
+    that needs to be solved"""
+    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = one_dim_lens_eq_calcs(args, phi)
     rr, thetaa = ell_to_pol(1, phiell, q)
     ip = cdot(y, rhat)*cdot(Omega, thetahat)-cdot(Omega, rhat)*cdot(y, thetahat)
     # The derivations are lost somewhere in my notes...
     eq = (rr * b)**(2/t-2)*ps((cdot(y,thetahat)/const), 2/t)*ip**2+ps(ip, 2/t)* cdot(Omega, thetahat)**2
     eq_notsmooth = ps(rr * b,1-t)*(cdot(y,thetahat)/const)*np.abs(ip)**t+ip* np.abs(cdot(Omega, thetahat))**(+t)
-        # return eq * np.abs(cdot(Omega, thetahat))**(2-t) * np.abs(ip)**(2-t) , ip
     return eq, eq_notsmooth
 
 @jit()
 def getr(phi, args):
-    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = lenseqtop_calcs(args, phi)
+    """Given an angle phi, get the radius r"""
+    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = one_dim_lens_eq_calcs(args, phi)
     return r
 
 @jit()
-def lenseqtop(phi, args, return_r=False):
-    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = lenseqtop_calcs(args, phi)
+def one_dim_lens_eq(phi, args):
+    """Calculates the smooth 1-dimensional lens equation to solve - to be used by a root-finder"""
+    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = one_dim_lens_eq_calcs(args, phi)
 
     rr, thetaa = ell_to_pol(1, phiell, q)
     ip = cdot(y, rhat)*cdot(Omega, thetahat)-cdot(Omega, rhat)*cdot(y, thetahat)
@@ -67,8 +70,10 @@ def lenseqtop(phi, args, return_r=False):
     return eq
 
 @jit()
-def lenseqtop_unsmooth(phi, args, return_r=False):
-    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = lenseqtop_calcs(args, phi)
+def one_dim_lens_eq_unsmooth(phi, args):
+    """Calculates the not-smooth 1-dimensional lens equation to to solve - to be used by a root-finder.
+    For some parameters and solutions, numerical issues make solving this one feasible while the other is not."""
+    Omega, const, phiell, q, r, rhat, t, b, thetahat, y = one_dim_lens_eq_calcs(args, phi)
 
     rr, thetaa = ell_to_pol(1, phiell, q)
     ip = cdot(y, rhat)*cdot(Omega, thetahat)-cdot(Omega, rhat)*cdot(y, thetahat)
@@ -77,12 +82,14 @@ def lenseqtop_unsmooth(phi, args, return_r=False):
 
 @jit()
 def pol_to_ell(r, theta, q):
+    """Converts from polar to elliptical coordinates"""
     phi = np.arctan2(np.sin(theta), np.cos(theta)*q)
     rell = r*np.sqrt(q**2*np.cos(theta)**2+np.sin(theta)**2)
     return rell, phi
 
 @jit()
 def ell_to_pol(rell, theta, q):
+    """Converts from elliptical to polar coordinates"""
     phi = np.arctan2(np.sin(theta)*q, np.cos(theta))
     r = rell*np.sqrt(1/q**2*np.cos(theta)**2+np.sin(theta)**2)
     return r, phi
@@ -90,13 +97,14 @@ def ell_to_pol(rell, theta, q):
 @jit()
 def getphi(thpl, args, edge_fix=True):
     """
-    Finds all roots to the 1-dimensional lens equation in phi.
+    Finds all roots to both versions the 1-dimensional lens equation in phi, by doing a grid search for sign changes on
+    the supplied thpl. In the case of extrema, refine at the relevant location.
     :param thpl: What points to calculate the equation on use for detecting sign changes
     :param args: Parameters to be passed to the lens equation
     :param edge_fix: Also check for sign changes at the edges (if thpl spans all angles)
     :return: an array containing all roots
     """
-    y, y_notsmooth = lenseqtop_both(thpl, args)
+    y, y_notsmooth = one_dim_lens_eq_both(thpl, args)
     num_phi = len(thpl)
     roots = []
     for i in range(num_phi-1):
@@ -104,13 +112,13 @@ def getphi(thpl, args, edge_fix=True):
             roots.append(thpl[i])
 
         if y[i+1]*y[i]<0:
-            roots.append(brentq_inline(lenseqtop, thpl[i], thpl[i+1], args=args)%(2*np.pi))
+            roots.append(brentq_inline(one_dim_lens_eq, thpl[i], thpl[i+1], args=args)%(2*np.pi))
         elif y_notsmooth[i+1]*y_notsmooth[i]<0:
-            roots.append(brentq_inline(lenseqtop_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
+            roots.append(brentq_inline(one_dim_lens_eq_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
     if edge_fix and y[-1]*y[0]<0:
-        roots.append(brentq_inline(lenseqtop, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
+        roots.append(brentq_inline(one_dim_lens_eq, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
     elif edge_fix and y_notsmooth[-1]*y_notsmooth[0]<0:
-        roots.append(brentq_inline(lenseqtop_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
+        roots.append(brentq_inline(one_dim_lens_eq_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
 
     for i in range(1,num_phi+1):
         if y.ndim!=1:
@@ -137,33 +145,35 @@ def getphi(thpl, args, edge_fix=True):
 
             xmin = min_approx(x1,x2,x3,y1,y2,y3)
             xmin_ns = min_approx(x1,x2,x3,y1n, y2n,y3n)
-            ymin = lenseqtop(xmin, args)
-            ymin_ns = lenseqtop_unsmooth(xmin_ns, args)
+            ymin = one_dim_lens_eq(xmin, args)
+            ymin_ns = one_dim_lens_eq_unsmooth(xmin_ns, args)
             if ymin==0.:
                 roots.append(xmin)
                 roots.append(xmin)
             elif ymin*y2 < 0 and x2<xmin <x3:
-                roots.append(brentq_inline(lenseqtop, x2, xmin, args=args)%(2*np.pi))
-                roots.append(brentq_inline(lenseqtop, xmin, x3, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq, x2, xmin, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq, xmin, x3, args=args)%(2*np.pi))
             elif ymin*y2 < 0 and x1 < xmin < x2:
-                roots.append(brentq_inline(lenseqtop, x1, xmin, args=args)%(2*np.pi))
-                roots.append(brentq_inline(lenseqtop, xmin, x2, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq, x1, xmin, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq, xmin, x2, args=args)%(2*np.pi))
             elif ymin_ns ==0:
                 roots.append(xmin)
                 roots.append(xmin)
             elif ymin_ns * y2n <0 and x2<xmin_ns<x3:
-                roots.append(brentq_inline(lenseqtop_unsmooth, x2, xmin_ns, args=args)%(2*np.pi))
-                roots.append(brentq_inline(lenseqtop_unsmooth, xmin_ns, x3, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, x2, xmin_ns, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, xmin_ns, x3, args=args)%(2*np.pi))
             elif ymin_ns*y2n < 0 and x1 < xmin_ns < x2:
-                roots.append(brentq_inline(lenseqtop_unsmooth, x1, xmin_ns, args=args)%(2*np.pi))
-                roots.append(brentq_inline(lenseqtop_unsmooth, xmin_ns, x2, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, x1, xmin_ns, args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, xmin_ns, x2, args=args)%(2*np.pi))
 
 
     return np.array(roots)
 
 @jit()
 def getphi_many(thpl, args_all, edge_fix=True):
-    ys, ys_notsmooth = lenseqtop_both(thpl, args_all)
+    """Finds all roots to both versions of the one-dimensional lens equations, in the case of multiple source positions
+    at once. No refinement at maxima is implemented, so a higher resolution is needed."""
+    ys, ys_notsmooth = one_dim_lens_eq_both(thpl, args_all)
     num_phi = len(thpl)
     all_roots = []
     for j, (y,y_notsmooth) in enumerate(zip(ys,ys_notsmooth)):
@@ -174,13 +184,13 @@ def getphi_many(thpl, args_all, edge_fix=True):
                 roots.append(thpl[i])
 
             if y[i+1]*y[i]<0:
-                roots.append(brentq_inline(lenseqtop, thpl[i], thpl[i+1], args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq, thpl[i], thpl[i+1], args=args)%(2*np.pi))
             elif y_notsmooth[i+1]*y_notsmooth[i]<0:
-                roots.append(brentq_inline(lenseqtop_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
+                roots.append(brentq_inline(one_dim_lens_eq_unsmooth, thpl[i], thpl[i+1], args=args)%(2*np.pi))
         if edge_fix and y[-1]*y[0]<0:
-            roots.append(brentq_inline(lenseqtop, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
+            roots.append(brentq_inline(one_dim_lens_eq, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args) % (2 * np.pi))
         elif edge_fix and y_notsmooth[-1]*y_notsmooth[0]<0:
-            roots.append(brentq_inline(lenseqtop_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
+            roots.append(brentq_inline(one_dim_lens_eq_unsmooth, circle_edge_fix(thpl[-1]), circle_edge_fix(thpl[0]), args=args)%(2*np.pi))
         all_roots.append(roots)
 
     return all_roots
@@ -188,17 +198,19 @@ def getphi_many(thpl, args_all, edge_fix=True):
 
 
 def geomlinspace(a,b,N):
+    """Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a, with the same spacing as the
+    geomspace would have at a"""
     delta = a*((b/a)**(1/(N-1))-1)
     return np.concatenate((np.linspace(0,a,int(a/delta), endpoint=False), np.geomspace(a,b,N)))
 
 
 def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False):
+    """Solve the lens equation, where the arguments have been properly rotated to the major-axis"""
     if len(args) == 7:
         b, t, y1, y2, q, gamma1, gamma2 = args
     else:
         b, t, y1, y2, q = args
         gamma1 = gamma2 = 0.
-    width = 0.2
     if np.asarray(y1).ndim ==0:
         p1 = np.arctan2(y2*(1-gamma1)+gamma2*y1, y1*(1+gamma1)+gamma2*y2)
     else:
@@ -219,10 +231,10 @@ def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False
         thetas  = [np.concatenate((t, np.array(t)+np.pi)) for t in thetaas]
     if make_diagplot:
         from matplotlib import pyplot as plt
-        ys_sm, ys = lenseqtop_both(thpl, (b, t, y1, y2, q, gamma1, gamma2))
+        ys_sm, ys = one_dim_lens_eq_both(thpl, (b, t, y1, y2, q, gamma1, gamma2))
         xmins = np.array(
             [min_approx(*thpl[i:i+3], *ys[i:i+3]) for i in range(len(thpl)-3) if (ys[i+2]-ys[i+1])*(ys[i+1]-ys[i]) < 0])
-        ymins, ymins2 = lenseqtop_both(xmins, (b, t, y1, y2, q, gamma1, gamma2))
+        ymins, ymins2 = one_dim_lens_eq_both(xmins, (b, t, y1, y2, q, gamma1, gamma2))
         plt.figure()
         plt.plot(thpl, ys, marker='.')
         plt.plot(xmins, ymins, marker='o')
@@ -235,41 +247,29 @@ def solvelenseq_majoraxis(args, Nmeas=200, Nmeas_extra = 50, make_diagplot=False
     if not many:
         Rs = np.array([getr(theta, (b, t, y1, y2, q, gamma1, gamma2)) for theta in thetas])
         stuff = np.array(pol_to_cart(Rs[Rs > 0], thetas[Rs > 0]))
-        # stuff = np.array(pol_to_cart(Rs, thetas))
         diff = -y1-y2*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2)
         goodones = np.abs(diff) < 1e-8
-        #print("Rs: ", Rs)
-        #print("Goodones: ", goodones)
-        #breakpoint()
         return findOverlap(*stuff[:, goodones], 1e-8)
     else:
         Rs_all= [getr(thetas[i], (b, t, y1[i,0], y2[i,0], q, gamma1, gamma2)) for i in range(len(thetas))]
-        """
-        Rs_all = []
-        i = 0
-        for l in map(len,thetas):
-            Rs_all.append(Rs_all_flat[i:i+l])
-            i+=l
-        """
         stuff = [np.array(pol_to_cart(Rs[Rs > 0], theta[Rs > 0])) for theta, Rs in zip(thetas, Rs_all)]
-        # stuff = np.array(pol_to_cart(Rs, thetas))
         diff = [-y1[i]-y2[i]*1j+stuff[0]+stuff[1]*1j-alpha_epl_shear(stuff[0], stuff[1], b, q, t, gamma1=gamma1, gamma2=gamma2) for i, stuff in enumerate(stuff)]
         goodones = [np.abs(d) < 1e-8 for d in diff]
-        #print("Rs: ", Rs_all)
-        #print("Goodones: ", goodones)
         return [findOverlap(*stuff[:, g], 1e-8) for stuff,g in zip(stuff, goodones)]
 
 def check_center(kwargs_lens):
+    """Checks if the shear-at-center convention is properly used."""
     if kwargs_lens[1]['ra_0'] != kwargs_lens[0]['center_x'] or kwargs_lens[1]['dec_0'] != kwargs_lens[0]['center_y']:
-        raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0)")
+        raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0). "
+                         "This can be ensured by supplying a dictionary-style joint_setting_list to the model.")
 
 def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, make_diagplot=False):
     """
     Solves the lens equation using a semi-analytical recipe.
     :param pos_: The source plane position (shape (2,)), or the source plane positions (shape (2,N)) for which to solve the lens equation 
     :param kwargs_lens: List of kwargs in lenstronomy style, following ['EPL', 'SHEAR'] format
-    :param Nmeas: resolution with which to sample the angular grid, higher means more precise. For solving many positions at once, you may want to set this higher.
-    :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more precise. For solving many positions at once, you may want to set this higher.
+    :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
+    :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
     :param make_diagplot: Make a plot (for debugging purposes).
     :return: The lens plane positions.
     Note: generally the (demagnified) central image will also be included.
@@ -302,7 +302,8 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, make_diagplo
         return x.real, x.imag
     else:
         xx = [[(xs+1j*ys)/rotfact+cen for xs, ys in zip(xsol, ysol)] for xsol, ysol in res]
-        return [[(x.real, x.imag) for x in a] for a in xx]
+        return [[x.real for x in a] for a in xx], [[x.imag for x in a] for a in xx]
+        #return [[(x.real, x.imag) for x in a] for a in xx]
 
 
 def caustics_epl_shear(kwargs_lens, num_th = 500, maginf=0, sourceplane=True, return_which=None):
@@ -317,7 +318,6 @@ def caustics_epl_shear(kwargs_lens, num_th = 500, maginf=0, sourceplane=True, re
     :param return_which: options 'quad', 'double', 'caustic' and 'cut' and None (in that case: return
     :return: (2,N) array if return_which set, else a tuple of (caustic, cut, quad)
     """
-    #assert maginf <= 0, "maginf should be -1/|limiting_magnitude|"
     e1, e2 = kwargs_lens[0]['e1'], kwargs_lens[0]['e2']
     if len(kwargs_lens)>1:
         gamma1unr, gamma2unr = kwargs_lens[1]['gamma1'], kwargs_lens[1]['gamma2']

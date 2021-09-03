@@ -11,31 +11,37 @@ def min_approx(x1,x2,x3,y1,y2,y3):
 
 @jit()
 def rotmat(th):
+    """Calculates the rotation matrix for an angle th"""
     return np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
 
 @jit()
 def circle_edge_fix(x):
+    """Make sure there are no discontinuities in the angle near an angle x=0"""
     return (x-3)%(2*np.pi)+3
-
 
 @jit()
 def cdot(a, b):
+    """Calculates some complex dot-product that simplifies the math"""
     return a.real*b.real + a.imag*b.imag
 
 @jit()
 def ps(x, p):
+    """A regularized power-law that gets rid of singularities"""
     return np.abs(x)**p*np.sign(x)
 
 @jit()
 def cart_to_pol(x, y):
+    """Convert from cartesian to polar"""
     return (np.sqrt(x**2+y**2), np.arctan2(y,x)%(2*np.pi))
 
 @jit()
 def pol_to_cart(r, th):
+    """Convert from polar to cartesian"""
     return (r*np.cos(th), r*np.sin(th))
 
 @jit()
 def solvequadeq(a,b,c):
+    """Solves a quadratic equation. Care is taken for the numerics"""
     # https://en.wikipedia.org/wiki/Loss_of_significance
     sD=(b**2-4*a*c)**0.5
     x1=(-b-np.sign(b)*sD)/(2*a)
@@ -45,7 +51,8 @@ def solvequadeq(a,b,c):
 
 def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100, args=(), verbose=False):
     """
-    A numba-compatible implementation of brentq (largely copied from scipy)
+    A numba-compatible implementation of brentq (largely copied from scipy.optimize.brentq).
+    Unfortunately, the scipy verison is not compatible with numba, hence this reimplementation :(
     :param f: function to optimize
     :param xa: left bound
     :param xb: right bound

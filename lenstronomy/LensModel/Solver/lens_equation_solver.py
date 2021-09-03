@@ -107,7 +107,24 @@ class LensEquationSolver(object):
             
         return x_mins, y_mins, delta_map, pixel_width
 
-    def image_position_analytical(self, x, y, kwargs_lens, arrival_time_sort=True, kwargs_solver=None, magnification_limit=None, **kwargs):
+    def image_position_analytical(self, x, y, kwargs_lens, arrival_time_sort=True, magnification_limit=None, **kwargs_solver):
+        """
+        Solves the lens equation. Only supports EPL-like (plus shear) models. Uses a specialized recipe that solves a
+         one-dimensional lens equation that is easier and more reliable to solve than the usual two-dimensional lens equation.
+
+        :param x: source position in units of angle, an array of positions is also supported.
+        :param y: source position in units of angle, an array of positions is also supported.
+        :param kwargs_lens: lens model parameters as keyword arguments
+        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)
+        :param magnification_limit: None or float, if set will only return image positions that have an
+         abs(magnification) larger than this number
+        :param kwargs_solver: additional kwargs to be supplied to the solver. Particularly relevant are Nmeas and Nmeas_extra
+        :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
+        :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+        Note: in contrast to the other solvers, generally the (heavily demagnified) central image will also be included, so
+        setting a a proper magnification_limit is more important. To get similar behaviour, a limit of 1e-1 is acceptable
+        """
         lens_model_list = list(self.lensModel.lens_model_list)
         if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
             raise ValueError("Only SIE or PEMD (+shear) supported in the analytical solver for now")
@@ -123,13 +140,25 @@ class LensEquationSolver(object):
             y_mins = y_mins[mag >= magnification_limit]
         return x_mins, y_mins
 
-    def image_position_from_source(self, *args, solver='lenstronomy', **kwargs):
+    def image_position_from_source(self, sourcePos_x, sourcePos_y, kwargs_lens, solver='lenstronomy', **kwargs):
+        """
+        Solves the lens equation, i.e. finds the image positions in the lens plane that are mapped to a given source
+        position.
+
+        :param sourcePos_x: source position in units of angle
+        :param sourcePos_y: source position in units of angle
+        :param kwargs_lens: lens model parameters as keyword arguments
+        :param solver: which solver to use, can be 'lenstronomy' (default), 'analytical' or 'stochastic'.
+        :param kwargs: Any additional kwargs are passed to the chosen solver, see the documentation of
+        image_position_lenstronomy, image_position_analytical and image_position_stochastic
+        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
+        """
         if solver=='lenstronomy':
-            return self.image_position_lenstronomy(*args, **kwargs)
+            return self.image_position_lenstronomy(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
         if solver=='analytical':
-            return self.image_position_analytical(*args, **kwargs)
+            return self.image_position_analytical(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
         if solver=='stochastic':
-            return self.image_position_stochastic(*args, **kwargs)
+            return self.image_position_stochastic(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
         raise ValueError(f"{solver} is not a valid solver.")
 
 
@@ -138,7 +167,9 @@ class LensEquationSolver(object):
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,
                                    non_linear=False, magnification_limit=None):
         """
-        finds image position source position and lens model
+        Finds image position  given source position and lens model. The solver first samples does a grid search in the
+        lens plane, and the grid points that are closest to the supplied source position are fed to a
+        specialized gradient-based root finder that finds the exact solutions. Works with all lens models.
 
         :param sourcePos_x: source position in units of angle
         :param sourcePos_y: source position in units of angle
@@ -154,7 +185,7 @@ class LensEquationSolver(object):
         :param y_center: float, center of the window to search for point sources
         :param num_random: int, number of random positions within the search window to be added to be starting
          positions for the gradient decent solver
-        :param non_linear: bool, if True applies a non-linear solver not dependent on Hessian computation
+        :param non_linear: bool, /if True applies a non-linear solver not dependent on Hessian computation
         :param magnification_limit: None or float, if set will only return image positions that have an
          abs(magnification) larger than this number
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle

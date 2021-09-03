@@ -1,7 +1,7 @@
 __author__ = 'ewoudwempe'
 
 import numpy as np
-from lenstronomy.Util.epl_util import min_approx, circle_edge_fix, pol_to_cart, cart_to_pol, cdot, ps, rotmat, solvequadeq, brentq_inline
+from lenstronomy.LensModel.Util.epl_util import min_approx, circle_edge_fix, pol_to_cart, cart_to_pol, cdot, ps, rotmat, solvequadeq, brentq_inline
 from lenstronomy.Util.image_util import findOverlap
 from lenstronomy.LensModel.Profiles.epl_numba import alpha, omega
 from lenstronomy.Util.numba_util import jit
@@ -36,7 +36,7 @@ def one_dim_lens_eq_calcs(args, phi):
     else:
         Omega_ort = 1j*Omega
         x = ((1-gamma1)*np.cos(phi)-gamma2*np.sin(phi))+1j*(-gamma2*np.cos(phi)+(1+gamma1)*np.sin(phi))
-        R= cdot(Omega_ort, y)/cdot(Omega_ort, x)*frac_Roverrsh
+        R = cdot(Omega_ort, y)/cdot(Omega_ort, x)*frac_Roverrsh
     #print(R, R_old)
     r, theta = ell_to_pol(R, phiell, q)
     return Omega, const, phiell, q, r, rhat, t, b, thetahat, y
@@ -49,8 +49,8 @@ def one_dim_lens_eq_both(phi, args):
     rr, thetaa = ell_to_pol(1, phiell, q)
     ip = cdot(y, rhat)*cdot(Omega, thetahat)-cdot(Omega, rhat)*cdot(y, thetahat)
     # The derivations are lost somewhere in my notes...
-    eq = (rr * b)**(2/t-2)*ps((cdot(y,thetahat)/const), 2/t)*ip**2+ps(ip, 2/t)* cdot(Omega, thetahat)**2
-    eq_notsmooth = ps(rr * b,1-t)*(cdot(y,thetahat)/const)*np.abs(ip)**t+ip* np.abs(cdot(Omega, thetahat))**(+t)
+    eq = (rr*b)**(2/t-2)*ps((cdot(y,thetahat)/const), 2/t)*ip**2+ps(ip, 2/t)*cdot(Omega, thetahat)**2
+    eq_notsmooth = ps(rr*b, 1-t)*(cdot(y,thetahat)/const)*np.abs(ip)**t+ip*np.abs(cdot(Omega, thetahat))**(+t)
     return eq, eq_notsmooth
 
 @jit()
@@ -78,7 +78,7 @@ def one_dim_lens_eq_unsmooth(phi, args):
     rr, thetaa = ell_to_pol(1, phiell, q)
     ip = cdot(y, rhat)*cdot(Omega, thetahat)-cdot(Omega, rhat)*cdot(y, thetahat)
     eq_notsmooth = ps(rr*b, 1-t)*(cdot(y, thetahat)/const)*np.abs(ip)**t+ip*np.abs(cdot(Omega, thetahat))**( +t)
-    return  eq_notsmooth
+    return eq_notsmooth
 
 @jit()
 def pol_to_ell(r, theta, q):
@@ -306,7 +306,7 @@ def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, make_diagplo
         #return [[(x.real, x.imag) for x in a] for a in xx]
 
 
-def caustics_epl_shear(kwargs_lens, num_th = 500, maginf=0, sourceplane=True, return_which=None):
+def caustics_epl_shear(kwargs_lens, num_th=500, maginf=0, sourceplane=True, return_which=None):
     """
     Analytically calculates the caustics of an EPL+shear lens model.
     Since for gamma>2, the outer critical curve does not exist, the option to find the curves for a set, finite magnification exists, by supplying maginf, so that the routine finds the curve of this magnification, rather than the true caustic.
@@ -328,7 +328,6 @@ def caustics_epl_shear(kwargs_lens, num_th = 500, maginf=0, sourceplane=True, re
     theta_ell, q = ellipticity2phi_q(e1, e2)
     theta_gamma, gamma_mag = shear_cartesian2polar(gamma1unr, gamma2unr)
     b = np.sqrt(q)*kwargs_lens[0]['theta_E']
-    M = rotmat(-theta_ell)
     cen = np.expand_dims(np.array([kwargs_lens[0]['center_x'], kwargs_lens[0]['center_y']]), 1)
     theta_gamma -= theta_ell
     gamma1, gamma2 = shear_polar2cartesian(theta_gamma, gamma_mag)
@@ -338,7 +337,7 @@ def caustics_epl_shear(kwargs_lens, num_th = 500, maginf=0, sourceplane=True, re
     r = 1
     R, phi = pol_to_ell(1, theta, q)
     Omega = omega(phi, t, q)
-    aa = 1 # - maginf in principle
+    aa = 1
     bb = -(2-t)
     frac_roverR = r/R
     cc = (1-t)*(2-t)*(cdot(np.exp(1j*theta), Omega))/frac_roverR*2/(1+q)

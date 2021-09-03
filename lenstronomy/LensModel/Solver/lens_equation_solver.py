@@ -2,8 +2,7 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
 from scipy.optimize import minimize
-from lenstronomy.Util.param_util import ellipticity2phi_q
-from lenstronomy.Analysis.epl_shear_solver import solve_lenseq_pemd
+from lenstronomy.LensModel.Solver.epl_shear_solver import solve_lenseq_pemd
 
 __all__ = ['LensEquationSolver']
 
@@ -153,11 +152,11 @@ class LensEquationSolver(object):
         image_position_lenstronomy, image_position_analytical and image_position_stochastic
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
-        if solver=='lenstronomy':
+        if solver == 'lenstronomy':
             return self.image_position_lenstronomy(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
-        if solver=='analytical':
+        if solver == 'analytical':
             return self.image_position_analytical(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
-        if solver=='stochastic':
+        if solver == 'stochastic':
             return self.image_position_stochastic(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
         raise ValueError(f"{solver} is not a valid solver.")
 

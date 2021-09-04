@@ -1,7 +1,6 @@
 __author__ = 'ewoudwempe'
 
 import numpy as np
-import numba as nb
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util.numba_util import jit, nan_to_num
@@ -111,7 +110,10 @@ class EPL_numba(LensProfileBase):
         R = np.abs(zz_ell)
         phi = np.angle(zz_ell)
 
-        u = nan_to_num((b/R)**t) # I remove all factors of (b/R)**t to only have to remove nans once
+        #u = np.minimum(nan_to_num((b/R)**t),1e100)
+        u = np.fmin((b/R)**t, 1e10)               # I remove all factors of (b/R)**t to only have to remove nans once.
+                                                  # The np.fmin is a regularisation near R=0, to avoid overflows
+                                                  # in the magnification calculations
         kappa = (2-t)/2
         Roverr = np.sqrt(np.cos(ang)**2*q**2+np.sin(ang)**2)
 
@@ -139,23 +141,23 @@ def param_transform(x, y, theta_E, gamma, e1, e2, center_x=0., center_y=0.):
 
 
 @jit()
-def alpha(x, y, b, q, t):
+def alpha(x, y, b, q, t, Omega=None):
     """
-    Converts the parameters from lenstronomy definitions (as defined in PEMD) to the definitions of Tessore+(2015)
+    Calculates the complex deflection
 
     :param x: x-coordinate (angle)
     :param y: y-coordinate (angle)
-    :param theta_E: Einstein radius (angle), pay attention to specific definition!
-    :param e1: eccentricity component
-    :param e2: eccentricity component
-    :param gamma: logarithmic slope of the power-law profile. gamma=2 corresponds to isothermal
-    :param center_x: x-position of lens center
-    :param center_y: y-position of lens center
-    :return: complex derotated coordinate, rescaled Einstein radius, powerlaw index, elliptical axis ratio and angle
+    :param b: Einstein radius (angle), pay attention to specific definition!
+    :param q: axis ratio
+    :param t: logarithmic power-law slope. Is t=gamma-1
+    :param Omega: If given, use this Omega (to avoid recalculations)
+    :return: complex deflection angle
     """
     zz = x*q + 1j*y
     R = np.abs(zz)
     phi = np.angle(zz)
+    if Omega is None:
+        Omega = omega(phi, t, q)
     Omega = omega(phi, t, q)
     alph = (2*b)/(1+q)*nan_to_num((b/R)**t*R/b)*Omega
     return alph

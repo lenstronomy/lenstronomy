@@ -48,7 +48,7 @@ class EPL_numba(LensProfileBase):
     upper_limit_default = {'theta_E': 100, 'gamma': 2.5, 'e1': 0.5, 'e2': 0.5, 'center_x': 100, 'center_y': 100}
 
     def __init__(self):
-        super().__init__()
+        super(EPL_numba).__init__()
 
     @staticmethod
     @jit()
@@ -105,7 +105,7 @@ class EPL_numba(LensProfileBase):
         """
         z, b, t, q, ang_ell = param_transform(x, y, theta_E, gamma, e1, e2, center_x, center_y)
         ang = np.angle(z)
-        r = np.abs(z)
+        #r = np.abs(z)
         zz_ell = z.real*q+1j*z.imag
         R = np.abs(zz_ell)
         phi = np.angle(zz_ell)
@@ -158,7 +158,7 @@ def alpha(x, y, b, q, t, Omega=None):
     phi = np.angle(zz)
     if Omega is None:
         Omega = omega(phi, t, q)
-    Omega = omega(phi, t, q)
+    # Omega = omega(phi, t, q)
     alph = (2*b)/(1+q)*nan_to_num((b/R)**t*R/b)*Omega
     return alph
 

@@ -1,5 +1,6 @@
 import numpy as np
 from lenstronomy.Conf import config_loader
+from os import environ
 
 """
 From pyautolens:
@@ -14,7 +15,7 @@ numba_conf = config_loader.numba_conf()
 nopython = numba_conf['nopython']
 cache = numba_conf['cache']
 parallel = numba_conf['parallel']
-numba_enabled = numba_conf['enable']
+numba_enabled = numba_conf['enable'] and not environ.get("NUMBA_DISABLE_JIT", False)
 fastmath = numba_conf['fastmath']
 error_model = numba_conf['error_model']
 

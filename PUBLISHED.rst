@@ -134,7 +134,10 @@ Lens searches
 
 
 * Strong lens systems search in the Dark Energy Survey using Convolutional Neural Networks; `Rojas et al. 2021 <https://arxiv.org/abs/2109.00014>`_
-    * *
+    *simulating training sets for lens searches*
+
+* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
+    *simulating training sets for lens searches*
 
 
 Galaxy formation and evolution
@@ -179,6 +182,10 @@ Quasar-host galaxy decomposition
 
 * The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
     *Quasar-host decomposition of 5000 SDSS quasars*
+
+* Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021 <https://arxiv.org/abs/2109.02751>`_
+    *Quasar-host decomposition of SDSS quasars with HSC data*
+
 
 
 
@@ -239,12 +246,6 @@ Large scale structure
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
 
-
-Lens finding
-------------
-
-* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
-    *simulating training sets for lens searches*
 
 
 

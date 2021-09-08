@@ -13,8 +13,13 @@ class LensModel(object):
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
-                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
+    '''
+    NH modifiying to include LOS_effects 08/09/21 #NHmod
+    '''
+
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None, multi_plane=False,
+                 los_effects=False, #NHmod
+                 numerical_alpha_class=None, observed_convention_index=None,
                  z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
         """
@@ -28,6 +33,7 @@ class LensModel(object):
         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
+        :param los_effects: bool, if True, uses LOS effects mode. Default is False. #NHmod
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
@@ -55,9 +61,12 @@ class LensModel(object):
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
         self.multi_plane = multi_plane
+        self.los_effects = los_effects #NHmod
         if multi_plane is True:
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
+            if los_effects is True: #NHmod
+                raise ValueError('cannot select LOS effects and multi-plane lensing simultaneously!')
 
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
@@ -69,6 +78,16 @@ class LensModel(object):
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,
                                           z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+        if los_effects is True: #NHmod
+            print('coming soon! using single plane lensing for now')
+            self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                          lens_redshift_list=lens_redshift_list,
+                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp) # NHmod: need to add extra kwargs to handle gamma_od etc?
+        else:
+            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                          lens_redshift_list=lens_redshift_list,
+                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 

@@ -47,8 +47,10 @@ class ModelAPI(object):
             z_source_convention = z_source
 
         self._lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, z_lens=z_lens,
-                                     lens_redshift_list=lens_redshift_list, multi_plane=multi_plane, cosmo=cosmo,
-                                           z_source_convention=z_source_convention)
+                                     lens_redshift_list=lens_redshift_list, multi_plane=multi_plane,
+                                     los_effects = los_effects, #NHmod
+                                     cosmo=cosmo,
+                                     z_source_convention=z_source_convention)
         self._source_model_class = LightModel(light_model_list=source_light_model_list,
                                         source_redshift_list=source_redshift_list)
         self._lens_light_model_class = LightModel(light_model_list=lens_light_model_list)
@@ -98,7 +100,7 @@ class ModelAPI(object):
 
     def physical2lensing_conversion(self, kwargs_mass):
         """
-        
+
         :param kwargs_mass: list of keyword arguments of all the lens models. Einstein radius 'theta_E' are replaced by
          'sigma_v', velocity dispersion in km/s, 'alpha_Rs' and 'Rs' of NFW profiles are replaced by 'M200' and 'concentration'
         :return: kwargs_lens in reduced deflection angles compatible with the lensModel instance of this module

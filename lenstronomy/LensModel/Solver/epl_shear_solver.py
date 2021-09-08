@@ -158,7 +158,7 @@ def _check_center(kwargs_lens):
         raise ValueError("Center of lens (center_{x,y}) must be the same as center of shear ({ra,dec}_0). "
                          "This can be ensured by supplying a dictionary-style joint_setting_list to the model.")
 
-def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80):
+def solve_lenseq_pemd(pos_, kwargs_lens, Nmeas=400, Nmeas_extra=80, **irrelevant_kwargs):
     """
     Solves the lens equation using a semi-analytical recipe.
     :param pos_: The source plane position (shape (2,)), or the source plane positions (shape (2,N)) for which to solve the lens equation 

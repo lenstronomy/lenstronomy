@@ -152,6 +152,9 @@ Galaxy formation and evolution
 * The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020b <https://arxiv.org/abs/2011.10059>`_
     *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
 
+* PS J1721+8842: A gravitationally lensed dual AGN system at redshift 2.37 with two radio components; `Mangat et al. 2021 <https://arxiv.org/abs/2109.03253>`_
+    *Imaging modeling of a dual lensed AGN with point sources and extended surface brightness*
+
 
 
 Automatized Lens Modeling

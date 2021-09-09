@@ -186,6 +186,9 @@ Quasar-host galaxy decomposition
 * The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
     *Quasar-host decomposition of 5000 SDSS quasars*
 
+* The eROSITA Final Equatorial-Depth Survey (eFEDS): A multiwavelength view of WISE mid-infrared galaxies/active galactic nuclei; `Toba et al. 2021 <https://arxiv.org/abs/2106.14527>`_
+    *Quasar-host decomposition of HSC imaging*
+
 * Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021 <https://arxiv.org/abs/2109.02751>`_
     *Quasar-host decomposition of SDSS quasars with HSC data*
 

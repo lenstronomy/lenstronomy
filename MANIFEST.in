@@ -9,3 +9,4 @@ include PUBLISHED.rst
 include Makefile
 include docs/*
 include test/*
+include lenstronomy/Conf/conf_default.yaml

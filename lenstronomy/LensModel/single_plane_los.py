@@ -10,9 +10,29 @@ class SinglePlaneLOS(ProfileListBase):
     """
     this class is based on the 'SinglePlane' class, modified to include line of sight effects
     as presented by Fleury et al in 2104.08883
+
+    NH todo:
+    ~ add docstrings for each function
+    ~ make the gamma_ij kwargs????
+    ~ grep for SinglePlane and add if/else statements everywhere
     """
 
-    def ray_shooting(self, x, y, kwargs, k=None):
+    def shear_os(self, x, y, gamma_os):
+        x = (1 - gamma_os[0]) * x - gamma_os[1] * y
+        y = -gamma_os[1] * x + (1 + gamma_os[0]) * y #NH: this notation makes sense to me because it looks like the matrix but it is ugly/clunky
+        return x, y
+
+    def shear_ds(self, x, y, gamma_ds):
+        x = (1 - gamma_ds[0]) * x - gamma_ds[1] * y
+        y = -gamma_ds[1] * x + (1 + gamma_ds[0]) * y
+        return x, y
+
+    def shear_od(self, x, y, gamma_od): #NHmod
+        x = (1 - gamma_od[0]) * x - gamma_od[1] * y
+        y = -gamma_od[1] * x + (1 + gamma_od[0]) * y
+        return x, y
+
+    def ray_shooting(self, x, y, gamma_os, gamma_ds, kwargs, k=None): #NHmod
         """
         maps image to source position (inverse deflection)
         :param x: x-position (preferentially arcsec)
@@ -23,7 +43,9 @@ class SinglePlaneLOS(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
-        dx, dy = self.alpha(x, y, kwargs, k=k)
+
+        dx, dy = self.shear_os(x, y, gamma_os) - self.shear_ds(self.alpha(x, y, kwargs, k=k), gamma_ds)
+
         return x - dx, y - dy
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
@@ -38,13 +60,15 @@ class SinglePlaneLOS(ProfileListBase):
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
 
-        potential = self.potential(x_image, y_image, kwargs_lens, k=k)
+        potential = self.potential(x_image, y_image, gamma_od, kwargs_lens, k=k) #NHmod
         if x_source is None or y_source is None:
-            x_source, y_source = self.ray_shooting(x_image, y_image, kwargs_lens, k=k)
+            x_source, y_source = self.ray_shooting(x_image, y_image,
+                                                   gamma_os, gamma_ds, #NHmod
+                                                   kwargs_lens, k=k)
         geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
         return geometry - potential
 
-    def potential(self, x, y, kwargs, k=None):
+    def potential(self, x, y, gamma_od, kwargs, k=None):
         """
         lensing potential
         :param x: x-position (preferentially arcsec)
@@ -57,7 +81,10 @@ class SinglePlaneLOS(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         if isinstance(k, int):
+            # x, y = self.shear_od(x, y, **kwargs[k])
+            x, y = self.shear_od(x, y, gamma_od)
             return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         potential = np.zeros_like(x)
@@ -66,7 +93,7 @@ class SinglePlaneLOS(ProfileListBase):
                 potential += func.function(x, y, **kwargs[i])
         return potential
 
-    def alpha(self, x, y, kwargs, k=None):
+    def alpha(self, x, y, gamma_od, kwargs, k=None):
 
         """
         deflection angles
@@ -78,10 +105,13 @@ class SinglePlaneLOS(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        x = np.array(x, dtype=float)
+        x = np.array(x, dtype=float) # NH: should the shear be applied here instead?
         y = np.array(y, dtype=float)
+
         if isinstance(k, int):
-            return self.func_list[k].derivatives(x, y, **kwargs[k])
+            # x, y = self.shear_od(x, y, **kwargs[k])
+            x, y = self.shear_od(x, y, gamma_od)
+            return self.func_list[k].derivatives(x, y, **kwargs[k]) # NH: like this or like shear_od(x), shear_od(y)?
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
         for i, func in enumerate(self.func_list):
@@ -91,7 +121,7 @@ class SinglePlaneLOS(ProfileListBase):
                 f_y += f_y_i
         return f_x, f_y
 
-    def hessian(self, x, y, kwargs, k=None):
+    def hessian(self, x, y, gamma_od, kwargs, k=None): # NH: does this need to be sheared at all??? are we mistakenly shearing twice??
         """
         hessian matrix
         :param x: x-position (preferentially arcsec)
@@ -104,7 +134,10 @@ class SinglePlaneLOS(ProfileListBase):
         """
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
         if isinstance(k, int):
+            # x, y = self.shear_od(x, y, **kwargs[k])
+            x, y = self.shear_od(x, y, gamma_od)
             f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs[k])
             return f_xx, f_xy, f_yx, f_yy
 

@@ -8,7 +8,9 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+    def __init__(self,
+                 los_effects=False, #NHmod
+                 lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
@@ -24,12 +26,21 @@ class LensParam(object):
         :param num_shapelet_lens: integer, number of shapelets in the lensing potential
          (only relevant when 'SHAPELET' lens model is used)
         """
+
+        self.los_effects = los_effects
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
-        lens_model = SinglePlane(lens_model_list=lens_model_list)
+
+        if los_effects is True: #NHmod... is this working?
+            lens_model = SinglePlaneLOS(lens_mode_list=lens_model_list)
+            print('Using LOS effects.')
+        else:
+            lens_model = SinglePlane(lens_model_list=lens_model_list)
+            print('Not using LOS effects.')
+
         name_list = []
         for func in lens_model.func_list:
             name_list.append(func.param_names)

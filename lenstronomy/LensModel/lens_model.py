@@ -83,7 +83,7 @@ class LensModel(object):
             print('Adding line-of-sight effects to the main lens.')
             self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp) # NHmod: need to add extra kwargs to handle gamma_od etc?
+                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,

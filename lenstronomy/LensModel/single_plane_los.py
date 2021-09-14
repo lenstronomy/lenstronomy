@@ -26,22 +26,21 @@ class SinglePlaneLOS(ProfileListBase):
     #                        'gamma_od':  np.array([5.0, 5.0])}
 
     def shear_os(self, x, y):
-        # print(gamma_os)
         gamma_os = np.array([0.0, 0.0])
         x = (1 - gamma_os[0]) * x - gamma_os[1] * y
-        y = -gamma_os[1] * x + (1 + gamma_os[0]) * y #NH: this notation makes sense to me because it looks like the matrix but it is ugly/clunky
+        y = (1 + gamma_os[0]) * y - gamma_os[1] * x
         return x, y
 
     def shear_ds(self, x, y):
         gamma_ds = np.array([0.0, 0.0])
         x = (1 - gamma_ds[0]) * x - gamma_ds[1] * y
-        y = -gamma_ds[1] * x + (1 + gamma_ds[0]) * y
+        y = (1 + gamma_ds[0]) * y - gamma_ds[1] * x
         return x, y
 
     def shear_od(self, x, y): #NHmod
         gamma_od = np.array([0.0, 0.0])
         x = (1 - gamma_od[0]) * x - gamma_od[1] * y
-        y = -gamma_od[1] * x + (1 + gamma_od[0]) * y
+        y = (1 + gamma_od[0]) * y - gamma_od[1] * x
         return x, y
 
     def ray_shooting(self, x, y, kwargs, k=None): #NHmod
@@ -56,15 +55,27 @@ class SinglePlaneLOS(ProfileListBase):
         :return: source plane positions corresponding to (x, y) in the image plane
         """
 
+        # NH: this should be exactly eqn 3.16?? or just the 2nd term??
+        # NH: because in the bog standard single_plane, ray_shooting returns only the 2nd term
+        # NH: whereas with this definition we can't recover the same unsheared main lens
+        # NH: because we have theta there too i.e. x, y - alpha
+        # NH: and even setting gamma_os = 0, this simply removes the shears, not x, y themselves
+
         # dx, dy = self.shear_os(x, y) - self.shear_ds(self.alpha(x, y, kwargs, k=k)) # NH: naive implementation
 
         dx, dy = tuple(np.subtract(self.shear_os(x, y), self.shear_ds(*self.alpha(x, y, kwargs, k=k)) )) # NH: correct implementation
+
+        print('shear_os', self.shear_os(x, y))
+        print('sheared alpha', self.shear_ds(*self.alpha(x, y, kwargs, k=k)))
 
         # NH: there are apparently faster ways to do the subtraction
         # NH: see https://stackoverflow.com/a/53385333/7013216
         # NH: but perhaps we don't need speed (yet)
         # NH: and the asterisk unpacks the result of alpha (a tuple) so shear_ds gets the correct number of arguments (two)
         #NH: see https://stackoverflow.com/a/56498754/7013216, https://stackoverflow.com/a/1993732/7013216
+
+        print('dx from sheared lens eqn', dx)
+        print('dy from sheared lens eqn', dy)
 
         return x - dx, y - dy
 
@@ -101,9 +112,12 @@ class SinglePlaneLOS(ProfileListBase):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
 
+        x, y = self.shear_od(x, y)
+
+        print('x post shear in potential', x)
+        print('y post shear in potential', y)
+
         if isinstance(k, int):
-            x, y = self.shear_od(x, y)
-            # x, y = self.shear_od(x, y, gamma_od)
             return self.func_list[k].function(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         potential = np.zeros_like(x)
@@ -124,12 +138,15 @@ class SinglePlaneLOS(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        x = np.array(x, dtype=float) # NH: should the shear be applied here instead?
+        x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
 
+        x, y = self.shear_od(x, y)
+
+        print('x post shear in alpha', x)
+        print('y post shear in alpha', y)
+
         if isinstance(k, int):
-            x, y = self.shear_od(x, y)
-            # x, y = self.shear_od(x, y, gamma_od)
             return self.func_list[k].derivatives(x, y, **kwargs[k]) # NH: like this or like shear_od(x), shear_od(y)?
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
@@ -154,9 +171,12 @@ class SinglePlaneLOS(ProfileListBase):
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
 
+        x, y = self.shear_od(x, y)
+
+        print('x post shear in hessian', x)
+        print('y post shear in hessian', y)
+
         if isinstance(k, int):
-            x, y = self.shear_od(x, y)
-            # x, y = self.shear_od(x, y, gamma_od)
             f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs[k])
             return f_xx, f_xy, f_yx, f_yy
 

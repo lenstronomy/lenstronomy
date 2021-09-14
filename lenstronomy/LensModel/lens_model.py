@@ -67,7 +67,7 @@ class LensModel(object):
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
             if los_effects is True: #NHmod
-                raise ValueError('cannot select LOS effects and multi-plane lensing simultaneously!')
+                raise ValueError('You cannot select LOS effects and multi-plane lensing simultaneously!')
 
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
@@ -80,7 +80,7 @@ class LensModel(object):
                                           lens_redshift_list=lens_redshift_list,
                                           z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
         if los_effects is True: #NHmod
-            print('coming soon! using single plane lensing for now')
+            print('Adding line-of-sight effects to the main lens.')
             self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,
                                           z_source_convention=z_source_convention, kwargs_interp=kwargs_interp) # NHmod: need to add extra kwargs to handle gamma_od etc?

@@ -37,7 +37,7 @@ class SinglePlaneLOS(ProfileListBase):
         y = (1 + gamma_ds[0]) * y - gamma_ds[1] * x
         return x, y
 
-    def shear_od(self, x, y): #NHmod
+    def shear_od(self, x, y):
         gamma_od = np.array([0.0, 0.0])
         x = (1 - gamma_od[0]) * x - gamma_od[1] * y
         y = (1 + gamma_od[0]) * y - gamma_od[1] * x
@@ -72,12 +72,14 @@ class SinglePlaneLOS(ProfileListBase):
         # NH: see https://stackoverflow.com/a/53385333/7013216
         # NH: but perhaps we don't need speed (yet)
         # NH: and the asterisk unpacks the result of alpha (a tuple) so shear_ds gets the correct number of arguments (two)
-        #NH: see https://stackoverflow.com/a/56498754/7013216, https://stackoverflow.com/a/1993732/7013216
+        # NH: see https://stackoverflow.com/a/56498754/7013216, https://stackoverflow.com/a/1993732/7013216
 
         print('dx from sheared lens eqn', dx)
         print('dy from sheared lens eqn', dy)
 
-        return x - dx, y - dy
+        # return x - dx, y - dy
+
+        return dx, dy #NHmod: don't subtract dx, dy twice!
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
         """
@@ -147,7 +149,7 @@ class SinglePlaneLOS(ProfileListBase):
         print('y post shear in alpha', y)
 
         if isinstance(k, int):
-            return self.func_list[k].derivatives(x, y, **kwargs[k]) # NH: like this or like shear_od(x), shear_od(y)?
+            return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
         for i, func in enumerate(self.func_list):
@@ -157,7 +159,7 @@ class SinglePlaneLOS(ProfileListBase):
                 f_y += f_y_i
         return f_x, f_y
 
-    def hessian(self, x, y, kwargs, k=None): # NH: does this need to be sheared at all??? are we mistakenly shearing twice??
+    def hessian(self, x, y, kwargs, k=None):
         """
         hessian matrix
         :param x: x-position (preferentially arcsec)

@@ -42,3 +42,4 @@ Contributors (alphabetic)
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
+* Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_

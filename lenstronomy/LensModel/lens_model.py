@@ -68,7 +68,6 @@ class LensModel(object):
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
             if los_effects is True: #NHmod
                 raise ValueError('You cannot select LOS effects and multi-plane lensing simultaneously!')
-
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index,
@@ -76,18 +75,15 @@ class LensModel(object):
                                          z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
                                          kwargs_interp=kwargs_interp)
         else:
-            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                          lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
-        if los_effects is True: #NHmod
-            print('Adding line-of-sight effects to the main lens.')
-            self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                          lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
-        else:
-            self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                          lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+            if los_effects is True:
+                print('Adding line-of-sight effects to the main lens.')
+                self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                              lens_redshift_list=lens_redshift_list,
+                                              z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+            else:
+                self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
+                                              lens_redshift_list=lens_redshift_list,
+                                              z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
 
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)

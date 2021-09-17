@@ -9,8 +9,8 @@ class LensParam(object):
     class to handle the lens model parameter
     """
     def __init__(self,
-                 los_effects=False, #NHmod
-                 lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+                 lens_model_list, kwargs_fixed, los_effects=False, #NHmod
+                 kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 

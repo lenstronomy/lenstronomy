@@ -7,9 +7,11 @@ __all__ = ['LensParam']
 class LensParam(object):
     """
     class to handle the lens model parameter
+
+    NH modifying to include LOS effects 28/09/21 #NHmod
     """
     def __init__(self, lens_model_list, kwargs_fixed,
-                 los_effects=False, #NHmod
+                 los_effects=False,
                  kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
@@ -44,19 +46,19 @@ class LensParam(object):
         name_list = []
         for func in lens_model.func_list:
             name_list.append(func.param_names)
-        name_list.append(single_plane_los.param_names) #NHmod... inside or outside the loop? before or after?
+        name_list.append(single_plane_los.param_names)
         print(name_list) #NHmod
         self._param_name_list = name_list
         if kwargs_lower is None:
             kwargs_lower = []
             for func in lens_model.func_list:
                 kwargs_lower.append(func.lower_limit_default)
-            kwargs_lower.append(single_plane_los.lower_limit_default) #NHmod
+            kwargs_lower.append(single_plane_los.lower_limit_default)
         if kwargs_upper is None:
             kwargs_upper = []
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
-            kwargs_upper.append(single_plane_los.upper_limit_default) #Nhmod
+            kwargs_upper.append(single_plane_los.upper_limit_default)
 
 
         self.lower_limit = kwargs_lower

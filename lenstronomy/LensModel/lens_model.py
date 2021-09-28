@@ -19,7 +19,7 @@ class LensModel(object):
     '''
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None, multi_plane=False,
-                 los_effects=False, #NHmod
+                 los_effects=False,
                  numerical_alpha_class=None, observed_convention_index=None,
                  z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
@@ -62,11 +62,11 @@ class LensModel(object):
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
         self.multi_plane = multi_plane
-        self.los_effects = los_effects #NHmod
+        self.los_effects = los_effects
         if multi_plane is True:
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
-            if los_effects is True: #NHmod
+            if los_effects is True:
                 raise ValueError('You cannot select LOS effects and multi-plane lensing simultaneously!')
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,

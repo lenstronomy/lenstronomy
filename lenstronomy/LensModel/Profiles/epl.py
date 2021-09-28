@@ -152,35 +152,16 @@ class EPL(LensProfileBase):
         :param center_y: profile center
         :return: alpha_x, alpha_y
         """
-        print('I am in EPL derivatives') #NHmod
         b, t, q, phi_G = self.param_conv(theta_E, gamma, e1, e2)
         # shift
-        print('x = ', x)
-        print('y = ', y)
-
         x_ = x - center_x
         y_ = y - center_y
-        print('shifted x_ = ', x_)
-        print('shifted y_ = ', y_)
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_G)
-        print('rotated x__ = ', x__)
-        print('rotated y__ = ', y__)
-
         # evaluate
         f__x, f__y = self.epl_major_axis.derivatives(x__, y__, b, t, q)
-        print('f__x = ', f__x)
-        print('f__y = ', f__y)
-
         # rotate back
         f_x, f_y = util.rotate(f__x, f__y, -phi_G)
-
-        print('rotated back f_x EPL = ', f_x)
-        print('rotated back f_y EPL = ', f_y)
-
-
-        # f_x, f_y = self.epl_major_axis.derivatives(x, y, b, t, q)
-
         return f_x, f_y
 
     def hessian(self, x, y, theta_E, gamma, e1, e2, center_x=0, center_y=0):

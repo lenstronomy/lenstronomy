@@ -43,19 +43,10 @@ class Shear(LensProfileBase):
         :param dec_0: y/dec position where shear deflection is 0
         :return: deflection angles
         """
-        print('I am in shear derivatives')
-        print('x in shear = ', x)
-        print('y in shear = ', y)
         x_ = x - ra_0
         y_ = y - dec_0
-        print('x_ in shear = ', x_)
-        print('y_ in shear = ', y_)
-        print('gamma1 =', gamma1)
-        print('gamma2 =', gamma2)
         f_x = gamma1 * x_ + gamma2 * y_
         f_y = +gamma2 * x_ - gamma1 * y_
-        print('f_x in shear', f_x)
-        print('f_y in shear', f_y)
         return f_x, f_y
 
     def hessian(self, x, y, gamma1, gamma2, ra_0=0, dec_0=0):

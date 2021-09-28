@@ -67,7 +67,7 @@ class Param(object):
     """
 
     def __init__(self, kwargs_model,
-                 los_effects = False, #NHmod
+                 los_effects = False, 
                  kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
                  kwargs_fixed_special=None, kwargs_fixed_extinction=None,
                  kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,

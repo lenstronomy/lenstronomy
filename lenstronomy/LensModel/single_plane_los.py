@@ -11,11 +11,6 @@ class SinglePlaneLOS(ProfileListBase):
     """
     this class is based on the 'SinglePlane' class, modified to include line of sight effects
     as presented by Fleury et al in 2104.08883
-
-    NH todo:
-    ~ add docstrings for each function
-    ~ make the gamma_ij kwargs????
-    ~ grep for SinglePlane and add if/else statements everywhere
     """
 
     param_names = ['gamma_os', 'gamma_ds', 'gamma_od']
@@ -26,53 +21,52 @@ class SinglePlaneLOS(ProfileListBase):
                            'gamma_ds':  np.array([5.0, 5.0]),
                            'gamma_od':  np.array([5.0, 5.0])}
 
-    def remove_dict_key(self, dictionary, key): #NHmod
+    def remove_dict_key(self, dictionary, key):
+        '''
+        This function takes a given dictionary,
+        copies it and then removes key:value pairs
+        which are passed to the function in a list
+        '''
         _dict = deepcopy(dictionary)
         for k in key:
             _dict.pop(k, None)
         return _dict
 
     def shear_os(self, x, y, kwargs):
-        print('I am in shear_os')
+        '''
+        this function shears a given image position by (1 - Gamma_os)
+        '''
         x_ = x - kwargs[0]['center_x']
         y_ = y - kwargs[0]['center_y']
         delta_x = (1 - kwargs[0]['gamma_os'][0]) * x_ - kwargs[0]['gamma_os'][1] * y_ # NH: generalise to multiple lists of kwargs!
         delta_y = (1 + kwargs[0]['gamma_os'][0]) * y_ - kwargs[0]['gamma_os'][1] * x_
         x = kwargs[0]['center_x'] + delta_x
         y = kwargs[0]['center_y'] + delta_y
-        print('I am leaving shear_os')
         return x, y
 
     def shear_ds(self, x, y, kwargs):
-        print('I am in shear_ds')
+        '''
+        this function shears a given image position by (1 - Gamma_ds)
+        '''
         x_ = x - kwargs[0]['center_x']
         y_ = y - kwargs[0]['center_y']
         delta_x = (1 - kwargs[0]['gamma_ds'][0]) * x_ - kwargs[0]['gamma_ds'][1] * y_
         delta_y = (1 + kwargs[0]['gamma_ds'][0]) * y_ - kwargs[0]['gamma_ds'][1] * x_
         x = kwargs[0]['center_x'] + delta_x
         y = kwargs[0]['center_y'] + delta_y
-        print('I am leaving shear_ds')
         return x, y
 
     def shear_od(self, x, y, kwargs):
-        print('I am in shear_od')
+        '''
+        this function shears a given image position by (1 - Gamma_od)
+        '''
         x_ = x - kwargs[0]['center_x']
         y_ = y - kwargs[0]['center_y']
         delta_x = (1 - kwargs[0]['gamma_od'][0]) * x_ - kwargs[0]['gamma_od'][1] * y_
         delta_y = (1 + kwargs[0]['gamma_od'][0]) * y_ - kwargs[0]['gamma_od'][1] * x_
         x = kwargs[0]['center_x'] + delta_x
         y = kwargs[0]['center_y'] + delta_y
-        print('I am leaving shear_od')
         return x, y
-
-    # def shear_os(self, x, y, kwargs): # NH: version which shears a position by Gamma only, not (1-Gamma)
-    #     x_ = x - kwargs[0]['center_x']
-    #     y_ = y - kwargs[0]['center_y']
-    #     delta_x = kwargs[0]['gamma_os'][0] * x_ + kwargs[0]['gamma_os'][1] * y_
-    #     delta_y = kwargs[0]['gamma_os'][1] * x_ - kwargs[0]['gamma_os'][0] * y_
-    #     x = kwargs[0]['center_x'] + delta_x
-    #     y = kwargs[0]['center_y'] + delta_y
-    #     return x, y
 
     def ray_shooting(self, x, y, kwargs, k=None): #NHmod
         """
@@ -86,36 +80,7 @@ class SinglePlaneLOS(ProfileListBase):
         :return: source plane positions corresponding to (x, y) in the image plane
         """
 
-        print('I am in ray shooting')
-
-        # dx, dy = tuple(np.subtract(self.shear_os(x, y, kwargs), self.shear_ds(*self.alpha(x, y, kwargs, k=k), kwargs)))
-
-        # print('I am getting the sheared image position')
-        #
-        sheared_theta = self.shear_os(x, y, kwargs)
-        #
-        # print('The sheared image position = ', sheared_theta)
-        #
-        # print('I am getting the deflection angle (acting on the sheared image position)')
-        #
-        alpha = self.alpha(x, y, kwargs, k=k)
-        #
-        # print('The deflection angle = ', alpha)
-        #
-        # print('I am shearing the deflection angle')
-        #
-        sheared_alpha = self.shear_ds(*alpha, kwargs)
-        #
-        print('The sheared deflection angle is', sheared_alpha)
-        #
-        # print('I am calculating beta = theta - alpha')
-        #
-        dx, dy = tuple(np.subtract(sheared_theta, sheared_alpha))
-
-        print('beta_x in ray shooting = ', dx)
-        print('beta_y in ray shooting = ', dy)
-
-        print('I am leaving ray shooting')
+        dx, dy = tuple(np.subtract(self.shear_os(x, y, kwargs), self.shear_ds(*self.alpha(x, y, kwargs, k=k), kwargs)))
 
         return dx, dy
 
@@ -154,15 +119,15 @@ class SinglePlaneLOS(ProfileListBase):
 
         x, y = self.shear_od(x, y, kwargs)
 
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
+        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)]
 
         if isinstance(k, int):
-            return self.func_list[k].function(x, y, **kwargs_without_shear[k]) #NHmod
+            return self.func_list[k].function(x, y, **kwargs_without_shear[k])
         bool_list = self._bool_list(k)
         potential = np.zeros_like(x)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                potential += func.function(x, y, **kwargs_without_shear[i]) #NHmod
+                potential += func.function(x, y, **kwargs_without_shear[i])
         return potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -177,38 +142,23 @@ class SinglePlaneLOS(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        print('I am in alpha')
-
-        print('x pre shear in alpha =', x)
-        print('y pre shear in alpha =', y)
-
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
 
         x, y = self.shear_od(x, y, kwargs)
 
-        print('x post shear in alpha =', x)
-        print('y post shear in alpha =', y)
-
         kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
-
-        print('I have got rid of the shears from kwargs')
 
         if isinstance(k, int):
             return self.func_list[k].derivatives(x, y, **kwargs_without_shear[k]) #NHmod
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
-        print('I am calling derivatives')
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 f_x_i, f_y_i = func.derivatives(x, y, **kwargs_without_shear[i]) #NHmod
                 f_x += f_x_i
                 f_y += f_y_i
 
-        print('f_x in alpha = ', f_x)
-        print('f_y in alpha = ', f_y)
-
-        print('I am leaving alpha')
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):

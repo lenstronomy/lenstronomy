@@ -102,6 +102,7 @@ class MultiPlane(object):
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
         """
+        print('I am in ray shooting')
         self._check_raise(k=k)
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
@@ -114,6 +115,11 @@ class MultiPlane(object):
                                                                  kwargs_lens=kwargs_lens, T_ij_start=self._T_ij_start,
                                                                  T_ij_end=self._T_ij_stop)
         beta_x, beta_y = self.co_moving2angle_source(x, y)
+        print('beta_x in ray shooting = ', beta_x)
+        print('beta_y in ray shooting = ', beta_y)
+
+        print('I am leaving ray shooting')
+
         return beta_x, beta_y
 
     def ray_shooting_partial(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens, include_z_start=False,
@@ -140,11 +146,16 @@ class MultiPlane(object):
         :return: co-moving position and angles at redshift z_stop
         """
 
+        print('I am in ray shooting partial')
+
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
+        print('I am leaving ray shooting partial')
+
         return self._multi_plane_base.ray_shooting_partial(x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                                            include_z_start=include_z_start, T_ij_start=T_ij_start,
                                                            T_ij_end=T_ij_end)
+
 
     def transverse_distance_start_stop(self, z_start, z_stop, include_z_start=False):
         """
@@ -198,10 +209,18 @@ class MultiPlane(object):
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: deflection angles in x and y directions
         """
+        print('I am in alpha')
         self._check_raise(k=k)
         beta_x, beta_y = self.ray_shooting(theta_x, theta_y, kwargs_lens, check_convention=check_convention)
+        print('x in alpha = ', theta_x)
+        print('y in alpha = ', theta_y)
+
         alpha_x = theta_x - beta_x
         alpha_y = theta_y - beta_y
+
+        print('alpha_x = theta - beta =', alpha_x)
+        print('alpha_y = theta - beta =', alpha_y)
+        print('I am leaving alpha')
         return alpha_x, alpha_y
 
     def hessian(self, theta_x, theta_y, kwargs_lens, k=None, diff=0.00000001, check_convention=True):
@@ -246,9 +265,16 @@ class MultiPlane(object):
         :param y: co-moving distance
         :return: angles on the sky at the nominal source plane
         """
+        print('\nI am in co_moving2angle_source')
         T_z = self._T_z_source
         theta_x = x / T_z
         theta_y = y / T_z
+        print('T_z = ', T_z)
+        print('x in co_moving = ', x)
+        print('y in co_moving = ', y)
+        print('theta_x in co_moving = ', theta_x)
+        print('theta_y in co_moving = ', theta_y)
+        print('I am leaving co_moving')
         return theta_x, theta_y
 
     def set_static(self, kwargs):

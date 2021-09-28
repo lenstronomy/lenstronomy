@@ -15,7 +15,7 @@ class LensModel(object):
     """
 
     '''
-    NH modifiying to include LOS_effects 08/09/21 #NHmod
+    NH modifiying to include LOS effects 08/09/21 #NHmod
     '''
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None, multi_plane=False,
@@ -81,6 +81,7 @@ class LensModel(object):
                                               lens_redshift_list=lens_redshift_list,
                                               z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
             else:
+                print('No line-of-sight effects being added.')
                 self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                               lens_redshift_list=lens_redshift_list,
                                               z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)

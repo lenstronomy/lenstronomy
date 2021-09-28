@@ -98,16 +98,25 @@ class MultiPlaneBase(ProfileListBase):
          If not set, will compute the distance each time this function gets executed.
         :return: co-moving position and angles at redshift z_stop
         """
+        print('I am in multiplane_base rayshooting_partial')
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+        # print('x in mpbase rayshooting partial = ', x)
+        # print('y in mpbase rayshooting partial = ', y)
+
         alpha_x = np.array(alpha_x)
         alpha_y = np.array(alpha_y)
+
+        print('x in mpbase rayshooting partial = ', alpha_x)
+        print('y in mpbase rayshooting partial = ', alpha_y)
+
         z_lens_last = z_start
         first_deflector = True
-
+# NH: beginning of for loop over lens planes ---------------------------------------------------------
         for i, idex in enumerate(self._sorted_redshift_index):
             z_lens = self._lens_redshift_list[idex]
 
+            print('\nz_lens = ', z_lens)
             if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
                 if first_deflector is True:
                     if T_ij_start is None:
@@ -117,13 +126,13 @@ class MultiPlaneBase(ProfileListBase):
                             delta_T = self._cosmo_bkg.T_xy(z_start, z_lens)
                     else:
                         delta_T = T_ij_start
-                    first_deflector = False
+                    first_deflector = False # NH: what is this doing?
                 else:
                     delta_T = self._T_ij_list[i]
                 x, y = self._ray_step_add(x, y, alpha_x, alpha_y, delta_T)
                 alpha_x, alpha_y = self._add_deflection(x, y, alpha_x, alpha_y, kwargs_lens, i)
-
                 z_lens_last = z_lens
+# NH: end of for loop over lens planes -----------------------------------------------------------------
         if T_ij_end is None:
             if z_lens_last == z_stop:
                 delta_T = 0
@@ -327,8 +336,10 @@ class MultiPlaneBase(ProfileListBase):
         :param delta_T: transverse angular diameter distance to the next step
         :return: co-moving position at the next step (backwards)
         """
+        print('I am in ray step add')
         x += alpha_x * delta_T
         y += alpha_y * delta_T
+        print('I am leaving ray step add')
         return x, y
 
     def _add_deflection(self, x, y, alpha_x, alpha_y, kwargs_lens, index):
@@ -344,11 +355,21 @@ class MultiPlaneBase(ProfileListBase):
         :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
+        print('I am in add deflection')
         theta_x, theta_y = self._co_moving2angle(x, y, index)
         k = self._sorted_redshift_index[index]
         alpha_x_red, alpha_y_red = self.func_list[k].derivatives(theta_x, theta_y, **kwargs_lens[k])
+        print('x_red = ', alpha_x_red)
+        print('y_red = ', alpha_y_red)
         alpha_x_phys = self._reduced2physical_deflection(alpha_x_red, index)
         alpha_y_phys = self._reduced2physical_deflection(alpha_y_red, index)
+        print('x_phys = ', alpha_x_phys)
+        print('y_phys = ', alpha_y_phys)
+        print('x = ', alpha_x)
+        print('y = ', alpha_y)
+        print('x - x_phys = ', alpha_x - alpha_x_phys)
+        print('y - y_phys = ', alpha_y - alpha_y_phys)
+        print('I am leaving add deflection')
         return alpha_x - alpha_x_phys, alpha_y - alpha_y_phys
 
     @staticmethod

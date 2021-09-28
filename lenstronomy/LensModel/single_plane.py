@@ -22,7 +22,12 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: source plane positions corresponding to (x, y) in the image plane
         """
+        print('I am in ray shooting')
         dx, dy = self.alpha(x, y, kwargs, k=k)
+
+        print('beta_x in ray shooting = ', x - dx)
+        print('beta_y in ray shooting = ', y - dy)
+
         return x - dx, y - dy
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
@@ -77,17 +82,28 @@ class SinglePlane(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
+
+        print('I am in alpha')
+
         x = np.array(x, dtype=float)
         y = np.array(y, dtype=float)
+
+        print('x in alpha =', x)
+        print('y in alpha =', y)
+
         if isinstance(k, int):
             return self.func_list[k].derivatives(x, y, **kwargs[k])
         bool_list = self._bool_list(k)
         f_x, f_y = np.zeros_like(x), np.zeros_like(x)
+        print('I am calling derivatives')
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
                 f_x_i, f_y_i = func.derivatives(x, y, **kwargs[i])
                 f_x += f_x_i
                 f_y += f_y_i
+        print('f_x in alpha = ', f_x)
+        print('f_y in alpha = ', f_y)
+        print('I am leaving alpha')
         return f_x, f_y
 
     def hessian(self, x, y, kwargs, k=None):

@@ -1,7 +1,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.single_plane_los import SinglePlaneLOS #NHmod
+from lenstronomy.LensModel.single_plane_los_2 import SinglePlaneLOS #PFmod
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
@@ -18,10 +18,13 @@ class LensModel(object):
     NH modifiying to include LOS effects 08/09/21 #NHmod
     '''
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None, multi_plane=False,
+    def __init__(self, lens_model_list, z_lens=None, z_source=None,
+                 lens_redshift_list=None, cosmo=None,
+                 multi_plane=False,
                  los_effects=False,
                  numerical_alpha_class=None, observed_convention_index=None,
-                 z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
+                 z_source_convention=None, cosmo_interp=False,
+                 z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
         """
 
@@ -77,14 +80,18 @@ class LensModel(object):
         else:
             if los_effects is True:
                 print('Adding line-of-sight effects to the main lens.')
-                self.lens_model = SinglePlaneLOS(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                              lens_redshift_list=lens_redshift_list,
-                                              z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+                self.lens_model = SinglePlaneLOS(lens_model_list,
+                    numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    kwargs_interp=kwargs_interp)
             else:
                 print('No line-of-sight effects being added.')
-                self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
-                                              lens_redshift_list=lens_redshift_list,
-                                              z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
+                self.lens_model = SinglePlane(lens_model_list,
+                    numerical_alpha_class=numerical_alpha_class,
+                    lens_redshift_list=lens_redshift_list,
+                    z_source_convention=z_source_convention,
+                    kwargs_interp=kwargs_interp)
 
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)

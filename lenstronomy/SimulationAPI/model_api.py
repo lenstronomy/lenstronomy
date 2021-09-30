@@ -39,10 +39,22 @@ class ModelAPI(object):
         """
         if cosmo is None:
             cosmo = default_cosmology.get()
+            
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:
             multi_plane = False
+            
+        #PFmod: trigger the inclusion of LOS effects
+        if 'LOS' in lens_model_list:
+            los_effects = True
+            if multi_plane == True:
+                raise ValueError("You cannot have both multi-plane\
+                                 lensing and line-of-sight effects")
+        else:
+            los_effects = False
+            
+            
         if z_source_convention is None:
             z_source_convention = z_source
 

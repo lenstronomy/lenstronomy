@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+from lenstronomy.LensModel.single_plane_los_2 import SinglePlaneLOS
 import numpy as np
 
 __all__ = ['LensParam']
@@ -15,7 +16,7 @@ class LensParam(object):
                  kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
-
+        
         :param lens_model_list: list of strings of lens model names
         :param kwargs_fixed: list of keyword arguments for model parameters to be held fixed
         :param kwargs_lower: list of keyword arguments of the lower bounds of the model parameters
@@ -36,7 +37,7 @@ class LensParam(object):
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
 
-        if los_effects is True:
+        if los_effects is True: # NHmod
             lens_model = SinglePlaneLOS(lens_model_list=lens_model_list)
             print('Using LOS effects.')
         else:
@@ -46,19 +47,15 @@ class LensParam(object):
         name_list = []
         for func in lens_model.func_list:
             name_list.append(func.param_names)
-        name_list.append(single_plane_los.param_names)
-        print(name_list) #NHmod
         self._param_name_list = name_list
         if kwargs_lower is None:
             kwargs_lower = []
             for func in lens_model.func_list:
                 kwargs_lower.append(func.lower_limit_default)
-            kwargs_lower.append(single_plane_los.lower_limit_default)
         if kwargs_upper is None:
             kwargs_upper = []
             for func in lens_model.func_list:
                 kwargs_upper.append(func.upper_limit_default)
-            kwargs_upper.append(single_plane_los.upper_limit_default)
 
 
         self.lower_limit = kwargs_lower

@@ -1,6 +1,5 @@
 __author__ = 'nataliehogg', 'pierrefleury'
 
-#import numpy as np
 from lenstronomy.LensModel.single_plane import SinglePlane
 
 __all__ = ['SinglePlaneLOS']
@@ -37,17 +36,19 @@ class SinglePlaneLOS(SinglePlane):
         extracted from the lens_model_list.
         """
 
-        # Extract LOS from lens_model_list
-        try:
+        los_models = ['LOS', 'LOS_MINIMAL']
+
+        if all(x in lens_model_list for x in los_models) is True:
+            raise ValueError('Remove either LOS or LOS_MINIMAL from your lens model list!')
+        elif 'LOS' in lens_model_list:
             self.index_los = lens_model_list.index('LOS')
-        except ValueError:
-            print("""
-                  You tried to do single-plane lensing with line-of-sight
-                  effect, but you did not include 'LOS' in the list of lens
-                  models.
-                  """)
-        self.los = self._import_class('LOS', custom_class=None,
-                                      kwargs_interp=None)
+            self.los = self._import_class('LOS', custom_class=None, kwargs_interp=None)
+        elif 'LOS_MINIMAL' in lens_model_list:
+            self.index_los = lens_model_list.index('LOS_MINIMAL')
+            self.los = self._import_class('LOS_MINIMAL', custom_class=None, kwargs_interp=None)
+        else:
+            raise ValueError('If you want to add line-of-sight effects you must add LOS or LOS_MINIMAL to your lens model list.')
+
 
         # Proceed with the rest of the lenses
         lens_model_list_wo_los = [
@@ -69,7 +70,6 @@ class SinglePlaneLOS(SinglePlane):
 
         return kwargs_lens, kwargs_los
 
-
     def alpha(self, x, y, kwargs, k=None):
         """
         Displacement angle including the line-of-sight corrections
@@ -85,30 +85,62 @@ class SinglePlaneLOS(SinglePlane):
 
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
 
-        # Angular position where the ray hits the deflector's plane
-        x_d, y_d = self.los.distort_vector(x, y,
-                                           kappa=kwargs_los['kappa_od'],
-                                           gamma1=kwargs_los['gamma1_od'],
-                                           gamma2=kwargs_los['gamma2_od'])
+        if 'kappa_od' in kwargs_los: #NHmod... my only worry is that these ifs might make it a bit slow
+            # Angular position where the ray hits the deflector's plane
+            x_d, y_d = self.los.distort_vector(x, y,
+                                               kappa=kwargs_los['kappa_od'],
+                                               gamma1=kwargs_los['gamma1_od'],
+                                               gamma2=kwargs_los['gamma2_od'])
 
-        # Displacement due to the main lens only
-        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
+            # Displacement due to the main lens only
+            f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
 
-        # Correction due to the background convergence and shear
-        f_x, f_y = self.los.distort_vector(f_x, f_y,
-                                           kappa=kwargs_los['kappa_ds'],
-                                           gamma1=kwargs_los['gamma1_ds'],
-                                           gamma2=kwargs_los['gamma2_ds'])
+            # Correction due to the background convergence and shear
+            f_x, f_y = self.los.distort_vector(f_x, f_y,
+                                               kappa=kwargs_los['kappa_ds'],
+                                               gamma1=kwargs_los['gamma1_ds'],
+                                               gamma2=kwargs_los['gamma2_ds'])
 
-        # Sheared position in the absence of the main lens
-        x_os, y_os =  self.los.distort_vector(x, y,
-                                              kappa=kwargs_los['kappa_os'],
-                                              gamma1=kwargs_los['gamma1_os'],
-                                              gamma2=kwargs_los['gamma2_os'])
 
-        # Complete displacement
-        f_x += x - x_os
-        f_y += y - y_os
+            # Sheared position in the absence of the main lens
+            x_os, y_os =  self.los.distort_vector(x, y,
+                                                  kappa=kwargs_los['kappa_os'],
+                                                  gamma1=kwargs_los['gamma1_os'],
+                                                  gamma2=kwargs_los['gamma2_os'])
+
+            # Complete displacement
+            f_x += x - x_os
+            f_y += y - y_os
+
+        elif 'kappa_od' not in kwargs_los: #NHmod... also is this criterion sufficient?
+            # NH: indeed, this can be easily broken by the user passing kappas
+            # NH: when calling LOS_MINIMAL
+            # NH: we can add a flag to avoid that...
+            # Angular position where the ray hits the deflector's plane
+            x_d, y_d = self.los.distort_vector(x, y,
+                                               gamma1=kwargs_los['gamma1_od'],
+                                               gamma2=kwargs_los['gamma2_od'])
+
+            # Displacement due to the main lens only
+            f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
+
+            # Correction due to the background convergence and shear
+            f_x, f_y = self.los.distort_vector(f_x, f_y,
+                                               gamma1=kwargs_los['gamma1_od'],
+                                               gamma2=kwargs_los['gamma2_od'])
+
+
+            # Sheared position in the absence of the main lens
+            x_os, y_os =  self.los.distort_vector(x, y,
+                                                  gamma1=kwargs_los['gamma1_los'],
+                                                  gamma2=kwargs_los['gamma2_los'])
+
+            # Complete displacement
+            f_x += x - x_os
+            f_y += y - y_os
+
+        else:
+            raise ValueError('If you are reading this something went terribly wrong.')
 
         return f_x, f_y
 
@@ -127,34 +159,63 @@ class SinglePlaneLOS(SinglePlane):
 
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
 
-        # Angular position where the ray hits the deflector's plane
-        x_d, y_d = self.los.distort_vector(x, y,
-                                           kappa=kwargs_los['kappa_od'],
-                                           gamma1=kwargs_los['gamma1_od'],
-                                           gamma2=kwargs_los['gamma2_od'])
+        if 'kappa_od' in kwargs_los:
+            # Angular position where the ray hits the deflector's plane
+            x_d, y_d = self.los.distort_vector(x, y,
+                                               kappa=kwargs_los['kappa_od'],
+                                               gamma1=kwargs_los['gamma1_od'],
+                                               gamma2=kwargs_los['gamma2_od'])
 
-        # Hessian matrix of the main lens only
-        f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
-                                                 kwargs=kwargs_lens, k=k)
+            # Hessian matrix of the main lens only
+            f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
+                                                     kwargs=kwargs_lens, k=k)
 
-        # Multiply on the left by (1 - Gamma_ds)
-        f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
-                                    f_xx, f_xy, f_yx, f_yy,
-                                    kappa=kwargs_los['kappa_ds'],
-                                    gamma1=kwargs_los['gamma1_ds'],
-                                    gamma2=kwargs_los['gamma2_ds'])
+            # Multiply on the left by (1 - Gamma_ds)
+            f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
+                                        f_xx, f_xy, f_yx, f_yy,
+                                        kappa=kwargs_los['kappa_ds'],
+                                        gamma1=kwargs_los['gamma1_ds'],
+                                        gamma2=kwargs_los['gamma2_ds'])
 
-        # Multiply on the right by (1 - Gamma_od)
-        f_xx, f_xy, f_yx, f_yy = self.los.right_multiply(
-                                    f_xx, f_xy, f_yx, f_yy,
-                                    kappa=kwargs_los['kappa_od'],
-                                    gamma1=kwargs_los['gamma1_od'],
-                                    gamma2=kwargs_los['gamma2_od'])
+            # Multiply on the right by (1 - Gamma_od)
+            f_xx, f_xy, f_yx, f_yy = self.los.right_multiply(
+                                        f_xx, f_xy, f_yx, f_yy,
+                                        kappa=kwargs_los['kappa_od'],
+                                        gamma1=kwargs_los['gamma1_od'],
+                                        gamma2=kwargs_los['gamma2_od'])
 
-        # LOS contribution in the absence of the main lens
-        f_xx += kwargs_los['kappa_os'] + kwargs_los['gamma1_os']
-        f_xy += kwargs_los['gamma2_os']
-        f_yx += kwargs_los['gamma2_os']
-        f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
+            # LOS contribution in the absence of the main lens
+            f_xx += kwargs_los['kappa_os'] + kwargs_los['gamma1_os']
+            f_xy += kwargs_los['gamma2_os']
+            f_yx += kwargs_los['gamma2_os']
+            f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
+
+        elif 'kappa_od' not in kwargs_los:
+            # Angular position where the ray hits the deflector's plane
+            x_d, y_d = self.los.distort_vector(x, y,
+                                               gamma1=kwargs_los['gamma1_od'],
+                                               gamma2=kwargs_los['gamma2_od'])
+
+            # Hessian matrix of the main lens only
+            f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
+                                                     kwargs=kwargs_lens, k=k)
+
+            # Multiply on the left by (1 - Gamma_ds)
+            f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
+                                        f_xx, f_xy, f_yx, f_yy,
+                                        gamma1=kwargs_los['gamma1_od'],
+                                        gamma2=kwargs_los['gamma2_od'])
+
+            # Multiply on the right by (1 - Gamma_od)
+            f_xx, f_xy, f_yx, f_yy = self.los.right_multiply(
+                                        f_xx, f_xy, f_yx, f_yy,
+                                        gamma1=kwargs_los['gamma1_od'],
+                                        gamma2=kwargs_los['gamma2_od'])
+
+            # LOS contribution in the absence of the main lens
+            f_xx += kwargs_los['kappa_los'] + kwargs_los['gamma1_los']
+            f_xy += kwargs_los['gamma2_los']
+            f_yx += kwargs_los['gamma2_los']
+            f_yy += kwargs_los['kappa_los'] - kwargs_los['gamma1_los']
 
         return f_xx, f_xy, f_yx, f_yy

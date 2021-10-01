@@ -1,5 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.single_plane_los_2 import SinglePlaneLOS
+from lenstronomy.LensModel.single_plane_los import SinglePlaneLOS
 import numpy as np
 
 __all__ = ['LensParam']
@@ -38,6 +38,7 @@ class LensParam(object):
         self._num_shapelet_lens = num_shapelet_lens
 
         lens_model = SinglePlane(lens_model_list=lens_model_list) # NH: I still don't know if we need to modify this
+        print(lens_model_list)
 
         name_list = []
         for func in lens_model.func_list:

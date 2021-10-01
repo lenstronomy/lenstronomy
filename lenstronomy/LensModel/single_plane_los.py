@@ -1,169 +1,121 @@
-__author__ = 'nataliehogg'
+__author__ = 'nataliehogg', 'pierrefleury'
 
-import numpy as np
-from copy import deepcopy #NHmod
-from lenstronomy.LensModel.profile_list_base import ProfileListBase
+#import numpy as np
+from lenstronomy.LensModel.single_plane import SinglePlane
 
 __all__ = ['SinglePlaneLOS']
 
 
-class SinglePlaneLOS(ProfileListBase):
+class SinglePlaneLOS(SinglePlane):
     """
-    this class is based on the 'SinglePlane' class, modified to include line of sight effects
-    as presented by Fleury et al in 2104.08883
+    This class is based on the 'SinglePlane' class, modified to include
+    line-of-sight effects as presented by Fleury et al. in 2104.08883.
+
+    Are modified:
+    - init (to include a new attribute, self.los)
+    - alpha
+    - hessian
+
+    Are unchanged (inherited from SinglePlane):
+    - ray_shooting, because it calls the modified alpha
+    - mass_2d, mass_3d, density which refer to the main lens without LOS
+    corrections.
+
+    To be done: implementation of the time delays, so that it can be used
+    by LensModel.
     """
 
-    param_names = ['gamma_os', 'gamma_ds', 'gamma_od']
-    lower_limit_default = {'gamma_os': np.array([-5.0, -5.0]),
-                           'gamma_ds':  np.array([-5.0, -5.0]),
-                           'gamma_od':  np.array([-5.0, -5.0])}
-    upper_limit_default = {'gamma_os': np.array([5.0, 5.0]),
-                           'gamma_ds':  np.array([5.0, 5.0]),
-                           'gamma_od':  np.array([5.0, 5.0])}
 
-    def remove_dict_key(self, dictionary, key):
-        '''
-        This function takes a given dictionary,
-        copies it and then removes key:value pairs
-        which are passed to the function in a list
-        '''
-        _dict = deepcopy(dictionary)
-        for k in key:
-            _dict.pop(k, None)
-        return _dict
-
-    def shear_os(self, x, y, kwargs):
-        '''
-        this function shears a given image position by (1 - Gamma_os)
-        '''
-        x_ = x - kwargs[0]['center_x']
-        y_ = y - kwargs[0]['center_y']
-        delta_x = (1 - kwargs[0]['gamma_os'][0]) * x_ - kwargs[0]['gamma_os'][1] * y_ # NH: generalise to multiple lists of kwargs!
-        delta_y = (1 + kwargs[0]['gamma_os'][0]) * y_ - kwargs[0]['gamma_os'][1] * x_
-        x = kwargs[0]['center_x'] + delta_x
-        y = kwargs[0]['center_y'] + delta_y
-        return x, y
-
-    def shear_ds(self, x, y, kwargs):
-        '''
-        this function shears a given image position by (1 - Gamma_ds)
-        '''
-        x_ = x - kwargs[0]['center_x']
-        y_ = y - kwargs[0]['center_y']
-        delta_x = (1 - kwargs[0]['gamma_ds'][0]) * x_ - kwargs[0]['gamma_ds'][1] * y_
-        delta_y = (1 + kwargs[0]['gamma_ds'][0]) * y_ - kwargs[0]['gamma_ds'][1] * x_
-        x = kwargs[0]['center_x'] + delta_x
-        y = kwargs[0]['center_y'] + delta_y
-        return x, y
-
-    def shear_od(self, x, y, kwargs):
-        '''
-        this function shears a given image position by (1 - Gamma_od)
-        '''
-        x_ = x - kwargs[0]['center_x']
-        y_ = y - kwargs[0]['center_y']
-        delta_x = (1 - kwargs[0]['gamma_od'][0]) * x_ - kwargs[0]['gamma_od'][1] * y_
-        delta_y = (1 + kwargs[0]['gamma_od'][0]) * y_ - kwargs[0]['gamma_od'][1] * x_
-        x = kwargs[0]['center_x'] + delta_x
-        y = kwargs[0]['center_y'] + delta_y
-        return x, y
-
-    def ray_shooting(self, x, y, kwargs, k=None): #NHmod
+    def __init__(self, lens_model_list,
+                 numerical_alpha_class=None,
+                 lens_redshift_list=None,
+                 z_source_convention=None,
+                 kwargs_interp=None):
         """
-        maps image to source position (inverse deflection)
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: source plane positions corresponding to (x, y) in the image plane
+        Instance of SinglePlaneLOS() based on the SinglePlane() but
+        to which we add, as an attribute, the line-of-sight class
+        extracted from the lens_model_list.
         """
 
-        dx, dy = tuple(np.subtract(self.shear_os(x, y, kwargs), self.shear_ds(*self.alpha(x, y, kwargs, k=k), kwargs)))
+        # Extract LOS from lens_model_list
+        try:
+            self.index_los = lens_model_list.index('LOS')
+        except ValueError:
+            print("""
+                  You tried to do single-plane lensing with line-of-sight
+                  effect, but you did not include 'LOS' in the list of lens
+                  models.
+                  """)
+        self.los = self._import_class('LOS', custom_class=None,
+                                      kwargs_interp=None)
 
-        return dx, dy
+        # Proceed with the rest of the lenses
+        lens_model_list_wo_los = [
+            model for i, model in enumerate(lens_model_list)
+            if i != self.index_los]
+        super().__init__(lens_model_list_wo_los)
 
-    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):
+
+    def split_lens_los(self, kwargs):
         """
-        fermat potential (negative sign means earlier arrival time)
-
-        :param x_image: image position
-        :param y_image: image position
-        :param x_source: source position
-        :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        This function splits the list of key-word arguments given to the lens
+        model into those that correspond to the lens itself (kwargs_lens), and
+        those that correspond to the line-of-sight corrections (kwargs_los).
         """
 
-        potential = self.potential(x_image, y_image, kwargs_lens, k=k)
-        if x_source is None or y_source is None:
-            x_source, y_source = self.ray_shooting(x_image, y_image,
-                                                   kwargs_lens, k=k)
-        geometry = ((x_image - x_source)**2 + (y_image - y_source)**2) / 2.
-        return geometry - potential
+        kwargs_los = kwargs[self.index_los]
+        kwargs_lens = [kwarg for i, kwarg in enumerate(kwargs)
+                       if i != self.index_los]
 
-    def potential(self, x, y, kwargs, k=None):
-        """
-        lensing potential
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: lensing potential in units of arcsec^2
-        """
-        x = np.array(x, dtype=float)
-        y = np.array(y, dtype=float)
+        return kwargs_lens, kwargs_los
 
-        x, y = self.shear_od(x, y, kwargs)
-
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)]
-
-        if isinstance(k, int):
-            return self.func_list[k].function(x, y, **kwargs_without_shear[k])
-        bool_list = self._bool_list(k)
-        potential = np.zeros_like(x)
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                potential += func.function(x, y, **kwargs_without_shear[i])
-        return potential
 
     def alpha(self, x, y, kwargs, k=None):
-
         """
-        deflection angles
+        Displacement angle including the line-of-sight corrections
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
         :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters
+        matching the lens model classes, including line-of-sight corrections
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        x = np.array(x, dtype=float)
-        y = np.array(y, dtype=float)
 
-        x, y = self.shear_od(x, y, kwargs)
+        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
 
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
+        # Angular position where the ray hits the deflector's plane
+        x_d, y_d = self.los.distort_vector(x, y,
+                                           kappa=kwargs_los['kappa_od'],
+                                           gamma1=kwargs_los['gamma1_od'],
+                                           gamma2=kwargs_los['gamma2_od'])
 
-        if isinstance(k, int):
-            return self.func_list[k].derivatives(x, y, **kwargs_without_shear[k]) #NHmod
-        bool_list = self._bool_list(k)
-        f_x, f_y = np.zeros_like(x), np.zeros_like(x)
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                f_x_i, f_y_i = func.derivatives(x, y, **kwargs_without_shear[i]) #NHmod
-                f_x += f_x_i
-                f_y += f_y_i
+        # Displacement due to the main lens only
+        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
+
+        # Correction due to the background convergence and shear
+        f_x, f_y = self.los.distort_vector(f_x, f_y,
+                                           kappa=kwargs_los['kappa_ds'],
+                                           gamma1=kwargs_los['gamma1_ds'],
+                                           gamma2=kwargs_los['gamma2_ds'])
+
+        # Sheared position in the absence of the main lens
+        x_os, y_os =  self.los.distort_vector(x, y,
+                                              kappa=kwargs_los['kappa_os'],
+                                              gamma1=kwargs_los['gamma1_os'],
+                                              gamma2=kwargs_los['gamma2_os'])
+
+        # Complete displacement
+        f_x += x - x_os
+        f_y += y - y_os
 
         return f_x, f_y
 
+
     def hessian(self, x, y, kwargs, k=None):
         """
-        hessian matrix
+        Hessian matrix
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -172,92 +124,37 @@ class SinglePlaneLOS(ProfileListBase):
         :param k: only evaluate the k-th lens model
         :return: f_xx, f_xy, f_yx, f_yy components
         """
-        x = np.array(x, dtype=float)
-        y = np.array(y, dtype=float)
 
-        x, y = self.shear_od(x, y, kwargs)
+        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
 
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
+        # Angular position where the ray hits the deflector's plane
+        x_d, y_d = self.los.distort_vector(x, y,
+                                           kappa=kwargs_los['kappa_od'],
+                                           gamma1=kwargs_los['gamma1_od'],
+                                           gamma2=kwargs_los['gamma2_od'])
 
-        if isinstance(k, int):
-            f_xx, f_xy, f_yx, f_yy = self.func_list[k].hessian(x, y, **kwargs_without_shear[k]) #NHmod
-            return f_xx, f_xy, f_yx, f_yy
+        # Hessian matrix of the main lens only
+        f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
+                                                 kwargs=kwargs_lens, k=k)
 
-        bool_list = self._bool_list(k)
-        f_xx, f_xy, f_yx, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                f_xx_i, f_xy_i, f_yx_i, f_yy_i = func.hessian(x, y, **kwargs_without_shear[i]) #NHmod
-                f_xx += f_xx_i
-                f_xy += f_xy_i
-                f_yx += f_yx_i
-                f_yy += f_yy_i
+        # Multiply on the left by (1 - Gamma_ds)
+        f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
+                                    f_xx, f_xy, f_yx, f_yy,
+                                    kappa=kwargs_los['kappa_ds'],
+                                    gamma1=kwargs_los['gamma1_ds'],
+                                    gamma2=kwargs_los['gamma2_ds'])
+
+        # Multiply on the right by (1 - Gamma_od)
+        f_xx, f_xy, f_yx, f_yy = self.los.right_multiply(
+                                    f_xx, f_xy, f_yx, f_yy,
+                                    kappa=kwargs_los['kappa_od'],
+                                    gamma1=kwargs_los['gamma1_od'],
+                                    gamma2=kwargs_los['gamma2_od'])
+
+        # LOS contribution in the absence of the main lens
+        f_xx += kwargs_los['kappa_os'] + kwargs_los['gamma1_os']
+        f_xy += kwargs_los['gamma2_os']
+        f_yx += kwargs_los['gamma2_os']
+        f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
+
         return f_xx, f_xy, f_yx, f_yy
-
-    def mass_3d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass within a 3d sphere of radius r
-
-        if you want to have physical units of kg, you need to multiply by this factor:
-        const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * const.c ** 2 / (4 * np.pi * const.G)
-        grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
-
-        :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param bool_list: list of bools that are part of the output
-        :return: mass (in angular units, modulo epsilon_crit)
-        """
-
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
-
-        bool_list = self._bool_list(bool_list)
-        mass_3d = 0
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                kwargs_i = {k:v for k, v in kwargs_without_shear[i].items() if not k in ['center_x', 'center_y']} #NHmod
-                mass_3d_i = func.mass_3d_lens(r, **kwargs_without_shear_i) #NHmod
-                mass_3d += mass_3d_i
-        return mass_3d
-
-    def mass_2d(self, r, kwargs, bool_list=None):
-        """
-        computes the mass enclosed a projected (2d) radius r
-
-        :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param bool_list: list of bools that are part of the output
-        :return: projected mass (in angular units, modulo epsilon_crit)
-        """
-
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
-
-        bool_list = self._bool_list(bool_list)
-        mass_2d = 0
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs_without_shear[i].items() if not k in ['center_x', 'center_y']} #NHmod
-                mass_2d_i = func.mass_2d_lens(r, **kwargs_without_shear_i) #NHmod
-                mass_2d += mass_2d_i
-        return mass_2d
-
-    def density(self, r, kwargs, bool_list=None):
-        """
-        3d mass density at radius r
-        The integral in the LOS projection of this quantity results in the convergence quantity.
-
-        :param r: radius (in angular units)
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param bool_list: list of bools that are part of the output
-        :return: mass density at radius r (in angular units, modulo epsilon_crit)
-        """
-
-        kwargs_without_shear = [self.remove_dict_key(kwargs[0], self.param_names)] #NHmod
-
-        bool_list = self._bool_list(bool_list)
-        density = 0
-        for i, func in enumerate(self.func_list):
-            if bool_list[i] is True:
-                kwargs_i = {k: v for k, v in kwargs_without_shear[i].items() if not k in ['center_x', 'center_y']} #NHmod
-                density_i = func.density_lens(r, **kwargs_without_shear_i) #NHmod
-                density += density_i
-        return density

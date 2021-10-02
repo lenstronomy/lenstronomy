@@ -213,9 +213,9 @@ class SinglePlaneLOS(SinglePlane):
                                         gamma2=kwargs_los['gamma2_od'])
 
             # LOS contribution in the absence of the main lens
-            f_xx += kwargs_los['kappa_los'] + kwargs_los['gamma1_los']
+            f_xx += kwargs_los['gamma1_los']
             f_xy += kwargs_los['gamma2_los']
             f_yx += kwargs_los['gamma2_los']
-            f_yy += kwargs_los['kappa_los'] - kwargs_los['gamma1_los']
+            f_yy += - kwargs_los['gamma1_los']
 
         return f_xx, f_xy, f_yx, f_yy

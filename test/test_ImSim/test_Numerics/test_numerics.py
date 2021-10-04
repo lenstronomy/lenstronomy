@@ -217,10 +217,95 @@ class TestNumerics(object):
         from lenstronomy.ImSim.Numerics.grid import AdaptiveGrid
         grid_class = image_model.ImageNumerics.grid_class
         assert isinstance(grid_class, AdaptiveGrid)
-        
+
+
+def test_supersampling_simple():
+    """
+
+    :return:
+    """
+    from lenstronomy.Data.psf import PSF
+    from lenstronomy.SimulationAPI.data_api import DataAPI
+
+    detector_pixel_scale = 0.04
+    numpix = 64
+    supersampling_factor = 2
+    # generate a Gaussian image
+
+    x, y = util.make_grid(numPix=numpix * supersampling_factor, deltapix=detector_pixel_scale / supersampling_factor)
+    from lenstronomy.LightModel.Profiles.gaussian import Gaussian
+    gaussian = Gaussian()
+    image_1d = gaussian.function(x, y, amp=1, sigma=0.1)
+    image = util.array2image(image_1d)
+
+    # generate psf kernal supersampled
+    kernel_super = kernel_util.kernel_gaussian(kernel_numPix=21 * supersampling_factor + 1,
+                                               deltaPix=detector_pixel_scale / supersampling_factor, fwhm=0.2)
+
+    psf_parameters = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_super,
+                      'point_source_supersampling_factor': supersampling_factor}
+    kwargs_detector = {'pixel_scale': detector_pixel_scale,
+                       'ccd_gain': 2.5, 'read_noise': 4.0, 'magnitude_zero_point': 25.0,
+                       'exposure_time': 5400.0, 'sky_brightness': 22, 'num_exposures': 1,
+                       'background_noise': None}
+    kwargs_numerics = {'supersampling_factor': 2,
+                       'supersampling_convolution': True,
+                       'point_source_supersampling_factor': 2,
+                       'supersampling_kernel_size': 21
+                       }
+    psf_model = PSF(**psf_parameters)
+    data_class = DataAPI(numpix=numpix, **kwargs_detector).data_class
+
+    from lenstronomy.ImSim.Numerics.numerics_subframe import NumericsSubFrame
+    image_numerics = NumericsSubFrame(pixel_grid=data_class,
+                                      psf=psf_model, **kwargs_numerics)
+
+    conv_class = image_numerics.convolution_class
+    conv_flat = conv_class.convolution2d(image)
+    print(np.shape(conv_flat), 'shape of output')
+
+    # psf_helper = lenstronomy_utils.PSFHelper(data_class, psf_model, kwargs_numerics)
+
+    # Convolve with lenstronomy and with scipy
+    # helper_image = psf_helper.psf_model(image)
+    from scipy import signal
+
+    scipy_image = signal.fftconvolve(image, kernel_super, mode='same')
+    from lenstronomy.Util import image_util
+    image_scipy_resized = image_util.re_size(scipy_image, supersampling_factor)
+    image_unconvolved = image_util.re_size(image, supersampling_factor)
+
+    # Compare the outputs
+
+    # low res convolution as comparison
+    kwargs_numerics_low_res = {'supersampling_factor': 2,
+                       'supersampling_convolution': False,
+                       'point_source_supersampling_factor': 2,
+                       }
+    image_numerics_low_res = NumericsSubFrame(pixel_grid=data_class,
+                                      psf=psf_model, **kwargs_numerics_low_res)
+    conv_class_low_res = image_numerics_low_res.convolution_class
+    conv_flat_low_res = conv_class_low_res.convolution2d(image_unconvolved)
+
+    #import matplotlib.pyplot as plt
+    #plt.matshow(image_scipy_resized - image_unconvolved)
+    #plt.colorbar()
+    #plt.show()
+
+    #plt.matshow(image_scipy_resized - conv_flat)
+    #plt.colorbar()
+    #plt.show()
+
+    #plt.matshow(image_scipy_resized - conv_flat_low_res)
+    #plt.colorbar()
+    #plt.show()
+
+    np.testing.assert_almost_equal(conv_flat, image_scipy_resized)
+
+
+
 
 class TestRaise(unittest.TestCase):
-
 
     def test_integer_in_supersampling_factor(self):
         from lenstronomy.Data.psf import PSF

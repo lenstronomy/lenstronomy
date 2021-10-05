@@ -9,10 +9,8 @@ class LensParam(object):
     """
     class to handle the lens model parameter
 
-    NH modifying to include LOS effects 28/09/21 #NHmod
     """
     def __init__(self, lens_model_list, kwargs_fixed,
-                 # los_effects=False,
                  kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
                  num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
@@ -30,15 +28,14 @@ class LensParam(object):
          (only relevant when 'SHAPELET' lens model is used)
         """
 
-        # self.los_effects = los_effects
+
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
         self._num_images = num_images
         self._solver_type = solver_type
         self._num_shapelet_lens = num_shapelet_lens
 
-        lens_model = SinglePlane(lens_model_list=lens_model_list) # NH: I still don't know if we need to modify this
-        print(lens_model_list)
+        lens_model = SinglePlane(lens_model_list=lens_model_list)
 
         name_list = []
         for func in lens_model.func_list:

@@ -106,3 +106,23 @@ def sample_ball(p0, std, size=1, dist='uniform'):
                           for i in range(size)])
     else:
         raise ValueError('distribution %s not supported. Chose among "uniform" or "normal".' % dist)
+
+
+@export
+def sample_ball_truncated(mean, sigma, lower_limit, upper_limit, size):
+    """
+    samples gaussian ball with truncation at lower and upper limit of the distribution
+
+    :param mean: numpy array, mean of the distribution to be sampled
+    :param sigma: numpy array, sigma of the distribution to be sampled
+    :param lower_limit: numpy array, lower bound of to be sampled distribution
+    :param upper_limit: numpy array, upper bound of to be sampled distribution
+    :param size: number of tuples to be sampled
+    :return: realization of truncated normal distribution with shape (size, dim(parameters))
+    """
+    a, b = (lower_limit- mean) / sigma, (upper_limit - mean) / sigma
+
+    r = stats.truncnorm.rvs(a, b, size=len(a))
+    print(r, 'test')
+    draws = np.vstack([mean + sigma * stats.truncnorm.rvs(a, b, size=len(a)) for i in range(size)])
+    return draws

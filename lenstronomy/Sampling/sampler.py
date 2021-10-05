@@ -154,7 +154,8 @@ class Sampler(object):
         """
         num_param, _ = self.chain.param.num_param()
         if initpos is None:
-            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers, dist='normal')
+            initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
+                                                          size=n_walkers)
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 

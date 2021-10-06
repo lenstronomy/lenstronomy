@@ -173,8 +173,8 @@ class LensCosmo(object):
         converts the angular parameters into the physical ones for an NFW profile
 
         :param alpha_Rs: observed bending angle at the scale radius in units of arcsec
-        :param Rs: scale radius in units of arcsec
-        :return: rho0, Rs, c, r200, M200
+        :param Rs_angle: scale radius in units of arcsec
+        :return: rho0 [Msun/Mpc^3], Rs [Mpc], c, r200 [Mpc], M200 [Msun]
         """
         Rs = Rs_angle * const.arcsec * self.dd
         theta_scaled = alpha_Rs * self.sigma_crit * self.dd * const.arcsec
@@ -204,7 +204,7 @@ class LensCosmo(object):
 
         :param M: physical mass in M_sun
         :param c: concentration
-        :return: rho0, Rs, r200
+        :return: rho0 [Msun/Mpc^3], Rs [Mpc], r200 [Mpc]
         """
         r200 = self.nfw_param.r200_M(M * self.h, self.z_lens) / self.h  # physical radius r200
         rho0 = self.nfw_param.rho0_c(c, self.z_lens) * self.h**2  # physical density in M_sun/Mpc**3

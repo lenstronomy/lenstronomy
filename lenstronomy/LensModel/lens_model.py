@@ -1,7 +1,7 @@
 from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
-from lenstronomy.LensModel.single_plane_los import SinglePlaneLOS 
+from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS 
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.Cosmo.lens_cosmo import LensCosmo
 from lenstronomy.Util import constants as const
@@ -12,11 +12,8 @@ __all__ = ['LensModel']
 class LensModel(object):
     """
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
-    """
-
-    '''
     NH modifiying to include LOS effects 08/09/21 #NHmod
-    '''
+    """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None,
                  lens_redshift_list=None, cosmo=None,

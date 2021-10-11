@@ -89,6 +89,7 @@ class SinglePlaneLOS(SinglePlane):
             # Angular position where the ray hits the deflector's plane
             x_d, y_d = self.los.distort_vector(x, y,
                                                kappa=kwargs_los['kappa_od'],
+                                               omega=kwargs_los['omega_od'],
                                                gamma1=kwargs_los['gamma1_od'],
                                                gamma2=kwargs_los['gamma2_od'])
 
@@ -98,6 +99,7 @@ class SinglePlaneLOS(SinglePlane):
             # Correction due to the background convergence and shear
             f_x, f_y = self.los.distort_vector(f_x, f_y,
                                                kappa=kwargs_los['kappa_ds'],
+                                               omega=kwargs_los['omega_ds'],
                                                gamma1=kwargs_los['gamma1_ds'],
                                                gamma2=kwargs_los['gamma2_ds'])
 
@@ -105,6 +107,7 @@ class SinglePlaneLOS(SinglePlane):
             # Sheared position in the absence of the main lens
             x_os, y_os =  self.los.distort_vector(x, y,
                                                   kappa=kwargs_los['kappa_os'],
+                                                  omega=kwargs_los['omega_os'],
                                                   gamma1=kwargs_los['gamma1_os'],
                                                   gamma2=kwargs_los['gamma2_os'])
 
@@ -163,6 +166,7 @@ class SinglePlaneLOS(SinglePlane):
             # Angular position where the ray hits the deflector's plane
             x_d, y_d = self.los.distort_vector(x, y,
                                                kappa=kwargs_los['kappa_od'],
+                                               omega=kwargs_los['omega_od'],
                                                gamma1=kwargs_los['gamma1_od'],
                                                gamma2=kwargs_los['gamma2_od'])
 
@@ -174,6 +178,7 @@ class SinglePlaneLOS(SinglePlane):
             f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(
                                         f_xx, f_xy, f_yx, f_yy,
                                         kappa=kwargs_los['kappa_ds'],
+                                        omega=kwargs_los['omega_ds'],
                                         gamma1=kwargs_los['gamma1_ds'],
                                         gamma2=kwargs_los['gamma2_ds'])
 
@@ -181,13 +186,14 @@ class SinglePlaneLOS(SinglePlane):
             f_xx, f_xy, f_yx, f_yy = self.los.right_multiply(
                                         f_xx, f_xy, f_yx, f_yy,
                                         kappa=kwargs_los['kappa_od'],
+                                        omega=kwargs_los['omega_od'],
                                         gamma1=kwargs_los['gamma1_od'],
                                         gamma2=kwargs_los['gamma2_od'])
 
             # LOS contribution in the absence of the main lens
             f_xx += kwargs_los['kappa_os'] + kwargs_los['gamma1_os']
-            f_xy += kwargs_los['gamma2_os']
-            f_yx += kwargs_los['gamma2_os']
+            f_xy += kwargs_los['gamma2_os'] - kwargs_los['omega_os']
+            f_yx += kwargs_los['gamma2_os'] + kwargs_los['omega_os']
             f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
 
         elif 'kappa_od' not in kwargs_los:

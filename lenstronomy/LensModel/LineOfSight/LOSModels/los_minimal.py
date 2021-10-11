@@ -1,6 +1,6 @@
 __author__ = 'nataliehogg', 'pierrefleury'
 
-__all__ = ['LOS_MINIMAL']
+__all__ = ['LOSMinimal']
 
 class LOSMinimal(object):
     """

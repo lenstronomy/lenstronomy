@@ -5,11 +5,12 @@ __author__ = 'pierrefleury'
 __all__ = ['LOS']
 
 class LOS(object):
+    # PF: update the docstring at the end of implementation.
     """
     Class allowing one to add tidal line-of-sight effects (convergence and
     shear) to single-plane lensing. Stricly speaking, this is not a profile,
     but when present in list of lens models, it is automatically recognised by
-    ModelAPI(), which sets the flat los_effects to True, and thereby leads
+    ModelAPI(), which sets the flag los_effects to True, and thereby leads
     LensModel to use SinglePlaneLOS() instead of SinglePlane(). It is however
     incompatible with MultiPlane().
     

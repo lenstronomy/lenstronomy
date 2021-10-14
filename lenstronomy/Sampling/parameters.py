@@ -67,7 +67,6 @@ class Param(object):
     """
 
     def __init__(self, kwargs_model,
-                 #los_effects = False, 
                  kwargs_fixed_lens=None, kwargs_fixed_source=None, kwargs_fixed_lens_light=None, kwargs_fixed_ps=None,
                  kwargs_fixed_special=None, kwargs_fixed_extinction=None,
                  kwargs_lower_lens=None, kwargs_lower_source=None, kwargs_lower_lens_light=None, kwargs_lower_ps=None,
@@ -252,7 +251,6 @@ class Param(object):
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
                                                             self._joint_lens_light_with_point_source)
         self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated,
-                                    #los_effects = False, #NHmod... should this be self. or not?
                                     kwargs_logsampling=kwargs_logsampling_lens,
                                     num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,

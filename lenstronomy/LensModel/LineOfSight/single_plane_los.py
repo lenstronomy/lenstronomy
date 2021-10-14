@@ -25,34 +25,27 @@ class SinglePlaneLOS(SinglePlane):
     """
 
 
-    def __init__(self, lens_model_list,
+    def __init__(self, lens_model_list, index_los,
                  numerical_alpha_class=None,
                  lens_redshift_list=None,
                  z_source_convention=None,
                  kwargs_interp=None):
         """
-        Instance of SinglePlaneLOS() based on the SinglePlane() but
-        to which we add, as an attribute, the line-of-sight class
-        extracted from the lens_model_list.
+        Instance of SinglePlaneLOS() based on the SinglePlane(), except:
+        - argument "index_los" indicating the position of the LOS model in the
+        lens_model_list (for correct association with kwargs)
+        - attribute "los" containing the LOS model.
         """
-
-        los_models = ['LOS', 'LOS_MINIMAL']
-
-        if all(x in lens_model_list for x in los_models) is True:
-            raise ValueError('Remove either LOS or LOS_MINIMAL from your lens model list!')
-        elif 'LOS' in lens_model_list:
-            self.index_los = lens_model_list.index('LOS')
-            self.los = self._import_class('LOS', custom_class=None, kwargs_interp=None)
-        elif 'LOS_MINIMAL' in lens_model_list:
-            self.index_los = lens_model_list.index('LOS_MINIMAL')
-            self.los = self._import_class('LOS_MINIMAL', custom_class=None, kwargs_interp=None)
-        else:
-            raise ValueError('If you want to add line-of-sight effects you must add LOS or LOS_MINIMAL to your lens model list.')
+        
+        # Extract the los model
+        self.index_los = index_los
+        self.los_model = lens_model_list[index_los]
+        self.los = self._import_class(self.los_model, custom_class=None, kwargs_interp=None)
 
         # Proceed with the rest of the lenses
         lens_model_list_wo_los = [
             model for i, model in enumerate(lens_model_list)
-            if i != self.index_los]
+            if i != index_los]
         super().__init__(lens_model_list_wo_los)
 
 
@@ -63,10 +56,10 @@ class SinglePlaneLOS(SinglePlane):
         those that correspond to the line-of-sight corrections (kwargs_los).
         """
 
-        kwargs_los = kwargs[self.index_los]
+        kwargs_los = kwargs[self.index_los].copy()
         # if 'LOS_MINIMAL' is at play, we set Gamma_os = Gamma_los
         # and Gamma_ds = Gamma_od
-        if 'kappa_los' in kwargs_los.keys():
+        if self.los_model == 'LOS_MINIMAL':
             kwargs_los['kappa_os'] = kwargs_los.pop('kappa_los')
             kwargs_los['gamma1_os'] = kwargs_los.pop('gamma1_los')
             kwargs_los['gamma2_os'] = kwargs_los.pop('gamma2_los')

@@ -13,13 +13,11 @@ class LensModel(object):
     """
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
     NH modifiying to include LOS effects 08/09/21 #NHmod
+    PF modifying to make the detection of LOS effects automatic and remove los_effects flag #PFmod
     """
 
-    def __init__(self, lens_model_list, z_lens=None, z_source=None,
-                 lens_redshift_list=None, cosmo=None,
-                 multi_plane=False,
-                 los_effects=False,
-                 numerical_alpha_class=None, observed_convention_index=None,
+    def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
+                 multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
                  z_source_convention=None, cosmo_interp=False,
                  z_interp_stop=None, num_z_interp=100,
                  kwargs_interp=None):
@@ -34,7 +32,6 @@ class LensModel(object):
         only applicable in multi_plane mode.
         :param cosmo: instance of the astropy cosmology class. If not specified, uses the default cosmology.
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
-        :param los_effects: bool, if True, uses LOS effects mode. Default is False. #NHmod
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
         :param kwargs_interp: interpolation keyword arguments specifying the numerics.
@@ -61,13 +58,26 @@ class LensModel(object):
             from astropy.cosmology import default_cosmology
             cosmo = default_cosmology.get()
         self.cosmo = cosmo
+        
+        # Are there line-of-sight corrections?
+        permitted_los_models = ['LOS', 'LOS_MINIMAL']
+        los_models = [(i, model) for (i, model) in enumerate(lens_model_list)
+                      if model in permitted_los_models]
+        if len(los_models) == 0:
+            los_effects = False
+        elif len(los_models) == 1:
+            los_effects = True
+            index_los, los_model = los_models[0]
+        else:
+            raise ValueError('You can only have one model for line-of-sight corrections.')
+            
+        # Multi-plane or single-plane lensing?
         self.multi_plane = multi_plane
-        self.los_effects = los_effects
         if multi_plane is True:
             if z_source is None:
                 raise ValueError('z_source needs to be set for multi-plane lens modelling.')
             if los_effects is True:
-                raise ValueError('You cannot select LOS effects and multi-plane lensing simultaneously!')
+                raise ValueError('LOS effects and multi-plane lensing are incompatible.')
             self.lens_model = MultiPlane(z_source, lens_model_list, lens_redshift_list, cosmo=cosmo,
                                          numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index,
@@ -78,6 +88,7 @@ class LensModel(object):
             if los_effects is True:
                 print('Adding line-of-sight effects to the main lens.')
                 self.lens_model = SinglePlaneLOS(lens_model_list,
+                    index_los=index_los,
                     numerical_alpha_class=numerical_alpha_class,
                     lens_redshift_list=lens_redshift_list,
                     z_source_convention=z_source_convention,

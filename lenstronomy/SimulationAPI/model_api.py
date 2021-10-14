@@ -43,25 +43,13 @@ class ModelAPI(object):
         if lens_redshift_list is not None or source_redshift_list is not None:
             multi_plane = True
         else:
-            multi_plane = False
-            
-        #PFmod: trigger the inclusion of LOS effects
-        if 'LOS' in lens_model_list:
-            los_effects = True
-            if multi_plane == True:
-                raise ValueError("You cannot have both multi-plane\
-                                 lensing and line-of-sight effects")
-        else:
-            los_effects = False
-            
+            multi_plane = False  
             
         if z_source_convention is None:
             z_source_convention = z_source
 
         self._lens_model_class = LensModel(lens_model_list=lens_model_list, z_source=z_source, z_lens=z_lens,
-                                     lens_redshift_list=lens_redshift_list, multi_plane=multi_plane,
-                                     los_effects = los_effects, #NHmod
-                                     cosmo=cosmo,
+                                     lens_redshift_list=lens_redshift_list, multi_plane=multi_plane, cosmo=cosmo,
                                      z_source_convention=z_source_convention)
         self._source_model_class = LightModel(light_model_list=source_light_model_list,
                                         source_redshift_list=source_redshift_list)

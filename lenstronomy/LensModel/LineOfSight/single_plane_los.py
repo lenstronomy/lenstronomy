@@ -1,6 +1,7 @@
 __author__ = 'nataliehogg', 'pierrefleury'
 
 from lenstronomy.LensModel.single_plane import SinglePlane
+import copy
 
 __all__ = ['SinglePlaneLOS']
 
@@ -56,7 +57,7 @@ class SinglePlaneLOS(SinglePlane):
         those that correspond to the line-of-sight corrections (kwargs_los).
         """
 
-        kwargs_los = kwargs[self.index_los].copy()
+        kwargs_los = copy.deepcopy(kwargs[self.index_los])
         # if 'LOS_MINIMAL' is at play, we set Gamma_os = Gamma_los
         # and Gamma_ds = Gamma_od
         if self.los_model == 'LOS_MINIMAL':

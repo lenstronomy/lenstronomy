@@ -86,7 +86,7 @@ class LensModel(object):
                                          kwargs_interp=kwargs_interp)
         else:
             if los_effects is True:
-                print('Adding line-of-sight effects to the main lens.')
+                print('Adding '+los_model+' to the main lens.')
                 self.lens_model = SinglePlaneLOS(lens_model_list,
                     index_los=index_los,
                     numerical_alpha_class=numerical_alpha_class,

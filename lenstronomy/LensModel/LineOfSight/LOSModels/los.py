@@ -72,7 +72,7 @@ class LOS(object):
     
     
     def left_multiply(self, f_xx, f_xy, f_yx, f_yy, 
-                      kappa, gamma1, gamma2, omega):
+                      kappa=0, gamma1=0, gamma2=0, omega=0):
         
         """
         Left-multiplies the Hessian matrix of a lens with a distortion matrix
@@ -98,7 +98,7 @@ class LOS(object):
     
     
     def right_multiply(self, f_xx, f_xy, f_yx, f_yy, 
-                      kappa, gamma1, gamma2, omega):
+                      kappa=0, gamma1=0, gamma2=0, omega=0):
         
         """
         Right-multiplies the Hessian matrix of a lens with a distortion matrix

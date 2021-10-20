@@ -1,6 +1,7 @@
 __author__ = 'nataliehogg', 'pierrefleury'
 
 from lenstronomy.LensModel.single_plane import SinglePlane
+#import numpy as np
 import copy
 
 __all__ = ['SinglePlaneLOS']
@@ -88,7 +89,7 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-
+        
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
         
         # Angular position where the ray hits the deflector's plane
@@ -108,13 +109,12 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma1=kwargs_los['gamma1_ds'],
                                            gamma2=kwargs_los['gamma2_ds'])
 
-
         # Perturbed position in the absence of the main lens
-        x_os, y_os =  self.los.distort_vector(x, y,
-                                              kappa=kwargs_los['kappa_os'],
-                                              omega=kwargs_los['omega_os'],
-                                              gamma1=kwargs_los['gamma1_os'],
-                                              gamma2=kwargs_los['gamma2_os'])
+        x_os, y_os = self.los.distort_vector(x, y,
+                                             kappa=kwargs_los['kappa_os'],
+                                             omega=kwargs_los['omega_os'],
+                                             gamma1=kwargs_los['gamma1_os'],
+                                             gamma2=kwargs_los['gamma2_os'])
 
         # Complete displacement
         f_x += x - x_os

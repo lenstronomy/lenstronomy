@@ -4,7 +4,7 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-import lenstronomy.Util.param_util as param_util
+#import lenstronomy.Util.param_util as param_util # not used here
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -13,7 +13,7 @@ export, __all__ = exporter()
 @export
 class Sersic(SersicUtil):
     """
-    this class contains functions to evaluate an spherical Sersic function
+    this class contains functions to evaluate a spherical Sersic function
 
     .. math::
         I(R) = I_0 \\exp \\left[ -b_n (R/R_{\\rm Sersic})^{\\frac{1}{n}}\\right]

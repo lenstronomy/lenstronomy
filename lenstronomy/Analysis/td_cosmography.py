@@ -56,7 +56,9 @@ class TDCosmography(KinematicsAPI):
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """
-        predicts the time delays of the image positions given the fiducial cosmology
+        predicts the time delays of the image positions given the fiducial cosmology relative to a straight line
+        without lensing.
+        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
 
         :param kwargs_lens: lens model parameters
         :param kwargs_ps: point source parameters
@@ -64,7 +66,7 @@ class TDCosmography(KinematicsAPI):
         :param original_ps_position: boolean (only applies when first point source model is of type 'LENSED_POSITION'),
          uses the image positions in the model parameters and does not re-compute images (which might be differently ordered) 
          in case of the lens equation solver
-        :return: time delays at image positions for the fixed cosmology
+        :return: time delays at image positions for the fixed cosmology in units of days
         """
         fermat_pot = self.fermat_potential(kwargs_lens, kwargs_ps, original_ps_position=original_ps_position)
         time_delay = self._lens_cosmo.time_delay_units(fermat_pot, kappa_ext)
@@ -72,6 +74,7 @@ class TDCosmography(KinematicsAPI):
 
     def fermat_potential(self, kwargs_lens, kwargs_ps, original_ps_position=False):
         """
+        Fermat potential (negative sign means earlier arrival time)
 
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list

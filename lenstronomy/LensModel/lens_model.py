@@ -88,7 +88,7 @@ class LensModel(object):
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
         """
-        fermat potential (negative sign means earlier arrival time)
+        Fermat potential (negative sign means earlier arrival time)
         for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
         subtracted off the time-delay distance for the given cosmology). The units are given in arcsecond square.
 
@@ -111,6 +111,8 @@ class LensModel(object):
 
     def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
         """
+        Arrival time of images relative to a straight line without lensing.
+        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
 
         :param x_image: image position
         :param y_image: image position

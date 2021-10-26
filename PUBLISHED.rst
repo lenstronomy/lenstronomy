@@ -166,6 +166,8 @@ Automatized Lens Modeling
 * Hierarchical Inference With Bayesian Neural Networks: An Application to Strong Gravitational Lensing; `Wagner-Carena et al. 2020 <https://arxiv.org/abs/2010.13787>`_
     *This work conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.*
 
+* A search for galaxy-scale strong gravitational lenses in the Ultraviolet Near Infrared Optical Northern Survey (UNIONS); `Savary et al. 2021 <https://arxiv.org/abs/2110.11972>`_
+    *Automated modeling of best candidates of ground based data.*
 
 
 

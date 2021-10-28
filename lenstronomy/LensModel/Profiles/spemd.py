@@ -223,7 +223,7 @@ class SPEMD(LensProfileBase):
         :param s2: square of smoothing scale of the core
         :return: bool of whether or not to let the fastell provide to be evaluated or instead return zero(s)
         """
-        if q_fastell < 0 or q > 1 or q < 0.01 or gam > 0.999 or gam < 0.001 or \
+        if q_fastell <= 0 or q > 1 or q < 0.01 or gam > 0.999 or gam < 0.001 or \
                 not np.isfinite(q_fastell):
             return False
         return True

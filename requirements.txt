@@ -15,6 +15,7 @@ h5py
 scikit-image
 pyyaml
 pyxdg
+docutils<0.18  # this is for a recent change in sphinx/readthedocs
 
 #schwimmbad==0.3.0
 -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad

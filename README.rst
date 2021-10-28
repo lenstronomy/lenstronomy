@@ -6,8 +6,8 @@ lenstronomy - gravitational lensing software package
 .. image:: https://badge.fury.io/py/lenstronomy.png
     :target: https://badge.fury.io/py/lenstronomy
 
-.. image:: https://app.travis-ci.com/sibirrer/lenstronomy.svg?branch=main
-        :target: https://travis-ci.com/github/sibirrer/lenstronomy
+.. image:: https://github.com/sibirrer/lenstronomy/workflows/ci_test/badge.svg
+    :target: https://github.com/sibirrer/lenstronomy/actions
 
 .. image:: https://readthedocs.org/projects/lenstronomy/badge/?version=latest
         :target: http://lenstronomy.readthedocs.io/en/latest/?badge=latest

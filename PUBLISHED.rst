@@ -87,6 +87,9 @@ Measuring the Hubble constant
 * AI-driven spatio-temporal engine for finding gravitationally lensed supernovae `Ramanah et al. 2021 <https://arxiv.org/abs/2107.12399>`_
     *Simulated images with time series of lensed supernovae.*
 
+* Systematic errors induced by the elliptical power-law model in galaxy-galaxy strong lens modeling `Cao et al. 2021 <https://arxiv.org/abs/2110.14554>`_
+    *Computing lensing quantities from mass maps.*
+
 
 
 Dark Matter substructure

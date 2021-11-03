@@ -97,7 +97,7 @@ class SPEMD(LensProfileBase):
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
             f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s2)
         else:
-            f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
+            f_x_prim, f_y_prim = np.zeros_like(x1), np.zeros_like(x1)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
 
@@ -209,7 +209,7 @@ class SPEMD(LensProfileBase):
         """
         sets bounds to parameters due to numerical stability
 
-        FASTELL has the following defintions:
+        FASTELL has the following definitons:
         The parameters are position (x1,x2), overall factor
         (q), power (gam), axis ratio (arat) which is <=1, core radius
         squared (s2), and the output potential (phi).

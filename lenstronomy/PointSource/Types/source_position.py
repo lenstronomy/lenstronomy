@@ -1,5 +1,5 @@
 import numpy as np
-from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array
+from lenstronomy.PointSource.Types.base_ps import PSBase, _expand_to_array, _shrink_array
 
 __all__ = ['SourcePositions']
 
@@ -77,6 +77,9 @@ class SourcePositions(PSBase):
             point_amp = kwargs_ps['point_amp']
             if x_pos is not None:
                 point_amp = _expand_to_array(point_amp, len(x_pos))
+        mag_pert = kwargs_ps.get('mag_pert', 1)
+        mag_pert = _shrink_array(mag_pert, len(point_amp))
+        point_amp *= mag_pert
         return np.array(point_amp)
 
     def source_amplitude(self, kwargs_ps, kwargs_lens=None):

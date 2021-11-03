@@ -94,3 +94,18 @@ def _expand_to_array(array, num):
         return out
     else:
         return array
+
+
+def _shrink_array(array, num):
+    """
+    
+    """
+    if np.isscalar(array):
+        return array
+    elif len(array) > num:
+        array_return = array[:num]
+        return array_return
+    elif len(array) < num:
+        raise ValueError("the length of the array (%s) needs to be larger or equal than the designated length %s " % (len(array), num))
+    else: 
+        return array

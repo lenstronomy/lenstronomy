@@ -124,7 +124,7 @@ class TestLensModelExtensions(object):
                                                                       cosmo=self.cosmo, axis_ratio=0)
         mag_adaptive_grid_3 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                       source_fwhm_parsec, z_source,
-                                                                      cosmo=self.cosmo, axis_ratio=0)
+                                                                      cosmo=self.cosmo, axis_ratio=1)
 
         flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2 / max(mag_adaptive_grid_2)
         flux_ratios_adaptive_grid_3 = mag_adaptive_grid_3 / max(mag_adaptive_grid_3)

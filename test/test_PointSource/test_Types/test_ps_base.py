@@ -45,13 +45,24 @@ class TestUtil(object):
         assert len(array_out) == num
         assert array_out[1] == 1
 
-    def test_shrink_arra(self):
+    def test_shrink_array(self):
 
         from lenstronomy.PointSource.Types.base_ps import _shrink_array
         array = [1, 2, 3]
         num = 2
         array_out = _shrink_array(array, num)
         assert len(array_out) == num
+        assert array_out[1] == 2
+
+        array = 1
+        num = 3
+        array_out = _shrink_array(array, num)
+        assert array_out == array
+
+        array = [1]
+        num = 2
+        with pytest.raises(ValueError):
+            _shrink_array(array, num)
 
 
 

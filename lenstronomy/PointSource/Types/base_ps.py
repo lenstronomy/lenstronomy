@@ -98,7 +98,9 @@ def _expand_to_array(array, num):
 
 def _shrink_array(array, num):
     """
-    
+    :param array: float/int or numpy array
+    :param num: number of array entries expected in array
+    :return: array of size num, or scalar if array is a scalar
     """
     if np.isscalar(array):
         return array

@@ -106,24 +106,27 @@ class LensModelExtensions(object):
 
         for xi, yi in zip(x_image, y_image):
 
-            w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
-            _v = [np.array([v11, v12]), np.array([v21, v22])]
-            _w = [abs(w1), abs(w2)]
-            if use_largest_eigenvalue:
-                idx = int(np.argmax(_w))
+            if axis_ratio == 1:
+                grid_r = np.hypot(grid_x_0, grid_y_0)
             else:
-                idx = int(np.argmin(_w))
-            v = _v[idx]
+                w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
+                _v = [np.array([v11, v12]), np.array([v21, v22])]
+                _w = [abs(w1), abs(w2)]
+                if use_largest_eigenvalue:
+                    idx = int(np.argmax(_w))
+                else:
+                    idx = int(np.argmin(_w))
+                v = _v[idx]
 
-            rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
-            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
+                rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
+                grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
 
-            if axis_ratio == 0:
-                sort = np.argsort(_w)
-                q = _w[sort[0]] / _w[sort[1]]
-                grid_r = np.hypot(grid_x, grid_y / q).ravel()
-            else:
-                grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
+                if axis_ratio == 0:
+                    sort = np.argsort(_w)
+                    q = _w[sort[0]] / _w[sort[1]]
+                    grid_r = np.hypot(grid_x, grid_y / q).ravel()
+                else:
+                    grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
 
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec

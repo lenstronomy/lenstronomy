@@ -59,7 +59,6 @@ class PSF(object):
         if psf_error_map is not None:
             n_kernel = len(self.kernel_point_source)
             self._psf_error_map = kernel_util.match_kernel_size(psf_error_map, n_kernel)
-            self._psf_error_map = psf_error_map
             if self.psf_type == 'PIXEL' and point_source_supersampling_factor > 1:
                 if len(psf_error_map) == len(self._kernel_point_source_supersampled):
                     Warning('psf_error_map has the same size as the super-sampled kernel. Make sure the units in the'

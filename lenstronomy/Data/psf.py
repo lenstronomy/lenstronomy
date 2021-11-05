@@ -23,7 +23,8 @@ class PSF(object):
         :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
-        :param psf_error_map: uncertainty in the PSF model. Same shape as point source kernel.
+        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not supersampled). 2d numpy array.
+        Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
         This error will be added to the pixel error around the position of point sources as follows:
         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
         :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source
@@ -55,11 +56,14 @@ class PSF(object):
             self._kernel_point_source[1, 1] = 1
         else:
             raise ValueError("psf_type %s not supported!" % self.psf_type)
+        n_kernel = len(self._kernel_point_source)
         if psf_error_map is not None:
+            self._psf_error_map = kernel_util.match_kernel_size(psf_error_map, n_kernel)
             self._psf_error_map = psf_error_map
-            if self.psf_type == 'PIXEL':
-                if len(self._psf_error_map) != len(self._kernel_point_source):
-                    raise ValueError('psf_error_map must have same size as kernel_point_source!')
+            if self.psf_type == 'PIXEL' and point_source_supersampling_factor > 1:
+                if len(psf_error_map) == len(self._kernel_point_source_supersampled):
+                    Warning('psf_error_map has the same size as the super-sampled kernel. Make sure the units in the'
+                            'psf_error_map are on the down-sampled pixel scale.')
             self.psf_error_map_bool = True
         else:
             self.psf_error_map_bool = False

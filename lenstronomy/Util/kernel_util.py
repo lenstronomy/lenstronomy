@@ -435,7 +435,7 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     #data_center = int((numPix-1.)/2)
     x_int = int(round(x_pos-0.49999))#+data_center
     y_int = int(round(y_pos-0.49999))#+data_center
-    # TODO: make amplitude estimate not sucecible to rounding effects on which pixels to chose to estimate the amplitude
+    # TODO: make amplitude estimate not sucebtible to rounding effects on which pixels to chose to estimate the amplitude
     if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
         mean_image = max(np.sum(data[y_int - 2:y_int+3, x_int-2:x_int+3]), 0)
         num = len(psf_kernel)
@@ -465,3 +465,24 @@ def mge_kernel(kernel, order=5):
     amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
     return amps, sigmas, norm
 
+
+@export
+def match_kernel_size(image, size):
+    """
+    matching kernel/image to a dedicated size by either expanding the image with zeros at the edges or chopping of the
+    edges.
+
+    :param image: 2d array (square with odd number of pixels)
+    :param size: integer (odd number)
+    :return: image with matched size, either by cutting or by adding zeros in the outskirts
+    """
+    n = len(image)
+    if n == size:
+        return image
+    image_copy = copy.deepcopy(image)
+    if n > size:
+        return image_copy[int((n-size)/2): int(n - (n-size)/2), int((n-size)/2): int(n - (n-size)/2)]
+    else:
+        image_add = np.zeros((size, size))
+        image_add[int((size - n)/2): int(size - (size - n)/2), int((size - n)/2): int(size - (size - n)/2)] = image_copy
+        return image_add

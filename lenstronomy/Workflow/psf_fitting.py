@@ -77,7 +77,9 @@ class PsfFitting(object):
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
-        kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source']}
+        point_source_supersampling_factor = kwargs_psf_copy.get('point_source_supersampling_factor', 1)
+        kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
+                          'point_source_supersampling_factor': point_source_supersampling_factor}
         if 'psf_error_map' in kwargs_psf_copy:
             kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
@@ -98,8 +100,15 @@ class PsfFitting(object):
                                             error_map_radius=error_map_radius,
                                             block_center_neighbour=block_center_neighbour_error_map)
 
+        if point_source_supersampling_factor > 1:
+            #TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
+            # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
+            # optimal and should be changed in the future that the corrections of the super-sampled version is done
+            # rather than constraining a totally new PSF first
+            kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor, odd=True,
+                                                    num_iter=10)
         kwargs_psf_new['kernel_point_source'] = kernel_new
-        kwargs_psf_new['point_source_supersampling_factor'] = 1
+        #kwargs_psf_new['point_source_supersampling_factor'] = 1
         if 'psf_error_map' in kwargs_psf_new:
             kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))

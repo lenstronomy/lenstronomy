@@ -464,3 +464,4 @@ def mge_kernel(kernel, order=5):
     r_array = np.linspace(start=0., stop=n_r - 1, num=n_r)
     amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
     return amps, sigmas, norm
+

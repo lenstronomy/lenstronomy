@@ -56,8 +56,8 @@ class PSF(object):
             self._kernel_point_source[1, 1] = 1
         else:
             raise ValueError("psf_type %s not supported!" % self.psf_type)
-        n_kernel = len(self._kernel_point_source)
         if psf_error_map is not None:
+            n_kernel = len(self.kernel_point_source)
             self._psf_error_map = kernel_util.match_kernel_size(psf_error_map, n_kernel)
             self._psf_error_map = psf_error_map
             if self.psf_type == 'PIXEL' and point_source_supersampling_factor > 1:
@@ -72,7 +72,7 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):
             if self.psf_type == 'GAUSSIAN':
-                kernel_num_pix = round(self._truncation * self._fwhm / self._pixel_size)
+                kernel_num_pix = min(round(self._truncation * self._fwhm / self._pixel_size), 201)
                 if kernel_num_pix % 2 == 0:
                     kernel_num_pix += 1
                 self._kernel_point_source = kernel_util.kernel_gaussian(kernel_num_pix, self._pixel_size, self._fwhm)

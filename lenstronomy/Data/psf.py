@@ -23,7 +23,7 @@ class PSF(object):
         :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)
         :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source
          (if not normalized, will be normalized)
-        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not supersampled). 2d numpy array.
+        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.
         Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.
         This error will be added to the pixel error around the position of point sources as follows:
         sigma^2_i += 'psf_error_map'_j * (point_source_flux_i)**2
@@ -72,10 +72,10 @@ class PSF(object):
     def kernel_point_source(self):
         if not hasattr(self, '_kernel_point_source'):
             if self.psf_type == 'GAUSSIAN':
-                kernel_numPix = round(self._truncation * self._fwhm / self._pixel_size)
-                if kernel_numPix % 2 == 0:
-                    kernel_numPix += 1
-                self._kernel_point_source = kernel_util.kernel_gaussian(kernel_numPix, self._pixel_size, self._fwhm)
+                kernel_num_pix = round(self._truncation * self._fwhm / self._pixel_size)
+                if kernel_num_pix % 2 == 0:
+                    kernel_num_pix += 1
+                self._kernel_point_source = kernel_util.kernel_gaussian(kernel_num_pix, self._pixel_size, self._fwhm)
         return self._kernel_point_source
 
     @property

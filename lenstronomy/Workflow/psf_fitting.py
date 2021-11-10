@@ -79,8 +79,7 @@ class PsfFitting(object):
         self._image_model_class.update_psf(psf_class)
 
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
-        kernel_old = kwargs_psf_copy['kernel_point_source']
-        kernel_size = len(kernel_old)
+
         point_source_supersampling_factor = kwargs_psf_copy.get('point_source_supersampling_factor', 1)
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
                           'point_source_supersampling_factor': point_source_supersampling_factor}
@@ -94,9 +93,38 @@ class PsfFitting(object):
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
 
         if full_update:
-            #TODO make psf_kernel_list return be supersampled
-            #TODO: make sure kernel_size high res and low res are known
-            psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list,
+            kernel_old = psf_class.kernel_point_source
+            kernel_size = len(kernel_old)
+            psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_,
+                                                                image_single_point_source_list,
+                                                                kernel_size, kernel_old,
+                                                                block_center_neighbour=block_center_neighbour)
+
+            kernel_new = self.combine_psf(psf_kernel_list, kernel_old, factor=psf_iter_factor,
+                                          stacking_option=stacking_method, symmetry=psf_symmetry)
+            kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
+            error_map = self.error_map_estimate(kernel_new, star_cutout_list, amp, x_, y_,
+                                                error_map_radius=error_map_radius,
+                                                block_center_neighbour=block_center_neighbour_error_map)
+
+            if point_source_supersampling_factor > 1:
+                # TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
+                # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
+                # optimal and should be changed in the future that the corrections of the super-sampled version is done
+                # rather than constraining a totally new PSF first
+                kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor,
+                                                        odd=True,
+                                                        num_iter=10)
+
+
+        else:
+            kernel_old = kwargs_psf_copy['kernel_point_source']
+            kernel_size = len(kernel_old)
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
+            # TODO make psf_kernel_list return be supersampled
+            # TODO: make sure kernel_size high res and low res are known
+            psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_,
+                                                                image_single_point_source_list,
                                                                 kernel_size, kernel_old,
                                                                 block_center_neighbour=block_center_neighbour)
 
@@ -112,21 +140,17 @@ class PsfFitting(object):
                                                 block_center_neighbour=block_center_neighbour_error_map)
 
             if point_source_supersampling_factor > 1:
-                #TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
+                # TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
                 # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
                 # optimal and should be changed in the future that the corrections of the super-sampled version is done
                 # rather than constraining a totally new PSF first
-                kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor, odd=True,
+                kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor,
+                                                        odd=True,
                                                         num_iter=10)
-        else:
-            kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
-            psf_kernel_residual_list, star_cutout_list = self.cutout_psf_residuals(ra_image, dec_image, x_, y_,
-                                                                image_single_point_source_list,
-                                                                kernel_size, kernel_old,
-                                                                block_center_neighbour=block_center_neighbour)
             # enhance residual resolution
 
-            kernel_new = kernel_old
+
+
         kwargs_psf_new['kernel_point_source'] = kernel_new
         #kwargs_psf_new['point_source_supersampling_factor'] = 1
         if 'psf_error_map' in kwargs_psf_new:

@@ -75,6 +75,12 @@ class ImageModel(object):
             self.source_mapping = None  # handled with pixelated operator
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
+            
+        self._pb = data_class.give_pb()
+        if self._pb is not None:
+            self._pb_lin = util.image2array(self._pb)
+        else:
+            self._pb_lin = None
 
     def reset_point_source_cache(self, bool=True):
         """
@@ -147,6 +153,11 @@ class ImageModel(object):
             source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
             source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
                                                         kwargs_special=kwargs_special)
+        
+        #add primary beam before convolution
+        if self._pb is not None:
+            source_light *= self._pb_lin
+      
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)
         return source_light_final
 
@@ -204,6 +215,11 @@ class ImageModel(object):
         """
         ra_grid, dec_grid = self.ImageNumerics.coordinates_evaluate
         lens_light = self.LensLightModel.surface_brightness(ra_grid, dec_grid, kwargs_lens_light, k=k)
+              
+        #add primary beam before convolution
+        if self._pb is not None:
+            lens_light *= self._pb_lin
+        
         lens_light_final = self.ImageNumerics.re_size_convolve(lens_light, unconvolved=unconvolved)
         return lens_light_final
 

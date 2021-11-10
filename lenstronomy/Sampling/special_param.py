@@ -23,7 +23,7 @@ class SpecialParam(object):
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
         :param num_images: number of point source images such that the point source offset parameters match their numbers
-        :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood.
+        :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param num_z_sampling: integer, number of different lens redshifts to be sampled
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates.
@@ -190,7 +190,7 @@ class SpecialParam(object):
     def num_param(self):
         """
 
-        :return: integer, number of free parameters sampled (and managed) by this class
+        :return: integer, number of free parameters sampled (and managed) by this class, parameter names (list of strings)
         """
         num = 0
         string_list = []

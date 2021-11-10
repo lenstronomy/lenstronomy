@@ -89,7 +89,7 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, **kwargs):
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, *args, **kwargs):
     """
     plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
     corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
@@ -115,10 +115,10 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
     if isinstance(line_set_list_x, list):
         for i in range(len(line_set_list_x)):
             x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
-            ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], **kwargs)  # ',', color=color)
+            ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
-        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], **kwargs)  # ',', color=color)
+        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
     return ax
 
 

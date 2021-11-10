@@ -1,5 +1,8 @@
 import numpy as np
+import lenstronomy.Util.util as util
 
+
+import matplotlib.pyplot as plt
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.image_noise import ImageNoise
 
@@ -38,7 +41,8 @@ class ImageData(PixelGrid, ImageNoise):
 
     """
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None, gradient_boost_factor=None,
-                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0):
+                 ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
+                 eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,primary_beam=None,pb_post=None,marg=True):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -54,12 +58,57 @@ class ImageData(PixelGrid, ImageNoise):
         :param ra_shift: RA shift of pixel grid
         :param dec_shift: DEC shift of pixel grid
         """
+        
+        """
+        eigen_vector_set: 2d np array, eg. eigen_vector_set[0] is the 0th eigen vector
+        eigen_value_set: 
+            1d np array with entries in a descending sequence,eg. eigen_value_set[0] is the eigenvalue corresponds to eigen_vector_set[0]
+            the eigen values are square of rms.
+        num_of_modes: a number, the number of modes contributing to the likelihood
+        primary_beam: 2d np array, the primary beam. It should be in the same size of image_data
+        marg: bool variable, if True, then the sampling will do the marginalisation over linear parameters
+        """
+        
         nx, ny = np.shape(image_data)
         if transform_pix2angle is None:
             transform_pix2angle = np.array([[1, 0], [0, 1]])
-        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift)
+        PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,primary_beam=None,pb_post=None,marg=True)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
-                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False)
+                            noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,
+                            eigen_vector_set=None,eigen_value_set=None,num_of_modes=None)
+        dim=nx*ny
+        
+        self._eigen_vector_set=eigen_vector_set
+        self._eigen_value_set=eigen_value_set
+        if eigen_vector_set is not None and eigen_value_set is not None:
+            nv,lv=np.shape(eigen_vector_set)
+            if lv != dim:
+                raise ValueError("The inputed eigenvectors should have the same dimension with the data!")
+            if num_of_modes is None:
+                self._num_of_modes=nv
+            elif num_of_modes > nv:
+                self._num_of_modes=nv
+            else:
+                self._num_of_modes=num_of_modes
+        
+        self._marg=marg
+        self._pb=primary_beam
+        self._pb_post=pb_post
+        if primary_beam is not None:
+            pbx,pby=np.shape(primary_beam)
+            if (pbx,pby) != (nx,ny):
+                raise ValueError("The inputed primary beam should be in the same size of the data!")
+        
+        if pb_post is not None:
+            pbpx,pbpy=np.shape(pb_post)
+            if (pbpx,pbpy) != (nx,ny):
+                raise ValueError("The inputed primary beam should be in the same size of the data!")
+    
+    def check_marg(self):
+        return self._marg
+    
+    def give_pb(self):
+        return self._pb
 
     def update_data(self, image_data):
         """
@@ -97,8 +146,24 @@ class ImageData(PixelGrid, ImageNoise):
             This can e.g. come from model errors in the PSF estimation.
         :return: the natural logarithm of the likelihood p(data|model)
         """
-        C_D = self.C_D_model(model)
-        X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
-        X2 = np.array(X2)
-        logL = - np.sum(X2) / 2
-        return logL
+        
+        
+        if self._pb_post is not None:
+            model *= self._pb_post
+        
+    
+        if self._eigen_vector_set is None or self._eigen_value_set is None:
+            C_D = self.C_D_model(model)
+            X2 = (model - self._data) ** 2 / (C_D + np.abs(additional_error_map)) * mask
+            X2 = np.array(X2)
+            logL = - np.sum(X2) / 2
+            return logL
+        else:
+            dchi2 = np.zeros(self._num_of_modes)
+            for i in range(self._num_of_modes):
+                coefficient = np.sum((util.image2array(model - self._data)) * self._eigen_vector_set[i])
+                dchi2[i] = coefficient * coefficient / self._eigen_value_set[i]
+            logL = - 0.5 * np.sum(dchi2)
+            return logL
+                
+            

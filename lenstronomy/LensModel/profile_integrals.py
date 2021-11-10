@@ -19,18 +19,24 @@ class ProfileIntegrals(object):
         """
         self._profile = profile_class
 
-    def mass_enclosed_3d(self, r, kwargs_profile):
+    def mass_enclosed_3d(self, r, kwargs_profile, lens_param=False):
         """
         computes the mass enclosed within a sphere of radius r
+
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
+        :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention
+         and the return is the convergence
         :return: 3d mass enclosed of r
         """
         kwargs = copy.deepcopy(kwargs_profile)
         kwargs.pop('center_x', None)
         kwargs.pop('center_y', None)
         # integral of self._profile.density(x)* 4*np.pi * x^2 *dx, 0,r
-        out = integrate.quad(lambda x: self._profile.density(x, **kwargs)*4*np.pi*x**2, 0, r)
+        if lens_param is True:
+            out = integrate.quad(lambda x: self._profile.density_lens(x, **kwargs) * 4 * np.pi * x ** 2, 0, r)
+        else:
+            out = integrate.quad(lambda x: self._profile.density(x, **kwargs)*4*np.pi*x**2, 0, r)
         return out[0]
 
     def density_2d(self, r, kwargs_profile, lens_param=False):

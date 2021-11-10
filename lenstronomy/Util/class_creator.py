@@ -12,6 +12,7 @@ export, __all__ = exporter()
 
 @export
 def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
+                           kwargs_interp=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=[],
                            lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
                            flux_from_point_source_list=None,
@@ -21,7 +22,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            index_lens_light_model_list=None, index_point_source_model_list=None,
                            optical_depth_model_list=[], index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
-                           surface_brightness_smoothing=0.001):
+                           surface_brightness_smoothing=0.001, sersic_major_axis=None):
     """
 
     :param lens_model_list: list of strings indicating the type of lens models
@@ -29,6 +30,8 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
     :param lens_redshift_list:
     :param multi_plane:
+    :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+     See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
     :param source_light_model_list:
     :param lens_light_model_list:
@@ -57,6 +60,9 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     :param point_source_magnification_limit: float >0 or None, if set and additional images are computed, then it will cut the point sources computed to the limiting (absolute) magnification
     :param surface_brightness_smoothing: float, smoothing scale of light profile (minimal distance to the center of a profile)
      this can help to avoid inaccuracies in the very center of a cuspy light profile
+    :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
+     half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
+     convention in the lenstronomy yaml setting (which by default is =False)
     :return:
     """
     if index_lens_model_list is None or all_models is True:
@@ -81,7 +87,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
     lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
-                                 observed_convention_index=observed_convention_index_i)
+                                 observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
 
     if index_source_light_model_list is None or all_models is True:
         source_light_model_list_i = source_light_model_list
@@ -99,13 +105,15 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
             source_redshift_list_i = [source_redshift_list[k] for k in index_source_light_model_list[band_index]]
     source_model_class = LightModel(light_model_list=source_light_model_list_i,
                                     deflection_scaling_list=source_deflection_scaling_list_i,
-                                    source_redshift_list=source_redshift_list_i, smoothing=surface_brightness_smoothing)
+                                    source_redshift_list=source_redshift_list_i, smoothing=surface_brightness_smoothing,
+                                    sersic_major_axis=sersic_major_axis)
 
     if index_lens_light_model_list is None or all_models is True:
         lens_light_model_list_i = lens_light_model_list
     else:
         lens_light_model_list_i = [lens_light_model_list[k] for k in index_lens_light_model_list[band_index]]
-    lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i, smoothing=surface_brightness_smoothing)
+    lens_light_model_class = LightModel(light_model_list=lens_light_model_list_i,
+                                        smoothing=surface_brightness_smoothing, sersic_major_axis=sersic_major_axis)
 
     point_source_model_list_i = point_source_model_list
     fixed_magnification_list_i = fixed_magnification_list
@@ -139,11 +147,10 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
 def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, likelihood_mask=None):
     """
 
-    :param kwargs_data:
-    :param kwargs_psf:
-    :param kwargs_model:
-    :param kwargs_model_indexes:
-    :return:
+    :param kwargs_data: ImageData keyword arguments
+    :param kwargs_psf: PSF keyword arguments
+    :param kwargs_model: model keyword arguments
+    :return: ImageLinearFit() instance
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)

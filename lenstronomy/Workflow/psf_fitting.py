@@ -45,7 +45,8 @@ class PsfFitting(object):
         self._image_model_class = image_model_class
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
-                   block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None):
+                   block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
+                   full_update=True):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -67,6 +68,9 @@ class PsfFitting(object):
         :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
          (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered
          (unless blocked through other means)
+        :param full_update: boolean, if True, performs an updated PSF estimate based on the new proposal PSF
+         (only works properly without supersampling). If False, computes a difference map and updates the difference map
+          to the previous PSF (works with supersampled PSF)
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -74,9 +78,9 @@ class PsfFitting(object):
         psf_class = PSF(**kwargs_psf)
         self._image_model_class.update_psf(psf_class)
 
-        kernel_old = psf_class.kernel_point_source
-        kernel_size = len(kernel_old)
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
+        kernel_old = kwargs_psf_copy['kernel_point_source']
+        kernel_size = len(kernel_old)
         point_source_supersampling_factor = kwargs_psf_copy.get('point_source_supersampling_factor', 1)
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
                           'point_source_supersampling_factor': point_source_supersampling_factor}
@@ -89,24 +93,40 @@ class PsfFitting(object):
         ra_image, dec_image, amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
         x_, y_ = self._image_model_class.Data.map_coord2pix(ra_image, dec_image)
 
-        psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list,
-                                                            kernel_size, kernel_old,
-                                                            block_center_neighbour=block_center_neighbour)
+        if full_update:
+            #TODO make psf_kernel_list return be supersampled
+            #TODO: make sure kernel_size high res and low res are known
+            psf_kernel_list, star_cutout_list = self.cutout_psf(ra_image, dec_image, x_, y_, image_single_point_source_list,
+                                                                kernel_size, kernel_old,
+                                                                block_center_neighbour=block_center_neighbour)
 
-        kernel_new = self.combine_psf(psf_kernel_list, kernel_old, factor=psf_iter_factor,
-                                      stacking_option=stacking_method, symmetry=psf_symmetry)
-        kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
-        error_map = self.error_map_estimate(kernel_new, star_cutout_list, amp, x_, y_,
-                                            error_map_radius=error_map_radius,
-                                            block_center_neighbour=block_center_neighbour_error_map)
+            kernel_new = self.combine_psf(psf_kernel_list, kernel_old, factor=psf_iter_factor,
+                                          stacking_option=stacking_method, symmetry=psf_symmetry)
+            kernel_new = kernel_util.cut_psf(kernel_new, psf_size=kernel_size)
 
-        if point_source_supersampling_factor > 1:
-            #TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
-            # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
-            # optimal and should be changed in the future that the corrections of the super-sampled version is done
-            # rather than constraining a totally new PSF first
-            kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor, odd=True,
-                                                    num_iter=10)
+            # resize kernel for error_map estimate
+            kernel_new_low = kernel_util.degrade_kernel(kernel_new, point_source_supersampling_factor)
+            # compute error map on pixel level
+            error_map = self.error_map_estimate(kernel_new_low, star_cutout_list, amp, x_, y_,
+                                                error_map_radius=error_map_radius,
+                                                block_center_neighbour=block_center_neighbour_error_map)
+
+            if point_source_supersampling_factor > 1:
+                #TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
+                # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
+                # optimal and should be changed in the future that the corrections of the super-sampled version is done
+                # rather than constraining a totally new PSF first
+                kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor, odd=True,
+                                                        num_iter=10)
+        else:
+            kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
+            psf_kernel_residual_list, star_cutout_list = self.cutout_psf_residuals(ra_image, dec_image, x_, y_,
+                                                                image_single_point_source_list,
+                                                                kernel_size, kernel_old,
+                                                                block_center_neighbour=block_center_neighbour)
+            # enhance residual resolution
+
+            kernel_new = kernel_old
         kwargs_psf_new['kernel_point_source'] = kernel_new
         #kwargs_psf_new['point_source_supersampling_factor'] = 1
         if 'psf_error_map' in kwargs_psf_new:
@@ -205,14 +225,20 @@ class PsfFitting(object):
             point_list.append(point_source)
         return point_list
 
-    def cutout_psf(self, ra_image, dec_image, x, y, image_list, kernelsize, kernel_init, block_center_neighbour=0):
+    def cutout_psf(self, ra_image, dec_image, x, y, image_list, kernel_size, kernel_init, block_center_neighbour=0):
         """
 
-        :param x_:
-        :param y_:
+        :param ra_image: coordinate array of images in angles
+        :param dec_image: coordinate array of images in angles
+        :param x: image position array in x-pixel
+        :param y: image position array in y-pixel
         :param image_list: list of images (i.e. data - all models subtracted, except a single point source)
-        :param kernelsize:
-        :return:
+        :param kernel_size: width in pixel of the kernel
+        :param kernel_init: initial guess of kernel (pixels that are masked are replaced by those values)
+        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates
+         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might
+         contaminate the estimate.
+        :return: list of de-shifted kernel estimates, cutouts of point sources of the size of the kernel
         """
         mask = self._image_model_class.likelihood_mask
         ra_grid, dec_grid = self._image_model_class.Data.pixel_coordinates
@@ -225,34 +251,34 @@ class PsfFitting(object):
         for l in range(len(x)):
             mask_point_source = self.mask_point_source(ra_image, dec_image, ra_grid, dec_grid, radius, i=l)
             mask_i = mask * mask_point_source
-            kernel_deshifted = self.cutout_psf_single(x[l], y[l], image_list[l], mask_i, kernelsize, kernel_init)
+            kernel_deshifted = self.cutout_psf_single(x[l], y[l], image_list[l], mask_i, kernel_size, kernel_init)
             kernel_list.append(kernel_deshifted)
             x_int = int(round(x[l]))
             y_int = int(round(y[l]))
-            star_cutout = kernel_util.cutout_source(x_int, y_int, image_list[l], kernelsize, shift=False)
+            star_cutout = kernel_util.cutout_source(x_int, y_int, image_list[l], kernel_size, shift=False)
             star_cutout_list.append(star_cutout)
         return kernel_list, star_cutout_list
 
     @staticmethod
-    def cutout_psf_single(x, y, image, mask, kernelsize, kernel_init):
+    def cutout_psf_single(x, y, image, mask, kernel_size, kernel_init):
         """
 
-        :param x: x-coordinate of point soure
+        :param x: x-coordinate of point source
         :param y: y-coordinate of point source
         :param image: image (i.e. data - all models subtracted, except a single point source)
         :param mask: mask of pixels in the image not to be considered in the PSF estimate (being replaced by kernel_init)
-        :param kernelsize: width in pixel of the kernel
+        :param kernel_size: width in pixel of the kernel
         :param kernel_init: initial guess of kernel (pixels that are masked are replaced by those values)
         :return: estimate of the PSF based on the image and position of the point source
         """
         # cutout the star
         x_int = int(round(x))
         y_int = int(round(y))
-        star_cutout = kernel_util.cutout_source(x_int, y_int, image, kernelsize + 2, shift=False)
+        star_cutout = kernel_util.cutout_source(x_int, y_int, image, kernel_size + 2, shift=False)
         # cutout the mask
-        mask_cutout = kernel_util.cutout_source(x_int, y_int, mask, kernelsize + 2, shift=False)
+        mask_cutout = kernel_util.cutout_source(x_int, y_int, mask, kernel_size + 2, shift=False)
         # enlarge the initial PSF kernel to the new cutout size
-        kernel_enlarged = np.zeros((kernelsize+2, kernelsize+2))
+        kernel_enlarged = np.zeros((kernel_size + 2, kernel_size + 2))
         kernel_enlarged[1:-1, 1:-1] = kernel_init
         # shift the initial kernel to the shift of the star
         shift_x = x_int - x
@@ -270,7 +296,7 @@ class PsfFitting(object):
         kernel_deshifted = kernel_util.de_shift_kernel(star_cutout, shift_x, shift_y, iterations=20,
                                                        fractional_step_size=0.1)
         # re-size kernel
-        kernel_deshifted = image_util.cut_edges(kernel_deshifted, kernelsize)
+        kernel_deshifted = image_util.cut_edges(kernel_deshifted, kernel_size)
         # re-normalize kernel again
         kernel_deshifted = kernel_util.kernel_norm(kernel_deshifted)
         return kernel_deshifted

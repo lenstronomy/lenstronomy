@@ -109,7 +109,7 @@ class LensModel(object):
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the '
                              'effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
+    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None):
         """
         Arrival time of images relative to a straight line without lensing.
         Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
@@ -119,12 +119,15 @@ class LensModel(object):
         :param kwargs_lens: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
          observables in position and relative fluxes but rescales the time delays
+        :param x_source: source position (optional), otherwise computed with ray-tracing
+        :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
         else:
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source=x_source,
+                                                          y_source=y_source)
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)

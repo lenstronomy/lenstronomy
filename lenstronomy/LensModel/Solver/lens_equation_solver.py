@@ -158,7 +158,6 @@ class LensEquationSolver(object):
             return self.image_position_stochastic(sourcePos_x, sourcePos_y, kwargs_lens, **kwargs)
         raise ValueError(f"{solver} is not a valid solver.")
 
-
     def image_position_lenstronomy(self, sourcePos_x, sourcePos_y, kwargs_lens, min_distance=0.1, search_window=10,
                                    precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
                                    initial_guess_cut=True, verbose=False, x_center=0, y_center=0, num_random=0,

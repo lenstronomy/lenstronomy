@@ -100,7 +100,7 @@ class PsfFitting(object):
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
-                   full_update=True):
+                   old_procedure=False):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -122,9 +122,7 @@ class PsfFitting(object):
         :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
          (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered
          (unless blocked through other means)
-        :param full_update: boolean, if True, performs an updated PSF estimate based on the new proposal PSF
-         (only works properly without supersampling). If False, computes a difference map and updates the difference map
-          to the previous PSF (works with supersampled PSF)
+        :param old_procedure: boolean, uses pre lenstronomy 1.9.2 procedure which is not optimal for super-sampled PSF's
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -149,7 +147,7 @@ class PsfFitting(object):
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
 
-        if full_update:
+        if old_procedure:
             image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_params)
             star_cutout_list = self.point_like_source_cutouts(x_pos=x_, y_pos=y_,
                                                               image_list=image_single_point_source_list,
@@ -165,7 +163,7 @@ class PsfFitting(object):
                                                 block_center_neighbour=block_center_neighbour_error_map)
 
             if point_source_supersampling_factor > 1:
-                # TODO: the current version of using a super-sampled PSF in the iterative reconstruction is to first
+                # The current version of using a super-sampled PSF in the iterative reconstruction is to first
                 # constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not
                 # optimal and should be changed in the future that the corrections of the super-sampled version is done
                 # rather than constraining a totally new PSF first

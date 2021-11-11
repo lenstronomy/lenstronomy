@@ -162,7 +162,6 @@ class TestPSFIteration(object):
         assert mask_point_source[10, 10] == 1
 
 
-
 class TestPSFIterationOld(object):
     """
     tests the source model routines
@@ -269,9 +268,11 @@ class TestPSFIterationOld(object):
         kernel_point_source = gaussian.function(x_grid, y_grid, amp=1., sigma=sigma, center_x=0, center_y=0)
         kernel_point_source /= np.sum(kernel_point_source)
         kernel_point_source = util.array2image(kernel_point_source)
-        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source,
+                      'kernel_point_source_init': kernel_point_source}
         kwargs_psf_iter = {'stacking_method': 'median', 'psf_symmetry': 2, 'psf_iter_factor': 0.2,
-                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5, 'old_procedure': True}
+                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5, 'old_procedure': True,
+                           'no_break': False, 'verbose': True, 'keep_psf_error_map': False}
 
         kwargs_params = copy.deepcopy(self.kwargs_params)
         kwargs_ps = kwargs_params['kwargs_ps']

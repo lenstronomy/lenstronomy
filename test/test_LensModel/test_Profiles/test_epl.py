@@ -5,9 +5,10 @@ import numpy as np
 import pytest
 import numpy.testing as npt
 import lenstronomy.Util.param_util as param_util
+from lenstronomy.Util import util
 
 
-class TestEPL(object):
+class TestEPLvsNIE(object):
     """
     tests the Gaussian methods
     """
@@ -122,6 +123,45 @@ class TestEPL(object):
         npt.assert_almost_equal(f_yy, 10**10)
         npt.assert_almost_equal(f_xy, 0)
         npt.assert_almost_equal(f_yx, 0)
+
+
+class TestEPLvsPEMD(object):
+    """
+    Test EPL model vs PEMD with FASTELL
+    This tests get only executed if fastell is installed
+    """
+    def setup(self):
+        try:
+            import fastell4py
+            self._fastell4py_bool = True
+        except:
+            print("Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!")
+            self._fastell4py_bool = False
+        from lenstronomy.LensModel.Profiles.epl import EPL
+        self.epl = EPL()
+        from lenstronomy.LensModel.Profiles.pemd import PEMD
+        self.pemd = PEMD()
+
+    def test_epl_pemd_convention(self):
+        """
+        tests convention of EPL and PEMD model on the deflection angle basis
+        """
+        if self._fastell4py_bool is False:
+            return 0
+        x, y = util.make_grid(numPix=10, deltapix=0.2)
+        theta_E_list = [0.5, 1, 2]
+        gamma_list = [1.8, 2., 2.2]
+        e1_list = [-0.2, 0., 0.2]
+        e2_list = [-0.2, 0., 0.2]
+        for gamma in gamma_list:
+            for e1 in e1_list:
+                for e2 in e2_list:
+                    for theta_E in theta_E_list:
+                        kwargs = {'theta_E': theta_E, 'gamma': gamma, 'e1': e1, 'e2': e2, 'center_x': 0, 'center_y': 0}
+                        f_x, f_y = self.epl.derivatives(x, y, **kwargs)
+                        f_x_pemd, f_y_pemd = self.pemd.derivatives(x, y, **kwargs)
+                        npt.assert_almost_equal(f_x, f_x_pemd, decimal=5)
+                        npt.assert_almost_equal(f_y, f_y_pemd, decimal=5)
 
 
 if __name__ == '__main__':

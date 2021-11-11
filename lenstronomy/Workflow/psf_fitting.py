@@ -100,7 +100,7 @@ class PsfFitting(object):
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
-                   old_procedure=False):
+                   new_procedure=False):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class
@@ -122,7 +122,7 @@ class PsfFitting(object):
         :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate
          (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered
          (unless blocked through other means)
-        :param old_procedure: boolean, uses pre lenstronomy 1.9.2 procedure which is not optimal for super-sampled PSF's
+        :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled PSF's
         :return: kwargs_psf_new, logL_after, error_map
         """
         if block_center_neighbour_error_map is None:
@@ -147,7 +147,7 @@ class PsfFitting(object):
         kernel_old = psf_class.kernel_point_source
         kernel_size = len(kernel_old)
 
-        if old_procedure:
+        if not new_procedure:
             image_single_point_source_list = self.image_single_point_source(self._image_model_class, kwargs_params)
             star_cutout_list = self.point_like_source_cutouts(x_pos=x_, y_pos=y_,
                                                               image_list=image_single_point_source_list,

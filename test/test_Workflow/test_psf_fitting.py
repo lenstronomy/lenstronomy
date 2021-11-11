@@ -102,7 +102,7 @@ class TestPSFIteration(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        kwargs_psf_iter = {'stacking_method': 'median', 'error_map_radius': 0.5}
+        kwargs_psf_iter = {'stacking_method': 'median', 'error_map_radius': 0.5, 'new_procedure': True}
 
         kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_params, **kwargs_psf_iter)
         assert improved_bool
@@ -124,7 +124,7 @@ class TestPSFIteration(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
         kwargs_psf_iter = {'stacking_method': 'median', 'psf_symmetry': 2, 'psf_iter_factor': 0.2,
-                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5}
+                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5, 'new_procedure': True}
 
         kwargs_params = copy.deepcopy(self.kwargs_params)
         kwargs_ps = kwargs_params['kwargs_ps']
@@ -248,7 +248,7 @@ class TestPSFIterationOld(object):
         kernel_point_source = util.array2image(kernel_point_source)
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source}
 
-        kwargs_psf_iter = {'stacking_method': 'median', 'error_map_radius': 0.5, 'old_procedure': True}
+        kwargs_psf_iter = {'stacking_method': 'median', 'error_map_radius': 0.5, 'new_procedure': False}
 
         kwargs_psf_return, improved_bool, error_map = self.psf_fitting.update_psf(kwargs_psf, self.kwargs_params, **kwargs_psf_iter)
         assert improved_bool
@@ -271,7 +271,7 @@ class TestPSFIterationOld(object):
         kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source,
                       'kernel_point_source_init': kernel_point_source}
         kwargs_psf_iter = {'stacking_method': 'median', 'psf_symmetry': 2, 'psf_iter_factor': 0.2,
-                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5, 'old_procedure': True,
+                           'block_center_neighbour': 0.1, 'error_map_radius': 0.5, 'new_procedure': False,
                            'no_break': False, 'verbose': True, 'keep_psf_error_map': False}
 
         kwargs_params = copy.deepcopy(self.kwargs_params)

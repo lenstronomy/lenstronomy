@@ -127,7 +127,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     plt.colorbar(im, cax=cax)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
+    ax.text(delta_x, n_kernel-delta_y, "Initial PSF model", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
     im = ax.matshow(np.log10(psf_out), origin='lower', **kwargs)

@@ -68,7 +68,7 @@ class EPL(LensProfileBase):
 
     def _param_conv(self, theta_E, gamma, e1, e2):
         """
-        convert parameters from :math:`R = r \sqrt{1 − e*cos(2*phi)}` to
+        convert parameters from :math:`R = \sqrt{q x^2 + y^2/q}` to
         :math:`R = \sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
@@ -77,11 +77,9 @@ class EPL(LensProfileBase):
         :param e2: eccentricity component
         :return: critical radius b, slope t, axis ratio q, orientation angle phi_G
         """
-
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        theta_E_conv = self._theta_E_q_convert(theta_E, q)
-        b = theta_E_conv * np.sqrt((1 + q**2)/2)
         t = gamma - 1
+        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
+        b = theta_E * np.sqrt(q)
         return b, t, q, phi_G
 
     def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
@@ -196,21 +194,6 @@ class EPL(LensProfileBase):
         f_yy = kappa - gamma1
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
-
-    def _theta_E_q_convert(self, theta_E, q):
-        """
-        converts a spherical averaged Einstein radius to an elliptical (major axis) Einstein radius.
-        This then follows the convention of the PEMD profile in lenstronomy.
-
-        .. math::
-            \\frac{\\theta_E}{\\theta_{E gravlens}}) = \\sqrt{(1+q^2) / (2 q)}
-
-        :param theta_E: Einstein radius in lenstronomy conventions
-        :param q: axis ratio minor/major
-        :return: theta_E in convention of kappa=  b *(q2(s2 + x2) + y2􏰉)−1/2
-        """
-        theta_E_new = theta_E / (np.sqrt((1.+q**2) / (2. * q)))
-        return theta_E_new
 
 
 class EPLMajorAxis(LensProfileBase):

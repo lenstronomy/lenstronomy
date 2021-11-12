@@ -9,7 +9,6 @@ __author__ = 'ajshajib'
 import numpy as np
 import abc
 from scipy.special import comb
-from future.utils import with_metaclass
 
 from lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa import GaussianEllipseKappa
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
@@ -198,7 +197,7 @@ class GaussianEllipseKappaSet(LensProfileBase):
 
 
 @export
-class GaussDecompositionAbstract(with_metaclass(abc.ABCMeta)):
+class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
     """
     This abstract class sets up a template for computing lensing properties of
     an elliptical convergence through Shajib (2019)'s Gauss decomposition.

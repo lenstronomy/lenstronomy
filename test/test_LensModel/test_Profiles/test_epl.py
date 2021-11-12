@@ -7,6 +7,13 @@ import numpy.testing as npt
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.Util import util
 
+try:
+    import fastell4py
+    fastell4py_bool = True
+except:
+    print("Warning: fastell4py not available, tests will be trivially fulfilled without giving the right answer!")
+    fastell4py_bool = False
+
 
 class TestEPLvsNIE(object):
     """
@@ -140,7 +147,7 @@ class TestEPLvsPEMD(object):
         from lenstronomy.LensModel.Profiles.epl import EPL
         self.epl = EPL()
         from lenstronomy.LensModel.Profiles.pemd import PEMD
-        self.pemd = PEMD()
+        self.pemd = PEMD(suppress_fastell=True)
 
     def test_epl_pemd_convention(self):
         """

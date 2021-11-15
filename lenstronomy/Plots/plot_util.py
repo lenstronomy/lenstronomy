@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from corner import quantile
 import matplotlib.pyplot as plt
 
 from lenstronomy.Util.package_util import exporter
@@ -191,6 +190,8 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     :param label: string of parameter label (optional)
     :return: string with mean \pm quartile
     """
+    from corner import quantile
+
     q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)
     q_m, q_p = q_50 - q_16, q_84 - q_50
 

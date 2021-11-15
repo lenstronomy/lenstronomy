@@ -1,6 +1,5 @@
 __author__ = 'sibirrer'
 
-import mpmath as mp
 import numpy as np
 
 from lenstronomy.Util.package_util import exporter
@@ -12,6 +11,8 @@ def hyp_2F1(a, b, c, z):
     """
     http://docs.sympy.org/0.7.1/modules/mpmath/functions/hypergeometric.html
     """
+    import mpmath as mp
+
     return mp.hyp2f1(a, b, c, z)
 
 

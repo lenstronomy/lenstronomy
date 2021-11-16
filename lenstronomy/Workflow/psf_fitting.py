@@ -76,10 +76,8 @@ class PsfFitting(object):
         logL_before = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
-        print(logL_before, 'logl_before')
         for i in range(num_iter):
             kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, **kwargs_psf_update)
-            print(logL_after, 'log_after')
 
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)

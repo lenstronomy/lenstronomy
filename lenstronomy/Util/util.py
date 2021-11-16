@@ -5,7 +5,6 @@ this file contains standard routines
 """
 
 import numpy as np
-import mpmath
 import itertools
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
@@ -566,6 +565,8 @@ def hyper2F2_array(a, b, c, d, x):
     :param x:
     :return:
     """
+    import mpmath
+
     if isinstance(x, int) or isinstance(x, float):
         out = mpmath.hyp2f2(a, b, c, d, x)
     else:

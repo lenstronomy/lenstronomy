@@ -76,8 +76,11 @@ class PsfFitting(object):
         logL_before = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         logL_best = copy.deepcopy(logL_before)
         i_best = 0
+        print(logL_before, 'logl_before')
         for i in range(num_iter):
             kwargs_psf_new, logL_after, error_map = self.update_psf(kwargs_psf_new, kwargs_params, **kwargs_psf_update)
+            print(logL_after, 'log_after')
+
             if logL_after > logL_best:
                 kwargs_psf_final = copy.deepcopy(kwargs_psf_new)
                 error_map_final = copy.deepcopy(error_map)
@@ -128,18 +131,17 @@ class PsfFitting(object):
         if block_center_neighbour_error_map is None:
             block_center_neighbour_error_map = block_center_neighbour
         psf_class = PSF(**kwargs_psf)
-        #self._image_model_class.update_psf(psf_class)
-
         kwargs_psf_copy = copy.deepcopy(kwargs_psf)
 
         point_source_supersampling_factor = kwargs_psf_copy.get('point_source_supersampling_factor', 1)
         kwargs_psf_new = {'psf_type': 'PIXEL', 'kernel_point_source': kwargs_psf_copy['kernel_point_source'],
-                          'point_source_supersampling_factor': point_source_supersampling_factor}
-        if 'psf_error_map' in kwargs_psf_copy:
-            kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
+                          'point_source_supersampling_factor': point_source_supersampling_factor,
+                          'psf_error_map': kwargs_psf_copy.get('psf_error_map', None)}
+        #if 'psf_error_map' in kwargs_psf_copy:
+        #    kwargs_psf_new['psf_error_map'] = kwargs_psf_copy['psf_error_map'] / 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
 
-        model, error_map, cov_param, param = self._image_model_class.image_linear_solve(**kwargs_params)
+        model, error_map_image, cov_param, param = self._image_model_class.image_linear_solve(**kwargs_params)
         kwargs_ps = kwargs_params.get('kwargs_ps', None)
         kwargs_lens = kwargs_params.get('kwargs_lens', None)
         ra_image, dec_image, point_amp = self._image_model_class.PointSource.point_source_list(kwargs_ps, kwargs_lens)
@@ -169,6 +171,9 @@ class PsfFitting(object):
                 # rather than constraining a totally new PSF first
                 kernel_new = kernel_util.subgrid_kernel(kernel_new, subgrid_res=point_source_supersampling_factor,
                                                         odd=True, num_iter=10)
+                # chop edges
+                n_kernel = len(kwargs_psf['kernel_point_source'])
+                kernel_new = kernel_util.cut_psf(kernel_new, psf_size=n_kernel)
 
         else:
             kernel_old_high_res = psf_class.kernel_point_source_supersampled(supersampling_factor=point_source_supersampling_factor)
@@ -193,8 +198,8 @@ class PsfFitting(object):
                                                     error_map_radius=error_map_radius)
 
         kwargs_psf_new['kernel_point_source'] = kernel_new
-        if 'psf_error_map' in kwargs_psf_new:
-            kwargs_psf_new['psf_error_map'] *= 10
+        #if 'psf_error_map' in kwargs_psf_new:
+        #    kwargs_psf_new['psf_error_map'] *= 10
         self._image_model_class.update_psf(PSF(**kwargs_psf_new))
         logL_after = self._image_model_class.likelihood_data_given_model(**kwargs_params)
         return kwargs_psf_new, logL_after, error_map
@@ -264,8 +269,8 @@ class PsfFitting(object):
             kernel_list.append(kernel_deshifted)
         return kernel_list
 
-    def psf_estimate_individual(self, ra_image, dec_image, point_amp, residuals, cutout_size, kernel_guess, supersampling_factor,
-                                block_center_neighbour):
+    def psf_estimate_individual(self, ra_image, dec_image, point_amp, residuals, cutout_size, kernel_guess,
+                                supersampling_factor, block_center_neighbour):
         """
 
         :param ra_image: list; position in angular units of the image
@@ -459,10 +464,10 @@ class PsfFitting(object):
 
             C_D_cutout = kernel_util.cutout_source(x_int, y_int, self._image_model_class.Data.C_D, len(kernel_low_i),
                                                    shift=False)
-            residuals_i = (kernel_low - kernel_low_i)**2
-            residuals_i -= C_D_cutout / amp_i**2
+            residuals_i = np.abs(kernel_low - kernel_low_i)
+            residuals_i -= np.sqrt(C_D_cutout) / amp_i
             residuals_i[residuals_i < 0] = 0
-            error_map_list[i, :, :] = residuals_i
+            error_map_list[i, :, :] = residuals_i**2
 
         error_map = np.median(error_map_list, axis=0)
         error_map[kernel_low > 0] /= kernel_low[kernel_low > 0] ** 2

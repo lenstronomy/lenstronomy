@@ -84,6 +84,10 @@ class FittingSequence(object):
                 self.fix_not_computed(**kwargs)
 
             elif fitting_type == 'psf_iteration':
+                #from lenstronomy.Sampling.Pool.pool import choose_pool
+                #pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
+                #if pool.is_master():
+                #    self.psf_iteration(**kwargs)
                 self.psf_iteration(**kwargs)
 
             elif fitting_type == 'align_images':

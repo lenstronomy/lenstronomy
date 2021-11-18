@@ -179,6 +179,7 @@ Automatized Lens Modeling
 Quasar-host galaxy decomposition
 --------------------------------
 
+
 * The mass relations between supermassive black holes and their host galaxies at 1<z<2 with HST-WFC3; `Ding et al. 2019 <https://arxiv.org/abs/1910.11875>`_
     *Quasar host galaxy decomposition at high redshift on HST imaging and marginalization over PSF uncertainties.*
 
@@ -198,6 +199,10 @@ Quasar-host galaxy decomposition
     *Quasar-host decomposition of SDSS quasars with HSC data*
 
 
+
+
+* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021 <https://arxiv.org/abs/2111.08721>`_
+    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
 
 

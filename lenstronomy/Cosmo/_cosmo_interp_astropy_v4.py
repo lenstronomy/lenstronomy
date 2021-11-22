@@ -2,7 +2,7 @@ import astropy
 if float(astropy.__version__[0]) < 5.0:
     from astropy.cosmology.core import vectorize_if_needed, isiterable
 else:
-    raise Warning('This routines are only supported for astropy version <5. Current version is %s.'
+    Warning('This routines are only supported for astropy version <5. Current version is %s.'
                   % astropy.__version__)
 #
 from scipy.integrate import quad

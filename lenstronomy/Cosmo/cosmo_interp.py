@@ -1,4 +1,5 @@
 from astropy.cosmology.core import vectorize_if_needed, isiterable
+# from astropy.cosmology.utils import vectorize_redshift_method
 from astropy import units
 from math import sqrt
 import numpy as np

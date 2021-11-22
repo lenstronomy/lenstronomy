@@ -1,6 +1,7 @@
 import astropy
 if float(astropy.__version__[0]) < 5.0:
-    raise ValueError('This routines are only supported for astropy version >=5. Current version is %s.' %astropy.__version__)
+    Warning('This routines are only supported for astropy version >=5. Current version is %s.'
+            % astropy.__version__)
 else:
     from astropy.cosmology.utils import vectorize_redshift_method, isiterable
 

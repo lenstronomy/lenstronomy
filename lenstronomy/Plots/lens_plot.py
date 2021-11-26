@@ -115,6 +115,7 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
      (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
+    :param args: argument for plotting curve
     :param kwargs: keyword arguments for plotting curves
     :return: updated matplotlib axis instance
     """
@@ -129,6 +130,13 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
             kwargs_lens, compute_window=frame_size, grid_scale=pixel_width, center_x=coord_center_ra,
             center_y=coord_center_dec)
     else:
+        # only supports individual points due to output of critical_curve_tiling definition
+        if 'linestyle' not in kwargs:
+            kwargs['linestyle'] = ""
+        if 'marker' not in kwargs:
+            kwargs['marker'] = "o"
+        if 'markersize' not in kwargs:
+            kwargs['markersize'] = 0.01
         ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(kwargs_lens, compute_window=frame_size,
                                                                          start_scale=pixel_width, max_order=10,
                                                                          center_x=coord_center_ra,

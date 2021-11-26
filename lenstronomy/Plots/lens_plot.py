@@ -142,8 +142,8 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
                                                                          center_x=coord_center_ra,
                                                                          center_y=coord_center_dec)
         ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        #ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
-        #ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
+        # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
+        # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
                             flipped_x=coord_inverse, *args, **kwargs)
     plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,

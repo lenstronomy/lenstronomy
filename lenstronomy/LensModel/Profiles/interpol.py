@@ -23,14 +23,19 @@ class Interpol(LensProfileBase):
     lower_limit_default = {}
     upper_limit_default = {}
 
-    def __init__(self, grid=False, min_grid_number=100):
+    def __init__(self, grid=False, min_grid_number=100, kwargs_spline=None):
         """
 
         :param grid: bool, if True, computes the calculation on a grid
-        :param min_grid_number: minimum numbers of positions to compute the interpolation on a grid
+        :param min_grid_number: minimum numbers of positions to compute the interpolation on a grid, otherwise in a loop
+        :param kwargs_spline: keyword arguments for the scipy.interpolate.RectBivariateSpline() interpolation (optional)
+         if =None, a default linear interpolation is chosen.
         """
         self._grid = grid
         self._min_grid_number = min_grid_number
+        if kwargs_spline is None:
+            kwargs_spline = {'kx': 1, 'ky': 1, 's': 0}
+        self._kwargs_spline = kwargs_spline
         super(Interpol, self).__init__()
 
     def function(self, x, y, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None, f_xx=None, f_yy=None,
@@ -163,44 +168,44 @@ class Interpol(LensProfileBase):
 
     def f_interp(self, x, y, x_grid=None, y_grid=None, f_=None, grid=False):
         if not hasattr(self, '_f_interp'):
-            self._f_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_, kx=1, ky=1, s=0)
+            self._f_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_, **self._kwargs_spline)
         return self._f_interp(y, x, grid=grid)
 
     def f_x_interp(self, x, y, x_grid=None, y_grid=None, f_x=None, grid=False):
         if not hasattr(self, '_f_x_interp'):
-            self._f_x_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_x, kx=1, ky=1, s=0)
+            self._f_x_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_x, **self._kwargs_spline)
         return self._f_x_interp(y, x, grid=grid)
 
     def f_y_interp(self, x, y, x_grid=None, y_grid=None, f_y=None, grid=False):
         if not hasattr(self, '_f_y_interp'):
-            self._f_y_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_y, kx=1, ky=1, s=0)
+            self._f_y_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_y, **self._kwargs_spline)
         return self._f_y_interp(y, x, grid=grid)
 
     def f_xx_interp(self, x, y, x_grid=None, y_grid=None, f_xx=None, grid=False):
         if not hasattr(self, '_f_xx_interp'):
-            self._f_xx_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xx, kx=1, ky=1, s=0)
+            self._f_xx_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xx, **self._kwargs_spline)
         return self._f_xx_interp(y, x, grid=grid)
 
     def f_xy_interp(self, x, y, x_grid=None, y_grid=None, f_xy=None, grid=False):
         if not hasattr(self, '_f_xy_interp'):
-            self._f_xy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xy, kx=1, ky=1, s=0)
+            self._f_xy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_xy, **self._kwargs_spline)
         return self._f_xy_interp(y, x, grid=grid)
 
     def f_yy_interp(self, x, y, x_grid=None, y_grid=None, f_yy=None, grid=False):
         if not hasattr(self, '_f_yy_interp'):
-            self._f_yy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_yy, kx=1, ky=1, s=0)
+            self._f_yy_interp = scipy.interpolate.RectBivariateSpline(y_grid, x_grid, f_yy, **self._kwargs_spline)
         return self._f_yy_interp(y, x, grid=grid)
 
     def do_interp(self, x_grid, y_grid, f_, f_x, f_y, f_xx=None, f_yy=None, f_xy=None):
-        self._f_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_, kx=1, ky=1, s=0)
-        self._f_x_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_x, kx=1, ky=1, s=0)
-        self._f_y_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_y, kx=1, ky=1, s=0)
+        self._f_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_, **self._kwargs_spline)
+        self._f_x_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_x, **self._kwargs_spline)
+        self._f_y_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_y, **self._kwargs_spline)
         if f_xx is not None:
-            self._f_xx_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xx, kx=1, ky=1, s=0)
+            self._f_xx_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xx, **self._kwargs_spline)
         if f_xy is not None:
-            self._f_xy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xy, kx=1, ky=1, s=0)
+            self._f_xy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_xy, **self._kwargs_spline)
         if f_yy is not None:
-            self._f_yy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_yy, kx=1, ky=1, s=0)
+            self._f_yy_interp = scipy.interpolate.RectBivariateSpline(x_grid, y_grid, f_yy, **self._kwargs_spline)
 
 
 class InterpolScaled(LensProfileBase):
@@ -212,8 +217,15 @@ class InterpolScaled(LensProfileBase):
     lower_limit_default = {'scale_factor': 0}
     upper_limit_default = {'scale_factor': 100}
 
-    def __init__(self, grid=True, min_grid_number=100):
-        self.interp_func = Interpol(grid, min_grid_number=min_grid_number)
+    def __init__(self, grid=True, min_grid_number=100, kwargs_spline=None):
+        """
+
+        :param grid: bool, if True, computes the calculation on a grid
+        :param min_grid_number: minimum numbers of positions to compute the interpolation on a grid
+        :param kwargs_spline: keyword arguments for the scipy.interpolate.RectBivariateSpline() interpolation (optional)
+         if =None, a default linear interpolation is chosen.
+        """
+        self.interp_func = Interpol(grid, min_grid_number=min_grid_number, kwargs_spline=kwargs_spline)
         super(InterpolScaled, self).__init__()
 
     def function(self, x, y, scale_factor=1, grid_interp_x=None, grid_interp_y=None, f_=None, f_x=None, f_y=None,

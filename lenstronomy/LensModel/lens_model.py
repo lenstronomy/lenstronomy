@@ -15,7 +15,8 @@ class LensModel(object):
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
                  multi_plane=False, numerical_alpha_class=None, observed_convention_index=None,
-                 z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
+                 z_source_convention=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
+                 kwargs_interp=None):
         """
 
         :param lens_model_list: list of strings with lens model names
@@ -29,6 +30,8 @@ class LensModel(object):
         :param multi_plane: bool, if True, uses multi-plane mode. Default is False.
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
+        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
         positions. The code will compute the physical locations when performing computations
@@ -60,11 +63,12 @@ class LensModel(object):
                                          numerical_alpha_class=numerical_alpha_class,
                                          observed_convention_index=observed_convention_index,
                                          z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
-                                         z_interp_stop=z_interp_stop, num_z_interp=num_z_interp)
+                                         z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
+                                         kwargs_interp=kwargs_interp)
         else:
             self.lens_model = SinglePlane(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                           lens_redshift_list=lens_redshift_list,
-                                          z_source_convention=z_source_convention)
+                                          z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
         if z_lens is not None and z_source is not None:
             self._lensCosmo = LensCosmo(z_lens, z_source, cosmo=cosmo)
 
@@ -84,7 +88,7 @@ class LensModel(object):
 
     def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
         """
-        fermat potential (negative sign means earlier arrival time)
+        Fermat potential (negative sign means earlier arrival time)
         for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
         subtracted off the time-delay distance for the given cosmology). The units are given in arcsecond square.
 
@@ -105,20 +109,25 @@ class LensModel(object):
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the '
                              'effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
+    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0, x_source=None, y_source=None):
         """
+        Arrival time of images relative to a straight line without lensing.
+        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.
 
         :param x_image: image position
         :param y_image: image position
         :param kwargs_lens: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
          observables in position and relative fluxes but rescales the time delays
+        :param x_source: source position (optional), otherwise computed with ray-tracing
+        :param y_source: source position (optional), otherwise computed with ray-tracing
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, 'arrival_time'):
             arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
         else:
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source=x_source,
+                                                          y_source=y_source)
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)

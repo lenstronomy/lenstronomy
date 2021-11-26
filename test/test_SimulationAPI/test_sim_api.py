@@ -12,14 +12,13 @@ class TestModelAPI(object):
         instrument_name = 'LSST'
         observation_name = 'LSST_g_band'
         kwargs_single_band = constructor.observation_constructor(instrument_name=instrument_name,
-                                                          observation_name=observation_name)
+                                                                 observation_name=observation_name)
         kwargs_single_band['data_count_unit'] = 'e-'
         kwargs_model = {'lens_model_list': ['SIS'], 'z_lens': None, 'z_source': None, 'lens_redshift_list': None,
                         'source_light_model_list': ['GAUSSIAN'],
                         'lens_light_model_list': ['SERSIC'], 'point_source_model_list':['UNLENSED'],
                         'source_redshift_list': None}
         kwargs_numerics = {'supersampling_factor': 2}
-
         self.api = SimAPI(numpix, kwargs_single_band, kwargs_model)
 
     def test_image_model_class(self):

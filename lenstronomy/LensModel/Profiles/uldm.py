@@ -4,7 +4,6 @@ __author__ = 'lucateo'
 import numpy as np
 import scipy.interpolate as interp
 from scipy.special import gamma, hyp2f1
-from mpmath import hyp3f2
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 import lenstronomy.Util.constants as const
 __all__ = ['Uldm']
@@ -62,6 +61,8 @@ class Uldm(LensProfileBase):
         :param center_y: center of halo (in angular units)
         :return: lensing potential (in arcsec^2)
         """
+        from mpmath import hyp3f2
+
         x_ = x - center_x
         y_ = y - center_y
         r = np.sqrt(x_** 2 + y_** 2)

@@ -43,7 +43,7 @@ class LightParam(object):
     def param_name_list(self):
         return self._param_name_list
 
-    def getParams(self, args, i):
+    def get_params(self, args, i):
         """
 
         :param args: list of floats corresponding ot the arguments being sampled
@@ -94,7 +94,7 @@ class LightParam(object):
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list):
+    def set_params(self, kwargs_list):
         """
 
         :param kwargs_list: list of keyword arguments of the light profile (free parameter as well as optionally the

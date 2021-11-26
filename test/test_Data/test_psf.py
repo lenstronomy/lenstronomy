@@ -124,6 +124,26 @@ class TestData(object):
         error_map = psf_kernel.psf_error_map
         assert error_map.all() == 0
 
+    def test_warning(self):
+        deltaPix = 0.05  # pixel size of image
+        subsampling_res = 4  # subsampling scale factor (in each dimension)
+        fwhm = 0.3  # FWHM of the PSF kernel
+
+        # create Gaussian/Pixelized kernels
+        # first we create the sub-sampled kernel
+        kernel_point_source_subsampled = kernel_util.kernel_gaussian(kernel_numPix=11 * subsampling_res + 1,
+                                                                     deltaPix=deltaPix / subsampling_res, fwhm=fwhm)
+        print(len(kernel_point_source_subsampled), 'test')
+        kwargs_psf = {'psf_type': 'PIXEL', 'kernel_point_source': kernel_point_source_subsampled,
+                      'point_source_supersampling_factor': subsampling_res,
+                      'psf_error_map': np.ones_like(kernel_point_source_subsampled)}
+        psf_kernel = PSF(**kwargs_psf)
+        n = len(psf_kernel.kernel_point_source)
+        error_map = psf_kernel.psf_error_map
+        assert len(error_map) == n
+
+
+
 
 class TestRaise(unittest.TestCase):
 

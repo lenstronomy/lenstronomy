@@ -5,7 +5,6 @@ this file contains standard routines
 """
 
 import numpy as np
-import mpmath
 import itertools
 from lenstronomy.Util.numba_util import jit
 from lenstronomy.Util.package_util import exporter
@@ -566,6 +565,8 @@ def hyper2F2_array(a, b, c, d, x):
     :param x:
     :return:
     """
+    import mpmath
+
     if isinstance(x, int) or isinstance(x, float):
         out = mpmath.hyp2f2(a, b, c, d, x)
     else:
@@ -649,3 +650,21 @@ def convert_bool_list(n, k=None):
     else:
         raise ValueError('input list k as %s not compatible' % k)
     return bool_list
+
+
+def area(vs):
+    """
+    Use Green's theorem to compute the area enclosed by the given contour.
+
+    param vs: 2d array of vertices of a contour line
+    return: area within contour line
+    """
+    a = 0
+    x0, y0 = vs[0]
+    for [x1, y1] in vs[1:]:
+        dx = x1 - x0
+        dy = y1 - y0
+        a += 0.5 * (y0 * dx - x0 * dy)
+        x0 = x1
+        y0 = y1
+    return abs(a)

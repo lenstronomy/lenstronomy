@@ -17,9 +17,10 @@ def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exp
     :return: estimated Gaussian noise sqrt(variance)
     """
     exposure_time_tot = num_exposures * exposure_time
-    readout_noise_tot = num_exposures * readout_noise ** 2
+    readout_noise_tot = num_exposures * readout_noise ** 2  # square of readout noise
     sky_per_pixel = sky_brightness * pixel_scale ** 2
-    sigma_bkg = np.sqrt(readout_noise_tot + exposure_time_tot * sky_per_pixel ** 2) / exposure_time_tot
+    sky_brightness_tot = exposure_time_tot * sky_per_pixel
+    sigma_bkg = np.sqrt(readout_noise_tot + sky_brightness_tot) / exposure_time_tot
     return sigma_bkg
 
 

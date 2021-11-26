@@ -89,6 +89,46 @@ class Chameleon(LensProfileBase):
         f_yx = f_yx_1 - f_yx_2
         return f_xx, f_xy, f_yx, f_yy
 
+    def density_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
+        """
+        spherical average density as a function of 3d radius
+
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param w_c: see Suyu+2014
+        :param w_t: see Suyu+2014
+        :param e1: ellipticity parameter
+        :param e2: ellipticity parameter
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: matter density at 3d radius r
+        """
+        theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(alpha_1, w_c, w_t, e1, e2)
+        f_1 = self._nie_1.density_lens(r, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        f_2 = self._nie_2.density_lens(r, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
+        f_ = f_1 - f_2
+        return f_
+
+    def mass_3d_lens(self, r, alpha_1, w_c, w_t, e1=0, e2=0, center_x=0, center_y=0):
+        """
+        mass enclosed 3d radius
+
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param w_c: see Suyu+2014
+        :param w_t: see Suyu+2014
+        :param e1: ellipticity parameter
+        :param e2: ellipticity parameter
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: mass enclosed 3d radius r
+        """
+        theta_E_conv, w_c, w_t, s_scale_1, s_scale_2 = self.param_convert(alpha_1, w_c, w_t, e1, e2)
+        m_1 = self._nie_1.mass_3d_lens(r, theta_E_conv, e1, e2, s_scale_1, center_x, center_y)
+        m_2 = self._nie_2.mass_3d_lens(r, theta_E_conv, e1, e2, s_scale_2, center_x, center_y)
+        m_ = m_1 - m_2
+        return m_
+
     def param_convert(self, alpha_1, w_c, w_t, e1, e2):
         """
         convert the parameter alpha_1 (deflection angle one arcsecond from the center) into the
@@ -122,8 +162,11 @@ class Chameleon(LensProfileBase):
     def set_static(self, alpha_1, w_c, w_t, e1, e2, center_x=0, center_y=0):
         """
 
-        :param logM:
-        :param concentration:
+        :param alpha_1:
+        :param w_c:
+        :param w_t:
+        :param e1:
+        :param e2:
         :param center_x:
         :param center_y:
         :return:
@@ -238,6 +281,50 @@ class DoubleChameleon(LensProfileBase):
         f_xx1, f_xy1, f_yx1, f_yy1,  = self._chameleon_1.hessian(x, y, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
         f_xx2, f_xy2, f_yx2, f_yy2 = self._chameleon_2.hessian(x, y, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
         return f_xx1 + f_xx2, f_xy1 + f_xy2, f_xy1 + f_xy2, f_yy1 + f_yy2
+
+    def density_lens(self, r, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
+        :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile
+        :param e11: ellipticity parameter for first profile
+        :param e21: ellipticity parameter for first profile
+        :param w_c2: Suyu+2014 for second profile
+        :param w_t2: Suyu+2014 for second profile
+        :param e12: ellipticity parameter for second profile
+        :param e22: ellipticity parameter for second profile
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: 3d density at radius r
+        """
+
+        f_1 = self._chameleon_1.density_lens(r, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self._chameleon_2.density_lens(r, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return f_1 + f_2
+
+    def mass_3d_lens(self, r, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
+        """
+        :param r: 3d radius
+        :param alpha_1: deflection angle at 1 (arcseconds) from the center
+        :param ratio: ratio of deflection amplitude at radius = 1 of the first to second Chameleon profile
+        :param w_c1: Suyu+2014 for first profile
+        :param w_t1: Suyu+2014 for first profile
+        :param e11: ellipticity parameter for first profile
+        :param e21: ellipticity parameter for first profile
+        :param w_c2: Suyu+2014 for second profile
+        :param w_t2: Suyu+2014 for second profile
+        :param e12: ellipticity parameter for second profile
+        :param e22: ellipticity parameter for second profile
+        :param center_x: ra center
+        :param center_y: dec center
+        :return: mass enclosed 3d radius
+        """
+
+        m_1 = self._chameleon_1.mass_3d_lens(r, alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
+        m_2 = self._chameleon_2.mass_3d_lens(r, alpha_1 / (1. + ratio), w_c2, w_t2, e12, e22, center_x, center_y)
+        return m_1 + m_2
 
     def set_static(self, alpha_1, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         self._chameleon_1.set_static(alpha_1 / (1. + 1. / ratio), w_c1, w_t1, e11, e21, center_x, center_y)
@@ -359,6 +446,58 @@ class TripleChameleon(LensProfileBase):
         f_xx2, f_xy2, f_yx2, f_yy2 = self._chameleon_2.hessian(x, y, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
         f_xx3, f_xy3, f_yx3, f_yy3 = self._chameleon_3.hessian(x, y, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
         return f_xx1 + f_xx2 + f_xx3, f_xy1 + f_xy2 + f_xy3, f_yx1 + f_yx2 + f_yx3, f_yy1 + f_yy2 + f_yy3
+
+    def density_lens(self, r, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplitude
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return: density at radius r (spherical average)
+        """
+        amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
+        f_1 = self._chameleon_1.density_lens(r, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        f_2 = self._chameleon_2.density_lens(r, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        f_3 = self._chameleon_3.density_lens(r, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return f_1 + f_2 + f_3
+
+    def mass_3d_lens(self, r, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
+                 center_x=0, center_y=0):
+        """
+
+        :param r: 3d radius
+        :param alpha_1:
+        :param ratio12: ratio of first to second amplitude
+        :param ratio13: ratio of first to third amplitude
+        :param w_c1:
+        :param w_t1:
+        :param e11:
+        :param e21:
+        :param w_c2:
+        :param w_t2:
+        :param e12:
+        :param e22:
+        :param center_x:
+        :param center_y:
+        :return: mass enclosed 3d radius
+        """
+        amp1, amp2, amp3 = self._ratio_definition(alpha_1, ratio12, ratio13)
+        m_1 = self._chameleon_1.mass_3d_lens(r, amp1, w_c1, w_t1, e11, e21, center_x, center_y)
+        m_2 = self._chameleon_2.mass_3d_lens(r, amp2, w_c2, w_t2, e12, e22, center_x, center_y)
+        m_3 = self._chameleon_3.mass_3d_lens(r, amp3, w_c3, w_t3, e13, e23, center_x, center_y)
+        return m_1 + m_2 + m_3
 
     def set_static(self, alpha_1, ratio12, ratio13, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, w_c3, w_t3, e13, e23,
                  center_x=0, center_y=0):

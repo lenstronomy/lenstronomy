@@ -34,11 +34,16 @@ class TestFluxRatioLikelihood(object):
                                                               grid_number=grid_number)
         flux_ratios = mag_finite[1:] / mag_finite[0]
         flux_ratio_errors = [0.1, 0.1, 0.1]
+        flux_ratio_cov = np.diag([0.1, 0.1, 0.1])**2
         self.flux_likelihood = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios, flux_ratio_errors=flux_ratio_errors,
                  source_type='GAUSSIAN', window_size=window_size, grid_number=grid_number)
 
         self.flux_likelihood_inf = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios,
                                                    flux_ratio_errors=flux_ratio_errors,
+                                                   source_type='INF', window_size=window_size,
+                                                   grid_number=grid_number)
+        self.flux_likelihood_inf_cov = FluxRatioLikelihood(lens_model_class=lensModel, flux_ratios=flux_ratios,
+                                                   flux_ratio_errors=flux_ratio_cov,
                                                    source_type='INF', window_size=window_size,
                                                    grid_number=grid_number)
         self.kwargs_cosmo = {'source_size': source_size_arcsec}
@@ -68,6 +73,16 @@ class TestFluxRatioLikelihood(object):
         flux_ratios = np.array([1., 1., 1.])
         logL = flux_likelihood._logL(flux_ratios)
         assert logL == -10 ** 15
+
+    def test_numimgs(self):
+        # Test with a different number of images
+        logL = self.flux_likelihood.logL(self.x_img[:-1], self.y_img[:-1], self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
+        assert logL == -10**15
+
+    def test_covmatrix(self):
+        # Test with a different number of images
+        logL = self.flux_likelihood_inf_cov.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
+        npt.assert_almost_equal(logL,0,decimal=8)
 
 
 if __name__ == '__main__':

@@ -22,7 +22,9 @@ Contributors (alphabetic)
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
+* Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Kevin Fusshoeller
+* Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
@@ -41,3 +43,4 @@ Contributors (alphabetic)
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
+* Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_

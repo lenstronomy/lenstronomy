@@ -17,7 +17,10 @@ class FluxRatioLikelihood(object):
         :param lens_model_class: LensModel class instance
         :param param_class: Param() class instance
         :param flux_ratios: ratio of fluxes of the multiple images (relative to the first appearing)
-        :param flux_ratio_errors: errors in the flux ratios (relative to the first appearing
+        :param flux_ratio_errors: errors in the flux ratios (relative to the first appearing. Alternatively 
+        a log-normal covariance matrix. Note: in the case of a the covariance matrix, the errors are are assumed
+        to be log-normal, i.e. the logarithms of the flux ratios, ln(F[i]/F[0]) are assumed to have a multivariate 
+        Gaussian distribution, with the given covariance matrix.
         :param source_type: string, type of source, 'INF' specifies a point source, while 'GAUSSIAN' specifies a
         finite-size source modeled as a Gaussian
         :param window_size: size of window to compute the finite flux
@@ -50,6 +53,8 @@ class FluxRatioLikelihood(object):
                                                                    grid_number=self._gird_number,
                                                                    polar_grid=self._polar_grid,
                                                                    aspect_ratio=self._aspect_ratio)
+        if len(mag)-1 != len(self._flux_ratios):
+            return -10**15
         mag_ratio = mag[1:] / mag[0]
         return self._logL(mag_ratio)
 
@@ -62,8 +67,13 @@ class FluxRatioLikelihood(object):
         """
         if not np.isfinite(flux_ratios).any():
             return -10 ** 15
-        dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
-        logL = -np.sum(dist)
+        if self._flux_ratio_errors.ndim <= 1:
+            dist = (flux_ratios - self._flux_ratios) ** 2 / self._flux_ratio_errors ** 2 / 2
+            logL = -np.sum(dist)
+        elif self._flux_ratio_errors.ndim == 2:
+            # Assume covariance matrix is in ln units!
+            D = np.log(flux_ratios) - np.log(self._flux_ratios)
+            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D # TODO: only calculate the inverse once
         if not np.isfinite(logL):
             return -10 ** 15
         return logL

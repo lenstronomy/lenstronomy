@@ -1,6 +1,5 @@
 import numpy as np
 import lenstronomy.Util.util as util
-from skimage.measure import find_contours
 from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 
 __all__ = ['LensModelExtensions']
@@ -106,24 +105,27 @@ class LensModelExtensions(object):
 
         for xi, yi in zip(x_image, y_image):
 
-            w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
-            _v = [np.array([v11, v12]), np.array([v21, v22])]
-            _w = [abs(w1), abs(w2)]
-            if use_largest_eigenvalue:
-                idx = int(np.argmax(_w))
+            if axis_ratio == 1:
+                grid_r = np.hypot(grid_x_0, grid_y_0)
             else:
-                idx = int(np.argmin(_w))
-            v = _v[idx]
+                w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
+                _v = [np.array([v11, v12]), np.array([v21, v22])]
+                _w = [abs(w1), abs(w2)]
+                if use_largest_eigenvalue:
+                    idx = int(np.argmax(_w))
+                else:
+                    idx = int(np.argmin(_w))
+                v = _v[idx]
 
-            rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
-            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
+                rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
+                grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
 
-            if axis_ratio == 0:
-                sort = np.argsort(_w)
-                q = _w[sort[0]] / _w[sort[1]]
-                grid_r = np.hypot(grid_x, grid_y / q).ravel()
-            else:
-                grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
+                if axis_ratio == 0:
+                    sort = np.argsort(_w)
+                    q = _w[sort[0]] / _w[sort[1]]
+                    grid_r = np.hypot(grid_x, grid_y / q).ravel()
+                else:
+                    grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
 
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec
@@ -303,6 +305,32 @@ class LensModelExtensions(object):
                 dec_crit_list += dec_crit  # list addition
         return np.array(ra_crit_list), np.array(dec_crit_list)
 
+    def caustic_area(self, kwargs_lens, kwargs_caustic_num, index_vertices=0):
+        """
+        computes the area inside a connected caustic curve
+
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_caustic_num: keyword arguments for the numerical calculation of the caustics, as input of
+         self.critical_curve_caustics()
+        :param index_vertices: integer, index of connected vortex from the output of self.critical_curve_caustics()
+         of disconnected curves.
+        :return: area within the caustic curve selected
+        """
+
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = self.critical_curve_caustics(kwargs_lens,
+                                                                                                      **kwargs_caustic_num)
+
+        # select specific vortex
+        ra_caustic_inner = ra_caustic_list[index_vertices]
+        dec_caustic_inner = dec_caustic_list[index_vertices]
+
+        # merge RA DEC to vertices
+        C = np.dstack([ra_caustic_inner, dec_caustic_inner])[0]
+
+        # compute area
+        a = util.area(C)
+        return a
+
     def _tiling_crit(self, edge1, edge2, edge_90, max_order, kwargs_lens):
         """
         tiles a rectangular triangle and compares the signs of the magnification
@@ -364,7 +392,10 @@ class LensModelExtensions(object):
         ra_caustic_list = []
         dec_caustic_list = []
 
+        # Import moved here to avoid import-time exception if skimage is missing
+        from skimage.measure import find_contours
         paths = find_contours(1/mag_high_res, 0.)
+
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
             ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2 + center_x

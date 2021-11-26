@@ -12,7 +12,8 @@ class TimeDelayLikelihood(object):
         """
 
         :param time_delays_measured: relative time delays (in days) in respect to the first image of the point source
-        :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured
+        :param time_delays_uncertainties: time-delay uncertainties in same order as time_delay_measured. Alternatively
+        a full covariance matrix that describes the likelihood.
         :param lens_model_class: instance of the LensModel() class
         :param point_source_class: instance of the PointSource() class, note: the first point source type is the one the
         time delays are imposed on
@@ -52,8 +53,14 @@ class TimeDelayLikelihood(object):
         :param delays_errors: gaussian errors on the measured delays
         :return: log likelihood of data given model
         """
+        if len(delays_model)-1 != len(delays_measured):
+            return -10**(15)
         delta_t_model = np.array(delays_model[1:]) - delays_model[0]
-        logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
+        if delays_errors.ndim <= 1:
+            logL = np.sum(-(delta_t_model - delays_measured) ** 2 / (2 * delays_errors ** 2))
+        elif delays_errors.ndim == 2:
+            D = delta_t_model - delays_measured
+            logL = -1/2* D @ np.linalg.inv(delays_errors) @ D # TODO: only calculate the inverse once
         return logL
 
     @property

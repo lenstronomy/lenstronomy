@@ -81,11 +81,14 @@ Measuring the Hubble constant
 * Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
     *Investigating the detectability of a cored component with mock imaging modeling and comparison of kinematic modeling.*
 
-* The Hubble constant from strongly lensed supernovae with standardizable magnifications `Birrer et al. 2021 <https://arxiv.org/abs/2107.12385>`_
+* The Hubble constant from strongly lensed supernovae with standardizable magnifications `Birrer, Dhawan, Shajib 2021 <https://arxiv.org/abs/2107.12385>`_
     *Methodology and forecast to use standardizable magnifications to break the mass-sheet degeneracy and hierarchically measure H0.*
 
 * AI-driven spatio-temporal engine for finding gravitationally lensed supernovae `Ramanah et al. 2021 <https://arxiv.org/abs/2107.12399>`_
     *Simulated images with time series of lensed supernovae.*
+
+* Systematic errors induced by the elliptical power-law model in galaxy-galaxy strong lens modeling `Cao et al. 2021 <https://arxiv.org/abs/2110.14554>`_
+    *Computing lensing quantities from mass maps.*
 
 
 
@@ -125,10 +128,19 @@ Dark Matter substructure
 * Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
 
-* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <hhttps://arxiv.org/abs/2105.05259>`_
+* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <https://arxiv.org/abs/2105.05259>`_
     * *
 
 
+Lens searches
+-------------
+
+
+* Strong lens systems search in the Dark Energy Survey using Convolutional Neural Networks; `Rojas et al. 2021 <https://arxiv.org/abs/2109.00014>`_
+    *simulating training sets for lens searches*
+
+* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
+    *simulating training sets for lens searches*
 
 
 Galaxy formation and evolution
@@ -143,6 +155,9 @@ Galaxy formation and evolution
 * The evolution of the size-mass relation at z=1-3 derived from the complete Hubble Frontier Fields data set; `Yang et al. 2020b <https://arxiv.org/abs/2011.10059>`_
     *reconstructing the intrinsic size-mass relation of strongly lensed sources in clusters*
 
+* PS J1721+8842: A gravitationally lensed dual AGN system at redshift 2.37 with two radio components; `Mangat et al. 2021 <https://arxiv.org/abs/2109.03253>`_
+    *Imaging modeling of a dual lensed AGN with point sources and extended surface brightness*
+
 
 
 Automatized Lens Modeling
@@ -154,6 +169,8 @@ Automatized Lens Modeling
 * Hierarchical Inference With Bayesian Neural Networks: An Application to Strong Gravitational Lensing; `Wagner-Carena et al. 2020 <https://arxiv.org/abs/2010.13787>`_
     *This work conducts hierarchical inference of strongly-lensed systems with Bayesian neural networks.*
 
+* A search for galaxy-scale strong gravitational lenses in the Ultraviolet Near Infrared Optical Northern Survey (UNIONS); `Savary et al. 2021 <https://arxiv.org/abs/2110.11972>`_
+    *Automated modeling of best candidates of ground based data.*
 
 
 
@@ -161,6 +178,7 @@ Automatized Lens Modeling
 
 Quasar-host galaxy decomposition
 --------------------------------
+
 
 * The mass relations between supermassive black holes and their host galaxies at 1<z<2 with HST-WFC3; `Ding et al. 2019 <https://arxiv.org/abs/1910.11875>`_
     *Quasar host galaxy decomposition at high redshift on HST imaging and marginalization over PSF uncertainties.*
@@ -174,6 +192,17 @@ Quasar-host galaxy decomposition
 * The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
     *Quasar-host decomposition of 5000 SDSS quasars*
 
+* The eROSITA Final Equatorial-Depth Survey (eFEDS): A multiwavelength view of WISE mid-infrared galaxies/active galactic nuclei; `Toba et al. 2021 <https://arxiv.org/abs/2106.14527>`_
+    *Quasar-host decomposition of HSC imaging*
+
+* Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021 <https://arxiv.org/abs/2109.02751>`_
+    *Quasar-host decomposition of SDSS quasars with HSC data*
+
+
+
+
+* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021 <https://arxiv.org/abs/2111.08721>`_
+    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
 
 
@@ -233,12 +262,6 @@ Large scale structure
 * Combining strong and weak lensingestimates in the Cosmos field; `Kuhn et al. 2020 <https://arxiv.org/abs/2010.08680>`_
     *inferring cosmic shear with three strong lenses in the COSMOS field*
 
-
-Lens finding
-------------
-
-* On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
-    *simulating training sets for lens searches*
 
 
 

@@ -21,9 +21,9 @@ try:
 except:
     print("Warning : MultiNest/pymultinest not installed properly, \
 but tests will be trivially fulfilled")
-    pymultinest_installed =  False
+    pymultinest_installed = False
 else:
-    pymultinest_installed =  True
+    pymultinest_installed = True
 
 
 class TestMultiNestSampler(object):

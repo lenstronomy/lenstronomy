@@ -1,5 +1,6 @@
 import numpy as np
 from lenstronomy.Conf import config_loader
+from os import environ
 
 """
 From pyautolens:
@@ -14,7 +15,7 @@ numba_conf = config_loader.numba_conf()
 nopython = numba_conf['nopython']
 cache = numba_conf['cache']
 parallel = numba_conf['parallel']
-numba_enabled = numba_conf['enable']
+numba_enabled = numba_conf['enable'] and not environ.get("NUMBA_DISABLE_JIT", False)
 fastmath = numba_conf['fastmath']
 error_model = numba_conf['error_model']
 
@@ -27,10 +28,10 @@ if numba_enabled:
 __all__ = ['jit', 'generated_jit']
 
 
-def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
+def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model,inline='never'):
     if numba_enabled:
         def wrapper(func):
-            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model)
+            return numba.jit(func, nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model, inline=inline)
     else:
         def wrapper(func):
             return func
@@ -55,7 +56,7 @@ def nan_to_num(x, posinf=1e10, neginf=-1e10, nan=0.):
     Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and scalar inputs.
     """
     # The generated_jit part is necessary because of the need to support both arrays and scalars for all input functions.
-    if (isinstance(x, numba.types.Array) or isinstance(x, np.ndarray)) and x.ndim > 0:
+    if ((numba_enabled and isinstance(x, numba.types.Array)) or isinstance(x, np.ndarray)) and x.ndim > 0:
         return nan_to_num_arr if numba_enabled else nan_to_num_arr(x, posinf, neginf, nan)
     else:
         return nan_to_num_single if numba_enabled else nan_to_num_single(x, posinf, neginf, nan)

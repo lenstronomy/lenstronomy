@@ -129,14 +129,10 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lens_model_ext.critical_curve_caustics(
             kwargs_lens, compute_window=frame_size, grid_scale=pixel_width, center_x=coord_center_ra,
             center_y=coord_center_dec)
+        points_only = False
     else:
         # only supports individual points due to output of critical_curve_tiling definition
-        if 'linestyle' not in kwargs:
-            kwargs['linestyle'] = ""
-        if 'marker' not in kwargs:
-            kwargs['marker'] = "o"
-        if 'markersize' not in kwargs:
-            kwargs['markersize'] = 0.01
+        points_only = True
         ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(kwargs_lens, compute_window=frame_size,
                                                                          start_scale=pixel_width, max_order=10,
                                                                          center_x=coord_center_ra,
@@ -145,9 +141,9 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
-                            flipped_x=coord_inverse, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, *args, **kwargs)
     plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
-                            flipped_x=coord_inverse, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, *args, **kwargs)
     return ax
 
 

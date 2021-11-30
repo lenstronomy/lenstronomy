@@ -63,7 +63,9 @@ class ModelBandPlot(ModelBand):
             #self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens_partial,
             #                                                                            compute_window=self._frame_size,
             #                                                                            start_scale=self._deltaPix / 5.,
-            #                                                                            max_order=10)
+            #                                                                            max_order=10,
+            #                                                                                   center_x=self._x_center,
+            #                                                                                   center_y=self._y_center)
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):

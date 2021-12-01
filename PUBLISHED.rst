@@ -33,6 +33,9 @@ Related software publications
 * deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021 <https://arxiv.org/abs/2102.02830>`_
     *Software to simulating large datasets for applying deep learning to strong gravitational lensing.*
 
+* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021 <https://arxiv.org/abs/2111.08721>`_
+    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
+
 
 
 
@@ -158,6 +161,9 @@ Galaxy formation and evolution
 * PS J1721+8842: A gravitationally lensed dual AGN system at redshift 2.37 with two radio components; `Mangat et al. 2021 <https://arxiv.org/abs/2109.03253>`_
     *Imaging modeling of a dual lensed AGN with point sources and extended surface brightness*
 
+* RELICS: Small Lensed z≥5.5 Galaxies Selected as Potential Lyman Continuum Leakers; `Neufeld et al. 2021 <https://arxiv.org/abs/2111.14882>`_
+    *size measurements of high-z lensed galaxies*
+
 
 
 Automatized Lens Modeling
@@ -200,9 +206,6 @@ Quasar-host galaxy decomposition
 
 
 
-
-* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021 <https://arxiv.org/abs/2111.08721>`_
-    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
 
 

@@ -134,6 +134,10 @@ Dark Matter substructure
 * Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <https://arxiv.org/abs/2105.05259>`_
     * *
 
+* Substructure Detection Reanalyzed: Dark Perturber shown to be a Line-of-Sight Halo; `Sengul et al. 2021 <https://arxiv.org/abs/2112.00749>`_
+    *modeling a line-of-sight mini-halo*
+
+
 
 Lens searches
 -------------

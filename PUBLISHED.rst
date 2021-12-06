@@ -142,12 +142,14 @@ Dark Matter substructure
 Lens searches
 -------------
 
-
 * Strong lens systems search in the Dark Energy Survey using Convolutional Neural Networks; `Rojas et al. 2021 <https://arxiv.org/abs/2109.00014>`_
     *simulating training sets for lens searches*
 
 * On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
     *simulating training sets for lens searches*
+
+* DeepZipper: A Novel Deep Learning Architecture for Lensed Supernovae Identification; `Morgan et al. 2021 <hhttps://arxiv.org/abs/2112.01541>`_
+    *simulating deeplenstronomy to simulate lensed supernovae data sets*
 
 
 Galaxy formation and evolution

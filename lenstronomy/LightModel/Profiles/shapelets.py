@@ -13,16 +13,23 @@ export, __all__ = exporter()
 @export
 class Shapelets(object):
     """
-
+    class for 2d cartesian Shapelets. Sources:
+    Refregier 2003: Shapelets: I. A Method for Image Analysis https://arxiv.org/abs/astro-ph/0105178
+    Refregier 2003: Shapelets: II. A Method for Weak Lensing Measurements https://arxiv.org/abs/astro-ph/0105179
     """
     param_names = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'beta': 0, 'n1': 0, 'n2': 0, 'center_x': -100, 'center_y': -100}
+    lower_limit_default = {'amp': 0, 'beta': 0.01, 'n1': 0, 'n2': 0, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'amp': 100, 'beta': 100, 'n1': 150, 'n2': 150, 'center_x': 100, 'center_y': 100}
 
     def __init__(self, interpolation=False, precalc=False, stable_cut=True, cut_scale=5):
         """
         load interpolation of the Hermite polynomials in a range [-30,30] in order n<= 150
-        :return:
+
+        :param interpolation: boolean; if True, uses interpolated pre-calculated shapelets in the evaluation
+        :param precalc: boolean; if True interprets as input (x, y) as pre-calculated normalized shapelets
+        :param stable_cut: boolean; if True, sets the values outside of np.sqrt(n_max + 1) * beta * self._cut_scale =0
+        :param cut_scale: float, scaling parameter where to cut the shapelets. This is for numerical reasons such that
+         the polynomials in the Hermite function do not get unstable.
         """
         self._interpolation = interpolation
         self._precalc = precalc
@@ -46,7 +53,7 @@ class Shapelets(object):
 
         :param x: array of values
         :param n_array: list of coeffs in H_n
-        :param cut_scale: scale where the polynomial will be set to zero
+        :param tensor: see numpy.polynomial.hermite.hermval
         :return: see numpy.polynomial.hermite.hermval
         """
         if not self._stable_cut:
@@ -66,14 +73,17 @@ class Shapelets(object):
 
     def function(self, x, y, amp, beta, n1, n2, center_x, center_y):
         """
+        2d cartesian shapelet
 
+        :param x: x-coordinate
+        :param y: y-coordinate
         :param amp: amplitude of shapelet
         :param beta: scale factor of shapelet
-        :param n1: x-order
-        :param n2: y-order
+        :param n1: x-order of Hermite polynomial
+        :param n2: y-order of Hermite polynomial
         :param center_x: center in x
         :param center_y: center in y
-        :return:
+        :return: flux surface brighness at (x, y)
         """
 
         if self._precalc:

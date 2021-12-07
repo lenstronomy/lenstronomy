@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lenstronomy.LensModel.Profiles.cored_density_mst &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -29,7 +27,8 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cored_density_mst</a></li> 
       </ul>
     </div>  
 
@@ -41,12 +40,12 @@
   <h1>Source code for lenstronomy.LensModel.Profiles.cored_density_mst</h1><div class="highlight"><pre>
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density</span> <span class="k">import</span> <span class="n">CoredDensity</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_2</span> <span class="k">import</span> <span class="n">CoredDensity2</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_exp</span> <span class="k">import</span> <span class="n">CoredDensityExp</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.uldm</span> <span class="k">import</span> <span class="n">Uldm</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="k">import</span> <span class="n">Convergence</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density</span> <span class="kn">import</span> <span class="n">CoredDensity</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_2</span> <span class="kn">import</span> <span class="n">CoredDensity2</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_density_exp</span> <span class="kn">import</span> <span class="n">CoredDensityExp</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.uldm</span> <span class="kn">import</span> <span class="n">Uldm</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="kn">import</span> <span class="n">Convergence</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CoredDensityMST&#39;</span><span class="p">]</span>
 
@@ -65,7 +64,7 @@
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lambda_approx&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;lambda_approx&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">profile_type</span><span class="o">=</span><span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">CoredDensity</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">profile_type</span> <span class="o">==</span> <span class="s1">&#39;CORED_DENSITY_2&#39;</span><span class="p">:</span>
@@ -133,23 +132,22 @@
         <span class="k">return</span> <span class="n">f_xx_cd</span> <span class="o">-</span> <span class="n">f_xx_ms</span><span class="p">,</span> <span class="n">f_xy_cd</span> <span class="o">-</span> <span class="n">f_xy_ms</span><span class="p">,</span> <span class="n">f_yx_cd</span> <span class="o">-</span> <span class="n">f_yx_ms</span><span class="p">,</span> <span class="n">f_yy_cd</span> <span class="o">-</span> <span class="n">f_yy_ms</span> </div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -164,12 +162,13 @@
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cored_density_mst</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

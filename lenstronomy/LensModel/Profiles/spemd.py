@@ -19,8 +19,7 @@ class SPEMD(LensProfileBase):
         \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q + s^2}} \\right)^{\\gamma-1}
 
     with :math:`\\theta_{E}` is the (circularized) Einstein radius,
-    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions,
-    :math:`q` is the minor/major axis ratio,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions, :math:`q` is the minor/major axis ratio,
     and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
 
     the FASTELL definitions are as follows:
@@ -30,10 +29,11 @@ class SPEMD(LensProfileBase):
     squared (:math:`s2`), and the output potential (:math:`\\phi`).
     The projected mass density distribution, in units of the
     critical density, is
+
     .. math::
         \\kappa(x1,x2)=b_{fastell} \\left[u2+s2\\right]^{-gam},
 
-    with :math:`u2=\\left[x1^2+x2^2/(arat^2)\\right].
+    with :math:`u2=\\left[x1^2+x2^2/(arat^2)\\right]`.
 
     The conversion from lenstronomy definitions of this class to FASTELL are:
 

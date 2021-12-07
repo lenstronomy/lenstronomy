@@ -121,8 +121,8 @@ class LensEquationSolver(object):
         :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
         :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
-        Note: in contrast to the other solvers, generally the (heavily demagnified) central image will also be included, so
-        setting a a proper magnification_limit is more important. To get similar behaviour, a limit of 1e-1 is acceptable
+         Note: in contrast to the other solvers, generally the (heavily demagnified) central image will also be included, so
+         setting a a proper magnification_limit is more important. To get similar behaviour, a limit of 1e-1 is acceptable
         """
         lens_model_list = list(self.lensModel.lens_model_list)
         if lens_model_list not in (['SIE', 'SHEAR'], ['SIE'], ['EPL_NUMBA', 'SHEAR'], ['EPL_NUMBA'], ['EPL', 'SHEAR'], ['EPL']):
@@ -147,7 +147,7 @@ class LensEquationSolver(object):
         :param kwargs_lens: lens model parameters as keyword arguments
         :param solver: which solver to use, can be 'lenstronomy' (default), 'analytical' or 'stochastic'.
         :param kwargs: Any additional kwargs are passed to the chosen solver, see the documentation of
-        image_position_lenstronomy, image_position_analytical and image_position_stochastic
+         image_position_lenstronomy, image_position_analytical and image_position_stochastic
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         """
         if solver == 'lenstronomy':

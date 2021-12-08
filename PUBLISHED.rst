@@ -137,6 +137,10 @@ Dark Matter substructure
 * Substructure Detection Reanalyzed: Dark Perturber shown to be a Line-of-Sight Halo; `Sengul et al. 2021 <https://arxiv.org/abs/2112.00749>`_
     *modeling a line-of-sight mini-halo*
 
+* The primordial matter power spectrum on sub-galactic scales; `Gilman et al. 2021 <https://arxiv.org/abs/2112.03293>`_
+    *rendering sub- and line-of-sight halos*
+
+
 
 
 Lens searches

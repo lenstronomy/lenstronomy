@@ -93,6 +93,9 @@ Measuring the Hubble constant
 * Systematic errors induced by the elliptical power-law model in galaxy-galaxy strong lens modeling `Cao et al. 2021 <https://arxiv.org/abs/2110.14554>`_
     *Computing lensing quantities from mass maps.*
 
+* TDCOSMO. VII. Boxyness/discyness in lensing galaxies : Detectability and impact on H0 `Van de Vyvere et al. 2021 <https://arxiv.org/abs/2112.03932>`_
+    *Assessment of boxy and discy lens model on the inference of H0.*
+
 
 
 Dark Matter substructure

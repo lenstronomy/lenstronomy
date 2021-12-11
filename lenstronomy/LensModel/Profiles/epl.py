@@ -4,7 +4,9 @@ import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.param_util as param_util
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
+from lenstronomy.LensModel.Profiles.spp import SPP
 from scipy.special import hyp2f1
+
 
 __all__ = ['EPL', 'EPLMajorAxis']
 
@@ -49,6 +51,7 @@ class EPL(LensProfileBase):
 
     def __init__(self):
         self.epl_major_axis = EPLMajorAxis()
+        self.spp = SPP()
         super(EPL, self).__init__()
 
     def param_conv(self, theta_E, gamma, e1, e2):
@@ -195,6 +198,32 @@ class EPL(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
+    def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
+        """
+        computes the spherical power-law mass enclosed (with SPP routine)
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self.spp.mass_3d_lens(r, theta_E, gamma)
+
+    def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
+        """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
+
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
+        """
+        return self.spp.density_lens(r, theta_E, gamma)
+
 
 class EPLMajorAxis(LensProfileBase):
     """
@@ -250,6 +279,7 @@ class EPLMajorAxis(LensProfileBase):
         Z.real = q*x
         Z.imag = y
         R = np.abs(Z)
+        R = np.maximum(R, 0.000000001)
 
         # angular dependency with extra factor of R, eq. (23)
         R_omega = Z*hyp2f1(1, t/2, 2-t/2, -(1-q)/(1+q)*(Z/Z.conj()))
@@ -275,6 +305,7 @@ class EPLMajorAxis(LensProfileBase):
         :return: f_xx, f_yy, f_xy
         """
         R = np.hypot(q*x, y)
+        R = np.maximum(R, 0.00000001)
         r = np.hypot(x, y)
 
         cos, sin = x/r, y/r

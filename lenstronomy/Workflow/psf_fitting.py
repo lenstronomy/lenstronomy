@@ -101,7 +101,7 @@ class PsfFitting(object):
 
     def update_psf(self, kwargs_psf, kwargs_params, stacking_method='median', psf_symmetry=1, psf_iter_factor=.2,
                    block_center_neighbour=0, error_map_radius=None, block_center_neighbour_error_map=None,
-                   new_procedure=False):
+                   new_procedure=True):
         """
 
         :param kwargs_psf: keyword arguments to construct the PSF() class

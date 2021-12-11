@@ -69,10 +69,11 @@ class EPL(LensProfileBase):
             return self._b_static, self._t_static, self._q_static, self._phi_G_static
         return self._param_conv(theta_E, gamma, e1, e2)
 
-    def _param_conv(self, theta_E, gamma, e1, e2):
+    @staticmethod
+    def _param_conv(theta_E, gamma, e1, e2):
         """
-        convert parameters from :math:`R = \sqrt{q x^2 + y^2/q}` to
-        :math:`R = \sqrt{q^2 x^2 + y^2}`
+        convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to
+        :math:`R = \\sqrt{q^2 x^2 + y^2}`
 
         :param gamma: power law slope
         :param theta_E: Einstein radius
@@ -88,8 +89,6 @@ class EPL(LensProfileBase):
     def set_static(self, theta_E, gamma, e1, e2, center_x=0, center_y=0):
         """
 
-        :param x: x-coordinate in image plane
-        :param y: y-coordinate in image plane
         :param theta_E: Einstein radius
         :param gamma: power law slope
         :param e1: eccentricity component

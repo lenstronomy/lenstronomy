@@ -165,7 +165,7 @@ class TestFittingSequence(object):
         #fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_align = {'lowerLimit': -0.1, 'upperLimit': 0.1, 'n_particles': 2, 'n_iterations': 2}
         fitting_list.append(['align_images', kwargs_align])
-        kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean'}
+        kwargs_psf_iter = {'num_iter': 2, 'psf_iter_factor': 0.5, 'stacking_method': 'mean', 'new_procedure': False}
         fitting_list.append(['psf_iteration', kwargs_psf_iter])
         fitting_list.append(['restart', None])
         fitting_list.append(['fix_not_computed', {'free_bands': [True]}])

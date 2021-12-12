@@ -257,3 +257,12 @@ History
 ++++++++++++++++++
 * re-defined amplitude normalization in NIE and CHAMELEON light profiles
 * bug fix in sky brightness errors (SimulationAPI)
+
+
+1.9.2 (2020-12-12)
+++++++++++++++++++
+* support for astropy v5
+* new PSF iteration procedure implemented
+* updated caustic plotting feature
+* magnification perturbations in point source amplitudes
+* analytic point source solver for SIE+shear

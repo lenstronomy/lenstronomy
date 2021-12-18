@@ -44,7 +44,7 @@ class CosmoInterp(object):
         return self._cosmo._hubble_distance * self._integral_comoving_distance_z1z2_scalar(z1, z2)
 
     @vectorize_redshift_method(nin=2)
-    def _integral_comoving_distance_z1z2_scalar(self, z1, z2, /):
+    def _integral_comoving_distance_z1z2_scalar(self, z1, z2):
         """
         Comoving line-of-sight distance between objects at redshifts ``z1`` and
         ``z2``. Value in Mpc.

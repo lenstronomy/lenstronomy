@@ -16,9 +16,10 @@ scikit-image
 pyyaml
 pyxdg
 
-#schwimmbad==0.3.0
+# schwimmbad version that is supporting dill, which is not the current pip release version
 -e git://github.com/adrn/schwimmbad.git@master#egg=schwimmbad
 multiprocess>=0.70.8
+# fastell is not a direct requirement as it needs a fortran compiler and is optional
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
 slitronomy==0.3.2
 

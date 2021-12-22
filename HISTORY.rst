@@ -266,3 +266,7 @@ History
 * updated caustic plotting feature
 * magnification perturbations in point source amplitudes
 * analytic point source solver for SIE+shear
+
+1.9.3 (2020-12-22)
+++++++++++++++++++
+* changed syntax to be compatible with python3 version <3.9

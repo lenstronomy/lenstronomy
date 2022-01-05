@@ -25,7 +25,7 @@ if numba_enabled:
     except ImportError:
         numba_enabled = False
 
-__all__ = ['jit', 'generated_jit']
+__all__ = ['jit', 'generated_jit', 'nan_to_num', 'nan_to_num_arr', 'nan_to_num_single']
 
 
 def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model,inline='never'):
@@ -36,6 +36,7 @@ def jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, er
         def wrapper(func):
             return func
     return wrapper
+
 
 def generated_jit(nopython=nopython, cache=cache, parallel=parallel, fastmath=fastmath, error_model=error_model):
     """ Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type - see the Numba docs for more info"""

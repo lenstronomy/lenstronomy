@@ -42,7 +42,7 @@ class ImageNoise(object):
                 if background_rms * np.max(exposure_time) < 1 and verbose is True:
                     print("WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates with a Gaussian"
                           " error function for a Poisson distribution with mean < 1." % (
-                        background_rms * np.max(exposure_time)))
+                           background_rms * np.max(exposure_time)))
         self._data = image_data
         self._gradient_boost_factor = gradient_boost_factor
 
@@ -84,7 +84,8 @@ class ImageNoise(object):
             if self._noise_map is not None:
                 self._C_D = self._noise_map ** 2
             else:
-                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map, self._gradient_boost_factor)
+                self._C_D = covariance_matrix(self._data, self.background_rms, self.exposure_map,
+                                              self._gradient_boost_factor)
         return self._C_D
 
     def C_D_model(self, model):

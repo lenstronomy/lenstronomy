@@ -4,7 +4,6 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-import lenstronomy.Util.param_util as param_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()

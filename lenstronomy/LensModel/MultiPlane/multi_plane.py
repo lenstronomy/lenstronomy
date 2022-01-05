@@ -186,7 +186,7 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
-                                                   T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
+                                                        T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """

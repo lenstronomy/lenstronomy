@@ -29,9 +29,9 @@ def get_param_WLS(A, C_D_inv, d, inv_bool=True):
         if np.linalg.cond(M) < 5/sys.float_info.epsilon:
             R = A.T.dot(np.multiply(C_D_inv, d))
             B = _solve_stable(M, R)
-            #try:
+            # try:
             #    B = np.linalg.solve(M, R).T
-            #except:
+            # except:
             #    B = np.zeros(len(A.T))
         else:
             B = np.zeros(len(A.T))

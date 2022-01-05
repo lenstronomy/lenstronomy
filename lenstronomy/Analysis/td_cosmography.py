@@ -22,7 +22,7 @@ class TDCosmography(KinematicsAPI):
 
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                 light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None,
+                 light_model_kinematics_bool=None, kwargs_seeing=None, kwargs_aperture=None, anisotropy_model=None,
                  **kwargs_kin_api):
         """
 
@@ -42,6 +42,10 @@ class TDCosmography(KinematicsAPI):
 
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
+        if kwargs_seeing is None:
+            kwargs_seeing = {}
+        if kwargs_aperture is None:
+            kwargs_aperture = {}
         self._z_lens = z_lens
         self._z_source = z_source
         self._cosmo_fiducial = cosmo_fiducial
@@ -150,6 +154,9 @@ class TDCosmography(KinematicsAPI):
 
         :param d_fermat_model: relative Fermat potential between two images from the same source in units arcsec^2
         :param dt_measured: measured time delay between the same image pair in units of days
+        :param kappa_s: external convergence from observer to source
+        :param kappa_ds: external convergence from lens to source
+        :param kappa_d: external convergence form observer to lens
         :return: D_dt, time-delay distance
         """
         D_dt_model = dt_measured * const.day_s * const.c / const.Mpc / d_fermat_model / const.arcsec ** 2

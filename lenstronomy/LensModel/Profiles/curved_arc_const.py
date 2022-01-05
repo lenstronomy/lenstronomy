@@ -3,7 +3,7 @@ from lenstronomy.LensModel.Profiles.convergence import Convergence
 from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 from lenstronomy.Util import util
 
-__all__ = ['CurvedArcConstMST']
+__all__ = ['CurvedArcConstMST', 'CurvedArcConst']
 
 
 class CurvedArcConstMST(LensProfileBase):

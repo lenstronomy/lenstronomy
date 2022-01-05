@@ -112,7 +112,6 @@ class SingleBandMultiModel(ImageLinearFit):
     def num_param_linear(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None):
         """
 
-        :param compute_bool:
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         kwargs_lens_i, kwargs_source_i, kwargs_lens_light_i, kwargs_ps_i, kwargs_extinction_i = self.select_kwargs(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)

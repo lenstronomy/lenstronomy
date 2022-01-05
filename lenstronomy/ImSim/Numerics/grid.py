@@ -169,7 +169,6 @@ class RegularGrid(Coordinates1D):
         :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate
         :param ra_at_xy_0: ra coordinate at pixel (0,0)
         :param dec_at_xy_0: dec coordinate at pixel (0,0)
-        :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled
         :param supersampling_factor: int, factor (per axis) of super-sampling
         :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated
         (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.
@@ -235,7 +234,8 @@ class RegularGrid(Coordinates1D):
             image_low_res = image
         return image_low_res, image_high_res
 
-    def _subgrid_index(self, idex_mask, subgrid_res, nx, ny):
+    @staticmethod
+    def _subgrid_index(idex_mask, subgrid_res, nx, ny):
         """
 
         :param idex_mask: 1d array of mask of data
@@ -253,9 +253,6 @@ class RegularGrid(Coordinates1D):
         maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices
 
         :param array: 1d array
-        :param idex_mask: 1d array of length nx*ny
-        :param nx: x-axis of 2d grid
-        :param ny: y-axis of 2d grid
         :return:
         """
         nx, ny = self._nx * self._supersampling_factor, self._ny * self._supersampling_factor

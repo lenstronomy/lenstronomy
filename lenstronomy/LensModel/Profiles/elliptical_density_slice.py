@@ -7,6 +7,7 @@ from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 __all__ = ['ElliSLICE']
 
+
 class ElliSLICE (LensProfileBase):
     """
     This class computes the lensing quantities for an elliptical slice of constant density.
@@ -30,17 +31,17 @@ class ElliSLICE (LensProfileBase):
     with
 
     ..math::
-        x_{rot} = x_c \\cos \\psi + y_c \\sin \psi  \\
-        y_{rot} = - x_c \\sin \\psi + y_c \cos \\psi  \\
+        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\
+        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\
         x_c = x - center_x  \\
         y_c = y - center_y
 
     """
-    param_names = ['a','b','psi','sigma_0','center_x','center_y']
-    lower_limit_default = {'a': 0., 'b': 0., 'psi': -90./180.*np.pi,'center_x':-100.,'center_y':-100.}
+    param_names = ['a', 'b', 'psi', 'sigma_0', 'center_x', 'center_y']
+    lower_limit_default = {'a': 0., 'b': 0., 'psi': -90./180.*np.pi, 'center_x': -100., 'center_y': -100.}
     upper_limit_default = {'a': 100., 'b': 100., 'psi': 90. / 180. * np.pi, 'center_x': 100., 'center_y': 100.}
 
-    def function(self,x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
+    def function(self, x, y, a, b, psi, sigma_0, center_x=0., center_y=0.):
         """
         lensing potential
 
@@ -122,7 +123,8 @@ class ElliSLICE (LensProfileBase):
         f_yy = (alpha_dec_dy - alpha_dec) / diff
         return f_xx, f_xy, f_yx, f_yy
 
-    def sign(self, z):
+    @staticmethod
+    def sign(z):
         """
         sign function
 
@@ -131,7 +133,7 @@ class ElliSLICE (LensProfileBase):
         """
         x = z.real
         y = z.imag
-        if (x > 0 or (x==0 and y>=0)):
+        if x > 0 or (x == 0 and y >= 0):
             return 1
         else:
             return -1
@@ -179,7 +181,7 @@ class ElliSLICE (LensProfileBase):
             median_op = True
         e2ipsi = c.exp(2j * psi)
         eipsi = c.exp(1j * psi)
-        if median_op is True :
+        if median_op is True:
             eps = 10 ** -10
             z_minus_eps = complex(r * np.cos(phi - eps), r * np.sin(phi - eps))
             zb_minus_eps = z_minus_eps.conjugate()
@@ -191,9 +193,9 @@ class ElliSLICE (LensProfileBase):
                                            * c.sqrt(zb_plus_eps ** 2 * e2ipsi - f2)) * sig_0
             I_out_mid = 2 * a * b / f2 * (zb * e2ipsi - eipsi * self.sign(zb * eipsi)
                                           * c.sqrt(zb ** 2 * e2ipsi - f2)) * sig_0
-            I_out_real = np.median([I_out_minus.real,I_out_plus.real,I_out_mid.real])
+            I_out_real = np.median([I_out_minus.real, I_out_plus.real, I_out_mid.real])
             I_out_imag = np.median([I_out_minus.imag, I_out_plus.imag, I_out_mid.imag])
-        else :
+        else:
             I_out = 2 * a * b / f2 * (
                         zb * e2ipsi - eipsi * self.sign(zb * eipsi) * c.sqrt(zb ** 2 * e2ipsi - f2)) * sig_0
             I_out_real = I_out.real
@@ -207,7 +209,8 @@ class ElliSLICE (LensProfileBase):
 
         return I_out_real, I_out_imag
 
-    def pot_in(self,x, y, kwargs_slice):
+    @staticmethod
+    def pot_in(x, y, kwargs_slice):
         """
         lensing potential for (x,y) inside the elliptical slice
 
@@ -225,7 +228,7 @@ class ElliSLICE (LensProfileBase):
         cst = sig_0 * rE ** 2 * (1 - e ** 2) * np.log(rE)
         return pot_in + cst
 
-    def pot_ext(self,x, y, kwargs_slice):
+    def pot_ext(self, x, y, kwargs_slice):
         """
         lensing potential for (x,y) outside the elliptical slice
 
@@ -233,7 +236,7 @@ class ElliSLICE (LensProfileBase):
 
         """
         z = complex(x, y)
-        zb = z.conjugate()
+        # zb = z.conjugate()
         psi = kwargs_slice['psi']
         a = kwargs_slice['a']
         b = kwargs_slice['b']
@@ -273,7 +276,7 @@ class ElliSLICE (LensProfileBase):
         else:
             pot_ext = ((1 - e ** 2) / (4 * e) * (
                         f2 * c.log((self.sign(z * emipsi) * z * emipsi + c.sqrt(z ** 2 * em2ipsi - f2)) / 2.)
-                        - self.sign(z * emipsi) * z * emipsi * c.sqrt(
-                    z ** 2 * em2ipsi - f2) + z ** 2 * em2ipsi) * sig_0).real
+                        - self.sign(z * emipsi) * z * emipsi *
+                        c.sqrt(z ** 2 * em2ipsi - f2) + z ** 2 * em2ipsi) * sig_0).real
         return pot_ext
 

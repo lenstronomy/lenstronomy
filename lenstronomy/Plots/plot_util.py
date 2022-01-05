@@ -196,7 +196,7 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     :param weights: weights of posteriors (optional)
     :param title_fmt: format to what digit the results are presented
     :param label: string of parameter label (optional)
-    :return: string with mean \pm quartile
+    :return: string with mean :math:`\pm` quartile
     """
     from corner import quantile
 

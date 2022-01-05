@@ -23,7 +23,7 @@ class TDCosmography(KinematicsAPI):
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
                  light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None,
-                 multi_observations=False):
+                 **kwargs_kin_api):
         """
 
         :param z_lens: redshift of deflector
@@ -37,8 +37,7 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_seeing: seeing conditions (see observation class in Galkin)
         :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)
         :param anisotropy_model: string, anisotropy model type
-        :param multi_observations: bool, if True, interprets kwargs_aperture and kwargs_seeing as lists of multiple
-         observations
+        :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance
         """
 
         if cosmo_fiducial is None:
@@ -52,7 +51,7 @@ class TDCosmography(KinematicsAPI):
                                             cosmo=cosmo_fiducial, lens_model_kinematics_bool=lens_model_kinematics_bool,
                                             light_model_kinematics_bool=light_model_kinematics_bool,
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
-                                            anisotropy_model=anisotropy_model, multi_observations=multi_observations)
+                                            anisotropy_model=anisotropy_model, **kwargs_kin_api)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """

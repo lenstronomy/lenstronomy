@@ -18,7 +18,7 @@ class ModelPlot(object):
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
                  likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear',
-                 source_marg=False, linear_prior=None):
+                 source_marg=False, linear_prior=None, fast_caustic=True):
         """
 
         :param multi_band_list:
@@ -31,6 +31,7 @@ class ModelPlot(object):
         :param multi_band_type:
         :param source_marg:
         :param linear_prior:
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
@@ -64,7 +65,7 @@ class ModelPlot(object):
                 bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
                                          param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
-                                         cmap_string=cmap_string)
+                                         cmap_string=cmap_string, fast_caustic=fast_caustic)
 
                 self._band_plot_list.append(bandplot)
                 self._index_list.append(index)

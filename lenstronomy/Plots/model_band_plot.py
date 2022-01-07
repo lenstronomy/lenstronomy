@@ -17,7 +17,8 @@ class ModelBandPlot(ModelBand):
 
     """
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
-                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat",
+                 fast_caustic=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -28,10 +29,11 @@ class ModelBandPlot(ModelBand):
         :param param: 1d numpy array of the linear coefficients of this imaging band
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
+        :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         """
         ModelBand.__init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                            image_likelihood_mask_list=likelihood_mask_list, band_index=band_index)
@@ -53,26 +55,38 @@ class ModelBandPlot(ModelBand):
 
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
+        self._fast_caustic = fast_caustic
 
     def _critical_curves(self):
         if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
             #self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
             #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,
             #    center_x=self._x_center, center_y=self._y_center)
-
-            self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens_partial,
-                                                                                        compute_window=self._frame_size,
-                                                                                        start_scale=self._deltaPix / 5.,
-                                                                                        max_order=10,
-                                                                                               center_x=self._x_center,
-                                                                                               center_y=self._y_center)
+            if self._fast_caustic:
+                self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
+                    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix,
+                    center_x=self._x_center, center_y=self._y_center)
+                self._caustic_points_only = False
+            else:
+                # only supports individual points due to output of critical_curve_tiling definition
+                self._caustic_points_only = True
+                self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(
+                    self._kwargs_lens_partial,
+                    compute_window=self._frame_size,
+                    start_scale=self._deltaPix / 5.,
+                    max_order=10,
+                    center_x=self._x_center,
+                    center_y=self._y_center)
+                self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(self._ra_crit_list,
+                                                                                             self._dec_crit_list,
+                                                                                             self._kwargs_lens_partial)
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
         if not hasattr(self, '_ra_caustic_list') or not hasattr(self, '_dec_caustic_list'):
             ra_crit_list, dec_crit_list = self._critical_curves()
-            self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list, dec_crit_list,
-                                                                                         self._kwargs_lens_partial)
+            #self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list, dec_crit_list,
+            #                                                                             self._kwargs_lens_partial)
         return self._ra_caustic_list, self._dec_caustic_list
 
     def data_plot(self, ax, v_min=None, v_max=None, text='Observed',
@@ -289,7 +303,6 @@ class ModelBandPlot(ModelBand):
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min:
         :param v_max:
-        :param with_caustics:
         :param caustic_color:
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
@@ -321,12 +334,12 @@ class ModelBandPlot(ModelBand):
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, coords_source, ra_caustic_list,
-                          dec_caustic_list, color=caustic_color)
-            plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size),
-                  color='w',
-                  flipped=False,
-                  font_size=font_size)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color=caustic_color,
+                                    points_only=self._caustic_points_only)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color=caustic_color,
+                                    points_only=self._caustic_points_only, **kwargs.get('kwargs_caustic', {}))
+            plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size), color='w', flipped=False,
+                                font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
             plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
@@ -377,7 +390,8 @@ class ModelBandPlot(ModelBand):
         cb.set_label(r'error variance', fontsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b', points_only=True)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b',
+                                    points_only=self._caustic_points_only)
         plot_util.scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
         plot_util.coordinate_arrows(ax, d_s, coords_source,
                           arrow_size=self._arrow_size, color='w', font_size=font_size)
@@ -460,8 +474,10 @@ class ModelBandPlot(ModelBand):
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
-            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
+            plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b',
+                                    points_only=self._caustic_points_only)
+            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r',
+                                    points_only=self._caustic_points_only)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         return ax

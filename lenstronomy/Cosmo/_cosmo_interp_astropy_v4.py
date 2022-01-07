@@ -1,6 +1,6 @@
 import astropy
 if float(astropy.__version__[0]) < 5.0:
-    from astropy.cosmology.core import vectorize_if_needed, isiterable
+    from astropy.cosmology.core import vectorize_if_needed
 else:
     Warning('This routines are only supported for astropy version <5. Current version is %s.'
                   % astropy.__version__)
@@ -13,12 +13,10 @@ class CosmoInterp(object):
     class which interpolates the comoving transfer distance and then computes angular diameter distances from it
     This class is modifying the astropy.cosmology routines
     """
-    def __init__(self, cosmo, z_stop, num_interp):
+    def __init__(self, cosmo):
         """
 
         :param cosmo: astropy.cosmology instance (version 4.0 as private functions need to be supported)
-        :param z_stop: maximum redshift for the interpolation
-        :param num_interp: int, number of interpolating steps
         """
         self._cosmo = cosmo
 

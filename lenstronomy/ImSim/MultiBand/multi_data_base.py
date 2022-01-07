@@ -57,7 +57,6 @@ class MultiDataBase(object):
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
         """
 
-        :param compute_bool:
         :return: number of linear coefficients to be solved for in the linear inversion
         """
         num = 0

@@ -44,7 +44,8 @@ class CurvedArcSPT(LensProfileBase):
         """
         raise NotImplemented('lensing potential for regularly curved arc is not implemented')
 
-    def derivatives(self, x, y, tangential_stretch, radial_stretch, curvature, direction, gamma1, gamma2, center_x, center_y):
+    def derivatives(self, x, y, tangential_stretch, radial_stretch, curvature, direction, gamma1, gamma2, center_x,
+                    center_y):
         """
 
         :param x:
@@ -67,7 +68,8 @@ class CurvedArcSPT(LensProfileBase):
         # distort source plane coordinate system around (center_x, center_y)
         f_x_b, f_y_b = self._distort.derivatives(beta_x, beta_y, gamma1, gamma2, ra_0=center_x, dec_0=center_y)
         beta_x_, beta_y_ = beta_x - f_x_b, beta_y - f_y_b
-        # compute total deflection between initial coordinate and final source coordinate to match lens equation beta = theta - alpha
+        # compute total deflection between initial coordinate and final source coordinate to match lens equation
+        # beta = theta - alpha
         f_x, f_y = x - beta_x_, y - beta_y_
         return f_x, f_y
 

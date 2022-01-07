@@ -22,7 +22,8 @@ class Coordinates(object):
         self._Ma2pix = linalg.inv(self._Mpix2a)
         self._ra_at_xy_0 = ra_at_xy_0
         self._dec_at_xy_0 = dec_at_xy_0
-        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0, self._Ma2pix)
+        self._x_at_radec_0, self._y_at_radec_0 = util.map_coord2pix(-self._ra_at_xy_0, -self._dec_at_xy_0, 0, 0,
+                                                                    self._Ma2pix)
 
     @property
     def transform_angle2pix(self):
@@ -100,7 +101,8 @@ class Coordinates(object):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
+                                                                    self._dec_at_xy_0)
         ra_coords = util.array2image(ra_coords, nx, ny)  # new
         dec_coords = util.array2image(dec_coords, nx, ny)  # new
         return ra_coords, dec_coords
@@ -149,5 +151,6 @@ class Coordinates1D(Coordinates):
         :param ny: number of pixels in y-direction
         :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]
         """
-        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0, self._dec_at_xy_0)
+        ra_coords, dec_coords = util.grid_from_coordinate_transform(nx, ny, self._Mpix2a, self._ra_at_xy_0,
+                                                                    self._dec_at_xy_0)
         return ra_coords, dec_coords

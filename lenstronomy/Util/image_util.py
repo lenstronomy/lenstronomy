@@ -313,7 +313,7 @@ def radial_profile(data, center=[0, 0]):
     """
     y, x = np.indices((data.shape))
     r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
-    r = r.astype(np.int)
+    r = r.astype(int)
 
     tbin = np.bincount(r.ravel(), data.ravel())
     nr = np.bincount(r.ravel())

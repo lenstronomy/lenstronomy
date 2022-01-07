@@ -3,8 +3,9 @@ __author__ = 'ewoudwempe'
 import numpy as np
 from lenstronomy.Util.numba_util import jit
 
+
 @jit()
-def min_approx(x1,x2,x3,y1,y2,y3):
+def min_approx(x1, x2, x3, y1, y2, y3):
     """
     Get the x-value of the minimum of the parabola through the points (x1,y1), ...
     :param x1: x-coordinate point 1
@@ -19,6 +20,7 @@ def min_approx(x1,x2,x3,y1,y2,y3):
     div = (2.*(x3*(y1 - y2) + x1*(y2 - y3) + x2*(-y1 + y3)))
     return (x3**2*(y1 - y2) + x1**2*(y2 - y3) + x2**2*(-y1 + y3))/div
 
+
 @jit()
 def rotmat(th):
     """
@@ -27,6 +29,7 @@ def rotmat(th):
     :return: rotation matrix
     """
     return np.array([[np.cos(th), np.sin(th)], [-np.sin(th), np.cos(th)]])
+
 
 @jit()
 def cdot(a, b):
@@ -38,6 +41,7 @@ def cdot(a, b):
     """
     return a.real*b.real + a.imag*b.imag
 
+
 @jit()
 def ps(x, p):
     """
@@ -48,6 +52,7 @@ def ps(x, p):
     """
     return np.abs(x)**p*np.sign(x)
 
+
 @jit()
 def cart_to_pol(x, y):
     """
@@ -56,7 +61,8 @@ def cart_to_pol(x, y):
     :param y: y-coordinate
     :return: tuple of (r, theta)
     """
-    return (np.sqrt(x**2+y**2), np.arctan2(y,x)%(2*np.pi))
+    return np.sqrt(x**2+y**2), np.arctan2(y, x) % (2*np.pi)
+
 
 @jit()
 def pol_to_cart(r, th):
@@ -66,7 +72,8 @@ def pol_to_cart(r, th):
     :param th: theta-coordinate
     :return: tuple of (x,y)
     """
-    return (r*np.cos(th), r*np.sin(th))
+    return r*np.cos(th), r*np.sin(th)
+
 
 @jit()
 def pol_to_ell(r, theta, q):
@@ -84,14 +91,15 @@ def ell_to_pol(rell, theta, q):
     return r, phi
 
 
-def geomlinspace(a,b,N):
+def geomlinspace(a, b, N):
     """Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a, with the same spacing as the
     geomspace would have at a"""
     delta = a*((b/a)**(1/(N-1))-1)
-    return np.concatenate((np.linspace(0,a,int(a/delta), endpoint=False), np.geomspace(a,b,N)))
+    return np.concatenate((np.linspace(0, a, int(a/delta), endpoint=False), np.geomspace(a, b, N)))
+
 
 @jit()
-def solvequadeq(a,b,c):
+def solvequadeq(a, b, c):
     """
     Solves a quadratic equation. Care is taken for the numerics, see also https://en.wikipedia.org/wiki/Loss_of_significance
     :param a: a
@@ -99,11 +107,12 @@ def solvequadeq(a,b,c):
     :param c: c
     :return: tuple of two solutions
     """
-    sD=(b**2-4*a*c)**0.5
-    x1=(-b-np.sign(b)*sD)/(2*a)
-    x2=2*c/(-b-np.sign(b)*sD)
-    return np.where(b!=0,np.where(a!=0,x1,-c/b),-(-c/a)**0.5), \
-            np.where(b!=0,np.where(a!=0,x2,-c/b+1e-8),+(-c/a)**0.5)
+    sD = (b**2-4*a*c)**0.5
+    x1 = (-b-np.sign(b)*sD)/(2*a)
+    x2 = 2*c/(-b-np.sign(b)*sD)
+    return np.where(b != 0, np.where(a != 0, x1, -c/b), -(-c/a)**0.5), \
+                    np.where(b != 0, np.where(a != 0, x2, -c/b+1e-8), +(-c/a)**0.5)
+
 
 def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100, args=()):
     """
@@ -116,19 +125,18 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
     :param rtol: x-coord relative tolerance
     :param maxiter: maximum num of iterations
     :param args: additional arguments to pass to function in the form f(x, args)
-    :param verbose: do some more diagnostic output
     :return: 
     """
-    xpre=xa
-    xcur=xb
-    xblk=0.
-    fblk=0.
-    spre=0.
-    scur=0.
+    xpre = xa
+    xcur = xb
+    xblk = 0.
+    fblk = 0.
+    spre = 0.
+    scur = 0.
     fpre = f(xpre, args)
     fcur = f(xcur, args)
     funcalls = 2
-    if fpre*fcur>0:
+    if fpre*fcur > 0:
         raise ValueError('Signs are not different')
     if fpre == 0:
         return xpre
@@ -140,7 +148,7 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
         if fpre*fcur < 0:
             xblk = xpre
             fblk = fpre
-            spres = scur = xcur - xpre
+            # spres = scur = xcur - xpre
         if abs(fblk) < abs(fcur):
             xpre = xcur
             xcur = xblk
@@ -162,7 +170,7 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
                 dpre = (fpre - fcur)/(xpre - xcur)
                 dblk = (fblk - fcur)/(xblk - xcur)
                 stry = -fcur*(fblk*dblk - fpre*dpre)\
-                    /(dblk*dpre*(fblk - fpre))
+                    / (dblk*dpre*(fblk - fpre))
             
             if 2*abs(stry) < min(abs(spre), 3*abs(sbis) - delta):
                 spre = scur
@@ -174,7 +182,8 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
             spre = sbis
             scur = sbis
 
-        xpre = xcur; fpre = fcur;
+        xpre = xcur
+        fpre = fcur
         if abs(scur) > delta:
             xcur += scur
         else:
@@ -184,5 +193,6 @@ def brentq_nojit(f, xa, xb, xtol=2e-14, rtol=16*np.finfo(float).eps, maxiter=100
         funcalls += 1
     
     return xcur
+
 
 brentq_inline = jit(inline='always')(brentq_nojit)

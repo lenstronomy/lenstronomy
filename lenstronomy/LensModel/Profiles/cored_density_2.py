@@ -118,7 +118,6 @@ class CoredDensity2(LensProfileBase):
         :return: deflection angle
         """
         return sigma0 * r_core ** 2 * np.log((r_core**2 + r**2) / r_core**2) / r  # this is mass_2d / (r * pi)
-        #return sigma0 * r_core * np.arctan(r/r_core)
 
     @staticmethod
     def d_alpha_dr(r, sigma0, r_core):
@@ -130,7 +129,8 @@ class CoredDensity2(LensProfileBase):
         :param r_core: core radius
         :return: dalpha/dr
         """
-        return sigma0 * r_core ** 2 * (-1./r**2 * np.log((r_core**2 + r**2) / r_core**2) + 1/r * r_core**2 / (r**2 + r_core**2) * 2 *r/r_core**2)
+        return sigma0 * r_core ** 2 * (-1./r**2 * np.log((r_core**2 + r**2) / r_core**2) + 1/r * r_core**2 /
+                                       (r**2 + r_core**2) * 2 * r/r_core**2)
 
     @staticmethod
     def kappa_r(r, sigma0, r_core):
@@ -186,7 +186,8 @@ class CoredDensity2(LensProfileBase):
         r = np.maximum(r, self._s)
         return self.kappa_r(r, sigma0, r_core)
 
-    def mass_2d(self, r, sigma0, r_core):
+    @staticmethod
+    def mass_2d(r, sigma0, r_core):
         """
         mass enclosed in cylinder of radius r
 

@@ -88,7 +88,7 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, *args, **kwargs):
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, points_only=False, *args, **kwargs):
     """
     plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
     corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
@@ -103,12 +103,20 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
      (e.g. caustic or critical curve)
     :param color: string with matplotlib color
     :param flipped_x: bool, if True, flips x-axis
+    :param points_only: bool, if True, sets plotting keywords to plot single points without connecting lines
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
         origin = [0, 0]
     pixel_width = coords.pixel_width
     pixel_width_x = pixel_width
+    if points_only:
+        if 'linestyle' not in kwargs:
+            kwargs['linestyle'] = ""
+        if 'marker' not in kwargs:
+            kwargs['marker'] = "o"
+        if 'markersize' not in kwargs:
+            kwargs['markersize'] = 0.01
     if flipped_x:
         pixel_width_x = -pixel_width
     if isinstance(line_set_list_x, list):
@@ -188,7 +196,7 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     :param weights: weights of posteriors (optional)
     :param title_fmt: format to what digit the results are presented
     :param label: string of parameter label (optional)
-    :return: string with mean \pm quartile
+    :return: string with mean :math:`\pm` quartile
     """
     from corner import quantile
 

@@ -4,7 +4,6 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-import lenstronomy.Util.param_util as param_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -20,7 +19,7 @@ class Sersic(SersicUtil):
 
     with :math:`I_0 = amp`
     and
-    with :math:`b_{n}\\approx 1.999\,n-0.327`
+    with :math:`b_{n}\\approx 1.999n-0.327`
 
     """
 
@@ -89,7 +88,7 @@ class CoreSersic(SersicUtil):
     with
 
     .. math::
-        I' = I_b 2^{-\\gamma/ \\alpha} \exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
+        I' = I_b 2^{-\\gamma/ \\alpha} \\exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
 
     where :math:`I_b` is the intensity at the break radius.
 

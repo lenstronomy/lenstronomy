@@ -30,8 +30,11 @@ Related software publications
 * SLITronomy: towards a fully wavelet-based strong lensing inversion technique; `Galan et al. 2020 <https://arxiv.org/abs/2012.02802>`_
     *This is the method paper presenting SLITromomy, an improved version of the SLIT algorithm fully implemented and compatible with lenstronomy.*
 
-* deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021 <https://arxiv.org/abs/2102.02830>`_
+* deeplenstronomy: A dataset simulation package for strong gravitational lensing; `Morgan et al. 2021a <https://arxiv.org/abs/2102.02830>`_
     *Software to simulating large datasets for applying deep learning to strong gravitational lensing.*
+
+* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021b <https://arxiv.org/abs/2111.08721>`_
+    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
 
 
@@ -75,7 +78,7 @@ Measuring the Hubble constant
 * Large-Scale Gravitational Lens Modeling with Bayesian Neural Networks for Accurate and Precise Inference of the Hubble Constant `Park et al. 2020 <https://arxiv.org/abs/2012.00042>`_
     *BBN lens model inference using lenstronomy through `baobab <https://github.com/jiwoncpark/baobab>`_ for training set generation.*
 
-* Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021 <https://arxiv.org/abs/2103.08609>`_
+* Improved time-delay lens modelling and H0 inference with transient sources `Ding et al. 2021a <https://arxiv.org/abs/2103.08609>`_
     *Simulations and models with and without lensed point sources to perform a time-delay cosmography analysis.*
 
 * Gravitational lensing H0 tension from ultralight axion galactic cores `Blum & Teodori 2021 <https://arxiv.org/abs/2105.10873>`_
@@ -89,6 +92,9 @@ Measuring the Hubble constant
 
 * Systematic errors induced by the elliptical power-law model in galaxy-galaxy strong lens modeling `Cao et al. 2021 <https://arxiv.org/abs/2110.14554>`_
     *Computing lensing quantities from mass maps.*
+
+* TDCOSMO. VII. Boxyness/discyness in lensing galaxies : Detectability and impact on H0 `Van de Vyvere et al. 2021 <https://arxiv.org/abs/2112.03932>`_
+    *Assessment of boxy and discy lens model on the inference of H0.*
 
 
 
@@ -131,16 +137,26 @@ Dark Matter substructure
 * Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <https://arxiv.org/abs/2105.05259>`_
     * *
 
+* Substructure Detection Reanalyzed: Dark Perturber shown to be a Line-of-Sight Halo; `Sengul et al. 2021 <https://arxiv.org/abs/2112.00749>`_
+    *modeling a line-of-sight mini-halo*
+
+* The primordial matter power spectrum on sub-galactic scales; `Gilman et al. 2021 <https://arxiv.org/abs/2112.03293>`_
+    *rendering sub- and line-of-sight halos*
+
+
+
 
 Lens searches
 -------------
-
 
 * Strong lens systems search in the Dark Energy Survey using Convolutional Neural Networks; `Rojas et al. 2021 <https://arxiv.org/abs/2109.00014>`_
     *simulating training sets for lens searches*
 
 * On machine learning search for gravitational lenses; `Khachatryan 2021 <https://arxiv.org/abs/2104.01014>`_
     *simulating training sets for lens searches*
+
+* DeepZipper: A Novel Deep Learning Architecture for Lensed Supernovae Identification; `Morgan et al. 2021b <hhttps://arxiv.org/abs/2112.01541>`_
+    *simulating deeplenstronomy to simulate lensed supernovae data sets*
 
 
 Galaxy formation and evolution
@@ -157,6 +173,9 @@ Galaxy formation and evolution
 
 * PS J1721+8842: A gravitationally lensed dual AGN system at redshift 2.37 with two radio components; `Mangat et al. 2021 <https://arxiv.org/abs/2109.03253>`_
     *Imaging modeling of a dual lensed AGN with point sources and extended surface brightness*
+
+* RELICS: Small Lensed z≥5.5 Galaxies Selected as Potential Lyman Continuum Leakers; `Neufeld et al. 2021 <https://arxiv.org/abs/2111.14882>`_
+    *size measurements of high-z lensed galaxies*
 
 
 
@@ -189,20 +208,17 @@ Quasar-host galaxy decomposition
 * A local baseline of the black hole mass scaling relations for active galaxies. IV. Correlations between MBH and host galaxy σ, stellar mass, and luminosity; `Bennert et al. 2021 <https://arxiv.org/abs/2101.10355>`_
     *Detailed measurement of galaxy morphology, decomposing in spheroid, disk and bar, and central AGN*
 
-* The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021 <https://arxiv.org/abs/2105.06568>`_
+* The Sizes of Quasar Host Galaxies with the Hyper Suprime-Cam Subaru Strategic Program; `Li et al. 2021a <https://arxiv.org/abs/2105.06568>`_
     *Quasar-host decomposition of 5000 SDSS quasars*
 
 * The eROSITA Final Equatorial-Depth Survey (eFEDS): A multiwavelength view of WISE mid-infrared galaxies/active galactic nuclei; `Toba et al. 2021 <https://arxiv.org/abs/2106.14527>`_
     *Quasar-host decomposition of HSC imaging*
 
-* Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021 <https://arxiv.org/abs/2109.02751>`_
+* Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021b <https://arxiv.org/abs/2109.02751>`_
     *Quasar-host decomposition of SDSS quasars with HSC data*
 
 
 
-
-* Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021 <https://arxiv.org/abs/2111.08721>`_
-    *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
 
 

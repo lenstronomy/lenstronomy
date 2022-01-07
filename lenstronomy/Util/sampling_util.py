@@ -121,8 +121,5 @@ def sample_ball_truncated(mean, sigma, lower_limit, upper_limit, size):
     :return: realization of truncated normal distribution with shape (size, dim(parameters))
     """
     a, b = (lower_limit- mean) / sigma, (upper_limit - mean) / sigma
-
-    r = stats.truncnorm.rvs(a, b, size=len(a))
-    print(r, 'test')
     draws = np.vstack([mean + sigma * stats.truncnorm.rvs(a, b, size=len(a)) for i in range(size)])
     return draws

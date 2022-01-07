@@ -22,8 +22,8 @@ class TDCosmography(KinematicsAPI):
 
     """
     def __init__(self, z_lens, z_source, kwargs_model, cosmo_fiducial=None, lens_model_kinematics_bool=None,
-                 light_model_kinematics_bool=None, kwargs_seeing={}, kwargs_aperture={}, anisotropy_model=None,
-                 multi_observations=False):
+                 light_model_kinematics_bool=None, kwargs_seeing=None, kwargs_aperture=None, anisotropy_model=None,
+                 **kwargs_kin_api):
         """
 
         :param z_lens: redshift of deflector
@@ -37,12 +37,15 @@ class TDCosmography(KinematicsAPI):
         :param kwargs_seeing: seeing conditions (see observation class in Galkin)
         :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)
         :param anisotropy_model: string, anisotropy model type
-        :param multi_observations: bool, if True, interprets kwargs_aperture and kwargs_seeing as lists of multiple
-         observations
+        :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance
         """
 
         if cosmo_fiducial is None:
             cosmo_fiducial = default_cosmology.get()
+        if kwargs_seeing is None:
+            kwargs_seeing = {}
+        if kwargs_aperture is None:
+            kwargs_aperture = {}
         self._z_lens = z_lens
         self._z_source = z_source
         self._cosmo_fiducial = cosmo_fiducial
@@ -52,7 +55,7 @@ class TDCosmography(KinematicsAPI):
                                             cosmo=cosmo_fiducial, lens_model_kinematics_bool=lens_model_kinematics_bool,
                                             light_model_kinematics_bool=light_model_kinematics_bool,
                                             kwargs_seeing=kwargs_seeing, kwargs_aperture=kwargs_aperture,
-                                            anisotropy_model=anisotropy_model, multi_observations=multi_observations)
+                                            anisotropy_model=anisotropy_model, **kwargs_kin_api)
 
     def time_delays(self, kwargs_lens, kwargs_ps, kappa_ext=0, original_ps_position=False):
         """
@@ -151,6 +154,9 @@ class TDCosmography(KinematicsAPI):
 
         :param d_fermat_model: relative Fermat potential between two images from the same source in units arcsec^2
         :param dt_measured: measured time delay between the same image pair in units of days
+        :param kappa_s: external convergence from observer to source
+        :param kappa_ds: external convergence from lens to source
+        :param kappa_d: external convergence form observer to lens
         :return: D_dt, time-delay distance
         """
         D_dt_model = dt_measured * const.day_s * const.c / const.Mpc / d_fermat_model / const.arcsec ** 2

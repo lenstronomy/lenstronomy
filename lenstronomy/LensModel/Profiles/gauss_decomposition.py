@@ -54,7 +54,7 @@ class GaussianEllipseKappaSet(LensProfileBase):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``numpy.array`` with ``dtype=float``
@@ -82,15 +82,15 @@ class GaussianEllipseKappaSet(LensProfileBase):
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        Compute the derivatives of function angles :math:`\partial
-        f/\partial x`, :math:`\partial f/\partial y` at :math:`x,\ y` for a
+        Compute the derivatives of function angles :math:`\\partial
+        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a
         set of concentric elliptic Gaussian convergence profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``numpy.array`` with ``dtype=float``
@@ -102,18 +102,15 @@ class GaussianEllipseKappaSet(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Deflection angle :math:`\partial f/\partial x`, :math:`\partial f/\partial y` for elliptical Gaussian convergence
+        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y` for elliptical Gaussian convergence
         :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
         """
         f_x = np.zeros_like(x, dtype=float)
         f_y = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
-            f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(x, y,
-                                                amp=amp[i],
-                                                sigma=sigma[i], e1=e1,
-                                                e2=e2, center_x=center_x,
-                                                center_y=center_y)
+            f_x_i, f_y_i = self.gaussian_ellipse_kappa.derivatives(x, y, amp=amp[i], sigma=sigma[i], e1=e1, e2=e2,
+                                                                   center_x=center_x, center_y=center_y)
             f_x += f_x_i
             f_y += f_y_i
 
@@ -121,16 +118,16 @@ class GaussianEllipseKappaSet(LensProfileBase):
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        Compute Hessian matrix of function :math:`\partial^2f/\partial x^2`,
-        :math:`\partial^2 f/\partial y^2`, :math:`\partial^2 f/\partial
-        x\partial y` for a set of concentric elliptic Gaussian convergence
+        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
+        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial
+        x\\partial y` for a set of concentric elliptic Gaussian convergence
         profiles.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``numpy.array`` with ``dtype=float``
@@ -142,8 +139,10 @@ class GaussianEllipseKappaSet(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Hessian :math:`\partial^2f/\partial x^2`, :math:`\partial^2/\partial x\partial y`, :math:`\partial^2/\partial y\partial x`, :math:`\partial^2 f/\partial y^2` for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy`` array's shape equal to ``x.shape``
+        :return: Hessian :math:`\\partial^2f/\\partial x^2`, :math:`\\partial^2/\\partial x\\partial y`,
+         :math:`\\partial^2/\\partial y\\partial x`, :math:`\\partial^2 f/\\partial y^2` for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)``
+         with each ``numpy`` array's shape equal to ``x.shape``
         """
         f_xx = np.zeros_like(x, dtype=float)
         f_yy = np.zeros_like(x, dtype=float)
@@ -161,14 +160,14 @@ class GaussianEllipseKappaSet(LensProfileBase):
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
         Compute the density of a set of concentric elliptical Gaussian
-        convergence profiles :math:`\sum A/(2\pi \sigma^2) \exp(-(
-        x^2+y^2/q^2)/2\sigma^2)`.
+        convergence profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-(
+        x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``numpy.array`` with ``dtype=float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``numpy.array`` with ``dtype=float``
@@ -180,18 +179,14 @@ class GaussianEllipseKappaSet(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Density :math:`\kappa` for elliptical Gaussian convergence
+        :return: Density :math:`\\kappa` for elliptical Gaussian convergence
         :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``
         """
         density_2d = np.zeros_like(x, dtype=float)
 
         for i in range(len(amp)):
-            density_2d += self.gaussian_ellipse_kappa.density_2d(x, y,
-                                                    amp=amp[i],
-                                                    sigma=sigma[i],
-                                                    e1=e1, e2=e2,
-                                                    center_x=center_x,
-                                                    center_y=center_y)
+            density_2d += self.gaussian_ellipse_kappa.density_2d(x, y, amp=amp[i], sigma=sigma[i], e1=e1, e2=e2,
+                                                                 center_x=center_x, center_y=center_y)
 
         return density_2d
 
@@ -245,8 +240,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
             epsilons[2 * p - k] = epsilons[2 * p - k + 1] + 1 / 2. ** p * comb(
                 p, k)
 
-        self.etas = (-1.) ** kes * epsilons * 10. ** (p / 3.) * 2. * \
-                    _SQRT_2PI
+        self.etas = (-1.) ** kes * epsilons * 10. ** (p / 3.) * 2. * _SQRT_2PI
 
     def gauss_decompose(self, **kwargs):
         r"""
@@ -254,23 +248,17 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         integral transform with Gaussian kernel from Shajib (2019). The
         returned values are in the convention of eq. (2.13).
 
-        :param func: The function to decompose
-        :type func: ``function``
-        :param \**kwargs: Keyword arguments to send to ``func``
+        :param kwargs: Keyword arguments to send to ``func``
         :return: Amplitudes and standard deviations of the Gaussian components
         :rtype: tuple ``(numpy.array, numpy.array)``
         """
         sigma_start = self.sigma_start_mult*self.get_scale(**kwargs)
         sigma_end = self.sigma_end_mult*self.get_scale(**kwargs)
 
-        sigmas = np.logspace(np.log10(sigma_start), np.log10(sigma_end),
-                           self.n_sigma)
+        sigmas = np.logspace(np.log10(sigma_start), np.log10(sigma_end), self.n_sigma)
 
-        f_sigmas = np.sum(self.etas * self.get_kappa_1d(
-                                sigmas[:,np.newaxis]*self.betas[np.newaxis, :],
-                                **kwargs).real,
-                          axis=1
-                          )
+        f_sigmas = np.sum(self.etas * self.get_kappa_1d(sigmas[:, np.newaxis]*self.betas[np.newaxis, :], **kwargs).real,
+                          axis=1)
 
         del_log_sigma = np.abs(np.diff(np.log(sigmas)).mean())
 
@@ -288,7 +276,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         Abstract method to identify the keyword argument for the scale size
         among the profile parameters of the child class' convergence profile.
 
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
         :return: Scale size
         :rtype: ``float``
         """
@@ -301,7 +289,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
 
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
         """
 
     def function(self, x, y, e1=0., e2=0., center_x=0.,
@@ -322,7 +310,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :type center_x: ``float``
         :param center_y: y coordinate of centroid
         :type center_y: ``float``
-        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
         :return: Deflection potential
         :rtype: ``float``
         """
@@ -331,8 +319,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
         amps *= 2.*np.pi * sigmas * sigmas
 
-        return self.gaussian_set.function(x, y, amps, sigmas, e1, e2,
-                                                    center_x, center_y)
+        return self.gaussian_set.function(x, y, amps, sigmas, e1, e2, center_x, center_y)
 
     def derivatives(self, x, y, e1=0., e2=0., center_x=0.,
                     center_y=0., **kwargs):
@@ -353,7 +340,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :type center_x: ``float``
         :param center_y: y coordinate of centroid
         :type center_y: ``float``
-        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
         :return: Derivatives of deflection potential
         :rtype: tuple ``(type(x), type(x))``
         """
@@ -362,8 +349,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
         amps *= 2. * np.pi * sigmas * sigmas
 
-        return self.gaussian_set.derivatives(x, y, amps, sigmas, e1, e2,
-                                                    center_x, center_y)
+        return self.gaussian_set.derivatives(x, y, amps, sigmas, e1, e2, center_x, center_y)
 
     def hessian(self, x, y, e1=0., e2=0., center_x=0.,
                 center_y=0., **kwargs):
@@ -385,7 +371,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :type center_x: ``float``
         :param center_y: y coordinate of centroid
         :type center_y: ``float``
-        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
+        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile
         :return: Hessian of deflection potential
         :rtype: tuple ``(type(x), type(x), type(x))``
         """
@@ -394,8 +380,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
         amps *= 2. * np.pi * sigmas * sigmas
 
-        return self.gaussian_set.hessian(x, y, amps, sigmas, e1, e2,
-                                                center_x, center_y)
+        return self.gaussian_set.hessian(x, y, amps, sigmas, e1, e2, center_x, center_y)
 
     def density_2d(self, x, y, e1=0., e2=0., center_x=0.,
                    center_y=0., **kwargs):
@@ -414,7 +399,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         :type center_x: ``float``
         :param center_y: y coordinate of centroid
         :type center_y: ``float``
-        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile in the child class.
+        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile in the child class.
         :return: Convergence profile
         :rtype: ``type(x)``
         """
@@ -423,8 +408,7 @@ class GaussDecompositionAbstract(metaclass=abc.ABCMeta):
         # converting the amplitude convention A -> A/(2*pi*sigma^2)
         amps *= 2. * np.pi * sigmas * sigmas
 
-        return self.gaussian_set.density_2d(x, y, amps, sigmas, e1, e2,
-                                                   center_x, center_y)
+        return self.gaussian_set.density_2d(x, y, amps, sigmas, e1, e2, center_x, center_y)
 
 
 @export
@@ -448,7 +432,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
 
         :param y: y coordinate
         :type y: ``float``
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **n_sersic** (``float``) --
@@ -473,7 +457,7 @@ class SersicEllipseGaussDec(GaussDecompositionAbstract):
         """
         Identify the scale size from the keyword arguments.
 
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **n_sersic** (``float``) --
@@ -533,7 +517,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
 
         :param y: y coordinate
         :type y: ``float``
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **alpha_Rs** (``float``) --
@@ -547,7 +531,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         R_s = kwargs['Rs']
         alpha_Rs = kwargs['alpha_Rs']
 
-        kappa_s = alpha_Rs / (4 * R_s * (1 -  0.30102999566))
+        kappa_s = alpha_Rs / (4 * R_s * (1 - 0.30102999566))
         # log2 = 0.30102999566
 
         x = y/R_s
@@ -576,7 +560,7 @@ class NFWEllipseGaussDec(GaussDecompositionAbstract):
         """
         Identify the scale size from the keyword arguments.
 
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **alpha_Rs** (``float``) --
@@ -603,9 +587,7 @@ class GaussDecompositionAbstract3D(GaussDecompositionAbstract):
         integral transform with Gaussian kernel from Shajib (2019). The
         returned values are in the convention of eq. (2.13).
 
-        :param func: The function to decompose
-        :type func: ``function``
-        :param \**kwargs: Keyword arguments to send to ``func``
+        :param kwargs: Keyword arguments to send to ``func``
         :return: Amplitudes and standard deviations of the Gaussian components
         :rtype: tuple ``(numpy.array, numpy.array)``
         """
@@ -646,13 +628,10 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
         :type precision: ``int``
         :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.
         :type use_scipy_wofz: ``bool``
-        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.
-        :type min_ellipticity: ``float``
         """
-        super(CTNFWGaussDec, self).__init__(n_sigma=n_sigma,
-                            sigma_start_mult=sigma_start_mult,
-                            sigma_end_mult=sigma_end_mult,
-                            precision=precision, use_scipy_wofz=use_scipy_wofz)
+        super(CTNFWGaussDec, self).__init__(n_sigma=n_sigma, sigma_start_mult=sigma_start_mult,
+                                            sigma_end_mult=sigma_end_mult, precision=precision,
+                                            use_scipy_wofz=use_scipy_wofz)
 
     def get_kappa_1d(self, y, **kwargs):
         r"""
@@ -660,7 +639,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
 
         :param y: y coordinate
         :type y: ``float``
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **r_s** (``float``) --
@@ -695,7 +674,7 @@ class CTNFWGaussDec(GaussDecompositionAbstract3D):
         """
         Identify the scale size from the keyword arguments.
 
-        :param \**kwargs: Keyword arguments
+        :param kwargs: Keyword arguments
 
         :Keyword Arguments:
             * **r_s** (``float``) --

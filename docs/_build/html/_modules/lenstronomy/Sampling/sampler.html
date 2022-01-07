@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lenstronomy.Sampling.sampler &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -29,7 +27,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.sampler</a></li> 
       </ul>
     </div>  
 
@@ -44,11 +43,10 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Samplers.pso</span> <span class="k">import</span> <span class="n">ParticleSwarmOptimizer</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">sampling_util</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Pool.pool</span> <span class="k">import</span> <span class="n">choose_pool</span>
-<span class="kn">import</span> <span class="nn">emcee</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Samplers.pso</span> <span class="kn">import</span> <span class="n">ParticleSwarmOptimizer</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">sampling_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Sampling.Pool.pool</span> <span class="kn">import</span> <span class="n">choose_pool</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Sampler&#39;</span><span class="p">]</span>
 
@@ -61,7 +59,7 @@
 <span class="sd">    Feel free to sample with your convenient sampler!</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">likelihoodModule</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">likelihoodModule</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param likelihoodModule: instance of LikelihoodModule class</span>
@@ -193,9 +191,12 @@
 <span class="sd">        :return: samples, ln likelihood value of samples</span>
 <span class="sd">        :rtype: numpy 2d array, numpy 1d array</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">import</span> <span class="nn">emcee</span>
+
         <span class="n">num_param</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">param</span><span class="o">.</span><span class="n">num_param</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">initpos</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">initpos</span> <span class="o">=</span> <span class="n">sampling_util</span><span class="o">.</span><span class="n">sample_ball</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="n">n_walkers</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="s1">&#39;normal&#39;</span><span class="p">)</span>
+            <span class="n">initpos</span> <span class="o">=</span> <span class="n">sampling_util</span><span class="o">.</span><span class="n">sample_ball_truncated</span><span class="p">(</span><span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_limit</span><span class="p">,</span>
+                                                          <span class="n">size</span><span class="o">=</span><span class="n">n_walkers</span><span class="p">)</span>
 
         <span class="n">pool</span> <span class="o">=</span> <span class="n">choose_pool</span><span class="p">(</span><span class="n">mpi</span><span class="o">=</span><span class="n">mpi</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="n">threadCount</span><span class="p">,</span> <span class="n">use_dill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -233,23 +234,22 @@
         <span class="k">return</span> <span class="n">flat_samples</span><span class="p">,</span> <span class="n">dist</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -264,12 +264,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.sampler</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

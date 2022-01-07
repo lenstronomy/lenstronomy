@@ -131,8 +131,8 @@ def image2array(image):
     """
     returns the information contained in a 2d array into an n*n 1d array
 
-    :param array: image values
-    :type array: array of size (n,n)
+    :param image: image values
+    :type image: array of size (n,n)
     :returns:  1d array
     :raises: AttributeError, KeyError
     """
@@ -149,9 +149,9 @@ def array2cube(array, n_1, n_23):
     :param array: image values
     :type array: 1d array
     :param n_1: first dimension of returned array
-    :type int:
+    :type n_1: int
     :param n_23: square of second and third dimensions of returned array
-    :type int:
+    :type n_23: int
     :returns: 3d array
     :raises ValueError: when n_23 is not a perfect square
     """
@@ -168,8 +168,8 @@ def cube2array(cube):
     """
     returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)
 
-    :param array: image values
-    :type array: 3d array
+    :param cube: image values
+    :type cube: 3d array
     :returns: 1d array
     """
     n_1, n_2, n_3 = cube.shape
@@ -196,14 +196,14 @@ def make_grid(numPix, deltapix, subgrid_res=1, left_lower=False):
         assert len(numPix) == 2
         if any(x != round(x) for x in numPix):
             raise ValueError("numPix contains non-integers: %s" % numPix)
-        numPix = np.asarray(numPix, dtype=np.int)
+        numPix = np.asarray(numPix, dtype=int)
     else:
         if numPix != round(numPix):
             raise ValueError("Attempt to specify non-int numPix: %s" % numPix)
-        numPix = np.array([numPix, numPix], dtype=np.int)
+        numPix = np.array([numPix, numPix], dtype=int)
 
     # Super-resolution sampling
-    numPix_eff = (numPix * subgrid_res).astype(np.int)
+    numPix_eff = (numPix * subgrid_res).astype(int)
     deltapix_eff = deltapix / float(subgrid_res)
 
     # Compute unshifted grids.
@@ -243,12 +243,12 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
 
     :param numPix: number of pixels per axis
     :param deltapix: pixel scale per axis
-    :param subgrid_res: supersampling resolution relative to the stated pixel size
+    :param subgrid_res: super-sampling resolution relative to the stated pixel size
     :param center_ra: center of the grid
     :param center_dec: center of the grid
     :param left_lower: sets the zero point at the lower left corner of the pixels
     :param inverse: bool, if true sets East as left, otherwise East is righrt
-    :return:
+    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix
     """
     numPix_eff = numPix * subgrid_res
     deltapix_eff = deltapix / float(subgrid_res)
@@ -265,8 +265,8 @@ def make_grid_with_coordtransform(numPix, deltapix, subgrid_res=1, center_ra=0, 
         ra_grid = (matrix[:, 0] - (numPix_eff - 1) / 2.) * delta_x
         dec_grid = (matrix[:, 1] - (numPix_eff - 1) / 2.) * deltapix_eff
     shift = (subgrid_res - 1) / (2. * subgrid_res) * deltapix
-    ra_grid -= shift + center_ra
-    dec_grid -= shift + center_dec
+    ra_grid += -shift + center_ra
+    dec_grid += -shift + center_dec
     ra_at_xy_0 = ra_grid[0]
     dec_at_xy_0 = dec_grid[0]
 
@@ -338,10 +338,14 @@ def displaceAbs(x, y, sourcePos_x, sourcePos_y):
     """
     calculates a grid of distances to the observer in angel
 
-    :param mapped_cartcoord: mapped cartesian coordinates
-    :type mapped_cartcoord: numpy array (n,2)
-    :param sourcePos: source position
-    :type sourcePos: numpy vector [x0,y0]
+    :param x: cartesian coordinates
+    :type x: numpy array
+    :param y: cartesian coordinates
+    :type y: numpy array
+    :param sourcePos_x: source position
+    :type sourcePos_x: float
+    :param sourcePos_y: source position
+    :type sourcePos_y: float
     :returns:  array of displacement
     :raises: AttributeError, KeyError
     """

@@ -15,7 +15,7 @@ class Cosmo(object):
         :param d_s: angular diameter distance to the source
         :param d_ds: angular diameter distance between deflector and source
         """
-        if d_ds <= 0 or d_s <= 0 or d_d <=0:
+        if d_ds <= 0 or d_s <= 0 or d_d <= 0:
             raise ValueError('input angular diameter distances Dd: %s, Ds: %s, Dds: %s are not suppored for a lens'
                              ' model!' % (d_d, d_s, d_ds))
         self.dd = float(d_d)  # angular diameter distance from observer to deflector in physical Mpc

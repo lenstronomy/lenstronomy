@@ -24,6 +24,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     plots a lens model (convergence) and the critical curves and caustics
 
     :param ax: matplotlib axis instance
+    :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total nnumber of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
@@ -96,8 +97,7 @@ def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=
     y_grid1d = util.image2array(y_grid)
     kappa_result = lens_model.kappa(x_grid1d, y_grid1d, kwargs_lens)
     kappa_result = util.array2image(kappa_result)
-    im = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap=cmap,
-                    vmin=vmin, vmax=vmax, **kwargs)
+    _ = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
     return ax
 
 
@@ -179,7 +179,6 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
                                                          y_center=y_center, min_distance=pixel_grid.pixel_width)
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
-    #ax = plot_util.image_position_plot(ax=ax, coords=pixel_grid, ra_image=theta_x, dec_image=theta_y, color='w', image_name_list=None)
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
     abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
     for i in range(len(x_image)):
@@ -194,12 +193,12 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
 
 @export
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
-                         letter_font_size=20):
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours=None,
+                         image_color_list=None, letter_font_size=20):
     """
 
     :param ax: matplotlib axis instance
-    :param lens_model: LensModel() class instance
+    :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix:
     :param deltaPix:
@@ -222,6 +221,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y)
     fermat_surface = util.array2image(fermat_surface)
+    if kwargs_contours is None:
+        kwargs_contours = {}
 
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:

@@ -61,7 +61,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     if with_caustics is True:
         kwargs_caustics = kwargs.get('kwargs_caustics', {})
         caustics_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens, fast_caustic=fast_caustic,
-                      coord_inverse=coord_inverse, **kwargs_caustics)
+                      coord_inverse=coord_inverse, pixel_offset=True, **kwargs_caustics)
     if point_source:
         kwargs_point_source = kwargs.get('kwargs_point_source', {})
         point_source_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens,
@@ -71,8 +71,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     else:
         ax.set_xlim([ra0, ra0 + _frame_size])
     ax.set_ylim([dec0, dec0 + _frame_size])
-    #ax.get_xaxis().set_visible(False)
-    #ax.get_yaxis().set_visible(False)
+    # ax.get_xaxis().set_visible(False)
+    # ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
     return ax
 
@@ -102,7 +102,7 @@ def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=
 
 
 def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, coord_inverse=False, color_crit='r',
-                  color_caustic='g', *args, **kwargs):
+                  color_caustic='g', pixel_offset=False, *args, **kwargs):
     """
 
     :param ax: matplotlib axis instance
@@ -115,6 +115,8 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
      (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
+    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
+     the matshow() command to center the coordinates in the pixel center
     :param args: argument for plotting curve
     :param kwargs: keyword arguments for plotting curves
     :return: updated matplotlib axis instance
@@ -141,9 +143,11 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
         # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
         # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
-                            flipped_x=coord_inverse, points_only=points_only, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
+                            **kwargs)
     plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
-                            flipped_x=coord_inverse, points_only=points_only, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
+                            **kwargs)
     return ax
 
 
@@ -235,12 +239,12 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
         theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
-                                                                 min_distance=deltaPix, search_window=deltaPix*numPix)
+                                                             min_distance=deltaPix, search_window=deltaPix*numPix)
 
         fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
-        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+        _ = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
                         levels=np.sort(fermat_pot_images), **kwargs_contours)
-        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
 

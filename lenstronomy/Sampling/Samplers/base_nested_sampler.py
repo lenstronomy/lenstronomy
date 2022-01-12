@@ -57,6 +57,6 @@ class NestedSampler(object):
         """
         raise NotImplementedError("Method not be implemented in base class")
 
-    def run(self, kwargs_run):
+    def run(self, **kwargs_run):
         """run the nested sampling algorithm"""
         raise NotImplementedError("Method not be implemented in base class")

@@ -167,7 +167,7 @@ class MultiNestSampler(NestedSampler):
         try:
             import pymultinest
             from pymultinest.analyse import Analyzer
-        except ImportError:
+        except:
             print("Warning : MultiNest/pymultinest not properly installed (results might be unexpected). \
                     You can get it from : https://johannesbuchner.github.io/PyMultiNest/pymultinest.html")
             self._pymultinest_installed = False

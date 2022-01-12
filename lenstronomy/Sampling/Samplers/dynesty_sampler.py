@@ -86,7 +86,7 @@ class DynestySampler(NestedSampler):
             self._has_warned = True
         return float(log_l)
 
-    def run(self, **kwargs_run):
+    def run(self, kwargs_run):
         """
         run the Dynesty nested sampler
 

@@ -18,7 +18,7 @@ class DynestySampler(NestedSampler):
 
     def __init__(self, likelihood_module, prior_type='uniform', 
                  prior_means=None, prior_sigmas=None, width_scale=1, sigma_scale=1,
-                 bound='multi', sample='auto', use_mpi=False, use_pool={}):
+                 bound='multi', sample='auto', use_mpi=False, use_pool=None):
         """
         :param likelihood_module: likelihood_module like in likelihood.py (should be callable)
         :param prior_type: 'uniform' of 'gaussian', for converting the unit hypercube to param cube
@@ -133,7 +133,7 @@ class DynestySampler(NestedSampler):
         try:
             import dynesty
             import dynesty.utils as dyfunc
-        except:
+        except ImportError:
             print("Warning : dynesty not properly installed (results might be unexpected). \
                     You can get it with $pip install dynesty.")
             self._dynesty_installed = False

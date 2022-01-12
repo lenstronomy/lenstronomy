@@ -78,7 +78,7 @@ def mask_half_moon(x, y, center_x, center_y, r_in, r_out, phi0=0, delta_phi=2*np
     :param center_y:
     :param r_in:
     :param r_out:
-    :param phi:
+    :param phi0:
     :param delta_phi:
     :return:
     """

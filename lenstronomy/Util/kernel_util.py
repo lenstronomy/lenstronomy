@@ -60,7 +60,7 @@ def center_kernel(kernel, iterations=20):
     """
     kernel = kernel_norm(kernel)
     nx, ny = np.shape(kernel)
-    if nx %2 == 0:
+    if nx % 2 == 0:
         raise ValueError("kernel needs odd number of pixels")
     # make coordinate grid of kernel
     x_grid, y_grid = util.make_grid(nx, deltapix=1, left_lower=False)
@@ -297,7 +297,6 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
     pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
     performed, i.e. smaller subsampling PSF and hole in larger PSF
 
-    :param kernel: PSF kernel of the size of the pixel
     :param kernel_super: super-sampled kernel
     :param supersampling_kernel_size: size of super-sampled PSF in units of degraded pixels
     :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel
@@ -428,7 +427,7 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     :param data:
     :param x_pos:
     :param y_pos:
-    :param deltaPix:
+    :param psf_kernel:
     :return:
     """
     numPix_x, numPix_y = np.shape(data)

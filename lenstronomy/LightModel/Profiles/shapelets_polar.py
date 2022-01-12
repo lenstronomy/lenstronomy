@@ -295,8 +295,10 @@ class ShapeletSetPolar(object):
         for i in range(num_param):
             out = self._pre_calc_function(L_list, i) * amp[i]
             f_ += out
-        try: len(x)
-        except: f_ = f_[0]
+        try:
+            len(x)
+        except:
+            f_ = f_[0]
         return np.nan_to_num(f_)
 
     def function_split(self, x, y, amp, n_max, beta, center_x=0, center_y=0):

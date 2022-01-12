@@ -12,7 +12,7 @@ def half_light_radius(lens_light, x_grid, y_grid, center_x=0, center_y=0):
 
     :param lens_light: array of surface brightness
     :param x_grid: x-axis coordinates
-    :param y_gird: y-axis coordinates
+    :param y_grid: y-axis coordinates
     :param center_x: center of light
     :param center_y: center of light
     :return:
@@ -35,7 +35,7 @@ def radial_profile(light_grid, x_grid, y_grid, center_x=0, center_y=0, n=None):
 
     :param light_grid: array of surface brightness
     :param x_grid: x-axis coordinates
-    :param y_gird: y-axis coordinates
+    :param y_grid: y-axis coordinates
     :param center_x: center of light
     :param center_y: center of light
     :param n: number of discrete steps
@@ -100,7 +100,7 @@ def moments(I_xy_input, x, y):
     """
     compute quadrupole moments from a light distribution
 
-    :param I_xy: light distribution
+    :param I_xy_input: light distribution
     :param x: x-coordinates of I_xy
     :param y: y-coordinates of I_xy
     :return: Q_xx, Q_xy, Q_yy

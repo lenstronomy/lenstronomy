@@ -330,13 +330,13 @@ class TestRaise(unittest.TestCase):
             image_util.re_size(image, factor=0.5)
         with self.assertRaises(ValueError):
             image = np.ones((5, 5))
-            image_util.cut_edges(image, numPix=7)
+            image_util.cut_edges(image, num_pix=7)
         with self.assertRaises(ValueError):
             image = np.ones((5, 6))
-            image_util.cut_edges(image, numPix=3)
+            image_util.cut_edges(image, num_pix=3)
         with self.assertRaises(ValueError):
             image = np.ones((5, 5))
-            image_util.cut_edges(image, numPix=2)
+            image_util.cut_edges(image, num_pix=2)
 
 
 if __name__ == '__main__':

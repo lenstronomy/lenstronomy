@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
@@ -95,6 +96,10 @@ class ModelPlot(object):
         n_bands = len(self._band_plot_list)
         import matplotlib.pyplot as plt
         f, axes = plt.subplots(n_bands, 3, figsize=(12, 4*n_bands))
+        if n_bands == 1:  # make sure axis can be called as 2d array
+            _axes = np.empty((1, 3), dtype=object)
+            _axes[:] = axes
+            axes = _axes
         i = 0
         for band_index in self._index_list:
             if band_index >= 0:

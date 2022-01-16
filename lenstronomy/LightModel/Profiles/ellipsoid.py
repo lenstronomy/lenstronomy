@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class to make a moffat profile
+# this file contains a class to make an Ellipsoid
 import numpy as np
 from lenstronomy.Util import param_util
 
@@ -33,8 +33,8 @@ class Ellipsoid(object):
         r2 = x_**2 + y_**2
         flux = np.zeros_like(x)
         flux[r2 <= radius**2] = 1
-        A = np.pi * radius ** 2
-        return amp / A * flux
+        area = np.pi * radius ** 2
+        return amp / area * flux
 
 
 def function(x, y, amp, sigma, center_x, center_y):
@@ -43,8 +43,8 @@ def function(x, y, amp, sigma, center_x, center_y):
     """
     x_shift = x - center_x
     y_shift = y - center_y
-    A = np.pi * sigma**2
+    area = np.pi * sigma**2
     dist = (x_shift / sigma) ** 2 + (y_shift / sigma) ** 2
     torus = np.zeros_like(x)
     torus[dist <= 1] = 1
-    return amp/A * torus
+    return amp/area * torus

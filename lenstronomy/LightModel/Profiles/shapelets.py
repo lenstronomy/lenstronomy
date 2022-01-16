@@ -27,21 +27,21 @@ class Shapelets(object):
     This basis is orthonormal. The dimensional basis function is
 
     .. math::
-        B_n(x;\\beta) \equiv \\beta^{-1/2} \\phi_n(\\beta^{-1}x)
+        B_n(x;\\beta) \\equiv \\beta^{-1/2} \\phi_n(\\beta^{-1}x)
 
     which are orthonormal as well.
 
     The two-dimensional basis function is
 
     .. math::
-        \\phi_{\\bf n}({\bf x}) \equiv \\phi_{n1}(x1) \\phi_{n2}(x2)
+        \\phi_{\\bf n}({\bf x}) \\equiv \\phi_{n1}(x1) \\phi_{n2}(x2)
 
     where :math:`{\\bf n} \\equiv (n1, n2)` and :math:`{\\bf x} \\equiv (x1, x2)`.
 
     The dimensional two-dimentional basis function is
 
     .. math::
-        B_{\\bf n}({\\bf x};\\beta) \equiv \\beta^{-1/2} \\phi_{\\bf n}(\\beta^{-1}{\\bf x}).
+        B_{\\bf n}({\\bf x};\\beta) \\equiv \\beta^{-1/2} \\phi_{\\bf n}(\\beta^{-1}{\\bf x}).
 
     """
     param_names = ['amp', 'beta', 'n1', 'n2', 'center_x', 'center_y']
@@ -66,7 +66,7 @@ class Shapelets(object):
         self._cut_scale = cut_scale
         if interpolation:
             n_order = 50
-            self.H_interp = [[] for i in range(0, n_order)]
+            self.H_interp = [[] for _ in range(0, n_order)]
             self.x_grid = np.linspace(-50, 50, 6000)
             for k in range(0, n_order):
                 n_array = np.zeros(k+1)
@@ -116,17 +116,16 @@ class Shapelets(object):
         """
 
         if self._precalc:
-            return amp * x[n1] * y[n2]# / beta
+            return amp * x[n1] * y[n2]  # / beta
         x_ = x - center_x
         y_ = y - center_y
-        return np.nan_to_num(amp * self.phi_n(n1, x_/beta) * self.phi_n(n2, y_/beta))#/beta
+        return np.nan_to_num(amp * self.phi_n(n1, x_/beta) * self.phi_n(n2, y_/beta))  # /beta
 
     def H_n(self, n, x):
         """
         constructs the Hermite polynomial of order n at position x (dimensionless)
 
         :param n: The n'the basis function.
-        :type name: int.
         :param x: 1-dim position (dimensionless)
         :type x: float or numpy array.
         :returns:  array-- H_n(x).
@@ -143,7 +142,7 @@ class Shapelets(object):
         constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)
 
         :param n: The n'the basis function.
-        :type name: int.
+        :type n: int.
         :param x: 1-dim position (dimensionless)
         :type x: float or numpy array.
         :returns:  array-- phi_n(x).

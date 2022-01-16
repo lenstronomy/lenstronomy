@@ -45,11 +45,12 @@ class ModelPlot(object):
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
 
         check_solver_error(param)
-        logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
+        log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
+                                                             **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
-            print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
 
         self._band_plot_list = []
         self._index_list = []

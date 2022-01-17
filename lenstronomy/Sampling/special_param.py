@@ -27,7 +27,7 @@ class SpecialParam(object):
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param num_z_sampling: integer, number of different lens redshifts to be sampled
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates.
-        Warning: this is only defined for pixel-based source modelluing (e.g. 'SLIT_STARLETS' light profile)
+        Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
         """
 
         self._D_dt_sampling = Ddt_sampling

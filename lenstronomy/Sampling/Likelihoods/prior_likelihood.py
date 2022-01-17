@@ -64,7 +64,8 @@ class PriorLikelihood(object):
         self._kde_ps_list = self._init_kde(prior_ps_kde)
         self._kde_lens_light_list = self._init_kde(prior_lens_light_kde)
 
-    def _init_kde(self, prior_list_kde):
+    @staticmethod
+    def _init_kde(prior_list_kde):
         """
 
         :param prior_list_kde: list of [index_model, param_name, samples]

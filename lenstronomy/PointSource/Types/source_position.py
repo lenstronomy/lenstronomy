@@ -21,7 +21,8 @@ class SourcePositions(PSBase):
         on-sky image positions
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver

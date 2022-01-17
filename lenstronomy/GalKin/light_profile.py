@@ -116,21 +116,21 @@ class LightProfile(object):
         flux_r *= dlog_r * x
 
         # linear integral
-        #x = np.linspace(start=self._min_interpolate, stop=np.sqrt(self._max_interpolate ** 2 - R ** 2),
+        # x = np.linspace(start=self._min_interpolate, stop=np.sqrt(self._max_interpolate ** 2 - R ** 2),
         #                num=self._interp_grid_num)
-        #r_array = np.sqrt(x ** 2 + R ** 2)
-        #dr = x[1] - x[0]
-        #flux_r = self.light_3d(r_array + dr / 2, kwargs_circ)
-        #dr = x[1] - x[0]
-        #flux_r *= dr
+        # r_array = np.sqrt(x ** 2 + R ** 2)
+        # dr = x[1] - x[0]
+        # flux_r = self.light_3d(r_array + dr / 2, kwargs_circ)
+        # dr = x[1] - x[0]
+        # flux_r *= dr
 
         flux_R = np.sum(flux_r)
         # perform finite integral
 
-        #out = integrate.quad(lambda x: self.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_circ), self._min_interpolate,
+        # out = integrate.quad(lambda x: self.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_circ), self._min_interpolate,
         #                     np.sqrt(self._max_interpolate**2 - R**2))
-        #print(out_1, out, 'test')
-        #flux_R = out[0]
+        # print(out_1, out, 'test')
+        # flux_R = out[0]
         return flux_R * 2  # integral in both directions
 
     def light_2d_finite(self, R, kwargs_list):
@@ -166,13 +166,13 @@ class LightProfile(object):
         if not hasattr(self, '_light_cdf') or new_compute is True:
             r_array = np.linspace(self._min_interpolate, self._max_draw, self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
-            sum = 0
+            sum_light = 0
             for i, r in enumerate(r_array):
                 if i == 0:
                     cum_sum[i] = 0
                 else:
-                    sum += self.light_2d(r, kwargs_list) * r
-                    cum_sum[i] = copy.deepcopy(sum)
+                    sum_light += self.light_2d(r, kwargs_list) * r
+                    cum_sum[i] = copy.deepcopy(sum_light)
             cum_sum_norm = cum_sum/cum_sum[-1]
             f = interp1d(cum_sum_norm, r_array)
             self._light_cdf = f
@@ -193,13 +193,13 @@ class LightProfile(object):
         if not hasattr(self, '_light_cdf_log') or new_compute is True:
             r_array = np.logspace(np.log10(self._min_interpolate), np.log10(self._max_draw), self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
-            sum = 0
+            sum_light = 0
             for i, r in enumerate(r_array):
                 if i == 0:
                     cum_sum[i] = 0
                 else:
-                    sum += self.light_2d(r, kwargs_list) * r * r
-                    cum_sum[i] = copy.deepcopy(sum)
+                    sum_light += self.light_2d(r, kwargs_list) * r * r
+                    cum_sum[i] = copy.deepcopy(sum_light)
             cum_sum_norm = cum_sum/cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))
             self._light_cdf_log = f
@@ -221,13 +221,13 @@ class LightProfile(object):
             dlog_r = np.log10(r_array[1]) - np.log10(r_array[0])
             r_array_int = np.logspace(np.log10(self._min_interpolate) + dlog_r / 2, np.log10(self._max_draw) + dlog_r / 2, self._interp_grid_num)
             cum_sum = np.zeros_like(r_array)
-            sum = 0
+            sum_light = 0
             for i, r in enumerate(r_array_int[:-1]):
-                #if i == 0:
+                # if i == 0:
                 #    cum_sum[i] = 0
-                #else:
-                    sum += self.light_3d(r, kwargs_list) * r**2 * (r_array[i+1] - r_array[i])# * r
-                    cum_sum[i+1] = copy.deepcopy(sum)
+                # else:
+                sum_light += self.light_3d(r, kwargs_list) * r**2 * (r_array[i+1] - r_array[i])  # * r
+                cum_sum[i+1] = copy.deepcopy(sum_light)
             cum_sum_norm = cum_sum/cum_sum[-1]
             f = interp1d(cum_sum_norm, np.log(r_array))
             self._light_3d_cdf_log = f

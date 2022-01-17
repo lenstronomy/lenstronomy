@@ -16,8 +16,8 @@ class PointSource(object):
 
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
-        :param fixed_magnification_list: list of booleans (same length as point_source_type_list). If True, magnification
-        ratio of point sources is fixed to the one given by the lens model
+        :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
+         If True, magnification ratio of point sources is fixed to the one given by the lens model
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
@@ -61,7 +61,8 @@ class PointSource(object):
                                                                  fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
             else:
-                raise ValueError("Point-source model %s not available. Supported models are %s ." % (model, _SUPPORTED_MODELS))
+                raise ValueError("Point-source model %s not available. Supported models are %s ."
+                                 % (model, _SUPPORTED_MODELS))
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         self._kwargs_lens_eqn_solver = kwargs_lens_eqn_solver
@@ -79,10 +80,11 @@ class PointSource(object):
         :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set
         :return: updated self instances
         """
-        if min_distance is not None and not 'min_distance' in self._kwargs_lens_eqn_solver and only_from_unspecified:
+        if min_distance is not None and 'min_distance' not in self._kwargs_lens_eqn_solver and only_from_unspecified:
             self._kwargs_lens_eqn_solver['min_distance'] = min_distance
         if only_from_unspecified:
-            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window', search_window)
+            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window',
+                                                                                             search_window)
             self._kwargs_lens_eqn_solver['x_center'] = self._kwargs_lens_eqn_solver.get('x_center', x_center)
             self._kwargs_lens_eqn_solver['y_center'] = self._kwargs_lens_eqn_solver.get('y_center', y_center)
         else:
@@ -110,26 +112,26 @@ class PointSource(object):
         for model in self._point_source_list:
             model.delete_lens_model_cache()
 
-    def set_save_cache(self, bool):
+    def set_save_cache(self, save_cache):
         """
         set the save cache boolean to new value
 
-        :param bool: bool, if True, saves (or uses a previously saved) values
+        :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: updated class and sub-class instances to either save or not save the point source information in cache
         """
-        self._set_save_cache(bool)
-        self._save_cache = bool
+        self._set_save_cache(save_cache)
+        self._save_cache = save_cache
 
-    def _set_save_cache(self, bool):
+    def _set_save_cache(self, save_cache):
         """
         set the save cache boolean to new value. This function is for use within this class for temporarily set the
         cache within a single routine.
 
-        :param bool: bool, if True, saves (or uses a previously saved) values
+        :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: None
         """
         for model in self._point_source_list:
-            model.set_save_cache(bool)
+            model.set_save_cache(save_cache)
 
     def source_position(self, kwargs_ps, kwargs_lens):
         """

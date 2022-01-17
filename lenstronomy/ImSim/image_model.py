@@ -76,15 +76,15 @@ class ImageModel(object):
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
-    def reset_point_source_cache(self, bool=True):
+    def reset_point_source_cache(self, cache=True):
         """
         deletes all the cache in the point source class and saves it from then on
 
-        :param bool: boolean, if True, saves the next occuring point source positions in the cache
+        :param cache: boolean, if True, saves the next occuring point source positions in the cache
         :return: None
         """
         self.PointSource.delete_lens_model_cache()
-        self.PointSource.set_save_cache(bool)
+        self.PointSource.set_save_cache(cache)
 
     def update_psf(self, psf_class):
         """

@@ -24,6 +24,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     plots a lens model (convergence) and the critical curves and caustics
 
     :param ax: matplotlib axis instance
+    :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix: total nnumber of pixels (for convergence map)
     :param deltaPix: width of pixel (total frame size is deltaPix x numPix)
@@ -60,7 +61,7 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     if with_caustics is True:
         kwargs_caustics = kwargs.get('kwargs_caustics', {})
         caustics_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens, fast_caustic=fast_caustic,
-                      coord_inverse=coord_inverse, **kwargs_caustics)
+                      coord_inverse=coord_inverse, pixel_offset=True, **kwargs_caustics)
     if point_source:
         kwargs_point_source = kwargs.get('kwargs_point_source', {})
         point_source_plot(ax, pixel_grid=_coords, lens_model=lensModel, kwargs_lens=kwargs_lens,
@@ -70,8 +71,8 @@ def lens_model_plot(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourc
     else:
         ax.set_xlim([ra0, ra0 + _frame_size])
     ax.set_ylim([dec0, dec0 + _frame_size])
-    #ax.get_xaxis().set_visible(False)
-    #ax.get_yaxis().set_visible(False)
+    # ax.get_xaxis().set_visible(False)
+    # ax.get_yaxis().set_visible(False)
     ax.autoscale(False)
     return ax
 
@@ -96,13 +97,12 @@ def convergence_plot(ax, pixel_grid, lens_model, kwargs_lens, extent=None, vmin=
     y_grid1d = util.image2array(y_grid)
     kappa_result = lens_model.kappa(x_grid1d, y_grid1d, kwargs_lens)
     kappa_result = util.array2image(kappa_result)
-    im = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap=cmap,
-                    vmin=vmin, vmax=vmax, **kwargs)
+    _ = ax.matshow(np.log10(kappa_result), origin='lower', extent=extent, cmap=cmap, vmin=vmin, vmax=vmax, **kwargs)
     return ax
 
 
 def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, coord_inverse=False, color_crit='r',
-                  color_caustic='g', *args, **kwargs):
+                  color_caustic='g', pixel_offset=False, *args, **kwargs):
     """
 
     :param ax: matplotlib axis instance
@@ -115,6 +115,9 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
      (effectively the RA definition)
     :param color_crit: string, color of critical curve
     :param color_caustic: string, color of caustic curve
+    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
+     the matshow() command to center the coordinates in the pixel center
+    :param args: argument for plotting curve
     :param kwargs: keyword arguments for plotting curves
     :return: updated matplotlib axis instance
     """
@@ -128,18 +131,23 @@ def caustics_plot(ax, pixel_grid, lens_model, kwargs_lens, fast_caustic=True, co
         ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = lens_model_ext.critical_curve_caustics(
             kwargs_lens, compute_window=frame_size, grid_scale=pixel_width, center_x=coord_center_ra,
             center_y=coord_center_dec)
+        points_only = False
     else:
+        # only supports individual points due to output of critical_curve_tiling definition
+        points_only = True
         ra_crit_list, dec_crit_list = lens_model_ext.critical_curve_tiling(kwargs_lens, compute_window=frame_size,
                                                                          start_scale=pixel_width, max_order=10,
                                                                          center_x=coord_center_ra,
                                                                          center_y=coord_center_dec)
         ra_caustic_list, dec_caustic_list = lens_model.ray_shooting(ra_crit_list, dec_crit_list, kwargs_lens)
-        #ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
-        #ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
+        # ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)
+        # ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)
     plot_util.plot_line_set(ax, pixel_grid, ra_caustic_list, dec_caustic_list, color=color_caustic, origin=origin,
-                            flipped_x=coord_inverse, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
+                            **kwargs)
     plot_util.plot_line_set(ax, pixel_grid, ra_crit_list, dec_crit_list, color=color_crit, origin=origin,
-                            flipped_x=coord_inverse, *args, **kwargs)
+                            flipped_x=coord_inverse, points_only=points_only, pixel_offset=pixel_offset, *args,
+                            **kwargs)
     return ax
 
 
@@ -175,7 +183,6 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
                                                          y_center=y_center, min_distance=pixel_grid.pixel_width)
     mag_images = lens_model.magnification(theta_x, theta_y, kwargs_lens)
 
-    #ax = plot_util.image_position_plot(ax=ax, coords=pixel_grid, ra_image=theta_x, dec_image=theta_y, color='w', image_name_list=None)
     x_image, y_image = pixel_grid.map_coord2pix(theta_x, theta_y)
     abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
     for i in range(len(x_image)):
@@ -190,12 +197,12 @@ def point_source_plot(ax, pixel_grid, lens_model, kwargs_lens, source_x, source_
 
 @export
 def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, sourcePos_x=0, sourcePos_y=0,
-                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours={}, image_color_list=None,
-                         letter_font_size=20):
+                         with_caustics=False, point_source=False, n_levels=10, kwargs_contours=None,
+                         image_color_list=None, letter_font_size=20):
     """
 
     :param ax: matplotlib axis instance
-    :param lens_model: LensModel() class instance
+    :param lensModel: LensModel() class instance
     :param kwargs_lens: lens model keyword argument list
     :param numPix:
     :param deltaPix:
@@ -218,6 +225,8 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
     y_grid1d = util.image2array(y_grid)
     fermat_surface = lensModel.fermat_potential(x_grid1d, y_grid1d, kwargs_lens, sourcePos_x, sourcePos_y)
     fermat_surface = util.array2image(fermat_surface)
+    if kwargs_contours is None:
+        kwargs_contours = {}
 
         #, cmap='Greys', vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)
     if with_caustics is True:
@@ -230,12 +239,12 @@ def arrival_time_surface(ax, lensModel, kwargs_lens, numPix=500, deltaPix=0.01, 
         from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
         solver = LensEquationSolver(lensModel)
         theta_x, theta_y = solver.image_position_from_source(sourcePos_x, sourcePos_y, kwargs_lens,
-                                                                 min_distance=deltaPix, search_window=deltaPix*numPix)
+                                                             min_distance=deltaPix, search_window=deltaPix*numPix)
 
         fermat_pot_images = lensModel.fermat_potential(theta_x, theta_y, kwargs_lens)
-        im = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
+        _ = ax.contour(x_grid, y_grid, fermat_surface, origin='lower',  # extent=[0, _frame_size, 0, _frame_size],
                         levels=np.sort(fermat_pot_images), **kwargs_contours)
-        mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
+        # mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)
         x_image, y_image = _coords.map_coord2pix(theta_x, theta_y)
         abc_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
 

@@ -4,7 +4,6 @@ __author__ = 'sibirrer'
 
 import numpy as np
 from lenstronomy.LensModel.Profiles.sersic_utils import SersicUtil
-import lenstronomy.Util.param_util as param_util
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -20,7 +19,7 @@ class Sersic(SersicUtil):
 
     with :math:`I_0 = amp`
     and
-    with :math:`b_{n}\\approx 1.999\,n-0.327`
+    with :math:`b_{n}\\approx 1.999n-0.327`
 
     """
 
@@ -52,8 +51,10 @@ class SersicElliptic(SersicUtil):
     this class contains functions to evaluate an elliptical Sersic function
     """
     param_names = ['amp', 'R_sersic', 'n_sersic', 'e1', 'e2', 'center_x', 'center_y']
-    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'e1': -0.5, 'e2': -0.5,'center_x': -100, 'center_y': -100}
-    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'e1': 0.5, 'e2': 0.5,'center_x': 100, 'center_y': 100}
+    lower_limit_default = {'amp': 0, 'R_sersic': 0, 'n_sersic': 0.5, 'e1': -0.5, 'e2': -0.5, 'center_x': -100,
+                           'center_y': -100}
+    upper_limit_default = {'amp': 100, 'R_sersic': 100, 'n_sersic': 8, 'e1': 0.5, 'e2': 0.5, 'center_x': 100,
+                           'center_y': 100}
 
     def function(self, x, y, amp, R_sersic, n_sersic, e1, e2, center_x=0, center_y=0, max_R_frac=100.0):
         """
@@ -89,7 +90,7 @@ class CoreSersic(SersicUtil):
     with
 
     .. math::
-        I' = I_b 2^{-\\gamma/ \\alpha} \exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
+        I' = I_b 2^{-\\gamma/ \\alpha} \\exp \\left[b_n 2^{1 / (n\\alpha)} (R_b/R_e)^{1/n}  \\right]
 
     where :math:`I_b` is the intensity at the break radius.
 
@@ -118,9 +119,10 @@ class CoreSersic(SersicUtil):
         :param max_R_frac: maximum window outside of which the mass is zeroed, in units of R_sersic (float)
         :return: Cored Sersic profile value at (x, y)
         """
-        #TODO max_R_frac not implemented
+        # TODO: max_R_frac not implemented
         R_ = self.get_distance_from_center(x, y, e1, e2, center_x, center_y)
         R = self._R_stable(R_)
         bn = self.b_n(n_sersic)
-        result = amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * np.exp(-bn * (((R ** alpha + Rb ** alpha) / R_sersic ** alpha) ** (1. / (alpha * n_sersic)) - 1.))
+        result = amp * (1 + (Rb / R) ** alpha) ** (gamma / alpha) * \
+                 np.exp(-bn * (((R ** alpha + Rb ** alpha) / R_sersic ** alpha) ** (1. / (alpha * n_sersic)) - 1.))
         return np.nan_to_num(result)

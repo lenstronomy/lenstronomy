@@ -8,7 +8,7 @@ class LightParam(object):
     class manages the parameters corresponding to the LightModel() module. Also manages linear parameter handling.
     """
 
-    def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, type='light',
+    def __init__(self, light_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, param_type='light',
                  linear_solver=True):
         """
 
@@ -16,13 +16,14 @@ class LightParam(object):
         :param kwargs_fixed: list of keyword arguments corresponding to parameters held fixed during sampling
         :param kwargs_lower: list of keyword arguments indicating hard lower limit of the parameter space
         :param kwargs_upper: list of keyword arguments indicating hard upper limit of the parameter space
-        :param type: string (optional), adding specifications in the output strings (such as lens light or source light)
+        :param param_type: string (optional), adding specifications in the output strings (such as lens light or
+         source light)
         :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
          get overwritten by the linear solver solution.
         """
         self._lightModel = LightModel(light_model_list=light_model_list)
         self._param_name_list = self._lightModel.param_name_list
-        self._type = type
+        self._type = param_type
         self.model_list = light_model_list
         self.kwargs_fixed = kwargs_fixed
         if linear_solver:
@@ -57,7 +58,7 @@ class LightParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         if 'n_max' in kwargs_fixed:
                             n_max = kwargs_fixed['n_max']
@@ -108,7 +109,7 @@ class LightParam(object):
 
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         n_max = kwargs_fixed.get('n_max', kwargs['n_max'])
                         if model in ['SHAPELETS_POLAR_EXP']:
@@ -129,7 +130,8 @@ class LightParam(object):
                         num_param = n_scales * n_pixels
                         for i in range(num_param):
                             args.append(kwargs[name][i])
-                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name in ['n_scales', 'n_pixels', 'scale', 'center_x', 'center_y']:
+                    elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name in ['n_scales', 'n_pixels', 'scale',
+                                                                                       'center_x', 'center_y']:
                         raise ValueError("'{}' must be a fixed keyword argument for STARLETS-like models".format(name))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs['sigma'])
@@ -147,12 +149,12 @@ class LightParam(object):
         :return: int, list of strings with param names
         """
         num = 0
-        list = []
+        name_list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP'] and name == 'amp':
                         if 'n_max' not in kwargs_fixed:
                             raise ValueError("n_max needs to be fixed in this configuration!")
@@ -163,7 +165,7 @@ class LightParam(object):
                             num_param = int((n_max + 1) * (n_max + 2) / 2)
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(str(name + '_' + self._type + str(k)))
                     elif model in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2'] and name == 'amp':
                         if 'n_scales' not in kwargs_fixed or 'n_pixels' not in kwargs_fixed:
                             raise ValueError("n_scales and n_pixels need to be fixed when using STARLETS-like models!")
@@ -172,16 +174,16 @@ class LightParam(object):
                         num_param = n_scales * n_pixels
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(str(name + '_' + self._type + str(k)))
                     elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE'] and name == 'amp':
                         num_param = len(kwargs_fixed['sigma'])
                         num += num_param
                         for i in range(num_param):
-                            list.append(str(name + '_' + self._type + str(k)))
+                            name_list.append(str(name + '_' + self._type + str(k)))
                     else:
                         num += 1
-                        list.append(str(name + '_' + self._type + str(k)))
-        return num, list
+                        name_list.append(str(name + '_' + self._type + str(k)))
+        return num, name_list
 
     def num_param_linear(self):
         """

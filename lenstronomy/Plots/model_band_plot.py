@@ -17,7 +17,8 @@ class ModelBandPlot(ModelBand):
 
     """
     def __init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
-                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat"):
+                 likelihood_mask_list=None, band_index=0, arrow_size=0.02, cmap_string="gist_heat",
+                 fast_caustic=True):
         """
 
         :param multi_band_list: list of imaging data configuration [[kwargs_data, kwargs_psf, kwargs_numerics], [...]]
@@ -28,10 +29,11 @@ class ModelBandPlot(ModelBand):
         :param param: 1d numpy array of the linear coefficients of this imaging band
         :param kwargs_params: keyword argument of keyword argument lists of the different model components selected for
          the imaging band, NOT including linear amplitudes (not required as being overwritten by the param list)
-        :param image_likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
+        :param likelihood_mask_list: list of 2d numpy arrays of likelihood masks (for all bands)
         :param band_index: integer of the band to be considered in this class
         :param arrow_size: size of the scale and orientation arrow
         :param cmap_string: string of color map (or cmap matplotlib object)
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         """
         ModelBand.__init__(self, multi_band_list, kwargs_model, model, error_map, cov_param, param, kwargs_params,
                            image_likelihood_mask_list=likelihood_mask_list, band_index=band_index)
@@ -49,23 +51,40 @@ class ModelBandPlot(ModelBand):
         x_grid, y_grid = self._coords.pixel_coordinates
         self._x_grid = util.image2array(x_grid)
         self._y_grid = util.image2array(y_grid)
+        self._x_center, self._y_center = self._coords.center
 
         self._cmap = plot_util.cmap_conf(cmap_string)
         self._arrow_size = arrow_size
+        self._fast_caustic = fast_caustic
 
     def _critical_curves(self):
         if not hasattr(self, '_ra_crit_list') or not hasattr(self, '_dec_crit_list'):
-            self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(self._kwargs_lens_partial,
-                                                                                        compute_window=self._frame_size,
-                                                                                        start_scale=self._deltaPix / 5.,
-                                                                                        max_order=10)
+            #self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
+            #    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix / 5.,
+            #    center_x=self._x_center, center_y=self._y_center)
+            if self._fast_caustic:
+                self._ra_crit_list, self._dec_crit_list, self._ra_caustic_list, self._dec_caustic_list = self._lensModelExt.critical_curve_caustics(
+                    self._kwargs_lens_partial, compute_window=self._frame_size, grid_scale=self._deltaPix,
+                    center_x=self._x_center, center_y=self._y_center)
+                self._caustic_points_only = False
+            else:
+                # only supports individual points due to output of critical_curve_tiling definition
+                self._caustic_points_only = True
+                self._ra_crit_list, self._dec_crit_list = self._lensModelExt.critical_curve_tiling(
+                    self._kwargs_lens_partial,
+                    compute_window=self._frame_size,
+                    start_scale=self._deltaPix / 5.,
+                    max_order=10,
+                    center_x=self._x_center,
+                    center_y=self._y_center)
+                self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(self._ra_crit_list,
+                                                                                             self._dec_crit_list,
+                                                                                             self._kwargs_lens_partial)
         return self._ra_crit_list, self._dec_crit_list
 
     def _caustics(self):
         if not hasattr(self, '_ra_caustic_list') or not hasattr(self, '_dec_caustic_list'):
-            ra_crit_list, dec_crit_list = self._critical_curves()
-            self._ra_caustic_list, self._dec_caustic_list = self._lensModel.ray_shooting(ra_crit_list,
-                                                                                     dec_crit_list, self._kwargs_lens_partial)
+            _, _ = self._critical_curves()
         return self._ra_caustic_list, self._dec_caustic_list
 
     def data_plot(self, ax, v_min=None, v_max=None, text='Observed',
@@ -105,8 +124,7 @@ class ModelBandPlot(ModelBand):
                    font_size=15, text='Reconstructed', **kwargs):
         """
 
-        :param ax:
-        :param model:
+        :param ax: matplotib axis instance
         :param v_min:
         :param v_max:
         :return:
@@ -144,11 +162,8 @@ class ModelBandPlot(ModelBand):
                          **kwargs):
         """
 
-        :param x_grid:
-        :param y_grid:
-        :param kwargs_lens:
-        :param kwargs_else:
-        :return:
+        :param ax: matplotib axis instance
+        :return: convergence plot in ax instance
         """
         if not 'cmap' in kwargs:
             kwargs['cmap'] = self._cmap
@@ -214,7 +229,6 @@ class ModelBandPlot(ModelBand):
         """
 
         :param ax:
-        :param residuals:
         :return:
         """
         im = ax.matshow(self._model - self._data, vmin=v_min, vmax=v_max,
@@ -286,7 +300,6 @@ class ModelBandPlot(ModelBand):
         :param center: [center_x, center_y], if specified, uses this as the center
         :param v_min:
         :param v_max:
-        :param with_caustics:
         :param caustic_color:
         :param font_size:
         :param plot_scale: string, log or linear, scale of surface brightness plot
@@ -300,7 +313,7 @@ class ModelBandPlot(ModelBand):
         d_s = numPix * deltaPix_source
         source, coords_source = self.source(numPix, deltaPix_source, center=center)
         if plot_scale == 'log':
-            source[source < 10**(v_min)] = 10**(v_min) # to remove weird shadow in plot
+            source[source < 10**v_min] = 10**(v_min)  # to remove weird shadow in plot
             source_scale = np.log10(source)
         elif plot_scale == 'linear':
             source_scale = source
@@ -318,12 +331,12 @@ class ModelBandPlot(ModelBand):
 
         if with_caustics is True:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, coords_source, ra_caustic_list,
-                          dec_caustic_list, color=caustic_color)
-            plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size),
-                  color='w',
-                  flipped=False,
-                  font_size=font_size)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color=caustic_color,
+                                    points_only=self._caustic_points_only)
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color=caustic_color,
+                                    points_only=self._caustic_points_only, **kwargs.get('kwargs_caustic', {}))
+            plot_util.scale_bar(ax, d_s, dist=scale_size, text='{:.1f}"'.format(scale_size), color='w', flipped=False,
+                                font_size=font_size)
         if 'no_arrow' not in kwargs or not kwargs['no_arrow']:
             plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='w',
                               arrow_size=self._arrow_size, font_size=font_size)
@@ -360,7 +373,7 @@ class ModelBandPlot(ModelBand):
         coords_source = Coordinates(self._coords.transform_pix2angle * deltaPix_source / self._deltaPix, ra_at_xy_0=x_grid_source[0],
                                     dec_at_xy_0=y_grid_source[0])
         error_map_source = self._bandmodel.error_map_source(self._kwargs_source_partial, x_grid_source, y_grid_source,
-                                                           self._cov_param, model_index_select=False)
+                                                            self._cov_param, model_index_select=False)
         error_map_source = util.array2image(error_map_source)
         d_s = numPix * deltaPix_source
         im = ax.matshow(error_map_source, origin='lower', extent=[0, d_s, 0, d_s],
@@ -374,12 +387,12 @@ class ModelBandPlot(ModelBand):
         cb.set_label(r'error variance', fontsize=font_size)
         if with_caustics:
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b')
+            plot_util.plot_line_set(ax, coords_source, ra_caustic_list, dec_caustic_list, color='b',
+                                    points_only=self._caustic_points_only)
         plot_util.scale_bar(ax, d_s, dist=0.1, text='0.1"', color='w', flipped=False, font_size=font_size)
-        plot_util.coordinate_arrows(ax, d_s, coords_source,
-                          arrow_size=self._arrow_size, color='w', font_size=font_size)
-        plot_util.text_description(ax, d_s, text="Error map in source", color="w",
-                         backgroundcolor='k', flipped=False, font_size=font_size)
+        plot_util.coordinate_arrows(ax, d_s, coords_source, arrow_size=self._arrow_size, color='w', font_size=font_size)
+        plot_util.text_description(ax, d_s, text="Error map in source", color="w", backgroundcolor='k', flipped=False,
+                                   font_size=font_size)
         if point_source_position is True:
             ra_source, dec_source = self._bandmodel.PointSource.source_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
             plot_util.source_position_plot(ax, coords_source, ra_source, dec_source)
@@ -398,9 +411,9 @@ class ModelBandPlot(ModelBand):
         :param kwargs: kwargs to send to matplotlib.pyplot.matshow()
         :return:
         """
-        if not 'cmap' in kwargs:
+        if 'cmap' not in kwargs:
             kwargs['cmap'] = self._cmap
-        if not 'alpha' in kwargs:
+        if 'alpha' not in kwargs:
             kwargs['alpha'] = 0.5
         mag_result = util.array2image(self._lensModel.magnification(self._x_grid, self._y_grid, self._kwargs_lens_partial))
         im = ax.matshow(mag_result, origin='lower', extent=[0, self._frame_size, 0, self._frame_size],
@@ -412,8 +425,7 @@ class ModelBandPlot(ModelBand):
         if not no_arrow:
             plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size,
                                         font_size=font_size)
-        plot_util.text_description(ax, self._frame_size, text=text, color="k",
-                         backgroundcolor='w', font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="k", backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -428,8 +440,6 @@ class ModelBandPlot(ModelBand):
                         colorbar_label=r'arcsec'):
         """
 
-        :param kwargs_lens:
-        :param kwargs_else:
         :return:
         """
 
@@ -446,10 +456,9 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', color='k', font_size=font_size)
-        plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k',
-                          arrow_size=self._arrow_size, font_size=font_size)
-        plot_util.text_description(ax, self._frame_size, text=text, color="k",
-                         backgroundcolor='w', font_size=font_size)
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords, color='k', arrow_size=self._arrow_size,
+                                    font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="k", backgroundcolor='w', font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -457,8 +466,10 @@ class ModelBandPlot(ModelBand):
         if with_caustics is True:
             ra_crit_list, dec_crit_list = self._critical_curves()
             ra_caustic_list, dec_caustic_list = self._caustics()
-            plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b')
-            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r')
+            plot_util.plot_line_set(ax, self._coords, ra_caustic_list, dec_caustic_list, color='b',
+                                    points_only=self._caustic_points_only)
+            plot_util.plot_line_set(ax, self._coords, ra_crit_list, dec_crit_list, color='r',
+                                    points_only=self._caustic_points_only)
         ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
         plot_util.image_position_plot(ax, self._coords, ra_image, dec_image, image_name_list=image_name_list)
         return ax
@@ -481,13 +492,13 @@ class ModelBandPlot(ModelBand):
         :return:
         """
         model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
-                                          self._kwargs_ps_partial, unconvolved=unconvolved, source_add=source_add,
-                                          lens_light_add=lens_light_add, point_source_add=point_source_add)
+                                      self._kwargs_ps_partial, unconvolved=unconvolved, source_add=source_add,
+                                      lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
             v_max = self._v_max_default
-        if not 'cmap' in kwargs:
+        if 'cmap' not in kwargs:
             kwargs['cmap'] = self._cmap
         im = ax.matshow(np.log10(model), origin='lower', vmin=v_min, vmax=v_max,
                         extent=[0, self._frame_size, 0, self._frame_size], **kwargs)
@@ -496,8 +507,8 @@ class ModelBandPlot(ModelBand):
         ax.autoscale(False)
         plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
         plot_util.text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k')
-        plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
-                          arrow_size=self._arrow_size, font_size=font_size)
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size,
+                                    font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -510,8 +521,8 @@ class ModelBandPlot(ModelBand):
                                 font_size=15
                                 ):
         model = self._bandmodel.image(self._kwargs_lens_partial, self._kwargs_source_partial, self._kwargs_lens_light_partial,
-                                          self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
-                                          lens_light_add=lens_light_add, point_source_add=point_source_add)
+                                      self._kwargs_ps_partial, unconvolved=False, source_add=source_add,
+                                      lens_light_add=lens_light_add, point_source_add=point_source_add)
         if v_min is None:
             v_min = self._v_min_default
         if v_max is None:
@@ -522,10 +533,9 @@ class ModelBandPlot(ModelBand):
         ax.get_yaxis().set_visible(False)
         ax.autoscale(False)
         plot_util.scale_bar(ax, self._frame_size, dist=1, text='1"', font_size=font_size)
-        plot_util.text_description(ax, self._frame_size, text=text, color="w",
-                         backgroundcolor='k', font_size=font_size)
-        plot_util.coordinate_arrows(ax, self._frame_size, self._coords,
-                          arrow_size=self._arrow_size, font_size=font_size)
+        plot_util.text_description(ax, self._frame_size, text=text, color="w", backgroundcolor='k', font_size=font_size)
+        plot_util.coordinate_arrows(ax, self._frame_size, self._coords, arrow_size=self._arrow_size,
+                                    font_size=font_size)
         divider = make_axes_locatable(ax)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cb = plt.colorbar(im, cax=cax)
@@ -563,9 +573,9 @@ class ModelBandPlot(ModelBand):
         self.decomposition_plot(ax=axes[0, 1], text='Source light', source_add=True, unconvolved=True)
         self.decomposition_plot(ax=axes[1, 1], text='Source light convolved', source_add=True)
         self.decomposition_plot(ax=axes[0, 2], text='All components', source_add=True, lens_light_add=True,
-                                    unconvolved=True)
+                                unconvolved=True)
         self.decomposition_plot(ax=axes[1, 2], text='All components convolved', source_add=True,
-                                    lens_light_add=True, point_source_add=True)
+                                lens_light_add=True, point_source_add=True)
         f.tight_layout()
         f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
         return f, axes
@@ -583,9 +593,9 @@ class ModelBandPlot(ModelBand):
         self.subtract_from_data_plot(ax=axes[0, 2], text='Data - Lens Light', lens_light_add=True)
         self.subtract_from_data_plot(ax=axes[1, 0], text='Data - Source Light', source_add=True)
         self.subtract_from_data_plot(ax=axes[1, 1], text='Data - Source Light - Point Source', source_add=True,
-                                         point_source_add=True)
+                                     point_source_add=True)
         self.subtract_from_data_plot(ax=axes[1, 2], text='Data - Lens Light - Point Source', lens_light_add=True,
-                                         point_source_add=True)
+                                     point_source_add=True)
         f.tight_layout()
         f.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0., hspace=0.05)
         return f, axes
@@ -604,6 +614,6 @@ class ModelBandPlot(ModelBand):
         if v_max is None:
             v_max = 1
 
-        im = ax.matshow(model, origin='lower', vmin=v_min, vmax=v_max,
-                        extent=[0, self._frame_size, 0, self._frame_size], **kwargs)
+        _ = ax.matshow(model, origin='lower', vmin=v_min, vmax=v_max,
+                       extent=[0, self._frame_size, 0, self._frame_size], **kwargs)
         return ax

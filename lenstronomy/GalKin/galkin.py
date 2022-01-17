@@ -108,8 +108,8 @@ class Galkin(GalkinModel, GalkinObservation):
             sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
             for k in range(0, num_psf_sampling):
                 x_, y_ = self.displace_psf(x, y)
-                bool, ifu_index = self.aperture_select(x_, y_)
-                if bool is True:
+                bool_ap, ifu_index = self.aperture_select(x_, y_)
+                if bool_ap is True:
                     sigma2_IR_sum[ifu_index] += sigma2_IR
                     count_draws[ifu_index] += IR
 
@@ -131,8 +131,8 @@ class Galkin(GalkinModel, GalkinObservation):
         while True:
             r, R, x, y = self.numerics.draw_light(kwargs_light)
             x_, y_ = self.displace_psf(x, y)
-            bool, _ = self.aperture_select(x_, y_)
-            if bool is True:
+            bool_ap, _ = self.aperture_select(x_, y_)
+            if bool_ap is True:
                 break
         sigma2_IR, IR = self.numerics.sigma_s2(r, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
         return sigma2_IR, IR

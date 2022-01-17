@@ -58,8 +58,8 @@ class GalkinMultiObservation(GalkinModel):
             for obs_index, observation in enumerate(self._observation_list):
                 for k in range(0, num_psf_sampling):
                     x_, y_ = observation.displace_psf(x, y)
-                    bool, _ = observation.aperture_select(x_, y_)
-                    if bool is True:
+                    bool_ap, _ = observation.aperture_select(x_, y_)
+                    if bool_ap is True:
                         sigma2_R_sum[obs_index] += sigma2_IR
                         count_draws[obs_index] += IR
 

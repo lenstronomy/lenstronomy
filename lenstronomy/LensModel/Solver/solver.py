@@ -34,6 +34,7 @@ class Solver(object):
         :param x_pos:
         :param y_pos:
         :param kwargs_list:
+        :param xtol:
         :return:
         """
         return self._solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)

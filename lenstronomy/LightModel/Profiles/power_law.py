@@ -23,6 +23,7 @@ class PowerLaw(object):
 
         :param x: ra-coordinate
         :param y: dec-coordinate
+        :param amp: amplitude of flux
         :param gamma: projected power-law slope
         :param e1: ellipticity
         :param e2: ellipticity
@@ -57,7 +58,8 @@ class PowerLaw(object):
         rho = rho0 / r ** gamma
         return rho
 
-    def _amp2rho(self, amp, gamma):
+    @staticmethod
+    def _amp2rho(amp, gamma):
         """
 
         :param amp:

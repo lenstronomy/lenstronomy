@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>lenstronomy.Data package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -37,7 +36,8 @@
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Data package</a></li> 
       </ul>
     </div>  
 
@@ -46,110 +46,95 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="lenstronomy-data-package">
+  <section id="lenstronomy-data-package">
 <h1>lenstronomy.Data package<a class="headerlink" href="#lenstronomy-data-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-lenstronomy.Data.coord_transforms">
+</section>
+<section id="module-lenstronomy.Data.coord_transforms">
 <span id="lenstronomy-data-coord-transforms-module"></span><h2>lenstronomy.Data.coord_transforms module<a class="headerlink" href="#module-lenstronomy.Data.coord_transforms" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates">
-<em class="property">class </em><code class="descclassname">lenstronomy.Data.coord_transforms.</code><code class="descname">Coordinates</code><span class="sig-paren">(</span><em>transform_pix2angle</em>, <em>ra_at_xy_0</em>, <em>dec_at_xy_0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Data.coord_transforms.</span></span><span class="sig-name descname"><span class="pre">Coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform_pix2angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_at_xy_0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to handle linear coordinate transformations of a square pixel image</p>
-<dl class="method">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">
-<code class="descname">coordinate_grid</code><span class="sig-paren">(</span><em>nx</em>, <em>ny</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.coordinate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nx</strong> – number of pixels in x-direction</li>
-<li><strong>ny</strong> – number of pixels in y-direction</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid">
+<span class="sig-name descname"><span class="pre">coordinate_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.coordinate_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.coordinate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> – number of pixels in x-direction</p></li>
+<li><p><strong>ny</strong> – number of pixels in y-direction</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix">
-<code class="descname">map_coord2pix</code><span class="sig-paren">(</span><em>ra</em>, <em>dec</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_coord2pix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix">
+<span class="sig-name descname"><span class="pre">map_coord2pix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_coord2pix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_coord2pix" title="Permalink to this definition">¶</a></dt>
 <dd><p>maps the (ra,dec) coordinates of the system into the pixel coordinate of the image</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ra</strong> – relative RA coordinate as defined by the coordinate frame</li>
-<li><strong>dec</strong> – relative DEC coordinate as defined by the coordinate frame</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ra</strong> – relative RA coordinate as defined by the coordinate frame</p></li>
+<li><p><strong>dec</strong> – relative DEC coordinate as defined by the coordinate frame</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(x, y) pixel coordinates</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(x, y) pixel coordinates</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord">
-<code class="descname">map_pix2coord</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_pix2coord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord">
+<span class="sig-name descname"><span class="pre">map_pix2coord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.map_pix2coord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.map_pix2coord" title="Permalink to this definition">¶</a></dt>
 <dd><p>maps the (x,y) pixel coordinates of the image into the system coordinates</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</li>
-<li><strong>y</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</p></li>
+<li><p><strong>y</strong> – pixel coordinate (can be 1d numpy array), defined in the center of the pixel</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">relative (RA, DEC) coordinates of the system</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>relative (RA, DEC) coordinates of the system</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.pixel_area">
-<code class="descname">pixel_area</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_area" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.pixel_area">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_area</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_area" title="Permalink to this definition">¶</a></dt>
 <dd><p>angular area of a pixel in the image
 :return: area [arcsec^2]</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.pixel_width">
-<code class="descname">pixel_width</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_width" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.pixel_width">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pixel_width</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.pixel_width" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of pixel
 :return: sqrt(pixel_area)</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.radec_at_xy_0">
-<code class="descname">radec_at_xy_0</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.radec_at_xy_0" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">RA, DEC coordinate at (0,0) pixel coordinate</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.radec_at_xy_0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radec_at_xy_0</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.radec_at_xy_0" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>RA, DEC coordinate at (0,0) pixel coordinate</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_system">
-<code class="descname">shift_coordinate_system</code><span class="sig-paren">(</span><em>x_shift</em>, <em>y_shift</em>, <em>pixel_unit=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.shift_coordinate_system"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_system" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_system">
+<span class="sig-name descname"><span class="pre">shift_coordinate_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_shift</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_unit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates.shift_coordinate_system"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.shift_coordinate_system" title="Permalink to this definition">¶</a></dt>
 <dd><p>shifts the coordinate system
 :param x_shift: shift in x (or RA)
 :param y_shift: shift in y (or DEC)
@@ -157,88 +142,75 @@
 :return: updated data class with change in coordinate system</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.transform_angle2pix">
-<code class="descname">transform_angle2pix</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.transform_angle2pix" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">transformation matrix from angular to pixel coordinates</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.transform_angle2pix">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform_angle2pix</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.transform_angle2pix" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>transformation matrix from angular to pixel coordinates</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.transform_pix2angle">
-<code class="descname">transform_pix2angle</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.transform_pix2angle" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">transformation matrix from pixel to angular coordinates</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.transform_pix2angle">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">transform_pix2angle</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.transform_pix2angle" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>transformation matrix from pixel to angular coordinates</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates.xy_at_radec_0">
-<code class="descname">xy_at_radec_0</code><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.xy_at_radec_0" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">pixel coordinate at angular (0,0) point</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates.xy_at_radec_0">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">xy_at_radec_0</span></span><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates.xy_at_radec_0" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>pixel coordinate at angular (0,0) point</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates1D">
-<em class="property">class </em><code class="descclassname">lenstronomy.Data.coord_transforms.</code><code class="descname">Coordinates1D</code><span class="sig-paren">(</span><em>transform_pix2angle</em>, <em>ra_at_xy_0</em>, <em>dec_at_xy_0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates1D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates1D" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates1D">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Data.coord_transforms.</span></span><span class="sig-name descname"><span class="pre">Coordinates1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">transform_pix2angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_at_xy_0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates1D"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.Data.coord_transforms.Coordinates" title="lenstronomy.Data.coord_transforms.Coordinates"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Data.coord_transforms.Coordinates</span></code></a></p>
 <p>coordinate grid described in 1-d arrays</p>
-<dl class="method">
-<dt id="lenstronomy.Data.coord_transforms.Coordinates1D.coordinate_grid">
-<code class="descname">coordinate_grid</code><span class="sig-paren">(</span><em>nx</em>, <em>ny</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates1D.coordinate_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates1D.coordinate_grid" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>nx</strong> – number of pixels in x-direction</li>
-<li><strong>ny</strong> – number of pixels in y-direction</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.coord_transforms.Coordinates1D.coordinate_grid">
+<span class="sig-name descname"><span class="pre">coordinate_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/coord_transforms.html#Coordinates1D.coordinate_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.coord_transforms.Coordinates1D.coordinate_grid" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nx</strong> – number of pixels in x-direction</p></li>
+<li><p><strong>ny</strong> – number of pixels in y-direction</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.Data.imaging_data">
+</section>
+<section id="module-lenstronomy.Data.imaging_data">
 <span id="lenstronomy-data-imaging-data-module"></span><h2>lenstronomy.Data.imaging_data module<a class="headerlink" href="#module-lenstronomy.Data.imaging_data" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Data.imaging_data.ImageData">
-<em class="property">class </em><code class="descclassname">lenstronomy.Data.imaging_data.</code><code class="descname">ImageData</code><span class="sig-paren">(</span><em>image_data</em>, <em>exposure_time=None</em>, <em>background_rms=None</em>, <em>noise_map=None</em>, <em>gradient_boost_factor=None</em>, <em>ra_at_xy_0=0</em>, <em>dec_at_xy_0=0</em>, <em>transform_pix2angle=None</em>, <em>ra_shift=0</em>, <em>dec_shift=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Data.imaging_data.ImageData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Data.imaging_data.</span></span><span class="sig-name descname"><span class="pre">ImageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_rms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gradient_boost_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_at_xy_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_at_xy_0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_pix2angle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_shift</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Data.pixel_grid.PixelGrid</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Data.image_noise.ImageNoise</span></code></p>
 <p>class to handle the data, coordinate system and masking, including convolution with various numerical precisions</p>
 <p>The Data() class is initialized with keyword arguments:</p>
 <ul class="simple">
-<li>‘image_data’: 2d numpy array of the image data</li>
-<li>‘transform_pix2angle’ 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -&gt; (ra, dec)</li>
-<li>‘ra_at_xy_0’ RA coordinate of pixel (0,0)</li>
-<li>‘dec_at_xy_0’ DEC coordinate of pixel (0,0)</li>
+<li><p>‘image_data’: 2d numpy array of the image data</p></li>
+<li><p>‘transform_pix2angle’ 2x2 transformation matrix (linear) to transform a pixel shift into a coordinate shift (x, y) -&gt; (ra, dec)</p></li>
+<li><p>‘ra_at_xy_0’ RA coordinate of pixel (0,0)</p></li>
+<li><p>‘dec_at_xy_0’ DEC coordinate of pixel (0,0)</p></li>
 </ul>
 <p>optional keywords for shifts in the coordinate system:
 - ‘ra_shift’: shifts the coordinate system with respect to ‘ra_at_xy_0’
@@ -252,156 +224,136 @@ If this keyword is set, the other noise properties will be ignored.</p>
 <p>the likelihood for the data given model P(data|model) is defined in the function below. Please make sure that
 your definitions and units of ‘exposure_map’, ‘background_rms’ and ‘image_data’ are in accordance with the
 likelihood function. In particular, make sure that the Poisson noise contribution is defined in the count rate.</p>
-<dl class="attribute">
-<dt id="lenstronomy.Data.imaging_data.ImageData.data">
-<code class="descname">data</code><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.data" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2d numpy array of data</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.imaging_data.ImageData.data">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.data" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>2d numpy array of data</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.ImageData.log_likelihood">
-<code class="descname">log_likelihood</code><span class="sig-paren">(</span><em>model</em>, <em>mask</em>, <em>additional_error_map=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData.log_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.log_likelihood" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.imaging_data.ImageData.log_likelihood">
+<span class="sig-name descname"><span class="pre">log_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_error_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData.log_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.log_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the data given the model p(data|model)
 The Gaussian errors are estimated with the covariance matrix, based on the model image. The errors include the
 background rms value and the exposure time to compute the Poisson noise level (in Gaussian approximation).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>model</strong> – the model (same dimensions and units as data)</li>
-<li><strong>mask</strong> – bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</li>
-<li><strong>additional_error_map</strong> – additional error term (in same units as covariance matrix).
-This can e.g. come from model errors in the PSF estimation.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – the model (same dimensions and units as data)</p></li>
+<li><p><strong>mask</strong> – bool (1, 0) values per pixel. If =0, the pixel is ignored in the likelihood</p></li>
+<li><p><strong>additional_error_map</strong> – additional error term (in same units as covariance matrix).
+This can e.g. come from model errors in the PSF estimation.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the natural logarithm of the likelihood p(data|model)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the natural logarithm of the likelihood p(data|model)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.imaging_data.ImageData.update_data">
-<code class="descname">update_data</code><span class="sig-paren">(</span><em>image_data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.update_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.imaging_data.ImageData.update_data">
+<span class="sig-name descname"><span class="pre">update_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/imaging_data.html#ImageData.update_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.imaging_data.ImageData.update_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>update the data as well as the error matrix estimated from it when done so using the data</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>image_data</strong> – 2d numpy array of same size as nx, ny</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>image_data</strong> – 2d numpy array of same size as nx, ny</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.Data.psf">
+</section>
+<section id="module-lenstronomy.Data.psf">
 <span id="lenstronomy-data-psf-module"></span><h2>lenstronomy.Data.psf module<a class="headerlink" href="#module-lenstronomy.Data.psf" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.Data.psf.PSF">
-<em class="property">class </em><code class="descclassname">lenstronomy.Data.psf.</code><code class="descname">PSF</code><span class="sig-paren">(</span><em>psf_type='NONE'</em>, <em>fwhm=None</em>, <em>truncation=5</em>, <em>pixel_size=None</em>, <em>kernel_point_source=None</em>, <em>psf_error_map=None</em>, <em>point_source_supersampling_factor=1</em>, <em>kernel_point_source_init=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Data.psf.</span></span><span class="sig-name descname"><span class="pre">PSF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psf_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NONE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fwhm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_point_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_error_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_supersampling_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_point_source_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Point Spread Function class.
 This class describes and manages products used to perform the PSF modeling (convolution for extended surface
 brightness and painting of PSF’s for point sources).</p>
-<dl class="attribute">
-<dt id="lenstronomy.Data.psf.PSF.fwhm">
-<code class="descname">fwhm</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.fwhm" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">full width at half maximum of kernel (in units of pixel)</td>
-</tr>
-</tbody>
-</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.fwhm">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fwhm</span></span><a class="headerlink" href="#lenstronomy.Data.psf.PSF.fwhm" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>full width at half maximum of kernel (in units of pixel)</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.psf.PSF.kernel_pixel">
-<code class="descname">kernel_pixel</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_pixel" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.kernel_pixel">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_pixel</span></span><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_pixel" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the convolution kernel for a uniform surface brightness on a pixel size</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">2d numpy array</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>2d numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.psf.PSF.kernel_point_source">
-<code class="descname">kernel_point_source</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_point_source" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.kernel_point_source">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kernel_point_source</span></span><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_point_source" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.psf.PSF.kernel_point_source_supersampled">
-<code class="descname">kernel_point_source_supersampled</code><span class="sig-paren">(</span><em>supersampling_factor</em>, <em>updata_cache=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.kernel_point_source_supersampled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_point_source_supersampled" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.kernel_point_source_supersampled">
+<span class="sig-name descname"><span class="pre">kernel_point_source_supersampled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updata_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.kernel_point_source_supersampled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.kernel_point_source_supersampled" title="Permalink to this definition">¶</a></dt>
 <dd><p>generates (if not already available) a supersampled PSF with ood numbers of pixels centered</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>supersampling_factor</strong> – int &gt;=1, supersampling factor relative to pixel resolution</li>
-<li><strong>updata_cache</strong> – boolean, if True, updates the cached supersampling PSF if generated.
-Attention, this will overwrite a previously used supersampled PSF if the resolution is changing.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>supersampling_factor</strong> – int &gt;=1, supersampling factor relative to pixel resolution</p></li>
+<li><p><strong>updata_cache</strong> – boolean, if True, updates the cached supersampling PSF if generated.
+Attention, this will overwrite a previously used supersampled PSF if the resolution is changing.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">super-sampled PSF as 2d numpy array</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>super-sampled PSF as 2d numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.Data.psf.PSF.psf_error_map">
-<code class="descname">psf_error_map</code><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_error_map" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.psf_error_map">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">psf_error_map</span></span><a class="headerlink" href="#lenstronomy.Data.psf.PSF.psf_error_map" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.Data.psf.PSF.set_pixel_size">
-<code class="descname">set_pixel_size</code><span class="sig-paren">(</span><em>deltaPix</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.set_pixel_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.set_pixel_size" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.Data.psf.PSF.set_pixel_size">
+<span class="sig-name descname"><span class="pre">set_pixel_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deltaPix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Data/psf.html#PSF.set_pixel_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Data.psf.PSF.set_pixel_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>update pixel size</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>deltaPix</strong> – pixel size in angular units (arc seconds)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>deltaPix</strong> – pixel size in angular units (arc seconds)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.Data">
+</section>
+<section id="module-lenstronomy.Data">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Data" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -433,17 +385,15 @@ Attention, this will overwrite a previously used supersampled PSF if the resolut
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -464,12 +414,13 @@ Attention, this will overwrite a previously used supersampled PSF if the resolut
           <a href="lenstronomy.Cosmo.html" title="lenstronomy.Cosmo package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Data package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

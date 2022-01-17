@@ -1,7 +1,6 @@
 import numpy as np
 import copy
 from scipy.interpolate import interp1d
-import scipy.integrate as integrate
 from lenstronomy.LightModel.light_model import LightModel
 
 __all__ = ['LightProfile']
@@ -94,7 +93,7 @@ class LightProfile(object):
                     kwargs['e1'] = 0
                 if 'e2' in kwargs:
                     kwargs['e2'] = 0
-                kwargs_list_new.append({k: v for k, v in kwargs.items() if not k in ['center_x', 'center_y']})
+                kwargs_list_new.append({k: v for k, v in kwargs.items() if k not in ['center_x', 'center_y']})
             self._kwargs_light_circularized = kwargs_list_new
         return self._kwargs_light_circularized
 

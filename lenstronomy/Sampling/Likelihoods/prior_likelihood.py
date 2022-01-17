@@ -9,13 +9,14 @@ class PriorLikelihood(object):
     class containing additional Gaussian priors to be folded into the likelihood
 
     """
-    def __init__(self, prior_lens=[], prior_source=[], prior_lens_light=[], prior_ps=[], prior_special=[],
-                 prior_extinction=[], prior_lens_kde=[], prior_source_kde=[], prior_lens_light_kde=[], prior_ps_kde=[],
-                 prior_special_kde=[], prior_extinction_kde=[],
-                 prior_lens_lognormal=[], prior_source_lognormal=[],
-                 prior_lens_light_lognormal=[],
-                 prior_ps_lognormal=[], prior_special_lognormal=[],
-                 prior_extinction_lognormal=[],
+    def __init__(self, prior_lens=None, prior_source=None, prior_lens_light=None, prior_ps=None, prior_special=None,
+                 prior_extinction=None, prior_lens_kde=None, prior_source_kde=None, prior_lens_light_kde=None,
+                 prior_ps_kde=None,
+                 prior_special_kde=None, prior_extinction_kde=None,
+                 prior_lens_lognormal=None, prior_source_lognormal=None,
+                 prior_lens_light_lognormal=None,
+                 prior_ps_lognormal=None, prior_special_lognormal=None,
+                 prior_extinction_lognormal=None,
                  ):
         """
 
@@ -69,6 +70,8 @@ class PriorLikelihood(object):
         :param prior_list_kde: list of [index_model, param_name, samples]
         :return: list of initiated KDE's
         """
+        if prior_list_kde is None:
+            return 0
         kde_list = []
         for prior in prior_list_kde:
             index, param_name, samples = prior
@@ -106,13 +109,16 @@ class PriorLikelihood(object):
         logL += self._prior_kde_list(kwargs_ps, self._prior_ps_kde, self._kde_ps_list)
         return logL
 
-    def _prior_kde_list(self, kwargs_list, prior_list, kde_list):
+    @staticmethod
+    def _prior_kde_list(kwargs_list, prior_list, kde_list):
         """
 
         :param kwargs_list:
         :param prior_list:
         :return:
         """
+        if prior_list is None:
+            return 0
         logL = 0
         for i in range(len(prior_list)):
             index, param_name, values = prior_list[i]
@@ -121,13 +127,16 @@ class PriorLikelihood(object):
             logL += np.log(likelihood)
         return logL
 
-    def _prior_kwargs_list(self, kwargs_list, prior_list):
+    @staticmethod
+    def _prior_kwargs_list(kwargs_list, prior_list):
         """
 
         :param kwargs_list: keyword argument list
         :param prior_list: prior list
         :return: logL
         """
+        if prior_list is None:
+            return 0
         logL = 0
         for i in range(len(prior_list)):
             index, param_name, value, sigma = prior_list[i]
@@ -136,13 +145,16 @@ class PriorLikelihood(object):
             logL -= np.sum(dist)
         return logL
 
-    def _prior_kwargs(self, kwargs, prior_list):
+    @staticmethod
+    def _prior_kwargs(kwargs, prior_list):
         """
         prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL
         """
+        if prior_list is None:
+            return 0
         logL = 0
         for i in range(len(prior_list)):
             param_name, value, sigma = prior_list[i]
@@ -151,13 +163,16 @@ class PriorLikelihood(object):
             logL -= np.sum(dist)
         return logL
 
-    def _prior_lognormal_kwargs_list(self, kwargs_list, prior_list):
+    @staticmethod
+    def _prior_lognormal_kwargs_list(kwargs_list, prior_list):
         """
 
         :param kwargs_list: keyword argument list
         :param prior_list: prior list
         :return: logL
         """
+        if prior_list is None:
+            return 0
         logL = 0
         for i in range(len(prior_list)):
             index, param_name, value, sigma = prior_list[i]
@@ -166,13 +181,16 @@ class PriorLikelihood(object):
             logL -= np.sum(dist)
         return logL
 
-    def _prior_lognormal_kwargs(self, kwargs, prior_list):
+    @staticmethod
+    def _prior_lognormal_kwargs(kwargs, prior_list):
         """
         prior computation for a keyword argument (not list thereof)
 
         :param kwargs: keyword argument
         :return: logL
         """
+        if prior_list is None:
+            return 0
         logL = 0
         for i in range(len(prior_list)):
             param_name, value, sigma = prior_list[i]

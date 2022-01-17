@@ -45,7 +45,7 @@ class LensParam(object):
 
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
-        if kwargs_logsampling is None :
+        if kwargs_logsampling is None:
             kwargs_logsampling = [[] for i in range(len(self.model_list))]
         self.kwargs_logsampling = kwargs_logsampling
 
@@ -63,7 +63,7 @@ class LensParam(object):
             kwargs_logsampling = self.kwargs_logsampling[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -98,7 +98,7 @@ class LensParam(object):
                 else:
                     kwargs[name] = kwargs_fixed[name]
 
-                if name in kwargs_logsampling and not name in kwargs_fixed:
+                if name in kwargs_logsampling and name not in kwargs_fixed:
                     kwargs[name] = 10**(kwargs[name])
 
             kwargs_list.append(kwargs)
@@ -118,7 +118,7 @@ class LensParam(object):
 
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         coeffs = kwargs['coeffs']
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -134,7 +134,7 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
-                    #elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    # elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
                     #    if name == 'e1':
                     #        _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
                     #        args.append(gamma_ext)
@@ -159,7 +159,7 @@ class LensParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:

@@ -255,10 +255,10 @@ class Param(object):
                                     num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
-        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
+        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, param_type='lens_light',
                                           linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
                                           kwargs_upper=kwargs_upper_lens_light)
-        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, type='source_light',
+        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, param_type='source_light',
                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
                                       kwargs_upper=kwargs_upper_source)
         self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,

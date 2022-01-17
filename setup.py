@@ -39,24 +39,24 @@ history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 desc = open("README.rst").read()
 requires = ['numpy>=1.13', 'scipy>=0.14.0', "configparser"]
-tests_require=['pytest>=2.3', "mock"]
+tests_require = ['pytest>=2.3', "mock"]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 
 
 setup(
     name='lenstronomy',
-    version='1.9.1',
+    version='1.9.3',
     description='Strong lens modeling package.',
     long_description=desc,
     author='Simon Birrer',
     author_email='sibirrer@gmail.com',
     url='https://github.com/sibirrer/lenstronomy',
-    download_url='https://github.com/sibirrer/lenstronomy/archive/1.9.1.tar.gz',
+    download_url='https://github.com/sibirrer/lenstronomy/archive/1.9.3.tar.gz',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'lenstronomy': 'lenstronomy'},
     include_package_data=True,
-    #setup_requires=requires,
+    # setup_requires=requires,
     install_requires=requires,
     license='MIT',
     zip_safe=False,
@@ -67,9 +67,10 @@ setup(
         "Natural Language :: English",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     tests_require=tests_require,
-    cmdclass={'test': PyTest},#'build_ext':build_ext,
+    cmdclass={'test': PyTest},  # 'build_ext':build_ext,
 )

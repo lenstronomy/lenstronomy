@@ -113,7 +113,7 @@ class ImageModel(object):
         :return: 2d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
-            return np.zeros((self.Data.num_pixel_axes))
+            return np.zeros(self.Data.num_pixel_axes)
         if self._pixelbased_bool is True:
             return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
                                                        kwargs_extinction=kwargs_extinction, 

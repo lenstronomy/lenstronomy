@@ -33,6 +33,7 @@ Contributors (alphabetic)
 * Brian Nord `bnord <https://github.com/bnord/>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
+* Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
 * Luca Teodori `lucateo <https://github.com/lucateo/>`_

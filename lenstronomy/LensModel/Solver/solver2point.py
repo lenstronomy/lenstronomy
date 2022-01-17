@@ -29,7 +29,7 @@ class Solver2Point(object):
         """
         self.lensModel = lensModel
         self._lens_mode_list = lensModel.lens_model_list
-        if not solver_type in ['CENTER', 'ELLIPSE', 'SHAPELETS', 'THETA_E_PHI', 'THETA_E_ELLIPSE']:
+        if solver_type not in ['CENTER', 'ELLIPSE', 'SHAPELETS', 'THETA_E_PHI', 'THETA_E_ELLIPSE']:
             raise ValueError("solver_type %s is not a valid option!" % solver_type)
         if solver_type == 'SHAPELETS':
             if not self._lens_mode_list[0] in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
@@ -71,7 +71,7 @@ class Solver2Point(object):
         return kwargs, accuracy
 
     def solve(self, x_pos, y_pos, init, kwargs_list, a, xtol=1.49012e-12):
-        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)#, factor=0.1)
+        x = scipy.optimize.fsolve(self._F, init, args=(x_pos, y_pos, kwargs_list, a), xtol=xtol)  # , factor=0.1)
         return x
 
     def _F(self, x, x_pos, y_pos, kwargs_list, a=np.zeros(2)):
@@ -89,8 +89,6 @@ class Solver2Point(object):
     def _subtract_constraint(x_sub, y_sub):
         """
 
-        :param x_pos:
-        :param y_pos:
         :param x_sub:
         :param y_sub:
         :return:
@@ -107,7 +105,6 @@ class Solver2Point(object):
         :param kwargs_list: list of lens model kwargs
         :return: updated kwargs_list
         """
-        lens_model = self._lens_mode_list[0]
         if self._solver_type == 'CENTER':
             [center_x, center_y] = x
             kwargs_list[0]['center_x'] = center_x
@@ -146,7 +143,6 @@ class Solver2Point(object):
         :param kwargs_list:
         :return:
         """
-        lens_model = self._lens_mode_list[0]
         if self._solver_type == 'CENTER':
             center_x = kwargs_list[0]['center_x']
             center_y = kwargs_list[0]['center_y']
@@ -201,6 +197,3 @@ class Solver2Point(object):
         else:
             raise ValueError("Solver type %s not supported for 2-point solver!" % self._solver_type)
         return kwargs_fixed_lens_list
-
-
-

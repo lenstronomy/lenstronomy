@@ -16,7 +16,8 @@ class CoredDensityMST(LensProfileBase):
     subtracts a mass-sheet that approximates the cored profile in it's center to counter-act (in approximation) this
     model. This allows for better sampling of the mass-sheet transformed quantities that do not have strong covariances.
     The subtraction of the mass-sheet is done such that the sampler returns the real central convergence of the original
-    model (but be careful, the output of quantities like the Einstein angle of the main deflector are still the not-scaled one). 
+    model (but be careful, the output of quantities like the Einstein angle of the main deflector are still the
+    not-scaled one).
     Attention!!! The interpretation of the result is that the mass sheet as 'CONVERGENCE' that is present needs to be
     subtracted in post-processing.
     """

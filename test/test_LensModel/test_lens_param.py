@@ -42,18 +42,18 @@ class TestParam(object):
 
     def test_get_setParams(self):
         print(self.kwargs, 'kwargs')
-        args = self.param.setParams(self.kwargs)
+        args = self.param.set_params(self.kwargs)
         print(args, 'args')
-        kwargs_new, _ = self.param.getParams(args, i=0)
+        kwargs_new, _ = self.param.get_params(args, i=0)
         print(kwargs_new, 'kwargs_new')
-        args_new = self.param.setParams(kwargs_new)
+        args_new = self.param.set_params(kwargs_new)
         print(args_new, 'args_new')
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
-        args = self.param_fixed.setParams(self.kwargs)
-        kwargs_new, _ = self.param_fixed.getParams(args, i=0)
-        args_new = self.param_fixed.setParams(kwargs_new)
+        args = self.param_fixed.set_params(self.kwargs)
+        kwargs_new, _ = self.param_fixed.get_params(args, i=0)
+        args_new = self.param_fixed.set_params(kwargs_new)
         for k in range(len(args)):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
@@ -81,8 +81,8 @@ class TestParam(object):
         lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=2, solver_type='SHAPELETS',
                               num_shapelet_lens=8)
         kwargs_lens = [{'beta': 1, 'coeffs': [0, 1, 2, 3, 4, 5, 5, 7], 'center_x':0, 'center_y': 0}]
-        args = lensParam.setParams(kwargs_lens)
-        kwargs_out, i = lensParam.getParams(args, i=0)
+        args = lensParam.set_params(kwargs_lens)
+        kwargs_out, i = lensParam.get_params(args, i=0)
         assert kwargs_out[0]['coeffs'][1] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
         num, param_list = lensParam.num_param()
@@ -91,8 +91,8 @@ class TestParam(object):
         lensParam = LensParam(lens_model_list, kwargs_fixed=[{}], num_images=4, solver_type='SHAPELETS',
                               num_shapelet_lens=8)
         kwargs_lens = [{'beta': 1, 'coeffs': [0, 1, 2, 3, 4, 5, 5, 7], 'center_x': 0, 'center_y': 0}]
-        args = lensParam.setParams(kwargs_lens)
-        kwargs_out, i = lensParam.getParams(args, i=0)
+        args = lensParam.set_params(kwargs_lens)
+        kwargs_out, i = lensParam.get_params(args, i=0)
         assert kwargs_out[0]['coeffs'][5] == 0
         assert kwargs_out[0]['beta'] == kwargs_lens[0]['beta']
         num, param_list = lensParam.num_param()

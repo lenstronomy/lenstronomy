@@ -127,27 +127,29 @@ class SPEP(LensProfileBase):
         f_xy = gamma2
         return f_xx, f_xy, f_xy, f_yy
 
-    def mass_3d_lens(self, r, theta_E, gamma, e1=0, e2=0):
+    def mass_3d_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """
-        computes the spherical power-law mass enclosed (with SPP routiune)
-        :param r:
-        :param theta_E:
-        :param gamma:
-        :param q:
-        :param phi_G:
-        :return:
+        computes the spherical power-law mass enclosed (with SPP routine)
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
         """
         return self.spp.mass_3d_lens(r, theta_E, gamma)
 
-    def density_lens(self, r, theta_E, gamma, e1=0, e2=0):
+    def density_lens(self, r, theta_E, gamma, e1=None, e2=None):
         """
+        computes the density at 3d radius r given lens model parameterization.
+        The integral in the LOS projection of this quantity results in the convergence quantity.
 
-        :param r:
-        :param theta_E:
-        :param gamma:
-        :param e1:
-        :param e2:
-        :return:
+        :param r: radius within the mass is computed
+        :param theta_E: Einstein radius
+        :param gamma: power-law slope
+        :param e1: eccentricity component (not used)
+        :param e2: eccentricity component (not used)
+        :return: mass enclosed a 3D radius r
         """
         return self.spp.density_lens(r, theta_E, gamma)
 

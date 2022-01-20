@@ -9,9 +9,10 @@ class PositionLikelihood(object):
     likelihood of positions of multiply imaged point sources
     """
     def __init__(self, point_source_class, image_position_uncertainty=0.005, astrometric_likelihood=False,
-                 image_position_likelihood=False, ra_image_list=[], dec_image_list=[],
+                 image_position_likelihood=False, ra_image_list=None, dec_image_list=None,
                  source_position_likelihood=False, check_matched_source_position=False, source_position_tolerance=0.001,
-                 source_position_sigma=0.001, force_no_add_image=False, restrict_image_number=False, max_num_images=None):
+                 source_position_sigma=0.001, force_no_add_image=False, restrict_image_number=False,
+                 max_num_images=None):
         """
 
         :param point_source_class: Instance of PointSource() class
@@ -19,14 +20,17 @@ class PositionLikelihood(object):
         this is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
         image positions with an offset 'delta_x_image' and 'delta_y_image'
-        :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position given the data/measured image positions
+        :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position
+         given the data/measured image positions
         :param ra_image_list: list or RA image positions per model component
         :param dec_image_list: list or DEC image positions per model component
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
         relative errors in respect ot the position_uncertainties in the image plane
-        :param check_matched_source_position: bool, if True, checks whether multiple images are a solution of the same source
+        :param check_matched_source_position: bool, if True, checks whether multiple images are a solution of the same
+         source
         :param source_position_tolerance: tolerance level (in arc seconds in the source plane) of the different images
-        :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model precision in matching the source position
+        :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model
+         precision in matching the source position
         :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled
         image(first calculate them)
         :param restrict_image_number: bool, if True, searches for all appearing images in the frame of the data and
@@ -49,6 +53,10 @@ class PositionLikelihood(object):
         if max_num_images is None and restrict_image_number is True:
             raise ValueError('max_num_images needs to be provided when restrict_number_images is True!')
         self._image_position_likelihood = image_position_likelihood
+        if ra_image_list is None:
+            ra_image_list = []
+        if dec_image_list is None:
+            dec_image_list = []
         self._ra_image_list, self._dec_image_list = ra_image_list, dec_image_list
 
     def logL(self, kwargs_lens, kwargs_ps, kwargs_special, verbose=False):
@@ -73,8 +81,8 @@ class PositionLikelihood(object):
             if verbose is True:
                 print('Source scatter punishing likelihood = %s' % logL_source_scatter)
         if self._force_no_add_image:
-            bool = self.check_additional_images(kwargs_ps, kwargs_lens)
-            if bool is True:
+            additional_image_bool = self.check_additional_images(kwargs_ps, kwargs_lens)
+            if additional_image_bool is True:
                 logL -= 10.**5
                 if verbose is True:
                     print('force no additional image penalty as additional images are found!')
@@ -129,7 +137,7 @@ class PositionLikelihood(object):
             dist = (delta_x ** 2 + delta_y ** 2) / sigma ** 2 / 2
             logL = -np.sum(dist)
             if np.isnan(logL) is True:
-                return -np.inf
+                return -10**15
             return logL
         else:
             return 0
@@ -190,7 +198,7 @@ class PositionLikelihood(object):
                     try:
                         Sigma_inv = inv(Sigma_beta)
                     except:
-                        return -np.inf
+                        return -10**15
                     chi2 = delta.T.dot(Sigma_inv.dot(delta))
                     logL -= chi2 / 2
         return logL

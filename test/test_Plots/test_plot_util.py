@@ -61,12 +61,13 @@ class TestPlotUtil(object):
         line_set_x = np.linspace(start=0, stop=1, num=10)
         line_set_y = np.linspace(start=0, stop=1, num=10)
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=None, color='g', flipped_x=True)
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=None, color='g', flipped_x=True,
+                                     pixel_offset=False)
         plt.close()
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
-        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=[1, 1], color='g',
-                                     flipped_x=False)
+        ax = plot_util.plot_line_set(ax, coords, line_set_x, line_set_y, origin=[1, 1], color='g', flipped_x=False,
+                                     pixel_offset=True)
         plt.close()
 
         # and here we input a list of arrays
@@ -80,7 +81,7 @@ class TestPlotUtil(object):
 
         f, ax = plt.subplots(1, 1, figsize=(4, 4))
         ax = plot_util.plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=[1, 1], color='g',
-                                          flipped_x=False)
+                                     flipped_x=False)
         plt.close()
 
     def test_image_position_plot(self):
@@ -89,10 +90,10 @@ class TestPlotUtil(object):
 
         ra_image, dec_image = np.array([1, 2]), np.array([1, 2])
         ax = plot_util.image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None,
-                                           origin=None, flipped_x=False)
+                                           origin=None, flipped_x=False, pixel_offset=False)
         plt.close()
         ax = plot_util.image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=['A', 'B'],
-                                           origin=[1, 1], flipped_x=True)
+                                           origin=[1, 1], flipped_x=True, pixel_offset=True)
         plt.close()
 
 

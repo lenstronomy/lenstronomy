@@ -22,14 +22,19 @@ class LightModelBase(object):
     """
     class to handle source and lens light models
     """
-    def __init__(self, light_model_list, smoothing=0.001):
+    def __init__(self, light_model_list, smoothing=0.001, sersic_major_axis=None):
         """
 
         :param light_model_list: list of light models
         :param smoothing: smoothing factor for certain models (deprecated)
+        :param sersic_major_axis: boolean or None, if True, uses the semi-major axis as the definition of the Sersic
+         half-light radius, if False, uses the product average of semi-major and semi-minor axis. If None, uses the
+         convention in the lenstronomy yaml setting (which by default is =False)
         """
         self.profile_type_list = light_model_list
         self.func_list = []
+        if sersic_major_axis is None:
+            sersic_major_axis = sersic_major_axis_conf
         for profile_type in light_model_list:
             if profile_type == 'GAUSSIAN':
                 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
@@ -51,10 +56,10 @@ class LightModelBase(object):
                 self.func_list.append(Sersic(smoothing=smoothing))
             elif profile_type == 'SERSIC_ELLIPSE':
                 from lenstronomy.LightModel.Profiles.sersic import SersicElliptic
-                self.func_list.append(SersicElliptic(smoothing=smoothing, sersic_major_axis=sersic_major_axis_conf))
+                self.func_list.append(SersicElliptic(smoothing=smoothing, sersic_major_axis=sersic_major_axis))
             elif profile_type == 'CORE_SERSIC':
                 from lenstronomy.LightModel.Profiles.sersic import CoreSersic
-                self.func_list.append(CoreSersic(smoothing=smoothing))
+                self.func_list.append(CoreSersic(smoothing=smoothing, sersic_major_axis=sersic_major_axis))
             elif profile_type == 'SHAPELETS':
                 from lenstronomy.LightModel.Profiles.shapelets import ShapeletSet
                 self.func_list.append(ShapeletSet())
@@ -74,8 +79,8 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe
                 self.func_list.append(PJaffe())
             elif profile_type == 'PJAFFE_ELLIPSE':
-                from lenstronomy.LightModel.Profiles.p_jaffe import PJaffe_Ellipse
-                self.func_list.append(PJaffe_Ellipse())
+                from lenstronomy.LightModel.Profiles.p_jaffe import PJaffeEllipse
+                self.func_list.append(PJaffeEllipse())
             elif profile_type == 'UNIFORM':
                 from lenstronomy.LightModel.Profiles.uniform import Uniform
                 self.func_list.append(Uniform())
@@ -104,13 +109,18 @@ class LightModelBase(object):
                 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
                 self.func_list.append(SLIT_Starlets(second_gen=True))
             else:
-                raise ValueError('No light model of type %s found! Supported are the following models: %s' % (profile_type, _MODELS_SUPPORTED))
+                raise ValueError('No light model of type %s found! Supported are the following models: %s'
+                                 % (profile_type, _MODELS_SUPPORTED))
         self._num_func = len(self.func_list)
 
     def surface_brightness(self, x, y, kwargs_list, k=None):
         """
         :param x: coordinate in units of arcsec relative to the center of the image
         :type x: set or single 1d numpy array
+        :param y: coordinate in units of arcsec relative to the center of the image
+        :type y: set or single 1d numpy array
+        :param kwargs_list: keyword argument list of light profile
+        :param k: integer or list of integers for selecting subsets of light profiles
         """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         x = np.array(x, dtype=float)
@@ -126,8 +136,9 @@ class LightModelBase(object):
     def light_3d(self, r, kwargs_list, k=None):
         """
         computes 3d density at radius r
-        :param x: coordinate in units of arcsec relative to the center of the image
-        :type x: set or single 1d numpy array
+        :param r: 3d radius units of arcsec relative to the center of the light profile
+        :param kwargs_list: keyword argument list of light profile
+        :param k: integer or list of integers for selecting subsets of light profiles
         """
         kwargs_list_standard = self._transform_kwargs(kwargs_list)
         r = np.array(r, dtype=float)
@@ -135,14 +146,15 @@ class LightModelBase(object):
         bool_list = self._bool_list(k=k)
         for i, func in enumerate(self.func_list):
             if bool_list[i] is True:
-                kwargs = {k: v for k, v in kwargs_list_standard[i].items() if not k in ['center_x', 'center_y']}
-                if self.profile_type_list[i] in ['HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE',
-                                                     'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'MULTI_GAUSSIAN',
-                                                     'MULTI_GAUSSIAN_ELLIPSE', 'POWER_LAW']:
+                kwargs = {k: v for k, v in kwargs_list_standard[i].items() if k not in ['center_x', 'center_y']}
+                if self.profile_type_list[i] in ['DOUBLE_CHAMELEON', 'CHAMELEON', 'HERNQUIST', 'HERNQUIST_ELLIPSE',
+                                                 'PJAFFE', 'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE',
+                                                 'MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE', 'NIE', 'POWER_LAW',
+                                                 'TRIPLE_CHAMELEON']:
                     flux += func.light_3d(r, **kwargs)
                 else:
                     raise ValueError('Light model %s does not support a 3d light distribution!'
-                                         % self.profile_type_list[i])
+                                     % self.profile_type_list[i])
         return flux
 
     def total_flux(self, kwargs_list, norm=False, k=None):
@@ -151,7 +163,8 @@ class LightModelBase(object):
         well as lenstronomy amp to magnitude conversions. Not all models are supported.
         The units are linked to the data to be modelled with associated noise properties (default is count/s).
 
-        :param kwargs_list: list of keyword arguments corresponding to the light profiles. The 'amp' parameter can be missing.
+        :param kwargs_list: list of keyword arguments corresponding to the light profiles. The 'amp' parameter can be
+         missing.
         :param norm: bool, if True, computes the flux for amp=1
         :param k: int, if set, only evaluates the specific light model
         :return: list of (total) flux values attributed to each profile
@@ -198,7 +211,8 @@ class LightModelBase(object):
         returns a bool list of the length of the lens models
         if k = None: returns bool list with True's
         if k is int, returns bool list with False's but k'th is True
-        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed and False elsewhere
+        if k is a list of int, e.g. [0, 3, 5], returns a bool list with True's in the integers listed
+        and False elsewhere
         if k is a boolean list, checks for size to match the numbers of models and returns it
 
         :param k: None, int, or list of ints

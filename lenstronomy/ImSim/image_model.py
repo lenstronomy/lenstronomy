@@ -76,15 +76,15 @@ class ImageModel(object):
         else:
             self.source_mapping = Image2SourceMapping(lensModel=lens_model_class, sourceModel=source_model_class)
 
-    def reset_point_source_cache(self, bool=True):
+    def reset_point_source_cache(self, cache=True):
         """
         deletes all the cache in the point source class and saves it from then on
 
-        :param bool: boolean, if True, saves the next occuring point source positions in the cache
+        :param cache: boolean, if True, saves the next occuring point source positions in the cache
         :return: None
         """
         self.PointSource.delete_lens_model_cache()
-        self.PointSource.set_save_cache(bool)
+        self.PointSource.set_save_cache(cache)
 
     def update_psf(self, psf_class):
         """
@@ -113,7 +113,7 @@ class ImageModel(object):
         :return: 2d array of surface brightness pixels
         """
         if len(self.SourceModel.profile_type_list) == 0:
-            return np.zeros((self.Data.num_pixel_axes))
+            return np.zeros(self.Data.num_pixel_axes)
         if self._pixelbased_bool is True:
             return self._source_surface_brightness_pixelbased(kwargs_source, kwargs_lens=kwargs_lens, 
                                                        kwargs_extinction=kwargs_extinction, 

@@ -60,7 +60,7 @@ def center_kernel(kernel, iterations=20):
     """
     kernel = kernel_norm(kernel)
     nx, ny = np.shape(kernel)
-    if nx %2 == 0:
+    if nx % 2 == 0:
         raise ValueError("kernel needs odd number of pixels")
     # make coordinate grid of kernel
     x_grid, y_grid = util.make_grid(nx, deltapix=1, left_lower=False)
@@ -297,7 +297,6 @@ def split_kernel(kernel_super, supersampling_kernel_size, supersampling_factor, 
     pixel kernel and subsampling kernel such that the convolution of both applied on an image can be
     performed, i.e. smaller subsampling PSF and hole in larger PSF
 
-    :param kernel: PSF kernel of the size of the pixel
     :param kernel_super: super-sampled kernel
     :param supersampling_kernel_size: size of super-sampled PSF in units of degraded pixels
     :param normalized: boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel
@@ -428,14 +427,14 @@ def estimate_amp(data, x_pos, y_pos, psf_kernel):
     :param data:
     :param x_pos:
     :param y_pos:
-    :param deltaPix:
+    :param psf_kernel:
     :return:
     """
     numPix_x, numPix_y = np.shape(data)
     #data_center = int((numPix-1.)/2)
     x_int = int(round(x_pos-0.49999))#+data_center
     y_int = int(round(y_pos-0.49999))#+data_center
-    # TODO: make amplitude estimate not sucecible to rounding effects on which pixels to chose to estimate the amplitude
+    # TODO: make amplitude estimate not sucebtible to rounding effects on which pixels to chose to estimate the amplitude
     if x_int > 2 and x_int < numPix_x-2 and y_int > 2 and y_int < numPix_y-2:
         mean_image = max(np.sum(data[y_int - 2:y_int+3, x_int-2:x_int+3]), 0)
         num = len(psf_kernel)
@@ -464,3 +463,25 @@ def mge_kernel(kernel, order=5):
     r_array = np.linspace(start=0., stop=n_r - 1, num=n_r)
     amps, sigmas, norm = mge.mge_1d(r_array, psf_r, N=order, linspace=True)
     return amps, sigmas, norm
+
+
+@export
+def match_kernel_size(image, size):
+    """
+    matching kernel/image to a dedicated size by either expanding the image with zeros at the edges or chopping of the
+    edges.
+
+    :param image: 2d array (square with odd number of pixels)
+    :param size: integer (odd number)
+    :return: image with matched size, either by cutting or by adding zeros in the outskirts
+    """
+    n = len(image)
+    if n == size:
+        return image
+    image_copy = copy.deepcopy(image)
+    if n > size:
+        return image_copy[int((n-size)/2): int(n - (n-size)/2), int((n-size)/2): int(n - (n-size)/2)]
+    else:
+        image_add = np.zeros((size, size))
+        image_add[int((size - n)/2): int(size - (size - n)/2), int((size - n)/2): int(size - (size - n)/2)] = image_copy
+        return image_add

@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class which describes the surface brightness of the light models
+# this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
 from lenstronomy.LightModel.light_model_base import LightModelBase
@@ -13,13 +13,12 @@ class LinearBasis(LightModelBase):
     class to handle source and lens light models
     """
 
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, **kwargs):
         """
 
-        :param light_model_list:
-        :param smoothing:
+        :param kwargs: keyword arguments for LightModelBase class
         """
-        super(LinearBasis, self).__init__(light_model_list=light_model_list, smoothing=smoothing)
+        super(LinearBasis, self).__init__(**kwargs)
 
     @property
     def param_name_list(self):
@@ -35,11 +34,12 @@ class LinearBasis(LightModelBase):
 
     def functions_split(self, x, y, kwargs_list, k=None):
         """
+        split model in different components
 
-        :param x:
-        :param y:
-        :param kwargs_list:
-        :return:
+        :param x: coordinate in units of arcsec relative to the center of the image
+        :param y: coordinate in units of arcsec relative to the center of the image
+        :param kwargs_list: keyword argument list of light profile
+        :param k: integer or list of integers for selecting subsets of light profiles
         """
         response = []
         n = 0
@@ -101,8 +101,8 @@ class LinearBasis(LightModelBase):
         n_list = []
         for i, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
+                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
                 n_list += [1]
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
@@ -126,10 +126,11 @@ class LinearBasis(LightModelBase):
     def update_linear(self, param, i, kwargs_list):
         """
 
-        :param param:
-        :param i:
-        :param kwargs_list:
-        :return:
+        :param param: array of linear amplitude coefficients in the order of the linear minimization of the ImSim module
+        :param i: index of first coefficient to start reading out the linear parameters associated with the model
+         components of this class
+        :param kwargs_list: list of keyword arguments of the model components
+        :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
         """
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',
@@ -159,7 +160,7 @@ class LinearBasis(LightModelBase):
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
-    def add_fixed_linear(self, kwargs_fixed_list, bool_list=None):
+    def add_fixed_linear(self, kwargs_fixed_list):
         """
 
         :param kwargs_fixed_list: list of fixed keyword arguments

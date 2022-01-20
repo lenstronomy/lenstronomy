@@ -16,7 +16,7 @@ class ImageLinearFit(ImageModel):
     """
     def __init__(self, data_class, psf_class=None, lens_model_class=None, source_model_class=None,
                  lens_light_model_class=None, point_source_class=None, extinction_class=None, 
-                 kwargs_numerics={}, likelihood_mask=None,
+                 kwargs_numerics=None, likelihood_mask=None,
                  psf_error_map_bool_list=None, kwargs_pixelbased=None):
         """
 
@@ -36,7 +36,7 @@ class ImageLinearFit(ImageModel):
             likelihood_mask = np.ones_like(data_class.data)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
         self._mask1d = util.image2array(self.likelihood_mask)
-        #kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
+        # kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
@@ -219,9 +219,9 @@ class ImageLinearFit(ImageModel):
                 marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
                 logL += marg_const
         if check_positive_flux is True:
-            bool = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-            if bool is False:
-                logL -= 10**5
+            bool_ = self.check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool_ is False:
+                logL -= 10**8
         return logL
 
     def num_param_linear(self, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps):
@@ -252,7 +252,7 @@ class ImageLinearFit(ImageModel):
         - first (optional) computing differential extinctions)
         - adding linear components of the lensed source(s)
         - adding linear components of the unlensed components (i.e. deflector)
-        - adding point soources (can be multiply lensed or stars in the field)
+        - adding point sources (can be multiply lensed or stars in the field)
 
         :param kwargs_lens: list of keyword arguments corresponding to the superposition of different lens profiles
         :param kwargs_source: list of keyword arguments corresponding to the superposition of different source light profiles
@@ -320,8 +320,8 @@ class ImageLinearFit(ImageModel):
         """
         # in case the source plane grid size has changed, update the kwargs accordingly
         ss_factor_source = self.SourceNumerics.grid_supersampling_factor
-        kwargs_source[0]['n_pixels'] = int(self.Data.num_pixel * ss_factor_source**2)  # effective number of pixels in source plane
-        kwargs_source[0]['scale'] = self.Data.pixel_width / ss_factor_source        # effective pixel size of source plane grid
+        kwargs_source[0]['n_pixels'] = int(self.Data.num_pixel * ss_factor_source**2)  #  effective number of pixels in source plane
+        kwargs_source[0]['scale'] = self.Data.pixel_width / ss_factor_source  # effective pixel size of source plane grid
         # pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0), center of the image
         kwargs_source[0]['center_x'] = 0
         kwargs_source[0]['center_y'] = 0
@@ -400,10 +400,10 @@ class ImageLinearFit(ImageModel):
         :param kwargs_ps:
         :return:
         """
-        error_map = np.zeros((self.Data.num_pixel_axes))
+        error_map = np.zeros(self.Data.num_pixel_axes)
         if self._psf_error_map is True:
-            for k, bool in enumerate(self._psf_error_map_bool_list):
-                if bool is True:
+            for k, bool_ in enumerate(self._psf_error_map_bool_list):
+                if bool_ is True:
                     ra_pos, dec_pos, _ = self.PointSource.point_source_list(kwargs_ps, kwargs_lens=kwargs_lens, k=k,
                                                                             with_amp=False)
                     if len(ra_pos) > 0:

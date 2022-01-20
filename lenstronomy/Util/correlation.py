@@ -17,12 +17,12 @@ def correlation_2D(image):
     :return: 2d fourier transform
     """
     # Take the fourier transform of the image.
-    F1 = fftpack.fft2(image)
+    f1 = fftpack.fft2(image)
 
     # Now shift the quadrants around so that low spatial frequencies are in
     # the center of the 2D fourier transformed image.
-    F2 = fftpack.fftshift(F1)
-    return np.abs(F2)
+    f2 = fftpack.fftshift(f1)
+    return np.abs(f2)
 
 
 @export

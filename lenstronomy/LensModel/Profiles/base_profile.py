@@ -14,8 +14,6 @@ class LensProfileBase(object):
         """
         lensing potential
 
-        :param x: x-coordinate
-        :param y: y-coordinate
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
@@ -25,8 +23,6 @@ class LensProfileBase(object):
         """
         deflection angles
 
-        :param x: x-coordinate
-        :param y: y-coordinate
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """
@@ -36,8 +32,6 @@ class LensProfileBase(object):
         """
         returns Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
 
-        :param x: x-coordinate
-        :param y: y-coordinate
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """

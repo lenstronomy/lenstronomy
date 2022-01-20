@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.Numerics.numerics &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.ImSim.Numerics.numerics &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numerics</a></li> 
       </ul>
     </div>  
 
@@ -39,11 +38,11 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.ImSim.Numerics.numerics</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.grid</span> <span class="k">import</span> <span class="n">RegularGrid</span><span class="p">,</span> <span class="n">AdaptiveGrid</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.convolution</span> <span class="k">import</span> <span class="n">SubgridKernelConvolution</span><span class="p">,</span> <span class="n">PixelKernelConvolution</span><span class="p">,</span> <span class="n">MultiGaussianConvolution</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.point_source_rendering</span> <span class="k">import</span> <span class="n">PointSourceRendering</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">kernel_util</span>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.grid</span> <span class="kn">import</span> <span class="n">RegularGrid</span><span class="p">,</span> <span class="n">AdaptiveGrid</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.convolution</span> <span class="kn">import</span> <span class="n">SubgridKernelConvolution</span><span class="p">,</span> <span class="n">PixelKernelConvolution</span><span class="p">,</span> <span class="n">MultiGaussianConvolution</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.point_source_rendering</span> <span class="kn">import</span> <span class="n">PointSourceRendering</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">kernel_util</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Numerics&#39;</span><span class="p">]</span>
@@ -54,7 +53,7 @@
 <span class="sd">    this classes manages the numerical options and computations of an image.</span>
 <span class="sd">    The class has two main functions, re_size_convolve() and coordinates_evaluate()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_mode</span><span class="o">=</span><span class="s1">&#39;regular&#39;</span><span class="p">,</span> <span class="n">supersampling_convolution</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="p">,</span> <span class="n">psf</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">compute_mode</span><span class="o">=</span><span class="s1">&#39;regular&#39;</span><span class="p">,</span> <span class="n">supersampling_convolution</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">supersampling_kernel_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">supersampled_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">compute_indexes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">convolution_kernel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">convolution_type</span><span class="o">=</span><span class="s1">&#39;fft_static&#39;</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
@@ -73,8 +72,9 @@
 <span class="sd">        ray-shooting). Pixels marked as False will be assigned a flux value of zero (or ignored in the adaptive</span>
 <span class="sd">        convolution)</span>
 <span class="sd">        :param supersampled_indexes: 2d boolean array (only used in mode=&#39;adaptive&#39;) of pixels to be supersampled (in</span>
-<span class="sd">        surface brightness and if supersampling_convolution=True also in convolution)</span>
-<span class="sd">        :param compute_indexes: 2d boolean array (only used in mode=&#39;adaptive&#39;), marks pixel that the response after</span>
+<span class="sd">        surface brightness and if supersampling_convolution=True also in convolution). All other pixels not set to =True</span>
+<span class="sd">        will not be super-sampled.</span>
+<span class="sd">        :param compute_indexes: 2d boolean array (only used in compute_mode=&#39;adaptive&#39;), marks pixel that the response after</span>
 <span class="sd">        convolution is computed (all others =0). This can be set to likelihood_mask in the Likelihood module for</span>
 <span class="sd">        consistency.</span>
 <span class="sd">        :param point_source_supersampling_factor: super-sampling resolution of the point source placing</span>
@@ -103,7 +103,7 @@
                                      <span class="n">flux_evaluate_indexes</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">compute_mode</span> <span class="o">==</span> <span class="s1">&#39;adaptive&#39;</span> <span class="ow">and</span> <span class="n">supersampling_convolution</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.adaptive_numerics</span> <span class="k">import</span> <span class="n">AdaptiveConvolution</span>
+                <span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.adaptive_numerics</span> <span class="kn">import</span> <span class="n">AdaptiveConvolution</span>
                 <span class="n">kernel_super</span> <span class="o">=</span> <span class="n">psf</span><span class="o">.</span><span class="n">kernel_point_source_supersampled</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="p">)</span>
                 <span class="n">kernel_super</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_cut_kernel</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">convolution_kernel_size</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_conv</span> <span class="o">=</span> <span class="n">AdaptiveConvolution</span><span class="p">(</span><span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span>
@@ -149,7 +149,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param flux_array: 1d array, flux values corresponding to coordinates_evaluate</span>
-<span class="sd">        :param array_low_res_partial: regular sampled surface brightness, 1d array</span>
+<span class="sd">        :param unconvolved: boolean, if True, does not apply a convolution</span>
 <span class="sd">        :return: convolved image on regular pixel grid, 2d array</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># add supersampled region to lower resolution on</span>
@@ -213,23 +213,22 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -243,13 +242,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numerics</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

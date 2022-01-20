@@ -91,6 +91,24 @@ def test_sample_ball():
     npt.assert_almost_equal(sigma, std*0.607, decimal=1)
 
 
+def test_sample_ball_truncated():
+    mean = np.array([0, 1])
+    sigma = np.array([0.1, 1])
+    lower_limit = np.array([0, 0])
+    upper_limit = np.array([3, 4])
+
+    samples = sampling_util.sample_ball_truncated(mean, sigma, lower_limit, upper_limit, size=1000)
+
+    assert len(samples) == 1000
+
+    var0 = samples[:, 0]
+    var1 = samples[:, 1]
+    assert np.max(var1) <= upper_limit[1]
+    assert np.max(var0) <= upper_limit[0]
+    assert np.min(var1) >= lower_limit[1]
+    assert np.min(var0) >= lower_limit[0]
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

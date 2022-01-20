@@ -41,6 +41,29 @@ class TestNumerics(object):
         kwargs = {'amp': 2, 'gamma': 2, 'e1': 0, 'e2': 0}
         self.assert_integrals(Model, kwargs)
 
+    def test_nie(self):
+        from lenstronomy.LightModel.Profiles.nie import NIE as Model
+        kwargs = {'amp': 2, 's_scale': 0.001, 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+        kwargs = {'amp': 2, 's_scale': 1., 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
+    def test_chameleon(self):
+        from lenstronomy.LightModel.Profiles.chameleon import Chameleon as Model
+        kwargs = {'amp': 2, 'w_c': 1, 'w_t': 2, 'e1': 0, 'e2': 0}
+        self.assert_integrals(Model, kwargs)
+
+        from lenstronomy.LightModel.Profiles.chameleon import DoubleChameleon as Model
+        kwargs = {'amp': 2, 'ratio': 0.4, 'w_c1': 1, 'w_t1': 2, 'e11': 0, 'e21': 0,
+                  'w_c2': 2, 'w_t2': 3, 'e12': 0, 'e22': 0}
+        self.assert_integrals(Model, kwargs)
+
+        from lenstronomy.LightModel.Profiles.chameleon import TripleChameleon as Model
+        kwargs = {'amp': 2, 'ratio12': 0.4, 'ratio13': 2, 'w_c1': 1, 'w_t1': 2, 'e11': 0, 'e21': 0,
+                  'w_c2': 2, 'w_t2': 3, 'e12': 0, 'e22': 0,
+                  'w_c3': 0.2, 'w_t3': 1, 'e13': 0, 'e23': 0}
+        self.assert_integrals(Model, kwargs)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

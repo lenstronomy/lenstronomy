@@ -15,7 +15,7 @@ class Solver(object):
         """
 
         :param solver_type: string, option for specific solver type
-        see detailed instruction of the Solver4Point and Solver2Point classes
+         see detailed instruction of the Solver4Point and Solver2Point classes
         :param lensModel: instance of a LensModel() class
         :param num_images: int, number of images to be solved for
         """
@@ -34,6 +34,7 @@ class Solver(object):
         :param x_pos:
         :param y_pos:
         :param kwargs_list:
+        :param xtol:
         :return:
         """
         return self._solver.constraint_lensmodel(x_pos, y_pos, kwargs_list, xtol=xtol)

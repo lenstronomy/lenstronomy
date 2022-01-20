@@ -7,7 +7,8 @@ import lenstronomy.Util.util as util
 __all__ = ['HST']
 
 # F160W filter configs
-WFC3_F160W_band_obs = {'exposure_time': 5400.,
+WFC3_F160W_band_obs = {'exposure_time': 5400.,  # ~90mins orbit on HST, but this number corresponds to
+                       # approximately two HST orbits with overheads, guide star aquisition. ~2700s science exposure per orbit
               'sky_brightness': 22.3,
               'magnitude_zero_point': 25.96,
               'num_exposures': 1,
@@ -16,7 +17,8 @@ WFC3_F160W_band_obs = {'exposure_time': 5400.,
               }
 
 # configs meant to simulate images close to those provided as part of the Time Delay Lens Modeling Challenge
-TDLMC_F160W_band_obs = {'exposure_time': 5400.,
+TDLMC_F160W_band_obs = {'exposure_time': 5400.,  # ~90mins orbit on HST, but this number corresponds to
+                       # approximately two HST orbits with overheads, guide star aquisition. ~2700s science exposure per orbit
               'sky_brightness': 22.0,
               'magnitude_zero_point': 25.9463,
               'num_exposures': 1,

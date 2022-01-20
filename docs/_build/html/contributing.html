@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Contributing to lenstronomy &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Contributing to lenstronomy &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing to lenstronomy</a></li> 
       </ul>
     </div>  
 
@@ -45,109 +45,126 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="contributing-to-lenstronomy">
+  <section id="contributing-to-lenstronomy">
 <h1>Contributing to lenstronomy<a class="headerlink" href="#contributing-to-lenstronomy" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="github-workflow">
-<h2>GitHub Workflow<a class="headerlink" href="#github-workflow" title="Permalink to this headline">¶</a></h2>
+<section id="id1">
+<h2>Contributing to lenstronomy<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<section id="github-workflow">
+<h3>GitHub Workflow<a class="headerlink" href="#github-workflow" title="Permalink to this headline">¶</a></h3>
 <p>### Fork and Clone the lenstronomy Repository
 <strong>You should only need to do this step once</strong></p>
 <p>First <em>fork</em> the lenstronomy repository. A fork is your own remote copy of the repository on GitHub. To create a fork:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Go to the [lenstronomy GitHub Repository](<a class="reference external" href="https://github.com/sibirrer/lenstronomy">https://github.com/sibirrer/lenstronomy</a>)</li>
-<li>Click the <strong>Fork</strong> button (in the top-right-hand corner)</li>
-<li>Choose where to create the fork, typically your personal GitHub account</li>
+<li><p>Go to the [lenstronomy GitHub Repository](<a class="reference external" href="https://github.com/sibirrer/lenstronomy">https://github.com/sibirrer/lenstronomy</a>)</p></li>
+<li><p>Click the <strong>Fork</strong> button (in the top-right-hand corner)</p></li>
+<li><p>Choose where to create the fork, typically your personal GitHub account</p></li>
 </ol>
 </div></blockquote>
 <p>Next <em>clone</em> your fork. Cloning creates a local copy of the repository on your computer to work with. To clone your fork:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">clone</span> <span class="pre">https://github.com/&lt;your-account&gt;/lenstronomy.git</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
 <p>Finally add the <cite>lenstronomy</cite> repository as a <em>remote</em>. This will allow you to fetch changes made to the codebase. To add the <cite>skypyproject</cite> remote:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">cd</span> <span class="pre">lenstronomy</span>
 <span class="pre">git</span> <span class="pre">remote</span> <span class="pre">add</span> <span class="pre">lenstronomyproject</span> <span class="pre">https://github.com/sibirrer/lenstronomy.git</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p>### Install your local lenstronomy version</p>
+<p>To enable that your new code gets accessible by python also outside of the development environment,
+make sure all previous versions of lenstronomy are uninstalled and then install your version of lenstronomy (aka add the software to the python path)</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<span class="pre">cd</span> <span class="pre">lenstronomy</span>
+<span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">develop</span> <span class="pre">--user</span>
+<span class="pre">`</span></code></p>
+</div></blockquote>
+<p>Alternatively, create virtual environments for the development (recommended for advanced usage with multiple branches).</p>
 <p>### Create a branch for your new feature</p>
 <p>Create a <em>branch</em> off the <cite>lenstronomyproject</cite> main branch. Working on unique branches for each new feature simplifies the development, review and merge processes by maintining logical separation. To create a feature branch:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
 <span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">-b</span> <span class="pre">&lt;your-branch-name&gt;</span> <span class="pre">lenstronomyproject/main</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
 <p>### Hack away!</p>
 <p>Write the new code you would like to contribute and <em>commit</em> it to the feature branch on your local repository. Ideally commit small units of work often with clear and descriptive commit messages describing the changes you made. To commit changes to a file:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">add</span> <span class="pre">file_containing_your_contribution</span>
 <span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-m</span> <span class="pre">'Your</span> <span class="pre">clear</span> <span class="pre">and</span> <span class="pre">descriptive</span> <span class="pre">commit</span> <span class="pre">message'</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
 <p><em>Push</em> the contributions in your feature branch to your remote fork on GitHub:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">push</span> <span class="pre">origin</span> <span class="pre">&lt;your-branch-name&gt;</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
 <p><strong>Note:</strong> The first time you <em>push</em> a feature branch you will probably need to use <cite>–set-upstream origin</cite> to link to your remote fork:</p>
 <blockquote>
-<div><code class="docutils literal notranslate"><span class="pre">`bash</span>
+<div><p><code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">push</span> <span class="pre">--set-upstream</span> <span class="pre">origin</span> <span class="pre">&lt;your-branch-name&gt;</span>
-<span class="pre">`</span></code></div></blockquote>
+<span class="pre">`</span></code></p>
+</div></blockquote>
 <p>### Open a Pull Request</p>
 <p>When you feel that work on your new feature is complete, you should create a <em>Pull Request</em>. This will propose your work to be merged into the main lenstronomy repository.</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li>Go to [lenstronomy Pull Requests](<a class="reference external" href="https://github.com/sibirrer/lenstronomy/pulls">https://github.com/sibirrer/lenstronomy/pulls</a>)</li>
-<li>Click the green <strong>New pull request</strong> button</li>
-<li>Click <strong>compare across forks</strong></li>
-<li>Confirm that the base fork is <cite>sibirrer/lenstronomy</cite> and the base branch is <cite>main</cite></li>
-<li>Confirm the head fork is <cite>&lt;your-account&gt;/lenstronomy</cite> and the compare branch is <cite>&lt;your-branch-name&gt;</cite></li>
-<li>Give your pull request a title and fill out the the template for the description</li>
-<li>Click the green <strong>Create pull request</strong> button</li>
+<li><p>Go to [lenstronomy Pull Requests](<a class="reference external" href="https://github.com/sibirrer/lenstronomy/pulls">https://github.com/sibirrer/lenstronomy/pulls</a>)</p></li>
+<li><p>Click the green <strong>New pull request</strong> button</p></li>
+<li><p>Click <strong>compare across forks</strong></p></li>
+<li><p>Confirm that the base fork is <cite>sibirrer/lenstronomy</cite> and the base branch is <cite>main</cite></p></li>
+<li><p>Confirm the head fork is <cite>&lt;your-account&gt;/lenstronomy</cite> and the compare branch is <cite>&lt;your-branch-name&gt;</cite></p></li>
+<li><p>Give your pull request a title and fill out the the template for the description</p></li>
+<li><p>Click the green <strong>Create pull request</strong> button</p></li>
 </ol>
 </div></blockquote>
 <p>### Updating your branch</p>
 <p>As you work on your feature, new commits might be made to the <cite>sibirrer/lenstronomy</cite> main branch. You will need to update your branch with these new commits before your pull request can be accepted. You can achieve this in a few different ways:</p>
 <blockquote>
 <div><ul class="simple">
-<li>If your pull request has no conflicts, click <strong>Update branch</strong></li>
-<li>If your pull request has conflicts, click <strong>Resolve conflicts</strong>, manually resolve the conflicts and click <strong>Mark as resolved</strong></li>
-<li><em>merge</em> the <cite>lenstronomyproject</cite> main branch from the command line:
+<li><p>If your pull request has no conflicts, click <strong>Update branch</strong></p></li>
+<li><p>If your pull request has conflicts, click <strong>Resolve conflicts</strong>, manually resolve the conflicts and click <strong>Mark as resolved</strong></p></li>
+<li><p><em>merge</em> the <cite>lenstronomyproject</cite> main branch from the command line:
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
 <span class="pre">git</span> <span class="pre">merge</span> <span class="pre">lenstronomyproject/main</span>
-<span class="pre">`</span></code></li>
-<li><em>rebase</em> your feature branch onto the <cite>lenstronomy</cite> main branch from the command line:
+<span class="pre">`</span></code></p></li>
+<li><p><em>rebase</em> your feature branch onto the <cite>lenstronomy</cite> main branch from the command line:
 <code class="docutils literal notranslate"><span class="pre">`bash</span>
 <span class="pre">git</span> <span class="pre">fetch</span> <span class="pre">lenstronomyproject</span>
 <span class="pre">git</span> <span class="pre">rebase</span> <span class="pre">lenstronomyproject/main</span>
-<span class="pre">`</span></code></li>
+<span class="pre">`</span></code></p></li>
 </ul>
 </div></blockquote>
 <p><strong>Warning</strong>: It is bad practice to <em>rebase</em> commits that have already been pushed to a remote such as your fork. Rebasing creates new copies of your commits that can cause the local and remote branches to diverge. <cite>git push –force</cite> will <strong>overwrite</strong> the remote branch with your newly rebased local branch. This is strongly discouraged, particularly when working on a shared branch where you could erase a collaborators commits.</p>
-<dl class="docutils">
-<dt>For more information about resolving conflicts see the GitHub guides:</dt>
-<dd><ul class="first last simple">
-<li>[Resolving a merge conflict on GitHub](<a class="reference external" href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github">https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github</a>)</li>
-<li>[Resolving a merge conflict using the command line](<a class="reference external" href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line">https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line</a>)</li>
-<li>[About Git rebase](<a class="reference external" href="https://help.github.com/en/github/using-git/about-git-rebase">https://help.github.com/en/github/using-git/about-git-rebase</a>)</li>
+<dl class="simple">
+<dt>For more information about resolving conflicts see the GitHub guides:</dt><dd><ul class="simple">
+<li><p>[Resolving a merge conflict on GitHub](<a class="reference external" href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github">https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-on-github</a>)</p></li>
+<li><p>[Resolving a merge conflict using the command line](<a class="reference external" href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line">https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/resolving-a-merge-conflict-using-the-command-line</a>)</p></li>
+<li><p>[About Git rebase](<a class="reference external" href="https://help.github.com/en/github/using-git/about-git-rebase">https://help.github.com/en/github/using-git/about-git-rebase</a>)</p></li>
 </ul>
 </dd>
 </dl>
 <p>### More Information</p>
 <p>More information regarding the usage of GitHub can be found in the [GitHub Guides](<a class="reference external" href="https://guides.github.com/">https://guides.github.com/</a>).</p>
-</div>
-<div class="section" id="coding-guidelines">
-<h2>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="coding-guidelines">
+<h3>Coding Guidelines<a class="headerlink" href="#coding-guidelines" title="Permalink to this headline">¶</a></h3>
 <p>Before your pull request can be merged into the codebase, it will be reviewed by one of the lenstronomy developers and required to pass a number of automated checks. Below are a minimum set of guidelines for developers to follow:</p>
 <p>### General Guidelines</p>
 <ul class="simple">
-<li>lenstronomy is compatible with Python&gt;=3.5 (see [setup.cfg](setup.cfg)). lenstronomy <em>does not</em> support backwards compatibility with Python 2.x; <cite>six</cite>, <cite>__future__</cite> and <cite>2to3</cite> should not be used.</li>
-<li>All contributions should follow the [PEP8 Style Guide for Python Code](<a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">https://www.python.org/dev/peps/pep-0008/</a>). We recommend using [flake8](<a class="reference external" href="https://flake8.pycqa.org/">https://flake8.pycqa.org/</a>) to check your code for PEP8 compliance.</li>
-<li>Importing lenstronomy should only depend on having [NumPy](<a class="reference external" href="https://www.numpy.org">https://www.numpy.org</a>), [SciPy](<a class="reference external" href="https://www.scipy.org/">https://www.scipy.org/</a>) and [Astropy](<a class="reference external" href="https://www.astropy.org/">https://www.astropy.org/</a>) installed.</li>
-<li>Code is grouped into submodules e.g. [LensModel](lenstronomy/LensModel), [LightModel](lenstronomy/LightModel) and [ImSim](lenstronomy/ImSim). There is also a [utils](lenstronomy/Utils) submodule for general utility functions.</li>
-<li>For more information see the [Astropy Coding Guidelines](<a class="reference external" href="http://docs.astropy.org/en/latest/development/codeguide.html">http://docs.astropy.org/en/latest/development/codeguide.html</a>)</li>
+<li><p>lenstronomy is compatible with Python&gt;=3.5 (see [setup.cfg](setup.cfg)). lenstronomy <em>does not</em> support backwards compatibility with Python 2.x; <cite>six</cite>, <cite>__future__</cite> and <cite>2to3</cite> should not be used.</p></li>
+<li><p>All contributions should follow the [PEP8 Style Guide for Python Code](<a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">https://www.python.org/dev/peps/pep-0008/</a>). We recommend using [flake8](<a class="reference external" href="https://flake8.pycqa.org/">https://flake8.pycqa.org/</a>) to check your code for PEP8 compliance.</p></li>
+<li><p>Importing lenstronomy should only depend on having [NumPy](<a class="reference external" href="https://www.numpy.org">https://www.numpy.org</a>), [SciPy](<a class="reference external" href="https://www.scipy.org/">https://www.scipy.org/</a>) and [Astropy](<a class="reference external" href="https://www.astropy.org/">https://www.astropy.org/</a>) installed.</p></li>
+<li><p>Code is grouped into submodules e.g. [LensModel](lenstronomy/LensModel), [LightModel](lenstronomy/LightModel) and [ImSim](lenstronomy/ImSim). There is also a [Util](lenstronomy/Util) submodule for general utility functions.</p></li>
+<li><p>For more information see the [Astropy Coding Guidelines](<a class="reference external" href="http://docs.astropy.org/en/latest/development/codeguide.html">http://docs.astropy.org/en/latest/development/codeguide.html</a>)</p></li>
 </ul>
 <p>### Unit Tests</p>
 <p>Pull requests will require existing unit tests to pass before they can be merged. Additionally, new unit tests should be written for all new public methods and functions. Unit tests for each submodule are contained in subdirectories called <cite>tests</cite> and you can run them locally using <cite>python setup.py test</cite>. For more information see the [Astropy Testing Guidelines](<a class="reference external" href="https://docs.astropy.org/en/stable/development/testguide.html">https://docs.astropy.org/en/stable/development/testguide.html</a>).</p>
@@ -155,19 +172,21 @@
 <p>All public classes, methods and functions require docstrings. You can build documentation locally by installing [sphinx-astropy](<a class="reference external" href="https://github.com/astropy/sphinx-astropy">https://github.com/astropy/sphinx-astropy</a>) and calling <cite>python setup.py build_docs</cite>. Docstrings should include the following sections:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Description</li>
-<li>Parameters</li>
-<li>Notes</li>
-<li>Examples</li>
-<li>References</li>
+<li><p>Description</p></li>
+<li><p>Parameters</p></li>
+<li><p>Notes</p></li>
+<li><p>Examples</p></li>
+<li><p>References</p></li>
 </ul>
 </div></blockquote>
 <p>For more information see the Astropy guide to [Writing Documentation](<a class="reference external" href="https://docs.astropy.org/en/stable/development/docguide.html">https://docs.astropy.org/en/stable/development/docguide.html</a>).</p>
 <p>This page is inspired by the Contributions guidelines of the [Skypy project](<a class="reference external" href="https://github.com/skypyproject/skypy/blob/main/CONTRIBUTING.md">https://github.com/skypyproject/skypy/blob/main/CONTRIBUTING.md</a>).</p>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -176,8 +195,11 @@
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Contributing to lenstronomy</a><ul>
+<li><a class="reference internal" href="#id1">Contributing to lenstronomy</a><ul>
 <li><a class="reference internal" href="#github-workflow">GitHub Workflow</a></li>
 <li><a class="reference internal" href="#coding-guidelines">Coding Guidelines</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -196,17 +218,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -226,12 +246,13 @@
         <li class="right" >
           <a href="lenstronomy.Workflow.html" title="lenstronomy.Workflow package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing to lenstronomy</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

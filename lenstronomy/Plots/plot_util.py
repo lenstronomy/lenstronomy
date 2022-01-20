@@ -122,10 +122,10 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
     if isinstance(line_set_list_x, list):
         for i in range(len(line_set_list_x)):
             x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
-            ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
+            ax.plot((x_c) * pixel_width_x + origin[0], (y_c) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
-        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
+        ax.plot((x_c) * pixel_width_x + origin[0], (y_c) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
     return ax
 
 

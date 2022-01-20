@@ -35,9 +35,9 @@ class ThinDisk(object):
         :return: Thin disk profile value at (x, y)
         """
         R = np.sqrt((x - center_x) ** 2 + (y - center_y)**2)
-        profile = np.zeros_like(R) * 1e-10
+        profile = np.zeros_like(R)
         if R_in <= 0:
-            profile = amp / (np.exp((R / R_0) ** (3. / 4.)) - 1)
+            profile = amp / (np.exp((R / R_0) ** (0.75)) - 1)
         else:
             profile = np.where(R <= R_in, profile,
                                amp / (np.exp((R / R_0) ** (0.75) * (1 - np.sqrt(R_in / R)) ** (-0.25)) - 1))

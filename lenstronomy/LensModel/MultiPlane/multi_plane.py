@@ -42,7 +42,8 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
+            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
+                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
                                                 lens_redshift_list=lens_redshift_list, cosmo=cosmo,
                                                 numerical_alpha_class=numerical_alpha_class,
@@ -61,7 +62,8 @@ class MultiPlane(object):
 
     def update_source_redshift(self, z_source):
         """
-        update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift
+        update instance of this class to compute reduced lensing quantities and time delays to a specific source
+        redshift
 
         :param z_source: float; source redshift
         :return: self variables update to new redshift

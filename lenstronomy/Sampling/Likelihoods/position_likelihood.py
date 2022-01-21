@@ -106,7 +106,8 @@ class PositionLikelihood(object):
 
     def check_additional_images(self, kwargs_ps, kwargs_lens):
         """
-        checks whether additional images have been found and placed in kwargs_ps
+        checks whether additional images have been found and placed in kwargs_ps of the first point source model
+        #TODO check for all point source models
         :param kwargs_ps: point source kwargs
         :return: bool, True if more image positions are found than originally been assigned
         """
@@ -182,8 +183,10 @@ class PositionLikelihood(object):
                 x_image = kwargs_ps[k]['ra_image']
                 y_image = kwargs_ps[k]['dec_image']
                 # calculating the individual source positions from the image positions
+                # TODO: have option for ray-shooting back to specific redshift in multi-plane lensing
                 x_source, y_source = self._lensModel.ray_shooting(x_image, y_image, kwargs_lens)
                 for i in range(len(x_image)):
+                    # TODO: add redshift information in computation
                     f_xx, f_xy, f_yx, f_yy = self._lensModel.hessian(x_image[i], y_image[i], kwargs_lens)
                     A = np.array([[1 - f_xx, -f_xy], [-f_yx, 1 - f_yy]])
                     Sigma_theta = np.array([[1, 0], [0, 1]]) * sigma ** 2
@@ -192,8 +195,8 @@ class PositionLikelihood(object):
                     if hard_bound_rms is not None:
                         if delta[0]**2 + delta[1]**2 > hard_bound_rms**2:
                             if verbose is True:
-                                print('Image positions do not match to the same source position to the required precision. '
-                                      'Achieved: %s, Required: %s.' % (delta, hard_bound_rms))
+                                print('Image positions do not match to the same source position to the required '
+                                      'precision. Achieved: %s, Required: %s.' % (delta, hard_bound_rms))
                             logL -= 10 ** 3
                     try:
                         Sigma_inv = inv(Sigma_beta)
@@ -207,7 +210,7 @@ class PositionLikelihood(object):
     def num_data(self):
         """
 
-        :return: integer, number of data points assocated with the class instance
+        :return: integer, number of data points associated with the class instance
         """
         num = 0
         if self._image_position_likelihood is True:

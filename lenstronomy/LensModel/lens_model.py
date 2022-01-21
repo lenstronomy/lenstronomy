@@ -14,6 +14,7 @@ class LensModel(object):
     class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.
     NH modifiying to include LOS effects 08/09/21 #NHmod
     PF modifying to make the detection of LOS effects automatic and remove los_effects flag #PFmod
+    DJ modifying to change kwargs_lens to kwargs in fermat_potential and time_delay functions, for implementation of LOS effects #DJmod
     """
 
     def __init__(self, lens_model_list, z_lens=None, z_source=None, lens_redshift_list=None, cosmo=None,
@@ -118,7 +119,7 @@ class LensModel(object):
         """
         return self.lens_model.ray_shooting(x, y, kwargs, k=k)
 
-    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
+    def fermat_potential(self, x_image, y_image, kwargs, x_source=None, y_source=None):       #DJmod  replaced "kwargs_lens" with "kwargs" (kw_l -> kw)
         """
         fermat potential (negative sign means earlier arrival time)
         for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
@@ -128,33 +129,33 @@ class LensModel(object):
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
+        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes              
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
         if hasattr(self.lens_model, 'fermat_potential'):
-            return self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source, y_source)
+            return self.lens_model.fermat_potential(x_image, y_image, kwargs, x_source, y_source)         #kw_l -> kw
         elif hasattr(self.lens_model, 'arrival_time') and hasattr(self, '_lensCosmo'):
-            dt = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+            dt = self.lens_model.arrival_time(x_image, y_image, kwargs)
             fermat_pot_eff = dt * const.c / self._lensCosmo.ddt / const.Mpc * const.day_s / const.arcsec ** 2
             return fermat_pot_eff
         else:
             raise ValueError('In multi-plane lensing you need to provide a specific z_lens and z_source for which the '
                              'effective Fermat potential is evaluated')
 
-    def arrival_time(self, x_image, y_image, kwargs_lens, kappa_ext=0):
+    def arrival_time(self, x_image, y_image, kwargs, kappa_ext=0):         #kw_l -> kw
         """
 
         :param x_image: image position
         :param y_image: image position
-        :param kwargs_lens: lens model parameter keyword argument list
+        :param kwargs: lens model parameter keyword argument list
         :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same
          observables in position and relative fluxes but rescales the time delays
         :return: arrival time of image positions in units of days
         """
         if hasattr(self.lens_model, 'arrival_time'):
-            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
+            arrival_time = self.lens_model.arrival_time(x_image, y_image, kwargs)         #kw_l -> kw
         else:
-            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs_lens)
+            fermat_pot = self.lens_model.fermat_potential(x_image, y_image, kwargs)         #kw_l -> kw
             if not hasattr(self, '_lensCosmo'):
                 raise ValueError("LensModel class was not initialized with lens and source redshifts!")
             arrival_time = self._lensCosmo.time_delay_units(fermat_pot)

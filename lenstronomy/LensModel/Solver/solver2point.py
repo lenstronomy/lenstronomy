@@ -33,7 +33,8 @@ class Solver2Point(object):
             raise ValueError("solver_type %s is not a valid option!" % solver_type)
         if solver_type == 'SHAPELETS':
             if not self._lens_mode_list[0] in ['SHAPELETS_CART', 'SHAPELETS_POLAR']:
-                raise ValueError("solver_type %s needs the first lens model to be in ['SHAPELETS_CART', 'SHAPELETS_POLAR']" % solver_type)
+                raise ValueError("solver_type %s needs the first lens model to be in ['SHAPELETS_CART', "
+                                 "'SHAPELETS_POLAR']" % solver_type)
         if solver_type == 'THETA_E_PHI':
             if not self._lens_mode_list[1] == 'SHEAR':
                 raise ValueError("solver_type %s needs the second lens model to be 'SHEAR" % solver_type)

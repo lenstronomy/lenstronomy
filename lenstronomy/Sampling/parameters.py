@@ -123,7 +123,7 @@ class Param(object):
         :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
          joint parameter between lens model and source light model. Samples light model parameter only.
         :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
-         will be scaled with the same additional scaling factor
+         will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
         :param num_point_source_list: list of number of point sources per point source model class

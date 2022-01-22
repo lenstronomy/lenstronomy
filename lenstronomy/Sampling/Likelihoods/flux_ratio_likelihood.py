@@ -70,7 +70,7 @@ class FluxRatioLikelihood(object):
         elif self._flux_ratio_errors.ndim == 2:
             # Assume covariance matrix is in ln units!
             D = np.log(flux_ratios) - np.log(self._flux_ratios)
-            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D # TODO: only calculate the inverse once
+            logL = -1/2 * D @ np.linalg.inv(self._flux_ratio_errors) @ D  # TODO: only calculate the inverse once
         else:
             raise ValueError('flux_ratio_errors need dimension of 1 or 2. Current dimensions are %s'
                              % self._flux_ratio_errors.ndim)

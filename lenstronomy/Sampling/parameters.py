@@ -123,7 +123,7 @@ class Param(object):
         :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
          joint parameter between lens model and source light model. Samples light model parameter only.
         :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
-         will be scaled with the same additional scaling factor
+         will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
         :param num_point_source_list: list of number of point sources per point source model class
@@ -299,7 +299,7 @@ class Param(object):
         kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.souceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
-        kwargs_ps, i = self.pointSourceParams.getParams(args, i)
+        kwargs_ps, i = self.pointSourceParams.get_params(args, i)
         kwargs_special, i = self.specialParams.get_params(args, i)
         kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
@@ -349,7 +349,7 @@ class Param(object):
         args = self.lensParams.set_params(kwargs_lens)
         args += self.souceParams.set_params(kwargs_source)
         args += self.lensLightParams.set_params(kwargs_lens_light)
-        args += self.pointSourceParams.setParams(kwargs_ps)
+        args += self.pointSourceParams.set_params(kwargs_ps)
         args += self.specialParams.set_params(kwargs_special)
         args += self.extinctionParams.set_params(kwargs_extinction)
         return np.array(args, dtype=float)

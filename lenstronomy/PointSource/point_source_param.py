@@ -65,7 +65,7 @@ class PointSourceParam(object):
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
-    def getParams(self, args, i):
+    def get_params(self, args, i):
         """
 
         :param args: sorted list of floats corresponding to the parameters being sampled
@@ -77,36 +77,36 @@ class PointSourceParam(object):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['LENSED_POSITION', 'UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
+                if 'ra_image' not in kwargs_fixed:
                     kwargs['ra_image'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
                 else:
                     kwargs['ra_image'] = kwargs_fixed['ra_image']
-                if not 'dec_image' in kwargs_fixed:
+                if 'dec_image' not in kwargs_fixed:
                     kwargs['dec_image'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
                 else:
                     kwargs['dec_image'] = kwargs_fixed['dec_image']
             if model in ['SOURCE_POSITION']:
-                if not 'ra_source' in kwargs_fixed:
+                if 'ra_source' not in kwargs_fixed:
                     kwargs['ra_source'] = args[i]
                     i += 1
                 else:
                     kwargs['ra_source'] = kwargs_fixed['ra_source']
-                if not 'dec_source' in kwargs_fixed:
+                if 'dec_source' not in kwargs_fixed:
                     kwargs['dec_source'] = args[i]
                     i += 1
                 else:
                     kwargs['dec_source'] = kwargs_fixed['dec_source']
             # amplitude parameter handling
             if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if not 'source_amp' in kwargs_fixed:
+                if 'source_amp' not in kwargs_fixed:
                     kwargs['source_amp'] = args[i]
                     i += 1
                 else:
                     kwargs['source_amp'] = kwargs_fixed['source_amp']
             else:
-                if not 'point_amp' in kwargs_fixed:
+                if 'point_amp' not in kwargs_fixed:
                     kwargs['point_amp'] = np.array(args[i:i + self._num_point_sources_list[k]])
                     i += self._num_point_sources_list[k]
                 else:
@@ -115,7 +115,7 @@ class PointSourceParam(object):
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list):
+    def set_params(self, kwargs_list):
         """
 
         :param kwargs_list: keyword argument list
@@ -126,25 +126,25 @@ class PointSourceParam(object):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['LENSED_POSITION', 'UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
+                if 'ra_image' not in kwargs_fixed:
                     x_pos = kwargs['ra_image'][0:self._num_point_sources_list[k]]
                     for x in x_pos:
                         args.append(x)
-                if not 'dec_image' in kwargs_fixed:
+                if 'dec_image' not in kwargs_fixed:
                     y_pos = kwargs['dec_image'][0:self._num_point_sources_list[k]]
                     for y in y_pos:
                         args.append(y)
             if model in ['SOURCE_POSITION']:
-                if not 'ra_source' in kwargs_fixed:
+                if 'ra_source' not in kwargs_fixed:
                     args.append(kwargs['ra_source'])
-                if not 'dec_source' in kwargs_fixed:
+                if 'dec_source' not in kwargs_fixed:
                     args.append(kwargs['dec_source'])
             # amplitude parameter handling
             if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if not 'source_amp' in kwargs_fixed:
+                if 'source_amp' not in kwargs_fixed:
                     args.append(kwargs['source_amp'])
             else:
-                if not 'point_amp' in kwargs_fixed:
+                if 'point_amp' not in kwargs_fixed:
                     amp = kwargs['point_amp'][0:self._num_point_sources_list[k]]
                     for a in amp:
                         args.append(a)
@@ -157,36 +157,36 @@ class PointSourceParam(object):
         :return: int, list of parameter names
         """
         num = 0
-        list = []
+        name_list = []
         for k, model in enumerate(self.model_list):
             kwargs_fixed = self.kwargs_fixed[k]
             if model in ['LENSED_POSITION', 'UNLENSED']:
-                if not 'ra_image' in kwargs_fixed:
+                if 'ra_image' not in kwargs_fixed:
                     num += self._num_point_sources_list[k]
                     for i in range(self._num_point_sources_list[k]):
-                        list.append('ra_image')
-                if not 'dec_image' in kwargs_fixed:
+                        name_list.append('ra_image')
+                if 'dec_image' not in kwargs_fixed:
                     num += self._num_point_sources_list[k]
                     for i in range(self._num_point_sources_list[k]):
-                        list.append('dec_image')
+                        name_list.append('dec_image')
             if model in ['SOURCE_POSITION']:
-                if not 'ra_source' in kwargs_fixed:
+                if 'ra_source' not in kwargs_fixed:
                     num += 1
-                    list.append('ra_source')
-                if not 'dec_source' in kwargs_fixed:
+                    name_list.append('ra_source')
+                if 'dec_source' not in kwargs_fixed:
                     num += 1
-                    list.append('dec_source')
+                    name_list.append('dec_source')
             # amplitude handling
             if self._fixed_magnification_list[k] is True and model in ['LENSED_POSITION', 'SOURCE_POSITION']:
-                if not 'source_amp' in kwargs_fixed:
+                if 'source_amp' not in kwargs_fixed:
                     num += 1
-                    list.append('source_amp')
+                    name_list.append('source_amp')
             else:
-                if not 'point_amp' in kwargs_fixed:
+                if 'point_amp' not in kwargs_fixed:
                     num += self._num_point_sources_list[k]
                     for i in range(self._num_point_sources_list[k]):
-                        list.append('point_amp')
-        return num, list
+                        name_list.append('point_amp')
+        return num, name_list
 
     def add_fix_linear(self, kwargs_fixed):
         """

@@ -17,7 +17,8 @@ class LikelihoodModule(object):
     the key components are:
     - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as
     ImageModel(), Multiband(), MultiExposure()
-    - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the conventions of the imSim_class
+    - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
+     conventions of the imSim_class
 
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
@@ -44,12 +45,14 @@ class LikelihoodModule(object):
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
         relative errors in respect ot the position_uncertainties in the image plane
         :param check_bounds:  bool, option to punish the hard bounds in parameter space
-        :param check_matched_source_position: bool, option to check whether point source positi gon solver finds a
+        :param check_matched_source_position: bool, option to check whether point source position of solver finds a
          solution to match all the image positions in the same source plane coordinate
-        :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source position
-        :param flaot, image_position_uncertainty: 1-sigma Gaussian uncertainty on the point source position
+        :param astrometric_likelihood: bool, additional likelihood term of the predicted vs modelled point source
+         position
+        :param image_position_uncertainty: float, 1-sigma Gaussian uncertainty on the point source position
          (only used if point_source_likelihood=True)
-        :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude parameters
+        :param check_positive_flux: bool, option to punish models that do not have all positive linear amplitude
+         parameters
         :param source_position_tolerance: float, punishment of check_solver occurs when image positions are predicted
          further away than this number
         :param image_likelihood_mask_list: list of boolean 2d arrays of size of images marking the pixels to be

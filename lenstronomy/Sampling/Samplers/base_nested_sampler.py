@@ -32,7 +32,7 @@ class NestedSampler(object):
         if prior_type == 'gaussian':
             if prior_means is None or prior_sigmas is None:
                 raise ValueError("For gaussian prior type, means and sigmas are required")
-            self.means, self.sigmas  = prior_means, prior_sigmas * sigma_scale
+            self.means, self.sigmas = prior_means, prior_sigmas * sigma_scale
             self.lowers, self.uppers = lowers, uppers
         elif prior_type != 'uniform':
             raise ValueError("Sampling type {} not supported".format(prior_type))
@@ -43,7 +43,6 @@ class NestedSampler(object):
         """
         compute the mapping between the unit cube and parameter cube
 
-        :param u: unit hypercube, sampled by the algorithm
         :return: hypercube in parameter space
         """
         raise NotImplementedError("Method not be implemented in base class")
@@ -52,7 +51,6 @@ class NestedSampler(object):
         """
         compute the log-likelihood given list of parameters
 
-        :param x: parameter values
         :return: log-likelihood (from the likelihood module)
         """
         raise NotImplementedError("Method not be implemented in base class")

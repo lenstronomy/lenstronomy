@@ -1,7 +1,7 @@
 from lenstronomy.LensModel.Solver.lens_equation_solver import LensEquationSolver
 import numpy as np
 
-__all__ = ['PSBase']
+__all__ = ['PSBase', '_expand_to_array', '_shrink_array']
 
 
 class PSBase(object):
@@ -108,6 +108,7 @@ def _shrink_array(array, num):
         array_return = array[:num]
         return array_return
     elif len(array) < num:
-        raise ValueError("the length of the array (%s) needs to be larger or equal than the designated length %s " % (len(array), num))
+        raise ValueError("the length of the array (%s) needs to be larger or equal than the designated length %s "
+                         % (len(array), num))
     else: 
         return array

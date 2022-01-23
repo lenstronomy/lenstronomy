@@ -427,6 +427,11 @@ class TestNumericsProfile(object):
         kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
         lens_model = ['SPL_CORE']
         self.assert_differentials(lens_model, kwargs, potential=False)
+        
+    def test_cosmic_string(self):
+        kwargs = {"alpha": 0.43653099458832717, "alpha_hat": 0.7775901436186862, "theta": np.pi/2, "center_x": 0., "center_y": 0.}
+        lens_model = ['COSMIC_STRING']
+        self.assert_differentials(lens_model, kwargs) 
 
 
 if __name__ == '__main__':

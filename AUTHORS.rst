@@ -43,5 +43,6 @@ Contributors (alphabetic)
 * Sebastian Wagner-Carena `swagnercarena <https://github.com/swagnercarena>`_
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
+* Jason Wu `abstractlegwear <https://github.com/abstractlegwear>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
 * Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_

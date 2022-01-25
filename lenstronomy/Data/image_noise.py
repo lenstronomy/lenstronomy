@@ -39,7 +39,8 @@ class ImageNoise(object):
             assert np.shape(noise_map) == np.shape(image_data)
         else:
             if background_rms is not None and exposure_time is not None:
-                if background_rms * np.max(exposure_time) < 1 and verbose is True:
+                if np.any(background_rms * exposure_time) < 1 and \
+                        verbose is True:
                     print("WARNING! sigma_b*f %s < 1 count may introduce unstable error estimates with a Gaussian"
                           " error function for a Poisson distribution with mean < 1." % (
                            background_rms * np.max(exposure_time)))

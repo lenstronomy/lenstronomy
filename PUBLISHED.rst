@@ -177,6 +177,8 @@ Galaxy formation and evolution
 * RELICS: Small Lensed z≥5.5 Galaxies Selected as Potential Lyman Continuum Leakers; `Neufeld et al. 2021 <https://arxiv.org/abs/2111.14882>`_
     *size measurements of high-z lensed galaxies*
 
+* The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022 <https://arxiv.org/abs/2201.08858>`_
+    *size measurements of high-z lensed galaxies*
 
 
 Automatized Lens Modeling

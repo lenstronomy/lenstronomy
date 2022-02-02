@@ -29,12 +29,12 @@ jobs:
           python -m pip install flake8 pytest pytest-cov coveralls
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f test_requirements.txt ]; then pip install -r test_requirements.txt; fi
-          git clone https://github.com/sibirrer/fastell4py.git
-          cd fastell4py
-          pip install .
-          cd ..
           python -m pip install .
       #- name: Lint with flake8
+          #  git clone https://github.com/sibirrer/fastell4py.git
+          #  cd fastell4py
+          #  pip install .
+          #  cd ..
       #  run: |
           # stop the build if there are Python syntax errors or undefined names
       #    flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

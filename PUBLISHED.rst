@@ -180,6 +180,10 @@ Galaxy formation and evolution
 * The size-luminosity relation of lensed galaxies at z=6−9 in the Hubble Frontier Fields; `Yang et al. 2022 <https://arxiv.org/abs/2201.08858>`_
     *size measurements of high-z lensed galaxies*
 
+* The Near Infrared Imager and Slitless Spectrograph for the James Webb Space Telescope -- II. Wide Field Slitless Spectroscopy; `Willott et al. 2022 <https://arxiv.org/abs/2202.01714>`_
+    *lensing calculations in cluster environments*
+
+
 
 Automatized Lens Modeling
 -------------------------

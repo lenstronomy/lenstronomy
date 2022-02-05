@@ -16,7 +16,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'CURVED_ARC_TAN_DIFF', 'ARC_PERT', 'coreBURKERT',
                      'CORED_DENSITY', 'CORED_DENSITY_2', 'CORED_DENSITY_MST', 'CORED_DENSITY_2_MST', 'CORED_DENSITY_EXP',
                      'CORED_DENSITY_EXP_MST', 'NumericalAlpha', 'MULTIPOLE', 'HESSIAN', 'ElliSLICE', 'ULDM',
-                     'CORED_DENSITY_ULDM_MST']
+                     'CORED_DENSITY_ULDM_MST', 'CSE']
 
 
 class ProfileListBase(object):
@@ -288,6 +288,9 @@ class ProfileListBase(object):
         elif lens_type == 'MULTIPOLE':
             from lenstronomy.LensModel.Profiles.multipole import Multipole
             return Multipole()
+        elif lens_type == 'CSE':
+            from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSE
+            return CSE()
         elif lens_type == 'ElliSLICE':
             from lenstronomy.LensModel.Profiles.elliptical_density_slice import ElliSLICE
             return ElliSLICE()

@@ -71,9 +71,9 @@ class TestNumericsProfile(object):
         pass
 
     def assert_differentials(self, lens_model, kwargs, potential=True):
-        #lensModelNum = NumericLens(lens_model)
+        # lensModelNum = NumericLens(lens_model)
         diff = 0.000001
-        #x, y = 1., 2.
+        # x, y = 1., 2.
 
         x = np.linspace(start=0.1, stop=5.5, num=10)
         y = np.zeros_like(x)
@@ -427,6 +427,23 @@ class TestNumericsProfile(object):
         kwargs = {'sigma0': 1., 'gamma': 2.5, 'r_core': 0.1, 'center_x': 0., 'center_y': 0.}
         lens_model = ['SPL_CORE']
         self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_cse(self):
+        kwargs = {'a': 2, 's': 1., 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': 0.3, 'e2': 0, 'center_x': 1., 'center_y': 2.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': -0.3, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': 0., 'e2': 0.3, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
 
 if __name__ == '__main__':

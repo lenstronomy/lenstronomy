@@ -5,7 +5,7 @@ import numpy as np
 from lenstronomy.Util import param_util
 from lenstronomy.Util import util
 
-__all__ = ['CSE']
+__all__ = ['CSE', 'CSEMajorAxis']
 
 
 class CSE(LensProfileBase):
@@ -13,7 +13,7 @@ class CSE(LensProfileBase):
     Cored steep ellipsoid (CSE)
     source:
     Keeton and Kochanek (1998)
-    Oguri 2021
+    Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
 
     .. math::
         \\kappa(u;s) = \\frac{A}{2(s^2 + \\xi^2)^{3/2}}
@@ -26,6 +26,10 @@ class CSE(LensProfileBase):
     param_names = ['A', 's', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'A': -1000, 's': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}
     upper_limit_default = {'A': 1000, 's': 10000, 'e1': 0.5, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
+
+    def __init__(self):
+        self.major_axis_model = CSEMajorAxis()
+        super(CSE, self).__init__()
 
     def function(self, x, y, a, s, e1, e2, center_x, center_y):
         """
@@ -48,10 +52,8 @@ class CSE(LensProfileBase):
         x__, y__ = util.rotate(x_, y_, phi_q)
 
         # potential calculation
-        psi = np.sqrt(q**2*(s**2 + x__**2) + y__**2)
-        Phi = (psi + s)**2 + (1-q**2) * x__**2
-        phi = q/(2*s) * np.log(Phi) - q/s * np.log((1+q) * s)
-        return a * phi
+        f_ = self.major_axis_model.function(x__, y__, a, s, q)
+        return f_
 
     def derivatives(self, x, y, a, s, e1, e2, center_x, center_y):
         """
@@ -73,14 +75,11 @@ class CSE(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_q)
 
-        psi = np.sqrt(q ** 2 * (s ** 2 + x__ ** 2) + y__ ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x__ ** 2
-        f__x = q * x__ * (psi + q**2*s) / (s * psi * Phi)
-        f__y = q * y__ * (psi + s) / (s * psi * Phi)
+        f__x, f__y = self.major_axis_model.derivatives(x__, y__, a, s, q)
 
         # rotate deflections back
         f_x, f_y = util.rotate(f__x, f__y, -phi_q)
-        return a * f_x, a * f_y
+        return f_x, f_y
 
     def hessian(self, x, y, a, s, e1, e2, center_x, center_y):
         """
@@ -102,12 +101,7 @@ class CSE(LensProfileBase):
         # rotate
         x__, y__ = util.rotate(x_, y_, phi_q)
 
-        # equations 21-23 in Oguri 2021
-        psi = np.sqrt(q ** 2 * (s ** 2 + x__ ** 2) + y__ ** 2)
-        Phi = (psi + s) ** 2 + (1 - q ** 2) * x__ ** 2
-        f__xx = q/(s * Phi) * (1 + q**2*s*(q**2 * s**2 + y__**2)/psi**3 - 2*x__**2*(psi + q**2*s)**2/(psi**2 * Phi))
-        f__yy = q/(s * Phi) * (1 + q**2 * s * (s**2 + x__**2)/psi**3 - 2*y__**2*(psi + s)**2/(psi**2 * Phi))
-        f__xy = - q * x__*y__ / (s * Phi) * (q**2 * s / psi**3 + 2 * (psi + q**2*s) * (psi + s) / (psi**2 * Phi))
+        f__xx, f__xy, __, f__yy = self.major_axis_model.hessian(x__, y__, a, s, q)
 
         # rotate back
         kappa = 1. / 2 * (f__xx + f__yy)
@@ -119,4 +113,139 @@ class CSE(LensProfileBase):
         f_yy = kappa - gamma1
         f_xy = gamma2
 
+        return f_xx, f_xy, f_xy, f_yy
+
+
+class CSEMajorAxis(LensProfileBase):
+    """
+    Cored steep ellipsoid (CSE) along the major axis
+    source:
+    Keeton and Kochanek (1998)
+    Oguri 2021: https://arxiv.org/pdf/2106.11464.pdf
+
+    .. math::
+        \\kappa(u;s) = \\frac{A}{2(s^2 + \\xi^2)^{3/2}}
+
+    with
+    .. math::
+        \\xi(x, y) = \\sqrt{x^2 + \\frac{y^2}{q^2}}
+
+    """
+    param_names = ['A', 's', 'q', 'center_x', 'center_y']
+    lower_limit_default = {'A': -1000, 's': 0, 'q': 0.001, 'center_x': -100, 'center_y': -100}
+    upper_limit_default = {'A': 1000, 's': 10000, 'q': 0.99999, 'e2': 0.5, 'center_x': -100, 'center_y': -100}
+
+    def function(self, x, y, a, s, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a: lensing strength
+        :param s: core radius
+        :param q: axis ratio
+        :return: lensing potential
+        """
+
+        # potential calculation
+        psi = np.sqrt(q**2*(s**2 + x**2) + y**2)
+        Phi = (psi + s)**2 + (1-q**2) * x**2
+        phi = q/(2*s) * np.log(Phi) - q/s * np.log((1+q) * s)
+        return a * phi
+
+    def derivatives(self, x, y, a, s, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a: lensing strength
+        :param s: core radius
+        :param q: axis ratio
+        :return: deflection in x- and y-direction
+        """
+
+        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
+        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
+        f_x = q * x * (psi + q**2*s) / (s * psi * Phi)
+        f_y = q * y * (psi + s) / (s * psi * Phi)
+
+        return a * f_x, a * f_y
+
+    def hessian(self, x, y, a, s, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a: lensing strength
+        :param s: core radius
+        :param q: axis ratio
+        :return: hessian elements f_xx, f_xy, f_yx, f_yy
+        """
+
+        # equations 21-23 in Oguri 2021
+        psi = np.sqrt(q ** 2 * (s ** 2 + x ** 2) + y ** 2)
+        Phi = (psi + s) ** 2 + (1 - q ** 2) * x ** 2
+        f_xx = q/(s * Phi) * (1 + q**2*s*(q**2 * s**2 + y**2)/psi**3 - 2*x**2*(psi + q**2*s)**2/(psi**2 * Phi))
+        f_yy = q/(s * Phi) * (1 + q**2 * s * (s**2 + x**2)/psi**3 - 2*y**2*(psi + s)**2/(psi**2 * Phi))
+        f_xy = - q * x*y / (s * Phi) * (q**2 * s / psi**3 + 2 * (psi + q**2*s) * (psi + s) / (psi**2 * Phi))
+
         return a * f_xx, a * f_xy, a * f_xy, a * f_yy
+
+
+class CSEMajorAxisSet(LensProfileBase):
+    """
+    a set of CSE profiles along a joint center and axis
+    """
+
+    def __init__(self):
+        self.major_axis_model = CSEMajorAxis()
+        super(CSEMajorAxisSet, self).__init__()
+
+    def function(self, x, y, a_list, s_list, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a_list: list of lensing strength
+        :param s_list: list of core radius
+        :param q: axis ratio
+        :return: lensing potential
+        """
+        f_ = np.zeros_like(x)
+        for a, s in zip(a_list, s_list):
+            f_ += self.major_axis_model.function(x, y, a, s, q)
+        return f_
+
+    def derivatives(self, x, y, a_list, s_list, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a_list: list of lensing strength
+        :param s_list: list of core radius
+        :param q: axis ratio
+        :return: deflection in x- and y-direction
+        """
+        f_x, f_y = np.zeros_like(x), np.zeros_like(y)
+        for a, s in zip(a_list, s_list):
+            f_x_, f_y_ = self.major_axis_model.derivatives(x, y, a, s, q)
+            f_x += f_x_
+            f_y += f_y_
+        return f_x, f_y
+
+    def hessian(self, x, y, a_list, s_list, q):
+        """
+
+        :param x: coordinate in image plane (angle)
+        :param y: coordinate in image plane (angle)
+        :param a_list: list of lensing strength
+        :param s_list: list of core radius
+        :param q: axis ratio
+        :return: hessian elements f_xx, f_xy, f_yx, f_yy
+        """
+        f_xx, f_xy, f_yy = np.zeros_like(x), np.zeros_like(x), np.zeros_like(x)
+        for a, s in zip(a_list, s_list):
+            f_xx_, f_xy_, _, f_yy_ = self.major_axis_model.hessian(x, y, a, s, q)
+            f_xx += f_xx_
+            f_xy += f_xy_
+            f_yy += f_yy_
+        return f_xx, f_xy, f_xy, f_yy

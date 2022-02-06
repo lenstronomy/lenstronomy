@@ -445,6 +445,19 @@ class TestNumericsProfile(object):
         lens_model = ['CSE']
         self.assert_differentials(lens_model, kwargs, potential=True)
 
+    def test_nfw_cse(self):
+        kwargs = {'alpha_Rs': 1, 'Rs': 1, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'alpha_Rs': 1, 'Rs': .5, 'e1': 0.2, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'alpha_Rs': 2, 'Rs': .5, 'e1': 0, 'e2': 0.4, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

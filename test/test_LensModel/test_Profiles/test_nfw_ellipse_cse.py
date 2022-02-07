@@ -1,6 +1,5 @@
 __author__ = 'sibirrer'
 
-
 from lenstronomy.LensModel.Profiles.nfw import NFW
 from lenstronomy.LensModel.Profiles.nfw_ellipse_cse import NFW_ELLIPSE_CSE
 
@@ -38,8 +37,8 @@ class TestNFWELLIPSE(object):
         f_x_cse, f_y_cse = self.nfw_cse.derivatives(x, y, e1=0, e2=0, **kwargs)
         npt.assert_almost_equal(f_x_cse, f_x_nfw, decimal=5)
         npt.assert_almost_equal(f_y_cse, f_y_nfw, decimal=5)
-        f_x_cse_low, f_y_cse_low = self.nfw_cse.derivatives(x, y, e1=0, e2=0, **kwargs)
-        npt.assert_almost_equal(f_x_cse_low / f_x_nfw, 1, decimal=3)
+        f_x_cse_low, f_y_cse_low = self.nfw_cse_low_accuracy.derivatives(x, y, e1=0, e2=0, **kwargs)
+        npt.assert_almost_equal(f_x_cse_low / f_x_nfw, 1, decimal=2)
         npt.assert_almost_equal(f_y_cse_low,  f_y_nfw, decimal=2)
 
     def test_hessian(self):

@@ -9,7 +9,7 @@ _SUPPORTED_MODELS = ['SHIFT', 'NIE_POTENTIAL', 'CONST_MAG', 'SHEAR', 'SHEAR_GAMM
                      'NFW', 'NFW_ELLIPSE', 'NFW_ELLIPSE_GAUSS_DEC', 'NFW_ELLIPSE_CSE' 'TNFW', 'TNFW_ELLIPSE',
                      'CNFW', 'CNFW_ELLIPSE', 'CTNFW_GAUSS_DEC', 'NFW_MC', 'SERSIC',
                      'SERSIC_ELLIPSE_POTENTIAL', 'SERSIC_ELLIPSE_KAPPA', 'SERSIC_ELLIPSE_GAUSS_DEC', 'PJAFFE',
-                     'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
+                     'PJAFFE_ELLIPSE', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'HERNQUIST_ELLIPSE_CSE', 'GAUSSIAN', 'GAUSSIAN_KAPPA',
                      'GAUSSIAN_ELLIPSE_KAPPA', 'GAUSSIAN_ELLIPSE_POTENTIAL', 'MULTI_GAUSSIAN_KAPPA',
                      'MULTI_GAUSSIAN_KAPPA_ELLIPSE', 'INTERPOL', 'INTERPOL_SCALED', 'SHAPELETS_POLAR', 'SHAPELETS_CART',
                      'DIPOLE', 'CURVED_ARC_CONST', 'CURVED_ARC_SPP', 'CURVED_ARC_SIS_MST', 'CURVED_ARC_SPT',
@@ -210,6 +210,9 @@ class ProfileListBase(object):
         elif lens_type == 'HERNQUIST_ELLIPSE':
             from lenstronomy.LensModel.Profiles.hernquist_ellipse import Hernquist_Ellipse
             return Hernquist_Ellipse()
+        elif lens_type =='HERNQUIST_ELLIPSE_CSE':
+            from lenstronomy.LensModel.Profiles.hernquist_ellipse_cse import HernquistEllipseCSE
+            return HernquistEllipseCSE()
         elif lens_type == 'GAUSSIAN':
             from lenstronomy.LensModel.Profiles.gaussian_potential import Gaussian
             return Gaussian()

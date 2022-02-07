@@ -20,7 +20,7 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
                            source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
                            index_lens_model_list=None, index_source_light_model_list=None,
                            index_lens_light_model_list=None, index_point_source_model_list=None,
-                           optical_depth_model_list=[], index_optical_depth_model_list=None,
+                           optical_depth_model_list=None, index_optical_depth_model_list=None,
                            band_index=0, tau0_index_list=None, all_models=False, point_source_magnification_limit=None,
                            surface_brightness_smoothing=0.001, sersic_major_axis=None):
     """

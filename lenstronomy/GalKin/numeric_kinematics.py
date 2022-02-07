@@ -190,7 +190,7 @@ class NumericKinematics(Anisotropy):
         """
         R = max(R, self._min_integrate)
         max_integrate = self._max_integrate  # make sure the integration of the Jeans equation is performed further out than the interpolation
-        #if False:
+        # if False:
         #    # linear integral near R
         #    lin_max = min(2 * R_, self._max_interpolate)
         #    lin_max = min(lin_max, R_+1)

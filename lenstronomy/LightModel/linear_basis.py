@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-#this file contains a class which describes the surface brightness of the light models
+# this file contains a class which describes the surface brightness of the light models
 
 import numpy as np
 from lenstronomy.LightModel.light_model_base import LightModelBase
@@ -34,11 +34,12 @@ class LinearBasis(LightModelBase):
 
     def functions_split(self, x, y, kwargs_list, k=None):
         """
+        split model in different components
 
-        :param x:
-        :param y:
-        :param kwargs_list:
-        :return:
+        :param x: coordinate in units of arcsec relative to the center of the image
+        :param y: coordinate in units of arcsec relative to the center of the image
+        :param kwargs_list: keyword argument list of light profile
+        :param k: integer or list of integers for selecting subsets of light profiles
         """
         response = []
         n = 0
@@ -100,8 +101,8 @@ class LinearBasis(LightModelBase):
         n_list = []
         for i, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE',
-                             'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
-                             'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
+                         'PJAFFE_ELLIPSE', 'GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'POWER_LAW', 'NIE', 'CHAMELEON',
+                         'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'UNIFORM', 'INTERPOL', 'ELLIPSOID']:
                 n_list += [1]
             elif model in ['MULTI_GAUSSIAN', 'MULTI_GAUSSIAN_ELLIPSE']:
                 num = len(kwargs_list[i]['sigma'])
@@ -159,7 +160,7 @@ class LinearBasis(LightModelBase):
                 raise ValueError('model type %s not valid!' % model)
         return kwargs_list, i
 
-    def add_fixed_linear(self, kwargs_fixed_list, bool_list=None):
+    def add_fixed_linear(self, kwargs_fixed_list):
         """
 
         :param kwargs_fixed_list: list of fixed keyword arguments

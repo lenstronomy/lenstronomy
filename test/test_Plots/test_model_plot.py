@@ -197,6 +197,15 @@ class TestOutputPlots(object):
         assert len(axes[0]) == 3
         plt.close()
 
+        multi_band_list = [[self.kwargs_data, self.kwargs_psf, self.kwargs_numerics]]
+        lensPlot = ModelPlot(multi_band_list, self.kwargs_model, self.kwargs_params, arrow_size=0.02,
+                             cmap_string="gist_heat",
+                             multi_band_type='joint-linear', bands_compute=[True])
+        f, axes = lensPlot.reconstruction_all_bands()
+        assert len(axes) == 1
+        assert len(axes[0]) == 3
+        plt.close()
+
     def test_check_solver_error(self):
 
         bool = check_solver_error(image=np.array([0, 0]))

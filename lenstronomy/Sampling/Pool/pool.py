@@ -32,8 +32,8 @@ import logging
 log = logging.getLogger(__name__)
 _VERBOSE = 5
 
-#from schwimmbad.multiprocessing import MultiPool
-#from schwimmbad.jl import JoblibPool
+# from schwimmbad.multiprocessing import MultiPool
+# from schwimmbad.jl import JoblibPool
 
 __all__ = ['choose_pool']
 

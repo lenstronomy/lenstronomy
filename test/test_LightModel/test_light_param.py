@@ -64,11 +64,11 @@ class TestParam(object):
         #     #kwargs_mean_k.update(self.kwargs_sigma[i])
         #     self.kwargs_mean.append(kwargs_mean_k)
         self.param = LightParam(light_model_list=self.light_model_list,
-                               kwargs_fixed=self.kwargs_fixed, type='source_light', linear_solver=False)
+                                kwargs_fixed=self.kwargs_fixed, param_type='source_light', linear_solver=False)
         self.param_linear = LightParam(light_model_list=self.light_model_list,
-                                kwargs_fixed=self.kwargs_fixed_linear, type='source_light', linear_solver=True)
+                                       kwargs_fixed=self.kwargs_fixed_linear, param_type='source_light', linear_solver=True)
         self.param_fixed = LightParam(light_model_list=self.light_model_list,
-                                kwargs_fixed=self.kwargs, type='source_light', linear_solver=False)
+                                      kwargs_fixed=self.kwargs, param_type='source_light', linear_solver=False)
 
     def test_get_setParams(self):
         args = self.param.set_params(self.kwargs)
@@ -105,7 +105,7 @@ class TestParam(object):
             {'n_scales': 3, 'n_pixels': 20**2, 'scale': 0.05, 'center_x': 0, 'center_y': 0},
         ]
         param = LightParam(light_model_list=self.light_model_list,
-                                kwargs_fixed=kwargs_fixed, type='source_light', linear_solver=True)
+                           kwargs_fixed=kwargs_fixed, param_type='source_light', linear_solver=True)
 
         num = param.num_param_linear()
         assert num == (16+1200)

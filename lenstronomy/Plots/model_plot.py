@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
@@ -44,11 +45,12 @@ class ModelPlot(object):
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
 
         check_solver_error(param)
-        logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
+        log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
+                                                             **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
-            print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
 
         self._band_plot_list = []
         self._index_list = []
@@ -95,6 +97,10 @@ class ModelPlot(object):
         n_bands = len(self._band_plot_list)
         import matplotlib.pyplot as plt
         f, axes = plt.subplots(n_bands, 3, figsize=(12, 4*n_bands))
+        if n_bands == 1:  # make sure axis can be called as 2d array
+            _axes = np.empty((1, 3), dtype=object)
+            _axes[:] = axes
+            axes = _axes
         i = 0
         for band_index in self._index_list:
             if band_index >= 0:

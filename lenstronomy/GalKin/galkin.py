@@ -17,7 +17,8 @@ class Galkin(GalkinModel, GalkinObservation):
     The computation follows Mamon&Lokas 2005 and performs the spectral rendering of the seeing convolved apperture with
     the method introduced by Birrer et al. 2016.
 
-    The class supports various types of anisotropy models (see Anisotropy class) and aperture types (see Aperture class).
+    The class supports various types of anisotropy models (see Anisotropy class) and aperture types
+     (see Aperture class).
     Solving the Jeans Equation requires a numerical integral over the 3d light and mass profile (see Mamon&Lokas 2005).
     This class (as well as the dedicated LightModel and MassModel classes) perform those integral numerically with an
     interpolated grid.
@@ -52,7 +53,8 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_model: keyword arguments describing the model components
         :param kwargs_aperture: keyword arguments describing the spectroscopic aperture, see Aperture() class
         :param kwargs_psf: keyword argument specifying the PSF of the observation
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
+        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
+         involved
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """

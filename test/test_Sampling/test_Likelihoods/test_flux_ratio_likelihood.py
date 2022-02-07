@@ -82,7 +82,7 @@ class TestFluxRatioLikelihood(object):
     def test_covmatrix(self):
         # Test with a different number of images
         logL = self.flux_likelihood_inf_cov.logL(self.x_img, self.y_img, self.kwargs_lens, kwargs_cosmo=self.kwargs_cosmo)
-        npt.assert_almost_equal(logL,0,decimal=8)
+        npt.assert_almost_equal(logL, 0, decimal=8)
 
 
 if __name__ == '__main__':

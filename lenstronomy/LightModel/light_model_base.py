@@ -15,7 +15,7 @@ _MODELS_SUPPORTED = ['GAUSSIAN', 'GAUSSIAN_ELLIPSE', 'ELLIPSOID', 'MULTI_GAUSSIA
                      'SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP',
                      'HERNQUIST', 'HERNQUIST_ELLIPSE', 'PJAFFE', 'PJAFFE_ELLIPSE', 'UNIFORM', 'POWER_LAW', 'NIE',
                      'CHAMELEON', 'DOUBLE_CHAMELEON', 'TRIPLE_CHAMELEON', 'INTERPOL', 'SLIT_STARLETS',
-                     'SLIT_STARLETS_GEN2']
+                     'SLIT_STARLETS_GEN2', 'THINDISK']
 
 
 class LightModelBase(object):
@@ -108,6 +108,9 @@ class LightModelBase(object):
             elif profile_type == 'SLIT_STARLETS_GEN2':
                 from lenstronomy.LightModel.Profiles.starlets import SLIT_Starlets
                 self.func_list.append(SLIT_Starlets(second_gen=True))
+            elif profile_type == 'THINDISK':
+                from lenstronomy.LightModel.Profiles.thin_disk import ThinDisk
+                self.func_list.append(ThinDisk())
             else:
                 raise ValueError('No light model of type %s found! Supported are the following models: %s'
                                  % (profile_type, _MODELS_SUPPORTED))

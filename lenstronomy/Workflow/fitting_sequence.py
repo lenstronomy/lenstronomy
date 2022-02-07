@@ -428,7 +428,8 @@ class FittingSequence(object):
                         lens_remove_fixed=[],
                         source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
                         change_source_lower_limit=None, change_source_upper_limit=None,
-                        change_lens_lower_limit=None, change_lens_upper_limit=None):
+                        change_lens_lower_limit=None, change_lens_upper_limit=None,
+                        change_lens_light_lower_limit=None, change_lens_light_upper_limit=None):
         """
         updates lenstronomy settings "on the fly"
 
@@ -446,6 +447,7 @@ class FittingSequence(object):
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
         :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
+        :param change_lens_light_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
@@ -453,7 +455,7 @@ class FittingSequence(object):
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
         self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
-                                          change_lens_upper_limit)
+                                          change_lens_upper_limit, change_lens_light_lower_limit, change_lens_light_upper_limit)
         return 0
 
     def set_param_value(self, **kwargs):

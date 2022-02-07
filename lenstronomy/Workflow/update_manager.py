@@ -217,7 +217,8 @@ class UpdateManager(object):
         return kwargs_model_updated, kwargs_constraints_updated, kwargs_likelihood_updated
 
     def update_limits(self, change_source_lower_limit=None, change_source_upper_limit=None,
-                      change_lens_lower_limit=None, change_lens_upper_limit=None,):
+                      change_lens_lower_limit=None, change_lens_upper_limit=None,
+                      change_lens_light_lower_limit=None, change_lens_light_upper_limit=None):
         """
         updates the limits (lower and upper) of the update manager instance
 
@@ -235,6 +236,10 @@ class UpdateManager(object):
             self._lens_lower = self._update_limit(change_lens_lower_limit, self._lens_lower)
         if not change_lens_upper_limit is None:
             self._lens_upper = self._update_limit(change_lens_upper_limit, self._lens_upper)
+        if not change_lens_light_lower_limit is None:
+            self._lens_light_lower = self._update_limit(change_lens_light_lower_limit, self._lens_light_lower)
+        if not change_lens_light_upper_limit is None:
+            self._lens_light_upper = self._update_limit(change_lens_light_upper_limit, self._lens_light_upper)
 
     @staticmethod
     def _update_limit(change_limit, kwargs_limit_previous):

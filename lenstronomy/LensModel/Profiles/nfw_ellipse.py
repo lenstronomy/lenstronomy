@@ -90,7 +90,8 @@ class NFW_ELLIPSE(LensProfileBase):
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        the calculation is performed as a numerical differential from the deflection field. Analytical relations are possible
+        the calculation is performed as a numerical differential from the deflection field. Analytical relations are
+        possible
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)

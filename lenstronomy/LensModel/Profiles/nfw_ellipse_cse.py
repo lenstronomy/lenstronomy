@@ -3,14 +3,14 @@ __author__ = 'sibirrer'
 import numpy as np
 from lenstronomy.Util import util
 from lenstronomy.LensModel.Profiles.nfw import NFW
+from lenstronomy.LensModel.Profiles.nfw_ellipse import NFW_ELLIPSE
 from lenstronomy.LensModel.Profiles.cored_steep_ellipsoid import CSEMajorAxisSet
 import lenstronomy.Util.param_util as param_util
-from lenstronomy.LensModel.Profiles.base_profile import LensProfileBase
 
 __all__ = ['NFW_ELLIPSE_CSE']
 
 
-class NFW_ELLIPSE_CSE(LensProfileBase):
+class NFW_ELLIPSE_CSE(NFW_ELLIPSE):
     """
     this class contains functions concerning the NFW profile with an ellipticity defined in the convergence
     parameterization of alpha_Rs and Rs is the same as for the spherical NFW profile
@@ -155,30 +155,6 @@ class NFW_ELLIPSE_CSE(LensProfileBase):
         const = self._normalization(alpha_Rs, Rs, q) / Rs**2
 
         return const * f_xx, const * f_xy, const * f_xy, const * f_yy
-
-    def mass_3d_lens(self, R, Rs, alpha_Rs, e1=1, e2=0):
-        """
-
-        :param R: radius (in angular units)
-        :param Rs: turn-over radius of NFW profile
-        :param alpha_Rs: deflection at Rs
-        :param e1: eccentricity
-        :param e2: eccentricity
-        :return: mass within 3d radius
-        """
-        return self.nfw.mass_3d_lens(R, Rs, alpha_Rs)
-
-    def density_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
-        """
-        computes the density at 3d radius r given lens model parameterization.
-        The integral in the LOS projection of this quantity results in the convergence quantity.
-
-        :param r: 3d radios
-        :param Rs: turn-over radius of NFW profile
-        :param alpha_Rs: deflection at Rs
-        :return: density rho(r)
-        """
-        return self.nfw.density_lens(r, Rs, alpha_Rs)
 
     def _normalization(self, alpha_Rs, Rs, q):
         """

@@ -275,8 +275,7 @@ class KinematicsAPI(object):
             else:
                 center_x, center_y = None, None
             mass_r = self._lensMassProfile.radial_lens_profile(r_array, kwargs_lens, center_x=center_x,
-                                                                            center_y=center_y,
-                                                                            model_bool_list=model_kinematics_bool)
+                                                               center_y=center_y, model_bool_list=model_kinematics_bool)
             amps, sigmas, norm = mge.mge_1d(r_array, mass_r, N=kwargs_mge.get('n_comp', 20))
             mass_profile_list = ['MULTI_GAUSSIAN_KAPPA']
             kwargs_profile = [{'amp': amps, 'sigma': sigmas}]
@@ -332,7 +331,7 @@ class KinematicsAPI(object):
                 if kwargs_mge is None:
                     raise ValueError('kwargs_mge must be provided to compute the MGE')
                 amps, sigmas, center_x, center_y = self._lensLightProfile.multi_gaussian_decomposition(
-                    kwargs_lens_light, model_bool_list=model_kinematics_bool, **kwargs_mge)
+                    kwargs_lens_light, model_bool_list=model_kinematics_bool, r_h=r_eff, **kwargs_mge)
                 light_profile_list = ['MULTI_GAUSSIAN']
                 kwargs_light = [{'amp': amps, 'sigma': sigmas}]
         return light_profile_list, kwargs_light

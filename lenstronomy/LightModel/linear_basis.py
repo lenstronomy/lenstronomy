@@ -13,13 +13,12 @@ class LinearBasis(LightModelBase):
     class to handle source and lens light models
     """
 
-    def __init__(self, light_model_list, smoothing=0.0000001):
+    def __init__(self, **kwargs):
         """
 
-        :param light_model_list:
-        :param smoothing:
+        :param kwargs: keyword arguments for LightModelBase class
         """
-        super(LinearBasis, self).__init__(light_model_list=light_model_list, smoothing=smoothing)
+        super(LinearBasis, self).__init__(**kwargs)
 
     @property
     def param_name_list(self):
@@ -126,10 +125,11 @@ class LinearBasis(LightModelBase):
     def update_linear(self, param, i, kwargs_list):
         """
 
-        :param param:
-        :param i:
-        :param kwargs_list:
-        :return:
+        :param param: array of linear amplitude coefficients in the order of the linear minimization of the ImSim module
+        :param i: index of first coefficient to start reading out the linear parameters associated with the model
+         components of this class
+        :param kwargs_list: list of keyword arguments of the model components
+        :return: kwargs list with over-written or added 'amp' parameters according to the coefficients in param
         """
         for k, model in enumerate(self.profile_type_list):
             if model in ['SERSIC', 'SERSIC_ELLIPSE', 'CORE_SERSIC', 'HERNQUIST', 'PJAFFE', 'PJAFFE_ELLIPSE',

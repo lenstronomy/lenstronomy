@@ -24,10 +24,20 @@ class FittingSequence(object):
         """
 
         :param kwargs_data_joint: keyword argument specifying the data according to LikelihoodModule
-        :param kwargs_model:
-        :param kwargs_constraints: keyword arguments of the Param() Class to handle parameter constraints during the sampling
-        :param kwargs_likelihood:
-        :param kwargs_params:
+        :param kwargs_model: keyword arguments to describe all model components used in
+         class_creator.create_class_instances()
+        :param kwargs_constraints: keyword arguments of the Param() class to handle parameter constraints during the
+         sampling (except upper and lower limits and sampling input mean and width)
+        :param kwargs_likelihood: keyword arguments of the Likelihood() class to handle parameters and settings of the
+         likelihood
+        :param kwargs_params: setting of the sampling bounds and initial guess mean and spread.
+         The argument is organized as:
+         'lens_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'lens_light_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'point_source_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'extinction_model': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
+         'special': [kwargs_init, kwargs_sigma, kwargs_fixed, kwargs_lower, kwargs_upper]
         :param mpi: MPI option (bool), if True, will launch an MPI Pool job for the steps in the fitting sequence where
         possible
         :param verbose: bool, if True prints temporary results and indicators of the fitting process
@@ -52,7 +62,8 @@ class FittingSequence(object):
     def fit_sequence(self, fitting_list):
         """
 
-        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and kwargs being the arguments passed to this option
+        :param fitting_list: list of [['string', {kwargs}], ..] with 'string being the specific fitting option and
+         kwargs being the arguments passed to this option
         :return: fitting results
         """
         chain_list = []
@@ -103,8 +114,8 @@ class FittingSequence(object):
                 chain_list.append(ns_output)
 
             else:
-                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', 'psf_iteration', "
-                                 "'restart', 'update_settings' or ""'align_images'" % fitting_type)
+                raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
+                                 "'psf_iteration', 'restart', 'update_settings' or ""'align_images'" % fitting_type)
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -155,7 +166,7 @@ class FittingSequence(object):
     def param_class(self):
         """
 
-        :return: Param() class instance reflecting the current state of Fittingsequence
+        :return: Param() class instance reflecting the current state of FittingSequence
         """
         return self._updateManager.param_class
 
@@ -163,7 +174,7 @@ class FittingSequence(object):
     def likelihoodModule(self):
         """
 
-        :return: Likelihood() class instance reflecting the current state of Fittingsequence
+        :return: Likelihood() class instance reflecting the current state of FittingSequence
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
@@ -188,14 +199,15 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio, sigma_scale=1, threadCount=1, init_samples=None, re_use_samples=True,
-             sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
+    def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
         """
         MCMC routine
 
         :param n_burn: number of burn in iterations (will not be saved)
         :param n_run: number of MCMC iterations that are saved
         :param walkerRatio: ratio of walkers/number of free parameters
+        :param n_walkers: integer, number of walkers of emcee (optional, if set, overwrites the walkerRatio input
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
@@ -213,12 +225,13 @@ class FittingSequence(object):
         kwargs_sigma = self._updateManager.sigma_kwargs
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
+        if n_walkers is None:
+            n_walkers = num_param * walkerRatio
         # run MCMC
         if not init_samples is None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
-                n_walkers = num_param * walkerRatio
                 idxs = np.random.choice(len(init_samples), n_walkers)
                 initpos = init_samples[idxs]
             else:
@@ -227,7 +240,6 @@ class FittingSequence(object):
             initpos = None
 
         if sampler_type == 'EMCEE':
-            n_walkers = num_param * walkerRatio
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
                                                   backup_filename=backup_filename, start_from_backup=start_from_backup)
@@ -382,9 +394,8 @@ class FittingSequence(object):
         :param n_iterations: number of iterations in the optimization process
         :param lowerLimit: lower limit of relative shift
         :param upperLimit: upper limit of relative shift
-        :param verbose: bool, print statements
         :param compute_bands: bool list, if multiple bands, this process can be limited to a subset of bands
-        :return:
+        :return: 0, updated coordinate system for the band(s)
         """
         kwargs_model = self._updateManager.kwargs_model
         kwargs_likelihood = self._updateManager.kwargs_likelihood
@@ -409,9 +420,11 @@ class FittingSequence(object):
         return 0
 
     def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
-                     source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[], lens_remove_fixed=[],
-                     source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
-                        change_source_lower_limit=None, change_source_upper_limit=None):
+                        source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[],
+                        lens_remove_fixed=[],
+                        source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
+                        change_source_lower_limit=None, change_source_upper_limit=None,
+                        change_lens_lower_limit=None, change_lens_upper_limit=None):
         """
         updates lenstronomy settings "on the fly"
 
@@ -428,13 +441,15 @@ class FittingSequence(object):
         :param lens_light_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param ps_remove_fixed: [[i_model, ['param1', 'param2',...], [...]]
         :param cosmo_remove_fixed: ['param1', 'param2',...]
+        :param change_lens_lower_limit: [[i_model, ['param_name', ...], [value1, value2, ...]]]
         :return: 0, the settings are overwritten for the next fitting step to come
         """
         self._updateManager.update_options(kwargs_model, kwargs_constraints, kwargs_likelihood)
         self._updateManager.update_fixed(lens_add_fixed, source_add_fixed, lens_light_add_fixed,
                                          ps_add_fixed, cosmo_add_fixed, lens_remove_fixed, source_remove_fixed,
                                          lens_light_remove_fixed, ps_remove_fixed, cosmo_remove_fixed)
-        self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit)
+        self._updateManager.update_limits(change_source_lower_limit, change_source_upper_limit, change_lens_lower_limit,
+                                          change_lens_upper_limit)
         return 0
 
     def set_param_value(self, **kwargs):

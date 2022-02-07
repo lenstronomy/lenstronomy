@@ -48,6 +48,14 @@ class ImageLinearFit(ImageModel):
         if self._pixelbased_bool is True:
             # update the pixel-based solver with the likelihood mask
             self.PixelSolver.set_likelihood_mask(self.likelihood_mask)
+            
+        self._pb=data_class.give_pb()
+        if self._pb is not None:
+            self._pb_lin = util.image2array(self._pb)
+        else:
+            self._pb_lin = None
+        
+        self._check_marg=data_class.check_marg()
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
@@ -92,8 +100,12 @@ class ImageLinearFit(ImageModel):
             C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-            model = self.array_masked2image(wls_model)
-            _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            # check_marg determines whether or not to do the linear parameter marginalisation
+            if self._check_marg == True:
+                model = self.array_masked2image(wls_model)
+                _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+            else:
+                model = self.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,kwargs_extinction, kwargs_special)
         return model, model_error, cov_param, param
 
     def image_pixelbased_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, 
@@ -277,6 +289,11 @@ class ImageLinearFit(ImageModel):
         # response of lensed source profile
         for i in range(0, n_source):
             image = source_light_response[i]
+            
+            #add primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_lin
+            
             image *= extinction
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
@@ -284,12 +301,22 @@ class ImageLinearFit(ImageModel):
         # response of deflector light profile (or any other un-lensed extended components)
         for i in range(0, n_lens_light):
             image = lens_light_response[i]
+            
+            #add primary beam before convolution
+            if self._pb is not None:
+                image *= self._pb_lin
+            
             image = self.ImageNumerics.re_size_convolve(image, unconvolved=unconvolved)
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         # response of point sources
         for i in range(0, n_points):
             image = self.ImageNumerics.point_source_rendering(ra_pos[i], dec_pos[i], amp[i])
+            
+            #add primary beam before
+            if self._pb is not None:
+                image *= self._pb
+            
             A[n, :] = np.nan_to_num(self.image2array_masked(image), copy=False)
             n += 1
         return A

@@ -35,7 +35,7 @@ class TestArcDistortions(object):
             x=center_x, y=center_y, kwargs_lens=kwargs_lens, smoothing_3rd=0.0001)
         print(orientation_angle, 'orientation angle')
         l = 1. / dphi_tan_dtan
-        npt.assert_almost_equal(l, 1./curvature)
+        npt.assert_almost_equal(l, 1./curvature, decimal=6)
 
     def test_hessian_eigenvector_mp(self):
         lens_model_list = ['SIS', 'SHEAR']

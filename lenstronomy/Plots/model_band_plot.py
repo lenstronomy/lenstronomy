@@ -153,8 +153,11 @@ class ModelBandPlot(ModelBand):
         #plot_line_set(ax, self._coords, self._ra_caustic_list, self._dec_caustic_list, color='b')
         #plot_line_set(ax, self._coords, self._ra_crit_list, self._dec_crit_list, color='r')
         if image_names is True:
-            ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial, self._kwargs_lens_partial)
-            plot_util.image_position_plot(ax, self._coords, ra_image, dec_image)
+            ra_image, dec_image = self._bandmodel.PointSource.image_position(self._kwargs_ps_partial,
+                                                                             self._kwargs_lens_partial,
+                                                                             original_position=kwargs.get('original_position', True))
+            plot_util.image_position_plot(ax, self._coords, ra_image, dec_image,
+                                          image_name_list=kwargs.get('image_name_list', None))
         #source_position_plot(ax, self._coords, self._kwargs_source)
 
     def convergence_plot(self, ax, text='Convergence', v_min=None, v_max=None,

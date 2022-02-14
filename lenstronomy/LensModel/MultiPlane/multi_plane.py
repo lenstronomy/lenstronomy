@@ -99,7 +99,9 @@ class MultiPlane(object):
         ray-tracing (backwards light cone) to the default z_source redshift
 
         :param theta_x: angle in x-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param theta_y: angle in y-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param kwargs_lens: lens model keyword argument list
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
@@ -124,8 +126,8 @@ class MultiPlane(object):
         ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at
         redshift z_start and then backwards to redshift z_stop
 
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
+        :param x: co-moving position [Mpc] / angle definition
+        :param y: co-moving position [Mpc] / angle definition
         :param alpha_x: ray angle at z_start [arcsec]
         :param alpha_y: ray angle at z_start [arcsec]
         :param z_start: redshift of start of computation
@@ -139,7 +141,7 @@ class MultiPlane(object):
          If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set,
          will compute the distance each time this function gets executed.
-        :return: co-moving position and angles at redshift z_stop
+        :return: co-moving position (modulo angle definition) and angles at redshift z_stop
         """
 
         if check_convention and not self.ignore_observed_positions:

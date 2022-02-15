@@ -16,8 +16,10 @@ class MultiPlaneBase(ProfileListBase):
     """
 
     def __init__(self, lens_model_list, lens_redshift_list, z_source_convention, cosmo=None,
-                 numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
+                 numerical_alpha_class=None, cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
+                 kwargs_interp=None):
         """
+        A description of the recursive multi-plane formalism can be found e.g. here: https://arxiv.org/abs/1312.1536
 
         :param lens_model_list: list of lens model strings
         :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list
@@ -26,6 +28,8 @@ class MultiPlaneBase(ProfileListBase):
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
          (see documentation in Profiles/numerical_alpha)
+        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
 
         """
         if z_interp_stop is None:
@@ -44,7 +48,7 @@ class MultiPlaneBase(ProfileListBase):
         self._lens_redshift_list = lens_redshift_list
         super(MultiPlaneBase, self).__init__(lens_model_list, numerical_alpha_class=numerical_alpha_class,
                                              lens_redshift_list=lens_redshift_list,
-                                             z_source_convention=z_source_convention)
+                                             z_source_convention=z_source_convention, kwargs_interp=kwargs_interp)
 
         if len(lens_model_list) < 1:
             self._sorted_redshift_index = []
@@ -217,9 +221,9 @@ class MultiPlaneBase(ProfileListBase):
         :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
-        #sort_index = np.argsort(redshift_list[redshift_list < z_source])
+        # sort_index = np.argsort(redshift_list[redshift_list < z_source])
         sort_index = np.argsort(redshift_list)
-        #if len(sort_index) < 1:
+        # if len(sort_index) < 1:
         #    Warning("There is no lens object between observer at z=0 and source at z=%s" % z_source)
         return sort_index
 
@@ -337,7 +341,6 @@ class MultiPlaneBase(ProfileListBase):
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
         :param index: index of the lens model to be added in sorted redshift list convention
-        :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)

@@ -1,6 +1,6 @@
 __author__ = 'sibirrer'
 
-# this file contains a class to make a moffat profile
+# this file contains a class to make a Moffat profile
 
 __all__ = ['Moffat']
 
@@ -11,7 +11,7 @@ class Moffat(object):
 
     .. math::
 
-        I(r) = I_0 * (1 + (r/\alpha)^2)^{-\beta}
+        I(r) = I_0 * (1 + (r/\\alpha)^2)^{-\\beta}
 
     with :math:`I_0 = amp`.
 

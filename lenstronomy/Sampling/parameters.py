@@ -57,7 +57,11 @@ class Param(object):
     Alternatively to the format of the linking of parameters with IDENTICAL names as listed above as:
     [[i_1, k_2, ['param_name1', 'param_name2', ...]], [...], ...]
     the following format of the arguments are supported to join parameters with DIFFERENT names:
-    [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]
+    [[i_1, k_2, {'param_old1': 'param_new1', 'ra_0': 'center_x'}], [...], ...]\
+
+    Log10 sampling of the lens parameters :
+    'log_sampling_lens': [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+    Sample the log10 of the lens model parameters.
 
 
     """
@@ -75,48 +79,62 @@ class Param(object):
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0):
+                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
+                 log_sampling_lens=[]):
         """
 
-        :param kwargs_model:
-        :param kwargs_fixed_lens:
-        :param kwargs_fixed_source:
-        :param kwargs_fixed_lens_light:
-        :param kwargs_fixed_ps:
-        :param kwargs_fixed_special:
-        :param kwargs_fixed_extinction:
-        :param kwargs_lower_lens:
-        :param kwargs_lower_source:
-        :param kwargs_lower_lens_light:
-        :param kwargs_lower_ps:
-        :param kwargs_lower_special:
-        :param kwargs_lower_extinction:
-        :param kwargs_upper_lens:
-        :param kwargs_upper_source:
-        :param kwargs_upper_lens_light:
-        :param kwargs_upper_ps:
-        :param kwargs_upper_special:
-        :param kwargs_upper_extinction:
-        :param kwargs_lens_init:
-        :param linear_solver:
-        :param joint_lens_with_lens:
-        :param joint_lens_light_with_lens_light:
-        :param joint_source_with_source:
-        :param joint_lens_with_light:
-        :param joint_source_with_point_source:
-        :param joint_lens_light_with_point_source:
-        :param joint_extinction_with_lens_light:
-        :param joint_lens_with_source_light:
-        :param mass_scaling_list:
-        :param point_source_offset:
-        :param num_point_source_list:
+        :param kwargs_model: keyword arguments to describe all model components used in class_creator.create_class_instances()
+        :param kwargs_fixed_lens: fixed parameters for lens model (keyword argument list)
+        :param kwargs_fixed_source: fixed parameters for source model (keyword argument list)
+        :param kwargs_fixed_lens_light: fixed parameters for lens light model (keyword argument list)
+        :param kwargs_fixed_ps: fixed parameters for point source model (keyword argument list)
+        :param kwargs_fixed_special: fixed parameters for special model parameters (keyword arguments)
+        :param kwargs_fixed_extinction: fixed parameters for extinction model parameters (keyword argument list)
+        :param kwargs_lower_lens: lower limits for parameters of lens model (keyword argument list)
+        :param kwargs_lower_source: lower limits for parameters of source model (keyword argument list)
+        :param kwargs_lower_lens_light: lower limits for parameters of lens light model (keyword argument list)
+        :param kwargs_lower_ps: lower limits for parameters of point source model (keyword argument list)
+        :param kwargs_lower_special: lower limits for parameters of special model parameters (keyword arguments)
+        :param kwargs_lower_extinction: lower limits for parameters of extinction model (keyword argument list)
+        :param kwargs_upper_lens: upper limits for parameters of lens model (keyword argument list)
+        :param kwargs_upper_source: upper limits for parameters of source model (keyword argument list)
+        :param kwargs_upper_lens_light: upper limits for parameters of lens light model (keyword argument list)
+        :param kwargs_upper_ps: upper limits for parameters of point source model (keyword argument list)
+        :param kwargs_upper_special: upper limits for parameters of special model parameters (keyword arguments)
+        :param kwargs_upper_extinction: upper limits for parameters of extinction model (keyword argument list)
+        :param kwargs_lens_init: initial guess of lens model keyword arguments (only relevant as the starting point of
+         the non-linear solver)
+        :param linear_solver: bool, if True fixes the linear amplitude parameters 'amp' (avoid sampling) such that they
+         get overwritten by the linear solver solution.
+        :param joint_lens_with_lens: list [[i_lens, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameter between two lens models
+        :param joint_lens_light_with_lens_light: list [[i_lens_light, k_lens_light, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameter between two lens light models, the second adopts the value of the first
+        :param joint_source_with_source: [[i_source, k_source, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameter between two source surface brightness models, the second adopts the value of the first
+        :param joint_lens_with_light: list [[i_light, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameter between lens model and lens light model
+        :param joint_source_with_point_source: list [[i_point_source, k_source], [...], ...],
+         joint position parameter between lens model and source light model
+        :param joint_lens_light_with_point_source: list [[i_point_source, k_lens_light], [...], ...],
+         joint position parameter between lens model and lens light model
+        :param joint_extinction_with_lens_light: list [[i_lens_light, k_extinction, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameters between the lens surface brightness and the optical depth models
+        :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
+         joint parameter between lens model and source light model. Samples light model parameter only.
+        :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
+         will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
+        :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
+         time-delay and lens equation solver
+        :param num_point_source_list: list of number of point sources per point source model class
         :param image_plane_source_list: optional, list of booleans for the source_light components.
          If a component is set =True it will parameterized the positions in the image plane and ray-trace the
          parameters back to the source position on the fly during the fitting.
-        :param solver_type:
-        :param Ddt_sampling:
-        :param source_size:
-        :param num_tau0:
+        :param solver_type: string, option for specific solver type
+         see detailed instruction of the Solver4Point and Solver2Point classes
+        :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
+        :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
+        :param num_tau0: integer, number of different optical depth re-normalization factors
         :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
          are a free parameter (only has an effect in multi-plane lensing) with same indexes indicating joint redshift,
          in ascending numbering e.g. [-1, 0, 0, 1, 0, 2], -1 indicating not sampled fixed indexes
@@ -127,6 +145,7 @@ class Param(object):
         :param source_grid_offset: optional, if True when using a pixel-based modelling (e.g. with STARLETS-like profiles),
         adds two additional sampled parameters describing RA/Dec offsets between data coordinate grid and pixelated source plane coordinate grid.
         :param num_shapelet_lens: number of shapelet coefficients in the 'SHAPELETS_CART' or 'SHAPELETS_POLAR' mass profile.
+        :param log_sampling_lens: Sample the log10 of the lens model parameters. Format : [[i_lens, ['param_name1', 'param_name2', ...]], [...], ...],
         """
 
         self._lens_model_list = kwargs_model.get('lens_model_list', [])
@@ -169,6 +188,12 @@ class Param(object):
         self._joint_lens_with_light = joint_lens_with_light
         self._joint_lens_with_source_light = joint_lens_with_source_light
         self._joint_source_with_point_source = copy.deepcopy(joint_source_with_point_source)
+
+        # Set up the parameters being sampled in log space in a similar way than the parameters being fixed.
+        self._log_sampling_lens = log_sampling_lens
+        kwargs_logsampling_lens = [[] for i in range(len(self._lens_model_list))]
+        kwargs_logsampling_lens = self._update_log_sampling(kwargs_logsampling_lens, log_sampling_lens)
+
         for param_list in self._joint_source_with_point_source:
             if len(param_list) == 2:
                 param_list.append(['center_x', 'center_y'])
@@ -207,7 +232,7 @@ class Param(object):
                                          num_images=self._num_images)
 
         source_model_list = self._source_light_model_list
-        if (len(source_model_list) != 1 or source_model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']):
+        if len(source_model_list) != 1 or source_model_list[0] not in ['SLIT_STARLETS', 'SLIT_STARLETS_GEN2']:
             # source_grid_offset only defined for source profiles compatible with pixel-based solver
             source_grid_offset = False
 
@@ -225,13 +250,15 @@ class Param(object):
         kwargs_fixed_source_updated = self._fix_joint_param(kwargs_fixed_source_updated, self._joint_source_with_point_source)
         kwargs_fixed_lens_light_updated = self._fix_joint_param(kwargs_fixed_lens_light_updated,
                                                             self._joint_lens_light_with_point_source)
-        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated, num_images=self._num_images,
+        self.lensParams = LensParam(self._lens_model_list, kwargs_fixed_lens_updated,
+                                    kwargs_logsampling=kwargs_logsampling_lens,
+                                    num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
-        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
+        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, param_type='lens_light',
                                           linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
                                           kwargs_upper=kwargs_upper_lens_light)
-        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, type='source_light',
+        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, param_type='source_light',
                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
                                       kwargs_upper=kwargs_upper_source)
         self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,
@@ -269,12 +296,12 @@ class Param(object):
         """
         i = 0
         args = np.atleast_1d(args)
-        kwargs_lens, i = self.lensParams.getParams(args, i)
-        kwargs_source, i = self.souceParams.getParams(args, i)
-        kwargs_lens_light, i = self.lensLightParams.getParams(args, i)
-        kwargs_ps, i = self.pointSourceParams.getParams(args, i)
+        kwargs_lens, i = self.lensParams.get_params(args, i)
+        kwargs_source, i = self.souceParams.get_params(args, i)
+        kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
+        kwargs_ps, i = self.pointSourceParams.get_params(args, i)
         kwargs_special, i = self.specialParams.get_params(args, i)
-        kwargs_extinction, i = self.extinctionParams.getParams(args, i)
+        kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
         # update lens_light joint parameters
         kwargs_lens_light = self._update_lens_light_joint_with_point_source(kwargs_lens_light, kwargs_ps)
@@ -319,12 +346,12 @@ class Param(object):
         :return: numpy array of parameters
         """
 
-        args = self.lensParams.setParams(kwargs_lens)
-        args += self.souceParams.setParams(kwargs_source)
-        args += self.lensLightParams.setParams(kwargs_lens_light)
-        args += self.pointSourceParams.setParams(kwargs_ps)
+        args = self.lensParams.set_params(kwargs_lens)
+        args += self.souceParams.set_params(kwargs_source)
+        args += self.lensLightParams.set_params(kwargs_lens_light)
+        args += self.pointSourceParams.set_params(kwargs_ps)
         args += self.specialParams.set_params(kwargs_special)
-        args += self.extinctionParams.setParams(kwargs_extinction)
+        args += self.extinctionParams.set_params(kwargs_extinction)
         return np.array(args, dtype=float)
 
     def param_limits(self):
@@ -349,7 +376,7 @@ class Param(object):
     def num_param(self):
         """
 
-        :return: number of parameters involved (int)
+        :return: number of parameters involved (int), list of parameter names
         """
         num, name_list = self.lensParams.num_param()
         _num, _list = self.souceParams.num_param()
@@ -458,6 +485,23 @@ class Param(object):
             else:
                 raise TypeError("Bad format for constraint setting: got %s" % param_list)
         return kwargs_list_2
+
+    @staticmethod
+    def _update_log_sampling(kwargs_logsampling_lens, log_sampling_lens):
+        """
+        Update the list of parameters being sampled in log-space
+        :param kwargs_logsampling_lens: list of list of parameters to sample in log10
+        :param log_sampling_lens: [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]
+        :return: updated kwargs_logsampling_lens
+        """
+        for setting in log_sampling_lens:
+            i_1, param_list = setting
+            if type(param_list) == list:
+                kwargs_logsampling_lens[i_1] = param_list
+            else:
+                raise TypeError(
+                    "Bad format for constraint setting: got %s. This should be in the format [[i_1, ['param_name1', 'param_name2', ...]], [...], ...]" % param_list)
+        return kwargs_logsampling_lens
 
     @staticmethod
     def _fix_joint_param(kwargs_list_2, joint_setting_list):
@@ -605,3 +649,6 @@ class Param(object):
         print("Number of non-linear parameters being sampled: ", num)
         print("Parameters being sampled: ", param_list)
         print("Number of linear parameters being solved for: ", num_linear)
+        print("===================")
+        print("The log10 of following parameters is being sampled:")
+        print("Lens:", self.lensParams.kwargs_logsampling)

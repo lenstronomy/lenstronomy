@@ -43,7 +43,7 @@ class TestLightModel(object):
             {'amp': 1, 'radius': 1., 'e1': 0, 'e2': 0.1, 'center_x': 0, 'center_y': 0}  # 'ELLIPSOID'
             ]
 
-        self.LightModel = LightModel(light_model_list=self.light_model_list)
+        self.LightModel = LightModel(light_model_list=self.light_model_list, sersic_major_axis=False)
 
     def test_init(self):
         model_list = ['CORE_SERSIC', 'SHAPELETS', 'SHAPELETS_POLAR', 'SHAPELETS_POLAR_EXP', 'UNIFORM', 'CHAMELEON',
@@ -53,11 +53,11 @@ class TestLightModel(object):
 
     def test_surface_brightness(self):
         output = self.LightModel.surface_brightness(x=1., y=1., kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output, 2.645077416355777, decimal=6)
+        npt.assert_almost_equal(output, 2.6448702845796355, decimal=6)
 
     def test_surface_brightness_array(self):
         output = self.LightModel.surface_brightness(x=[1], y=[1], kwargs_list=self.kwargs)
-        npt.assert_almost_equal(output[0], 2.645077416355777, decimal=6)
+        npt.assert_almost_equal(output[0], 2.6448702845796355, decimal=6)
 
     def test_functions_split(self):
         output = self.LightModel.functions_split(x=1., y=1., kwargs_list=self.kwargs)

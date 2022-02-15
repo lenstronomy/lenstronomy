@@ -47,7 +47,6 @@ class AnalyticKinematics(Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         self._spp = SPP()
-        #GalkinObservation.__init__(self, kwargs_psf=kwargs_psf, kwargs_aperture=kwargs_aperture)
         Anisotropy.__init__(self, anisotropy_type='OM')
 
     def _rho0_r0_gamma(self, theta_E, gamma):
@@ -176,7 +175,7 @@ class AnalyticKinematics(Anisotropy):
         gamma = kwargs_mass['gamma']
         mass_dimless = self._spp.mass_3d_lens(r, theta_E, gamma)
         mass_dim = mass_dimless * const.arcsec ** 2 * self._cosmo.dd * self._cosmo.ds / self._cosmo.dds * const.Mpc * \
-                   const.c ** 2 / (4 * np.pi * const.G)
+                    const.c ** 2 / (4 * np.pi * const.G)
         grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
         return grav_pot
 

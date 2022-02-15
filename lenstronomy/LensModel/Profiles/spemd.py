@@ -9,21 +9,46 @@ __all__ = ['SPEMD']
 
 class SPEMD(LensProfileBase):
     """
-    class for smooth power law ellipse mass density profile. This class effectively performs the FASTELL calculations
+    class for smooth power law ellipse mass density profile (SPEMD). This class effectively performs the FASTELL calculations
     by Renan Barkana. The parameters are changed and represent a spherically averaged Einstein radius an a logarithmic
     3D mass profile slope.
 
-    The Einstein ring parameter converts to the definition used by GRAVLENS as follow:
-    (theta_E / theta_E_gravlens) = sqrt[ (1+q^2) / (2 q) ]
+    The SPEMD mass profile is defined as follow:
 
+    .. math::
+        \\kappa(x, y) = \\frac{3-\\gamma}{2} \\left(\\frac{\\theta_{E}}{\\sqrt{q x^2 + y^2/q + s^2}} \\right)^{\\gamma-1}
 
-    FASTELL has the following defintions:
-    The parameters are position (x1,x2), overall factor
-    (q), power (gam), axis ratio (arat) which is <=1, core radius
-    squared (s2), and the output potential (phi).
+    with :math:`\\theta_{E}` is the (circularized) Einstein radius,
+    :math:`\\gamma` is the negative power-law slope of the 3D mass distributions, :math:`q` is the minor/major axis ratio,
+    and :math:`x` and :math:`y` are defined in a coordinate system aligned with the major and minor axis of the lens.
+
+    the FASTELL definitions are as follows:
+
+    The parameters are position :math:`(x1,x2)`, overall factor
+    (:math:`b`), power (gam), axis ratio (arat) which is <=1, core radius
+    squared (:math:`s2`), and the output potential (:math:`\\phi`).
     The projected mass density distribution, in units of the
-    critical density, is kappa(x1,x2)=q [u2+s2]^(-gam), where
-    u2=[x1^2+x2^2/(arat^2)].
+    critical density, is
+
+    .. math::
+        \\kappa(x1,x2)=b_{fastell} \\left[u2+s2\\right]^{-gam},
+
+    with :math:`u2=\\left[x1^2+x2^2/(arat^2)\\right]`.
+
+    The conversion from lenstronomy definitions of this class to FASTELL are:
+
+    .. math::
+        q_{fastell} \\equiv q_{lenstronomy}
+
+    .. math::
+        gam \\equiv (\\gamma-1)/2
+
+    .. math::
+        b_{fastell} \\equiv (3-\\gamma)/2. * \\left(\\theta_{E}^2 / q\\right)^{gam}
+
+    .. math::
+        s2_{fastell} = s_{lenstronomy}^2 * q
+
     """
     param_names = ['theta_E', 'gamma', 'e1', 'e2', 's_scale', 'center_x', 'center_y']
     lower_limit_default = {'theta_E': 0, 'gamma': 0, 'e1': -0.5, 'e2': -0.5, 's_scale': 0, 'center_x': -100, 'center_y': -100}
@@ -97,7 +122,7 @@ class SPEMD(LensProfileBase):
         if self._fastell4py_bool and self.is_not_empty(x1, x2) and compute_bool:
             f_x_prim, f_y_prim = self.fastell4py.fastelldefl(x1, x2, q_fastell, gam, arat=q, s2=s2)
         else:
-            f_x_prim, f_y_prim =  np.zeros_like(x1), np.zeros_like(x1)
+            f_x_prim, f_y_prim = np.zeros_like(x1), np.zeros_like(x1)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
 
@@ -175,7 +200,7 @@ class SPEMD(LensProfileBase):
     @staticmethod
     def convert_params(theta_E, gamma, q, s_scale):
         """
-        converts parameter defintions into quantities used by the FASTELL fortran library
+        converts parameter definitions into quantities used by the FASTELL fortran library
 
         :param theta_E: Einstein radius
         :param gamma: 3D power-law slope of mass profile
@@ -185,7 +210,7 @@ class SPEMD(LensProfileBase):
         """
         gam = (gamma-1)/2.
         q_fastell = (3-gamma)/2. * (theta_E ** 2 / q) ** gam
-        s2 = s_scale ** 2
+        s2 = s_scale ** 2 * q
         return q_fastell, gam, s2
 
     @staticmethod
@@ -210,7 +235,7 @@ class SPEMD(LensProfileBase):
         """
         sets bounds to parameters due to numerical stability
 
-        FASTELL has the following defintions:
+        FASTELL has the following definitons:
         The parameters are position (x1,x2), overall factor
         (q), power (gam), axis ratio (arat) which is <=1, core radius
         squared (s2), and the output potential (phi).
@@ -224,7 +249,7 @@ class SPEMD(LensProfileBase):
         :param s2: square of smoothing scale of the core
         :return: bool of whether or not to let the fastell provide to be evaluated or instead return zero(s)
         """
-        if q_fastell < 0 or s2 < 0.0000000000001 or q > 1 or q < 0.01 or gam > 0.999 or gam < 0.001 or \
+        if q_fastell <= 0 or q > 1 or q < 0.01 or gam > 0.999 or gam < 0.001 or \
                 not np.isfinite(q_fastell):
             return False
         return True

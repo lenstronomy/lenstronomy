@@ -57,8 +57,13 @@ class TestMultiPlane(object):
         z_source = 1.5
         lens_model_list = ['SIS']
         redshift_list = [0.5]
-        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list, lens_redshift_list=redshift_list)
-        lensModel = LensModel(lens_model_list=lens_model_list)
+        from astropy.cosmology import FlatLambdaCDM, LambdaCDM
+
+        # test flat LCDM
+        cosmo = FlatLambdaCDM(H0=70, Om0=0.3)
+        lensModelMutli = MultiPlane(z_source=z_source, lens_model_list=lens_model_list,
+                                    lens_redshift_list=redshift_list, cosmo=cosmo)
+        lensModel = LensModel(lens_model_list=lens_model_list, cosmo=cosmo)
         kwargs_lens = [{'theta_E': 1, 'center_x': 0, 'center_y': 0}]
         beta_x_simple, beta_y_simple = lensModel.ray_shooting(1, 0, kwargs_lens)
         beta_x_multi, beta_y_multi = lensModelMutli.ray_shooting(1, 0, kwargs_lens)

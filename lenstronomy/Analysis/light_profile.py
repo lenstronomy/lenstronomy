@@ -80,8 +80,8 @@ class LightProfileAnalysis(object):
             f_list.append(np.average(f_r))
         return f_list
 
-    def multi_gaussian_decomposition(self, kwargs_light, grid_spacing=0.01, grid_num=100, model_bool_list=None,
-                                     n_comp=20, center_x=None, center_y=None):
+    def multi_gaussian_decomposition(self, kwargs_light, model_bool_list=None, n_comp=20, center_x=None, center_y=None,
+                                     r_h=None, grid_spacing=0.02, grid_num=200):
         """
         multi-gaussian decomposition of the lens light profile (in 1-dimension)
 
@@ -89,15 +89,17 @@ class LightProfileAnalysis(object):
         :param center_x: center of profile, if None takes it from the first profile in kwargs_light
         :param center_y: center of profile, if None takes it from the first profile in kwargs_light
         :param model_bool_list: list of booleans to select subsets of the profile
-        :param grid_spacing: grid spacing over which the moments are computed
+        :param grid_spacing: grid spacing over which the moments are computed for the half-light radius
         :param grid_num: grid size over which the moments are computed
         :param n_comp: maximum number of Gaussian's in the MGE
+        :param r_h: float, half light radius to be used for MGE (optional, otherwise using a numerical grid)
         :return: amplitudes, sigmas, center_x, center_y
         """
 
         center_x, center_y = analysis_util.profile_center(kwargs_light, center_x, center_y)
-        r_h = self.half_light_radius(kwargs_light, center_x=center_x, center_y=center_y,
-                                     model_bool_list=model_bool_list, grid_spacing=grid_spacing, grid_num=grid_num)
+        if r_h is None:
+            r_h = self.half_light_radius(kwargs_light, center_x=center_x, center_y=center_y,
+                                         model_bool_list=model_bool_list, grid_spacing=grid_spacing, grid_num=grid_num)
         r_array = np.logspace(-3, 2, 200) * r_h * 2
         flux_r = self.radial_light_profile(r_array, kwargs_light, center_x=center_x, center_y=center_y,
                                            model_bool_list=model_bool_list)

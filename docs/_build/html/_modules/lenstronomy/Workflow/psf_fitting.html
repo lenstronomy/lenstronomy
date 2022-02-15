@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Workflow.psf_fitting &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Workflow.psf_fitting &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.psf_fitting</a></li> 
       </ul>
     </div>  
 
@@ -39,7 +38,7 @@
           <div class="body" role="main">
             
   <h1>Source code for lenstronomy.Workflow.psf_fitting</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="k">import</span> <span class="n">PSF</span>
+<span></span><span class="kn">from</span> <span class="nn">lenstronomy.Data.psf</span> <span class="kn">import</span> <span class="n">PSF</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
@@ -82,70 +81,8 @@
 <span class="sd">    Any previously set subgrid kernels or pixel_kernels are removed and constructed from the &#39;point_source_kernel&#39;.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span> <span class="o">=</span> <span class="n">image_model_class</span>
-
-<div class="viewcode-block" id="PsfFitting.update_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">[docs]</a>    <span class="k">def</span> <span class="nf">update_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">,</span> <span class="n">stacking_method</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">psf_symmetry</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_iter_factor</span><span class="o">=.</span><span class="mi">2</span><span class="p">,</span>
-                   <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">error_map_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">block_center_neighbour_error_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        :param kwargs_psf: keyword arguments to construct the PSF() class</span>
-<span class="sd">        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. &#39;kwargs_lens&#39; etc)</span>
-<span class="sd">        :param stacking_method: &#39;median&#39;, &#39;mean&#39;; the different estimates of the PSF are stacked and combined together.</span>
-<span class="sd">         The choices are:</span>
-<span class="sd">         &#39;mean&#39;: mean of pixel values as the estimator (not robust to outliers)</span>
-<span class="sd">         &#39;median&#39;: median of pixel values as the estimator (outlier rejection robust but needs &gt;2 point sources in the data</span>
-<span class="sd">        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.</span>
-<span class="sd">         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to</span>
-<span class="sd">         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are</span>
-<span class="sd">         limited constraints/number of point sources in the image.</span>
-<span class="sd">        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.</span>
-<span class="sd">        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates</span>
-<span class="sd">         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might</span>
-<span class="sd">         contaminate the estimate.</span>
-<span class="sd">        :param block_center_neighbour_error_map: angle, radius of neighbouring point sources around their centers the</span>
-<span class="sd">         estimates of the ERROR MAP is ignored. If None, then the value of block_center_neighbour is used (recommended)</span>
-<span class="sd">        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate</span>
-<span class="sd">         (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered</span>
-<span class="sd">         (unless blocked through other means)</span>
-<span class="sd">        :return: kwargs_psf_new, logL_after, error_map</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">block_center_neighbour_error_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">block_center_neighbour_error_map</span> <span class="o">=</span> <span class="n">block_center_neighbour</span>
-        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">psf_class</span><span class="p">)</span>
-
-        <span class="n">kernel_old</span> <span class="o">=</span> <span class="n">psf_class</span><span class="o">.</span><span class="n">kernel_point_source</span>
-        <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_old</span><span class="p">)</span>
-        <span class="n">kwargs_psf_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
-        <span class="n">kwargs_psf_new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">,</span> <span class="s1">&#39;kernel_point_source&#39;</span><span class="p">:</span> <span class="n">kwargs_psf_copy</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]}</span>
-        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf_copy</span><span class="p">:</span>
-            <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_psf_copy</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
-        <span class="n">image_single_point_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_single_point_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">)</span>
-        <span class="n">kwargs_ps</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_ps&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">amp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_list</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">)</span>
-
-        <span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">star_cutout_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">image_single_point_source_list</span><span class="p">,</span>
-                                                            <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span>
-                                                            <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">)</span>
-
-        <span class="n">kernel_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">combine_psf</span><span class="p">(</span><span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">psf_iter_factor</span><span class="p">,</span>
-                                      <span class="n">stacking_option</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">psf_symmetry</span><span class="p">)</span>
-        <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
-        <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_map_estimate</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">star_cutout_list</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span>
-                                            <span class="n">error_map_radius</span><span class="o">=</span><span class="n">error_map_radius</span><span class="p">,</span>
-                                            <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour_error_map</span><span class="p">)</span>
-
-        <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_new</span>
-        <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;point_source_supersampling_factor&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="k">if</span> <span class="s1">&#39;psf_error_map&#39;</span> <span class="ow">in</span> <span class="n">kwargs_psf_new</span><span class="p">:</span>
-            <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">*=</span> <span class="mi">10</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
-        <span class="n">logL_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_params</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">logL_after</span><span class="p">,</span> <span class="n">error_map</span></div>
 
 <div class="viewcode-block" id="PsfFitting.update_iterative"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative">[docs]</a>    <span class="k">def</span> <span class="nf">update_iterative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">keep_psf_error_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">no_break</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                          <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_psf_update</span><span class="p">):</span>
@@ -181,6 +118,7 @@
         <span class="n">i_best</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_iter</span><span class="p">):</span>
             <span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">logL_after</span><span class="p">,</span> <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_psf_update</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="n">logL_after</span> <span class="o">&gt;</span> <span class="n">logL_best</span><span class="p">:</span>
                 <span class="n">kwargs_psf_final</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf_new</span><span class="p">)</span>
                 <span class="n">error_map_final</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">error_map</span><span class="p">)</span>
@@ -200,6 +138,109 @@
             <span class="n">kwargs_psf_final</span><span class="p">[</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error_map_final</span>
         <span class="n">kwargs_psf_final</span><span class="p">[</span><span class="s1">&#39;kernel_point_source_init&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_point_source_init</span>
         <span class="k">return</span> <span class="n">kwargs_psf_final</span></div>
+
+<div class="viewcode-block" id="PsfFitting.update_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">[docs]</a>    <span class="k">def</span> <span class="nf">update_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_psf</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">,</span> <span class="n">stacking_method</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">psf_symmetry</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">psf_iter_factor</span><span class="o">=</span><span class="mf">.2</span><span class="p">,</span>
+                   <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">error_map_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">block_center_neighbour_error_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">new_procedure</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_psf: keyword arguments to construct the PSF() class</span>
+<span class="sd">        :param kwargs_params: keyword arguments of the parameters of the model components (e.g. &#39;kwargs_lens&#39; etc)</span>
+<span class="sd">        :param stacking_method: &#39;median&#39;, &#39;mean&#39;; the different estimates of the PSF are stacked and combined together.</span>
+<span class="sd">         The choices are:</span>
+<span class="sd">         &#39;mean&#39;: mean of pixel values as the estimator (not robust to outliers)</span>
+<span class="sd">         &#39;median&#39;: median of pixel values as the estimator (outlier rejection robust but needs &gt;2 point sources in the data</span>
+<span class="sd">        :param psf_symmetry: number of rotational invariant symmetries in the estimated PSF.</span>
+<span class="sd">         =1 mean no additional symmetries. =4 means 90 deg symmetry. This is enforced by a rotatioanl stack according to</span>
+<span class="sd">         the symmetry specified. These additional imposed symmetries can help stabelize the PSF estimate when there are</span>
+<span class="sd">         limited constraints/number of point sources in the image.</span>
+<span class="sd">        :param psf_iter_factor: factor in (0, 1] of ratio of old vs new PSF in the update in the iteration.</span>
+<span class="sd">        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates</span>
+<span class="sd">         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might</span>
+<span class="sd">         contaminate the estimate.</span>
+<span class="sd">        :param block_center_neighbour_error_map: angle, radius of neighbouring point sources around their centers the</span>
+<span class="sd">         estimates of the ERROR MAP is ignored. If None, then the value of block_center_neighbour is used (recommended)</span>
+<span class="sd">        :param error_map_radius: float, radius (in arc seconds) of the outermost error in the PSF estimate</span>
+<span class="sd">         (e.g. to avoid double counting of overlapping PSF errors), if None, all of the pixels are considered</span>
+<span class="sd">         (unless blocked through other means)</span>
+<span class="sd">        :param new_procedure: boolean, uses post lenstronomy 1.9.2 procedure which is more optimal for super-sampled PSF&#39;s</span>
+<span class="sd">        :return: kwargs_psf_new, logL_after, error_map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">block_center_neighbour_error_map</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">block_center_neighbour_error_map</span> <span class="o">=</span> <span class="n">block_center_neighbour</span>
+        <span class="n">psf_class</span> <span class="o">=</span> <span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf</span><span class="p">)</span>
+        <span class="n">kwargs_psf_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">)</span>
+
+        <span class="n">point_source_supersampling_factor</span> <span class="o">=</span> <span class="n">kwargs_psf_copy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;point_source_supersampling_factor&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">kwargs_psf_new</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">,</span> <span class="s1">&#39;kernel_point_source&#39;</span><span class="p">:</span> <span class="n">kwargs_psf_copy</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">],</span>
+                          <span class="s1">&#39;point_source_supersampling_factor&#39;</span><span class="p">:</span> <span class="n">point_source_supersampling_factor</span><span class="p">,</span>
+                          <span class="s1">&#39;psf_error_map&#39;</span><span class="p">:</span> <span class="n">kwargs_psf_copy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;psf_error_map&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)}</span>
+        <span class="c1">#if &#39;psf_error_map&#39; in kwargs_psf_copy:</span>
+        <span class="c1">#    kwargs_psf_new[&#39;psf_error_map&#39;] = kwargs_psf_copy[&#39;psf_error_map&#39;] / 10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
+
+        <span class="n">model</span><span class="p">,</span> <span class="n">error_map_image</span><span class="p">,</span> <span class="n">cov_param</span><span class="p">,</span> <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">image_linear_solve</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_params</span><span class="p">)</span>
+        <span class="n">kwargs_ps</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_ps&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="n">kwargs_params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">point_amp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_list</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">)</span>
+        <span class="n">kernel_old</span> <span class="o">=</span> <span class="n">psf_class</span><span class="o">.</span><span class="n">kernel_point_source</span>
+        <span class="n">kernel_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_old</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">new_procedure</span><span class="p">:</span>
+            <span class="n">image_single_point_source_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_single_point_source</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">)</span>
+            <span class="n">star_cutout_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_like_source_cutouts</span><span class="p">(</span><span class="n">x_pos</span><span class="o">=</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_pos</span><span class="o">=</span><span class="n">y_</span><span class="p">,</span>
+                                                              <span class="n">image_list</span><span class="o">=</span><span class="n">image_single_point_source_list</span><span class="p">,</span>
+                                                              <span class="n">cutout_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+            <span class="n">psf_kernel_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">image_single_point_source_list</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span>
+                                              <span class="n">kernel_old</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">)</span>
+
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">combine_psf</span><span class="p">(</span><span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">kernel_old</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">psf_iter_factor</span><span class="p">,</span>
+                                          <span class="n">stacking_option</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">psf_symmetry</span><span class="p">)</span>
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">)</span>
+            <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_map_estimate</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">star_cutout_list</span><span class="p">,</span> <span class="n">point_amp</span><span class="p">,</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span>
+                                                <span class="n">error_map_radius</span><span class="o">=</span><span class="n">error_map_radius</span><span class="p">,</span>
+                                                <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour_error_map</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">point_source_supersampling_factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># The current version of using a super-sampled PSF in the iterative reconstruction is to first</span>
+                <span class="c1"># constrain a down-sampled version and then in a second step perform a super-sampling of it. This is not</span>
+                <span class="c1"># optimal and should be changed in the future that the corrections of the super-sampled version is done</span>
+                <span class="c1"># rather than constraining a totally new PSF first</span>
+                <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">subgrid_kernel</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="n">point_source_supersampling_factor</span><span class="p">,</span>
+                                                        <span class="n">odd</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_iter</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+                <span class="c1"># chop edges</span>
+                <span class="n">n_kernel</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs_psf</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">])</span>
+                <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">n_kernel</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kernel_old_high_res</span> <span class="o">=</span> <span class="n">psf_class</span><span class="o">.</span><span class="n">kernel_point_source_supersampled</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="o">=</span><span class="n">point_source_supersampling_factor</span><span class="p">)</span>
+            <span class="n">kernel_size_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_old_high_res</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">data</span>
+            <span class="n">residuals</span> <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">model</span>
+
+            <span class="n">psf_kernel_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_estimate_individual</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">point_amp</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span>
+                                                           <span class="n">cutout_size</span><span class="o">=</span><span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_guess</span><span class="o">=</span><span class="n">kernel_old_high_res</span><span class="p">,</span>
+                                                           <span class="n">supersampling_factor</span><span class="o">=</span><span class="n">point_source_supersampling_factor</span><span class="p">,</span>
+                                                           <span class="n">block_center_neighbour</span><span class="o">=</span><span class="n">block_center_neighbour</span><span class="p">)</span>
+
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">combine_psf</span><span class="p">(</span><span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">kernel_old_high_res</span><span class="p">,</span> <span class="n">factor</span><span class="o">=</span><span class="n">psf_iter_factor</span><span class="p">,</span>
+                                          <span class="n">stacking_option</span><span class="o">=</span><span class="n">stacking_method</span><span class="p">,</span> <span class="n">symmetry</span><span class="o">=</span><span class="n">psf_symmetry</span><span class="p">)</span>
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cut_psf</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_size</span><span class="o">=</span><span class="n">kernel_size_high</span><span class="p">)</span>
+
+            <span class="c1"># resize kernel for error_map estimate</span>
+            <span class="n">kernel_new_low</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">degrade_kernel</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">point_source_supersampling_factor</span><span class="p">)</span>
+            <span class="c1"># compute error map on pixel level</span>
+            <span class="n">error_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">error_map_estimate_new</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">,</span> <span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">point_amp</span><span class="p">,</span>
+                                                    <span class="n">point_source_supersampling_factor</span><span class="p">,</span>
+                                                    <span class="n">error_map_radius</span><span class="o">=</span><span class="n">error_map_radius</span><span class="p">)</span>
+
+        <span class="n">kwargs_psf_new</span><span class="p">[</span><span class="s1">&#39;kernel_point_source&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_new</span>
+        <span class="c1">#if &#39;psf_error_map&#39; in kwargs_psf_new:</span>
+        <span class="c1">#    kwargs_psf_new[&#39;psf_error_map&#39;] *= 10</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">update_psf</span><span class="p">(</span><span class="n">PSF</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_psf_new</span><span class="p">))</span>
+        <span class="n">logL_after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_data_given_model</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_psf_new</span><span class="p">,</span> <span class="n">logL_after</span><span class="p">,</span> <span class="n">error_map</span></div>
 
 <div class="viewcode-block" id="PsfFitting.image_single_point_source"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source">[docs]</a>    <span class="k">def</span> <span class="nf">image_single_point_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_model_class</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -237,14 +278,20 @@
             <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point_source</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">point_list</span>
 
-<div class="viewcode-block" id="PsfFitting.cutout_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf">[docs]</a>    <span class="k">def</span> <span class="nf">cutout_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image_list</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="PsfFitting.cutout_psf"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf">[docs]</a>    <span class="k">def</span> <span class="nf">cutout_psf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image_list</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x_:</span>
-<span class="sd">        :param y_:</span>
+<span class="sd">        :param ra_image: coordinate array of images in angles</span>
+<span class="sd">        :param dec_image: coordinate array of images in angles</span>
+<span class="sd">        :param x: image position array in x-pixel</span>
+<span class="sd">        :param y: image position array in y-pixel</span>
 <span class="sd">        :param image_list: list of images (i.e. data - all models subtracted, except a single point source)</span>
-<span class="sd">        :param kernelsize:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param kernel_size: width in pixel of the kernel</span>
+<span class="sd">        :param kernel_init: initial guess of kernel (pixels that are masked are replaced by those values)</span>
+<span class="sd">        :param block_center_neighbour: angle, radius of neighbouring point sources around their centers the estimates</span>
+<span class="sd">         is ignored. Default is zero, meaning a not optimal subtraction of the neighbouring point sources might</span>
+<span class="sd">         contaminate the estimate.</span>
+<span class="sd">        :return: list of de-shifted kernel estimates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_mask</span>
         <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_coordinates</span>
@@ -253,38 +300,117 @@
         <span class="n">radius</span> <span class="o">=</span> <span class="n">block_center_neighbour</span>
 
         <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">star_cutout_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
             <span class="n">mask_point_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_point_source</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">l</span><span class="p">)</span>
             <span class="n">mask_i</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">mask_point_source</span>
-            <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf_single</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">image_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">mask_i</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">)</span>
+            <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutout_psf_single</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">image_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">mask_i</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">)</span>
             <span class="n">kernel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">)</span>
-            <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
-            <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
-            <span class="n">star_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">image_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">star_cutout_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">star_cutout</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kernel_list</span><span class="p">,</span> <span class="n">star_cutout_list</span></div>
+        <span class="k">return</span> <span class="n">kernel_list</span></div>
 
-<div class="viewcode-block" id="PsfFitting.cutout_psf_single"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">cutout_psf_single</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">):</span>
+<div class="viewcode-block" id="PsfFitting.psf_estimate_individual"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.psf_estimate_individual">[docs]</a>    <span class="k">def</span> <span class="nf">psf_estimate_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">point_amp</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span> <span class="n">cutout_size</span><span class="p">,</span> <span class="n">kernel_guess</span><span class="p">,</span>
+                                <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">block_center_neighbour</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x: x-coordinate of point soure</span>
+<span class="sd">        :param ra_image: list; position in angular units of the image</span>
+<span class="sd">        :param dec_image: list; position in angular units of the image</span>
+<span class="sd">        :param point_amp: list of model amplitudes of point sources</span>
+<span class="sd">        :param residuals: data - model</span>
+<span class="sd">        :param cutout_size: pixel size of cutout around single star/quasar to be considered for the psf reconstruction</span>
+<span class="sd">        :param kernel_guess: initial guess of super-sampled PSF</span>
+<span class="sd">        :param supersampling_factor: int, super-sampling factor</span>
+<span class="sd">        :param block_center_neighbour:</span>
+<span class="sd">        :return: list of best-guess PSF&#39;s for each star based on the residual patterns</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">likelihood_mask</span>
+        <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_coordinates</span>
+        <span class="n">ra_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">ra_grid</span><span class="p">)</span>
+        <span class="n">dec_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">dec_grid</span><span class="p">)</span>
+        <span class="n">radius</span> <span class="o">=</span> <span class="n">block_center_neighbour</span>
+        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">)</span>
+
+        <span class="n">kernel_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ra_image</span><span class="p">)):</span>
+            <span class="n">mask_point_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_point_source</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">ra_grid</span><span class="p">,</span> <span class="n">dec_grid</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">l</span><span class="p">)</span>
+            <span class="n">mask_i</span> <span class="o">=</span> <span class="n">mask</span> <span class="o">*</span> <span class="n">mask_point_source</span>
+
+            <span class="c1"># cutout residuals</span>
+            <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
+            <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
+            <span class="n">residual_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">residuals</span><span class="p">,</span> <span class="n">cutout_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># cutout the mask</span>
+            <span class="n">mask_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">mask_i</span><span class="p">,</span> <span class="n">cutout_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># apply mask</span>
+            <span class="n">residual_cutout_mask</span> <span class="o">=</span> <span class="n">residual_cutout</span> <span class="o">*</span> <span class="n">mask_cutout</span>
+            <span class="c1"># re-scale residuals with point source brightness</span>
+            <span class="n">residual_cutout_mask</span> <span class="o">/=</span> <span class="n">point_amp</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="c1"># enlarge residuals by super-sampling factor</span>
+            <span class="n">residual_cutout_mask</span> <span class="o">=</span> <span class="n">residual_cutout_mask</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># inverse shift residuals</span>
+            <span class="n">shift_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_int</span> <span class="o">-</span> <span class="n">x_</span><span class="p">[</span><span class="n">l</span><span class="p">])</span> <span class="o">*</span> <span class="n">supersampling_factor</span>
+            <span class="n">shift_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_int</span> <span class="o">-</span> <span class="n">y_</span><span class="p">[</span><span class="n">l</span><span class="p">])</span> <span class="o">*</span> <span class="n">supersampling_factor</span>
+            <span class="c1"># for odd number super-sampling</span>
+            <span class="k">if</span> <span class="n">supersampling_factor</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">residuals_shifted</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">residual_cutout_mask</span><span class="p">,</span> <span class="p">[</span><span class="n">shift_y</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># for even number super-sampling half a super-sampled pixel offset needs to be performed</span>
+                <span class="n">residuals_shifted</span> <span class="o">=</span> <span class="n">interp</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">residual_cutout_mask</span><span class="p">,</span> <span class="p">[</span><span class="n">shift_y</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">shift_x</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="c1"># and the last column and row need to be removed</span>
+                <span class="n">residuals_shifted</span> <span class="o">=</span> <span class="n">residuals_shifted</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># re-size shift residuals</span>
+            <span class="n">psf_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_guess</span><span class="p">)</span>
+            <span class="n">residuals_shifted</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">cut_edges</span><span class="p">(</span><span class="n">residuals_shifted</span><span class="p">,</span> <span class="n">psf_size</span><span class="p">)</span>
+
+            <span class="c1"># normalize residuals</span>
+            <span class="n">correction</span> <span class="o">=</span> <span class="n">residuals_shifted</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">residuals_shifted</span><span class="p">)</span>
+            <span class="c1"># correct old PSF with inverse shifted residuals</span>
+            <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_guess</span> <span class="o">+</span> <span class="n">correction</span>
+            <span class="n">kernel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kernel_list</span></div>
+
+<div class="viewcode-block" id="PsfFitting.point_like_source_cutouts"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.point_like_source_cutouts">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">point_like_source_cutouts</span><span class="p">(</span><span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">image_list</span><span class="p">,</span> <span class="n">cutout_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        cutouts of point-like objects</span>
+
+<span class="sd">        :param x_pos: list of image positions in pixel units</span>
+<span class="sd">        :param y_pos: list of image position in pixel units</span>
+<span class="sd">        :param image_list: list of 2d numpy arrays with cleaned images, with all contaminating sources removed except</span>
+<span class="sd">         the point-like object to be cut out.</span>
+<span class="sd">        :param cutout_size: odd integer, size of cutout.</span>
+<span class="sd">        :return: list of cutouts</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">star_cutout_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)):</span>
+            <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x_pos</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
+            <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y_pos</span><span class="p">[</span><span class="n">l</span><span class="p">]))</span>
+            <span class="n">star_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">image_list</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">cutout_size</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">star_cutout_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">star_cutout</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">star_cutout_list</span></div>
+
+<div class="viewcode-block" id="PsfFitting.cutout_psf_single"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cutout_psf_single</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">,</span> <span class="n">kernel_init</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param x: x-coordinate of point source</span>
 <span class="sd">        :param y: y-coordinate of point source</span>
 <span class="sd">        :param image: image (i.e. data - all models subtracted, except a single point source)</span>
 <span class="sd">        :param mask: mask of pixels in the image not to be considered in the PSF estimate (being replaced by kernel_init)</span>
-<span class="sd">        :param kernelsize: width in pixel of the kernel</span>
+<span class="sd">        :param kernel_size: width in pixel of the kernel</span>
 <span class="sd">        :param kernel_init: initial guess of kernel (pixels that are masked are replaced by those values)</span>
 <span class="sd">        :return: estimate of the PSF based on the image and position of the point source</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># cutout the star</span>
         <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
-        <span class="n">star_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernelsize</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">star_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># cutout the mask</span>
-        <span class="n">mask_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernelsize</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">mask_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># enlarge the initial PSF kernel to the new cutout size</span>
-        <span class="n">kernel_enlarged</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernelsize</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">kernelsize</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">kernel_enlarged</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">kernel_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">kernel_size</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
         <span class="n">kernel_enlarged</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel_init</span>
         <span class="c1"># shift the initial kernel to the shift of the star</span>
         <span class="n">shift_x</span> <span class="o">=</span> <span class="n">x_int</span> <span class="o">-</span> <span class="n">x</span>
@@ -302,7 +428,7 @@
         <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">de_shift_kernel</span><span class="p">(</span><span class="n">star_cutout</span><span class="p">,</span> <span class="n">shift_x</span><span class="p">,</span> <span class="n">shift_y</span><span class="p">,</span> <span class="n">iterations</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                                                        <span class="n">fractional_step_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="c1"># re-size kernel</span>
-        <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">cut_edges</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">,</span> <span class="n">kernelsize</span><span class="p">)</span>
+        <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">cut_edges</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">,</span> <span class="n">kernel_size</span><span class="p">)</span>
         <span class="c1"># re-normalize kernel again</span>
         <span class="n">kernel_deshifted</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_deshifted</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">kernel_deshifted</span></div>
@@ -348,6 +474,51 @@
         <span class="n">kernel_new</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_norm</span><span class="p">(</span><span class="n">kernel_new</span><span class="p">)</span>
         <span class="n">kernel_return</span> <span class="o">=</span> <span class="n">factor</span> <span class="o">*</span> <span class="n">kernel_new</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">factor</span><span class="p">)</span> <span class="o">*</span> <span class="n">kernel_old</span>
         <span class="k">return</span> <span class="n">kernel_return</span></div>
+
+<div class="viewcode-block" id="PsfFitting.error_map_estimate_new"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate_new">[docs]</a>    <span class="k">def</span> <span class="nf">error_map_estimate_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_kernel</span><span class="p">,</span> <span class="n">psf_kernel_list</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">point_amp</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span>
+                               <span class="n">error_map_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image</span>
+
+<span class="sd">        :param psf_kernel: PSF kernel (super-sampled)</span>
+<span class="sd">        :param psf_kernel_list: list of individual best PSF kernel estimates</span>
+<span class="sd">        :param ra_image: image positions in angles</span>
+<span class="sd">        :param dec_image: image positions in angles</span>
+<span class="sd">        :param point_amp: image amplitude</span>
+<span class="sd">        :param supersampling_factor: super-sampling factor</span>
+<span class="sd">        :param error_map_radius: radius (in angle) to cut the error map</span>
+<span class="sd">        :return: psf error map such that square of the uncertainty gets boosted by error_map * (psf * amp)**2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kernel_low</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">degrade_kernel</span><span class="p">(</span><span class="n">psf_kernel</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">)</span>
+        <span class="n">error_map_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">psf_kernel_list</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_low</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_low</span><span class="p">)))</span>
+        <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">psf_kernel_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">psf_kernel_list</span><span class="p">):</span>
+            <span class="n">kernel_low_i</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">degrade_kernel</span><span class="p">(</span><span class="n">psf_kernel_i</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">)</span>
+
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp_i</span> <span class="o">=</span> <span class="n">x_pos</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_pos</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">point_amp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">x_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+            <span class="n">y_int</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+            <span class="n">C_D_cutout</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">cutout_source</span><span class="p">(</span><span class="n">x_int</span><span class="p">,</span> <span class="n">y_int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">C_D</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_low_i</span><span class="p">),</span>
+                                                   <span class="n">shift</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">residuals_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">kernel_low</span> <span class="o">-</span> <span class="n">kernel_low_i</span><span class="p">)</span>
+            <span class="n">residuals_i</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">C_D_cutout</span><span class="p">)</span> <span class="o">/</span> <span class="n">amp_i</span>
+            <span class="n">residuals_i</span><span class="p">[</span><span class="n">residuals_i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">error_map_list</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">residuals_i</span><span class="o">**</span><span class="mi">2</span>
+
+        <span class="n">error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">error_map_list</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">error_map</span><span class="p">[</span><span class="n">kernel_low</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/=</span> <span class="n">kernel_low</span><span class="p">[</span><span class="n">kernel_low</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="n">error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">error_map</span><span class="p">)</span>
+        <span class="n">error_map</span><span class="p">[</span><span class="n">error_map</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># cap on error to be the same</span>
+
+        <span class="c1"># mask the error map outside a certain radius (can avoid double counting of errors when map is overlapping</span>
+        <span class="k">if</span> <span class="n">error_map_radius</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pixel_scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_model_class</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_width</span>
+            <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">error_map</span><span class="p">),</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">pixel_scale</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">mask_util</span><span class="o">.</span><span class="n">mask_azimuthal</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">error_map_radius</span><span class="p">)</span>
+            <span class="n">error_map</span> <span class="o">*=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">error_map</span></div>
 
 <div class="viewcode-block" id="PsfFitting.error_map_estimate"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate">[docs]</a>    <span class="k">def</span> <span class="nf">error_map_estimate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">star_cutout_list</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">error_map_radius</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">block_center_neighbour</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -432,23 +603,22 @@
         <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -462,13 +632,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.psf_fitting</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

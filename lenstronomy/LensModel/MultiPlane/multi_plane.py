@@ -17,7 +17,7 @@ class MultiPlane(object):
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
                  observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None,
-                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100):
+                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100, kwargs_interp=None):
         """
 
         :param z_source: source redshift for default computation of reduced lensing quantities
@@ -26,6 +26,8 @@ class MultiPlane(object):
         :param cosmo: instance of astropy.cosmology
         :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model
         (see documentation in Profiles/numerical_alpha)
+        :param kwargs_interp: interpolation keyword arguments specifying the numerics.
+         See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
         :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same
         index, where the 'center_x' and 'center_y' kwargs correspond to observed (lensed) positions, not physical
         positions. The code will compute the physical locations when performing computations
@@ -40,12 +42,14 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
+            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
+                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
                                                 lens_redshift_list=lens_redshift_list, cosmo=cosmo,
                                                 numerical_alpha_class=numerical_alpha_class,
                                                 z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
-                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp)
+                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
+                                                kwargs_interp=kwargs_interp)
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index
@@ -58,7 +62,8 @@ class MultiPlane(object):
 
     def update_source_redshift(self, z_source):
         """
-        update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift
+        update instance of this class to compute reduced lensing quantities and time delays to a specific source
+        redshift
 
         :param z_source: float; source redshift
         :return: self variables update to new redshift
@@ -183,7 +188,7 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
-                                                   T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
+                                                        T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """

@@ -1,6 +1,5 @@
 import numpy as np
 import lenstronomy.Util.util as util
-from skimage.measure import find_contours
 from lenstronomy.Util.magnification_finite_util import setup_mag_finite
 
 __all__ = ['LensModelExtensions']
@@ -56,6 +55,8 @@ class LensModelExtensions(object):
 
         :param x_image: a list or array of x coordinates [units arcsec]
         :param y_image: a list or array of y coordinates [units arcsec]
+        :param source_x: float, source position
+        :param source_y: float, source position
         :param kwargs_lens: keyword arguments for the lens model
         :param source_fwhm_parsec: the size of the background source [units parsec]
         :param z_source: the source redshift
@@ -106,24 +107,27 @@ class LensModelExtensions(object):
 
         for xi, yi in zip(x_image, y_image):
 
-            w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
-            _v = [np.array([v11, v12]), np.array([v21, v22])]
-            _w = [abs(w1), abs(w2)]
-            if use_largest_eigenvalue:
-                idx = int(np.argmax(_w))
+            if axis_ratio == 1:
+                grid_r = np.hypot(grid_x_0, grid_y_0)
             else:
-                idx = int(np.argmin(_w))
-            v = _v[idx]
+                w1, w2, v11, v12, v21, v22 = self.hessian_eigenvectors(xi, yi, kwargs_lens)
+                _v = [np.array([v11, v12]), np.array([v21, v22])]
+                _w = [abs(w1), abs(w2)]
+                if use_largest_eigenvalue:
+                    idx = int(np.argmax(_w))
+                else:
+                    idx = int(np.argmin(_w))
+                v = _v[idx]
 
-            rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
-            grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
+                rotation_angle = np.arctan(v[1] / v[0]) - np.pi / 2
+                grid_x, grid_y = util.rotate(grid_x_0, grid_y_0, rotation_angle)
 
-            if axis_ratio == 0:
-                sort = np.argsort(_w)
-                q = _w[sort[0]] / _w[sort[1]]
-                grid_r = np.hypot(grid_x, grid_y / q).ravel()
-            else:
-                grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
+                if axis_ratio == 0:
+                    sort = np.argsort(_w)
+                    q = _w[sort[0]] / _w[sort[1]]
+                    grid_r = np.hypot(grid_x, grid_y / q).ravel()
+                else:
+                    grid_r = np.hypot(grid_x, grid_y / axis_ratio).ravel()
 
             flux_array = np.zeros_like(grid_x_0)
             step = step_size * grid_radius_arcsec
@@ -215,7 +219,7 @@ class LensModelExtensions(object):
         if polar_grid is True:
             a = window_size*0.5
             b = window_size*0.5*aspect_ratio
-            ellipse_inds = (x_grid*a**-1) **2 + (y_grid*b**-1) **2 <= 1
+            ellipse_inds = (x_grid*a**-1) ** 2 + (y_grid*b**-1) ** 2 <= 1
             x_grid, y_grid = x_grid[ellipse_inds], y_grid[ellipse_inds]
 
         for i in range(len(x_pos)):
@@ -224,7 +228,7 @@ class LensModelExtensions(object):
             center_x, center_y = self._lensModel.ray_shooting(ra, dec, kwargs_lens)
 
             if polar_grid is True:
-                theta = np.arctan2(dec,ra)
+                theta = np.arctan2(dec, ra)
                 xcoord, ycoord = util.rotate(x_grid, y_grid, theta)
             else:
                 xcoord, ycoord = x_grid, y_grid
@@ -236,7 +240,7 @@ class LensModelExtensions(object):
         return mag_finite
 
     def zoom_source(self, x_pos, y_pos, kwargs_lens, source_sigma=0.003, window_size=0.1, grid_number=100,
-                             shape="GAUSSIAN"):
+                    shape="GAUSSIAN"):
         """
         computes the surface brightness on an image with a zoomed window
 
@@ -303,6 +307,32 @@ class LensModelExtensions(object):
                 dec_crit_list += dec_crit  # list addition
         return np.array(ra_crit_list), np.array(dec_crit_list)
 
+    def caustic_area(self, kwargs_lens, kwargs_caustic_num, index_vertices=0):
+        """
+        computes the area inside a connected caustic curve
+
+        :param kwargs_lens: lens model keyword argument list
+        :param kwargs_caustic_num: keyword arguments for the numerical calculation of the caustics, as input of
+         self.critical_curve_caustics()
+        :param index_vertices: integer, index of connected vortex from the output of self.critical_curve_caustics()
+         of disconnected curves.
+        :return: area within the caustic curve selected
+        """
+
+        ra_crit_list, dec_crit_list, ra_caustic_list, dec_caustic_list = self.critical_curve_caustics(kwargs_lens,
+                                                                                                      **kwargs_caustic_num)
+
+        # select specific vortex
+        ra_caustic_inner = ra_caustic_list[index_vertices]
+        dec_caustic_inner = dec_caustic_list[index_vertices]
+
+        # merge RA DEC to vertices
+        C = np.dstack([ra_caustic_inner, dec_caustic_inner])[0]
+
+        # compute area
+        a = util.area(C)
+        return a
+
     def _tiling_crit(self, edge1, edge2, edge_90, max_order, kwargs_lens):
         """
         tiles a rectangular triangle and compares the signs of the magnification
@@ -364,7 +394,10 @@ class LensModelExtensions(object):
         ra_caustic_list = []
         dec_caustic_list = []
 
+        # Import moved here to avoid import-time exception if skimage is missing
+        from skimage.measure import find_contours
         paths = find_contours(1/mag_high_res, 0.)
+
         for i, v in enumerate(paths):
             # x, y changed because of skimage conventions
             ra_points = v[:, 1] * grid_scale - grid_scale * (numPix-1)/2 + center_x
@@ -418,8 +451,6 @@ class LensModelExtensions(object):
         prod_v2 = v_x*v21 + v_y*v22
         if isinstance(x, int) or isinstance(x, float):
             if (coordinate_frame_definitions is True and abs(prod_v1) >= abs(prod_v2)) or (coordinate_frame_definitions is False and w1 >= w2):
-            #if w1 > w2:
-            #if abs(prod_v1) > abs(prod_v2):  # radial vector has larger scalar product to the zero point
                 lambda_rad = 1. / w1
                 lambda_tan = 1. / w2
                 v1_rad, v2_rad = v11, v12
@@ -442,7 +473,7 @@ class LensModelExtensions(object):
             for i in range(len(x)):
                 if (coordinate_frame_definitions is True and abs(prod_v1[i]) >= abs(prod_v2[i])) or (
                         coordinate_frame_definitions is False and w1[i] >= w2[i]):
-                #if w1[i] > w2[i]:
+                # if w1[i] > w2[i]:
                     lambda_rad[i] = 1. / w1[i]
                     lambda_tan[i] = 1. / w2[i]
                     v1_rad[i], v2_rad[i] = v11[i], v12[i]
@@ -484,7 +515,7 @@ class LensModelExtensions(object):
         y0 = y - center_y
 
         # computing angle of tangential vector in regard to the defined coordinate center
-        cos_angle = (v1_tan * x0 + v2_tan * y0) / np.sqrt((x0 ** 2 + y0 ** 2) * (v1_tan ** 2 + v2_tan ** 2))# * np.sign(v1_tan * y0 - v2_tan * x0)
+        cos_angle = (v1_tan * x0 + v2_tan * y0) / np.sqrt((x0 ** 2 + y0 ** 2) * (v1_tan ** 2 + v2_tan ** 2))  # * np.sign(v1_tan * y0 - v2_tan * x0)
         orientation_angle = np.arccos(cos_angle) - np.pi / 2
 
         # computing differentials in tangential and radial directions
@@ -498,13 +529,13 @@ class LensModelExtensions(object):
             dx_rad, dy_rad, kwargs_lens, diff=smoothing_2nd, ra_0=center_x, dec_0=center_y, coordinate_frame_definitions=True)
 
         # eigenvalue differentials in tangential and radial direction
-        dlambda_tan_dtan = (lambda_tan_dtan - lambda_tan) / smoothing_3rd# * np.sign(v1_tan * y0 - v2_tan * x0)
-        dlambda_tan_drad = (lambda_tan_drad - lambda_tan) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
-        dlambda_rad_drad = (lambda_rad_drad - lambda_rad) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
-        dlambda_rad_dtan = (lambda_rad_dtan - lambda_rad) / smoothing_3rd# * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_tan_dtan = (lambda_tan_dtan - lambda_tan) / smoothing_3rd  # * np.sign(v1_tan * y0 - v2_tan * x0)
+        dlambda_tan_drad = (lambda_tan_drad - lambda_tan) / smoothing_3rd  # * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_rad_drad = (lambda_rad_drad - lambda_rad) / smoothing_3rd  # * np.sign(v1_rad * x0 + v2_rad * y0)
+        dlambda_rad_dtan = (lambda_rad_dtan - lambda_rad) / smoothing_3rd  # * np.sign(v1_rad * x0 + v2_rad * y0)
 
         # eigenvector direction differentials in tangential and radial direction
-        cos_dphi_tan_dtan = v1_tan * v1_tan_dtan + v2_tan * v2_tan_dtan #/ (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))
+        cos_dphi_tan_dtan = v1_tan * v1_tan_dtan + v2_tan * v2_tan_dtan  # / (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))
         norm = np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2)
         cos_dphi_tan_dtan /= norm
         arc_cos_dphi_tan_dtan = np.arccos(np.abs(np.minimum(cos_dphi_tan_dtan, 1)))
@@ -516,13 +547,13 @@ class LensModelExtensions(object):
         arc_cos_dphi_tan_drad = np.arccos(np.abs(np.minimum(cos_dphi_tan_drad, 1)))
         dphi_tan_drad = arc_cos_dphi_tan_drad / smoothing_3rd
 
-        cos_dphi_rad_drad = v1_rad * v1_rad_drad + v2_rad * v2_rad_drad #/ (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))
+        cos_dphi_rad_drad = v1_rad * v1_rad_drad + v2_rad * v2_rad_drad  # / (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))
         norm = np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2)
         cos_dphi_rad_drad /= norm
         cos_dphi_rad_drad = np.minimum(cos_dphi_rad_drad, 1)
         dphi_rad_drad = np.arccos(cos_dphi_rad_drad) / smoothing_3rd
 
-        cos_dphi_rad_dtan = v1_rad * v1_rad_dtan + v2_rad * v2_rad_dtan # / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))
+        cos_dphi_rad_dtan = v1_rad * v1_rad_dtan + v2_rad * v2_rad_dtan  # / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))
         norm = np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2)
         cos_dphi_rad_dtan /= norm
         cos_dphi_rad_dtan = np.minimum(cos_dphi_rad_dtan, 1)
@@ -545,7 +576,7 @@ class LensModelExtensions(object):
         radial_stretch, tangential_stretch, v_rad1, v_rad2, v_tang1, v_tang2 = self.radial_tangential_stretch(x, y, kwargs_lens, diff=smoothing)
         dx_tang = x + smoothing_3rd * v_tang1
         dy_tang = y + smoothing_3rd * v_tang2
-        _, _, _, _, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang,kwargs_lens,
+        _, _, _, _, v_tang1_dt, v_tang2_dt = self.radial_tangential_stretch(dx_tang, dy_tang, kwargs_lens,
                                                                             diff=smoothing)
         d_tang1 = v_tang1_dt - v_tang1
         d_tang2 = v_tang2_dt - v_tang2

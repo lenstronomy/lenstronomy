@@ -16,9 +16,9 @@ class PSF(object):
         :param kwargs_psf: keyword argument describing the relevant parameters of the PSF.
         """
         if psf_type == 'GAUSSIAN':
-            self._psf = PSF_GAUSSIAN(**kwargs_psf)
+            self._psf = PSFGaussian(**kwargs_psf)
         elif psf_type == 'MOFFAT':
-            self._psf = PSF_MOFFAT(**kwargs_psf)
+            self._psf = PSFMoffat(**kwargs_psf)
         else:
             raise ValueError('psf_type %s not supported for convolution!' % psf_type)
 
@@ -33,7 +33,7 @@ class PSF(object):
 
 
 @export
-class PSF_GAUSSIAN(object):
+class PSFGaussian(object):
     """
     Gaussian PSF
     """
@@ -55,7 +55,7 @@ class PSF_GAUSSIAN(object):
 
 
 @export
-class PSF_MOFFAT(object):
+class PSFMoffat(object):
     """
     Moffat PSF
     """

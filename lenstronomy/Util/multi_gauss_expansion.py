@@ -6,11 +6,10 @@ Multi-Gaussian expansion fitting, based on Capellari 2002, http://adsabs.harvard
 import numpy as np
 from scipy.optimize import nnls
 import warnings
+from lenstronomy.Util.package_util import exporter
 from lenstronomy.LightModel.Profiles.gaussian import Gaussian
 gaussian_func = Gaussian()
 
-
-from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
 
 

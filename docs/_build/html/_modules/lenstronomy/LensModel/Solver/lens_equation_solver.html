@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Solver.lens_equation_solver &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver.lens_equation_solver</a></li> 
       </ul>
     </div>  
 
@@ -42,7 +41,8 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
-<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.epl_shear_solver</span> <span class="kn">import</span> <span class="n">solve_lenseq_pemd</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LensEquationSolver&#39;</span><span class="p">]</span>
 
@@ -51,7 +51,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to solve for image positions given lens model and source position</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This class must contain the following definitions (with same syntax as the standard LensModel() class:</span>
 <span class="sd">        def ray_shooting()</span>
@@ -95,7 +95,7 @@
                 <span class="n">y_solve</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">findOverlap</span><span class="p">(</span><span class="n">x_solve</span><span class="p">,</span> <span class="n">y_solve</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">arrival_time_sort</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arrival_time_sort</span><span class="p">:</span>
             <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_arrival_times</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
@@ -146,12 +146,66 @@
             
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">delta_map</span><span class="p">,</span> <span class="n">pixel_width</span></div>
 
-<div class="viewcode-block" id="LensEquationSolver.image_position_from_source"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">[docs]</a>    <span class="k">def</span> <span class="nf">image_position_from_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<div class="viewcode-block" id="LensEquationSolver.image_position_analytical"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_analytical">[docs]</a>    <span class="k">def</span> <span class="nf">image_position_analytical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_solver</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solves the lens equation. Only supports EPL-like (plus shear) models. Uses a specialized recipe that solves a</span>
+<span class="sd">         one-dimensional lens equation that is easier and more reliable to solve than the usual two-dimensional lens equation.</span>
+
+<span class="sd">        :param x: source position in units of angle, an array of positions is also supported.</span>
+<span class="sd">        :param y: source position in units of angle, an array of positions is also supported.</span>
+<span class="sd">        :param kwargs_lens: lens model parameters as keyword arguments</span>
+<span class="sd">        :param arrival_time_sort: bool, if True, sorts image position in arrival time (first arrival photon first listed)</span>
+<span class="sd">        :param magnification_limit: None or float, if set will only return image positions that have an</span>
+<span class="sd">         abs(magnification) larger than this number</span>
+<span class="sd">        :param kwargs_solver: additional kwargs to be supplied to the solver. Particularly relevant are Nmeas and Nmeas_extra</span>
+<span class="sd">        :param Nmeas: resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</span>
+<span class="sd">        :param Nmeas_extra: resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</span>
+<span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
+<span class="sd">         Note: in contrast to the other solvers, generally the (heavily demagnified) central image will also be included, so</span>
+<span class="sd">         setting a a proper magnification_limit is more important. To get similar behaviour, a limit of 1e-1 is acceptable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lens_model_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lens_model_list</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">([</span><span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;SIE&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;EPL_NUMBA&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;EPL_NUMBA&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;EPL&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">],</span> <span class="p">[</span><span class="s1">&#39;EPL&#39;</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only SIE or PEMD (+shear) supported in the analytical solver for now&quot;</span><span class="p">)</span>
+
+        <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="n">solve_lenseq_pemd</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_solver</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">arrival_time_sort</span><span class="p">:</span>
+            <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_arrival_times</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">magnification_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
+            <span class="n">x_mins</span> <span class="o">=</span> <span class="n">x_mins</span><span class="p">[</span><span class="n">mag</span> <span class="o">&gt;=</span> <span class="n">magnification_limit</span><span class="p">]</span>
+            <span class="n">y_mins</span> <span class="o">=</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">mag</span> <span class="o">&gt;=</span> <span class="n">magnification_limit</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div>
+
+<div class="viewcode-block" id="LensEquationSolver.image_position_from_source"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">[docs]</a>    <span class="k">def</span> <span class="nf">image_position_from_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">&#39;lenstronomy&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solves the lens equation, i.e. finds the image positions in the lens plane that are mapped to a given source</span>
+<span class="sd">        position.</span>
+
+<span class="sd">        :param sourcePos_x: source position in units of angle</span>
+<span class="sd">        :param sourcePos_y: source position in units of angle</span>
+<span class="sd">        :param kwargs_lens: lens model parameters as keyword arguments</span>
+<span class="sd">        :param solver: which solver to use, can be &#39;lenstronomy&#39; (default), &#39;analytical&#39; or &#39;stochastic&#39;.</span>
+<span class="sd">        :param kwargs: Any additional kwargs are passed to the chosen solver, see the documentation of</span>
+<span class="sd">         image_position_lenstronomy, image_position_analytical and image_position_stochastic</span>
+<span class="sd">        :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;lenstronomy&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_lenstronomy</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;analytical&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_analytical</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">solver</span> <span class="o">==</span> <span class="s1">&#39;stochastic&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">image_position_stochastic</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">solver</span><span class="si">}</span><span class="s2"> is not a valid solver.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensEquationSolver.image_position_lenstronomy"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Solver.html#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_lenstronomy">[docs]</a>    <span class="k">def</span> <span class="nf">image_position_lenstronomy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
                                    <span class="n">precision_limit</span><span class="o">=</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">),</span> <span class="n">num_iter_max</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">arrival_time_sort</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                                    <span class="n">initial_guess_cut</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">x_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y_center</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_random</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                                    <span class="n">non_linear</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        finds image position source position and lens model</span>
+<span class="sd">        Finds image position  given source position and lens model. The solver first samples does a grid search in the</span>
+<span class="sd">        lens plane, and the grid points that are closest to the supplied source position are fed to a</span>
+<span class="sd">        specialized gradient-based root finder that finds the exact solutions. Works with all lens models.</span>
 
 <span class="sd">        :param sourcePos_x: source position in units of angle</span>
 <span class="sd">        :param sourcePos_y: source position in units of angle</span>
@@ -176,22 +230,23 @@
         <span class="c1"># find pixels in the image plane possibly hosting a solution of the lens equation, related source distances and</span>
         <span class="c1"># pixel width</span>
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">delta_map</span><span class="p">,</span> <span class="n">pixel_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">candidate_solutions</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">,</span> <span class="n">search_window</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">x_center</span><span class="p">,</span> <span class="n">y_center</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are </span><span class="si">%s</span><span class="s2"> regions identified that could contain a solution of the lens equation&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span>
-        <span class="k">if</span> <span class="n">initial_guess_cut</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">initial_guess_cut</span><span class="p">:</span>
             <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
             <span class="n">mag</span><span class="p">[</span><span class="n">mag</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="n">x_mins</span> <span class="o">=</span> <span class="n">x_mins</span><span class="p">[</span><span class="n">delta_map</span> <span class="o">&lt;=</span> <span class="n">min_distance</span><span class="o">*</span><span class="n">mag</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
             <span class="n">y_mins</span> <span class="o">=</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">delta_map</span> <span class="o">&lt;=</span> <span class="n">min_distance</span><span class="o">*</span><span class="n">mag</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The number of regions that meet the plausibility criteria are </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">))</span>
         <span class="n">x_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="n">search_window</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="n">x_center</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">search_window</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="n">x_center</span><span class="p">,</span>
                                                      <span class="n">size</span><span class="o">=</span><span class="n">num_random</span><span class="p">))</span>
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_mins</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="o">=-</span><span class="n">search_window</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_center</span><span class="p">,</span>
                                                      <span class="n">high</span><span class="o">=</span><span class="n">search_window</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_center</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">num_random</span><span class="p">))</span>
         <span class="c1"># iterative solving of the lens equation for the selected grid points</span>
+        <span class="c1">#print(&quot;Candidates:&quot;, x_mins.shape, y_mins.shape)</span>
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">solver_precision</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_gradient_decent</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
                                                                       <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                                                                       <span class="n">min_distance</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
@@ -200,7 +255,7 @@
         <span class="n">y_mins</span> <span class="o">=</span> <span class="n">y_mins</span><span class="p">[</span><span class="n">solver_precision</span> <span class="o">&lt;=</span> <span class="n">precision_limit</span><span class="p">]</span>
         <span class="c1"># find redundant solutions within the min_distance criterion</span>
         <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="n">image_util</span><span class="o">.</span><span class="n">findOverlap</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">min_distance</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">arrival_time_sort</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arrival_time_sort</span><span class="p">:</span>
             <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_arrival_times</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">magnification_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">mag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">))</span>
@@ -236,7 +291,7 @@
             <span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solve_single_proposal</span><span class="p">(</span><span class="n">x_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_min</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span>
                                                                      <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">precision_limit</span><span class="p">,</span> <span class="n">num_iter_max</span><span class="p">,</span>
                                                                      <span class="n">max_step</span><span class="o">=</span><span class="n">min_distance</span><span class="p">,</span> <span class="n">non_linear</span><span class="o">=</span><span class="n">non_linear</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Solution found for region </span><span class="si">%s</span><span class="s2"> with required precision at iteration </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span><span class="p">))</span>
             <span class="n">x_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_guess</span>
             <span class="n">y_mins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_guess</span>
@@ -260,7 +315,7 @@
 <span class="sd">        :return: x_position, y_position, error in the source plane, steps required (for gradient decent)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">l</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="n">non_linear</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">non_linear</span><span class="p">:</span>
             <span class="n">xinitial</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x_guess</span><span class="p">,</span> <span class="n">y_guess</span><span class="p">])</span>
             <span class="n">result</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">,</span> <span class="n">xinitial</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">source_x</span><span class="p">,</span> <span class="n">source_y</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="n">precision_limit</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span>
                               <span class="n">method</span><span class="o">=</span><span class="s1">&#39;Nelder-Mead&#39;</span><span class="p">)</span>
@@ -359,7 +414,7 @@
         <span class="n">mag_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mag_list</span><span class="p">)</span>
         <span class="n">x_mins_sorted</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">selectBest</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">mag_list</span><span class="p">,</span> <span class="n">numImages</span><span class="p">)</span>
         <span class="n">y_mins_sorted</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">selectBest</span><span class="p">(</span><span class="n">y_mins</span><span class="p">,</span> <span class="n">mag_list</span><span class="p">,</span> <span class="n">numImages</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">arrival_time_sort</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">arrival_time_sort</span><span class="p">:</span>
             <span class="n">x_mins_sorted</span><span class="p">,</span> <span class="n">y_mins_sorted</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_arrival_times</span><span class="p">(</span><span class="n">x_mins_sorted</span><span class="p">,</span> <span class="n">y_mins_sorted</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_mins_sorted</span><span class="p">,</span> <span class="n">y_mins_sorted</span></div>
 
@@ -379,7 +434,7 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_mins</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">multi_plane</span><span class="p">:</span>
             <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
@@ -390,23 +445,22 @@
         <span class="k">return</span> <span class="n">x_mins</span><span class="p">,</span> <span class="n">y_mins</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -420,13 +474,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver.lens_equation_solver</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

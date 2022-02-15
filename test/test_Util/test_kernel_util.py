@@ -335,6 +335,30 @@ def test_degrade_kernel():
     npt.assert_almost_equal(np.sum(kernel_degraded), 1, decimal=8)
 
 
+def test_match_kernel_sixe():
+
+    image = np.ones((21, 21))
+    size = 11
+    image_match = kernel_util.match_kernel_size(image, size)
+    nx, ny = np.shape(image_match)
+    assert nx == size
+    assert ny == size
+
+    image = np.ones((9, 9))
+    size = 11
+    image_match = kernel_util.match_kernel_size(image, size)
+    nx, ny = np.shape(image_match)
+    assert nx == size
+    assert ny == size
+
+    image = np.ones((11, 11))
+    size = 11
+    image_match = kernel_util.match_kernel_size(image, size)
+    nx, ny = np.shape(image_match)
+    assert nx == size
+    assert ny == size
+
+
 class TestRaise(unittest.TestCase):
 
     def test_raise(self):

@@ -645,13 +645,12 @@ class PowerLawFreeShearMultipole(PowerLawParamManager):
 
         return self.kwargs_lens
 
-class PowerLawFixedShearMultipole(PowerLawFixedShear):
 
+class PowerLawFixedShearMultipole(PowerLawFixedShear):
     """
     This class implements a fit of EPL + external shear + a multipole term with every parameter except the
-    power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the multipole term are
-    fixed to that of the EPL profile
-
+    power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the
+    multipole term are fixed to that of the EPL profile
     """
 
     @property
@@ -691,6 +690,3 @@ class PowerLawFixedShearMultipole(PowerLawFixedShear):
         self.kwargs_lens[2]['phi_m'] = phi
 
         return self.kwargs_lens
-
-
-

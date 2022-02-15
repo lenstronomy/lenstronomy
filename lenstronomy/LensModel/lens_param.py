@@ -1,4 +1,5 @@
 from lenstronomy.LensModel.single_plane import SinglePlane
+import numpy as np
 
 __all__ = ['LensParam']
 
@@ -7,12 +8,21 @@ class LensParam(object):
     """
     class to handle the lens model parameter
     """
-    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, num_images=0,
-                 solver_type='NONE', num_shapelet_lens=0):
+    def __init__(self, lens_model_list, kwargs_fixed, kwargs_lower=None, kwargs_upper=None, kwargs_logsampling=None,
+                 num_images=0, solver_type='NONE', num_shapelet_lens=0):
         """
 
-        :param kwargs_options:
-        :param kwargs_fixed:
+        :param lens_model_list: list of strings of lens model names
+        :param kwargs_fixed: list of keyword arguments for model parameters to be held fixed
+        :param kwargs_lower: list of keyword arguments of the lower bounds of the model parameters
+        :param kwargs_upper: list of keyword arguments of the upper bounds of the model parameters
+        :param kwargs_logsampling: list of keyword arguments of parameters to be sampled in log10 space
+        :param num_images: number of images to be constrained by a non-linear solver
+         (only relevant when shapelet potential functions are used)
+        :param solver_type: string, type of non-linear solver
+         (only relevant in this class when 'SHAPELETS' is the solver type)
+        :param num_shapelet_lens: integer, number of shapelets in the lensing potential
+         (only relevant when 'SHAPELET' lens model is used)
         """
         self.model_list = lens_model_list
         self.kwargs_fixed = kwargs_fixed
@@ -35,15 +45,25 @@ class LensParam(object):
 
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
+        if kwargs_logsampling is None:
+            kwargs_logsampling = [[] for i in range(len(self.model_list))]
+        self.kwargs_logsampling = kwargs_logsampling
 
-    def getParams(self, args, i):
+    def get_params(self, args, i):
+        """
+
+        :param args: tuple of individual floats of sampling argument
+        :param i: integer, index at the beginning of the tuple for read out to keyword argument convention
+        :return: kwargs_list, index at the end of read out of this model component
+        """
         kwargs_list = []
         for k, model in enumerate(self.model_list):
             kwargs = {}
             kwargs_fixed = self.kwargs_fixed[k]
+            kwargs_logsampling = self.kwargs_logsampling[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -77,24 +97,29 @@ class LensParam(object):
                         i += 1
                 else:
                     kwargs[name] = kwargs_fixed[name]
+
+                if name in kwargs_logsampling and name not in kwargs_fixed:
+                    kwargs[name] = 10**(kwargs[name])
+
             kwargs_list.append(kwargs)
         return kwargs_list, i
 
-    def setParams(self, kwargs_list):
+    def set_params(self, kwargs_list):
         """
 
-        :param kwargs:
-        :return:
+        :param kwargs_list: keyword argument list of lens model components
+        :return: tuple of arguments (floats) that are being sampled
         """
         args = []
 
         for k, model in enumerate(self.model_list):
             kwargs = kwargs_list[k]
             kwargs_fixed = self.kwargs_fixed[k]
+            kwargs_logsampling = self.kwargs_logsampling[k]
 
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         coeffs = kwargs['coeffs']
                         if self._solver_type == 'SHAPELETS' and k == 0:
@@ -110,20 +135,23 @@ class LensParam(object):
                         raise ValueError("%s must have fixed 'sigma' list!" % model)
                     elif model in ['INTERPOL', 'INTERPOL_SCALED'] and name in ['f_', 'f_xx', 'f_xy', 'f_yy']:
                         pass
-                    #elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
+                    # elif self._solver_type == 'PROFILE_SHEAR' and k == 1:
                     #    if name == 'e1':
                     #        _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs['e1'], kwargs['e2'])
                     #        args.append(gamma_ext)
                     #    else:
                     #        pass
                     else:
-                        args.append(kwargs[name])
+                        if name in kwargs_logsampling:
+                            args.append(np.log10(kwargs[name]))
+                        else:
+                            args.append(kwargs[name])
         return args
 
     def num_param(self):
         """
 
-        :return:
+        :return: integer, number of free parameters being sampled from the lens model components
         """
         num = 0
         list = []
@@ -132,7 +160,7 @@ class LensParam(object):
             kwargs_fixed = self.kwargs_fixed[k]
             param_names = self._param_name_list[k]
             for name in param_names:
-                if not name in kwargs_fixed:
+                if name not in kwargs_fixed:
                     if model in ['SHAPELETS_POLAR', 'SHAPELETS_CART'] and name == 'coeffs':
                         num_coeffs = self._num_shapelet_lens
                         if self._solver_type == 'SHAPELETS' and k == 0:

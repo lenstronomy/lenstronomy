@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Installation &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Installation &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,7 +35,8 @@
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
 
@@ -45,7 +45,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="installation">
+  <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <p>At the command line with pip:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install lenstronomy
@@ -57,20 +57,20 @@ $ pip install lenstronomy
 </pre></div>
 </div>
 <p>You can also clone the github repository for development purposes.</p>
-<div class="section" id="requirements">
+<section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>Make sure the standard python libraries as specified in the <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt">requirements</a>.
 The standard usage does not require all libraries to be installed, in particular the different posterior samplers are only required when being used.</p>
 <p>In the following, a few specific cases are mentioned that may require special attention in the installation and settings, in particular when it comes
 to MPI and HPC applications.</p>
-</div>
-<div class="section" id="mpi">
+</section>
+<section id="mpi">
 <h2>MPI<a class="headerlink" href="#mpi" title="Permalink to this headline">¶</a></h2>
 <p>MPI support is provided for several sampling techniques for parallel computing. A specific version of the library schwimmbad is required
 for the correct support of the moving of the likelihood elements from one processor to another with MPI. Pay attention ot the
 <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt">requirements</a>.</p>
-</div>
-<div class="section" id="numba">
+</section>
+<section id="numba">
 <h2>NUMBA<a class="headerlink" href="#numba" title="Permalink to this headline">¶</a></h2>
 <p>Just-in-time (jit) compilation with numba can provide significant speed-up for certain calculations.
 There are specific settings for the settings provided as per default, but these may need to be adopted when running on a HPC cluster.
@@ -79,8 +79,8 @@ You can define your own configuration file in your $XDG_CONFIG_HOME/lenstronomy/
 </pre></div>
 </div>
 <p>following the format of the default configuration which is <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/lenstronomy/Conf/conf_default.yaml">here</a>.</p>
-</div>
-<div class="section" id="fastell">
+</section>
+<section id="fastell">
 <h2>FASTELL<a class="headerlink" href="#fastell" title="Permalink to this headline">¶</a></h2>
 <p>The fastell4py package, originally from Barkana (fastell), is required to run the PEMD (power-law elliptical mass distribution) lens model
 and can be cloned from: <a class="reference external" href="https://github.com/sibirrer/fastell4py">https://github.com/sibirrer/fastell4py</a> (needs a fortran compiler).
@@ -91,8 +91,8 @@ $ <span class="nb">cd</span> &lt;desired location&gt;
 $ python setup.py install --user
 </pre></div>
 </div>
-</div>
-<div class="section" id="check-installation-by-running-tests">
+</section>
+<section id="check-installation-by-running-tests">
 <h2>Check installation by running tests<a class="headerlink" href="#check-installation-by-running-tests" title="Permalink to this headline">¶</a></h2>
 <p>You can check your installation with pytest:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd &lt;lenstronomy_repo&gt;
@@ -110,10 +110,11 @@ $ tox
 </pre></div>
 </div>
 <p>Note: tox might have trouble with the PyMultiNest installation and the cmake part of it.</p>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -145,17 +146,15 @@ $ tox
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -175,12 +174,13 @@ $ tox
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

@@ -62,8 +62,10 @@ class TestUpdateManager(object):
 
     def test_update_limits(self):
         self.manager.update_limits(change_source_lower_limit=[[0, ['test'], [-1]]], change_source_upper_limit=[[0, ['test'], [1]]])
-        _, upper_source, _, _, _, _ = self.manager._upper_kwargs
+        self.manager.update_limits(change_lens_lower_limit=[[0, ['e1'], [-0.9]]], change_lens_upper_limit=[[0, ['e1'], [0.9]]])
+        upper_lens, upper_source, _, _, _, _ = self.manager._upper_kwargs
         assert upper_source[0]['test'] == 1
+        assert upper_lens[0]['e1'] == 0.9
 
     def test_update_fixed(self):
         lens_add_fixed = [[0, ['e1'], [-1]]]
@@ -87,6 +89,10 @@ class TestUpdateManager(object):
 
         self.manager.update_fixed(special_add_fixed=['special1'])
         assert self.manager._special_fixed['special1'] == 1
+
+    def test_update_logsampling(self):
+        self.manager.update_options(kwargs_model={}, kwargs_constraints={'log_sampling_lens': [[0, ['e1']]]}, kwargs_likelihood = {})
+        assert self.manager.param_class.lensParams.kwargs_logsampling[0] == ['e1']
 
     def test_fix_image_parameters(self):
         self.manager.fix_image_parameters(image_index=0)

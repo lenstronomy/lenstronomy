@@ -17,9 +17,10 @@ def bkg_noise(readout_noise, exposure_time, sky_brightness, pixel_scale, num_exp
     :return: estimated Gaussian noise sqrt(variance)
     """
     exposure_time_tot = num_exposures * exposure_time
-    readout_noise_tot = num_exposures * readout_noise ** 2
+    readout_noise_tot = num_exposures * readout_noise ** 2  # square of readout noise
     sky_per_pixel = sky_brightness * pixel_scale ** 2
-    sigma_bkg = np.sqrt(readout_noise_tot + exposure_time_tot * sky_per_pixel ** 2) / exposure_time_tot
+    sky_brightness_tot = exposure_time_tot * sky_per_pixel
+    sigma_bkg = np.sqrt(readout_noise_tot + sky_brightness_tot) / exposure_time_tot
     return sigma_bkg
 
 
@@ -49,8 +50,8 @@ def magnitude2cps(magnitude, magnitude_zero_point):
     :param magnitude_zero_point: magnitude zero point (astronomical magnitude with 1 count per second)
     :return: counts per second of astronomical object
     """
-    delta_M = magnitude - magnitude_zero_point
-    counts = 10**(-delta_M/2.5)
+    delta_m = magnitude - magnitude_zero_point
+    counts = 10**(-delta_m / 2.5)
     return counts
 
 
@@ -62,8 +63,8 @@ def cps2magnitude(cps, magnitude_zero_point):
     :param magnitude_zero_point: magnitude zero point
     :return: magnitude for given counts
     """
-    delta_M = -np.log10(cps) * 2.5
-    magnitude = delta_M + magnitude_zero_point
+    delta_m = -np.log10(cps) * 2.5
+    magnitude = delta_m + magnitude_zero_point
     return magnitude
 
 
@@ -86,6 +87,7 @@ def adu2electrons(adu, ccd_gain):
     converts analog-to-digital units into electron counts
 
     :param adu: counts in analog-to-digital unit
+    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
     :return: counts in electrons
     """
     return adu * ccd_gain
@@ -96,7 +98,8 @@ def electrons2adu(electrons, ccd_gain):
     """
     converts electron counts into analog-to-digital unit
 
-    :param electrons:
-    :return: adu value corresponding to electron count
+    :param electrons: number of electrons received on detector
+    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU
+    :return: adu value in Analog-to-digital units corresponding to electron count
     """
     return electrons / ccd_gain

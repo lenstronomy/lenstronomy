@@ -7,11 +7,12 @@ import pytest
 class TestImageLikelihood(object):
 
     def setup(self):
-        self.prior = PriorLikelihood(prior_lens=[[0, 'gamma', 2, 0.1]], prior_source=[], prior_lens_light=[], prior_ps=[],
+        self.prior = PriorLikelihood(prior_lens=[[0, 'gamma', 2, 0.1]], prior_source=None, prior_lens_light=None,
+                                     prior_ps=None,
                                      prior_special=[['source_size', 1, 0.1]])
         self.prior_lognormal = PriorLikelihood(prior_lens_lognormal=[[0, 'gamma', np.log(2.), 0.1]],
-                                     prior_source_lognormal=[], prior_lens_light_lognormal=[],
-                                     prior_ps_lognormal=[],
+                                     prior_source_lognormal=None, prior_lens_light_lognormal=None,
+                                     prior_ps_lognormal=None,
                                      prior_special_lognormal=[['source_size', 0., 0.1]])
 
     def test_logL(self):

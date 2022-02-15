@@ -62,7 +62,6 @@ class NumericsSubFrame(PointSourceRendering):
         """
 
         :param flux_array: 1d array, flux values corresponding to coordinates_evaluate
-        :param array_low_res_partial: regular sampled surface brightness, 1d array
         :return: convolved image on regular pixel grid, 2d array
         """
         # add supersampled region to lower resolution on
@@ -115,10 +114,7 @@ class NumericsSubFrame(PointSourceRendering):
 
     def _init_sub_frame(self, flux_evaluate_indexes):
         """
-        smaller frame that encolses all the idex_mask
-        :param idex_mask:
-        :param nx:
-        :param ny:
+        smaller frame that encloses all the idex_mask
         :return:
         """
         if flux_evaluate_indexes is None:

@@ -1,25 +1,24 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LightModel package &#8212; lenstronomy 1.9.0 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>lenstronomy.LightModel package &#8212; lenstronomy 1.9.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="lenstronomy.LightModel.Profiles package" href="lenstronomy.LightModel.Profiles.html" />
-    <link rel="prev" title="lenstronomy.LensModel.Solver package" href="lenstronomy.LensModel.Solver.html" /> 
+    <link rel="prev" title="lenstronomy.LensModel.Util package" href="lenstronomy.LensModel.Util.html" /> 
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
@@ -34,10 +33,11 @@
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+          <a href="lenstronomy.LensModel.Util.html" title="lenstronomy.LensModel.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel package</a></li> 
       </ul>
     </div>  
 
@@ -46,9 +46,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="lenstronomy-lightmodel-package">
+  <section id="lenstronomy-lightmodel-package">
 <h1>lenstronomy.LightModel package<a class="headerlink" href="#lenstronomy-lightmodel-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
+<section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
@@ -72,17 +72,17 @@
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="submodules">
+</section>
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-lenstronomy.LightModel.light_model">
+</section>
+<section id="module-lenstronomy.LightModel.light_model">
 <span id="lenstronomy-lightmodel-light-model-module"></span><h2>lenstronomy.LightModel.light_model module<a class="headerlink" href="#module-lenstronomy.LightModel.light_model" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LightModel.light_model.LightModel">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_model.</code><code class="descname">LightModel</code><span class="sig-paren">(</span><em>light_model_list</em>, <em>deflection_scaling_list=None</em>, <em>source_redshift_list=None</em>, <em>smoothing=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_model.LightModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LightModel.light_model.</span></span><span class="sig-name descname"><span class="pre">LightModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">light_model_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deflection_scaling_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sersic_major_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_model.html#LightModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_model.LightModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LightModel.linear_basis.LinearBasis</span></code></p>
-<p>class to handle extended surface brightness profiels (for e.g. source and lens light)</p>
+<p>class to handle extended surface brightness profiles (for e.g. source and lens light)</p>
 <p>all profiles come with a surface_brightness parameterization (in units per square angle and independent of
 the pixel scale).
 The parameter ‘amp’ is the linear scaling parameter of surface brightness.
@@ -92,91 +92,80 @@ given set of parameters.</p>
 conventions of this module given a magnitude zero point.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.LightModel.light_param">
+</section>
+<section id="module-lenstronomy.LightModel.light_param">
 <span id="lenstronomy-lightmodel-light-param-module"></span><h2>lenstronomy.LightModel.light_param module<a class="headerlink" href="#module-lenstronomy.LightModel.light_param" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LightModel.light_param.LightParam">
-<em class="property">class </em><code class="descclassname">lenstronomy.LightModel.light_param.</code><code class="descname">LightParam</code><span class="sig-paren">(</span><em>light_model_list</em>, <em>kwargs_fixed</em>, <em>kwargs_lower=None</em>, <em>kwargs_upper=None</em>, <em>type='light'</em>, <em>linear_solver=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LightModel.light_param.</span></span><span class="sig-name descname"><span class="pre">LightParam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">light_model_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_fixed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lower</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_upper</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'light'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class manages the parameters corresponding to the LightModel() module. Also manages linear parameter handling.</p>
-<dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.getParams">
-<code class="descname">getParams</code><span class="sig-paren">(</span><em>args</em>, <em>i</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.getParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.getParams" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>args</strong> – list of floats corresponding ot the arguments being sampled</li>
-<li><strong>i</strong> – int, index of the first argument that is managed/read-out by this class</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.get_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> – list of floats corresponding ot the arguments being sampled</p></li>
+<li><p><strong>i</strong> – int, index of the first argument that is managed/read-out by this class</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">keyword argument list of the light profile, index after reading out the arguments corresponding to
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>keyword argument list of the light profile, index after reading out the arguments corresponding to
 this class</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.num_param">
-<code class="descname">num_param</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.num_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.num_param" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">int, list of strings with param names</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam.num_param">
+<span class="sig-name descname"><span class="pre">num_param</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.num_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.num_param" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>int, list of strings with param names</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.num_param_linear">
-<code class="descname">num_param_linear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.num_param_linear" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">number of linear basis set coefficients</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam.num_param_linear">
+<span class="sig-name descname"><span class="pre">num_param_linear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.num_param_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of linear basis set coefficients</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.LightModel.light_param.LightParam.param_name_list">
-<code class="descname">param_name_list</code><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.param_name_list" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam.param_name_list">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_name_list</span></span><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.param_name_list" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LightModel.light_param.LightParam.setParams">
-<code class="descname">setParams</code><span class="sig-paren">(</span><em>kwargs_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.setParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.setParams" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs_list</strong> – list of keyword arguments of the light profile (free parameter as well as optionally the
-fixed ones)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of floats corresponding to the free parameters</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LightModel.light_param.LightParam.set_params">
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/light_param.html#LightParam.set_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.light_param.LightParam.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs_list</strong> – list of keyword arguments of the light profile (free parameter as well as optionally the
+fixed ones)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of floats corresponding to the free parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.LightModel">
+</section>
+<section id="module-lenstronomy.LightModel">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LightModel" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -195,8 +184,8 @@ fixed ones)</td>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="lenstronomy.LensModel.Solver.html"
-                        title="previous chapter">lenstronomy.LensModel.Solver package</a></p>
+  <p class="topless"><a href="lenstronomy.LensModel.Util.html"
+                        title="previous chapter">lenstronomy.LensModel.Util package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="lenstronomy.LightModel.Profiles.html"
                         title="next chapter">lenstronomy.LightModel.Profiles package</a></p>
@@ -208,17 +197,15 @@ fixed ones)</td>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -236,15 +223,16 @@ fixed ones)</td>
           <a href="lenstronomy.LightModel.Profiles.html" title="lenstronomy.LightModel.Profiles package"
              >next</a> |</li>
         <li class="right" >
-          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+          <a href="lenstronomy.LensModel.Util.html" title="lenstronomy.LensModel.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.0 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

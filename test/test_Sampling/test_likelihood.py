@@ -8,7 +8,6 @@ import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.ImSim.image_model import ImageModel
 from lenstronomy.Sampling.likelihood import LikelihoodModule
 from lenstronomy.Sampling.parameters import Param
-from lenstronomy.LightModel.light_model import LightModel
 from lenstronomy.Data.imaging_data import ImageData
 from lenstronomy.Data.psf import PSF
 
@@ -49,7 +48,7 @@ class TestLikelihoodModule(object):
 
         self.kwargs_lens_light = [kwargs_sersic]
         self.kwargs_source = [kwargs_sersic_ellipse]
-        self.kwargs_ps = [{'ra_source': 0.55, 'dec_source': 0.02,
+        self.kwargs_ps = [{'ra_source': 0.05, 'dec_source': 0.02,
                            'source_amp': 1.}]  # quasar point source position in the source plane and intrinsic brightness
         self.kwargs_cosmo = {'D_dt': 1000}
         kwargs_numerics = {'supersampling_factor': 1, 'supersampling_convolution': False}
@@ -96,10 +95,10 @@ class TestLikelihoodModule(object):
                              'image_position_likelihood': True
                              }
         self.kwargs_data = {'multi_band_list': [[kwargs_band, kwargs_psf, kwargs_numerics]], 'multi_band_type': 'single-band',
-                            'time_delays_measured': np.ones(4),
-                            'time_delays_uncertainties': np.ones(4),
-                            'flux_ratios': np.ones(4),
-                            'flux_ratio_errors': np.ones(4),
+                            'time_delays_measured': np.ones(3),
+                            'time_delays_uncertainties': np.ones(3),
+                            'flux_ratios': np.ones(3),
+                            'flux_ratio_errors': np.ones(3),
                             'ra_image_list': ra_pos,
                             'dec_image_list': dec_pos
                             }
@@ -128,7 +127,7 @@ class TestLikelihoodModule(object):
                                             kwargs_lens_light=self.kwargs_lens_light, kwargs_ps=self.kwargs_ps, kwargs_special=self.kwargs_cosmo)
 
         logL = likelihood.logL(args, verbose=True)
-        npt.assert_almost_equal(logL, -3097.189103539873, decimal=-1)
+        npt.assert_almost_equal(logL, -1328.821179288249, decimal=-1)
 
     def test_check_bounds(self):
         penalty, bound_hit = self.Likelihood.check_bounds(args=[0, 1], lowerLimit=[1, 0], upperLimit=[2, 2],

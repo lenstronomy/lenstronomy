@@ -122,8 +122,12 @@ class TestLensModelExtensions(object):
         mag_adaptive_grid_2 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
                                                                       source_fwhm_parsec, z_source,
                                                                       cosmo=self.cosmo, axis_ratio=0)
+        mag_adaptive_grid_3 = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
+                                                                      source_fwhm_parsec, z_source,
+                                                                      cosmo=self.cosmo, axis_ratio=1)
 
         flux_ratios_adaptive_grid_2 = mag_adaptive_grid_2 / max(mag_adaptive_grid_2)
+        flux_ratios_adaptive_grid_3 = mag_adaptive_grid_3 / max(mag_adaptive_grid_3)
 
         # tests the default cosmology
         _ = extension.magnification_finite_adaptive(x_image, y_image, source_x, source_y, kwargs_lens,
@@ -148,6 +152,8 @@ class TestLensModelExtensions(object):
         npt.assert_array_less(flux_ratios_fixed_aperture_size / flux_ratios_adaptive_grid - 1,
                               quarter_precent_precision)
         npt.assert_array_less(flux_ratios_square_grid / flux_ratios_adaptive_grid_2 - 1,
+                              quarter_precent_precision)
+        npt.assert_array_less(flux_ratios_adaptive_grid_3 / flux_ratios_adaptive_grid_2 - 1,
                               quarter_precent_precision)
         half_percent_precision = [0.005] * 4
         npt.assert_array_less(mag_square_grid / mag_adaptive_grid - 1, half_percent_precision)
@@ -238,6 +244,17 @@ class TestLensModelExtensions(object):
         lensModelExtensions = LensModelExtensions(lensModel=lensModel)
         tang_stretch_ave = lensModelExtensions.tangential_average(x=1.1, y=0, kwargs_lens=[{'theta_E': 1, 'center_x': 0, 'center_y': 0}], dr=1, smoothing=None, num_average=9)
         npt.assert_almost_equal(tang_stretch_ave, -2.525501464097973, decimal=6)
+
+    def test_caustic_area(self):
+        lens_model_list = ['SIE']
+        lensModel = LensModel(lens_model_list=lens_model_list)
+        lensModelExtensions = LensModelExtensions(lensModel=lensModel)
+        kwargs_lens = [{'theta_E': 1, 'e1': 0.2, 'e2': 0, 'center_x': 0, 'center_y': 0}]
+        kwargs_caustic_num = {'compute_window': 3, 'grid_scale': 0.005, 'center_x': 0, 'center_y': 0}
+
+        area = lensModelExtensions.caustic_area(kwargs_lens=kwargs_lens, kwargs_caustic_num=kwargs_caustic_num,
+                                                index_vertices=0)
+        npt.assert_almost_equal(area, 0.08445866728739478, decimal=3)
 
 
 if __name__ == '__main__':

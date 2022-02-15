@@ -292,3 +292,7 @@ Others
 
 * Predicting future astronomical events using deep learning; `Singh et al. <https://arxiv.org/abs/2012.15476>`_
     *simulating strongly lensed galaxy merger pairs in time sequence*
+
+* Role of the companion lensing galaxy in the CLASS gravitational lens B1152+199; `Zhang et al. 2022 <https://arxiv.org/abs/2202.06926>`_
+    *modeling of a double lensed quasar with HST and VLBI data*
+

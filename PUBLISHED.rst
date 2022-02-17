@@ -197,6 +197,8 @@ Automatized Lens Modeling
 * A search for galaxy-scale strong gravitational lenses in the Ultraviolet Near Infrared Optical Northern Survey (UNIONS); `Savary et al. 2021 <https://arxiv.org/abs/2110.11972>`_
     *Automated modeling of best candidates of ground based data.*
 
+* GIGA-Lens: Fast Bayesian Inference for Strong Gravitational Lens Modeling; `Gu et al. 2022 <https://arxiv.org/abs/2202.07663>`_
+    *lenstronomy-inspired GPU lensing code with PEMD+shear and Sersic modeling, and tested against lenstronomy.*
 
 
 

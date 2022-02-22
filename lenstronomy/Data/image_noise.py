@@ -14,7 +14,8 @@ class ImageNoise(object):
 
     def __init__(self, image_data, exposure_time=None, background_rms=None, noise_map=None,
                  gradient_boost_factor=None, verbose=True,
-                 eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None):
+                 likelihood_method = 'diagonal', eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
+                 d_minv_d = 0, convolution_core = None):
         """
 
         :param image_data: numpy array, pixel data values

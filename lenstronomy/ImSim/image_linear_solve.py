@@ -55,7 +55,7 @@ class ImageLinearFit(ImageModel):
         else:
             self._pb_lin = None
         
-        self._check_marg=data_class.check_marg()
+        self._check_if_use_linear_solver=data_class.check_if_use_linear_solver()
 
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
@@ -101,7 +101,7 @@ class ImageLinearFit(ImageModel):
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
             # check_marg determines whether or not to do the linear parameter marginalisation
-            if self._check_marg == True:
+            if self._check_if_use_linear_solver == True:
                 model = self.array_masked2image(wls_model)
                 _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
             else:

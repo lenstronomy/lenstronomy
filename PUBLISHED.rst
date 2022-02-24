@@ -96,6 +96,10 @@ Measuring the Hubble constant
 * TDCOSMO. VII. Boxyness/discyness in lensing galaxies : Detectability and impact on H0 `Van de Vyvere et al. 2021 <https://arxiv.org/abs/2112.03932>`_
     *Assessment of boxy and discy lens model on the inference of H0.*
 
+* TDCOSMO. IX. Systematic comparison between lens modelling software programs: time delay prediction for WGD 2038−4008 `Shajib et al. 2022 <https://arxiv.org/abs/2202.11101>`_
+    *modeling of a time-delay lens and comprehensive analysis between two modeling codes.*
+
+
 
 
 Dark Matter substructure

@@ -1,6 +1,6 @@
 import numpy as np
-import scipy
 import lenstronomy.Util.util as util
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 
 from lenstronomy.Data.pixel_grid import PixelGrid
 from lenstronomy.Data.image_noise import ImageNoise
@@ -128,8 +128,10 @@ class ImageData(PixelGrid, ImageNoise):
             else:
                 self._num_of_modes=num_of_modes
                 
-        elif self._likelihood_method != 'natwt_special':
-            self._likelihood_method = 'diagonal'
+        elif self._likelihood_method == 'natwt_special':
+            self._convolution = PixelKernelConvolution(kernel = convolution_core)
+        elif self._likelihood_method != 'diagonal':
+            raise ValueError("The likelihood method should be one of 'diagonal', 'eigen' or 'natwt_special'." )
             
                     
     def check_if_use_linear_solver(self):
@@ -186,7 +188,7 @@ class ImageData(PixelGrid, ImageNoise):
         
         elif self._likelihood_method == 'natwt_special':
             xd = np.sum(model * self._data)
-            convolved_x = scipy.signal.fftconvolve(model,self._convolve_core,mode='same')
+            convolved_x = self._convolution._static_fft(model, mode='same')
             xMx = np.sum(model * convolved_x)
             X2_times_variance = self._d_minv_d + xMx - 2*xd
             logL = - 0.5 * X2_times_variance/ (self._bkg_variance)

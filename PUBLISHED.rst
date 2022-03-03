@@ -147,6 +147,8 @@ Dark Matter substructure
 * The primordial matter power spectrum on sub-galactic scales; `Gilman et al. 2021 <https://arxiv.org/abs/2112.03293>`_
     *rendering sub- and line-of-sight halos*
 
+* From Images to Dark Matter: End-To-End Inference of Substructure From Hundreds of Strong Gravitational Lenses; `Wagner-Carena et al. 2022 <https://arxiv.org/abs/2203.00690>`_
+    *rendering sub- and line-of-sight halos and generating realistic training sets of images for substructure quantifications*
 
 
 

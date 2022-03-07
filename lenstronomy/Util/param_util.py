@@ -146,7 +146,19 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     y_shift = y - center_y
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    e = abs(1 - q)
+    #e = abs(1 - q)
+    e = q2e(q)
     x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
     y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
     return x_, y_
+
+
+def q2e(q):
+    """
+
+    :param q:
+    :return:
+    """
+    # e = (1 - q ** 2) / (1 + q ** 2)
+    e = abs(1 - q)
+    return e

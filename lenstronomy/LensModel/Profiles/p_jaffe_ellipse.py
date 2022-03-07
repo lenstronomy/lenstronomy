@@ -25,14 +25,7 @@ class PJaffe_Ellipse(LensProfileBase):
         """
         returns double integral of NFW profile
         """
-        phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_shift = x - center_x
-        y_shift = y - center_y
-        cos_phi = np.cos(phi_G)
-        sin_phi = np.sin(phi_G)
-        e = min(abs(1. - q), 0.99)
-        x_ = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
-        y_ = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
         f_ = self.spherical.function(x_, y_, sigma0, Ra, Rs)
         return f_
 
@@ -41,14 +34,10 @@ class PJaffe_Ellipse(LensProfileBase):
         returns df/dx and df/dy of the function (integral of NFW)
         """
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
-        x_shift = x - center_x
-        y_shift = y - center_y
+        x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x, center_y)
+        e = param_util.q2e(q)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = min(abs(1. - q), 0.99)
-        x_ = (cos_phi*x_shift+sin_phi*y_shift)*np.sqrt(1 - e)
-        y_ = (-sin_phi*x_shift+cos_phi*y_shift)*np.sqrt(1 + e)
-
         f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Ra, Rs, center_x=0, center_y=0)
         f_x_prim *= np.sqrt(1 - e)
         f_y_prim *= np.sqrt(1 + e)
@@ -79,8 +68,8 @@ class PJaffe_Ellipse(LensProfileBase):
         :param sigma0:
         :param Ra:
         :param Rs:
-        :param q:
-        :param phi_G:
+        :param e1:
+        :param e2:
         :return:
         """
         return self.spherical.mass_3d_lens(r, sigma0, Ra, Rs)

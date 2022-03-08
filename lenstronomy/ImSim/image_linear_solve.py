@@ -1,5 +1,6 @@
 from lenstronomy.ImSim.image_model import ImageModel
 import lenstronomy.ImSim.de_lens as de_lens
+from lenstronomy.ImSim.Numerics.convolution import PixelKernelConvolution
 from lenstronomy.Util import util
 import numpy as np
 
@@ -56,7 +57,13 @@ class ImageLinearFit(ImageModel):
             self._pb_lin = None
         
         self._check_if_use_linear_solver=data_class.check_if_use_linear_solver()
-
+        
+        self._if_use_natwt_linear_solver , self._natwt_convolution_core = data_class.use_natwt_linear_solver()
+        if self._if_use_natwt_linear_solver == True:
+            self._data = data_class.data
+            self._convolution = PixelKernelConvolution(kernel = self._natwt_convolution_core)
+            
+            
     def image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                            kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
@@ -74,7 +81,73 @@ class ImageLinearFit(ImageModel):
         """
         return self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
                                         kwargs_special, inv_bool=inv_bool)
+    
+    
+    def _image_linear_solve_natwt_special(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
+                            kwargs_extinction=None, kwargs_special=None,):
+        """
+        Update the amps of source light and lens light profiles by linear solving using the natwt covariance matrix to estimate the xhi^2.
+        """
+        number_of_source_light = len(kwargs_source)
+        number_of_lens_light = len(kwargs_lens_light)
+        basis = []
+        
+        import copy
+        kwargs_source_basis = copy.deepcopy(kwargs_source)
+        kwargs_lens_light_basis = copy.deepcopy(kwargs_lens_light)
 
+        for i in range(number_of_source_light):
+            for j in range(number_of_lens_light):
+                kwargs_lens_light_basis[j]['amp'] = 0
+            for j in range(number_of_source_light):
+                if j == i:
+                    kwargs_source_basis[j]['amp'] = 1
+                else:
+                    kwargs_source_basis[j]['amp'] = 0
+            basis_temp = self.image(kwargs_lens, kwargs_source_basis, kwargs_lens_light_basis, kwargs_ps,kwargs_extinction, kwargs_special)
+            basis.append(basis_temp)
+        
+        for i in range(number_of_lens_light):
+            for j in range(number_of_source_light):
+                kwargs_source_basis[j]['amp'] = 0
+            for j in range(number_of_lens_light):
+                if j == i:
+                    kwargs_lens_light_basis[j]['amp'] = 1
+                else:
+                    kwargs_lens_light_basis[j]['amp'] = 0
+            basis_temp = self.image(kwargs_lens, kwargs_source_basis, kwargs_lens_light_basis, kwargs_ps,kwargs_extinction, kwargs_special)
+            basis.append(basis_temp)
+        
+        basis_convolved = []
+        number_of_basis = len(basis)
+        for i in range(number_of_basis):
+            convolved_temp = self._convolution._static_fft(basis[i], mode='same')
+            basis_convolved.append(convolved_temp)
+            
+        M = np.zeros((number_of_basis,number_of_basis))
+        for i in range(number_of_basis):
+            for j in range(number_of_basis):
+                if j < i:
+                    M[i,j] = M[j,i]
+                else:
+                    M[i,j] = np.sum(basis_convolved[j]*basis[i])
+        
+        b = np.zeros((number_of_basis))
+        for i in range(number_of_basis):
+            b[i] = np.sum(basis[i]*(self._data))
+        
+        params_coefficient = np.linalg.lstsq(M,b)[0]
+        
+        clean_temp = np.zeros(np.shape(basis[0]))
+        dirty_temp = np.zeros(np.shape(basis[0]))
+        for i in range(number_of_basis):
+            clean_temp += params_coefficient[i] * basis[i]
+            dirty_temp += params_coefficient[i] * basis_convolved[i]
+            
+        model = [clean_temp, dirty_temp]
+        
+        return model, params_coefficient
+        
     def _image_linear_solve(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                             kwargs_extinction=None, kwargs_special=None, inv_bool=False):
         """
@@ -100,10 +173,14 @@ class ImageLinearFit(ImageModel):
             C_D_response, model_error = self._error_response(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
             d = self.data_response
             param, cov_param, wls_model = de_lens.get_param_WLS(A.T, 1 / C_D_response, d, inv_bool=inv_bool)
-            # check_marg determines whether or not to do the linear parameter marginalisation
+            # _check_if_use_linear_solver determines whether or not to do the linear parameter marginalisation
             if self._check_if_use_linear_solver == True:
-                model = self.array_masked2image(wls_model)
-                _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+                if self._if_use_natwt_linear_solver == True:
+                    model, param = self._image_linear_solve_natwt_special(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,kwargs_extinction, kwargs_special)
+                    _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
+                else:
+                    model = self.array_masked2image(wls_model)
+                    _, _, _, _ = self.update_linear_kwargs(param, kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
             else:
                 model = self.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps,kwargs_extinction, kwargs_special)
         return model, model_error, cov_param, param

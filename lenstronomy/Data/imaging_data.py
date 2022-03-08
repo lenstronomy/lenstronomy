@@ -43,7 +43,7 @@ class ImageData(PixelGrid, ImageNoise):
                  ra_at_xy_0=0, dec_at_xy_0=0, transform_pix2angle=None, ra_shift=0, dec_shift=0,
                  primary_beam=None,use_linear_solver=True, likelihood_method = 'diagonal',
                  eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
-                 d_minv_d = 0, convolution_core = None):
+                 d_minv_d = 0, convolution_core = None ):
         """
 
         :param image_data: 2d numpy array of the image data
@@ -89,7 +89,7 @@ class ImageData(PixelGrid, ImageNoise):
         PixelGrid.__init__(self, nx, ny, transform_pix2angle, ra_at_xy_0 + ra_shift, dec_at_xy_0 + dec_shift,primary_beam=None,use_linear_solver=True)
         ImageNoise.__init__(self, image_data, exposure_time=exposure_time, background_rms=background_rms,
                             noise_map=noise_map, gradient_boost_factor=gradient_boost_factor, verbose=False,
-                            likelihood_method = 'diagonal',
+                            likelihood_method = 'diagonal', 
                             eigen_vector_set=None,eigen_value_set=None,num_of_modes=None,data_mask=None,
                             d_minv_d = 0, convolution_core = None)
         dim=nx*ny
@@ -109,6 +109,7 @@ class ImageData(PixelGrid, ImageNoise):
         self._eigen_value_set=eigen_value_set
         self._d_minv_d = d_minv_d
         self._convolve_core = convolution_core
+        self._use_natwt_linear_solver = False
         
         if self._likelihood_method == 'eigen':
             if eigen_vector_set is None or eigen_value_set is None:
@@ -130,12 +131,18 @@ class ImageData(PixelGrid, ImageNoise):
                 
         elif self._likelihood_method == 'natwt_special':
             self._convolution = PixelKernelConvolution(kernel = convolution_core)
+            if use_linear_solver == True:
+                self._use_natwt_linear_solver = True
+        
         elif self._likelihood_method != 'diagonal':
             raise ValueError("The likelihood method should be one of 'diagonal', 'eigen' or 'natwt_special'." )
             
-                    
+    
     def check_if_use_linear_solver(self):
         return self._use_linear_solver
+    
+    def use_natwt_linear_solver(self):
+        return self._use_natwt_linear_solver , self._convolve_core
     
     def give_pb(self):
         return self._pb
@@ -187,9 +194,17 @@ class ImageData(PixelGrid, ImageNoise):
             return logL
         
         elif self._likelihood_method == 'natwt_special':
-            xd = np.sum(model * self._data)
-            convolved_x = self._convolution._static_fft(model, mode='same')
-            xMx = np.sum(model * convolved_x)
+            check_if_used_linear_solver = len(np.shape(model))
+            
+            if check_if_used_linear_solver == 3:
+                xd = np.sum(model[0] * self._data)
+                xMx = np.sum(model[0] * model[1])
+            
+            if check_if_used_linear_solver == 2:
+                xd = np.sum(model * self._data)
+                convolved_x = self._convolution._static_fft(model, mode='same')
+                xMx = np.sum(model * convolved_x)
+            
             X2_times_variance = self._d_minv_d + xMx - 2*xd
             logL = - 0.5 * X2_times_variance/ (self._bkg_variance)
             return logL

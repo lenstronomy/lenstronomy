@@ -159,6 +159,6 @@ def q2e(q):
     :param q:
     :return:
     """
-    # e = (1 - q ** 2) / (1 + q ** 2)
-    e = abs(1 - q)
+    e = (1 - q ** 2) / (1 + q ** 2)
+    #  e = abs(1 - q)
     return e

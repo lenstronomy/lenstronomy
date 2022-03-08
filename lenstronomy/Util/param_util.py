@@ -155,10 +155,13 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
 
 def q2e(q):
     """
+    computes
 
-    :param q:
-    :return:
+    .. math::
+        e = \\equic \\frac{1 - q^2}{1 + q^2}
+
+    :param q: axis ratio of minor to major axis
+    :return: ellipticity e
     """
-    e = (1 - q ** 2) / (1 + q ** 2)
-    #  e = abs(1 - q)
+    e = abs(1 - q ** 2) / (1 + q ** 2)
     return e

@@ -8,9 +8,36 @@ __all__ = ['PJaffe_Ellipse']
 
 class PJaffe_Ellipse(LensProfileBase):
     """
-    this class contains functions concerning the NFW profile
+    class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION
+    based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A
+    with the ellipticity implemented in the potential
 
-    relation are: R_200 = c * Rs
+    Module name: 'PJAFFE_ELLIPSE';
+
+    An alternative name is dPIED.
+
+    The 3D density distribution is
+
+    .. math::
+        \\rho(r) = \\frac{\\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}
+
+    with :math:`Rs > Ra`.
+
+    The projected density is
+
+    .. math::
+        \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)
+
+    with
+
+    .. math::
+        \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}
+
+    In the lensing parameterization,
+
+    .. math::
+        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}
+
     """
     param_names = ['sigma0', 'Ra', 'Rs', 'e1', 'e2', 'center_x', 'center_y']
     lower_limit_default = {'sigma0': 0, 'Ra': 0, 'Rs': 0, 'e1': -0.5, 'e2': -0.5, 'center_x': -100, 'center_y': -100}

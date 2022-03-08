@@ -18,7 +18,7 @@ class Hernquist_Ellipse(LensProfileBase):
 
     def __init__(self):
         self.spherical = Hernquist()
-        self._diff = 0.0000000001
+        self._diff = 0.00000001
         super(Hernquist_Ellipse, self).__init__()
 
     def function(self, x, y, sigma0, Rs, e1, e2, center_x=0, center_y=0):
@@ -37,7 +37,7 @@ class Hernquist_Ellipse(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
+        e = param_util.q2e(q)
 
         f_x_prim, f_y_prim = self.spherical.derivatives(x_, y_, sigma0, Rs)
         f_x_prim *= np.sqrt(1 - e)

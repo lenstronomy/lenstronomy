@@ -75,7 +75,8 @@ class NFW_ELLIPSE(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
+        e = param_util.q2e(q)
+        # e = abs(1 - q)
         R_ = np.sqrt(x_ ** 2 + y_ ** 2)
         rho0_input = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:

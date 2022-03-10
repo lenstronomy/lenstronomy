@@ -2,11 +2,17 @@ __author__ = 'nataliehogg'
 
 import numpy as np
 import numpy.testing as npt
-import unittest
 import pytest
-
+from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
 from lenstronomy.LensModel.Profiles.sis import SIS
+import unittest
+
+try:
+    import fastell4py
+    bool_test = True
+except:
+    bool_test = False
 
 class TestSinglePlaneLOS(object):
     """
@@ -124,4 +130,6 @@ class TestRaise(unittest.TestCase):
 
 
 if __name__ == '__main__':
+    # NH: note that I had to add the square brackets to get the test to run on my machine
+    # pytest.main(["-k TestLensModel"])
     pytest.main("-k TestLensModel")

@@ -31,11 +31,9 @@ class Hernquist(object):
     def light_3d(self, r, amp, Rs):
         """
 
-        :param y:
+        :param r:
         :param amp:
         :param Rs:
-        :param center_x:
-        :param center_y:
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Rs)
@@ -61,8 +59,9 @@ class HernquistEllipse(object):
         :param x:
         :param y:
         :param amp:
-        :param a:
-        :param s:
+        :param Rs:
+        :param e1:
+        :param e2:
         :param center_x:
         :param center_y:
         :return:
@@ -73,11 +72,11 @@ class HernquistEllipse(object):
     def light_3d(self, r, amp, Rs, e1=0, e2=0):
         """
 
-        :param y:
+        :param r:
         :param amp:
         :param Rs:
-        :param center_x:
-        :param center_y:
+        :param e1:
+        :param e2:
         :return:
         """
         rho0 = self.lens.sigma2rho(amp, Rs)

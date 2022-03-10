@@ -92,7 +92,7 @@ def deflection_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fa
     if num_pix % 2 == 0:
         num_pix += 1
 
-    #if high_res_kernel_size % low_res_factor != 0:
+    # if high_res_kernel_size % low_res_factor != 0:
     #    assert ValueError('fine grid kernel size needs to be a multiplicative factor of low_res_factor! Settings used: '
     #                      'fine_grid_kernel_size=%s, low_res_factor=%s' % (high_res_kernel_size, low_res_factor))
     kernel_x, kernel_y = deflection_kernel(num_pix, grid_spacing)

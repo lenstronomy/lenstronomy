@@ -75,7 +75,8 @@ class NFW_ELLIPSE(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
+        e = param_util.q2e(q)
+        # e = abs(1 - q)
         R_ = np.sqrt(x_ ** 2 + y_ ** 2)
         rho0_input = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -90,7 +91,8 @@ class NFW_ELLIPSE(LensProfileBase):
     def hessian(self, x, y, Rs, alpha_Rs, e1, e2, center_x=0, center_y=0):
         """
         returns Hessian matrix of function d^2f/dx^2, d^f/dy^2, d^2/dxdy
-        the calculation is performed as a numerical differential from the deflection field. Analytical relations are possible
+        the calculation is performed as a numerical differential from the deflection field. Analytical relations are
+        possible
 
         :param x: angular position (normally in units of arc seconds)
         :param y: angular position (normally in units of arc seconds)

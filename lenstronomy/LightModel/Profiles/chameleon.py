@@ -78,6 +78,8 @@ class DoubleChameleon(object):
     def function(self, x, y, amp, ratio, w_c1, w_t1, e11, e21, w_c2, w_t2, e12, e22, center_x=0, center_y=0):
         """
 
+        :param x:
+        :param y:
         :param amp:
         :param ratio:
         :param w_c1:
@@ -146,6 +148,8 @@ class TripleChameleon(object):
                  center_x=0, center_y=0):
         """
 
+        :param x:
+        :param y:
         :param amp:
         :param ratio12: ratio of first to second amplitude
         :param ratio13: ratio of first to third amplitude

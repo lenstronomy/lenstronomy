@@ -90,10 +90,14 @@ class GaussianEllipsePotential(LensProfileBase):
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
 
-        :param R:
-        :param am:
-        :param sigma_x:
-        :param sigma_y:
+        :param x:
+        :param y:
+        :param amp:
+        :param sigma:
+        :param e1:
+        :param e2:
+        :param center_x:
+        :param center_y:
         :return:
         """
         return self.spherical.density_2d(x, y, amp, sigma, center_x, center_y)
@@ -103,8 +107,9 @@ class GaussianEllipsePotential(LensProfileBase):
 
         :param R:
         :param amp:
-        :param sigma_x:
-        :param sigma_y:
+        :param sigma:
+        :param e1:
+        :param e2:
         :return:
         """
         return self.spherical.mass_2d(R, amp, sigma)
@@ -138,8 +143,9 @@ class GaussianEllipsePotential(LensProfileBase):
 
         :param R:
         :param amp:
-        :param sigma_x:
-        :param sigma_y:
+        :param sigma:
+        :param e1:
+        :param e2:
         :return:
         """
         return self.spherical.mass_2d_lens(R, amp, sigma)

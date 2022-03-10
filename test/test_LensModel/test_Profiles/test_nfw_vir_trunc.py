@@ -52,7 +52,7 @@ class TestNFW(object):
         c = 1.
         logM = 13.
         M = 10 ** logM
-        theta_vir = self.nfw._lens_cosmo.nfw_M_theta_vir(M)
+        theta_vir = self.nfw._lens_cosmo.nfw_M_theta_r200(M)
         print(theta_vir, 'test theta_vir')
         print(theta_vir/c, 'theta_Rs')
 

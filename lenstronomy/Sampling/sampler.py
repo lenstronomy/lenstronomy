@@ -6,7 +6,6 @@ import numpy as np
 from lenstronomy.Sampling.Samplers.pso import ParticleSwarmOptimizer
 from lenstronomy.Util import sampling_util
 from lenstronomy.Sampling.Pool.pool import choose_pool
-import emcee
 from scipy.optimize import minimize
 
 __all__ = ['Sampler']
@@ -152,9 +151,12 @@ class Sampler(object):
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
+        import emcee
+
         num_param, _ = self.chain.param.num_param()
         if initpos is None:
-            initpos = sampling_util.sample_ball(mean_start, sigma_start, n_walkers, dist='normal')
+            initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
+                                                          size=n_walkers)
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 

@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lenstronomy.Data.psf &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -29,7 +27,8 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Data.psf</a></li> 
       </ul>
     </div>  
 
@@ -54,7 +53,7 @@
 <span class="sd">    brightness and painting of PSF&#39;s for point sources).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_point_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">fwhm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">pixel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_point_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">psf_error_map</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_supersampling_factor</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">kernel_point_source_init</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -64,7 +63,8 @@
 <span class="sd">        :param pixel_size: width of pixel (required for Gaussian model, not required when using in combination with ImageModel modules)</span>
 <span class="sd">        :param kernel_point_source: 2d numpy array, odd length, centered PSF of a point source</span>
 <span class="sd">         (if not normalized, will be normalized)</span>
-<span class="sd">        :param psf_error_map: uncertainty in the PSF model. Same shape as point source kernel.</span>
+<span class="sd">        :param psf_error_map: uncertainty in the PSF model per pixel (size of data, not super-sampled). 2d numpy array.</span>
+<span class="sd">        Size can be larger or smaller than the pixel-sized PSF model and if so, will be matched.</span>
 <span class="sd">        This error will be added to the pixel error around the position of point sources as follows:</span>
 <span class="sd">        sigma^2_i += &#39;psf_error_map&#39;_j * (point_source_flux_i)**2</span>
 <span class="sd">        :param point_source_supersampling_factor: int, supersampling factor of kernel_point_source</span>
@@ -97,10 +97,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;psf_type </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">psf_error_map</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">psf_error_map</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;psf_error_map must have same size as kernel_point_source!&#39;</span><span class="p">)</span>
+            <span class="n">n_kernel</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">match_kernel_size</span><span class="p">(</span><span class="n">psf_error_map</span><span class="p">,</span> <span class="n">n_kernel</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;PIXEL&#39;</span> <span class="ow">and</span> <span class="n">point_source_supersampling_factor</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">psf_error_map</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source_supersampled</span><span class="p">):</span>
+                    <span class="ne">Warning</span><span class="p">(</span><span class="s1">&#39;psf_error_map has the same size as the super-sampled kernel. Make sure the units in the&#39;</span>
+                            <span class="s1">&#39;psf_error_map are on the down-sampled pixel scale.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">psf_error_map_bool</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">psf_error_map_bool</span> <span class="o">=</span> <span class="kc">False</span>
@@ -109,10 +111,10 @@
     <span class="k">def</span> <span class="nf">kernel_point_source</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_kernel_point_source&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">psf_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-                <span class="n">kernel_numPix</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">kernel_numPix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">kernel_numPix</span> <span class="o">+=</span> <span class="mi">1</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_numPix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
+                <span class="n">kernel_num_pix</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_truncation</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="p">),</span> <span class="mi">201</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">kernel_num_pix</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">kernel_num_pix</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">kernel_gaussian</span><span class="p">(</span><span class="n">kernel_num_pix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fwhm</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kernel_point_source</span>
 
     <span class="nd">@property</span>
@@ -200,23 +202,22 @@
             <span class="k">return</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">fwhm_kernel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kernel_point_source</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pixel_size</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -231,12 +232,13 @@
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Data.psf</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

@@ -22,6 +22,7 @@ Contributors (alphabetic)
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
+* Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
@@ -33,6 +34,7 @@ Contributors (alphabetic)
 * Brian Nord `bnord <https://github.com/bnord/>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
+* Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
 * Luca Teodori `lucateo <https://github.com/lucateo/>`_
@@ -43,3 +45,4 @@ Contributors (alphabetic)
 * Cyril Welschen
 * Ewoud Wempe `ewoudwempe <https://github.com/ewoudwempe/>`_
 * Lilan Yang `ylilan <https://github.com/ylilan/>`_
+* Zhiyuan Ma `Jerry-Ma <https://github.com/Jerry-Ma/>`_

@@ -48,12 +48,13 @@ class AdaptiveConvolution(object):
                                                  nopython=nopython, cache=cache, parallel=parallel, memory_raise=True)
         self._hig_res_partial = SubgridNumbaConvolution(kernel_super_cut, supersampling_factor, conv_supersample_pixels,
                                                         compute_pixels=compute_pixels, nopython=nopython, cache=cache,
-                                                        parallel=parallel)#, kernel_size=len(kernel_cut))
+                                                        parallel=parallel)  # , kernel_size=len(kernel_cut))
         self._supersampling_factor = supersampling_factor
 
     def re_size_convolve(self, image_low_res, image_high_res):
         """
 
+        :param image_low_res: regular sampled image/model
         :param image_high_res: supersampled image/model to be convolved on a regular pixel grid
         :return: convolved and re-sized image
         """

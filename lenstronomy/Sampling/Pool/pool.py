@@ -32,11 +32,8 @@ import logging
 log = logging.getLogger(__name__)
 _VERBOSE = 5
 
-#from schwimmbad.multiprocessing import MultiPool
-from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
-from schwimmbad.serial import SerialPool
-from schwimmbad.mpi import MPIPool
-#from schwimmbad.jl import JoblibPool
+# from schwimmbad.multiprocessing import MultiPool
+# from schwimmbad.jl import JoblibPool
 
 __all__ = ['choose_pool']
 
@@ -66,6 +63,11 @@ def choose_pool(mpi=False, processes=1, **kwargs):
     Any additional kwargs are passed in to the pool class initializer selected by the arguments.
 
     """
+    # Imports moved here to avoid crashing at import time if dependencies
+    # are missing
+    from lenstronomy.Sampling.Pool.multiprocessing import MultiPool
+    from schwimmbad.serial import SerialPool
+    from schwimmbad.mpi import MPIPool
 
     if mpi:
         if not MPIPool.enabled():

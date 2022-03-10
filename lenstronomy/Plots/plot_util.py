@@ -1,6 +1,5 @@
 import numpy as np
 import math
-from corner import quantile
 import matplotlib.pyplot as plt
 
 from lenstronomy.Util.package_util import exporter
@@ -89,7 +88,8 @@ def coordinate_arrows(ax, d, coords, color='w', font_size=15, arrow_size=0.05):
 
 
 @export
-def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, *args, **kwargs):
+def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, flipped_x=False, points_only=False,
+                  pixel_offset=True, *args, **kwargs):
     """
     plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left
     corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center
@@ -104,26 +104,41 @@ def plot_line_set(ax, coords, line_set_list_x, line_set_list_y, origin=None, fli
      (e.g. caustic or critical curve)
     :param color: string with matplotlib color
     :param flipped_x: bool, if True, flips x-axis
+    :param points_only: bool, if True, sets plotting keywords to plot single points without connecting lines
+    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
+     the matshow() command to center the coordinates in the pixel center
     :return: plot with line sets on matplotlib axis in pixel coordinates
     """
     if origin is None:
         origin = [0, 0]
     pixel_width = coords.pixel_width
     pixel_width_x = pixel_width
+    if points_only:
+        if 'linestyle' not in kwargs:
+            kwargs['linestyle'] = ""
+        if 'marker' not in kwargs:
+            kwargs['marker'] = "o"
+        if 'markersize' not in kwargs:
+            kwargs['markersize'] = 0.01
     if flipped_x:
         pixel_width_x = -pixel_width
+    if pixel_offset is True:
+        shift = 0.5
+    else:
+        shift = 0
     if isinstance(line_set_list_x, list):
         for i in range(len(line_set_list_x)):
             x_c, y_c = coords.map_coord2pix(line_set_list_x[i], line_set_list_y[i])
-            ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
+            ax.plot((x_c + shift) * pixel_width_x + origin[0], (y_c + shift) * pixel_width + origin[1], *args, **kwargs)
     else:
         x_c, y_c = coords.map_coord2pix(line_set_list_x, line_set_list_y)
-        ax.plot((x_c + 0.5) * pixel_width_x + origin[0], (y_c + 0.5) * pixel_width + origin[1], *args, **kwargs)  # ',', color=color)
+        ax.plot((x_c + shift) * pixel_width_x + origin[0], (y_c + shift) * pixel_width + origin[1], *args, **kwargs)
     return ax
 
 
 @export
-def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None, origin=None, flipped_x=False):
+def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_list=None, origin=None, flipped_x=False,
+                        pixel_offset=True):
     """
 
     :param ax: matplotlib axis instance
@@ -134,6 +149,8 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
     :param image_name_list: list of strings for names of the images in the same order as the positions
     :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels
     :param flipped_x: bool, if True, flips x-axis
+    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with
+     the matshow() command to center the coordinates in the pixel center
     :return: matplotlib axis instance with images plotted on
     """
     if origin is None:
@@ -149,12 +166,16 @@ def image_position_plot(ax, coords, ra_image, dec_image, color='w', image_name_l
         ra_image_, dec_image_ = [ra_image], [dec_image]
     else:
         ra_image_, dec_image_ = ra_image, dec_image
+    if pixel_offset is True:
+        shift = 0.5
+    else:
+        shift = 0
     for ra, dec in zip(ra_image_, dec_image_):
         x_image, y_image = coords.map_coord2pix(ra, dec)
 
         for i in range(len(x_image)):
-            x_ = (x_image[i] + 0.5) * pixel_width_x + origin[0]
-            y_ = (y_image[i] + 0.5) * pixel_width + origin[1]
+            x_ = (x_image[i] + shift) * pixel_width_x + origin[0]
+            y_ = (y_image[i] + shift) * pixel_width + origin[1]
             ax.plot(x_, y_, 'o', color=color)
             ax.text(x_, y_, image_name_list[i], fontsize=20, color=color)
     return ax
@@ -189,8 +210,10 @@ def result_string(x, weights=None, title_fmt=".2f", label=None):
     :param weights: weights of posteriors (optional)
     :param title_fmt: format to what digit the results are presented
     :param label: string of parameter label (optional)
-    :return: string with mean \pm quartile
+    :return: string with mean :math:`\\pm` quartile
     """
+    from corner import quantile
+
     q_16, q_50, q_84 = quantile(x, [0.16, 0.5, 0.84], weights=weights)
     q_m, q_p = q_50 - q_16, q_84 - q_50
 

@@ -1,4 +1,5 @@
 import copy
+import numpy as np
 
 import lenstronomy.Util.class_creator as class_creator
 from lenstronomy.Plots.model_band_plot import ModelBandPlot
@@ -18,7 +19,7 @@ class ModelPlot(object):
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, arrow_size=0.02, cmap_string="gist_heat",
                  likelihood_mask_list=None, bands_compute=None, multi_band_type='multi-linear',
-                 source_marg=False, linear_prior=None):
+                 source_marg=False, linear_prior=None, fast_caustic=True):
         """
 
         :param multi_band_list:
@@ -31,6 +32,7 @@ class ModelPlot(object):
         :param multi_band_type:
         :param source_marg:
         :param linear_prior:
+        :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
@@ -43,11 +45,12 @@ class ModelPlot(object):
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)
 
         check_solver_error(param)
-        logL = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior, **kwargs_params)
+        log_l = self._imageModel.likelihood_data_given_model(source_marg=source_marg, linear_prior=linear_prior,
+                                                             **kwargs_params)
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
-            print(logL * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
 
         self._band_plot_list = []
         self._index_list = []
@@ -64,7 +67,7 @@ class ModelPlot(object):
                 bandplot = ModelBandPlot(multi_band_list, kwargs_model, model[index], error_map[index], cov_param_i,
                                          param_i, copy.deepcopy(kwargs_params),
                                          likelihood_mask_list=likelihood_mask_list, band_index=i, arrow_size=arrow_size,
-                                         cmap_string=cmap_string)
+                                         cmap_string=cmap_string, fast_caustic=fast_caustic)
 
                 self._band_plot_list.append(bandplot)
                 self._index_list.append(index)
@@ -94,6 +97,10 @@ class ModelPlot(object):
         n_bands = len(self._band_plot_list)
         import matplotlib.pyplot as plt
         f, axes = plt.subplots(n_bands, 3, figsize=(12, 4*n_bands))
+        if n_bands == 1:  # make sure axis can be called as 2d array
+            _axes = np.empty((1, 3), dtype=object)
+            _axes[:] = axes
+            axes = _axes
         i = 0
         for band_index in self._index_list:
             if band_index >= 0:

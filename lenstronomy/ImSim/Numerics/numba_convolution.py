@@ -13,20 +13,23 @@ class NumbaConvolution(object):
 
     the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLens
     """
-    def __init__(self, kernel, conv_pixels, compute_pixels=None, nopython=True, cache=True, parallel=False, memory_raise=True):
+    def __init__(self, kernel, conv_pixels, compute_pixels=None, nopython=True, cache=True, parallel=False,
+                 memory_raise=True):
         """
 
         :param kernel: convolution kernel in units of the image pixels provided, odd length per axis
         :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred
-        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels
+        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other
+         pixels
         :param nopython: bool, numba jit setting to use python or compiled.
         :param cache: bool, numba jit setting to use cache
         :param parallel: bool, numba jit setting to use parallel mode
-        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within certain bounds
+        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within
+         certain bounds
         """
-        #numba_util.nopython = nopython
-        #numba_util.cache = cache
-        #numba_util.parallel = parallel
+        # numba_util.nopython = nopython
+        # numba_util.cache = cache
+        # numba_util.parallel = parallel
         self._memory_raise = memory_raise
         self._kernel = kernel
         self._conv_pixels = conv_pixels
@@ -121,7 +124,6 @@ class NumbaConvolution(object):
 
         :param image_array: selected subset of image in 1d array conventions
         :param num_data: number of 1d data that get convolved light and are output
-        :param image_conv_indexes: indexes of image (in 1d convention) those pixels get convolved
         :param image_frame_kernels: list of indexes that have a response for certain pixel (as a list
         :param image_frame_lengths: length of image_frame_kernels
         :return:

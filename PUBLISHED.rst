@@ -36,6 +36,11 @@ Related software publications
 * Galaxy shapes of Light (GaLight): a 2D modeling of galaxy images; `Ding et al. 2021b <https://arxiv.org/abs/2111.08721>`_
     *Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.*
 
+* LensingETC: a tool to optimize multi-filter imaging campaigns of galaxy-scale strong lensing systems; `Shajib et al. 2022b <https://arxiv.org/abs/2203.05170>`_
+    *A Python package to select an optimal observing strategy for multi-filter imaging campaigns of strong lensing systems.*
+
+
+
 
 
 
@@ -96,7 +101,7 @@ Measuring the Hubble constant
 * TDCOSMO. VII. Boxyness/discyness in lensing galaxies : Detectability and impact on H0 `Van de Vyvere et al. 2021 <https://arxiv.org/abs/2112.03932>`_
     *Assessment of boxy and discy lens model on the inference of H0.*
 
-* TDCOSMO. IX. Systematic comparison between lens modelling software programs: time delay prediction for WGD 2038−4008 `Shajib et al. 2022 <https://arxiv.org/abs/2202.11101>`_
+* TDCOSMO. IX. Systematic comparison between lens modelling software programs: time delay prediction for WGD 2038−4008 `Shajib et al. 2022a <https://arxiv.org/abs/2202.11101>`_
     *modeling of a time-delay lens and comprehensive analysis between two modeling codes.*
 
 

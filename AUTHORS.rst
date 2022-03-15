@@ -23,9 +23,12 @@ Contributors (alphabetic)
 * Adam Amara `aamara <https://github.com/aamara/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
+* Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Pierre Fleury `pierrefleury <https://github.com/pierrefleury/>`_
 * Kevin Fusshoeller
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
+* Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`
+* Daniel Johnson `DanJohnson98 <https://github.com/DanJohnson98>`
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_
@@ -34,7 +37,6 @@ Contributors (alphabetic)
 * Brian Nord `bnord <https://github.com/bnord/>`_
 * Giulia Pagano
 * Ji Won Park `jiwoncpark <https://github.com/jiwoncpark/>`_
-* Andreas Filipp `andreasfilipp <https://github.com/andreasfilipp/>`_
 * Thomas Schmidt `Thomas-01 <https://github.com/Thomas-01/>`_
 * Dominique Sluse
 * Luca Teodori `lucateo <https://github.com/lucateo/>`_

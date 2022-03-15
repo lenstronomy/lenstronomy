@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy - gravitational lensing software package</a></li> 
       </ul>
     </div>  
@@ -41,7 +41,7 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="lenstronomy-gravitational-lensing-software-package">
+  <div class="section" id="lenstronomy-gravitational-lensing-software-package">
 <h1>lenstronomy - gravitational lensing software package<a class="headerlink" href="#lenstronomy-gravitational-lensing-software-package" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://badge.fury.io/py/lenstronomy"><img alt="https://badge.fury.io/py/lenstronomy.png" src="https://badge.fury.io/py/lenstronomy.png" /></a>
 <a class="reference external image-reference" href="https://github.com/sibirrer/lenstronomy/actions"><img alt="https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg" src="https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg" /></a>
@@ -62,23 +62,23 @@ A (incomplete) list of publications making use of lenstronomy can be found <a cl
 The documentation of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
 the package is distributed over <a class="reference external" href="https://pypi.python.org/pypi/lenstronomy">PyPI</a>.
 <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is an <a class="reference external" href="https://www.astropy.org/affiliated/">affiliated package</a> of <a class="reference external" href="https://www.astropy.org/">astropy</a>.</p>
-<section id="installation">
+<div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install lenstronomy --user
 </pre></div>
 </div>
 <p>Specific instructions for settings and installation requirements for special cases that can provide speed-ups,
 we refer to the <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/installation.html">documentation</a> page.</p>
-</section>
-<section id="getting-started">
+</div>
+<div class="section" id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/main/lenstronomy_extensions/Notebooks/starting_guide.ipynb">starting guide jupyter notebook</a>
 leads through the main modules and design features of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>. The modular design of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> allows the
 user to directly access a lot of tools and each module can also be used as stand-alone packages.</p>
 <p>If you are new to gravitational lensing, check out the <a class="reference external" href="https://github.com/sibirrer/strong_lensing_lectures">mini lecture series</a> giving an introduction to gravitational lensing
 with interactive Jupyter notebooks in the cloud.</p>
-</section>
-<section id="example-notebooks">
+</div>
+<div class="section" id="example-notebooks">
 <h2>Example notebooks<a class="headerlink" href="#example-notebooks" title="Permalink to this headline">¶</a></h2>
 <p>We have made an extension module available at <a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions">https://github.com/sibirrer/lenstronomy_extensions</a>.
 You can find simple examle notebooks for various cases. The latest versions of the notebooks should be compatible with the recent pip version of lenstronomy.</p>
@@ -102,13 +102,13 @@ You can find simple examle notebooks for various cases. The latest versions of t
 <li><p><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/main/lenstronomy_extensions/Notebooks/lenstronomy_numerics.ipynb">Example of numerical ray-tracing and convolution options</a></p></li>
 <li><p><a class="reference external" href="https://github.com/sibirrer/lenstronomy_extensions/blob/main/lenstronomy_extensions/Notebooks/skypy_lenstronomy.ipynb">Simulated lenses with populations generated by SkyPy</a></p></li>
 </ul>
-</section>
-<section id="affiliated-packages">
+</div>
+<div class="section" id="affiliated-packages">
 <h2>Affiliated packages<a class="headerlink" href="#affiliated-packages" title="Permalink to this headline">¶</a></h2>
 <p>Multiple affiliated packages that make use of lenstronomy can be found <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/affiliatedpackages.html">here</a>
 (not complete) and further packages are under development by the community.</p>
-</section>
-<section id="mailing-list-and-slack-channel">
+</div>
+<div class="section" id="mailing-list-and-slack-channel">
 <h2>Mailing list and Slack channel<a class="headerlink" href="#mailing-list-and-slack-channel" title="Permalink to this headline">¶</a></h2>
 <p>You can join the <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> mailing list by signing up on the
 <a class="reference external" href="https://groups.google.com/forum/#!forum/lenstronomy">google groups page</a>.</p>
@@ -117,13 +117,13 @@ and suggest new features. New releases will be announced via this mailing list.<
 <p>We also have a <a class="reference external" href="https://lenstronomers.slack.com">Slack channel</a> for the community.
 Please send me an <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;com">email</a> such that I can add you to the channel.</p>
 <p>If you encounter errors or problems with <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>, please let us know!</p>
-</section>
-<section id="contribution">
+</div>
+<div class="section" id="contribution">
 <h2>Contribution<a class="headerlink" href="#contribution" title="Permalink to this headline">¶</a></h2>
 <p>Check out the <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/contributing.html">contributing page</a>
 and become an author of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>! A big shutout to the current <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/authors.html">list of contributors and developers</a>!</p>
-</section>
-<section id="shapelet-reconstruction-demonstration-movies">
+</div>
+<div class="section" id="shapelet-reconstruction-demonstration-movies">
 <h2>Shapelet reconstruction demonstration movies<a class="headerlink" href="#shapelet-reconstruction-demonstration-movies" title="Permalink to this headline">¶</a></h2>
 <p>We provide some examples where a real galaxy has been lensed and then been reconstructed by a shapelet basis set.</p>
 <ul class="simple">
@@ -131,8 +131,8 @@ and become an author of <code class="docutils literal notranslate"><span class="
 <li><p><a class="reference external" href="http://www.astro.ucla.edu/~sibirrer/video/clump_reconstruct.mp4">HST quality with a clump hidden in the data</a></p></li>
 <li><p><a class="reference external" href="http://www.astro.ucla.edu/~sibirrer/video/TMT_high_res_clump_reconstruct.mp4">Extremely large telescope quality data with a clump hidden in the data</a></p></li>
 </ul>
-</section>
-<section id="attribution">
+</div>
+<div class="section" id="attribution">
 <h2>Attribution<a class="headerlink" href="#attribution" title="Permalink to this headline">¶</a></h2>
 <p>The design concept of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is reported by <a class="reference external" href="https://arxiv.org/abs/1803.09746v1">Birrer &amp; Amara 2018</a>.
 The current JOSS software publication is presented by <a class="reference external" href="https://joss.theoj.org/papers/10.21105/joss.03283">Birrer et al. 2021</a>.
@@ -141,7 +141,7 @@ Please also cite <a class="reference external" href="http://adsabs.harvard.edu/a
 when you make use of the <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> work-flow or the Shapelet source reconstruction and make sure to cite also
 the relevant work that was implemented in <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code>, as described in the release paper and the documentation.
 Don’t hesitate to reach out to the developers if you have questions!</p>
-<section id="contents">
+<div class="section" id="contents">
 <h3>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h3>
 <div class="toctree-wrapper compound">
 <ul>
@@ -233,6 +233,8 @@ Don’t hesitate to reach out to the developers if you have questions!</p>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id36">1.8.2 (2020-06-08)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id37">1.9.0 (2020-07-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id38">1.9.1 (2020-08-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id39">1.9.2 (2020-12-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id40">1.9.3 (2020-12-22)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">lenstronomy</a><ul>
@@ -241,15 +243,15 @@ Don’t hesitate to reach out to the developers if you have questions!</p>
 </li>
 </ul>
 </div>
-</section>
-<section id="feedback">
+</div>
+<div class="section" id="feedback">
 <h3>Feedback<a class="headerlink" href="#feedback" title="Permalink to this headline">¶</a></h3>
 <p>If you have any suggestions or questions about <strong>lenstronomy</strong> feel free to email me
 at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;com">sibirrer<span>&#64;</span>gmail<span>&#46;</span>com</a>.</p>
 <p>If you encounter any errors or problems with <strong>lenstronomy</strong>, please let me know!</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -291,7 +293,7 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -313,13 +315,13 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy - gravitational lensing software package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

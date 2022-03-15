@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.GalKin.cosmo &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.GalKin.cosmo &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.cosmo</a></li> 
       </ul>
@@ -55,7 +56,7 @@
 <span class="sd">        :param d_s: angular diameter distance to the source</span>
 <span class="sd">        :param d_ds: angular diameter distance between deflector and source</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">d_ds</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">d_s</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">d_d</span> <span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">d_ds</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">d_s</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">d_d</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input angular diameter distances Dd: </span><span class="si">%s</span><span class="s1">, Ds: </span><span class="si">%s</span><span class="s1">, Dds: </span><span class="si">%s</span><span class="s1"> are not suppored for a lens&#39;</span>
                              <span class="s1">&#39; model!&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">d_d</span><span class="p">,</span> <span class="n">d_s</span><span class="p">,</span> <span class="n">d_ds</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">d_d</span><span class="p">)</span>  <span class="c1"># angular diameter distance from observer to deflector in physical Mpc</span>
@@ -75,11 +76,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns the critical projected mass density in units of M_sun/Mpc^2 (physical units)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">const_SI</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># c^2/(4*pi*G) in units of [kg/m]</span>
+        <span class="n">const_si</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># c^2/(4*pi*G) in units of [kg/m]</span>
         <span class="n">conversion</span> <span class="o">=</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">M_sun</span>  <span class="c1"># converts [kg/m] to [M_sun/Mpc]</span>
-        <span class="n">pre_const</span> <span class="o">=</span> <span class="n">const_SI</span> <span class="o">*</span> <span class="n">conversion</span>  <span class="c1"># c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
-        <span class="n">Epsilon_Crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">pre_const</span>  <span class="c1"># [M_sun/Mpc^2]</span>
-        <span class="k">return</span> <span class="n">Epsilon_Crit</span></div>
+        <span class="n">pre_const</span> <span class="o">=</span> <span class="n">const_si</span> <span class="o">*</span> <span class="n">conversion</span>  <span class="c1"># c^2/(4*pi*G) in units of [M_sun/Mpc]</span>
+        <span class="n">epsilon_crit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dd</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">dds</span><span class="p">)</span> <span class="o">*</span> <span class="n">pre_const</span>  <span class="c1"># [M_sun/Mpc^2]</span>
+        <span class="k">return</span> <span class="n">epsilon_crit</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -92,7 +93,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -111,14 +112,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.cosmo</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

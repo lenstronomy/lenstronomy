@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    <title>lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</a></li> 
       </ul>
@@ -98,7 +99,7 @@
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``float``</span>
@@ -165,25 +166,24 @@
         <span class="k">def</span> <span class="nf">pot_imag_line_integrand</span><span class="p">(</span><span class="n">_y</span><span class="p">):</span>
             <span class="n">sig_func_re</span><span class="p">,</span> <span class="n">sig_func_im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_function</span><span class="p">(</span><span class="n">_p</span> <span class="o">*</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_p</span> <span class="o">*</span> <span class="n">_y</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
 
-            <span class="n">alpha_y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">amp_</span><span class="o">*</span><span class="n">sigma_</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sgn</span><span class="p">(</span><span class="n">x_</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">_y</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span>
-                        <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_func_im</span>
+            <span class="n">alpha_y_</span> <span class="o">=</span> <span class="o">-</span><span class="n">amp_</span><span class="o">*</span><span class="n">sigma_</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sgn</span><span class="p">(</span><span class="n">x_</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span><span class="o">*</span><span class="n">_y</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_func_im</span>
 
             <span class="k">return</span> <span class="n">alpha_y_</span>
 
         <span class="n">pot_on_real_line</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">pot_real_line_integrand</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">pot_on_imag_parallel</span> <span class="o">=</span> <span class="n">quad</span><span class="p">(</span><span class="n">pot_imag_line_integrand</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">y_</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">pot_on_real_line</span> <span class="o">+</span> <span class="n">pot_on_imag_parallel</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pot_on_real_line</span> <span class="o">+</span> <span class="n">pot_on_imag_parallel</span>
 
 <div class="viewcode-block" id="GaussianEllipseKappa.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the derivatives of function angles :math:`\partial</span>
-<span class="sd">        f/\partial x`, :math:`\partial f/\partial y` at :math:`x,\ y`.</span>
+<span class="sd">        Compute the derivatives of function angles :math:`\\partial</span>
+<span class="sd">        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y`.</span>
 
 <span class="sd">        :param x: x coordinate</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``float``</span>
@@ -195,8 +195,10 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Deflection angle :math:`\partial f/\partial x`, :math:`\partial f/\partial y` for elliptical Gaussian convergence.</span>
-<span class="sd">        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``&#39;s shape equal to ``x.shape``.</span>
+<span class="sd">        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y`</span>
+<span class="sd">         for elliptical Gaussian convergence.</span>
+<span class="sd">        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``&#39;s shape equal</span>
+<span class="sd">         to ``x.shape``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">phi_g</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
 
@@ -237,15 +239,15 @@
 
 <div class="viewcode-block" id="GaussianEllipseKappa.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute Hessian matrix of function :math:`\partial^2f/\partial x^2`,</span>
-<span class="sd">        :math:`\partial^2 f/\partial y^2`, :math:`\partial^2/\partial</span>
-<span class="sd">        x\partial y`.</span>
+<span class="sd">        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,</span>
+<span class="sd">        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2/\\partial</span>
+<span class="sd">        x\\partial y`.</span>
 
 <span class="sd">        :param x: x coordinate</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``float``</span>
@@ -257,7 +259,8 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Hessian :math:`A/(2 \pi \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)` for elliptical Gaussian convergence.</span>
+<span class="sd">        :return: Hessian :math:`A/(2 \\pi \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)` for elliptical Gaussian</span>
+<span class="sd">         convergence.</span>
 <span class="sd">        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy.array``&#39;s shape equal to ``x.shape``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">phi_g</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
@@ -296,25 +299,22 @@
         <span class="n">f_xy_</span> <span class="o">=</span> <span class="n">shear</span><span class="o">.</span><span class="n">imag</span>
 
         <span class="c1"># rotate back to the original frame</span>
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">f_xx_</span> <span class="o">*</span> <span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f_yy_</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span> \
-               <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="n">f_xy_</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">f_xx_</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f_yy_</span> <span class="o">*</span> <span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> \
-               <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="n">f_xy_</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_</span> <span class="o">-</span> <span class="n">f_yy_</span><span class="p">)</span> \
-               <span class="o">+</span> <span class="p">(</span><span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">f_xy_</span>
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">f_xx_</span> <span class="o">*</span> <span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f_yy_</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="n">f_xy_</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">f_xx_</span> <span class="o">*</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">f_yy_</span> <span class="o">*</span> <span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="n">f_xy_</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">sin_phi</span> <span class="o">*</span> <span class="n">cos_phi</span> <span class="o">*</span> <span class="p">(</span><span class="n">f_xx_</span> <span class="o">-</span> <span class="n">f_yy_</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">cos_phi</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">sin_phi</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">f_xy_</span>
 
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span></div>
 
 <div class="viewcode-block" id="GaussianEllipseKappa.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the density of elliptical Gaussian :math:`A/(2 \pi</span>
-<span class="sd">        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`.</span>
+<span class="sd">        Compute the density of elliptical Gaussian :math:`A/(2 \\pi</span>
+<span class="sd">        \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`.</span>
 
 <span class="sd">        :param x: x coordinate.</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate.</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian.</span>
 <span class="sd">        :type sigma: ``float``</span>
@@ -326,7 +326,7 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid.</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Density :math:`\kappa` for elliptical Gaussian convergence.</span>
+<span class="sd">        :return: Density :math:`\\kappa` for elliptical Gaussian convergence.</span>
 <span class="sd">        :rtype: ``float``, or ``numpy.array`` with shape = ``x.shape``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
@@ -335,22 +335,22 @@
 <div class="viewcode-block" id="GaussianEllipseKappa.sgn"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sgn">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">sgn</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the sign function :math:`\mathrm{sgn}(z)` factor for</span>
+<span class="sd">        Compute the sign function :math:`\\mathrm{sgn}(z)` factor for</span>
 <span class="sd">        deflection as sugggested by Bray (1984). For current implementation, returning 1 is sufficient.</span>
 
-<span class="sd">        :param z: Complex variable :math:`z = x + \mathrm{i}y`</span>
+<span class="sd">        :param z: Complex variable :math:`z = x + \\mathrm{i}y`</span>
 <span class="sd">        :type z: ``complex``</span>
-<span class="sd">        :return: :math:`\mathrm{sgn}(z)`</span>
+<span class="sd">        :return: :math:`\\mathrm{sgn}(z)`</span>
 <span class="sd">        :rtype: ``float``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mf">1.</span></div>
         <span class="c1"># np.sqrt(z*z)/z #np.sign(z.real*z.imag)</span>
-        <span class="c1">#return np.sign(z.real)</span>
-        <span class="c1">#if z.real != 0:</span>
+        <span class="c1"># return np.sign(z.real)</span>
+        <span class="c1"># if z.real != 0:</span>
         <span class="c1">#    return np.sign(z.real)</span>
-        <span class="c1">#else:</span>
+        <span class="c1"># else:</span>
         <span class="c1">#    return np.sign(z.imag)</span>
-        <span class="c1">#return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))</span>
+        <span class="c1"># return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))</span>
 
 <div class="viewcode-block" id="GaussianEllipseKappa.sigma_function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.sigma_function">[docs]</a>    <span class="k">def</span> <span class="nf">sigma_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -385,12 +385,12 @@
 <div class="viewcode-block" id="GaussianEllipseKappa.w_f_approx"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa.GaussianEllipseKappa.w_f_approx">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">w_f_approx</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the Faddeeva function :math:`w_{\mathrm F}(z)` using the</span>
+<span class="sd">        Compute the Faddeeva function :math:`w_{\\mathrm F}(z)` using the</span>
 <span class="sd">        approximation given in Zaghloul (2017).</span>
 
 <span class="sd">        :param z: complex number</span>
 <span class="sd">        :type z: ``complex`` or ``numpy.array(dtype=complex)``</span>
-<span class="sd">        :return: :math:`w_\mathrm{F}(z)`</span>
+<span class="sd">        :return: :math:`w_\\mathrm{F}(z)`</span>
 <span class="sd">        :rtype: ``complex``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sqrt_pi</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
@@ -469,7 +469,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -488,14 +488,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.lens_param &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.LensModel.lens_param &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_param</a></li> 
       </ul>
@@ -39,6 +40,7 @@
             
   <h1>Source code for lenstronomy.LensModel.lens_param</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.single_plane</span> <span class="kn">import</span> <span class="n">SinglePlane</span>
+<span class="c1">#from lenstronomy.LensModel.single_plane_los import SinglePlaneLOS</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LensParam&#39;</span><span class="p">]</span>
@@ -47,8 +49,10 @@
 <div class="viewcode-block" id="LensParam"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_param.LensParam">[docs]</a><span class="k">class</span> <span class="nc">LensParam</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle the lens model parameter</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span> <span class="n">kwargs_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_logsampling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">kwargs_fixed</span><span class="p">,</span>
+                 <span class="n">kwargs_lower</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_upper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_logsampling</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">num_images</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">solver_type</span><span class="o">=</span><span class="s1">&#39;NONE&#39;</span><span class="p">,</span> <span class="n">num_shapelet_lens</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -64,12 +68,19 @@
 <span class="sd">        :param num_shapelet_lens: integer, number of shapelets in the lensing potential</span>
 <span class="sd">         (only relevant when &#39;SHAPELET&#39; lens model is used)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+
         <span class="bp">self</span><span class="o">.</span><span class="n">model_list</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="n">kwargs_fixed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_images</span> <span class="o">=</span> <span class="n">num_images</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">=</span> <span class="n">solver_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_shapelet_lens</span> <span class="o">=</span> <span class="n">num_shapelet_lens</span>
+
+        <span class="c1">#PF: Here the instanciation of SinglePlane is only made to deal with</span>
+        <span class="c1"># a list of lens parameters. It does not seem to matter whether multi-</span>
+        <span class="c1"># plane lensing or line-of-sight effects are activated.</span>
         <span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">lens_model_list</span><span class="p">)</span>
+
         <span class="n">name_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">lens_model</span><span class="o">.</span><span class="n">func_list</span><span class="p">:</span>
             <span class="n">name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">param_names</span><span class="p">)</span>
@@ -83,9 +94,10 @@
             <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">lens_model</span><span class="o">.</span><span class="n">func_list</span><span class="p">:</span>
                 <span class="n">kwargs_upper</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">upper_limit_default</span><span class="p">)</span>
 
+
         <span class="bp">self</span><span class="o">.</span><span class="n">lower_limit</span> <span class="o">=</span> <span class="n">kwargs_lower</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">upper_limit</span> <span class="o">=</span> <span class="n">kwargs_upper</span>
-        <span class="k">if</span> <span class="n">kwargs_logsampling</span> <span class="ow">is</span> <span class="kc">None</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">kwargs_logsampling</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_list</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="n">kwargs_logsampling</span>
 
@@ -103,7 +115,7 @@
             <span class="n">kwargs_logsampling</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_logsampling</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;coeffs&#39;</span><span class="p">:</span>
                         <span class="n">num_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_shapelet_lens</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -138,7 +150,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
 
-                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_logsampling</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_logsampling</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
             <span class="n">kwargs_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
@@ -158,7 +170,7 @@
 
             <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;coeffs&#39;</span><span class="p">:</span>
                         <span class="n">coeffs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;coeffs&#39;</span><span class="p">]</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -174,7 +186,7 @@
                         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> must have fixed &#39;sigma&#39; list!&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="p">)</span>
                     <span class="k">elif</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;f_&#39;</span><span class="p">,</span> <span class="s1">&#39;f_xx&#39;</span><span class="p">,</span> <span class="s1">&#39;f_xy&#39;</span><span class="p">,</span> <span class="s1">&#39;f_yy&#39;</span><span class="p">]:</span>
                         <span class="k">pass</span>
-                    <span class="c1">#elif self._solver_type == &#39;PROFILE_SHEAR&#39; and k == 1:</span>
+                    <span class="c1"># elif self._solver_type == &#39;PROFILE_SHEAR&#39; and k == 1:</span>
                     <span class="c1">#    if name == &#39;e1&#39;:</span>
                     <span class="c1">#        _, gamma_ext = param_util.ellipticity2phi_gamma(kwargs[&#39;e1&#39;], kwargs[&#39;e2&#39;])</span>
                     <span class="c1">#        args.append(gamma_ext)</span>
@@ -199,7 +211,7 @@
             <span class="n">kwargs_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_fixed</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="n">param_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_name_list</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">param_names</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs_fixed</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;coeffs&#39;</span><span class="p">:</span>
                         <span class="n">num_coeffs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_shapelet_lens</span>
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solver_type</span> <span class="o">==</span> <span class="s1">&#39;SHAPELETS&#39;</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -234,7 +246,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -253,14 +265,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_param</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

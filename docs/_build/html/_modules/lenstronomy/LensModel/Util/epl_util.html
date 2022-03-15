@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Util.epl_util &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Util.epl_util</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.Util.epl_util</h1><div class="highlight"><pre>
+<span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;ewoudwempe&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.numba_util</span> <span class="kn">import</span> <span class="n">jit</span>
+
+
+<div class="viewcode-block" id="min_approx"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.min_approx">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">min_approx</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x3</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y3</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the x-value of the minimum of the parabola through the points (x1,y1), ...</span>
+<span class="sd">    :param x1: x-coordinate point 1</span>
+<span class="sd">    :param x2: x-coordinate point 2</span>
+<span class="sd">    :param x3: x-coordinate point 3</span>
+<span class="sd">    :param y1: y-coordinate point 1</span>
+<span class="sd">    :param y2: y-coordinate point 2</span>
+<span class="sd">    :param y3: y-coordinate point 3</span>
+<span class="sd">    :return: x-location of the minimum</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#</span>
+    <span class="n">div</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="p">(</span><span class="n">x3</span><span class="o">*</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span> <span class="o">+</span> <span class="n">x1</span><span class="o">*</span><span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y3</span><span class="p">)</span> <span class="o">+</span> <span class="n">x2</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y3</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">x3</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">y1</span> <span class="o">-</span> <span class="n">y2</span><span class="p">)</span> <span class="o">+</span> <span class="n">x1</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">y2</span> <span class="o">-</span> <span class="n">y3</span><span class="p">)</span> <span class="o">+</span> <span class="n">x2</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y3</span><span class="p">))</span><span class="o">/</span><span class="n">div</span></div>
+
+
+<div class="viewcode-block" id="rotmat"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.rotmat">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">rotmat</span><span class="p">(</span><span class="n">th</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates the rotation matrix</span>
+<span class="sd">    :param th: angle</span>
+<span class="sd">    :return: rotation matrix</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">th</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">th</span><span class="p">)],</span> <span class="p">[</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">th</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">th</span><span class="p">)]])</span></div>
+
+
+<div class="viewcode-block" id="cdot"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.cdot">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">cdot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculates some complex dot-product that simplifies the math</span>
+<span class="sd">    :param a: complex number</span>
+<span class="sd">    :param b: complex number</span>
+<span class="sd">    :return: dot-product</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">a</span><span class="o">.</span><span class="n">real</span><span class="o">*</span><span class="n">b</span><span class="o">.</span><span class="n">real</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="n">imag</span><span class="o">*</span><span class="n">b</span><span class="o">.</span><span class="n">imag</span></div>
+
+
+<div class="viewcode-block" id="ps"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.ps">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">ps</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A regularized power-law that gets rid of singularities, abs(x)**p*sign(x)</span>
+<span class="sd">    :param x: x</span>
+<span class="sd">    :param p: p</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">p</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cart_to_pol"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.cart_to_pol">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">cart_to_pol</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert from cartesian to polar</span>
+<span class="sd">    :param x: x-coordinate</span>
+<span class="sd">    :param y: y-coordinate</span>
+<span class="sd">    :return: tuple of (r, theta)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pol_to_cart"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.pol_to_cart">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">pol_to_cart</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">th</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert from polar to cartesian</span>
+<span class="sd">    :param r: r-coordinate</span>
+<span class="sd">    :param th: theta-coordinate</span>
+<span class="sd">    :return: tuple of (x,y)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">th</span><span class="p">),</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">th</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pol_to_ell"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.pol_to_ell">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">pol_to_ell</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts from polar to elliptical coordinates&quot;&quot;&quot;</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">*</span><span class="n">q</span><span class="p">)</span>
+    <span class="n">rell</span> <span class="o">=</span> <span class="n">r</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rell</span><span class="p">,</span> <span class="n">phi</span></div>
+
+
+<div class="viewcode-block" id="ell_to_pol"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.ell_to_pol">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">ell_to_pol</span><span class="p">(</span><span class="n">rell</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">q</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Converts from elliptical to polar coordinates&quot;&quot;&quot;</span>
+    <span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">))</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">rell</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">q</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">phi</span></div>
+
+
+<div class="viewcode-block" id="geomlinspace"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.geomlinspace">[docs]</a><span class="k">def</span> <span class="nf">geomlinspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a, with the same spacing as the</span>
+<span class="sd">    geomspace would have at a&quot;&quot;&quot;</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">a</span><span class="o">*</span><span class="p">((</span><span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">a</span><span class="o">/</span><span class="n">delta</span><span class="p">),</span> <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">geomspace</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">N</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="solvequadeq"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.solvequadeq">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">solvequadeq</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Solves a quadratic equation. Care is taken for the numerics, see also https://en.wikipedia.org/wiki/Loss_of_significance</span>
+<span class="sd">    :param a: a</span>
+<span class="sd">    :param b: b</span>
+<span class="sd">    :param c: c</span>
+<span class="sd">    :return: tuple of two solutions</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sD</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">a</span><span class="o">*</span><span class="n">c</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span>
+    <span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">sD</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="o">/</span><span class="p">(</span><span class="o">-</span><span class="n">b</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">*</span><span class="n">sD</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="n">b</span><span class="p">),</span> <span class="o">-</span><span class="p">(</span><span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">),</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">b</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">a</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="n">b</span><span class="o">+</span><span class="mf">1e-8</span><span class="p">),</span> <span class="o">+</span><span class="p">(</span><span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="n">a</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="brentq_nojit"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Util.html#lenstronomy.LensModel.Util.epl_util.brentq_nojit">[docs]</a><span class="k">def</span> <span class="nf">brentq_nojit</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">xa</span><span class="p">,</span> <span class="n">xb</span><span class="p">,</span> <span class="n">xtol</span><span class="o">=</span><span class="mf">2e-14</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">16</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span><span class="o">.</span><span class="n">eps</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">()):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A numba-compatible implementation of brentq (largely copied from scipy.optimize.brentq).</span>
+<span class="sd">    Unfortunately, the scipy verison is not compatible with numba, hence this reimplementation :(</span>
+<span class="sd">    :param f: function to optimize</span>
+<span class="sd">    :param xa: left bound</span>
+<span class="sd">    :param xb: right bound</span>
+<span class="sd">    :param xtol: x-coord root tolerance</span>
+<span class="sd">    :param rtol: x-coord relative tolerance</span>
+<span class="sd">    :param maxiter: maximum num of iterations</span>
+<span class="sd">    :param args: additional arguments to pass to function in the form f(x, args)</span>
+<span class="sd">    :return: </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xpre</span> <span class="o">=</span> <span class="n">xa</span>
+    <span class="n">xcur</span> <span class="o">=</span> <span class="n">xb</span>
+    <span class="n">xblk</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">fblk</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">spre</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">scur</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">fpre</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xpre</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">fcur</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xcur</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+    <span class="n">funcalls</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">if</span> <span class="n">fpre</span><span class="o">*</span><span class="n">fcur</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Signs are not different&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fpre</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xpre</span>
+    <span class="k">if</span> <span class="n">fcur</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">xcur</span>
+    <span class="n">iterations</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">maxiter</span><span class="p">):</span>
+        <span class="n">iterations</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">fpre</span><span class="o">*</span><span class="n">fcur</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">xblk</span> <span class="o">=</span> <span class="n">xpre</span>
+            <span class="n">fblk</span> <span class="o">=</span> <span class="n">fpre</span>
+            <span class="c1"># spres = scur = xcur - xpre</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fblk</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fcur</span><span class="p">):</span>
+            <span class="n">xpre</span> <span class="o">=</span> <span class="n">xcur</span>
+            <span class="n">xcur</span> <span class="o">=</span> <span class="n">xblk</span>
+            <span class="n">xblk</span> <span class="o">=</span> <span class="n">xpre</span>
+            
+            <span class="n">fpre</span> <span class="o">=</span> <span class="n">fcur</span>
+            <span class="n">fcur</span> <span class="o">=</span> <span class="n">fblk</span>
+            <span class="n">fblk</span> <span class="o">=</span> <span class="n">fpre</span>
+            
+        <span class="n">delta</span> <span class="o">=</span> <span class="p">(</span><span class="n">xtol</span> <span class="o">+</span> <span class="n">rtol</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">xcur</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span>
+        <span class="n">sbis</span> <span class="o">=</span> <span class="p">(</span><span class="n">xblk</span> <span class="o">-</span> <span class="n">xcur</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
+        <span class="k">if</span> <span class="n">fcur</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sbis</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">delta</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">xcur</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">spre</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">delta</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fcur</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fpre</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">xpre</span> <span class="o">==</span> <span class="n">xblk</span><span class="p">:</span>
+                <span class="n">stry</span> <span class="o">=</span> <span class="o">-</span><span class="n">fcur</span><span class="o">*</span><span class="p">(</span><span class="n">xcur</span> <span class="o">-</span> <span class="n">xpre</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">fcur</span> <span class="o">-</span> <span class="n">fpre</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dpre</span> <span class="o">=</span> <span class="p">(</span><span class="n">fpre</span> <span class="o">-</span> <span class="n">fcur</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">xpre</span> <span class="o">-</span> <span class="n">xcur</span><span class="p">)</span>
+                <span class="n">dblk</span> <span class="o">=</span> <span class="p">(</span><span class="n">fblk</span> <span class="o">-</span> <span class="n">fcur</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">xblk</span> <span class="o">-</span> <span class="n">xcur</span><span class="p">)</span>
+                <span class="n">stry</span> <span class="o">=</span> <span class="o">-</span><span class="n">fcur</span><span class="o">*</span><span class="p">(</span><span class="n">fblk</span><span class="o">*</span><span class="n">dblk</span> <span class="o">-</span> <span class="n">fpre</span><span class="o">*</span><span class="n">dpre</span><span class="p">)</span>\
+                    <span class="o">/</span> <span class="p">(</span><span class="n">dblk</span><span class="o">*</span><span class="n">dpre</span><span class="o">*</span><span class="p">(</span><span class="n">fblk</span> <span class="o">-</span> <span class="n">fpre</span><span class="p">))</span>
+            
+            <span class="k">if</span> <span class="mi">2</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">stry</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">spre</span><span class="p">),</span> <span class="mi">3</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">sbis</span><span class="p">)</span> <span class="o">-</span> <span class="n">delta</span><span class="p">):</span>
+                <span class="n">spre</span> <span class="o">=</span> <span class="n">scur</span>
+                <span class="n">scur</span> <span class="o">=</span> <span class="n">stry</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">spre</span> <span class="o">=</span> <span class="n">sbis</span>
+                <span class="n">scur</span> <span class="o">=</span> <span class="n">sbis</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">spre</span> <span class="o">=</span> <span class="n">sbis</span>
+            <span class="n">scur</span> <span class="o">=</span> <span class="n">sbis</span>
+
+        <span class="n">xpre</span> <span class="o">=</span> <span class="n">xcur</span>
+        <span class="n">fpre</span> <span class="o">=</span> <span class="n">fcur</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">scur</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">delta</span><span class="p">:</span>
+            <span class="n">xcur</span> <span class="o">+=</span> <span class="n">scur</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xcur</span> <span class="o">+=</span> <span class="n">delta</span> <span class="k">if</span> <span class="n">sbis</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="o">-</span><span class="n">delta</span>
+
+        <span class="n">fcur</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="n">xcur</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="n">funcalls</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">return</span> <span class="n">xcur</span></div>
+
+
+<span class="n">brentq_inline</span> <span class="o">=</span> <span class="n">jit</span><span class="p">(</span><span class="n">inline</span><span class="o">=</span><span class="s1">&#39;always&#39;</span><span class="p">)(</span><span class="n">brentq_nojit</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Util.epl_util</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
+    </div>
+  </body>
+</html>

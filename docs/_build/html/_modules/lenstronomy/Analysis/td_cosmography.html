@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Analysis.td_cosmography &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.Analysis.td_cosmography &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis.td_cosmography</a></li> 
       </ul>
@@ -62,8 +63,8 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">cosmo_fiducial</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_model_kinematics_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">light_model_kinematics_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_seeing</span><span class="o">=</span><span class="p">{},</span> <span class="n">kwargs_aperture</span><span class="o">=</span><span class="p">{},</span> <span class="n">anisotropy_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">multi_observations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                 <span class="n">light_model_kinematics_bool</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_seeing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">anisotropy_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs_kin_api</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param z_lens: redshift of deflector</span>
@@ -77,12 +78,15 @@
 <span class="sd">        :param kwargs_seeing: seeing conditions (see observation class in Galkin)</span>
 <span class="sd">        :param kwargs_aperture: aperture keyword arguments (see aperture class in Galkin)</span>
 <span class="sd">        :param anisotropy_model: string, anisotropy model type</span>
-<span class="sd">        :param multi_observations: bool, if True, interprets kwargs_aperture and kwargs_seeing as lists of multiple</span>
-<span class="sd">         observations</span>
+<span class="sd">        :param kwargs_kin_api: additional keyword arguments for KinematicsAPI class instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">cosmo_fiducial</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cosmo_fiducial</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">kwargs_seeing</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs_seeing</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">kwargs_aperture</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">kwargs_aperture</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_z_lens</span> <span class="o">=</span> <span class="n">z_lens</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span> <span class="o">=</span> <span class="n">z_source</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cosmo_fiducial</span> <span class="o">=</span> <span class="n">cosmo_fiducial</span>
@@ -92,7 +96,7 @@
                                             <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo_fiducial</span><span class="p">,</span> <span class="n">lens_model_kinematics_bool</span><span class="o">=</span><span class="n">lens_model_kinematics_bool</span><span class="p">,</span>
                                             <span class="n">light_model_kinematics_bool</span><span class="o">=</span><span class="n">light_model_kinematics_bool</span><span class="p">,</span>
                                             <span class="n">kwargs_seeing</span><span class="o">=</span><span class="n">kwargs_seeing</span><span class="p">,</span> <span class="n">kwargs_aperture</span><span class="o">=</span><span class="n">kwargs_aperture</span><span class="p">,</span>
-                                            <span class="n">anisotropy_model</span><span class="o">=</span><span class="n">anisotropy_model</span><span class="p">,</span> <span class="n">multi_observations</span><span class="o">=</span><span class="n">multi_observations</span><span class="p">)</span>
+                                            <span class="n">anisotropy_model</span><span class="o">=</span><span class="n">anisotropy_model</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_kin_api</span><span class="p">)</span>
 
 <div class="viewcode-block" id="TDCosmography.time_delays"><a class="viewcode-back" href="../../../lenstronomy.Analysis.html#lenstronomy.Analysis.td_cosmography.TDCosmography.time_delays">[docs]</a>    <span class="k">def</span> <span class="nf">time_delays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">original_ps_position</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -191,6 +195,9 @@
 
 <span class="sd">        :param d_fermat_model: relative Fermat potential between two images from the same source in units arcsec^2</span>
 <span class="sd">        :param dt_measured: measured time delay between the same image pair in units of days</span>
+<span class="sd">        :param kappa_s: external convergence from observer to source</span>
+<span class="sd">        :param kappa_ds: external convergence from lens to source</span>
+<span class="sd">        :param kappa_d: external convergence form observer to lens</span>
 <span class="sd">        :return: D_dt, time-delay distance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">D_dt_model</span> <span class="o">=</span> <span class="n">dt_measured</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">/</span> <span class="n">d_fermat_model</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>
@@ -240,7 +247,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -259,14 +266,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis.td_cosmography</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

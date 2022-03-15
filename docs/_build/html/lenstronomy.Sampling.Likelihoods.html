@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lenstronomy.Sampling.Likelihoods package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Sampling.Likelihoods package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" accesskey="U">lenstronomy.Sampling package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods package</a></li> 
@@ -47,21 +47,21 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="lenstronomy-sampling-likelihoods-package">
+  <div class="section" id="lenstronomy-sampling-likelihoods-package">
 <h1>lenstronomy.Sampling.Likelihoods package<a class="headerlink" href="#lenstronomy-sampling-likelihoods-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-lenstronomy.Sampling.Likelihoods.image_likelihood">
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.image_likelihood">
 <span id="lenstronomy-sampling-likelihoods-image-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.image_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.image_likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Likelihoods.image_likelihood.</span></span><span class="sig-name descname"><span class="pre">ImageLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_band_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_band_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bands_compute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_likelihood_mask_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_marg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">linear_prior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_positive_flux</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_pixelbased</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Sampling.Likelihoods.image_likelihood.</code><code class="sig-name descname">ImageLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multi_band_list</span></em>, <em class="sig-param"><span class="n">multi_band_type</span></em>, <em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">bands_compute</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">image_likelihood_mask_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_marg</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">linear_prior</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">check_positive_flux</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">kwargs_pixelbased</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>manages imaging data likelihoods</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL">
-<span class="sig-name descname"><span class="pre">logL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_extinction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.logL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL">
+<code class="sig-name descname">logL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_lens_light</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_special</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_extinction</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.logL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -79,9 +79,9 @@
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_data</span></span><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data">
+<em class="property">property </em><code class="sig-name descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>number of image data points</p>
@@ -90,8 +90,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear">
-<span class="sig-name descname"><span class="pre">num_param_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_extinction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.num_param_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear">
+<code class="sig-name descname">num_param_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_lens_light</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_special</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_extinction</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.num_param_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.num_param_linear" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>number of linear parameters solved for during the image reconstruction process</p>
@@ -100,11 +100,11 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache">
-<span class="sig-name descname"><span class="pre">reset_point_source_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.reset_point_source_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache">
+<code class="sig-name descname">reset_point_source_cache</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cache</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/image_likelihood.html#ImageLikelihood.reset_point_source_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.image_likelihood.ImageLikelihood.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bool</strong> – boolean</p>
+<dd class="field-odd"><p><strong>cache</strong> – boolean</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -114,17 +114,17 @@
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Sampling.Likelihoods.position_likelihood">
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.position_likelihood">
 <span id="lenstronomy-sampling-likelihoods-position-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.position_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.position_likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Likelihoods.position_likelihood.</span></span><span class="sig-name descname"><span class="pre">PositionLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">point_source_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_position_uncertainty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">astrometric_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_position_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_image_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_image_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_position_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_matched_source_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_position_tolerance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_position_sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">force_no_add_image</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restrict_image_number</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_num_images</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Sampling.Likelihoods.position_likelihood.</code><code class="sig-name descname">PositionLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">point_source_class</span></em>, <em class="sig-param"><span class="n">image_position_uncertainty</span><span class="o">=</span><span class="default_value">0.005</span></em>, <em class="sig-param"><span class="n">astrometric_likelihood</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">image_position_likelihood</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">ra_image_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dec_image_list</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">source_position_likelihood</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">check_matched_source_position</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">source_position_tolerance</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">source_position_sigma</span><span class="o">=</span><span class="default_value">0.001</span></em>, <em class="sig-param"><span class="n">force_no_add_image</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">restrict_image_number</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_num_images</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>likelihood of positions of multiply imaged point sources</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">astrometric_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.astrometric_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood">
+<em class="property">static </em><code class="sig-name descname">astrometric_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">kwargs_special</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.astrometric_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.astrometric_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>evaluates the astrometric uncertainty of the model plotted point sources (only available for ‘LENSED_POSITION’
 point source model) and predicted image position by the lens model including an astrometric correction term.</p>
 <dl class="field-list simple">
@@ -142,16 +142,17 @@ point source model) and predicted image position by the lens model including an 
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images">
-<span class="sig-name descname"><span class="pre">check_additional_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.check_additional_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images" title="Permalink to this definition">¶</a></dt>
-<dd><p>checks whether additional images have been found and placed in kwargs_ps
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images">
+<code class="sig-name descname">check_additional_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.check_additional_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images" title="Permalink to this definition">¶</a></dt>
+<dd><p>checks whether additional images have been found and placed in kwargs_ps of the first point source model
+#TODO check for all point source models
 :param kwargs_ps: point source kwargs
 :return: bool, True if more image positions are found than originally been assigned</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood">
-<span class="sig-name descname"><span class="pre">image_position_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.image_position_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood">
+<code class="sig-name descname">image_position_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">sigma</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.image_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.image_position_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes the likelihood of the model predicted image position relative to measured image positions with an astrometric error.
 This routine requires the ‘ra_image_list’ and ‘dec_image_list’ being declared in the initiation of the class</p>
 <dl class="field-list simple">
@@ -169,8 +170,8 @@ This routine requires the ‘ra_image_list’ and ‘dec_image_list’ being dec
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL">
-<span class="sig-name descname"><span class="pre">logL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.logL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL">
+<code class="sig-name descname">logL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">kwargs_special</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -186,19 +187,19 @@ This routine requires the ‘ra_image_list’ and ‘dec_image_list’ being dec
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_data</span></span><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data">
+<em class="property">property </em><code class="sig-name descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>integer, number of data points assocated with the class instance</p>
+<dd class="field-odd"><p>integer, number of data points associated with the class instance</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood">
-<span class="sig-name descname"><span class="pre">source_position_likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hard_bound_rms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood">
+<code class="sig-name descname">source_position_likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">hard_bound_rms</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/position_likelihood.html#PositionLikelihood.source_position_likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.source_position_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes a likelihood/punishing factor of how well the source positions of multiple images match given the image
 position and a lens model.
 The likelihood level is computed in respect of a displacement in the image plane and transposed through the
@@ -221,17 +222,17 @@ Hessian into the source plane.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Sampling.Likelihoods.prior_likelihood">
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.prior_likelihood">
 <span id="lenstronomy-sampling-likelihoods-prior-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.prior_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.prior_likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Likelihoods.prior_likelihood.</span></span><span class="sig-name descname"><span class="pre">PriorLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_extinction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_lens_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_source_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_lens_light_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_ps_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_special_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_extinction_kde</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_lens_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_source_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_lens_light_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_ps_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_special_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_extinction_lognormal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Sampling.Likelihoods.prior_likelihood.</code><code class="sig-name descname">PriorLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prior_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_lens_light</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_ps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_special</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_extinction</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_lens_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_source_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_lens_light_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_ps_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_special_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_extinction_kde</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_lens_lognormal</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_source_lognormal</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_lens_light_lognormal</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_ps_lognormal</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_special_lognormal</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prior_extinction_lognormal</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class containing additional Gaussian priors to be folded into the likelihood</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL">
-<span class="sig-name descname"><span class="pre">logL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_extinction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood.logL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL">
+<code class="sig-name descname">logL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_lens_light</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_special</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_extinction</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/prior_likelihood.html#PriorLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.prior_likelihood.PriorLikelihood.logL" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>kwargs_lens</strong> – lens model parameter list</p>
@@ -244,17 +245,17 @@ Hessian into the source plane.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood">
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood">
 <span id="lenstronomy-sampling-likelihoods-time-delay-likelihood-module"></span><h2>lenstronomy.Sampling.Likelihoods.time_delay_likelihood module<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods.time_delay_likelihood" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Sampling.Likelihoods.time_delay_likelihood.</span></span><span class="sig-name descname"><span class="pre">TimeDelayLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_delays_measured</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_delays_uncertainties</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_model_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Sampling.Likelihoods.time_delay_likelihood.</code><code class="sig-name descname">TimeDelayLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time_delays_measured</span></em>, <em class="sig-param"><span class="n">time_delays_uncertainties</span></em>, <em class="sig-param"><span class="n">lens_model_class</span></em>, <em class="sig-param"><span class="n">point_source_class</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to compute the likelihood of a model given a measurement of time delays</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL">
-<span class="sig-name descname"><span class="pre">logL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_cosmo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood.logL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL">
+<code class="sig-name descname">logL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span></em>, <em class="sig-param"><span class="n">kwargs_cosmo</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Sampling/Likelihoods/time_delay_likelihood.html#TimeDelayLikelihood.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.logL" title="Permalink to this definition">¶</a></dt>
 <dd><p>routine to compute the log likelihood of the time delay distance
 :param kwargs_lens: lens model kwargs list
 :param kwargs_ps: point source kwargs list
@@ -262,9 +263,9 @@ Hessian into the source plane.</p>
 :return: log likelihood of the model given the time delay data</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_data</span></span><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data">
+<em class="property">property </em><code class="sig-name descname">num_data</code><a class="headerlink" href="#lenstronomy.Sampling.Likelihoods.time_delay_likelihood.TimeDelayLikelihood.num_data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>number of time delay measurements</p>
@@ -274,11 +275,11 @@ Hessian into the source plane.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Sampling.Likelihoods">
+</div>
+<div class="section" id="module-lenstronomy.Sampling.Likelihoods">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Sampling.Likelihoods" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -317,7 +318,7 @@ Hessian into the source plane.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -342,7 +343,7 @@ Hessian into the source plane.</p>
         <li class="right" >
           <a href="lenstronomy.Sampling.html" title="lenstronomy.Sampling package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.Sampling.html" >lenstronomy.Sampling package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods package</a></li> 
@@ -350,7 +351,7 @@ Hessian into the source plane.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

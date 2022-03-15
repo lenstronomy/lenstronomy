@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Sampling.Samplers.polychord_sampler &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    <title>lenstronomy.Sampling.Samplers.polychord_sampler &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers.polychord_sampler</a></li> 
       </ul>
@@ -76,7 +77,6 @@
 <span class="sd">        :param sigma_scale: if prior_type is &#39;gaussian&#39;, scale the gaussian sigma by this factor</span>
 <span class="sd">        :param output_dir: name of the folder that will contain output files</span>
 <span class="sd">        :param output_basename: prefix for output files</span>
-<span class="sd">        :param seed_increment: seed increment for dypolychord RNG with MPI. Check dypolychord documentation for details.</span>
 <span class="sd">        :param resume_dyn_run: if True, previous resume files will not be deleted so that previous run can be resumed</span>
 <span class="sd">        :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.</span>
 <span class="sd">        :param remove_output_dir: remove the output_dir folder after completion</span>
@@ -144,6 +144,8 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_type</span> <span class="o">==</span> <span class="s1">&#39;uniform&#39;</span><span class="p">:</span>
             <span class="n">p</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">cube2args_uniform</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> 
                                         <span class="bp">self</span><span class="o">.</span><span class="n">n_dims</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Variable prior_type with entry </span><span class="si">%s</span><span class="s2"> not supported!&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior_type</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">p</span></div>
 
 <div class="viewcode-block" id="DyPolyChordSampler.log_likelihood"><a class="viewcode-back" href="../../../../lenstronomy.Sampling.Samplers.html#lenstronomy.Sampling.Samplers.polychord_sampler.DyPolyChordSampler.log_likelihood">[docs]</a>    <span class="k">def</span> <span class="nf">log_likelihood</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
@@ -245,9 +247,11 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">dyPolyChord</span>
             <span class="kn">from</span> <span class="nn">dyPolyChord</span> <span class="kn">import</span> <span class="n">pypolychord_utils</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="n">dyPolyChord</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">pypolychord_utils</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning : dyPolyChord not properly installed. </span><span class="se">\</span>
-<span class="s2">You can get it from : https://github.com/ejhigson/dyPolyChord&quot;</span><span class="p">)</span>
+<span class="s2">                   You can get it from : https://github.com/ejhigson/dyPolyChord&quot;</span><span class="p">)</span>
             <span class="n">dypolychord_installed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dypolychord_installed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -256,9 +260,9 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">nestcheck</span> <span class="kn">import</span> <span class="n">data_processing</span>
-        <span class="k">except</span><span class="p">:</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning : nestcheck not properly installed (results might be unexpected). </span><span class="se">\</span>
-<span class="s2">You can get it from : https://github.com/ejhigson/nestcheck&quot;</span><span class="p">)</span>
+<span class="s2">                   You can get it from : https://github.com/ejhigson/nestcheck&quot;</span><span class="p">)</span>
             <span class="n">nestcheck_installed</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">nestcheck_installed</span> <span class="o">=</span> <span class="kc">True</span>
@@ -277,7 +281,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -296,14 +300,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers.polychord_sampler</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

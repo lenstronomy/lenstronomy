@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver package</a></li> 
@@ -47,21 +47,21 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="lenstronomy-lensmodel-solver-package">
+  <div class="section" id="lenstronomy-lensmodel-solver-package">
 <h1>lenstronomy.LensModel.Solver package<a class="headerlink" href="#lenstronomy-lensmodel-solver-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-lenstronomy.LensModel.Solver.lens_equation_solver">
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Solver.lens_equation_solver">
 <span id="lenstronomy-lensmodel-solver-lens-equation-solver-module"></span><h2>lenstronomy.LensModel.Solver.lens_equation_solver module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.lens_equation_solver" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Solver.lens_equation_solver.</span></span><span class="sig-name descname"><span class="pre">LensEquationSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lensModel</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.Solver.lens_equation_solver.</code><code class="sig-name descname">LensEquationSolver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lensModel</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to solve for image positions given lens model and source position</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions">
-<span class="sig-name descname"><span class="pre">candidate_solutions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sourcePos_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourcePos_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.candidate_solutions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions">
+<code class="sig-name descname">candidate_solutions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sourcePos_x</span></em>, <em class="sig-param"><span class="n">sourcePos_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">min_distance</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">search_window</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">x_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">y_center</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.candidate_solutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.candidate_solutions" title="Permalink to this definition">¶</a></dt>
 <dd><p>finds pixels in the image plane possibly hosting a solution of the lens equation, for the given source position and lens model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -86,8 +86,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">
-<span class="sig-name descname"><span class="pre">findBrightImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sourcePos_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourcePos_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numImages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_time_sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_random</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnification_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.findBrightImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage">
+<code class="sig-name descname">findBrightImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sourcePos_x</span></em>, <em class="sig-param"><span class="n">sourcePos_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">numImages</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">min_distance</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">search_window</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">precision_limit</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">num_iter_max</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">arrival_time_sort</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">y_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">num_random</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">non_linear</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">magnification_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">initial_guess_cut</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.findBrightImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.findBrightImage" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -117,8 +117,8 @@ abs(magnification) larger than this number</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_analytical">
-<span class="sig-name descname"><span class="pre">image_position_analytical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_time_sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnification_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_solver</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_analytical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_analytical" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_analytical">
+<code class="sig-name descname">image_position_analytical</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">arrival_time_sort</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">magnification_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs_solver</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_analytical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_analytical" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Solves the lens equation. Only supports EPL-like (plus shear) models. Uses a specialized recipe that solves a</dt><dd><p>one-dimensional lens equation that is easier and more reliable to solve than the usual two-dimensional lens equation.</p>
 </dd>
@@ -133,8 +133,6 @@ abs(magnification) larger than this number</p></li>
 <li><p><strong>magnification_limit</strong> – None or float, if set will only return image positions that have an
 abs(magnification) larger than this number</p></li>
 <li><p><strong>kwargs_solver</strong> – additional kwargs to be supplied to the solver. Particularly relevant are Nmeas and Nmeas_extra</p></li>
-<li><p><strong>Nmeas</strong> – resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</p></li>
-<li><p><strong>Nmeas_extra</strong> – resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -146,8 +144,8 @@ setting a a proper magnification_limit is more important. To get similar behavio
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">
-<span class="sig-name descname"><span class="pre">image_position_from_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sourcePos_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourcePos_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lenstronomy'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source">
+<code class="sig-name descname">image_position_from_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sourcePos_x</span></em>, <em class="sig-param"><span class="n">sourcePos_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">solver</span><span class="o">=</span><span class="default_value">'lenstronomy'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_from_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_from_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solves the lens equation, i.e. finds the image positions in the lens plane that are mapped to a given source
 position.</p>
 <dl class="field-list simple">
@@ -168,8 +166,8 @@ image_position_lenstronomy, image_position_analytical and image_position_stochas
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_lenstronomy">
-<span class="sig-name descname"><span class="pre">image_position_lenstronomy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sourcePos_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sourcePos_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_distance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter_max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_time_sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_guess_cut</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_random</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">non_linear</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">magnification_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_lenstronomy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_lenstronomy" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_lenstronomy">
+<code class="sig-name descname">image_position_lenstronomy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sourcePos_x</span></em>, <em class="sig-param"><span class="n">sourcePos_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">min_distance</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">search_window</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">precision_limit</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">num_iter_max</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">arrival_time_sort</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">initial_guess_cut</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">x_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">y_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">num_random</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">non_linear</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">magnification_limit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_lenstronomy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_lenstronomy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds image position  given source position and lens model. The solver first samples does a grid search in the
 lens plane, and the grid points that are closest to the supplied source position are fed to a
 specialized gradient-based root finder that finds the exact solutions. Works with all lens models.</p>
@@ -205,8 +203,8 @@ abs(magnification) larger than this number</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_stochastic">
-<span class="sig-name descname"><span class="pre">image_position_stochastic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">search_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precision_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arrival_time_sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_random</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_stochastic"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_stochastic" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_stochastic">
+<code class="sig-name descname">image_position_stochastic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">source_x</span></em>, <em class="sig-param"><span class="n">source_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">search_window</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">precision_limit</span><span class="o">=</span><span class="default_value">1e-10</span></em>, <em class="sig-param"><span class="n">arrival_time_sort</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">x_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">y_center</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">num_random</span><span class="o">=</span><span class="default_value">1000</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.image_position_stochastic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.image_position_stochastic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Solves the lens equation stochastic with the scipy minimization routine on the quadratic distance between
 the backwards ray-shooted proposed image position and the source position.
 Credits to Giulia Pagano</p>
@@ -231,8 +229,8 @@ Credits to Giulia Pagano</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times">
-<span class="sig-name descname"><span class="pre">sort_arrival_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_mins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_mins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.sort_arrival_times"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times">
+<code class="sig-name descname">sort_arrival_times</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_mins</span></em>, <em class="sig-param"><span class="n">y_mins</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/lens_equation_solver.html#LensEquationSolver.sort_arrival_times"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.lens_equation_solver.LensEquationSolver.sort_arrival_times" title="Permalink to this definition">¶</a></dt>
 <dd><p>sort arrival times (fermat potential) of image positions in increasing order of light travel time</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -250,17 +248,17 @@ Credits to Giulia Pagano</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.LensModel.Solver.solver">
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Solver.solver">
 <span id="lenstronomy-lensmodel-solver-solver-module"></span><h2>lenstronomy.LensModel.Solver.solver module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver.Solver">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Solver.solver.</span></span><span class="sig-name descname"><span class="pre">Solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">solver_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lensModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_images</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver.Solver">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.Solver.solver.</code><code class="sig-name descname">Solver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">solver_type</span></em>, <em class="sig-param"><span class="n">lensModel</span></em>, <em class="sig-param"><span class="n">num_images</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>joint solve class to manage with type of solver to be executed and checks whether the requirements are fulfilled.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens">
-<span class="sig-name descname"><span class="pre">add_fixed_lens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_fixed_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.add_fixed_lens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens">
+<code class="sig-name descname">add_fixed_lens</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_fixed_lens</span></em>, <em class="sig-param"><span class="n">kwargs_lens_init</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns kwargs that are kept fixed during run, depending on options</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -277,8 +275,8 @@ non-linear solver.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver.Solver.check_solver">
-<span class="sig-name descname"><span class="pre">check_solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.check_solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.check_solver" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.check_solver">
+<code class="sig-name descname">check_solver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_x</span></em>, <em class="sig-param"><span class="n">image_y</span></em>, <em class="sig-param"><span class="n">kwargs_lens</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.check_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.check_solver" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the precision of the solver to match the image position</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -295,14 +293,15 @@ non-linear solver.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel">
-<span class="sig-name descname"><span class="pre">constraint_lensmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.constraint_lensmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel">
+<code class="sig-name descname">constraint_lensmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">kwargs_list</span></em>, <em class="sig-param"><span class="n">xtol</span><span class="o">=</span><span class="default_value">1.49012e-12</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_pos</strong> – </p></li>
 <li><p><strong>y_pos</strong> – </p></li>
 <li><p><strong>kwargs_list</strong> – </p></li>
+<li><p><strong>xtol</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -312,8 +311,8 @@ non-linear solver.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver.Solver.update_solver">
-<span class="sig-name descname"><span class="pre">update_solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.update_solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.update_solver" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver.Solver.update_solver">
+<code class="sig-name descname">update_solver</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span></em>, <em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver.html#Solver.update_solver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver.Solver.update_solver" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -330,12 +329,12 @@ non-linear solver.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.LensModel.Solver.solver2point">
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Solver.solver2point">
 <span id="lenstronomy-lensmodel-solver-solver2point-module"></span><h2>lenstronomy.LensModel.Solver.solver2point module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver2point" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver2point.Solver2Point">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Solver.solver2point.</span></span><span class="sig-name descname"><span class="pre">Solver2Point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lensModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CENTER'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decoupling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.Solver.solver2point.</code><code class="sig-name descname">Solver2Point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lensModel</span></em>, <em class="sig-param"><span class="n">solver_type</span><span class="o">=</span><span class="default_value">'CENTER'</span></em>, <em class="sig-param"><span class="n">decoupling</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to solve a constraint lens model with two point source positions</p>
 <p>options are:
@@ -344,8 +343,8 @@ non-linear solver.</p>
 ‘SHAPELETS’: solves for shapelet coefficients c01, c10
 ‘THETA_E_PHI: solves for Einstein radius of first lens model and shear angle of second model</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens">
-<span class="sig-name descname"><span class="pre">add_fixed_lens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_fixed_lens_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.add_fixed_lens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens">
+<code class="sig-name descname">add_fixed_lens</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_fixed_lens_list</span></em>, <em class="sig-param"><span class="n">kwargs_lens_init</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -360,8 +359,8 @@ non-linear solver.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.constraint_lensmodel">
-<span class="sig-name descname"><span class="pre">constraint_lensmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.constraint_lensmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.constraint_lensmodel">
+<code class="sig-name descname">constraint_lensmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">kwargs_list</span></em>, <em class="sig-param"><span class="n">xtol</span><span class="o">=</span><span class="default_value">1.49012e-12</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
 <dd><p>constrains lens model parameters by demanding the solution to match the image positions to a single source
 position</p>
 <dl class="field-list simple">
@@ -380,23 +379,23 @@ position</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.solve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver2point.Solver2Point.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">kwargs_list</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">xtol</span><span class="o">=</span><span class="default_value">1.49012e-12</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver2point.html#Solver2Point.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver2point.Solver2Point.solve" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.LensModel.Solver.solver4point">
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Solver.solver4point">
 <span id="lenstronomy-lensmodel-solver-solver4point-module"></span><h2>lenstronomy.LensModel.Solver.solver4point module<a class="headerlink" href="#module-lenstronomy.LensModel.Solver.solver4point" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver4point.Solver4Point">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Solver.solver4point.</span></span><span class="sig-name descname"><span class="pre">Solver4Point</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lensModel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">solver_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PROFILE'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.Solver.solver4point.</code><code class="sig-name descname">Solver4Point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lensModel</span></em>, <em class="sig-param"><span class="n">solver_type</span><span class="o">=</span><span class="default_value">'PROFILE'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to make the constraints for the solver</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens">
-<span class="sig-name descname"><span class="pre">add_fixed_lens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_fixed_lens_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.add_fixed_lens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens">
+<code class="sig-name descname">add_fixed_lens</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_fixed_lens_list</span></em>, <em class="sig-param"><span class="n">kwargs_lens_init</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.add_fixed_lens"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.add_fixed_lens" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -411,14 +410,14 @@ position</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel">
-<span class="sig-name descname"><span class="pre">constraint_lensmodel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.constraint_lensmodel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel">
+<code class="sig-name descname">constraint_lensmodel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">kwargs_list</span></em>, <em class="sig-param"><span class="n">xtol</span><span class="o">=</span><span class="default_value">1.49012e-12</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.constraint_lensmodel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.constraint_lensmodel" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_pos</strong> – list of image positions (x-axis)</p></li>
 <li><p><strong>y_pos</strong> – list of image position (y-axis)</p></li>
-<li><p><strong>init</strong> – initial parameters</p></li>
+<li><p><strong>xtol</strong> – numerical tolerance level</p></li>
 <li><p><strong>kwargs_list</strong> – list of lens model kwargs</p></li>
 </ul>
 </dd>
@@ -429,17 +428,17 @@ position</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.solve">
-<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.49012e-10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.solve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.LensModel.Solver.solver4point.Solver4Point.solve">
+<code class="sig-name descname">solve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">init</span></em>, <em class="sig-param"><span class="n">kwargs_list</span></em>, <em class="sig-param"><span class="n">a</span></em>, <em class="sig-param"><span class="n">xtol</span><span class="o">=</span><span class="default_value">1.49012e-10</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Solver/solver4point.html#Solver4Point.solve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.Solver.solver4point.Solver4Point.solve" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.LensModel.Solver">
+</div>
+<div class="section" id="module-lenstronomy.LensModel.Solver">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LensModel.Solver" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -478,7 +477,7 @@ position</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -503,7 +502,7 @@ position</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver package</a></li> 
@@ -511,7 +510,7 @@ position</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.MultiPlane.multi_plane &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.MultiPlane.multi_plane</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.LensModel.MultiPlane.multi_plane</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.MultiPlane.multi_plane_base</span> <span class="kn">import</span> <span class="n">MultiPlaneBase</span>
+
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="kn">import</span> <span class="n">exporter</span>
+<span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="MultiPlane"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">MultiPlane</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Multi-plane lensing class with option to assign positions of a selected set of lens models in the observed plane.</span>
+
+<span class="sd">    The lens model deflection angles are in units of reduced deflections from the specified redshift of the lens to the</span>
+<span class="sd">    source redshift of the class instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_observed_positions</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">cosmo_interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">z_interp_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_z_interp</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">kwargs_interp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param z_source: source redshift for default computation of reduced lensing quantities</span>
+<span class="sd">        :param lens_model_list: list of lens model strings</span>
+<span class="sd">        :param lens_redshift_list: list of floats with redshifts of the lens models indicated in lens_model_list</span>
+<span class="sd">        :param cosmo: instance of astropy.cosmology</span>
+<span class="sd">        :param numerical_alpha_class: an instance of a custom class for use in NumericalAlpha() lens model</span>
+<span class="sd">        (see documentation in Profiles/numerical_alpha)</span>
+<span class="sd">        :param kwargs_interp: interpolation keyword arguments specifying the numerics.</span>
+<span class="sd">         See description in the Interpolate() class. Only applicable for &#39;INTERPOL&#39; and &#39;INTERPOL_SCALED&#39; models.</span>
+<span class="sd">        :param observed_convention_index: a list of indices, corresponding to the lens_model_list element with same</span>
+<span class="sd">        index, where the &#39;center_x&#39; and &#39;center_y&#39; kwargs correspond to observed (lensed) positions, not physical</span>
+<span class="sd">        positions. The code will compute the physical locations when performing computations</span>
+<span class="sd">        :param ignore_observed_positions: bool, if True, will ignore the conversion between observed to physical</span>
+<span class="sd">        position of deflectors</span>
+<span class="sd">        :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens</span>
+<span class="sd">        models. If None, &#39;z_source&#39; is used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">z_source_convention</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">z_source_convention</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="k">if</span> <span class="n">z_interp_stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">z_interp_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">z_interp_stop</span> <span class="o">&lt;</span> <span class="nb">max</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_interp_stop= </span><span class="si">%s</span><span class="s1"> needs to be larger or equal the maximum of z_source=</span><span class="si">%s</span><span class="s1"> and &#39;</span>
+                             <span class="s1">&#39;z_source_convention=</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">z_interp_stop</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">z_source_convention</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span> <span class="o">=</span> <span class="n">MultiPlaneBase</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="n">lens_model_list</span><span class="p">,</span>
+                                                <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
+                                                <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
+                                                <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">,</span> <span class="n">cosmo_interp</span><span class="o">=</span><span class="n">cosmo_interp</span><span class="p">,</span>
+                                                <span class="n">z_interp_stop</span><span class="o">=</span><span class="n">z_interp_stop</span><span class="p">,</span> <span class="n">num_z_interp</span><span class="o">=</span><span class="n">num_z_interp</span><span class="p">,</span>
+                                                <span class="n">kwargs_interp</span><span class="o">=</span><span class="n">kwargs_interp</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_source_distances</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observed_convention_index</span> <span class="o">=</span> <span class="n">observed_convention_index</span>
+        <span class="k">if</span> <span class="n">observed_convention_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span> <span class="o">=</span> <span class="n">PhysicalLocation</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observed_convention_index</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span> <span class="o">=</span> <span class="n">LensedLocation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span> <span class="o">=</span> <span class="n">ignore_observed_positions</span>
+
+<div class="viewcode-block" id="MultiPlane.update_source_redshift"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.update_source_redshift">[docs]</a>    <span class="k">def</span> <span class="nf">update_source_redshift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        update instance of this class to compute reduced lensing quantities and time delays to a specific source</span>
+<span class="sd">        redshift</span>
+
+<span class="sd">        :param z_source: float; source redshift</span>
+<span class="sd">        :return: self variables update to new redshift</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">z_source</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_source_distances</span><span class="p">(</span><span class="n">z_source</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_set_source_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_source</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        compute the relevant angular diameter distances to a specific source redshift</span>
+
+<span class="sd">        :param z_source: float, source redshift</span>
+<span class="sd">        :return: self variables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span> <span class="o">=</span> <span class="n">z_source</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">transverse_distance_start_stop</span><span class="p">(</span><span class="n">z_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                                                                  <span class="n">z_stop</span><span class="o">=</span><span class="n">z_source</span><span class="p">,</span>
+                                                                                                  <span class="n">include_z_start</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_T_z_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">_cosmo_bkg</span><span class="o">.</span><span class="n">T_xy</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z_source</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MultiPlane.observed2flat_convention"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.observed2flat_convention">[docs]</a>    <span class="k">def</span> <span class="nf">observed2flat_convention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs_lens: keyword argument list of lens model parameters in the observed convention</span>
+<span class="sd">        :return: kwargs_lens positions mapped into angular position without lensing along its LOS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiPlane.ray_shooting"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.ray_shooting">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ray-tracing (backwards light cone) to the default z_source redshift</span>
+
+<span class="sd">        :param theta_x: angle in x-direction on the image</span>
+<span class="sd">         (usually arc seconds, in the same convention as lensing deflection angles)</span>
+<span class="sd">        :param theta_y: angle in y-direction on the image</span>
+<span class="sd">         (usually arc seconds, in the same convention as lensing deflection angles)</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param check_convention: flag to check the image position convention (leave this alone)</span>
+<span class="sd">        :return: angles in the source plane</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_raise</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_convention</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span><span class="p">:</span>
+            <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">theta_y</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">alpha_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">theta_x</span><span class="p">)</span>
+        <span class="n">alpha_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">theta_y</span><span class="p">)</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">ray_shooting_partial</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">z_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                                                                 <span class="n">z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span><span class="p">,</span>
+                                                                 <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">T_ij_start</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_start</span><span class="p">,</span>
+                                                                 <span class="n">T_ij_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_stop</span><span class="p">)</span>
+        <span class="n">beta_x</span><span class="p">,</span> <span class="n">beta_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">co_moving2angle_source</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">beta_x</span><span class="p">,</span> <span class="n">beta_y</span></div>
+
+<div class="viewcode-block" id="MultiPlane.ray_shooting_partial"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.ray_shooting_partial">[docs]</a>    <span class="k">def</span> <span class="nf">ray_shooting_partial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">z_start</span><span class="p">,</span> <span class="n">z_stop</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">include_z_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                             <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">T_ij_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_ij_end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at</span>
+<span class="sd">        redshift z_start and then backwards to redshift z_stop</span>
+
+<span class="sd">        :param x: co-moving position [Mpc] / angle definition</span>
+<span class="sd">        :param y: co-moving position [Mpc] / angle definition</span>
+<span class="sd">        :param alpha_x: ray angle at z_start [arcsec]</span>
+<span class="sd">        :param alpha_y: ray angle at z_start [arcsec]</span>
+<span class="sd">        :param z_start: redshift of start of computation</span>
+<span class="sd">        :param z_stop: redshift where output is computed</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param include_z_start: bool, if True, includes the computation of the deflection angle at the same redshift as</span>
+<span class="sd">         the start of the ray-tracing. ATTENTION: deflection angles at the same redshift as z_stop will be computed!</span>
+<span class="sd">         This can lead to duplications in the computation of deflection angles.</span>
+<span class="sd">        :param check_convention: flag to check the image position convention (leave this alone)</span>
+<span class="sd">        :param T_ij_start: transverse angular distance between the starting redshift to the first lens plane to follow.</span>
+<span class="sd">         If not set, will compute the distance each time this function gets executed.</span>
+<span class="sd">        :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set,</span>
+<span class="sd">         will compute the distance each time this function gets executed.</span>
+<span class="sd">        :return: co-moving position (modulo angle definition) and angles at redshift z_stop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">check_convention</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span><span class="p">:</span>
+            <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">ray_shooting_partial</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span><span class="p">,</span> <span class="n">z_start</span><span class="p">,</span> <span class="n">z_stop</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                           <span class="n">include_z_start</span><span class="o">=</span><span class="n">include_z_start</span><span class="p">,</span> <span class="n">T_ij_start</span><span class="o">=</span><span class="n">T_ij_start</span><span class="p">,</span>
+                                                           <span class="n">T_ij_end</span><span class="o">=</span><span class="n">T_ij_end</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MultiPlane.transverse_distance_start_stop"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.transverse_distance_start_stop">[docs]</a>    <span class="k">def</span> <span class="nf">transverse_distance_start_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z_start</span><span class="p">,</span> <span class="n">z_stop</span><span class="p">,</span> <span class="n">include_z_start</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the transverse distance (T_ij) that is required by the ray-tracing between the starting redshift and</span>
+<span class="sd">        the first deflector afterwards and the last deflector before the end of the ray-tracing.</span>
+
+<span class="sd">        :param z_start: redshift of the start of the ray-tracing</span>
+<span class="sd">        :param z_stop: stop of ray-tracing</span>
+<span class="sd">        :param include_z_start: bool, i</span>
+<span class="sd">        :return: T_ij_start, T_ij_end</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">transverse_distance_start_stop</span><span class="p">(</span><span class="n">z_start</span><span class="p">,</span> <span class="n">z_stop</span><span class="p">,</span> <span class="n">include_z_start</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiPlane.arrival_time"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.arrival_time">[docs]</a>    <span class="k">def</span> <span class="nf">arrival_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        light travel time relative to a straight path through the coordinate (0,0)</span>
+<span class="sd">        Negative sign means earlier arrival time</span>
+
+<span class="sd">        :param theta_x: angle in x-direction on the image</span>
+<span class="sd">        :param theta_y: angle in y-direction on the image</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :return: travel time in unit of days</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dt_geo</span><span class="p">,</span> <span class="n">dt_grav</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geo_shapiro_delay</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="n">check_convention</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dt_geo</span> <span class="o">+</span> <span class="n">dt_grav</span></div>
+
+<div class="viewcode-block" id="MultiPlane.geo_shapiro_delay"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.geo_shapiro_delay">[docs]</a>    <span class="k">def</span> <span class="nf">geo_shapiro_delay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        geometric and Shapiro (gravitational) light travel time relative to a straight path through the coordinate (0,0)</span>
+<span class="sd">        Negative sign means earlier arrival time</span>
+
+<span class="sd">        :param theta_x: angle in x-direction on the image</span>
+<span class="sd">        :param theta_y: angle in y-direction on the image</span>
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param check_convention: boolean, if True goes through the lens model list and checks whether the positional</span>
+<span class="sd">         conventions are satisfied.</span>
+<span class="sd">        :return: geometric delay, gravitational delay [days]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">check_convention</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span><span class="p">:</span>
+            <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">geo_shapiro_delay</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_z_source</span><span class="p">,</span>
+                                                        <span class="n">T_z_stop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_z_source</span><span class="p">,</span> <span class="n">T_ij_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_T_ij_stop</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiPlane.alpha"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.alpha">[docs]</a>    <span class="k">def</span> <span class="nf">alpha</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        reduced deflection angle</span>
+
+<span class="sd">        :param theta_x: angle in x-direction</span>
+<span class="sd">        :param theta_y: angle in y-direction</span>
+<span class="sd">        :param kwargs_lens: lens model kwargs</span>
+<span class="sd">        :param check_convention: flag to check the image position convention (leave this alone)</span>
+<span class="sd">        :return: deflection angles in x and y directions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_raise</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">beta_x</span><span class="p">,</span> <span class="n">beta_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="n">check_convention</span><span class="p">)</span>
+
+        <span class="n">alpha_x</span> <span class="o">=</span> <span class="n">theta_x</span> <span class="o">-</span> <span class="n">beta_x</span>
+        <span class="n">alpha_y</span> <span class="o">=</span> <span class="n">theta_y</span> <span class="o">-</span> <span class="n">beta_y</span>
+
+        <span class="k">return</span> <span class="n">alpha_x</span><span class="p">,</span> <span class="n">alpha_y</span></div>
+
+<div class="viewcode-block" id="MultiPlane.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="mf">0.00000001</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the hessian components f_xx, f_yy, f_xy from f_x and f_y with numerical differentiation</span>
+
+<span class="sd">        :param theta_x: x-position (preferentially arcsec)</span>
+<span class="sd">        :type theta_x: numpy array</span>
+<span class="sd">        :param theta_y: y-position (preferentially arcsec)</span>
+<span class="sd">        :type theta_y: numpy array</span>
+<span class="sd">        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes</span>
+<span class="sd">        :param diff: numerical differential step (float)</span>
+<span class="sd">        :param check_convention: boolean, if True goes through the lens model list and checks whether the positional</span>
+<span class="sd">         conventions are satisfied.</span>
+<span class="sd">        :return: f_xx, f_xy, f_yx, f_yy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_raise</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_convention</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span><span class="p">:</span>
+            <span class="n">kwargs_lens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convention</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+
+        <span class="n">alpha_ra</span><span class="p">,</span> <span class="n">alpha_dec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">alpha_ra_dx</span><span class="p">,</span> <span class="n">alpha_dec_dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">theta_x</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">alpha_ra_dy</span><span class="p">,</span> <span class="n">alpha_dec_dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span> <span class="o">+</span> <span class="n">diff</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">check_convention</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">dalpha_rara</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dx</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">dalpha_radec</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_ra_dy</span> <span class="o">-</span> <span class="n">alpha_ra</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">dalpha_decra</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dx</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+        <span class="n">dalpha_decdec</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
+
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">dalpha_rara</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">dalpha_decdec</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">dalpha_radec</span>
+        <span class="n">f_yx</span> <span class="o">=</span> <span class="n">dalpha_decra</span>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
+
+<div class="viewcode-block" id="MultiPlane.co_moving2angle_source"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.co_moving2angle_source">[docs]</a>    <span class="k">def</span> <span class="nf">co_moving2angle_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        special case of the co_moving2angle definition at the source redshift</span>
+
+<span class="sd">        :param x: co-moving distance</span>
+<span class="sd">        :param y: co-moving distance</span>
+<span class="sd">        :return: angles on the sky at the nominal source plane</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">T_z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_T_z_source</span>
+        <span class="n">theta_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">T_z</span>
+        <span class="n">theta_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">T_z</span>
+        <span class="k">return</span> <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span></div>
+
+<div class="viewcode-block" id="MultiPlane.set_static"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs: lens model keyword argument list</span>
+<span class="sd">        :return: lens model keyword argument list with positional parameters all in flat sky coordinates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observed2flat_convention</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MultiPlane.set_dynamic"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.set_dynamic">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_observed_positions</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multi_plane_base</span><span class="o">.</span><span class="n">set_dynamic</span><span class="p">()</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_raise</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        checks whether no option to select a specific subset of deflector models is selected, as this feature is not</span>
+<span class="sd">        yet supported in multi-plane</span>
+
+<span class="sd">        :param k: parameter that optionally indicates a sub-set of lens models being executed for single plane</span>
+<span class="sd">        :return: None, optional raise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;no specific selection of a subset of lens models supported in multi-plane mode. Please&#39;</span>
+                             <span class="s1">&#39;use single plane mode or generate new instance of LensModel of the subset of profiles.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PhysicalLocation"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.PhysicalLocation">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">PhysicalLocation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    center_x and center_y kwargs correspond to angular location of deflectors without lensing along the LOS</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">kwargs_lens</span></div>
+
+
+<div class="viewcode-block" id="LensedLocation"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.MultiPlane.html#lenstronomy.LensModel.MultiPlane.multi_plane.LensedLocation">[docs]</a><span class="nd">@export</span>
+<span class="k">class</span> <span class="nc">LensedLocation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    center_x and center_y kwargs correspond to observed (lensed) locations of deflectors</span>
+<span class="sd">    given a model for the line of sight structure, compute the angular position of the deflector without lensing</span>
+<span class="sd">    contribution along the LOS</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplane_instance</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param multiplane_instance: instance of the MultiPlane class</span>
+<span class="sd">        :param observed_convention_index: list of lens model indexes to be modelled in the observed plane</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_multiplane</span> <span class="o">=</span> <span class="n">multiplane_instance</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed_convention_index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inds</span> <span class="o">=</span> <span class="n">observed_convention_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">observed_convention_index</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds</span><span class="p">:</span>
+                <span class="n">z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">multiplane_instance</span><span class="o">.</span><span class="n">_lens_redshift_list</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+
+            <span class="n">sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inds</span> <span class="o">=</span> <span class="n">inds</span><span class="p">[</span><span class="n">sort</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
+
+        <span class="n">new_kwargs</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inds</span><span class="p">:</span>
+            <span class="n">theta_x</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span>
+            <span class="n">theta_y</span> <span class="o">=</span> <span class="n">kwargs_lens</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+            <span class="n">zstop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiplane</span><span class="o">.</span><span class="n">_lens_redshift_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiplane</span><span class="o">.</span><span class="n">ray_shooting_partial</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">theta_x</span><span class="p">,</span>
+                                                               <span class="n">theta_y</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">zstop</span><span class="p">,</span> <span class="n">new_kwargs</span><span class="p">,</span> <span class="n">T_ij_start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T_ij_end</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">T</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multiplane</span><span class="o">.</span><span class="n">_T_z_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span>
+            <span class="n">new_kwargs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span> <span class="o">/</span> <span class="n">T</span>
+            <span class="n">new_kwargs</span><span class="p">[</span><span class="n">ind</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">T</span>
+        <span class="k">return</span> <span class="n">new_kwargs</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.MultiPlane.multi_plane</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
+    </div>
+  </body>
+</html>

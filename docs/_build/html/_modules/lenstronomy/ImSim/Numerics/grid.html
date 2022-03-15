@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.ImSim.Numerics.grid &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
+    <title>lenstronomy.ImSim.Numerics.grid &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
     <script src="../../../../_static/jquery.js"></script>
     <script src="../../../../_static/underscore.js"></script>
     <script src="../../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.grid</a></li> 
       </ul>
@@ -209,7 +210,6 @@
 <span class="sd">        :param transform_pix2angle: 2x2 matrix, mapping of pixel to coordinate</span>
 <span class="sd">        :param ra_at_xy_0: ra coordinate at pixel (0,0)</span>
 <span class="sd">        :param dec_at_xy_0: dec coordinate at pixel (0,0)</span>
-<span class="sd">        :param supersampling_indexes: bool array of shape nx x ny, corresponding to pixels being super_sampled</span>
 <span class="sd">        :param supersampling_factor: int, factor (per axis) of super-sampling</span>
 <span class="sd">        :param flux_evaluate_indexes: bool array of shape nx x ny, corresponding to pixels being evaluated</span>
 <span class="sd">        (for both low and high res). Default is None, replaced by setting all pixels to being evaluated.</span>
@@ -275,7 +275,8 @@
             <span class="n">image_low_res</span> <span class="o">=</span> <span class="n">image</span>
         <span class="k">return</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span></div>
 
-    <span class="k">def</span> <span class="nf">_subgrid_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_subgrid_index</span><span class="p">(</span><span class="n">idex_mask</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param idex_mask: 1d array of mask of data</span>
@@ -293,9 +294,6 @@
 <span class="sd">        maps a 1d array into a (nx, ny) 2d grid with array populating the idex_mask indices</span>
 
 <span class="sd">        :param array: 1d array</span>
-<span class="sd">        :param idex_mask: 1d array of length nx*ny</span>
-<span class="sd">        :param nx: x-axis of 2d grid</span>
-<span class="sd">        :param ny: y-axis of 2d grid</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nx</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ny</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span>
@@ -315,7 +313,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -334,14 +332,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.grid</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

@@ -23,12 +23,13 @@ class TestSinglePlaneLOS(object):
     """
 
     def setup(self):
-        self.lensModel = SinglePlaneLOS(['GAUSSIAN', 'LOS'])
-        self.lensModel_minimal = SinglePlaneLOS(['GAUSSIAN', 'LOS_MINIMAL'])
+        self.lensModel = SinglePlaneLOS(['GAUSSIAN', 'LOS'], index_los = 1)
+        self.lensModel_minimal = SinglePlaneLOS(['GAUSSIAN', 'LOS_MINIMAL'], index_los = 1)
         self.kwargs = {'amp': 1., 'sigma_x': 2., 'sigma_y': 2., 'center_x': 0., 'center_y': 0.}
         self.los_kwargs = {'gamma1_os': 0.0, 'gamma2_os': 0.0, 'kappa_os': 0.0, 'omega_os': 0.0,
                            'gamma1_od': 0.0, 'gamma2_od': 0.0, 'kappa_od': 0.0, 'omega_od': 0.0,
-                           'gamma1_ds': 0.0, 'gamma2_ds': 0.0, 'kappa_ds': 0.0, 'omega_ds': 0.0}
+                           'gamma1_ds': 0.0, 'gamma2_ds': 0.0, 'kappa_ds': 0.0, 'omega_ds': 0.0,
+                           'gamma1_los': 0.0, 'gamma2_los': 0.0, 'kappa_los': 0.0, 'omega_los': 0.0}
 
     def test_potential(self):
         output = self.lensModel.potential(x=1., y=1., kwargs=[self.kwargs, self.los_kwargs])
@@ -53,10 +54,11 @@ class TestSinglePlaneLOS(object):
         assert delta_y_minimal == 1 + 0.19470019576785122/(8*np.pi)
 
     def test_mass_2d(self):
-        lensModel = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS'])
-        lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'])
-        output = lensModel.mass_2d(r=1, kwargs=[self.kwargs, self.los_kwargs])
-        output_minimal = lensModel_minimal.mass_2d(r=1, kwargs=[self.kwargs, self.los_kwargs])
+        mass_kwargs = {'amp': 1., 'sigma': 2., 'center_x': 0., 'center_y': 0.}
+        lensModel = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS'], index_los = 1)
+        lensModel_minimal = SinglePlaneLOS(['GAUSSIAN_KAPPA', 'LOS_MINIMAL'], index_los = 1)
+        output = lensModel.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
+        output_minimal = lensModel_minimal.mass_2d(r=1, kwargs=[mass_kwargs, self.los_kwargs])
         assert output == 0.11750309741540453
         assert output_minimal == 0.11750309741540453
 
@@ -67,18 +69,18 @@ class TestSinglePlaneLOS(object):
         density_model = sis.density_lens(r=r, theta_E=theta_E)
 
         # LOS
-        lensModel = SinglePlaneLOS(lens_model_list=['SIS', 'LOS'])
+        lensModel = SinglePlaneLOS(lens_model_list=['SIS', 'LOS'], index_los = 1)
         density = lensModel.density(r=r, kwargs=[{'theta_E': theta_E}, self.los_kwargs])
         npt.assert_almost_equal(density, density_model, decimal=8)
 
         # LOS_MINIMAL
-        lensModel_minimal = SinglePlaneLOS(lens_model_list = ['SIS', 'LOS_MINIMAL'])
+        lensModel_minimal = SinglePlaneLOS(lens_model_list = ['SIS', 'LOS_MINIMAL'], index_los = 1)
         density_minimal = lensModel_minimal.density(r=r, kwargs=[{'theta_E': theta_E}, self.los_kwargs])
         npt.assert_almost_equal(density_minimal, density_model, decimal=8)
 
     def test_bool_list(self):
-        lensModel = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS'])
-        lensModel_minimal = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS_MINIMAL'])
+        lensModel = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS'], index_los = 2)
+        lensModel_minimal = SinglePlaneLOS(['SPEP', 'SHEAR', 'LOS_MINIMAL'], index_los = 2)
         kwargs = [{'theta_E': 1, 'gamma': 2, 'e1': 0.1, 'e2': -0.1, 'center_x': 0, 'center_y': 0},
                            {'gamma1': 0.01, 'gamma2': -0.02}, self.los_kwargs]
 
@@ -96,7 +98,7 @@ class TestSinglePlaneLOS(object):
 
         # LOS_MINIMAL
         alphax_1_minimal, alphay_1_minimal = lensModel_minimal.alpha(1, 1, kwargs, k=0)
-        alphax_1_list_minimal, alphay_1_list_minimal = lensModel_minimal.alpha(1, 1, kwarhs, k=[0])
+        alphax_1_list_minimal, alphay_1_list_minimal = lensModel_minimal.alpha(1, 1, kwargs, k=[0])
         npt.assert_almost_equal(alphax_1_minimal, alphax_1_list_minimal, decimal=5)
         npt.assert_almost_equal(alphay_1_minimal, alphay_1_list_minimal, decimal=5)
 
@@ -107,10 +109,12 @@ class TestSinglePlaneLOS(object):
         npt.assert_almost_equal(alphay_1_1_minimal + alphay_1_2_minimal, alphay_full_minimal, decimal=5)
 
     def test_init(self):
-        lens_model_list = ['TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC_CONST',
+        # need to do this for los minimal too?
+        lens_model_list = ['LOS', 'TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC_CONST',
                            'NFW_MC', 'ARC_PERT', 'MULTIPOLE', 'CURVED_ARC_SPP']
-        lensModel = SinglePlaneLOS(lens_model_list=lens_model_list)
+        lensModel = SinglePlaneLOS(lens_model_list=lens_model_list, index_los = 0)
         assert lensModel.func_list[0].param_names[0] == 'Rs'
+
 
 class TestRaise(unittest.TestCase):
 
@@ -122,11 +126,11 @@ class TestRaise(unittest.TestCase):
         """
         if bool_test is False:
             with self.assertRaises(ImportError):
-                SinglePlane(lens_model_list=['PEMD'])
+                SinglePlaneLOS(lens_model_list=['PEMD', 'LOS'], index_los = 1)
             with self.assertRaises(ImportError):
-                SinglePlane(lens_model_list=['SPEMD'])
+                SinglePlaneLOS(lens_model_list=['SPEMD', 'LOS'], index_los = 1)
         else:
-            SinglePlane(lens_model_list=['PEMD', 'SPEMD'])
+            SinglePlaneLOS(lens_model_list=['PEMD', 'SPEMD', 'LOS'], index_los = 2)
 
 
 if __name__ == '__main__':

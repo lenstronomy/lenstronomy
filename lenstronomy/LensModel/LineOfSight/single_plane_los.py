@@ -12,13 +12,13 @@ class SinglePlaneLOS(SinglePlane):
     This class is based on the 'SinglePlane' class, modified to include
     line-of-sight effects as presented by Fleury et al. in 2104.08883.
 
-    Are added:                          #DJMod
+    Are added:
     - effective potential
     - effective alpha
-    
+
     Are modified:
     - init (to include a new attribute, self.los)
-    - fermat potential                 #DJMod
+    - fermat potential
     - alpha
     - hessian
 
@@ -40,7 +40,7 @@ class SinglePlaneLOS(SinglePlane):
         lens_model_list (for correct association with kwargs)
         - attribute "los" containing the LOS model.
         """
-        
+
         # Extract the los model
         self.index_los = index_los
         self.los_model = lens_model_list[index_los]
@@ -72,7 +72,7 @@ class SinglePlaneLOS(SinglePlane):
             kwargs_los['gamma1_ds'] = kwargs_los['gamma1_od']
             kwargs_los['gamma2_ds'] = kwargs_los['gamma2_od']
             kwargs_los['omega_ds'] = kwargs_los['omega_od']
-                
+
         kwargs_lens = [kwarg for i, kwarg in enumerate(kwargs)
                        if i != self.index_los]
 
@@ -82,7 +82,7 @@ class SinglePlaneLOS(SinglePlane):
         """
         the lensing potential of the main lens, evaluated at a position which is modified by LOS effects
         between the observer and the lens(equation 3.14 in Fleury et al.)
-        
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -93,8 +93,8 @@ class SinglePlaneLOS(SinglePlane):
         """
 
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
-        
-        # Angular position where the ray hits the deflector's plane 
+
+        # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
                                            kappa=kwargs_los['kappa_od'],
                                            omega=kwargs_los['omega_od'],
@@ -103,13 +103,13 @@ class SinglePlaneLOS(SinglePlane):
 
         #Evaluating the potential of the main lens at this position
         effective_potential = super().potential(x_d, y_d, kwargs=kwargs_lens, k=k)
-        
+
         return effective_potential
 
     def effective_alpha(self, x, y, kwargs, k=None):                    #DJMod
         """
-        the effective displacement angle (equation 3.15 in Fleury et al.) 
-        
+        the effective displacement angle (equation 3.15 in Fleury et al.)
+
         :param x: x-position (preferentially arcsec)
         :type x: numpy array
         :param y: y-position (preferentially arcsec)
@@ -139,7 +139,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         #f_x_d and f_y_d are the components of alpha_eff
-        
+
         return f_x_d, f_y_d
 
 
@@ -158,10 +158,10 @@ class SinglePlaneLOS(SinglePlane):
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
 
         #calculating the effective potential
-        effective_potential = self.effective_potential(x_image, y_image, kwargs, k=k) 
+        effective_potential = self.effective_potential(x_image, y_image, kwargs, k=k)
 
         #the effective displacement angles
-        f_x, f_y = self.effective_alpha(x_image, y_image, kwargs, k=k) 
+        f_x, f_y = self.effective_alpha(x_image, y_image, kwargs, k=k)
 
         #deflection angle distorted by \Gamma_LOS matrix
         a_x, a_y = self.los.distort_vector(f_x, f_y,
@@ -172,7 +172,7 @@ class SinglePlaneLOS(SinglePlane):
 
         #we can then obtain the geometrical term
         geometry = (f_x*a_x + f_y*a_y) / 2.
-        
+
         return geometry - effective_potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -187,9 +187,9 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-        
+
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
-        
+
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
                                            kappa=kwargs_los['kappa_od'],
@@ -217,7 +217,7 @@ class SinglePlaneLOS(SinglePlane):
         # Complete displacement
         f_x += x - x_os
         f_y += y - y_os
-        
+
         return f_x, f_y
 
 
@@ -234,7 +234,7 @@ class SinglePlaneLOS(SinglePlane):
         """
 
         kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
-        
+
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
                                            kappa=kwargs_los['kappa_od'],
@@ -267,5 +267,5 @@ class SinglePlaneLOS(SinglePlane):
         f_xy += kwargs_los['gamma2_os'] - kwargs_los['omega_os']
         f_yx += kwargs_los['gamma2_os'] + kwargs_los['omega_os']
         f_yy += kwargs_los['kappa_os'] - kwargs_los['gamma1_os']
-        
+
         return f_xx, f_xy, f_yx, f_yy

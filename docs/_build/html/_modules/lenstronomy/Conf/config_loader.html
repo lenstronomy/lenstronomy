@@ -1,0 +1,143 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Conf.config_loader &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Conf.config_loader</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for lenstronomy.Conf.config_loader</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">lenstronomy</span>
+
+
+<span class="c1"># in case the xdg library is installed, the import statement with pyxdg can raise an error</span>
+<span class="c1"># to avoid it, we draw back to the ~/.config directory in case this import fails.</span>
+<span class="c1"># TODO come up with more permanent solution of path to configuration directory</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">xdg.BaseDirectory</span> <span class="kn">import</span> <span class="n">xdg_config_home</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">xdg_config_home</span> <span class="o">=</span> <span class="s1">&#39;~/.config&#39;</span>
+
+<span class="n">user_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">xdg_config_home</span><span class="p">,</span> <span class="s2">&quot;lenstronomy&quot;</span><span class="p">,</span> <span class="s2">&quot;config.yaml&quot;</span><span class="p">)</span>
+
+<span class="n">module_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">lenstronomy</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">default_config_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;Conf&#39;</span><span class="p">,</span> <span class="s1">&#39;conf_default.yaml&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">user_config_file</span><span class="p">):</span>
+    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">user_config_file</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">conf_file</span> <span class="o">=</span> <span class="n">default_config_file</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+    <span class="c1"># The FullLoader parameter handles the conversion from YAML</span>
+    <span class="c1"># scalar values to the Python the dictionary format</span>
+    <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="c1"># conf = yaml.load(file, Loader=yaml.FullLoader)</span>
+    <span class="n">numba_conf</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;numba&#39;</span><span class="p">]</span>
+    <span class="n">nopython</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;cache&#39;</span><span class="p">]</span>
+    <span class="n">parallel</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;parallel&#39;</span><span class="p">]</span>
+    <span class="n">numba_enabled</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;enable&#39;</span><span class="p">]</span>
+    <span class="n">fastmath</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;fastmath&#39;</span><span class="p">]</span>
+    <span class="n">error_model</span> <span class="o">=</span> <span class="n">numba_conf</span><span class="p">[</span><span class="s1">&#39;error_model&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="numba_conf"><a class="viewcode-back" href="../../../lenstronomy.Conf.html#lenstronomy.Conf.config_loader.numba_conf">[docs]</a><span class="k">def</span> <span class="nf">numba_conf</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :return: keyword arguments of numba configurations from yaml file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="c1"># The FullLoader parameter handles the conversion from YAML</span>
+        <span class="c1"># scalar values to the Python the dictionary format</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="c1"># conf = yaml.load(file, Loader=yaml.FullLoader)</span>
+        <span class="n">numba_conf</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;numba&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">numba_conf</span></div>
+
+
+<div class="viewcode-block" id="conventions_conf"><a class="viewcode-back" href="../../../lenstronomy.Conf.html#lenstronomy.Conf.config_loader.conventions_conf">[docs]</a><span class="k">def</span> <span class="nf">conventions_conf</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    :return: convention keyword arguments</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="n">conventions_conf</span> <span class="o">=</span> <span class="n">conf</span><span class="p">[</span><span class="s1">&#39;conventions&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">conventions_conf</span></div>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Conf.config_loader</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
+    </div>
+  </body>
+</html>

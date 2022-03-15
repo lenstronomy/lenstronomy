@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.GalKin.light_profile &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.light_profile</a></li> 
       </ul>
@@ -41,7 +42,6 @@
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">interp1d</span>
-<span class="kn">import</span> <span class="nn">scipy.integrate</span> <span class="k">as</span> <span class="nn">integrate</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.light_model</span> <span class="kn">import</span> <span class="n">LightModel</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LightProfile&#39;</span><span class="p">]</span>
@@ -134,7 +134,7 @@
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">if</span> <span class="s1">&#39;e2&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                     <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;e2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-                <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]})</span>
+                <span class="n">kwargs_list_new</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]})</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_light_circularized</span> <span class="o">=</span> <span class="n">kwargs_list_new</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_light_circularized</span>
 
@@ -157,21 +157,21 @@
         <span class="n">flux_r</span> <span class="o">*=</span> <span class="n">dlog_r</span> <span class="o">*</span> <span class="n">x</span>
 
         <span class="c1"># linear integral</span>
-        <span class="c1">#x = np.linspace(start=self._min_interpolate, stop=np.sqrt(self._max_interpolate ** 2 - R ** 2),</span>
+        <span class="c1"># x = np.linspace(start=self._min_interpolate, stop=np.sqrt(self._max_interpolate ** 2 - R ** 2),</span>
         <span class="c1">#                num=self._interp_grid_num)</span>
-        <span class="c1">#r_array = np.sqrt(x ** 2 + R ** 2)</span>
-        <span class="c1">#dr = x[1] - x[0]</span>
-        <span class="c1">#flux_r = self.light_3d(r_array + dr / 2, kwargs_circ)</span>
-        <span class="c1">#dr = x[1] - x[0]</span>
-        <span class="c1">#flux_r *= dr</span>
+        <span class="c1"># r_array = np.sqrt(x ** 2 + R ** 2)</span>
+        <span class="c1"># dr = x[1] - x[0]</span>
+        <span class="c1"># flux_r = self.light_3d(r_array + dr / 2, kwargs_circ)</span>
+        <span class="c1"># dr = x[1] - x[0]</span>
+        <span class="c1"># flux_r *= dr</span>
 
         <span class="n">flux_R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">flux_r</span><span class="p">)</span>
         <span class="c1"># perform finite integral</span>
 
-        <span class="c1">#out = integrate.quad(lambda x: self.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_circ), self._min_interpolate,</span>
+        <span class="c1"># out = integrate.quad(lambda x: self.light_3d(np.sqrt(R ** 2 + x ** 2), kwargs_circ), self._min_interpolate,</span>
         <span class="c1">#                     np.sqrt(self._max_interpolate**2 - R**2))</span>
-        <span class="c1">#print(out_1, out, &#39;test&#39;)</span>
-        <span class="c1">#flux_R = out[0]</span>
+        <span class="c1"># print(out_1, out, &#39;test&#39;)</span>
+        <span class="c1"># flux_R = out[0]</span>
         <span class="k">return</span> <span class="n">flux_R</span> <span class="o">*</span> <span class="mi">2</span>  <span class="c1"># integral in both directions</span>
 
 <div class="viewcode-block" id="LightProfile.light_2d_finite"><a class="viewcode-back" href="../../../lenstronomy.GalKin.html#lenstronomy.GalKin.light_profile.LightProfile.light_2d_finite">[docs]</a>    <span class="k">def</span> <span class="nf">light_2d_finite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">):</span>
@@ -207,13 +207,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_cdf&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_draw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
-            <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">sum_light</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_array</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span>
-                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+                    <span class="n">sum_light</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span>
+                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sum_light</span><span class="p">)</span>
             <span class="n">cum_sum_norm</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="o">/</span><span class="n">cum_sum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cum_sum_norm</span><span class="p">,</span> <span class="n">r_array</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_light_cdf</span> <span class="o">=</span> <span class="n">f</span>
@@ -234,13 +234,13 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_light_cdf_log&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">new_compute</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_draw</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
-            <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">sum_light</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_array</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span>
-                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+                    <span class="n">sum_light</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_2d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span>
+                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sum_light</span><span class="p">)</span>
             <span class="n">cum_sum_norm</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="o">/</span><span class="n">cum_sum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cum_sum_norm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_light_cdf_log</span> <span class="o">=</span> <span class="n">f</span>
@@ -262,13 +262,13 @@
             <span class="n">dlog_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
             <span class="n">r_array_int</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_min_interpolate</span><span class="p">)</span> <span class="o">+</span> <span class="n">dlog_r</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_draw</span><span class="p">)</span> <span class="o">+</span> <span class="n">dlog_r</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interp_grid_num</span><span class="p">)</span>
             <span class="n">cum_sum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">r_array</span><span class="p">)</span>
-            <span class="nb">sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">sum_light</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">r_array_int</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
-                <span class="c1">#if i == 0:</span>
+                <span class="c1"># if i == 0:</span>
                 <span class="c1">#    cum_sum[i] = 0</span>
-                <span class="c1">#else:</span>
-                    <span class="nb">sum</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="c1"># * r</span>
-                    <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+                <span class="c1"># else:</span>
+                <span class="n">sum_light</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">light_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kwargs_list</span><span class="p">)</span> <span class="o">*</span> <span class="n">r</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">r_array</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_array</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>  <span class="c1"># * r</span>
+                <span class="n">cum_sum</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">sum_light</span><span class="p">)</span>
             <span class="n">cum_sum_norm</span> <span class="o">=</span> <span class="n">cum_sum</span><span class="o">/</span><span class="n">cum_sum</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">cum_sum_norm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r_array</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_light_3d_cdf_log</span> <span class="o">=</span> <span class="n">f</span>
@@ -302,7 +302,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -321,14 +321,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.light_profile</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

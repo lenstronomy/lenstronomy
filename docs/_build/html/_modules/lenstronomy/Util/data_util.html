@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.data_util &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.Util.data_util &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.data_util</a></li> 
       </ul>
@@ -90,8 +91,8 @@
 <span class="sd">    :param magnitude_zero_point: magnitude zero point (astronomical magnitude with 1 count per second)</span>
 <span class="sd">    :return: counts per second of astronomical object</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">delta_M</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">magnitude_zero_point</span>
-    <span class="n">counts</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">delta_M</span><span class="o">/</span><span class="mf">2.5</span><span class="p">)</span>
+    <span class="n">delta_m</span> <span class="o">=</span> <span class="n">magnitude</span> <span class="o">-</span> <span class="n">magnitude_zero_point</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="n">delta_m</span> <span class="o">/</span> <span class="mf">2.5</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">counts</span></div>
 
 
@@ -103,8 +104,8 @@
 <span class="sd">    :param magnitude_zero_point: magnitude zero point</span>
 <span class="sd">    :return: magnitude for given counts</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">delta_M</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cps</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.5</span>
-    <span class="n">magnitude</span> <span class="o">=</span> <span class="n">delta_M</span> <span class="o">+</span> <span class="n">magnitude_zero_point</span>
+    <span class="n">delta_m</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">cps</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.5</span>
+    <span class="n">magnitude</span> <span class="o">=</span> <span class="n">delta_m</span> <span class="o">+</span> <span class="n">magnitude_zero_point</span>
     <span class="k">return</span> <span class="n">magnitude</span></div>
 
 
@@ -127,6 +128,7 @@
 <span class="sd">    converts analog-to-digital units into electron counts</span>
 
 <span class="sd">    :param adu: counts in analog-to-digital unit</span>
+<span class="sd">    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU</span>
 <span class="sd">    :return: counts in electrons</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">adu</span> <span class="o">*</span> <span class="n">ccd_gain</span></div>
@@ -137,8 +139,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    converts electron counts into analog-to-digital unit</span>
 
-<span class="sd">    :param electrons:</span>
-<span class="sd">    :return: adu value corresponding to electron count</span>
+<span class="sd">    :param electrons: number of electrons received on detector</span>
+<span class="sd">    :param ccd_gain: CCD gain, meaning how many electrons are counted per unit ADU</span>
+<span class="sd">    :return: adu value in Analog-to-digital units corresponding to electron count</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">electrons</span> <span class="o">/</span> <span class="n">ccd_gain</span></div>
 </pre></div>
@@ -153,7 +156,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -172,14 +175,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.data_util</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

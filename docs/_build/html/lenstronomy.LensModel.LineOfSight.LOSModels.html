@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.LineOfSight.LOSModels package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.LensModel.MultiPlane package" href="lenstronomy.LensModel.MultiPlane.html" />
+    <link rel="prev" title="lenstronomy.LensModel.LineOfSight package" href="lenstronomy.LensModel.LineOfSight.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.MultiPlane.html" title="lenstronomy.LensModel.MultiPlane package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.LineOfSight.html" title="lenstronomy.LensModel.LineOfSight package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="lenstronomy.LensModel.LineOfSight.html" accesskey="U">lenstronomy.LensModel.LineOfSight package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.LineOfSight.LOSModels package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="lenstronomy-lensmodel-lineofsight-losmodels-package">
+<h1>lenstronomy.LensModel.LineOfSight.LOSModels package<a class="headerlink" href="#lenstronomy-lensmodel-lineofsight-losmodels-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-lenstronomy.LensModel.LineOfSight.LOSModels.los">
+<span id="lenstronomy-lensmodel-lineofsight-losmodels-los-module"></span><h2>lenstronomy.LensModel.LineOfSight.LOSModels.los module<a class="headerlink" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels.los" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.LineOfSight.LOSModels.los.</code><code class="sig-name descname">LOS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/LineOfSight/LOSModels/los.html#LOS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Class allowing one to add tidal line-of-sight effects (convergence and
+shear) to single-plane lensing. Stricly speaking, this is not a profile,
+but when present in list of lens models, it is automatically recognised by
+ModelAPI(), which sets the flag los_effects to True, and thereby leads
+LensModel to use SinglePlaneLOS() instead of SinglePlane(). It is however
+incompatible with MultiPlane().</p>
+<p>The key-word arguments are the three line-of-sight convergences, the
+two components of the three line-of-sight shears, and the three
+line-of-sight rotations, all defined with the convention of
+<a class="reference external" href="https://arxiv.org/abs/2104.08883">https://arxiv.org/abs/2104.08883</a>:
+kappa_od, kappa_os, kappa_ds, gamma1_od, gamma2_od, gamma1_os, gamma2_os,
+gamma1_ds, gamma2_ds, omega_od, omega_os, omega_ds</p>
+<p>Because LOS is not a profile, it does not contain the usual functions
+function(), derivatives(), and hessian(), but rather modifies the
+behaviour of those functions in the SinglePlaneLOS() class.</p>
+<p>Instead, it contains the essential building blocks of this modification.</p>
+<dl class="py method">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.distort_vector">
+<code class="sig-name descname">distort_vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">kappa</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">omega</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/LineOfSight/LOSModels/los.html#LOS.distort_vector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.distort_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function applies a distortion matrix to a vector (x, y) and 
+returns (x’, y’) as follows:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\begin{pmatrix}
+x'\\y'
+\end{pmatrix}
+=
+\begin{pmatrix}
+1 - \kappa - \gamma_1 &amp; -\gamma_2 + \omega\\-\gamma_2 - \omega &amp; 1 - \kappa + \gamma_1
+\end{pmatrix}
+\begin{pmatrix}
+x\\y
+\end{pmatrix}\end{aligned}\end{align} \]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.left_multiply">
+<code class="sig-name descname">left_multiply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_xx</span></em>, <em class="sig-param"><span class="n">f_xy</span></em>, <em class="sig-param"><span class="n">f_yx</span></em>, <em class="sig-param"><span class="n">f_yy</span></em>, <em class="sig-param"><span class="n">kappa</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">omega</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/LineOfSight/LOSModels/los.html#LOS.left_multiply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.left_multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Left-multiplies the Hessian matrix of a lens with a distortion matrix
+with convergence kappa, shear gamma1, gamma2, and rotation omega:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\mathsf{H}'
+=
+\begin{pmatrix}
+1 - \kappa - \gamma_1 &amp; -\gamma_2 + \omega\\-\gamma_2 - \omega &amp; 1 - \kappa + \gamma_1
+\end{pmatrix}
+\mathsf{H}\end{aligned}\end{align} \]</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.lower_limit_default">
+<code class="sig-name descname">lower_limit_default</code><em class="property"> = {'gamma1_ds': -0.5, 'gamma1_od': -0.5, 'gamma1_os': -0.5, 'gamma2_ds': -0.5, 'gamma2_od': -0.5, 'gamma2_os': -0.5, 'kappa_ds': -0.5, 'kappa_od': -0.5, 'kappa_os': -0.5, 'omega_ds': -0.5, 'omega_od': -0.5, 'omega_os': -0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.param_names">
+<code class="sig-name descname">param_names</code><em class="property"> = ['kappa_od', 'kappa_os', 'kappa_ds', 'gamma1_od', 'gamma2_od', 'gamma1_os', 'gamma2_os', 'gamma1_ds', 'gamma2_ds', 'omega_od', 'omega_os', 'omega_ds']</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.right_multiply">
+<code class="sig-name descname">right_multiply</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_xx</span></em>, <em class="sig-param"><span class="n">f_xy</span></em>, <em class="sig-param"><span class="n">f_yx</span></em>, <em class="sig-param"><span class="n">f_yy</span></em>, <em class="sig-param"><span class="n">kappa</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">gamma2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">omega</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/LineOfSight/LOSModels/los.html#LOS.right_multiply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.right_multiply" title="Permalink to this definition">¶</a></dt>
+<dd><p>Right-multiplies the Hessian matrix of a lens with a distortion matrix
+with convergence kappa and shear gamma1, gamma2:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\mathsf{H}'
+=
+\mathsf{H}
+\begin{pmatrix}
+1 - \kappa - \gamma_1 &amp; -\gamma_2 + \omega\\-\gamma_2 - \omega &amp; 1 - \kappa + \gamma_1
+\end{pmatrix}\end{aligned}\end{align} \]</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.upper_limit_default">
+<code class="sig-name descname">upper_limit_default</code><em class="property"> = {'gamma1_ds': 0.5, 'gamma1_od': 0.5, 'gamma1_os': 0.5, 'gamma2_ds': 0.5, 'gamma2_od': 0.5, 'gamma2_os': 0.5, 'kappa_ds': 0.5, 'kappa_od': 0.5, 'kappa_os': 0.5, 'omega_ds': 0.5, 'omega_od': 0.5, 'omega_os': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal">
+<span id="lenstronomy-lensmodel-lineofsight-losmodels-los-minimal-module"></span><h2>lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal module<a class="headerlink" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.</code><code class="sig-name descname">LOSMinimal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/LineOfSight/LOSModels/los_minimal.html#LOSMinimal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS" title="lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.LineOfSight.LOSModels.los.LOS</span></code></a></p>
+<p>Class deriving from LOS containing the parameters for line-of-sight
+corrections within the “minimal model” defined in
+<a class="reference external" href="https://arxiv.org/abs/2104.08883">https://arxiv.org/abs/2104.08883</a>
+It is equivalent to LOS but with fewer parameters, namely:
+kappa_od, gamma1_od, gamma2_od, omega_od, kappa_los, gamma1_los,
+gamma2_los, omega_los.</p>
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.lower_limit_default">
+<code class="sig-name descname">lower_limit_default</code><em class="property"> = {'gamma1_los': -0.5, 'gamma1_od': -0.5, 'gamma2_los': -0.5, 'gamma2_od': -0.5, 'kappa_los': -0.5, 'kappa_od': -0.5, 'omega_los': -0.5, 'omega_od': -0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.param_names">
+<code class="sig-name descname">param_names</code><em class="property"> = ['kappa_od', 'gamma1_od', 'gamma2_od', 'omega_od', 'kappa_los', 'gamma1_los', 'gamma2_los', 'omega_los']</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.param_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.upper_limit_default">
+<code class="sig-name descname">upper_limit_default</code><em class="property"> = {'gamma1_los': 0.5, 'gamma1_od': 0.5, 'gamma2_los': 0.5, 'gamma2_od': 0.5, 'kappa_los': 0.5, 'kappa_od': 0.5, 'omega_los': 0.5, 'omega_od': 0.5}</em><a class="headerlink" href="#lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal.LOSMinimal.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-lenstronomy.LensModel.LineOfSight.LOSModels">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.LensModel.LineOfSight.LOSModels package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels.los">lenstronomy.LensModel.LineOfSight.LOSModels.los module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal">lenstronomy.LensModel.LineOfSight.LOSModels.los_minimal module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.LineOfSight.LOSModels">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.LensModel.LineOfSight.html"
+                        title="previous chapter">lenstronomy.LensModel.LineOfSight package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.LensModel.MultiPlane.html"
+                        title="next chapter">lenstronomy.LensModel.MultiPlane package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.LensModel.LineOfSight.LOSModels.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.MultiPlane.html" title="lenstronomy.LensModel.MultiPlane package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.LineOfSight.html" title="lenstronomy.LensModel.LineOfSight package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="lenstronomy.LensModel.LineOfSight.html" >lenstronomy.LensModel.LineOfSight package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.LineOfSight.LOSModels package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
+    </div>
+  </body>
+</html>

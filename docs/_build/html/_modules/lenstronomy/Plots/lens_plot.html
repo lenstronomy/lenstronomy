@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Plots.lens_plot &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.Plots.lens_plot &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Plots.lens_plot</a></li> 
       </ul>
@@ -64,6 +65,7 @@
 <span class="sd">    plots a lens model (convergence) and the critical curves and caustics</span>
 
 <span class="sd">    :param ax: matplotlib axis instance</span>
+<span class="sd">    :param lensModel: LensModel() class instance</span>
 <span class="sd">    :param kwargs_lens: lens model keyword argument list</span>
 <span class="sd">    :param numPix: total nnumber of pixels (for convergence map)</span>
 <span class="sd">    :param deltaPix: width of pixel (total frame size is deltaPix x numPix)</span>
@@ -100,7 +102,7 @@
     <span class="k">if</span> <span class="n">with_caustics</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">kwargs_caustics</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_caustics&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">caustics_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="o">=</span><span class="n">_coords</span><span class="p">,</span> <span class="n">lens_model</span><span class="o">=</span><span class="n">lensModel</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">fast_caustic</span><span class="o">=</span><span class="n">fast_caustic</span><span class="p">,</span>
-                      <span class="n">coord_inverse</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_caustics</span><span class="p">)</span>
+                      <span class="n">coord_inverse</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="n">pixel_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_caustics</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">point_source</span><span class="p">:</span>
         <span class="n">kwargs_point_source</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;kwargs_point_source&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">point_source_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="o">=</span><span class="n">_coords</span><span class="p">,</span> <span class="n">lens_model</span><span class="o">=</span><span class="n">lensModel</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span>
@@ -110,8 +112,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="n">ra0</span><span class="p">,</span> <span class="n">ra0</span> <span class="o">+</span> <span class="n">_frame_size</span><span class="p">])</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">dec0</span><span class="p">,</span> <span class="n">dec0</span> <span class="o">+</span> <span class="n">_frame_size</span><span class="p">])</span>
-    <span class="c1">#ax.get_xaxis().set_visible(False)</span>
-    <span class="c1">#ax.get_yaxis().set_visible(False)</span>
+    <span class="c1"># ax.get_xaxis().set_visible(False)</span>
+    <span class="c1"># ax.get_yaxis().set_visible(False)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
@@ -136,13 +138,12 @@
     <span class="n">y_grid1d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">y_grid</span><span class="p">)</span>
     <span class="n">kappa_result</span> <span class="o">=</span> <span class="n">lens_model</span><span class="o">.</span><span class="n">kappa</span><span class="p">(</span><span class="n">x_grid1d</span><span class="p">,</span> <span class="n">y_grid1d</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
     <span class="n">kappa_result</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">kappa_result</span><span class="p">)</span>
-    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">kappa_result</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
-                    <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">matshow</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">kappa_result</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span> <span class="n">extent</span><span class="o">=</span><span class="n">extent</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span>
 
 
 <span class="k">def</span> <span class="nf">caustics_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="p">,</span> <span class="n">lens_model</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">fast_caustic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">coord_inverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">color_crit</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
-                  <span class="n">color_caustic</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                  <span class="n">color_caustic</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">pixel_offset</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param ax: matplotlib axis instance</span>
@@ -155,6 +156,8 @@
 <span class="sd">     (effectively the RA definition)</span>
 <span class="sd">    :param color_crit: string, color of critical curve</span>
 <span class="sd">    :param color_caustic: string, color of caustic curve</span>
+<span class="sd">    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with</span>
+<span class="sd">     the matshow() command to center the coordinates in the pixel center</span>
 <span class="sd">    :param args: argument for plotting curve</span>
 <span class="sd">    :param kwargs: keyword arguments for plotting curves</span>
 <span class="sd">    :return: updated matplotlib axis instance</span>
@@ -181,9 +184,11 @@
         <span class="c1"># ra_crit_list, dec_crit_list = list(ra_crit_list), list(dec_crit_list)</span>
         <span class="c1"># ra_caustic_list, dec_caustic_list = list(ra_caustic_list), list(dec_caustic_list)</span>
     <span class="n">plot_util</span><span class="o">.</span><span class="n">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="p">,</span> <span class="n">ra_caustic_list</span><span class="p">,</span> <span class="n">dec_caustic_list</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_caustic</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
-                            <span class="n">flipped_x</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="n">points_only</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="n">flipped_x</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="n">points_only</span><span class="p">,</span> <span class="n">pixel_offset</span><span class="o">=</span><span class="n">pixel_offset</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">plot_util</span><span class="o">.</span><span class="n">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">pixel_grid</span><span class="p">,</span> <span class="n">ra_crit_list</span><span class="p">,</span> <span class="n">dec_crit_list</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color_crit</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span>
-                            <span class="n">flipped_x</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="n">points_only</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                            <span class="n">flipped_x</span><span class="o">=</span><span class="n">coord_inverse</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="n">points_only</span><span class="p">,</span> <span class="n">pixel_offset</span><span class="o">=</span><span class="n">pixel_offset</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span>
 
 
@@ -219,7 +224,6 @@
                                                          <span class="n">y_center</span><span class="o">=</span><span class="n">y_center</span><span class="p">,</span> <span class="n">min_distance</span><span class="o">=</span><span class="n">pixel_grid</span><span class="o">.</span><span class="n">pixel_width</span><span class="p">)</span>
     <span class="n">mag_images</span> <span class="o">=</span> <span class="n">lens_model</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
 
-    <span class="c1">#ax = plot_util.image_position_plot(ax=ax, coords=pixel_grid, ra_image=theta_x, dec_image=theta_y, color=&#39;w&#39;, image_name_list=None)</span>
     <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">pixel_grid</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">)</span>
     <span class="n">abc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_image</span><span class="p">)):</span>
@@ -234,12 +238,12 @@
 
 <div class="viewcode-block" id="arrival_time_surface"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.lens_plot.arrival_time_surface">[docs]</a><span class="nd">@export</span>
 <span class="k">def</span> <span class="nf">arrival_time_surface</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">numPix</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">deltaPix</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                         <span class="n">with_caustics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">point_source</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_levels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">kwargs_contours</span><span class="o">=</span><span class="p">{},</span> <span class="n">image_color_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">letter_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+                         <span class="n">with_caustics</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">point_source</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">n_levels</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">kwargs_contours</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">image_color_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">letter_font_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param ax: matplotlib axis instance</span>
-<span class="sd">    :param lens_model: LensModel() class instance</span>
+<span class="sd">    :param lensModel: LensModel() class instance</span>
 <span class="sd">    :param kwargs_lens: lens model keyword argument list</span>
 <span class="sd">    :param numPix:</span>
 <span class="sd">    :param deltaPix:</span>
@@ -262,6 +266,8 @@
     <span class="n">y_grid1d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="n">y_grid</span><span class="p">)</span>
     <span class="n">fermat_surface</span> <span class="o">=</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_grid1d</span><span class="p">,</span> <span class="n">y_grid1d</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">)</span>
     <span class="n">fermat_surface</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">fermat_surface</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">kwargs_contours</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">kwargs_contours</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="c1">#, cmap=&#39;Greys&#39;, vmin=-1, vmax=1) #, cmap=self._cmap, vmin=v_min, vmax=v_max)</span>
     <span class="k">if</span> <span class="n">with_caustics</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -274,12 +280,12 @@
         <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.lens_equation_solver</span> <span class="kn">import</span> <span class="n">LensEquationSolver</span>
         <span class="n">solver</span> <span class="o">=</span> <span class="n">LensEquationSolver</span><span class="p">(</span><span class="n">lensModel</span><span class="p">)</span>
         <span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">image_position_from_source</span><span class="p">(</span><span class="n">sourcePos_x</span><span class="p">,</span> <span class="n">sourcePos_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
-                                                                 <span class="n">min_distance</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="n">deltaPix</span><span class="o">*</span><span class="n">numPix</span><span class="p">)</span>
+                                                             <span class="n">min_distance</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">,</span> <span class="n">search_window</span><span class="o">=</span><span class="n">deltaPix</span><span class="o">*</span><span class="n">numPix</span><span class="p">)</span>
 
         <span class="n">fermat_pot_images</span> <span class="o">=</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-        <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">fermat_surface</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>  <span class="c1"># extent=[0, _frame_size, 0, _frame_size],</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">fermat_surface</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="s1">&#39;lower&#39;</span><span class="p">,</span>  <span class="c1"># extent=[0, _frame_size, 0, _frame_size],</span>
                         <span class="n">levels</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">fermat_pot_images</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs_contours</span><span class="p">)</span>
-        <span class="n">mag_images</span> <span class="o">=</span> <span class="n">lensModel</span><span class="o">.</span><span class="n">magnification</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+        <span class="c1"># mag_images = lensModel.magnification(theta_x, theta_y, kwargs_lens)</span>
         <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">_coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">theta_x</span><span class="p">,</span> <span class="n">theta_y</span><span class="p">)</span>
         <span class="n">abc_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">]</span>
 
@@ -468,14 +474,14 @@
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">lambda_tan2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\lambda_</span><span class="si">{tan}</span><span class="s2">$&quot;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">orientation_angle2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;$\phi$&quot;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">lambda_tan</span> <span class="o">*</span> <span class="n">lambda_rad</span><span class="p">),</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;magnification&#39;</span><span class="p">)</span>
-    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dlambda_rad_drad2d</span><span class="o">/</span><span class="n">lambda_rad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_rad_drad&#39;</span><span class="p">)</span>
+    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dlambda_rad_drad2d</span><span class="o">/</span><span class="n">lambda_rad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-.</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_rad_drad&#39;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dlambda_tan_dtan2d</span><span class="o">/</span><span class="n">lambda_tan2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_tan_dtan&#39;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dlambda_tan_drad2d</span><span class="o">/</span><span class="n">lambda_tan2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mi">20</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_tan_drad&#39;</span><span class="p">)</span>
-    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dlambda_rad_dtan2d</span><span class="o">/</span><span class="n">lambda_rad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_rad_dtan&#39;</span><span class="p">)</span>
+    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dlambda_rad_dtan2d</span><span class="o">/</span><span class="n">lambda_rad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-.</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dlambda_rad_dtan&#39;</span><span class="p">)</span>
 
-    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dphi_rad_drad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_rad_drad&#39;</span><span class="p">)</span>
+    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dphi_rad_drad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-.</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_rad_drad&#39;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dphi_tan_dtan2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_tan_dtan: curvature radius&#39;</span><span class="p">)</span>
-    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dphi_tan_drad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="mf">.1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mf">.1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_tan_drad&#39;</span><span class="p">)</span>
+    <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dphi_tan_drad2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-.</span><span class="mi">1</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_tan_drad&#39;</span><span class="p">)</span>
     <span class="n">_plot_frame</span><span class="p">(</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">dphi_rad_dtan2d</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">text_string</span><span class="o">=</span><span class="s1">&#39;dphi_rad_dtan&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">axes</span></div>
@@ -491,7 +497,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -510,14 +516,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Plots.lens_plot</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

@@ -5,14 +5,15 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
+    <title>lenstronomy.LensModel.lens_model &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
     
-    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/jquery.js"></script>
     <script src="../../../_static/underscore.js"></script>
     <script src="../../../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -26,7 +27,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_model</a></li> 
       </ul>
@@ -41,6 +42,7 @@
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.single_plane</span> <span class="kn">import</span> <span class="n">SinglePlane</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.LineOfSight.single_plane_los</span> <span class="kn">import</span> <span class="n">SinglePlaneLOS</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.MultiPlane.multi_plane</span> <span class="kn">import</span> <span class="n">MultiPlane</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Cosmo.lens_cosmo</span> <span class="kn">import</span> <span class="n">LensCosmo</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">constants</span> <span class="k">as</span> <span class="n">const</span>
@@ -51,11 +53,15 @@
 <div class="viewcode-block" id="LensModel"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel">[docs]</a><span class="k">class</span> <span class="nc">LensModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class to handle an arbitrary list of lens models. This is the main lenstronomy LensModel API for all other modules.</span>
+<span class="sd">    NH modifiying to include LOS effects 08/09/21 #NHmod</span>
+<span class="sd">    PF modifying to make the detection of LOS effects automatic and remove los_effects flag #PFmod</span>
+<span class="sd">    DJ modifying to change kwargs_lens to kwargs in fermat_potential and time_delay functions, for implementation of LOS effects #DJmod</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo_interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">z_interp_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_z_interp</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">z_source_convention</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo_interp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">z_interp_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_z_interp</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
                  <span class="n">kwargs_interp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -94,11 +100,26 @@
             <span class="kn">from</span> <span class="nn">astropy.cosmology</span> <span class="kn">import</span> <span class="n">default_cosmology</span>
             <span class="n">cosmo</span> <span class="o">=</span> <span class="n">default_cosmology</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cosmo</span> <span class="o">=</span> <span class="n">cosmo</span>
+
+        <span class="c1"># Are there line-of-sight corrections?</span>
+        <span class="n">permitted_los_models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LOS&#39;</span><span class="p">,</span> <span class="s1">&#39;LOS_MINIMAL&#39;</span><span class="p">]</span>
+        <span class="n">los_models</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">)</span>
+                      <span class="k">if</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">permitted_los_models</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">los_models</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">los_effects</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">los_models</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">los_effects</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">index_los</span><span class="p">,</span> <span class="n">los_model</span> <span class="o">=</span> <span class="n">los_models</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You can only have one model for line-of-sight corrections.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Multi-plane or single-plane lensing?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">multi_plane</span> <span class="o">=</span> <span class="n">multi_plane</span>
         <span class="k">if</span> <span class="n">multi_plane</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;z_source needs to be set for multi-plane lens modelling.&#39;</span><span class="p">)</span>
-
+            <span class="k">if</span> <span class="n">los_effects</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;LOS effects and multi-plane lensing are incompatible.&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">MultiPlane</span><span class="p">(</span><span class="n">z_source</span><span class="p">,</span> <span class="n">lens_model_list</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">,</span>
                                          <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
                                          <span class="n">observed_convention_index</span><span class="o">=</span><span class="n">observed_convention_index</span><span class="p">,</span>
@@ -106,9 +127,22 @@
                                          <span class="n">z_interp_stop</span><span class="o">=</span><span class="n">z_interp_stop</span><span class="p">,</span> <span class="n">num_z_interp</span><span class="o">=</span><span class="n">num_z_interp</span><span class="p">,</span>
                                          <span class="n">kwargs_interp</span><span class="o">=</span><span class="n">kwargs_interp</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
-                                          <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span>
-                                          <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">,</span> <span class="n">kwargs_interp</span><span class="o">=</span><span class="n">kwargs_interp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">los_effects</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Adding &#39;</span><span class="o">+</span><span class="n">los_model</span><span class="o">+</span><span class="s1">&#39; to the main lens.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlaneLOS</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span>
+                    <span class="n">index_los</span><span class="o">=</span><span class="n">index_los</span><span class="p">,</span>
+                    <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
+                    <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span>
+                    <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">,</span>
+                    <span class="n">kwargs_interp</span><span class="o">=</span><span class="n">kwargs_interp</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No line-of-sight effects being added.&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span> <span class="o">=</span> <span class="n">SinglePlane</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span>
+                    <span class="n">numerical_alpha_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
+                    <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span>
+                    <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">,</span>
+                    <span class="n">kwargs_interp</span><span class="o">=</span><span class="n">kwargs_interp</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="n">z_lens</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">z_source</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span> <span class="o">=</span> <span class="n">LensCosmo</span><span class="p">(</span><span class="n">z_lens</span><span class="p">,</span> <span class="n">z_source</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="n">cosmo</span><span class="p">)</span>
 
@@ -126,7 +160,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LensModel.fermat_potential"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.fermat_potential">[docs]</a>    <span class="k">def</span> <span class="nf">fermat_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LensModel.fermat_potential"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.fermat_potential">[docs]</a>    <span class="k">def</span> <span class="nf">fermat_potential</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>       <span class="c1">#DJmod  replaced &quot;kwargs_lens&quot; with &quot;kwargs&quot; (kw_l -&gt; kw)</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Fermat potential (negative sign means earlier arrival time)</span>
 <span class="sd">        for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and</span>
@@ -136,27 +170,27 @@
 <span class="sd">        :param y_image: image position</span>
 <span class="sd">        :param x_source: source position</span>
 <span class="sd">        :param y_source: source position</span>
-<span class="sd">        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes</span>
+<span class="sd">        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes</span>
 <span class="sd">        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="p">,</span> <span class="s1">&#39;fermat_potential&#39;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span><span class="p">)</span>         <span class="c1">#kw_l -&gt; kw</span>
         <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="p">,</span> <span class="s1">&#39;arrival_time&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_lensCosmo&#39;</span><span class="p">):</span>
-            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="n">fermat_pot_eff</span> <span class="o">=</span> <span class="n">dt</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">c</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lensCosmo</span><span class="o">.</span><span class="n">ddt</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">Mpc</span> <span class="o">*</span> <span class="n">const</span><span class="o">.</span><span class="n">day_s</span> <span class="o">/</span> <span class="n">const</span><span class="o">.</span><span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span>
             <span class="k">return</span> <span class="n">fermat_pot_eff</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;In multi-plane lensing you need to provide a specific z_lens and z_source for which the &#39;</span>
                              <span class="s1">&#39;effective Fermat potential is evaluated&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="LensModel.arrival_time"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.arrival_time">[docs]</a>    <span class="k">def</span> <span class="nf">arrival_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LensModel.arrival_time"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model.LensModel.arrival_time">[docs]</a>    <span class="k">def</span> <span class="nf">arrival_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_source</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Arrival time of images relative to a straight line without lensing.</span>
 <span class="sd">        Negative values correspond to images arriving earlier, and positive signs correspond to images arriving later.</span>
 
 <span class="sd">        :param x_image: image position</span>
 <span class="sd">        :param y_image: image position</span>
-<span class="sd">        :param kwargs_lens: lens model parameter keyword argument list</span>
+<span class="sd">        :param kwargs: lens model parameter keyword argument list</span>
 <span class="sd">        :param kappa_ext: external convergence contribution not accounted in the lens model that leads to the same</span>
 <span class="sd">         observables in position and relative fluxes but rescales the time delays</span>
 <span class="sd">        :param x_source: source position (optional), otherwise computed with ray-tracing</span>
@@ -164,9 +198,9 @@
 <span class="sd">        :return: arrival time of image positions in units of days</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="p">,</span> <span class="s1">&#39;arrival_time&#39;</span><span class="p">):</span>
-            <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="n">arrival_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">arrival_time</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>         <span class="c1">#kw_l -&gt; kw</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="n">x_source</span><span class="p">,</span>
+            <span class="n">fermat_pot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens_model</span><span class="o">.</span><span class="n">fermat_potential</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">x_source</span><span class="o">=</span><span class="n">x_source</span><span class="p">,</span>
                                                           <span class="n">y_source</span><span class="o">=</span><span class="n">y_source</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_lensCosmo&#39;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;LensModel class was not initialized with lens and source redshifts!&quot;</span><span class="p">)</span>
@@ -454,7 +488,7 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -473,14 +507,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_model</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

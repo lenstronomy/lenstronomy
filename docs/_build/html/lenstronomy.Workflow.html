@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lenstronomy.Workflow package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Workflow package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow package</a></li> 
       </ul>
@@ -46,38 +46,38 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="lenstronomy-workflow-package">
+  <div class="section" id="lenstronomy-workflow-package">
 <h1>lenstronomy.Workflow package<a class="headerlink" href="#lenstronomy-workflow-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-lenstronomy.Workflow.alignment_matching">
+</div>
+<div class="section" id="module-lenstronomy.Workflow.alignment_matching">
 <span id="lenstronomy-workflow-alignment-matching-module"></span><h2>lenstronomy.Workflow.alignment_matching module<a class="headerlink" href="#module-lenstronomy.Workflow.alignment_matching" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentFitting">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Workflow.alignment_matching.</span></span><span class="sig-name descname"><span class="pre">AlignmentFitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_band_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood_mask_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentFitting">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="sig-name descname">AlignmentFitting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multi_band_list</span></em>, <em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em>, <em class="sig-param"><span class="n">band_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">likelihood_mask_list</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class which executes the different sampling  methods</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso">
-<span class="sig-name descname"><span class="pre">pso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_particles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting.pso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso">
+<code class="sig-name descname">pso</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_particles</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">lowerLimit</span><span class="o">=</span><span class="default_value">- 0.2</span></em>, <em class="sig-param"><span class="n">upperLimit</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">threadCount</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">mpi</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">print_key</span><span class="o">=</span><span class="default_value">'default'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentFitting.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the best fit for the lense model on catalogue basis with particle swarm optimizer</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Workflow.alignment_matching.</span></span><span class="sig-name descname"><span class="pre">AlignmentLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_band_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">likelihood_mask_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Workflow.alignment_matching.</code><code class="sig-name descname">AlignmentLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">multi_band_list</span></em>, <em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em>, <em class="sig-param"><span class="n">band_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">likelihood_mask_list</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.computeLikelihood">
-<span class="sig-name descname"><span class="pre">computeLikelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ctx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.computeLikelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.computeLikelihood" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.computeLikelihood">
+<code class="sig-name descname">computeLikelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ctx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.computeLikelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.computeLikelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.get_args">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.get_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.get_args" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.get_args">
+<em class="property">static </em><code class="sig-name descname">get_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.get_args" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>kwargs_data</strong> – </p>
@@ -89,23 +89,23 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.likelihood">
-<span class="sig-name descname"><span class="pre">likelihood</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.likelihood"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.num_param">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_param</span></span><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.num_param" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.likelihood">
+<code class="sig-name descname">likelihood</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.likelihood"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.likelihood" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.setup">
-<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.setup"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.setup" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.num_param">
+<em class="property">property </em><code class="sig-name descname">num_param</code><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.num_param" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_data">
-<span class="sig-name descname"><span class="pre">update_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.update_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_data" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_data">
+<code class="sig-name descname">update_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.update_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_data" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>args</strong> – </p>
@@ -117,8 +117,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_multi_band">
-<span class="sig-name descname"><span class="pre">update_multi_band</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.update_multi_band"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_multi_band" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_multi_band">
+<code class="sig-name descname">update_multi_band</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/alignment_matching.html#AlignmentLikelihood.update_multi_band"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.alignment_matching.AlignmentLikelihood.update_multi_band" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>args</strong> – list of parameters</p>
@@ -131,19 +131,19 @@
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Workflow.fitting_sequence">
+</div>
+<div class="section" id="module-lenstronomy.Workflow.fitting_sequence">
 <span id="lenstronomy-workflow-fitting-sequence-module"></span><h2>lenstronomy.Workflow.fitting_sequence module<a class="headerlink" href="#module-lenstronomy.Workflow.fitting_sequence" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Workflow.fitting_sequence.</span></span><span class="sig-name descname"><span class="pre">FittingSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_data_joint</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Workflow.fitting_sequence.</code><code class="sig-name descname">FittingSequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_data_joint</span></em>, <em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">kwargs_constraints</span></em>, <em class="sig-param"><span class="n">kwargs_likelihood</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em>, <em class="sig-param"><span class="n">mpi</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to define a sequence of fitting applied, inherit the Fitting class
 this is a Workflow manager that allows to update model configurations before executing another step in the modelling
 The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images">
-<span class="sig-name descname"><span class="pre">align_images</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_particles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lowerLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upperLimit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.align_images"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images">
+<code class="sig-name descname">align_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_particles</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">n_iterations</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">lowerLimit</span><span class="o">=</span><span class="default_value">- 0.2</span></em>, <em class="sig-param"><span class="n">upperLimit</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">threadCount</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">compute_bands</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.align_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.align_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>aligns the coordinate systems of different exposures within a fixed model parameterisation by executing a PSO
 with relative coordinate shifts as free parameters</p>
 <dl class="field-list simple">
@@ -163,8 +163,8 @@ with relative coordinate shifts as free parameters</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit">
-<span class="sig-name descname"><span class="pre">best_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bijective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.best_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit">
+<code class="sig-name descname">best_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bijective</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.best_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>bijective</strong> – bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.</p>
@@ -175,9 +175,9 @@ with relative coordinate shifts as free parameters</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit_likelihood">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">best_fit_likelihood</span></span><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit_likelihood" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit_likelihood">
+<em class="property">property </em><code class="sig-name descname">best_fit_likelihood</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit_likelihood" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the log likelihood of the best fit model of the current state of this class</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -186,16 +186,16 @@ with relative coordinate shifts as free parameters</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.bic">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bic</span></span><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.bic" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.bic">
+<em class="property">property </em><code class="sig-name descname">bic</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.bic" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the bayesian information criterion of the model.
 :return: bic value, float</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">
-<span class="sig-name descname"><span class="pre">fit_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fitting_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fit_sequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence">
+<code class="sig-name descname">fit_sequence</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fitting_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fit_sequence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fit_sequence" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>fitting_list</strong> – list of [[‘string’, {kwargs}], ..] with ‘string being the specific fitting option and
@@ -208,8 +208,8 @@ kwargs being the arguments passed to this option</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fix_not_computed">
-<span class="sig-name descname"><span class="pre">fix_not_computed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">free_bands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fix_not_computed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fix_not_computed" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.fix_not_computed">
+<code class="sig-name descname">fix_not_computed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">free_bands</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.fix_not_computed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.fix_not_computed" title="Permalink to this definition">¶</a></dt>
 <dd><p>fixes lens model parameters of imaging bands/frames that are not computed and frees the parameters of the other
 lens models to the initial kwargs_fixed options</p>
 <dl class="field-list simple">
@@ -223,8 +223,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed">
-<span class="sig-name descname"><span class="pre">kwargs_fixed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.kwargs_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed">
+<code class="sig-name descname">kwargs_fixed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.kwargs_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.kwargs_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>returns the updated kwargs_fixed from the update Manager</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -233,9 +233,9 @@ lens models to the initial kwargs_fixed options</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">likelihoodModule</span></span><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule">
+<em class="property">property </em><code class="sig-name descname">likelihoodModule</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.likelihoodModule" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Likelihood() class instance reflecting the current state of FittingSequence</p>
@@ -244,8 +244,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc">
-<span class="sig-name descname"><span class="pre">mcmc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_burn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_run</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">walkerRatio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_walkers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re_use_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sampler_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'EMCEE'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backup_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_from_backup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc">
+<code class="sig-name descname">mcmc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_burn</span></em>, <em class="sig-param"><span class="n">n_run</span></em>, <em class="sig-param"><span class="n">walkerRatio</span></em>, <em class="sig-param"><span class="n">n_walkers</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sigma_scale</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">threadCount</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">init_samples</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">re_use_samples</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">sampler_type</span><span class="o">=</span><span class="default_value">'EMCEE'</span></em>, <em class="sig-param"><span class="n">progress</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">backup_filename</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">start_from_backup</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.mcmc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.mcmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>MCMC routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -269,8 +269,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling">
-<span class="sig-name descname"><span class="pre">nested_sampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampler_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'MULTINEST'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'uniform'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_basename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'chain'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dypolychord_dynamic_goal</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">polychord_settings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dypolychord_seed_increment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'nested_sampling_chains'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynesty_bound</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'multi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynesty_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.nested_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling">
+<code class="sig-name descname">nested_sampling</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sampler_type</span><span class="o">=</span><span class="default_value">'MULTINEST'</span></em>, <em class="sig-param"><span class="n">kwargs_run</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">prior_type</span><span class="o">=</span><span class="default_value">'uniform'</span></em>, <em class="sig-param"><span class="n">width_scale</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">sigma_scale</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">output_basename</span><span class="o">=</span><span class="default_value">'chain'</span></em>, <em class="sig-param"><span class="n">remove_output_dir</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dypolychord_dynamic_goal</span><span class="o">=</span><span class="default_value">0.8</span></em>, <em class="sig-param"><span class="n">polychord_settings</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">dypolychord_seed_increment</span><span class="o">=</span><span class="default_value">200</span></em>, <em class="sig-param"><span class="n">output_dir</span><span class="o">=</span><span class="default_value">'nested_sampling_chains'</span></em>, <em class="sig-param"><span class="n">dynesty_bound</span><span class="o">=</span><span class="default_value">'multi'</span></em>, <em class="sig-param"><span class="n">dynesty_sample</span><span class="o">=</span><span class="default_value">'auto'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.nested_sampling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.nested_sampling" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run (Dynamic) Nested Sampling algorithms, depending on the type of algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -295,9 +295,9 @@ lens models to the initial kwargs_fixed options</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.param_class">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_class</span></span><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.param_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.param_class">
+<em class="property">property </em><code class="sig-name descname">param_class</code><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.param_class" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Param() class instance reflecting the current state of FittingSequence</p>
@@ -306,8 +306,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration">
-<span class="sig-name descname"><span class="pre">psf_iteration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compute_bands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_psf_iter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.psf_iteration"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration">
+<code class="sig-name descname">psf_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">compute_bands</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs_psf_iter</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.psf_iteration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.psf_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>iterative PSF reconstruction</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -323,8 +323,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.pso">
-<span class="sig-name descname"><span class="pre">pso</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_particles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PSO'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.pso"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.pso" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.pso">
+<code class="sig-name descname">pso</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_particles</span></em>, <em class="sig-param"><span class="n">n_iterations</span></em>, <em class="sig-param"><span class="n">sigma_scale</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">print_key</span><span class="o">=</span><span class="default_value">'PSO'</span></em>, <em class="sig-param"><span class="n">threadCount</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.pso"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.pso" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particle Swarm Optimization</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -343,8 +343,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value">
-<span class="sig-name descname"><span class="pre">set_param_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.set_param_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value">
+<code class="sig-name descname">set_param_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.set_param_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.set_param_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a parameter to a specific value. <cite>kwargs</cite> are below.
 :param lens: [[i_model, [‘param1’, ‘param2’,…], […]]
 :type lens:
@@ -359,8 +359,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.simplex">
-<span class="sig-name descname"><span class="pre">simplex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Nelder-Mead'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.simplex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.simplex" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.simplex">
+<code class="sig-name descname">simplex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_iterations</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'Nelder-Mead'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.simplex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.simplex" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downhill simplex optimization using the Nelder-Mead algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,8 +376,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.update_settings">
-<span class="sig-name descname"><span class="pre">update_settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_constraints</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_likelihood</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ps_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ps_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_source_lower_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_source_upper_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_lens_lower_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_lens_upper_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.update_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_settings" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.update_settings">
+<code class="sig-name descname">update_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_model</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">kwargs_constraints</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">kwargs_likelihood</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">lens_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">source_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ps_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">cosmo_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">source_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ps_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">cosmo_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">change_source_lower_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_source_upper_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_lens_lower_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_lens_upper_limit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.update_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates lenstronomy settings “on the fly”</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -405,8 +405,8 @@ lens models to the initial kwargs_fixed options</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state">
-<span class="sig-name descname"><span class="pre">update_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_update</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.update_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state">
+<code class="sig-name descname">update_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_update</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/fitting_sequence.html#FittingSequence.update_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.fitting_sequence.FittingSequence.update_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates current best fit state to the input model keywords specified.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -420,12 +420,12 @@ lens models to the initial kwargs_fixed options</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Workflow.psf_fitting">
+</div>
+<div class="section" id="module-lenstronomy.Workflow.psf_fitting">
 <span id="lenstronomy-workflow-psf-fitting-module"></span><h2>lenstronomy.Workflow.psf_fitting module<a class="headerlink" href="#module-lenstronomy.Workflow.psf_fitting" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Workflow.psf_fitting.</span></span><span class="sig-name descname"><span class="pre">PsfFitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_model_class</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Workflow.psf_fitting.</code><code class="sig-name descname">PsfFitting</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_model_class</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to find subsequently a better psf
 The method make use of a model and subtracts all the non-point source components of the model from the data.
@@ -449,8 +449,8 @@ limited constraints/number of point sources in the image.</p>
 <p>The procedure only requires and changes the ‘point_source_kernel’ in the PSF() class and the ‘psf_error_map’.
 Any previously set subgrid kernels or pixel_kernels are removed and constructed from the ‘point_source_kernel’.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.combine_psf">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">combine_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_list_new</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacking_option</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.combine_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.combine_psf" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.combine_psf">
+<em class="property">static </em><code class="sig-name descname">combine_psf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel_list_new</span></em>, <em class="sig-param"><span class="n">kernel_old</span></em>, <em class="sig-param"><span class="n">factor</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">stacking_option</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">symmetry</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.combine_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.combine_psf" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates psf estimate based on old kernel and several new estimates
 :param kernel_list_new: list of new PSF kernels estimated from the point sources in the image (un-normalized)
 :param kernel_old: old PSF kernel
@@ -462,8 +462,8 @@ factor=0 means old estimate
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf">
-<span class="sig-name descname"><span class="pre">cutout_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_center_neighbour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.cutout_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf">
+<code class="sig-name descname">cutout_psf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_image</span></em>, <em class="sig-param"><span class="n">dec_image</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">image_list</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">kernel_init</span></em>, <em class="sig-param"><span class="n">block_center_neighbour</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.cutout_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -486,8 +486,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cutout_psf_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.cutout_psf_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single">
+<em class="property">static </em><code class="sig-name descname">cutout_psf_single</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">image</span></em>, <em class="sig-param"><span class="n">mask</span></em>, <em class="sig-param"><span class="n">kernel_size</span></em>, <em class="sig-param"><span class="n">kernel_init</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.cutout_psf_single"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.cutout_psf_single" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -506,8 +506,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate">
-<span class="sig-name descname"><span class="pre">error_map_estimate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">star_cutout_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_map_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_center_neighbour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.error_map_estimate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate">
+<code class="sig-name descname">error_map_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">star_cutout_list</span></em>, <em class="sig-param"><span class="n">amp</span></em>, <em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">error_map_radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">block_center_neighbour</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.error_map_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate" title="Permalink to this definition">¶</a></dt>
 <dd><p>provides a psf_error_map based on the goodness of fit of the given PSF kernel on the point source cutouts,
 their estimated amplitudes and positions</p>
 <dl class="field-list simple">
@@ -531,8 +531,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate_new">
-<span class="sig-name descname"><span class="pre">error_map_estimate_new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">psf_kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_kernel_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_map_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.error_map_estimate_new"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate_new" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate_new">
+<code class="sig-name descname">error_map_estimate_new</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">psf_kernel</span></em>, <em class="sig-param"><span class="n">psf_kernel_list</span></em>, <em class="sig-param"><span class="n">ra_image</span></em>, <em class="sig-param"><span class="n">dec_image</span></em>, <em class="sig-param"><span class="n">point_amp</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">error_map_radius</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.error_map_estimate_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.error_map_estimate_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>relative uncertainty in the psf model (in quadrature) per pixel based on residuals achieved in the image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -553,8 +553,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source">
-<span class="sig-name descname"><span class="pre">image_single_point_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_model_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.image_single_point_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source">
+<code class="sig-name descname">image_single_point_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_model_class</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.image_single_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.image_single_point_source" title="Permalink to this definition">¶</a></dt>
 <dd><p>return model without including the point source contributions as a list (for each point source individually)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -570,8 +570,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.mask_point_source">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mask_point_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.mask_point_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.mask_point_source" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.mask_point_source">
+<em class="property">static </em><code class="sig-name descname">mask_point_source</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">x_grid</span></em>, <em class="sig-param"><span class="n">y_grid</span></em>, <em class="sig-param"><span class="n">radius</span></em>, <em class="sig-param"><span class="n">i</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.mask_point_source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.mask_point_source" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -590,8 +590,8 @@ contaminate the estimate.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.point_like_source_cutouts">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">point_like_source_cutouts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutout_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.point_like_source_cutouts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.point_like_source_cutouts" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.point_like_source_cutouts">
+<em class="property">static </em><code class="sig-name descname">point_like_source_cutouts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x_pos</span></em>, <em class="sig-param"><span class="n">y_pos</span></em>, <em class="sig-param"><span class="n">image_list</span></em>, <em class="sig-param"><span class="n">cutout_size</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.point_like_source_cutouts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.point_like_source_cutouts" title="Permalink to this definition">¶</a></dt>
 <dd><p>cutouts of point-like objects</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -610,8 +610,8 @@ the point-like object to be cut out.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.psf_estimate_individual">
-<span class="sig-name descname"><span class="pre">psf_estimate_individual</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">residuals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutout_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel_guess</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_center_neighbour</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.psf_estimate_individual"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.psf_estimate_individual" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.psf_estimate_individual">
+<code class="sig-name descname">psf_estimate_individual</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_image</span></em>, <em class="sig-param"><span class="n">dec_image</span></em>, <em class="sig-param"><span class="n">point_amp</span></em>, <em class="sig-param"><span class="n">residuals</span></em>, <em class="sig-param"><span class="n">cutout_size</span></em>, <em class="sig-param"><span class="n">kernel_guess</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">block_center_neighbour</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.psf_estimate_individual"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.psf_estimate_individual" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -632,8 +632,8 @@ the point-like object to be cut out.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative">
-<span class="sig-name descname"><span class="pre">update_iterative</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_psf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_psf_error_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_break</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_psf_update</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_iterative"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative">
+<code class="sig-name descname">update_iterative</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_psf</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em>, <em class="sig-param"><span class="n">num_iter</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">keep_psf_error_map</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">no_break</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs_psf_update</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_iterative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_iterative" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -655,8 +655,8 @@ passed to update_psf() method</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">
-<span class="sig-name descname"><span class="pre">update_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_psf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stacking_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_symmetry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf_iter_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_center_neighbour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_map_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">block_center_neighbour_error_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_procedure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf">
+<code class="sig-name descname">update_psf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_psf</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em>, <em class="sig-param"><span class="n">stacking_method</span><span class="o">=</span><span class="default_value">'median'</span></em>, <em class="sig-param"><span class="n">psf_symmetry</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">psf_iter_factor</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">block_center_neighbour</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">error_map_radius</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">block_center_neighbour_error_map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">new_procedure</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/psf_fitting.html#PsfFitting.update_psf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.psf_fitting.PsfFitting.update_psf" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -690,18 +690,18 @@ estimates of the ERROR MAP is ignored. If None, then the value of block_center_n
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Workflow.update_manager">
+</div>
+<div class="section" id="module-lenstronomy.Workflow.update_manager">
 <span id="lenstronomy-workflow-update-manager-module"></span><h2>lenstronomy.Workflow.update_manager module<a class="headerlink" href="#module-lenstronomy.Workflow.update_manager" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Workflow.update_manager.</span></span><span class="sig-name descname"><span class="pre">UpdateManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_likelihood</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_params</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.Workflow.update_manager.</code><code class="sig-name descname">UpdateManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">kwargs_constraints</span></em>, <em class="sig-param"><span class="n">kwargs_likelihood</span></em>, <em class="sig-param"><span class="n">kwargs_params</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>this class manages the parameter constraints as they may evolve through the steps of the modeling.
 This includes: keeping certain parameters fixed during one modelling step</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.best_fit">
-<span class="sig-name descname"><span class="pre">best_fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bijective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.best_fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.best_fit" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.best_fit">
+<code class="sig-name descname">best_fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bijective</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.best_fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.best_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>best fit (max likelihood) position for all the model parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -716,8 +716,8 @@ remain in the image plane rather than being mapped to the source plane.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters">
-<span class="sig-name descname"><span class="pre">fix_image_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.fix_image_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters">
+<code class="sig-name descname">fix_image_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_index</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.fix_image_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fix_image_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>fixes all parameters that are only assigned to a specific image. This allows to sample only parameters that
 constraint by the fitting of a sub-set of the images.</p>
 <dl class="field-list simple">
@@ -730,14 +730,14 @@ constraint by the fitting of a sub-set of the images.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fixed_kwargs</span></span><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs">
+<em class="property">property </em><code class="sig-name descname">fixed_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.fixed_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_kwargs</span></span><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs">
+<em class="property">property </em><code class="sig-name descname">init_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.init_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>keyword arguments for all model components of the initial mean model proposition in the sampling</p>
@@ -745,9 +745,9 @@ constraint by the fitting of a sub-set of the images.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.param_class">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param_class</span></span><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.param_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.param_class">
+<em class="property">property </em><code class="sig-name descname">param_class</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.param_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>creating instance of lenstronomy Param() class. It uses the keyword arguments in self.kwargs_constraints as
 __init__() arguments, as well as self.kwargs_model, and the set of kwargs_fixed___, kwargs_lower___,
 kwargs_upper___ arguments for lens, lens_light, source, point source, extinction and special parameters.</p>
@@ -758,9 +758,9 @@ kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.parameter_state">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameter_state</span></span><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.parameter_state" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.parameter_state">
+<em class="property">property </em><code class="sig-name descname">parameter_state</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.parameter_state" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>parameter state saved in this class</p>
@@ -769,8 +769,8 @@ kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.set_init_state">
-<span class="sig-name descname"><span class="pre">set_init_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.set_init_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.set_init_state" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.set_init_state">
+<code class="sig-name descname">set_init_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.set_init_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.set_init_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>set the current state of the parameters to the initial one.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -779,9 +779,9 @@ kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.sigma_kwargs">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sigma_kwargs</span></span><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.sigma_kwargs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.sigma_kwargs">
+<em class="property">property </em><code class="sig-name descname">sigma_kwargs</code><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.sigma_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>keyword arguments for all model components of the initial 1-sigma width proposition in the sampling</p>
@@ -790,8 +790,8 @@ kwargs_upper___ arguments for lens, lens_light, source, point source, extinction
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">
-<span class="sig-name descname"><span class="pre">update_fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ps_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_add_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ps_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">special_remove_fixed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">
+<code class="sig-name descname">update_fixed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lens_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">source_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ps_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">special_add_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">source_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ps_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">special_remove_fixed</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed" title="Permalink to this definition">¶</a></dt>
 <dd><p>adds or removes the values of the keyword arguments that are stated in the _add_fixed to the existing fixed
 arguments. convention for input arguments are:
 [[i_model, [‘param_name1’, ‘param_name2’, …], [value1, value2, … (optional)], [], …]</p>
@@ -817,8 +817,8 @@ arguments. convention for input arguments are:
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.update_limits">
-<span class="sig-name descname"><span class="pre">update_limits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">change_source_lower_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_source_upper_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_lens_lower_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">change_lens_upper_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_limits"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_limits" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_limits">
+<code class="sig-name descname">update_limits</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">change_source_lower_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_source_upper_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_lens_lower_limit</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">change_lens_upper_limit</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_limits" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates the limits (lower and upper) of the update manager instance</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -836,8 +836,8 @@ arguments. convention for input arguments are:
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.update_options">
-<span class="sig-name descname"><span class="pre">update_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_constraints</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_likelihood</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_options" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_options">
+<code class="sig-name descname">update_options</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_model</span></em>, <em class="sig-param"><span class="n">kwargs_constraints</span></em>, <em class="sig-param"><span class="n">kwargs_likelihood</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_options"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_options" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates the options by overwriting the kwargs with the new ones being added/changed
 WARNING: some updates may not be valid depending on the model options. Use carefully!</p>
 <dl class="field-list simple">
@@ -856,8 +856,8 @@ class_creator.create_class_instances() that are updated from previous arguments<
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.update_param_state">
-<span class="sig-name descname"><span class="pre">update_param_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_special</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_extinction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_state" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_param_state">
+<code class="sig-name descname">update_param_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs_lens</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_source</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_lens_light</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_ps</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_special</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs_extinction</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>updates the temporary state of the parameters being saved. ATTENTION: Any previous knowledge gets lost if you
 call this function</p>
 <dl class="field-list simple">
@@ -878,8 +878,8 @@ call this function</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.Workflow.update_manager.UpdateManager.update_param_value">
-<span class="sig-name descname"><span class="pre">update_param_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_value" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.Workflow.update_manager.UpdateManager.update_param_value">
+<code class="sig-name descname">update_param_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lens</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">source</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">lens_light</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ps</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Workflow/update_manager.html#UpdateManager.update_param_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.Workflow.update_manager.UpdateManager.update_param_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a model parameter to a specific value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -898,11 +898,11 @@ call this function</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.Workflow">
+</div>
+<div class="section" id="module-lenstronomy.Workflow">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.Workflow" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -941,7 +941,7 @@ call this function</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -966,14 +966,14 @@ call this function</p>
         <li class="right" >
           <a href="lenstronomy.Util.html" title="lenstronomy.Util package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

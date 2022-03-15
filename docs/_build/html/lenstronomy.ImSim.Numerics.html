@@ -4,16 +4,16 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
-    <title>lenstronomy.ImSim.Numerics package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.ImSim.Numerics package &#8212; lenstronomy 1.9.3 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.MultiBand.html" title="lenstronomy.ImSim.MultiBand package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" accesskey="U">lenstronomy.ImSim package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics package</a></li> 
@@ -47,16 +47,16 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="lenstronomy-imsim-numerics-package">
+  <div class="section" id="lenstronomy-imsim-numerics-package">
 <h1>lenstronomy.ImSim.Numerics package<a class="headerlink" href="#lenstronomy-imsim-numerics-package" title="Permalink to this headline">¶</a></h1>
-<section id="submodules">
+<div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.adaptive_numerics">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.adaptive_numerics">
 <span id="lenstronomy-imsim-numerics-adaptive-numerics-module"></span><h2>lenstronomy.ImSim.Numerics.adaptive_numerics module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.adaptive_numerics" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.adaptive_numerics.</span></span><span class="sig-name descname"><span class="pre">AdaptiveConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_super</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_supersample_pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_pixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nopython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.adaptive_numerics.</code><code class="sig-name descname">AdaptiveConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel_super</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">conv_supersample_pixels</span></em>, <em class="sig-param"><span class="n">supersampling_kernel_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">compute_pixels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nopython</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">cache</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class performs convolutions of a subset of pixels at higher supersampled resolution
 Goal: speed up relative to higher resolution FFT when only considering a (small) subset of pixels to be convolved
@@ -67,8 +67,8 @@ on the higher resolution grid.</p>
 3. the same subset of pixels with low resolution Numba convolution (with same kernel as step 2)
 adaptive solution is 1 + 2 - 3</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.convolve2d">
-<span class="sig-name descname"><span class="pre">convolve2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_high_res</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution.convolve2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.convolve2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.convolve2d">
+<code class="sig-name descname">convolve2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_high_res</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution.convolve2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.convolve2d" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p>
@@ -80,11 +80,14 @@ adaptive solution is 1 + 2 - 3</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.re_size_convolve">
-<span class="sig-name descname"><span class="pre">re_size_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_low_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_high_res</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution.re_size_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.re_size_convolve">
+<code class="sig-name descname">re_size_convolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_low_res</span></em>, <em class="sig-param"><span class="n">image_high_res</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/adaptive_numerics.html#AdaptiveConvolution.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_low_res</strong> – regular sampled image/model</p></li>
+<li><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>convolved and re-sized image</p>
@@ -94,17 +97,17 @@ adaptive solution is 1 + 2 - 3</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.convolution">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.convolution">
 <span id="lenstronomy-imsim-numerics-convolution-module"></span><h2>lenstronomy.ImSim.Numerics.convolution module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.convolution" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.convolution.</span></span><span class="sig-name descname"><span class="pre">FWHMGaussianConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#FWHMGaussianConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.convolution.</code><code class="sig-name descname">FWHMGaussianConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">truncation</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#FWHMGaussianConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>uses a two-dimensional Gaussian function with same FWHM of given kernel as approximation</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution.convolution2d">
-<span class="sig-name descname"><span class="pre">convolution2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#FWHMGaussianConvolution.convolution2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution.convolution2d">
+<code class="sig-name descname">convolution2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#FWHMGaussianConvolution.convolution2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.FWHMGaussianConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>2d convolution</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -119,13 +122,13 @@ adaptive solution is 1 + 2 - 3</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.convolution.</span></span><span class="sig-name descname"><span class="pre">MGEConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.convolution.</code><code class="sig-name descname">MGEConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">pixel_scale</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>approximates a 2d kernel with an azimuthal Multi-Gaussian expansion</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution.convolution2d">
-<span class="sig-name descname"><span class="pre">convolution2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution.convolution2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution.convolution2d">
+<code class="sig-name descname">convolution2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution.convolution2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image</strong> – </p>
@@ -137,8 +140,8 @@ adaptive solution is 1 + 2 - 3</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution.kernel_difference">
-<span class="sig-name descname"><span class="pre">kernel_difference</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution.kernel_difference"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.kernel_difference" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MGEConvolution.kernel_difference">
+<code class="sig-name descname">kernel_difference</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MGEConvolution.kernel_difference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MGEConvolution.kernel_difference" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>difference between true kernel and MGE approximation</p>
@@ -149,15 +152,15 @@ adaptive solution is 1 + 2 - 3</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.convolution.</span></span><span class="sig-name descname"><span class="pre">MultiGaussianConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fraction_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pixel_scale</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_convolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.convolution.</code><code class="sig-name descname">MultiGaussianConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma_list</span></em>, <em class="sig-param"><span class="n">fraction_list</span></em>, <em class="sig-param"><span class="n">pixel_scale</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">supersampling_convolution</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">truncation</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to perform a convolution consisting of multiple 2d Gaussians
 This is aimed to lead to a speed-up without significant loss of accuracy do to the simplified convolution kernel
 relative to a pixelized kernel.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.convolution2d">
-<span class="sig-name descname"><span class="pre">convolution2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.convolution2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.convolution2d">
+<code class="sig-name descname">convolution2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.convolution2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>2d convolution</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -170,8 +173,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.pixel_kernel">
-<span class="sig-name descname"><span class="pre">pixel_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_pix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.pixel_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.pixel_kernel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.pixel_kernel">
+<code class="sig-name descname">pixel_kernel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_pix</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.pixel_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.pixel_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes a pixelized kernel from the MGE parameters</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -184,8 +187,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.re_size_convolve">
-<span class="sig-name descname"><span class="pre">re_size_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_low_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_high_res</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.re_size_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.re_size_convolve">
+<code class="sig-name descname">re_size_convolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_low_res</span></em>, <em class="sig-param"><span class="n">image_high_res</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#MultiGaussianConvolution.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.MultiGaussianConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p>
@@ -199,13 +202,13 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.convolution.</span></span><span class="sig-name descname"><span class="pre">PixelKernelConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convolution_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fft_static'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.convolution.</code><code class="sig-name descname">PixelKernelConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">convolution_type</span><span class="o">=</span><span class="default_value">'fft_static'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to compute convolutions for a given pixelized kernel (fft, grid)</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.convolution2d">
-<span class="sig-name descname"><span class="pre">convolution2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.convolution2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.convolution2d">
+<code class="sig-name descname">convolution2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.convolution2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image</strong> – 2d array (image) to be convolved</p>
@@ -217,8 +220,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.copy_transpose">
-<span class="sig-name descname"><span class="pre">copy_transpose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.copy_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.copy_transpose" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.copy_transpose">
+<code class="sig-name descname">copy_transpose</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.copy_transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.copy_transpose" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>copy of the class with kernel set to the transpose of original one</p>
@@ -227,8 +230,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.pixel_kernel">
-<span class="sig-name descname"><span class="pre">pixel_kernel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_pix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.pixel_kernel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.pixel_kernel" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.pixel_kernel">
+<code class="sig-name descname">pixel_kernel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_pix</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.pixel_kernel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.pixel_kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>access pixelated kernel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -241,11 +244,14 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve">
-<span class="sig-name descname"><span class="pre">re_size_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_low_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_high_res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.re_size_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve">
+<code class="sig-name descname">re_size_convolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_low_res</span></em>, <em class="sig-param"><span class="n">image_high_res</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#PixelKernelConvolution.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image_low_res</strong> – regular sampled image/model</p></li>
+<li><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>convolved and re-sized image</p>
@@ -256,13 +262,13 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.convolution.</span></span><span class="sig-name descname"><span class="pre">SubgridKernelConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel_supersampled</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convolution_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fft_static'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.convolution.</code><code class="sig-name descname">SubgridKernelConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel_supersampled</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">supersampling_kernel_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">convolution_type</span><span class="o">=</span><span class="default_value">'fft_static'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to compute the convolution on a supersampled grid with partial convolution computed on the regular grid</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.convolution2d">
-<span class="sig-name descname"><span class="pre">convolution2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution.convolution2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.convolution2d">
+<code class="sig-name descname">convolution2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution.convolution2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.convolution2d" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image</strong> – 2d array (high resoluton image) to be convolved and re-sized</p>
@@ -274,8 +280,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.re_size_convolve">
-<span class="sig-name descname"><span class="pre">re_size_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_low_res</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image_high_res</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution.re_size_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.re_size_convolve">
+<code class="sig-name descname">re_size_convolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image_low_res</span></em>, <em class="sig-param"><span class="n">image_high_res</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/convolution.html#SubgridKernelConvolution.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.convolution.SubgridKernelConvolution.re_size_convolve" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image_high_res</strong> – supersampled image/model to be convolved on a regular pixel grid</p>
@@ -288,17 +294,17 @@ relative to a pixelized kernel.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.grid">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.grid">
 <span id="lenstronomy-imsim-numerics-grid-module"></span><h2>lenstronomy.ImSim.Numerics.grid module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.grid" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.grid.</span></span><span class="sig-name descname"><span class="pre">AdaptiveGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_pix2angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_indexes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flux_evaluate_indexes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#AdaptiveGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.grid.</code><code class="sig-name descname">AdaptiveGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nx</span></em>, <em class="sig-param"><span class="n">ny</span></em>, <em class="sig-param"><span class="n">transform_pix2angle</span></em>, <em class="sig-param"><span class="n">ra_at_xy_0</span></em>, <em class="sig-param"><span class="n">dec_at_xy_0</span></em>, <em class="sig-param"><span class="n">supersampling_indexes</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#AdaptiveGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates1D" title="lenstronomy.Data.coord_transforms.Coordinates1D"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Data.coord_transforms.Coordinates1D</span></code></a></p>
 <p>manages a super-sampled grid on the partial image</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.coordinates_evaluate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates_evaluate</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.coordinates_evaluate">
+<em class="property">property </em><code class="sig-name descname">coordinates_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>1d array of all coordinates being evaluated to perform the image computation</p>
@@ -307,8 +313,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high">
-<span class="sig-name descname"><span class="pre">flux_array2image_low_high</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flux_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high_res_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#AdaptiveGrid.flux_array2image_low_high"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high">
+<code class="sig-name descname">flux_array2image_low_high</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flux_array</span></em>, <em class="sig-param"><span class="n">high_res_return</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#AdaptiveGrid.flux_array2image_low_high"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.AdaptiveGrid.flux_array2image_low_high" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -326,13 +332,13 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.grid.</span></span><span class="sig-name descname"><span class="pre">RegularGrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ny</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transform_pix2angle</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_at_xy_0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flux_evaluate_indexes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#RegularGrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.grid.</code><code class="sig-name descname">RegularGrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nx</span></em>, <em class="sig-param"><span class="n">ny</span></em>, <em class="sig-param"><span class="n">transform_pix2angle</span></em>, <em class="sig-param"><span class="n">ra_at_xy_0</span></em>, <em class="sig-param"><span class="n">dec_at_xy_0</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#RegularGrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="lenstronomy.Data.html#lenstronomy.Data.coord_transforms.Coordinates1D" title="lenstronomy.Data.coord_transforms.Coordinates1D"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Data.coord_transforms.Coordinates1D</span></code></a></p>
 <p>manages a super-sampled grid on the partial image</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid.coordinates_evaluate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates_evaluate</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid.coordinates_evaluate">
+<em class="property">property </em><code class="sig-name descname">coordinates_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>1d array of all coordinates being evaluated to perform the image computation</p>
@@ -341,8 +347,8 @@ relative to a pixelized kernel.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid.flux_array2image_low_high">
-<span class="sig-name descname"><span class="pre">flux_array2image_low_high</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flux_array</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#RegularGrid.flux_array2image_low_high"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.flux_array2image_low_high" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid.flux_array2image_low_high">
+<code class="sig-name descname">flux_array2image_low_high</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flux_array</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/grid.html#RegularGrid.flux_array2image_low_high"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.flux_array2image_low_high" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>flux_array</strong> – 1d array of low and high resolution flux values corresponding to the coordinates_evaluate order</p>
@@ -353,23 +359,23 @@ relative to a pixelized kernel.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid.grid_points_spacing">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid_points_spacing</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.grid_points_spacing" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid.grid_points_spacing">
+<em class="property">property </em><code class="sig-name descname">grid_points_spacing</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.grid_points_spacing" title="Permalink to this definition">¶</a></dt>
 <dd><p>effective spacing between coordinate points, after supersampling
 :return: sqrt(pixel_area)/supersampling_factor</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid.num_grid_points_axes">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_grid_points_axes</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.num_grid_points_axes" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid.num_grid_points_axes">
+<em class="property">property </em><code class="sig-name descname">num_grid_points_axes</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.num_grid_points_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>effective number of points along each axes, after supersampling
 :return: number of pixels per axis, nx*supersampling_factor ny*supersampling_factor</p>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.grid.RegularGrid.supersampling_factor">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">supersampling_factor</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.supersampling_factor" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.grid.RegularGrid.supersampling_factor">
+<em class="property">property </em><code class="sig-name descname">supersampling_factor</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.grid.RegularGrid.supersampling_factor" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>factor (per axis) of super-sampling relative to a pixel</p>
@@ -379,18 +385,18 @@ relative to a pixelized kernel.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.numba_convolution">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.numba_convolution">
 <span id="lenstronomy-imsim-numerics-numba-convolution-module"></span><h2>lenstronomy.ImSim.Numerics.numba_convolution module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.numba_convolution" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.numba_convolution.</span></span><span class="sig-name descname"><span class="pre">NumbaConvolution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kernel</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">conv_pixels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_pixels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nopython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memory_raise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numba_convolution.html#NumbaConvolution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.numba_convolution.</code><code class="sig-name descname">NumbaConvolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kernel</span></em>, <em class="sig-param"><span class="n">conv_pixels</span></em>, <em class="sig-param"><span class="n">compute_pixels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nopython</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">cache</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">memory_raise</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numba_convolution.html#NumbaConvolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to convolve explicit pixels only</p>
 <p>the convolution is inspired by pyautolens: <a class="reference external" href="https://github.com/Jammy2211/PyAutoLens">https://github.com/Jammy2211/PyAutoLens</a></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution.convolve2d">
-<span class="sig-name descname"><span class="pre">convolve2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numba_convolution.html#NumbaConvolution.convolve2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution.convolve2d" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution.convolve2d">
+<code class="sig-name descname">convolve2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numba_convolution.html#NumbaConvolution.convolve2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numba_convolution.NumbaConvolution.convolve2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>2d convolution</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -404,18 +410,18 @@ relative to a pixelized kernel.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.numerics">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.numerics">
 <span id="lenstronomy-imsim-numerics-numerics-module"></span><h2>lenstronomy.ImSim.Numerics.numerics module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.numerics" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.numerics.</span></span><span class="sig-name descname"><span class="pre">Numerics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixel_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'regular'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_convolution</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flux_evaluate_indexes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampled_indexes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_indexes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_supersampling_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convolution_kernel_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convolution_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fft_static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numerics.html#Numerics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.numerics.</code><code class="sig-name descname">Numerics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixel_grid</span></em>, <em class="sig-param"><span class="n">psf</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">compute_mode</span><span class="o">=</span><span class="default_value">'regular'</span></em>, <em class="sig-param"><span class="n">supersampling_convolution</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">supersampling_kernel_size</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">flux_evaluate_indexes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">supersampled_indexes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">compute_indexes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">point_source_supersampling_factor</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">convolution_kernel_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">convolution_type</span><span class="o">=</span><span class="default_value">'fft_static'</span></em>, <em class="sig-param"><span class="n">truncation</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numerics.html#Numerics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering" title="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering</span></code></a></p>
 <p>this classes manages the numerical options and computations of an image.
 The class has two main functions, re_size_convolve() and coordinates_evaluate()</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics.convolution_class">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">convolution_class</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.convolution_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics.convolution_class">
+<em class="property">property </em><code class="sig-name descname">convolution_class</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.convolution_class" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>convolution class (can be SubgridKernelConvolution, PixelKernelConvolution, MultiGaussianConvolution, …)</p>
@@ -423,9 +429,9 @@ The class has two main functions, re_size_convolve() and coordinates_evaluate()<
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics.coordinates_evaluate">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coordinates_evaluate</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics.coordinates_evaluate">
+<em class="property">property </em><code class="sig-name descname">coordinates_evaluate</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.coordinates_evaluate" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>1d array of all coordinates being evaluated to perform the image computation</p>
@@ -433,9 +439,9 @@ The class has two main functions, re_size_convolve() and coordinates_evaluate()<
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics.grid_class">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid_class</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.grid_class" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics.grid_class">
+<em class="property">property </em><code class="sig-name descname">grid_class</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.grid_class" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>grid class (can be RegularGrid, AdaptiveGrid)</p>
@@ -443,9 +449,9 @@ The class has two main functions, re_size_convolve() and coordinates_evaluate()<
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics.grid_supersampling_factor">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">grid_supersampling_factor</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.grid_supersampling_factor" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics.grid_supersampling_factor">
+<em class="property">property </em><code class="sig-name descname">grid_supersampling_factor</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.grid_supersampling_factor" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>supersampling factor set for higher resolution sub-pixel sampling of surface brightness</p>
@@ -454,8 +460,8 @@ The class has two main functions, re_size_convolve() and coordinates_evaluate()<
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.numerics.Numerics.re_size_convolve">
-<span class="sig-name descname"><span class="pre">re_size_convolve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flux_array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unconvolved</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numerics.html#Numerics.re_size_convolve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.re_size_convolve" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.numerics.Numerics.re_size_convolve">
+<code class="sig-name descname">re_size_convolve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">flux_array</span></em>, <em class="sig-param"><span class="n">unconvolved</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/numerics.html#Numerics.re_size_convolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.numerics.Numerics.re_size_convolve" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -471,18 +477,18 @@ The class has two main functions, re_size_convolve() and coordinates_evaluate()<
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.partial_image">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.partial_image">
 <span id="lenstronomy-imsim-numerics-partial-image-module"></span><h2>lenstronomy.ImSim.Numerics.partial_image module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.partial_image" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.partial_image.</span></span><span class="sig-name descname"><span class="pre">PartialImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial_read_bools</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.partial_image.</code><code class="sig-name descname">PartialImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">partial_read_bools</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class to deal with the use of partial slicing of a 2d data array, to be used for various computations where only
 a subset of pixels need to be know.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.array_from_partial">
-<span class="sig-name descname"><span class="pre">array_from_partial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.array_from_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.array_from_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.array_from_partial">
+<code class="sig-name descname">array_from_partial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">partial_array</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.array_from_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.array_from_partial" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>partial_array</strong> – 1d array of the partial indexes</p>
@@ -494,8 +500,8 @@ a subset of pixels need to be know.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.image_from_partial">
-<span class="sig-name descname"><span class="pre">image_from_partial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">partial_array</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.image_from_partial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.image_from_partial" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.image_from_partial">
+<code class="sig-name descname">image_from_partial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">partial_array</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.image_from_partial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.image_from_partial" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>partial_array</strong> – 1d array corresponding to the indexes of the partial read</p>
@@ -506,9 +512,9 @@ a subset of pixels need to be know.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.index_array">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index_array</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.index_array" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.index_array">
+<em class="property">property </em><code class="sig-name descname">index_array</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.index_array" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>2d array with indexes (integers) corresponding to the 1d array, -1 when masked</p>
@@ -516,9 +522,9 @@ a subset of pixels need to be know.</p>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.num_partial">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_partial</span></span><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.num_partial" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.num_partial">
+<em class="property">property </em><code class="sig-name descname">num_partial</code><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.num_partial" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>number of indexes handled in the partial section</p>
@@ -527,8 +533,8 @@ a subset of pixels need to be know.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array">
-<span class="sig-name descname"><span class="pre">partial_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.partial_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array">
+<code class="sig-name descname">partial_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">image</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/partial_image.html#PartialImage.partial_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.partial_image.PartialImage.partial_array" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>image</strong> – 2d array</p>
@@ -541,17 +547,17 @@ a subset of pixels need to be know.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics.point_source_rendering">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics.point_source_rendering">
 <span id="lenstronomy-imsim-numerics-point-source-rendering-module"></span><h2>lenstronomy.ImSim.Numerics.point_source_rendering module<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics.point_source_rendering" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.Numerics.point_source_rendering.</span></span><span class="sig-name descname"><span class="pre">PointSourceRendering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pixel_grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psf</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering">
+<em class="property">class </em><code class="sig-prename descclassname">lenstronomy.ImSim.Numerics.point_source_rendering.</code><code class="sig-name descname">PointSourceRendering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pixel_grid</span></em>, <em class="sig-param"><span class="n">supersampling_factor</span></em>, <em class="sig-param"><span class="n">psf</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>numerics to compute the point source response on an image</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.point_source_rendering">
-<span class="sig-name descname"><span class="pre">point_source_rendering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering.point_source_rendering"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.point_source_rendering" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.point_source_rendering">
+<code class="sig-name descname">point_source_rendering</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_pos</span></em>, <em class="sig-param"><span class="n">dec_pos</span></em>, <em class="sig-param"><span class="n">amp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering.point_source_rendering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.point_source_rendering" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -567,8 +573,8 @@ a subset of pixels need to be know.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.psf_error_map">
-<span class="sig-name descname"><span class="pre">psf_error_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ra_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix_psf_error_map</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering.psf_error_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.psf_error_map" title="Permalink to this definition">¶</a></dt>
+<dt id="lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.psf_error_map">
+<code class="sig-name descname">psf_error_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ra_pos</span></em>, <em class="sig-param"><span class="n">dec_pos</span></em>, <em class="sig-param"><span class="n">amp</span></em>, <em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">fix_psf_error_map</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/Numerics/point_source_rendering.html#PointSourceRendering.psf_error_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.ImSim.Numerics.point_source_rendering.PointSourceRendering.psf_error_map" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -587,11 +593,11 @@ a subset of pixels need to be know.</p>
 
 </dd></dl>
 
-</section>
-<section id="module-lenstronomy.ImSim.Numerics">
+</div>
+<div class="section" id="module-lenstronomy.ImSim.Numerics">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.ImSim.Numerics" title="Permalink to this headline">¶</a></h2>
-</section>
-</section>
+</div>
+</div>
 
 
             <div class="clearer"></div>
@@ -633,7 +639,7 @@ a subset of pixels need to be know.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -658,7 +664,7 @@ a subset of pixels need to be know.</p>
         <li class="right" >
           <a href="lenstronomy.ImSim.MultiBand.html" title="lenstronomy.ImSim.MultiBand package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" >lenstronomy.ImSim package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics package</a></li> 
@@ -666,7 +672,7 @@ a subset of pixels need to be know.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.2.
     </div>
   </body>
 </html>

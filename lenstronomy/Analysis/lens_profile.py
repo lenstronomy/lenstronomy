@@ -45,13 +45,23 @@ class LensProfileAnalysis(object):
         if self._lens_model.lens_model_list[0] in ['INTERPOL', 'INTERPOL_SCALED']:
             center_x = x_grid[kappa == np.max(kappa)][0]
             center_y = y_grid[kappa == np.max(kappa)][0]
-        #kappa = util.array2image(kappa)
+
         r_array = np.linspace(0, grid_num*grid_spacing/2., grid_num*2)
+        inner_most_bin = True
         for r in r_array:
             mask = np.array(1 - mask_util.mask_center_2d(center_x, center_y, r, x_grid, y_grid))
             sum_mask = np.sum(mask)
             if sum_mask > 0:
                 kappa_mean = np.sum(kappa*mask)/np.sum(mask)
+                if inner_most_bin:
+                    if kappa_mean < 1:
+                        Warning(
+                            "Central convergence value is subcritical <1 and hence an Einstein radius is ill defined.")
+                        if get_precision:
+                            return np.nan, 0
+                        else:
+                            return np.nan
+                    inner_most_bin = False
                 if kappa_mean < 1:
                     if get_precision:
                         return r, r_array[1] - r_array[0]

@@ -11,10 +11,10 @@ export, __all__ = exporter()
 
 
 @export
-def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_redshift_list=None,
+def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, lens_redshift_list=None,
                            kwargs_interp=None,
-                           multi_plane=False, observed_convention_index=None, source_light_model_list=[],
-                           lens_light_model_list=[], point_source_model_list=[], fixed_magnification_list=None,
+                           multi_plane=False, observed_convention_index=None, source_light_model_list=None,
+                           lens_light_model_list=None, point_source_model_list=None, fixed_magnification_list=None,
                            flux_from_point_source_list=None,
                            additional_images_list=None, kwargs_lens_eqn_solver=None,
                            source_deflection_scaling_list=None, source_redshift_list=None, cosmo=None,
@@ -65,6 +65,15 @@ def create_class_instances(lens_model_list=[], z_lens=None, z_source=None, lens_
      convention in the lenstronomy yaml setting (which by default is =False)
     :return:
     """
+    if lens_model_list is None:
+        lens_model_list = []
+    if lens_light_model_list is None:
+        lens_light_model_list = []
+    if source_light_model_list is None:
+        source_light_model_list = []
+    if point_source_model_list is None:
+        point_source_model_list = []
+
     if index_lens_model_list is None or all_models is True:
         lens_model_list_i = lens_model_list
         lens_redshift_list_i = lens_redshift_list

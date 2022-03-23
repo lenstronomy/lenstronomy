@@ -95,6 +95,8 @@ class LensProfileAnalysis(object):
 
         :param kwargs_lens: lens model keyword argument list
         :param radius: radius from the center where to compute the logarithmic slope (angular units
+        :param center_x: center of profile from where to compute the slope
+        :param center_y: center of profile from where to compute the slope
         :param model_list_bool: bool list, indicate which part of the model to consider
         :param num_points: number of estimates around the Einstein radius
         :return: logarithmic power-law slope
@@ -106,7 +108,8 @@ class LensProfileAnalysis(object):
 
         alpha_E_x_i, alpha_E_y_i = self._lens_model.alpha(center_x + x, center_y + y, kwargs_lens, k=model_list_bool)
         alpha_E_r = np.sqrt(alpha_E_x_i**2 + alpha_E_y_i**2)
-        alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(center_x + x_dr, center_y + y_dr, kwargs_lens, k=model_list_bool)
+        alpha_E_dr_x_i, alpha_E_dr_y_i = self._lens_model.alpha(center_x + x_dr, center_y + y_dr, kwargs_lens,
+                                                                k=model_list_bool)
         alpha_E_dr = np.sqrt(alpha_E_dr_x_i ** 2 + alpha_E_dr_y_i ** 2)
         slope = np.mean(np.log(alpha_E_dr / alpha_E_r) / np.log((radius + dr) / radius))
         gamma = -slope + 2
@@ -169,7 +172,7 @@ class LensProfileAnalysis(object):
         theta_E = self.effective_einstein_radius(kwargs_lens)
         r_array = np.logspace(-4, 2, 200) * theta_E
         kappa_s = self.radial_lens_profile(r_array, kwargs_lens, center_x=center_x, center_y=center_y,
-                                                model_bool_list=model_bool_list)
+                                           model_bool_list=model_bool_list)
         amplitudes, sigmas, norm = mge.mge_1d(r_array, kappa_s, N=n_comp)
         return amplitudes, sigmas, center_x, center_y
 

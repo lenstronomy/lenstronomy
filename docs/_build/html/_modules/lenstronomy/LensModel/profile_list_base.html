@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.profile_list_base &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.profile_list_base &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.profile_list_base</a></li> 
       </ul>
@@ -46,17 +46,17 @@
 <span class="n">_SUPPORTED_MODELS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SHIFT&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;CONST_MAG&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR_GAMMA_PSI&#39;</span><span class="p">,</span> <span class="s1">&#39;SHEAR_REDUCED&#39;</span><span class="p">,</span> <span class="s1">&#39;CONVERGENCE&#39;</span><span class="p">,</span> <span class="s1">&#39;FLEXION&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;FLEXIONFG&#39;</span><span class="p">,</span> <span class="s1">&#39;POINT_MASS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS&#39;</span><span class="p">,</span> <span class="s1">&#39;SIS_TRUNCATED&#39;</span><span class="p">,</span> <span class="s1">&#39;SIE&#39;</span><span class="p">,</span> <span class="s1">&#39;SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NIE_SIMPLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CHAMELEON&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;DOUBLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;TRIPLE_CHAMELEON&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEP&#39;</span><span class="p">,</span> <span class="s1">&#39;PEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;SPEMD&#39;</span><span class="p">,</span> <span class="s1">&#39;EPL&#39;</span><span class="p">,</span> <span class="s1">&#39;EPL_NUMBA&#39;</span><span class="p">,</span> <span class="s1">&#39;SPL_CORE&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">,</span> <span class="s1">&#39;TNFW_ELLIPSE&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;NFW&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_ELLIPSE_CSE&#39;</span><span class="p">,</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">,</span> <span class="s1">&#39;TNFW_ELLIPSE&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;CNFW&#39;</span><span class="p">,</span> <span class="s1">&#39;CNFW_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;CTNFW_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;NFW_MC&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;SERSIC_ELLIPSE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE_KAPPA&#39;</span><span class="p">,</span> <span class="s1">&#39;SERSIC_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">,</span> <span class="s1">&#39;PJAFFE&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_KAPPA&#39;</span><span class="p">,</span>
+                     <span class="s1">&#39;PJAFFE_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HERNQUIST_ELLIPSE_CSE&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_KAPPA&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;GAUSSIAN_ELLIPSE_KAPPA&#39;</span><span class="p">,</span> <span class="s1">&#39;GAUSSIAN_ELLIPSE_POTENTIAL&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;MULTI_GAUSSIAN_KAPPA_ELLIPSE&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_POLAR&#39;</span><span class="p">,</span> <span class="s1">&#39;SHAPELETS_CART&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;DIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_CONST&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SPP&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SIS_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CURVED_ARC_SPT&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;CURVED_ARC_TAN_DIFF&#39;</span><span class="p">,</span> <span class="s1">&#39;ARC_PERT&#39;</span><span class="p">,</span> <span class="s1">&#39;coreBURKERT&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;CORED_DENSITY&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_2&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_2_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CORED_DENSITY_EXP&#39;</span><span class="p">,</span>
                      <span class="s1">&#39;CORED_DENSITY_EXP_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;NumericalAlpha&#39;</span><span class="p">,</span> <span class="s1">&#39;MULTIPOLE&#39;</span><span class="p">,</span> <span class="s1">&#39;HESSIAN&#39;</span><span class="p">,</span> <span class="s1">&#39;ElliSLICE&#39;</span><span class="p">,</span> <span class="s1">&#39;ULDM&#39;</span><span class="p">,</span>
-                     <span class="s1">&#39;CORED_DENSITY_ULDM_MST&#39;</span><span class="p">]</span>
+                     <span class="s1">&#39;CORED_DENSITY_ULDM_MST&#39;</span><span class="p">,</span> <span class="s1">&#39;CSE&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="ProfileListBase"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.profile_list_base.ProfileListBase">[docs]</a><span class="k">class</span> <span class="nc">ProfileListBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -74,7 +74,6 @@
 <span class="sd">        :param kwargs_interp: interpolation keyword arguments specifying the numerics.</span>
 <span class="sd">         See description in the Interpolate() class. Only applicable for &#39;INTERPOL&#39; and &#39;INTERPOL_SCALED&#39; models.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">func_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_model_instances</span><span class="p">(</span><span class="n">lens_model_list</span><span class="p">,</span> <span class="n">custom_class</span><span class="o">=</span><span class="n">numerical_alpha_class</span><span class="p">,</span>
                                                     <span class="n">lens_redshift_list</span><span class="o">=</span><span class="n">lens_redshift_list</span><span class="p">,</span>
                                                     <span class="n">z_source_convention</span><span class="o">=</span><span class="n">z_source_convention</span><span class="p">,</span>
@@ -205,6 +204,9 @@
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE_GAUSS_DEC&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gauss_decomposition</span> <span class="kn">import</span> <span class="n">NFWEllipseGaussDec</span>
             <span class="k">return</span> <span class="n">NFWEllipseGaussDec</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;NFW_ELLIPSE_CSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.nfw_ellipse_cse</span> <span class="kn">import</span> <span class="n">NFW_ELLIPSE_CSE</span>
+            <span class="k">return</span> <span class="n">NFW_ELLIPSE_CSE</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;TNFW&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.tnfw</span> <span class="kn">import</span> <span class="n">TNFW</span>
             <span class="k">return</span> <span class="n">TNFW</span><span class="p">()</span>
@@ -247,6 +249,9 @@
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;HERNQUIST_ELLIPSE&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist_ellipse</span> <span class="kn">import</span> <span class="n">Hernquist_Ellipse</span>
             <span class="k">return</span> <span class="n">Hernquist_Ellipse</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span><span class="s1">&#39;HERNQUIST_ELLIPSE_CSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.hernquist_ellipse_cse</span> <span class="kn">import</span> <span class="n">HernquistEllipseCSE</span>
+            <span class="k">return</span> <span class="n">HernquistEllipseCSE</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_potential</span> <span class="kn">import</span> <span class="n">Gaussian</span>
             <span class="k">return</span> <span class="n">Gaussian</span><span class="p">()</span>
@@ -328,6 +333,9 @@
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;MULTIPOLE&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.multipole</span> <span class="kn">import</span> <span class="n">Multipole</span>
             <span class="k">return</span> <span class="n">Multipole</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;CSE&#39;</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.cored_steep_ellipsoid</span> <span class="kn">import</span> <span class="n">CSE</span>
+            <span class="k">return</span> <span class="n">CSE</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">lens_type</span> <span class="o">==</span> <span class="s1">&#39;ElliSLICE&#39;</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.elliptical_density_slice</span> <span class="kn">import</span> <span class="n">ElliSLICE</span>
             <span class="k">return</span> <span class="n">ElliSLICE</span><span class="p">()</span>
@@ -403,7 +411,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.profile_list_base</a></li> 
       </ul>

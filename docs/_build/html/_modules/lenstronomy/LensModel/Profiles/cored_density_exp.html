@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.cored_density_exp &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.cored_density_exp &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cored_density_exp</a></li> 
       </ul>
@@ -41,10 +41,8 @@
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;lucateo&#39;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">scipy.interpolate</span> <span class="k">as</span> <span class="nn">interp</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">exp1</span><span class="p">,</span> <span class="n">erf</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
-<span class="kn">import</span> <span class="nn">lenstronomy.Util.constants</span> <span class="k">as</span> <span class="nn">const</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CoredDensityExp&#39;</span><span class="p">]</span>
 
@@ -60,10 +58,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_s</span> <span class="o">=</span> <span class="mf">0.000001</span>  <span class="c1"># numerical limit for minimal radius</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;kappa_0&#39;</span><span class="p">,</span> <span class="s1">&#39;theta_c&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa_0&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;theta_c&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span> <span class="p">}</span>
-    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa_0&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;theta_c&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span> <span class="p">}</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa_0&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;theta_c&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
+    <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;kappa_0&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;theta_c&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-<div class="viewcode-block" id="CoredDensityExp.rhotilde"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.rhotilde">[docs]</a>    <span class="k">def</span> <span class="nf">rhotilde</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
+<div class="viewcode-block" id="CoredDensityExp.rhotilde"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.rhotilde">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">rhotilde</span><span class="p">(</span><span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes the central density in angular units</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
@@ -84,9 +83,9 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s</span><span class="p">)</span>
-        <span class="n">Integral_factor</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">exp1</span><span class="p">(</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">))</span>
+        <span class="n">Integral_factor</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">exp1</span><span class="p">((</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">))</span>
         <span class="n">function</span> <span class="o">=</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">Integral_factor</span>
         <span class="k">return</span> <span class="n">function</span></div>
 
@@ -94,14 +93,13 @@
     <span class="k">def</span> <span class="nf">alpha_radial</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns the radial part of the deflection angle</span>
-<span class="sd">        :param x: angular position (normally in units of arc seconds)</span>
-<span class="sd">        :param y: angular position (normally in units of arc seconds)</span>
+<span class="sd">        :param r: angular position (normally in units of arc seconds)</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
 <span class="sd">        :param theta_c: core radius (in arcsec)</span>
 <span class="sd">        :return: radial deflection angle</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">prefactor</span> <span class="o">=</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="n">r</span>
-        <span class="k">return</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="p">))</span></div>
+        <span class="k">return</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">r</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="CoredDensityExp.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -119,8 +117,8 @@
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="mf">0.00000001</span><span class="p">)</span>
-        <span class="n">f_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_radial</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span> <span class="p">)</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">/</span> <span class="n">R</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mf">0.00000001</span><span class="p">)</span>
+        <span class="n">f_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_radial</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">/</span> <span class="n">R</span>
         <span class="n">f_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_radial</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">/</span> <span class="n">R</span>
         <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
@@ -137,14 +135,14 @@
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span><span class="mf">0.00000001</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mf">0.00000001</span><span class="p">)</span>
         <span class="n">prefactor</span> <span class="o">=</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span>
-        <span class="n">expFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span> <span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">expFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">factor1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">expFactor</span><span class="p">)</span><span class="o">/</span><span class="n">R</span><span class="o">**</span><span class="mi">4</span>
         <span class="n">factor2</span> <span class="o">=</span> <span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="n">R</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">expFactor</span>
-        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span> <span class="n">factor1</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
-        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span> <span class="n">factor1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span> <span class="p">)</span>
-        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span> <span class="o">-</span> <span class="n">factor1</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span><span class="n">x_</span><span class="o">*</span><span class="n">y_</span> <span class="p">)</span>
+        <span class="n">f_xx</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor1</span> <span class="o">*</span> <span class="p">(</span><span class="n">y_</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">f_yy</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span><span class="n">factor1</span> <span class="o">*</span> <span class="p">(</span><span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">f_xy</span> <span class="o">=</span> <span class="n">prefactor</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span> <span class="n">factor1</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x_</span> <span class="o">*</span> <span class="n">y_</span> <span class="o">+</span> <span class="n">factor2</span> <span class="o">*</span> <span class="n">x_</span><span class="o">*</span><span class="n">y_</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span></div>
 
 <div class="viewcode-block" id="CoredDensityExp.density"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.density">[docs]</a>    <span class="k">def</span> <span class="nf">density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
@@ -152,29 +150,28 @@
 <span class="sd">        three dimensional density profile in angular units</span>
 <span class="sd">        (rho0_physical = rho0_angular Sigma_crit / D_lens)</span>
 
-<span class="sd">        :param x: angular position (normally in units of arc seconds)</span>
-<span class="sd">        :param y: angular position (normally in units of arc seconds)</span>
+<span class="sd">        :param R: projected angular position (normally in units of arc seconds)</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
 <span class="sd">        :param theta_c: core radius (in arcsec)</span>
 <span class="sd">        :return: rho(R) density</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rhotilde</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rhotilde</span><span class="p">(</span><span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">rhotilde</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">rhotilde</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CoredDensityExp.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
 <span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
 
-<span class="sd">        :param x: angular position (normally in units of arc seconds)</span>
-<span class="sd">        :param y: angular position (normally in units of arc seconds)</span>
+<span class="sd">        :param r: angular position (normally in units of arc seconds)</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
 <span class="sd">        :param theta_c: core radius (in arcsec)</span>
 <span class="sd">        :return: density rho(r)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">density</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CoredDensityExp.kappa_r"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.kappa_r">[docs]</a>    <span class="k">def</span> <span class="nf">kappa_r</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
+<div class="viewcode-block" id="CoredDensityExp.kappa_r"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.kappa_r">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">kappa_r</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        convergence of the cored density profile. This routine is also for testing</span>
 
@@ -183,10 +180,10 @@
 <span class="sd">        :param theta_c: core radius</span>
 <span class="sd">        :return: convergence at r</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">expFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span> <span class="o">-</span> <span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kappa_0</span>  <span class="o">*</span> <span class="n">expFactor</span></div>
+        <span class="n">expFactor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span> <span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">expFactor</span></div>
 
-<div class="viewcode-block" id="CoredDensityExp.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">,</span> <span class="n">center_x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="CoredDensityExp.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        projected two dimensional ULDM profile (convergence * Sigma_crit), but given our</span>
 <span class="sd">        units convention for rho0, it is basically the convergence</span>
@@ -203,7 +200,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kappa_r</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="CoredDensityExp.mass_3d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.mass_3d">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span> <span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mass_3d</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        mass enclosed a 3d sphere or radius r</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
@@ -212,7 +209,7 @@
 <span class="sd">        :return: mass of soliton in angular units</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">integral_factor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">erf</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="n">R</span><span class="o">/</span><span class="n">theta_c</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">R</span><span class="o">/</span><span class="n">theta_c</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">m_3d</span> <span class="o">=</span>  <span class="mi">2</span><span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">integral_factor</span>
+        <span class="n">m_3d</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">*</span> <span class="n">kappa_0</span> <span class="o">*</span> <span class="n">theta_c</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">integral_factor</span>
         <span class="k">return</span> <span class="n">m_3d</span></div>
 
 <div class="viewcode-block" id="CoredDensityExp.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.cored_density_exp.CoredDensityExp.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">):</span>
@@ -220,8 +217,6 @@
 <span class="sd">        mass enclosed a 3d sphere or radius r</span>
 <span class="sd">        :param kappa_0: central convergence of profile</span>
 <span class="sd">        :param theta_c: core radius (in arcsec)</span>
-<span class="sd">        :param center_x: center of halo (in angular units)</span>
-<span class="sd">        :param center_y: center of halo (in angular units)</span>
 <span class="sd">        :return: mass</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">m_3d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass_3d</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span>
@@ -240,7 +235,6 @@
 <span class="sd">        :return: M_2D (ULDM only)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alpha_radial</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">kappa_0</span><span class="p">,</span> <span class="n">theta_c</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">R</span></div></div>
-
 </pre></div>
 
             <div class="clearer"></div>
@@ -272,7 +266,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cored_density_exp</a></li> 
       </ul>

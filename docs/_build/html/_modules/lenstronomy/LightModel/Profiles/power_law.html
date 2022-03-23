@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LightModel.Profiles.power_law &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.power_law &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.power_law</a></li> 
       </ul>
@@ -63,6 +63,7 @@
 
 <span class="sd">        :param x: ra-coordinate</span>
 <span class="sd">        :param y: dec-coordinate</span>
+<span class="sd">        :param amp: amplitude of flux</span>
 <span class="sd">        :param gamma: projected power-law slope</span>
 <span class="sd">        :param e1: ellipticity</span>
 <span class="sd">        :param e2: ellipticity</span>
@@ -97,7 +98,8 @@
         <span class="n">rho</span> <span class="o">=</span> <span class="n">rho0</span> <span class="o">/</span> <span class="n">r</span> <span class="o">**</span> <span class="n">gamma</span>
         <span class="k">return</span> <span class="n">rho</span></div>
 
-    <span class="k">def</span> <span class="nf">_amp2rho</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_amp2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">gamma</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param amp:</span>
@@ -137,7 +139,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.power_law</a></li> 
       </ul>

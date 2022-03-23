@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.p_jaffe_ellipse &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.p_jaffe_ellipse &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.p_jaffe_ellipse</a></li> 
       </ul>
@@ -48,9 +48,36 @@
 
 <div class="viewcode-block" id="PJaffe_Ellipse"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.p_jaffe_ellipse.PJaffe_Ellipse">[docs]</a><span class="k">class</span> <span class="nc">PJaffe_Ellipse</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    this class contains functions concerning the NFW profile</span>
+<span class="sd">    class to compute the DUAL PSEUDO ISOTHERMAL ELLIPTICAL MASS DISTRIBUTION</span>
+<span class="sd">    based on Eliasdottir (2007) https://arxiv.org/pdf/0710.5636.pdf Appendix A</span>
+<span class="sd">    with the ellipticity implemented in the potential</span>
 
-<span class="sd">    relation are: R_200 = c * Rs</span>
+<span class="sd">    Module name: &#39;PJAFFE_ELLIPSE&#39;;</span>
+
+<span class="sd">    An alternative name is dPIED.</span>
+
+<span class="sd">    The 3D density distribution is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\rho(r) = \\frac{\\rho_0}{(1+r^2/Ra^2)(1+r^2/Rs^2)}</span>
+
+<span class="sd">    with :math:`Rs &gt; Ra`.</span>
+
+<span class="sd">    The projected density is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\Sigma(R) = \\Sigma_0 \\frac{Ra Rs}{Rs-Ra}\\left(\\frac{1}{\\sqrt{Ra^2+R^2}} - \\frac{1}{\\sqrt{Rs^2+R^2}} \\right)</span>
+
+<span class="sd">    with</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\Sigma_0 = \\pi \\rho_0 \\frac{Ra Rs}{Rs + Ra}</span>
+
+<span class="sd">    In the lensing parameterization,</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        \\sigma_0 = \\frac{\\Sigma_0}{\\Sigma_{\\rm crit}}</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sigma0&#39;</span><span class="p">,</span> <span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="s1">&#39;Rs&#39;</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sigma0&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Ra&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
@@ -65,14 +92,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns double integral of NFW profile</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
-        <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span><span class="p">),</span> <span class="mf">0.99</span><span class="p">)</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
+        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">transform_e1e2_square_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_</span></div>
 
@@ -81,14 +101,10 @@
 <span class="sd">        returns df/dx and df/dy of the function (integral of NFW)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">phi_G</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">ellipticity2phi_q</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span>
-        <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
-        <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
+        <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">transform_e1e2_square_average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">param_util</span><span class="o">.</span><span class="n">q2e</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
         <span class="n">cos_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
         <span class="n">sin_phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_G</span><span class="p">)</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">q</span><span class="p">),</span> <span class="mf">0.99</span><span class="p">)</span>
-        <span class="n">x_</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">y_shift</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
-        <span class="n">y_</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">sin_phi</span><span class="o">*</span><span class="n">x_shift</span><span class="o">+</span><span class="n">cos_phi</span><span class="o">*</span><span class="n">y_shift</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
-
         <span class="n">f_x_prim</span><span class="p">,</span> <span class="n">f_y_prim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">f_x_prim</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span>
         <span class="n">f_y_prim</span> <span class="o">*=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">e</span><span class="p">)</span>
@@ -119,8 +135,8 @@
 <span class="sd">        :param sigma0:</span>
 <span class="sd">        :param Ra:</span>
 <span class="sd">        :param Rs:</span>
-<span class="sd">        :param q:</span>
-<span class="sd">        :param phi_G:</span>
+<span class="sd">        :param e1:</span>
+<span class="sd">        :param e2:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">sigma0</span><span class="p">,</span> <span class="n">Ra</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span></div></div>
@@ -155,7 +171,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.p_jaffe_ellipse</a></li> 
       </ul>

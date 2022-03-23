@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.constants &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util.constants &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.constants</a></li> 
       </ul>
@@ -66,15 +66,15 @@
 <span class="n">F_ES</span> <span class="o">=</span> <span class="n">G</span> <span class="o">*</span> <span class="n">M_sun</span> <span class="o">*</span> <span class="n">M_earth</span> <span class="o">/</span> <span class="n">AU</span><span class="o">**</span><span class="mi">2</span>
 
 
-<div class="viewcode-block" id="delay_arcsec2days"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.constants.delay_arcsec2days">[docs]</a><span class="k">def</span> <span class="nf">delay_arcsec2days</span><span class="p">(</span><span class="n">delay_arcsec</span><span class="p">,</span> <span class="n">D_dt</span><span class="p">):</span>
+<div class="viewcode-block" id="delay_arcsec2days"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.constants.delay_arcsec2days">[docs]</a><span class="k">def</span> <span class="nf">delay_arcsec2days</span><span class="p">(</span><span class="n">delay_arcsec</span><span class="p">,</span> <span class="n">ddt</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    given a delay in arcsec^2 and a Delay distance, the delay is computed in days</span>
 
 <span class="sd">    :param delay_arcsec: gravitational delay in units of arcsec^2 (e.g. Fermat potential)</span>
-<span class="sd">    :param D_dt: Time delay distance (in units of Mpc)</span>
+<span class="sd">    :param ddt: Time delay distance (in units of Mpc)</span>
 <span class="sd">    :return: time-delay in units of days</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">D_dt</span> <span class="o">*</span> <span class="n">Mpc</span> <span class="o">/</span> <span class="n">c</span> <span class="o">*</span> <span class="n">delay_arcsec</span> <span class="o">/</span> <span class="n">day_s</span> <span class="o">*</span> <span class="n">arcsec</span><span class="o">**</span><span class="mi">2</span></div>
+    <span class="k">return</span> <span class="n">ddt</span> <span class="o">*</span> <span class="n">Mpc</span> <span class="o">/</span> <span class="n">c</span> <span class="o">*</span> <span class="n">delay_arcsec</span> <span class="o">/</span> <span class="n">day_s</span> <span class="o">*</span> <span class="n">arcsec</span> <span class="o">**</span> <span class="mi">2</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -106,7 +106,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.constants</a></li> 
       </ul>

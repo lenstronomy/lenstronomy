@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.epl &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.epl &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.epl</a></li> 
       </ul>
@@ -44,7 +44,9 @@
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.param_util</span> <span class="k">as</span> <span class="nn">param_util</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spp</span> <span class="kn">import</span> <span class="n">SPP</span>
 <span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">hyp2f1</span>
+
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;EPL&#39;</span><span class="p">,</span> <span class="s1">&#39;EPLMajorAxis&#39;</span><span class="p">]</span>
 
@@ -89,6 +91,7 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">epl_major_axis</span> <span class="o">=</span> <span class="n">EPLMajorAxis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spp</span> <span class="o">=</span> <span class="n">SPP</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">EPL</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
 <div class="viewcode-block" id="EPL.param_conv"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.epl.EPL.param_conv">[docs]</a>    <span class="k">def</span> <span class="nf">param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
@@ -106,10 +109,11 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_t_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_q_static</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phi_G_static</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_param_conv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_param_conv</span><span class="p">(</span><span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        convert parameters from :math:`R = \sqrt{q x^2 + y^2/q}` to</span>
-<span class="sd">        :math:`R = \sqrt{q^2 x^2 + y^2}`</span>
+<span class="sd">        convert parameters from :math:`R = \\sqrt{q x^2 + y^2/q}` to</span>
+<span class="sd">        :math:`R = \\sqrt{q^2 x^2 + y^2}`</span>
 
 <span class="sd">        :param gamma: power law slope</span>
 <span class="sd">        :param theta_E: Einstein radius</span>
@@ -125,8 +129,6 @@
 <div class="viewcode-block" id="EPL.set_static"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.epl.EPL.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param x: x-coordinate in image plane</span>
-<span class="sd">        :param y: y-coordinate in image plane</span>
 <span class="sd">        :param theta_E: Einstein radius</span>
 <span class="sd">        :param gamma: power law slope</span>
 <span class="sd">        :param e1: eccentricity component</span>
@@ -233,7 +235,33 @@
         <span class="n">f_xx</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">+</span> <span class="n">gamma1</span>
         <span class="n">f_yy</span> <span class="o">=</span> <span class="n">kappa</span> <span class="o">-</span> <span class="n">gamma1</span>
         <span class="n">f_xy</span> <span class="o">=</span> <span class="n">gamma2</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span></div></div>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yy</span></div>
+
+<div class="viewcode-block" id="EPL.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.epl.EPL.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the spherical power-law mass enclosed (with SPP routine)</span>
+<span class="sd">        :param r: radius within the mass is computed</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param gamma: power-law slope</span>
+<span class="sd">        :param e1: eccentricity component (not used)</span>
+<span class="sd">        :param e2: eccentricity component (not used)</span>
+<span class="sd">        :return: mass enclosed a 3D radius r</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spp</span><span class="o">.</span><span class="n">mass_3d_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EPL.density_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.epl.EPL.density_lens">[docs]</a>    <span class="k">def</span> <span class="nf">density_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the density at 3d radius r given lens model parameterization.</span>
+<span class="sd">        The integral in the LOS projection of this quantity results in the convergence quantity.</span>
+
+<span class="sd">        :param r: radius within the mass is computed</span>
+<span class="sd">        :param theta_E: Einstein radius</span>
+<span class="sd">        :param gamma: power-law slope</span>
+<span class="sd">        :param e1: eccentricity component (not used)</span>
+<span class="sd">        :param e2: eccentricity component (not used)</span>
+<span class="sd">        :return: mass enclosed a 3D radius r</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">spp</span><span class="o">.</span><span class="n">density_lens</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="EPLMajorAxis"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.epl.EPLMajorAxis">[docs]</a><span class="k">class</span> <span class="nc">EPLMajorAxis</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
@@ -290,6 +318,7 @@
         <span class="n">Z</span><span class="o">.</span><span class="n">real</span> <span class="o">=</span> <span class="n">q</span><span class="o">*</span><span class="n">x</span>
         <span class="n">Z</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="n">y</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mf">0.000000001</span><span class="p">)</span>
 
         <span class="c1"># angular dependency with extra factor of R, eq. (23)</span>
         <span class="n">R_omega</span> <span class="o">=</span> <span class="n">Z</span><span class="o">*</span><span class="n">hyp2f1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">-</span><span class="n">t</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">q</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">q</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">Z</span><span class="o">/</span><span class="n">Z</span><span class="o">.</span><span class="n">conj</span><span class="p">()))</span>
@@ -315,6 +344,7 @@
 <span class="sd">        :return: f_xx, f_yy, f_xy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">q</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="mf">0.00000001</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
         <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span> <span class="o">=</span> <span class="n">x</span><span class="o">/</span><span class="n">r</span><span class="p">,</span> <span class="n">y</span><span class="o">/</span><span class="n">r</span>
@@ -370,7 +400,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.epl</a></li> 
       </ul>

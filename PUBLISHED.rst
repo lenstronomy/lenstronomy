@@ -143,13 +143,13 @@ Dark Matter substructure
 * Extracting the Subhalo Mass Function from Strong Lens Images with Image Segmentation; `Ostdiek et al. 2020b <https://arxiv.org/abs/2009.06639>`_
     * *
 
-* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021 <https://arxiv.org/abs/2105.05259>`_
+* Strong lensing signatures of self-interacting dark matter in low-mass halos; `Gilman et al. 2021a <https://arxiv.org/abs/2105.05259>`_
     * *
 
 * Substructure Detection Reanalyzed: Dark Perturber shown to be a Line-of-Sight Halo; `Sengul et al. 2021 <https://arxiv.org/abs/2112.00749>`_
     *modeling a line-of-sight mini-halo*
 
-* The primordial matter power spectrum on sub-galactic scales; `Gilman et al. 2021 <https://arxiv.org/abs/2112.03293>`_
+* The primordial matter power spectrum on sub-galactic scales; `Gilman et al. 2021b <https://arxiv.org/abs/2112.03293>`_
     *rendering sub- and line-of-sight halos*
 
 * From Images to Dark Matter: End-To-End Inference of Substructure From Hundreds of Strong Gravitational Lenses; `Wagner-Carena et al. 2022 <https://arxiv.org/abs/2203.00690>`_

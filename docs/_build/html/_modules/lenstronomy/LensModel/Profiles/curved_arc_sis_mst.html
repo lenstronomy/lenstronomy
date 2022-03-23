@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.curved_arc_sis_mst &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.curved_arc_sis_mst &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_sis_mst</a></li> 
       </ul>
@@ -109,7 +109,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">r_curvature</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">center_x_sis</span> <span class="o">-</span> <span class="n">center_x</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">center_y_sis</span> <span class="o">-</span> <span class="n">center_y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">direction</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">center_y</span> <span class="o">-</span> <span class="n">center_y_sis</span><span class="p">,</span> <span class="n">center_x</span> <span class="o">-</span> <span class="n">center_x_sis</span><span class="p">)</span>
-        <span class="n">radial_stretch</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kappa_ext</span><span class="p">)</span>
+        <span class="n">radial_stretch</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">kappa_ext</span><span class="p">)</span>
         <span class="n">tangential_stretch</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">theta_E</span><span class="o">/</span><span class="n">r_curvature</span><span class="p">))</span> <span class="o">*</span> <span class="n">radial_stretch</span>
         <span class="n">curvature</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">r_curvature</span>
         <span class="k">return</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span></div>
@@ -151,8 +151,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lambda_mst</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">radial_stretch</span>
         <span class="n">theta_E</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stretch2sis_mst</span><span class="p">(</span><span class="n">tangential_stretch</span><span class="p">,</span>
-                                                                          <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span>
-                                                                          <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+                                                                              <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span>
+                                                                              <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_x_sis</span><span class="p">,</span> <span class="n">f_y_sis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sis</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span><span class="p">)</span>
         <span class="n">f_x0</span><span class="p">,</span> <span class="n">f_y0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sis</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span><span class="p">)</span>
         <span class="n">f_x_mst</span><span class="p">,</span> <span class="n">f_y_mst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mst</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">ra_0</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">dec_0</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
@@ -175,8 +175,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lambda_mst</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">radial_stretch</span>
         <span class="n">theta_E</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stretch2sis_mst</span><span class="p">(</span><span class="n">tangential_stretch</span><span class="p">,</span>
-                                                                          <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span>
-                                                                          <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+                                                                              <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span>
+                                                                              <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_xx_sis</span><span class="p">,</span> <span class="n">f_xy_sis</span><span class="p">,</span> <span class="n">f_yx_sis</span><span class="p">,</span> <span class="n">f_yy_sis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sis</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span><span class="p">)</span>
         <span class="n">f_xx_mst</span><span class="p">,</span> <span class="n">f_xy_mst</span><span class="p">,</span> <span class="n">f_yx_mst</span><span class="p">,</span> <span class="n">f_yy_mst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mst</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kappa_ext</span><span class="p">,</span> <span class="n">ra_0</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">dec_0</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">lambda_mst</span> <span class="o">*</span> <span class="n">f_xx_sis</span> <span class="o">+</span> <span class="n">f_xx_mst</span><span class="p">,</span> <span class="n">lambda_mst</span> <span class="o">*</span> <span class="n">f_xy_sis</span> <span class="o">+</span> <span class="n">f_xy_mst</span><span class="p">,</span> <span class="n">lambda_mst</span> <span class="o">*</span> <span class="n">f_yx_sis</span> <span class="o">+</span> <span class="n">f_yx_mst</span><span class="p">,</span> <span class="n">lambda_mst</span> <span class="o">*</span> <span class="n">f_yy_sis</span> <span class="o">+</span> <span class="n">f_yy_mst</span></div></div>
@@ -194,7 +194,6 @@
     <span class="n">center_x_sis</span> <span class="o">=</span> <span class="n">center_x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">/</span> <span class="n">curvature</span>
     <span class="n">center_y_sis</span> <span class="o">=</span> <span class="n">center_y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">/</span> <span class="n">curvature</span>
     <span class="k">return</span> <span class="n">center_x_sis</span><span class="p">,</span> <span class="n">center_y_sis</span>
-
 </pre></div>
 
             <div class="clearer"></div>
@@ -226,7 +225,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_sis_mst</a></li> 
       </ul>

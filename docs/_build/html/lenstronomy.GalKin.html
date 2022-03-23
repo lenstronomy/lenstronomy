@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.GalKin package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.GalKin package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -14,6 +14,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin package</a></li> 
       </ul>
@@ -553,10 +554,7 @@ d ln(f)/ d ln(r) = 2 beta(r)
 See e.g. A4 in Mamon &amp; Lokas</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>r</strong> – 3d radius</p></li>
-<li><p><strong>kwargs</strong> – parameters of the specified anisotropy model</p></li>
-</ul>
+<dd class="field-odd"><p><strong>r</strong> – 3d radius</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>f(r)</p>
@@ -853,8 +851,8 @@ It starts with the inner-most edge to the outermost edge.</p></li>
 Multi-Gaussian Expansion (MGE) on their models and use the MGE to be de-projected to 3d.</p>
 <p>The computation follows Mamon&amp;Lokas 2005 and performs the spectral rendering of the seeing convolved apperture with
 the method introduced by Birrer et al. 2016.</p>
-<p>The class supports various types of anisotropy models (see Anisotropy class) and aperture types (see Aperture class).
-Solving the Jeans Equation requires a numerical integral over the 3d light and mass profile (see Mamon&amp;Lokas 2005).
+<p>The class supports various types of anisotropy models (see Anisotropy class) and aperture types (see Aperture class).</p>
+<p>Solving the Jeans Equation requires a numerical integral over the 3d light and mass profile (see Mamon&amp;Lokas 2005).
 This class (as well as the dedicated LightModel and MassModel classes) perform those integral numerically with an
 interpolated grid.</p>
 <p>The seeing convolved integral over the aperture is computed by rendering spectra (light weighted LOS kinematics)
@@ -965,10 +963,9 @@ Currently this is implemented by the relation provided by Ciotti and Morganti 20
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>r</strong> – 3d radius to check slope-anisotropy constraint</p></li>
-<li><p><strong>theta_E</strong> – Einstein radius in arc seconds</p></li>
-<li><p><strong>gamma</strong> – power-law slope</p></li>
-<li><p><strong>a_ani</strong> – scaled transition radius of the OM anisotropy distribution</p></li>
-<li><p><strong>r_eff</strong> – half-light radius in arc seconds</p></li>
+<li><p><strong>kwargs_mass</strong> – keyword arguments for mass (lens) profile</p></li>
+<li><p><strong>kwargs_light</strong> – keyword arguments for light profile</p></li>
+<li><p><strong>kwargs_anisotropy</strong> – keyword arguments for stellar anisotropy distribution</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1206,9 +1203,10 @@ in logarithmic units with interpol_grid_num numbers of interpolation steps</p>
 <dt class="sig sig-object py" id="lenstronomy.GalKin.numeric_kinematics.NumericKinematics.sigma_r2">
 <span class="sig-name descname"><span class="pre">sigma_r2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_mass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_light</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_anisotropy</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/numeric_kinematics.html#NumericKinematics.sigma_r2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.numeric_kinematics.NumericKinematics.sigma_r2" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes numerically the solution of the Jeans equation for a specific 3d radius
-E.g. Equation (A1) of Mamon &amp; Lokas <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0405491.pdf">https://arxiv.org/pdf/astro-ph/0405491.pdf</a>
-l(r) sigma_r(r) ^ 2 =  1/f(r) int_r^{infty} f(s) l(s) G M(s) / s^2 ds
-where l(r) is the 3d light profile
+E.g. Equation (A1) of Mamon &amp; Lokas <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0405491.pdf">https://arxiv.org/pdf/astro-ph/0405491.pdf</a></p>
+<div class="math notranslate nohighlight">
+\[l(r) \sigma_r(r) ^ 2 = 1/f(r) \int_r^{\infty} f(s) l(s) G M(s) / s^2 ds\]</div>
+<p>where l(r) is the 3d light profile
 M(s) is the enclosed 3d mass
 f is the solution to
 d ln(f)/ d ln(r) = 2 beta(r)</p>
@@ -1331,13 +1329,13 @@ We refer to the Anisotropy() class for details on the parameters.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSF_GAUSSIAN">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.GalKin.psf.</span></span><span class="sig-name descname"><span class="pre">PSF_GAUSSIAN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSF_GAUSSIAN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSF_GAUSSIAN" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSFGaussian">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.GalKin.psf.</span></span><span class="sig-name descname"><span class="pre">PSFGaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSFGaussian"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSFGaussian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Gaussian PSF</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSF_GAUSSIAN.displace_psf">
-<span class="sig-name descname"><span class="pre">displace_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSF_GAUSSIAN.displace_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSF_GAUSSIAN.displace_psf" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSFGaussian.displace_psf">
+<span class="sig-name descname"><span class="pre">displace_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSFGaussian.displace_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSFGaussian.displace_psf" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1354,13 +1352,13 @@ We refer to the Anisotropy() class for details on the parameters.</p></li>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSF_MOFFAT">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.GalKin.psf.</span></span><span class="sig-name descname"><span class="pre">PSF_MOFFAT</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moffat_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSF_MOFFAT"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSF_MOFFAT" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSFMoffat">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.GalKin.psf.</span></span><span class="sig-name descname"><span class="pre">PSFMoffat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fwhm</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">moffat_beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSFMoffat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSFMoffat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Moffat PSF</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSF_MOFFAT.displace_psf">
-<span class="sig-name descname"><span class="pre">displace_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSF_MOFFAT.displace_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSF_MOFFAT.displace_psf" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.GalKin.psf.PSFMoffat.displace_psf">
+<span class="sig-name descname"><span class="pre">displace_psf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/GalKin/psf.html#PSFMoffat.displace_psf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.GalKin.psf.PSFMoffat.displace_psf" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1593,7 +1591,7 @@ cdf(Y) = 1-Y**(1-beta)</p>
         <li class="right" >
           <a href="lenstronomy.Data.html" title="lenstronomy.Data package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin package</a></li> 
       </ul>

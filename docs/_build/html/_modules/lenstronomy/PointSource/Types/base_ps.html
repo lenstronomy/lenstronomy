@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.PointSource.Types.base_ps &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.PointSource.Types.base_ps &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource.Types.base_ps</a></li> 
       </ul>
@@ -41,7 +41,7 @@
 <span></span><span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Solver.lens_equation_solver</span> <span class="kn">import</span> <span class="n">LensEquationSolver</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PSBase&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PSBase&#39;</span><span class="p">,</span> <span class="s1">&#39;_expand_to_array&#39;</span><span class="p">,</span> <span class="s1">&#39;_shrink_array&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="PSBase"><a class="viewcode-back" href="../../../../lenstronomy.PointSource.Types.html#lenstronomy.PointSource.Types.base_ps.PSBase">[docs]</a><span class="k">class</span> <span class="nc">PSBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -148,7 +148,8 @@
         <span class="n">array_return</span> <span class="o">=</span> <span class="n">array</span><span class="p">[:</span><span class="n">num</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">array_return</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">num</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the length of the array (</span><span class="si">%s</span><span class="s2">) needs to be larger or equal than the designated length </span><span class="si">%s</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">),</span> <span class="n">num</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;the length of the array (</span><span class="si">%s</span><span class="s2">) needs to be larger or equal than the designated length </span><span class="si">%s</span><span class="s2"> &quot;</span>
+                         <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">),</span> <span class="n">num</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span> 
         <span class="k">return</span> <span class="n">array</span>
 </pre></div>
@@ -182,7 +183,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource.Types.base_ps</a></li> 
       </ul>

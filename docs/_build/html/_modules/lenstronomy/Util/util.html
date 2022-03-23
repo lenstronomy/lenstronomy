@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util.util &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.util</a></li> 
       </ul>
@@ -171,8 +171,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 2d array into an n*n 1d array</span>
 
-<span class="sd">    :param array: image values</span>
-<span class="sd">    :type array: array of size (n,n)</span>
+<span class="sd">    :param image: image values</span>
+<span class="sd">    :type image: array of size (n,n)</span>
 <span class="sd">    :returns:  1d array</span>
 <span class="sd">    :raises: AttributeError, KeyError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -189,9 +189,9 @@
 <span class="sd">    :param array: image values</span>
 <span class="sd">    :type array: 1d array</span>
 <span class="sd">    :param n_1: first dimension of returned array</span>
-<span class="sd">    :type int:</span>
+<span class="sd">    :type n_1: int</span>
 <span class="sd">    :param n_23: square of second and third dimensions of returned array</span>
-<span class="sd">    :type int:</span>
+<span class="sd">    :type n_23: int</span>
 <span class="sd">    :returns: 3d array</span>
 <span class="sd">    :raises ValueError: when n_23 is not a perfect square</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -208,8 +208,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)</span>
 
-<span class="sd">    :param array: image values</span>
-<span class="sd">    :type array: 3d array</span>
+<span class="sd">    :param cube: image values</span>
+<span class="sd">    :type cube: 3d array</span>
 <span class="sd">    :returns: 1d array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_1</span><span class="p">,</span> <span class="n">n_2</span><span class="p">,</span> <span class="n">n_3</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">shape</span>
@@ -236,14 +236,14 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">numPix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numPix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;numPix contains non-integers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">numPix</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">numPix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Attempt to specify non-int numPix: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
     <span class="c1"># Super-resolution sampling</span>
-    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
 
     <span class="c1"># Compute unshifted grids.</span>
@@ -378,10 +378,14 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    calculates a grid of distances to the observer in angel</span>
 
-<span class="sd">    :param mapped_cartcoord: mapped cartesian coordinates</span>
-<span class="sd">    :type mapped_cartcoord: numpy array (n,2)</span>
-<span class="sd">    :param sourcePos: source position</span>
-<span class="sd">    :type sourcePos: numpy vector [x0,y0]</span>
+<span class="sd">    :param x: cartesian coordinates</span>
+<span class="sd">    :type x: numpy array</span>
+<span class="sd">    :param y: cartesian coordinates</span>
+<span class="sd">    :type y: numpy array</span>
+<span class="sd">    :param sourcePos_x: source position</span>
+<span class="sd">    :type sourcePos_x: float</span>
+<span class="sd">    :param sourcePos_y: source position</span>
+<span class="sd">    :type sourcePos_y: float</span>
 <span class="sd">    :returns:  array of displacement</span>
 <span class="sd">    :raises: AttributeError, KeyError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -739,7 +743,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.util</a></li> 
       </ul>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.LensModel.QuadOptimizer package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.QuadOptimizer package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer package</a></li> 
@@ -142,7 +142,7 @@ a downhill simplex routine.</p>
 <li><p><strong>n_particles</strong> – number of PSO particles, will be ignored if self._particle_swarm is False</p></li>
 <li><p><strong>n_iterations</strong> – number of PSO iterations, will be ignored if self._particle_swarm is False</p></li>
 <li><p><strong>verbose</strong> – whether to print stuff</p></li>
-<li><p><strong>pool</strong> – instance of Pool with a map method for multiprocessing</p></li>
+<li><p><strong>threadCount</strong> – integer; number of threads in multi-threading mode</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -183,8 +183,8 @@ creating the Optimizer class</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawFixedShearMultipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear_strength</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear" title="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear</span></code></a></p>
 <p>This class implements a fit of EPL + external shear + a multipole term with every parameter except the
-power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the multipole term are
-fixed to that of the EPL profile</p>
+power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the
+multipole term are fixed to that of the EPL profile</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs">
 <span class="sig-name descname"><span class="pre">args_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole.args_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
@@ -379,7 +379,7 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer package</a></li> 

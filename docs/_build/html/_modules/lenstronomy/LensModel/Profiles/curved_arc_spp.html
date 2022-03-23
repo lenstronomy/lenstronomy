@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.curved_arc_spp &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.curved_arc_spp &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_spp</a></li> 
       </ul>
@@ -42,7 +42,7 @@
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.spp</span> <span class="kn">import</span> <span class="n">SPP</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CurvedArcSPP&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CurvedArcSPP&#39;</span><span class="p">,</span> <span class="s1">&#39;center_deflector&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CurvedArcSPP"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_spp.CurvedArcSPP">[docs]</a><span class="k">class</span> <span class="nc">CurvedArcSPP</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
@@ -169,7 +169,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spp</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">theta_E</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">center_x_spp</span><span class="p">,</span> <span class="n">center_y_spp</span><span class="p">)</span></div></div>
 
 
-<span class="k">def</span> <span class="nf">center_deflector</span><span class="p">(</span><span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="center_deflector"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_spp.center_deflector">[docs]</a><span class="k">def</span> <span class="nf">center_deflector</span><span class="p">(</span><span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param curvature: 1/curvature radius</span>
@@ -180,7 +180,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">center_x_spp</span> <span class="o">=</span> <span class="n">center_x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">/</span> <span class="n">curvature</span>
     <span class="n">center_y_spp</span> <span class="o">=</span> <span class="n">center_y</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">direction</span><span class="p">)</span> <span class="o">/</span> <span class="n">curvature</span>
-    <span class="k">return</span> <span class="n">center_x_spp</span><span class="p">,</span> <span class="n">center_y_spp</span>
+    <span class="k">return</span> <span class="n">center_x_spp</span><span class="p">,</span> <span class="n">center_y_spp</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -212,7 +212,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_spp</a></li> 
       </ul>

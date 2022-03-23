@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.ImSim.MultiBand package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" accesskey="U">lenstronomy.ImSim package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.MultiBand package</a></li> 
@@ -153,7 +153,7 @@ components and applies a punishment in the likelihood if so.</p></li>
 <span id="lenstronomy-imsim-multiband-multi-data-base-module"></span><h2>lenstronomy.ImSim.MultiBand.multi_data_base module<a class="headerlink" href="#module-lenstronomy.ImSim.MultiBand.multi_data_base" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.MultiBand.multi_data_base.</span></span><span class="sig-name descname"><span class="pre">MultiDataBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imageModel_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html#MultiDataBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.ImSim.MultiBand.multi_data_base.</span></span><span class="sig-name descname"><span class="pre">MultiDataBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image_model_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compute_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html#MultiDataBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class with definitions that are shared among all variations of modelling multiple data sets</p>
 <dl class="py property">
@@ -170,11 +170,8 @@ components and applies a punishment in the likelihood if so.</p></li>
 <dt class="sig sig-object py" id="lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.num_param_linear">
 <span class="sig-name descname"><span class="pre">num_param_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html#MultiDataBase.num_param_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.num_param_linear" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>compute_bool</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>number of linear coefficients to be solved for in the linear inversion</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of linear coefficients to be solved for in the linear inversion</p>
 </dd>
 </dl>
 </dd></dl>
@@ -208,7 +205,7 @@ components and applies a punishment in the likelihood if so.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.reset_point_source_cache">
-<span class="sig-name descname"><span class="pre">reset_point_source_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html#MultiDataBase.reset_point_source_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">reset_point_source_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/multi_data_base.html#MultiDataBase.reset_point_source_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.multi_data_base.MultiDataBase.reset_point_source_cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>deletes all the cache in the point source class and saves it from then on</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -384,11 +381,8 @@ components and applies a punishment in the likelihood if so.</p></li>
 <dt class="sig sig-object py" id="lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear">
 <span class="sig-name descname"><span class="pre">num_param_linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_light</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_ps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/ImSim/MultiBand/single_band_multi_model.html#SingleBandMultiModel.num_param_linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.ImSim.MultiBand.single_band_multi_model.SingleBandMultiModel.num_param_linear" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>compute_bool</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>number of linear coefficients to be solved for in the linear inversion</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>number of linear coefficients to be solved for in the linear inversion</p>
 </dd>
 </dl>
 </dd></dl>
@@ -482,7 +476,7 @@ components and applies a punishment in the likelihood if so.</p></li>
         <li class="right" >
           <a href="lenstronomy.ImSim.html" title="lenstronomy.ImSim package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.ImSim.html" >lenstronomy.ImSim package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.MultiBand package</a></li> 

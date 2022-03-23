@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.class_creator &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util.class_creator &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.class_creator</a></li> 
       </ul>
@@ -51,16 +51,16 @@
 
 
 <div class="viewcode-block" id="create_class_instances"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.class_creator.create_class_instances">[docs]</a><span class="nd">@export</span>
-<span class="k">def</span> <span class="nf">create_class_instances</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">create_class_instances</span><span class="p">(</span><span class="n">lens_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">kwargs_interp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_light_model_list</span><span class="o">=</span><span class="p">[],</span>
-                           <span class="n">lens_light_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">point_source_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">multi_plane</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">observed_convention_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">lens_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fixed_magnification_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">flux_from_point_source_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">additional_images_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">source_deflection_scaling_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_redshift_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cosmo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">index_lens_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_source_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">index_lens_light_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_point_source_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                           <span class="n">optical_depth_model_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">index_optical_depth_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">optical_depth_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">index_optical_depth_model_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">band_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">tau0_index_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">all_models</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">point_source_magnification_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                            <span class="n">surface_brightness_smoothing</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">sersic_major_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -105,6 +105,15 @@
 <span class="sd">     convention in the lenstronomy yaml setting (which by default is =False)</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lens_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lens_model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">lens_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">lens_light_model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">source_light_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">source_light_model_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">point_source_model_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">point_source_model_list</span> <span class="o">=</span> <span class="p">[]</span>
+
     <span class="k">if</span> <span class="n">index_lens_model_list</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">all_models</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">lens_model_list_i</span> <span class="o">=</span> <span class="n">lens_model_list</span>
         <span class="n">lens_redshift_list_i</span> <span class="o">=</span> <span class="n">lens_redshift_list</span>
@@ -261,7 +270,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.class_creator</a></li> 
       </ul>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.QuadOptimizer.param_manager &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.QuadOptimizer.param_manager &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer.param_manager</a></li> 
       </ul>
@@ -287,13 +287,12 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_lens</span></div></div>
 
-<div class="viewcode-block" id="PowerLawFixedShearMultipole"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.QuadOptimizer.html#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole">[docs]</a><span class="k">class</span> <span class="nc">PowerLawFixedShearMultipole</span><span class="p">(</span><span class="n">PowerLawFixedShear</span><span class="p">):</span>
 
+<div class="viewcode-block" id="PowerLawFixedShearMultipole"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.QuadOptimizer.html#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole">[docs]</a><span class="k">class</span> <span class="nc">PowerLawFixedShearMultipole</span><span class="p">(</span><span class="n">PowerLawFixedShear</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class implements a fit of EPL + external shear + a multipole term with every parameter except the</span>
-<span class="sd">    power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the multipole term are</span>
-<span class="sd">    fixed to that of the EPL profile</span>
-
+<span class="sd">    power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the</span>
+<span class="sd">    multipole term are fixed to that of the EPL profile</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@property</span>
@@ -333,9 +332,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_lens</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s1">&#39;phi_m&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_lens</span></div></div>
-
-
-
 </pre></div>
 
             <div class="clearer"></div>
@@ -367,7 +363,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer.param_manager</a></li> 
       </ul>

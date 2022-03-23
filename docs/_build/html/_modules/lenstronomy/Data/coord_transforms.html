@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Data.coord_transforms &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Data.coord_transforms &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Data.coord_transforms</a></li> 
       </ul>
@@ -62,7 +62,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_Ma2pix</span> <span class="o">=</span> <span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span> <span class="o">=</span> <span class="n">ra_at_xy_0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span> <span class="o">=</span> <span class="n">dec_at_xy_0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_x_at_radec_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_at_radec_0</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Ma2pix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_x_at_radec_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_y_at_radec_0</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_Ma2pix</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">transform_angle2pix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -140,7 +141,8 @@
 <span class="sd">        :param ny: number of pixels in y-direction</span>
 <span class="sd">        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
+        <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
         <span class="n">ra_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">ra_coords</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>  <span class="c1"># new</span>
         <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">array2image</span><span class="p">(</span><span class="n">dec_coords</span><span class="p">,</span> <span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>  <span class="c1"># new</span>
         <span class="k">return</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span></div>
@@ -189,7 +191,8 @@
 <span class="sd">        :param ny: number of pixels in y-direction</span>
 <span class="sd">        :return: 2d arrays with coordinates in RA/DEC with ra_coord[y-axis, x-axis]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
+        <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">grid_from_coordinate_transform</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Mpix2a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ra_at_xy_0</span><span class="p">,</span>
+                                                                    <span class="bp">self</span><span class="o">.</span><span class="n">_dec_at_xy_0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ra_coords</span><span class="p">,</span> <span class="n">dec_coords</span></div></div>
 </pre></div>
 
@@ -222,7 +225,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Data.coord_transforms</a></li> 
       </ul>

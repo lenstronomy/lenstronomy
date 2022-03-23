@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Sampling.Likelihoods.time_delay_likelihood &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Sampling.Likelihoods.time_delay_likelihood &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods.time_delay_likelihood</a></li> 
       </ul>
@@ -84,7 +84,8 @@
         <span class="n">logL</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logL_delays</span><span class="p">(</span><span class="n">delay_days</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delays_measured</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delays_errors</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">logL</span></div>
 
-    <span class="k">def</span> <span class="nf">_logL_delays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delays_model</span><span class="p">,</span> <span class="n">delays_measured</span><span class="p">,</span> <span class="n">delays_errors</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_logL_delays</span><span class="p">(</span><span class="n">delays_model</span><span class="p">,</span> <span class="n">delays_measured</span><span class="p">,</span> <span class="n">delays_errors</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        log likelihood of modeled delays vs measured time delays under considerations of errors</span>
 
@@ -94,13 +95,16 @@
 <span class="sd">        :return: log likelihood of data given model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">delays_model</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">delays_measured</span><span class="p">):</span>
-            <span class="k">return</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">15</span>
         <span class="n">delta_t_model</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">delays_model</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="o">-</span> <span class="n">delays_model</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">delays_errors</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logL</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">delta_t_model</span> <span class="o">-</span> <span class="n">delays_measured</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">delays_errors</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">elif</span> <span class="n">delays_errors</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">D</span> <span class="o">=</span> <span class="n">delta_t_model</span> <span class="o">-</span> <span class="n">delays_measured</span>
-            <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span> <span class="n">D</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">delays_errors</span><span class="p">)</span> <span class="o">@</span> <span class="n">D</span> <span class="c1"># TODO: only calculate the inverse once</span>
+            <span class="n">logL</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="n">D</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">delays_errors</span><span class="p">)</span> <span class="o">@</span> <span class="n">D</span>  <span class="c1"># TODO: only calculate the inverse once</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Dimension of time delay error needs to be either one- or two-dimensional, not </span><span class="si">%s</span><span class="s1">&#39;</span>
+                             <span class="o">%</span> <span class="n">delays_errors</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">logL</span>
 
     <span class="nd">@property</span>
@@ -141,7 +145,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods.time_delay_likelihood</a></li> 
       </ul>

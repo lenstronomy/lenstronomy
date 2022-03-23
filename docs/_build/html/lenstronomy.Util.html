@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.Util package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util package</a></li> 
       </ul>
@@ -107,7 +107,7 @@ image (including fractional pixels).
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lens_light</strong> – array of surface brightness</p></li>
 <li><p><strong>x_grid</strong> – x-axis coordinates</p></li>
-<li><p><strong>y_gird</strong> – y-axis coordinates</p></li>
+<li><p><strong>y_grid</strong> – y-axis coordinates</p></li>
 <li><p><strong>center_x</strong> – center of light</p></li>
 <li><p><strong>center_y</strong> – center of light</p></li>
 </ul>
@@ -125,7 +125,7 @@ image (including fractional pixels).
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>I_xy</strong> – light distribution</p></li>
+<li><p><strong>I_xy_input</strong> – light distribution</p></li>
 <li><p><strong>x</strong> – x-coordinates of I_xy</p></li>
 <li><p><strong>y</strong> – y-coordinates of I_xy</p></li>
 </ul>
@@ -162,7 +162,7 @@ image (including fractional pixels).
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>light_grid</strong> – array of surface brightness</p></li>
 <li><p><strong>x_grid</strong> – x-axis coordinates</p></li>
-<li><p><strong>y_gird</strong> – y-axis coordinates</p></li>
+<li><p><strong>y_grid</strong> – y-axis coordinates</p></li>
 <li><p><strong>center_x</strong> – center of light</p></li>
 <li><p><strong>center_y</strong> – center of light</p></li>
 <li><p><strong>n</strong> – number of discrete steps</p></li>
@@ -179,7 +179,7 @@ image (including fractional pixels).
 <span id="lenstronomy-util-class-creator-module"></span><h2>lenstronomy.Util.class_creator module<a class="headerlink" href="#module-lenstronomy.Util.class_creator" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.class_creator.create_class_instances">
-<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.class_creator.</span></span><span class="sig-name descname"><span class="pre">create_class_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_interp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_convention_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_magnification_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flux_from_point_source_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_images_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_eqn_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_deflection_scaling_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optical_depth_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_optical_depth_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau0_index_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_magnification_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_brightness_smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sersic_major_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_class_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_class_instances" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.class_creator.</span></span><span class="sig-name descname"><span class="pre">create_class_instances</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_interp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_plane</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">observed_convention_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fixed_magnification_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flux_from_point_source_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">additional_images_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_lens_eqn_solver</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_deflection_scaling_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optical_depth_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_optical_depth_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">band_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tau0_index_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_magnification_limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface_brightness_smoothing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sersic_major_axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/class_creator.html#create_class_instances"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.class_creator.create_class_instances" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -274,13 +274,13 @@ convention in the lenstronomy yaml setting (which by default is =False)</p></li>
 <span id="lenstronomy-util-constants-module"></span><h2>lenstronomy.Util.constants module<a class="headerlink" href="#module-lenstronomy.Util.constants" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.constants.delay_arcsec2days">
-<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.constants.</span></span><span class="sig-name descname"><span class="pre">delay_arcsec2days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay_arcsec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D_dt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/constants.html#delay_arcsec2days"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.constants.delay_arcsec2days" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.constants.</span></span><span class="sig-name descname"><span class="pre">delay_arcsec2days</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay_arcsec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ddt</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/constants.html#delay_arcsec2days"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.constants.delay_arcsec2days" title="Permalink to this definition">¶</a></dt>
 <dd><p>given a delay in arcsec^2 and a Delay distance, the delay is computed in days</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>delay_arcsec</strong> – gravitational delay in units of arcsec^2 (e.g. Fermat potential)</p></li>
-<li><p><strong>D_dt</strong> – Time delay distance (in units of Mpc)</p></li>
+<li><p><strong>ddt</strong> – Time delay distance (in units of Mpc)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -358,7 +358,10 @@ convention in the lenstronomy yaml setting (which by default is =False)</p></li>
 <dd><p>converts analog-to-digital units into electron counts</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>adu</strong> – counts in analog-to-digital unit</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>adu</strong> – counts in analog-to-digital unit</p></li>
+<li><p><strong>ccd_gain</strong> – CCD gain, meaning how many electrons are counted per unit ADU</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>counts in electrons</p>
@@ -408,10 +411,13 @@ convention in the lenstronomy yaml setting (which by default is =False)</p></li>
 <dd><p>converts electron counts into analog-to-digital unit</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>electrons</strong> – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>electrons</strong> – number of electrons received on detector</p></li>
+<li><p><strong>ccd_gain</strong> – CCD gain, meaning how many electrons are counted per unit ADU</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>adu value corresponding to electron count</p>
+<dd class="field-even"><p>adu value in Analog-to-digital units corresponding to electron count</p>
 </dd>
 </dl>
 </dd></dl>
@@ -714,7 +720,7 @@ equivalent to second order derivatives dr_dyy</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.image_util.coordInImage">
-<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">coordInImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numPix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltapix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#coordInImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.coordInImage" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">coordInImage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltapix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#coordInImage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.coordInImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>checks whether image positions are within the pixel image in units of arcsec
 if not: remove it</p>
 <dl class="field-list simple">
@@ -729,11 +735,11 @@ if not: remove it</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.image_util.cut_edges">
-<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">cut_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numPix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#cut_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.cut_edges" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">cut_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_pix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#cut_edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.cut_edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>cuts out the edges of a 2d image and returns re-sized image to numPix
 center is well defined for odd pixel sizes.
 :param image: 2d numpy array
-:param numPix: square size of cut out image
+:param num_pix: square size of cut out image
 :return: cutout image with size numPix</p>
 </dd></dl>
 
@@ -759,7 +765,7 @@ center is well defined for odd pixel sizes.
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.image_util.radial_profile">
-<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0,</span> <span class="pre">0]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.radial_profile" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">radial_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#radial_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.radial_profile" title="Permalink to this definition">¶</a></dt>
 <dd><p>computes radial profile</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -777,10 +783,18 @@ center is well defined for odd pixel sizes.
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.image_util.re_size">
 <span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">re_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#re_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.re_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>re-sizes image with nx x ny to nx/factor x ny/factor
-:param image: 2d image with shape (nx,ny)
-:param factor: integer &gt;=1
-:return:</p>
+<dd><p>re-sizes image with nx x ny to nx/factor x ny/factor</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>image</strong> – 2d image with shape (nx,ny)</p></li>
+<li><p><strong>factor</strong> – integer &gt;=1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -812,9 +826,15 @@ center is well defined for odd pixel sizes.
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.image_util.rebin_image">
 <span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.image_util.</span></span><span class="sig-name descname"><span class="pre">rebin_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bin_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wht_map</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma_bkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ra_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dec_coords</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">idex_mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/image_util.html#rebin_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.image_util.rebin_image" title="Permalink to this definition">¶</a></dt>
-<dd><p>rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
-:param bin_size: number of pixels (per axis) to merge
-:return:</p>
+<dd><p>re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bin_size</strong> – number of pixels (per axis) to merge</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -951,7 +971,7 @@ its shifted version with the input kernel.</p>
 :param data:
 :param x_pos:
 :param y_pos:
-:param deltaPix:
+:param psf_kernel:
 :return:</p>
 </dd></dl>
 
@@ -1070,7 +1090,6 @@ performed, i.e. smaller subsampling PSF and hole in larger PSF</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kernel</strong> – PSF kernel of the size of the pixel</p></li>
 <li><p><strong>kernel_super</strong> – super-sampled kernel</p></li>
 <li><p><strong>supersampling_kernel_size</strong> – size of super-sampled PSF in units of degraded pixels</p></li>
 <li><p><strong>normalized</strong> – boolean, if True returns a split kernel that is area normalized=1 representing a convolution kernel</p></li>
@@ -1174,7 +1193,7 @@ iterative approach</p>
 <li><p><strong>center_y</strong> – </p></li>
 <li><p><strong>r_in</strong> – </p></li>
 <li><p><strong>r_out</strong> – </p></li>
-<li><p><strong>phi</strong> – </p></li>
+<li><p><strong>phi0</strong> – </p></li>
 <li><p><strong>delta_phi</strong> – </p></li>
 </ul>
 </dd>
@@ -1236,13 +1255,38 @@ iterative approach</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.numba_util.generated_jit">
 <span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.numba_util.</span></span><span class="sig-name descname"><span class="pre">generated_jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nopython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastmath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numpy'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#generated_jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.generated_jit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type - see the Numba docs for more info</p>
+<dd><dl class="simple">
+<dt>Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type</dt><dd><ul class="simple">
+<li><p>see the Numba docs for more info</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="lenstronomy.Util.numba_util.jit">
 <span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.numba_util.</span></span><span class="sig-name descname"><span class="pre">jit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nopython</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parallel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastmath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'numpy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'never'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#jit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.jit" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.Util.numba_util.nan_to_num">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.numba_util.</span></span><span class="sig-name descname"><span class="pre">nan_to_num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posinf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neginf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#nan_to_num"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.nan_to_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.
+Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and
+scalar inputs.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.Util.numba_util.nan_to_num_arr">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.numba_util.</span></span><span class="sig-name descname"><span class="pre">nan_to_num_arr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posinf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neginf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#nan_to_num_arr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.nan_to_num_arr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Part of the Numba implementation of np.nan_to_num - see nan_to_num</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.Util.numba_util.nan_to_num_single">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.Util.numba_util.</span></span><span class="sig-name descname"><span class="pre">nan_to_num_single</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">posinf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neginf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">10000000000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Util/numba_util.html#nan_to_num_single"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Util.numba_util.nan_to_num_single" title="Permalink to this definition">¶</a></dt>
+<dd><p>Part of the Numba implementation of np.nan_to_num - see nan_to_num</p>
+</dd></dl>
 
 </section>
 <section id="module-lenstronomy.Util.param_util">
@@ -1637,8 +1681,8 @@ to uniform distribution on unit hypercube</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>array</strong> (<em>1d array</em>) – image values</p></li>
-<li><p><strong>n_1</strong> – first dimension of returned array</p></li>
-<li><p><strong>n_23</strong> – square of second and third dimensions of returned array</p></li>
+<li><p><strong>n_1</strong> (<em>int</em>) – first dimension of returned array</p></li>
+<li><p><strong>n_23</strong> (<em>int</em>) – square of second and third dimensions of returned array</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1721,7 +1765,7 @@ if k is a boolean list, checks for size to match the numbers of models and retur
 <dd><p>returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>array</strong> (<em>3d array</em>) – image values</p>
+<dd class="field-odd"><p><strong>cube</strong> (<em>3d array</em>) – image values</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>1d array</p>
@@ -1736,8 +1780,10 @@ if k is a boolean list, checks for size to match the numbers of models and retur
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>mapped_cartcoord</strong> (<em>numpy array</em><em> (</em><em>n</em><em>,</em><em>2</em><em>)</em>) – mapped cartesian coordinates</p></li>
-<li><p><strong>sourcePos</strong> (<em>numpy vector</em><em> [</em><em>x0</em><em>,</em><em>y0</em><em>]</em>) – source position</p></li>
+<li><p><strong>x</strong> (<em>numpy array</em>) – cartesian coordinates</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – cartesian coordinates</p></li>
+<li><p><strong>sourcePos_x</strong> (<em>float</em>) – source position</p></li>
+<li><p><strong>sourcePos_y</strong> (<em>float</em>) – source position</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1834,7 +1880,7 @@ if k is a boolean list, checks for size to match the numbers of models and retur
 <dd><p>returns the information contained in a 2d array into an n*n 1d array</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>array</strong> (<em>array of size</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – image values</p>
+<dd class="field-odd"><p><strong>image</strong> (<em>array of size</em><em> (</em><em>n</em><em>,</em><em>n</em><em>)</em>) – image values</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>1d array</p>
@@ -2140,7 +2186,7 @@ precedence goes to key value pairs in latter dicts.</p>
         <li class="right" >
           <a href="lenstronomy.SimulationAPI.ObservationConfig.html" title="lenstronomy.SimulationAPI.ObservationConfig package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util package</a></li> 
       </ul>

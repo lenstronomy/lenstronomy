@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.ImSim.Numerics.convolution &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.ImSim.Numerics.convolution &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.convolution</a></li> 
       </ul>
@@ -41,16 +41,17 @@
 <span></span><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">fftpack</span><span class="p">,</span> <span class="n">ndimage</span><span class="p">,</span> <span class="n">signal</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="c1">#from scipy._lib._version import NumpyVersion</span>
-<span class="n">_rfft_mt_safe</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># (NumpyVersion(np.__version__) &gt;= &#39;1.9.0.dev-e24486e&#39;)</span>
-<span class="n">_rfft_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
-
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.kernel_util</span> <span class="k">as</span> <span class="nn">kernel_util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.image_util</span> <span class="k">as</span> <span class="nn">image_util</span>
 
 <span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="kn">import</span> <span class="n">exporter</span>
 <span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
+
+<span class="n">_rfft_mt_safe</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># (NumpyVersion(np.__version__) &gt;= &#39;1.9.0.dev-e24486e&#39;)</span>
+<span class="n">_rfft_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+
 
 
 <span class="k">def</span> <span class="nf">_centered</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">newshape</span><span class="p">):</span>
@@ -127,16 +128,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fshape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static_pre_compute</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pre_computed</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="n">complex_result</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">fshape</span><span class="p">,</span> <span class="n">fslice</span><span class="p">,</span> <span class="n">sp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_s2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complex_result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fshape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fslice</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sp2</span>
-        <span class="c1">#if in1.ndim == in2.ndim == 0:  # scalar inputs</span>
+        <span class="c1"># if in1.ndim == in2.ndim == 0:  # scalar inputs</span>
         <span class="c1">#    return in1 * in2</span>
-        <span class="c1">#elif not in1.ndim == in2.ndim:</span>
+        <span class="c1"># elif not in1.ndim == in2.ndim:</span>
         <span class="c1">#    raise ValueError(&quot;in1 and in2 should have the same dimensionality&quot;)</span>
-        <span class="c1">#elif in1.size == 0 or in2.size == 0:  # empty arrays</span>
+        <span class="c1"># elif in1.size == 0 or in2.size == 0:  # empty arrays</span>
         <span class="c1">#    return np.array([])</span>
 
-
         <span class="c1"># Check that input sizes are compatible with &#39;valid&#39; mode</span>
-        <span class="c1">#if _inputs_swap_needed(mode, s1, s2):</span>
+        <span class="c1"># if _inputs_swap_needed(mode, s1, s2):</span>
             <span class="c1"># Convolution is commutative; order doesn&#39;t have any effect on output</span>
             <span class="c1"># only applicable for &#39;valid&#39; mode</span>
         <span class="c1">#    in1, s1, in2, s2 = in2, s2, in1, s1</span>
@@ -213,6 +213,7 @@
 <div class="viewcode-block" id="PixelKernelConvolution.re_size_convolve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.convolution.PixelKernelConvolution.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">        :param image_low_res: regular sampled image/model</span>
 <span class="sd">        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid</span>
 <span class="sd">        :return: convolved and re-sized image</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -232,12 +233,12 @@
 <span class="sd">        :param supersampling_kernel_size: number of pixels (in units of the image pixels) that are convolved with the</span>
 <span class="sd">        supersampled kernel</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">n_high</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kernel_supersampled</span><span class="p">)</span>
+        <span class="c1"># n_high = len(kernel_supersampled)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_high</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span><span class="p">)</span>
-        <span class="c1">#if self._supersampling_factor % 2 == 0:</span>
+        <span class="c1"># numPix = int(n_high / self._supersampling_factor)</span>
+        <span class="c1"># if self._supersampling_factor % 2 == 0:</span>
         <span class="c1">#    self._kernel = kernel_util.averaging_even_kernel(kernel_supersampled, self._supersampling_factor)</span>
-        <span class="c1">#else:</span>
+        <span class="c1"># else:</span>
         <span class="c1">#    self._kernel = util.averaging(kernel_supersampled, numGrid=n_high, numPix=numPix)</span>
         <span class="k">if</span> <span class="n">supersampling_kernel_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kernel_low_res</span><span class="p">,</span> <span class="n">kernel_high_res</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">kernel_supersampled</span>
@@ -388,7 +389,6 @@
 <span class="sd">        :param kernel: 2d convolution kernel (centered, odd axis number)</span>
 <span class="sd">        :param order: order of Multi-Gaussian Expansion</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#kernel_util.fwhm_kernel(kernel)</span>
         <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">kernel_util</span><span class="o">.</span><span class="n">mge_kernel</span><span class="p">(</span><span class="n">kernel</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="c1"># make instance o MultiGaussian convolution kernel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mge_conv</span> <span class="o">=</span> <span class="n">MultiGaussianConvolution</span><span class="p">(</span><span class="n">sigma_list</span><span class="o">=</span><span class="n">sigmas</span><span class="o">*</span><span class="n">pixel_scale</span><span class="p">,</span> <span class="n">fraction_list</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">amps</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">amps</span><span class="p">),</span>
@@ -442,7 +442,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.convolution</a></li> 
       </ul>

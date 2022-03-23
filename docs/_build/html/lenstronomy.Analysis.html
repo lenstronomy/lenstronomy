@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Analysis package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis package</a></li> 
       </ul>
@@ -395,6 +395,8 @@ Kochanek 2020, Sonnenfeld 2018.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kwargs_lens</strong> – lens model keyword argument list</p></li>
 <li><p><strong>radius</strong> – radius from the center where to compute the logarithmic slope (angular units</p></li>
+<li><p><strong>center_x</strong> – center of profile from where to compute the slope</p></li>
+<li><p><strong>center_y</strong> – center of profile from where to compute the slope</p></li>
 <li><p><strong>model_list_bool</strong> – bool list, indicate which part of the model to consider</p></li>
 <li><p><strong>num_points</strong> – number of estimates around the Einstein radius</p></li>
 </ul>
@@ -591,7 +593,7 @@ Attention: numerical grid settings for ellipticity estimate and radial MGE may n
 <span id="lenstronomy-analysis-td-cosmography-module"></span><h2>lenstronomy.Analysis.td_cosmography module<a class="headerlink" href="#module-lenstronomy.Analysis.td_cosmography" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="lenstronomy.Analysis.td_cosmography.TDCosmography">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Analysis.td_cosmography.</span></span><span class="sig-name descname"><span class="pre">TDCosmography</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo_fiducial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_model_kinematics_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">light_model_kinematics_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_seeing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anisotropy_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multi_observations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.Analysis.td_cosmography.</span></span><span class="sig-name descname"><span class="pre">TDCosmography</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo_fiducial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_model_kinematics_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">light_model_kinematics_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_seeing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_aperture</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anisotropy_model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs_kin_api</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/Analysis/td_cosmography.html#TDCosmography"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.Analysis.td_cosmography.TDCosmography" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.Analysis.kinematics_api.KinematicsAPI" title="lenstronomy.Analysis.kinematics_api.KinematicsAPI"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.Analysis.kinematics_api.KinematicsAPI</span></code></a></p>
 <p>class equipped to perform a cosmographic analysis from a lens model with added measurements of time delays and
 kinematics.
@@ -628,6 +630,9 @@ This description follows Birrer et al. 2016, 2019.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>d_fermat_model</strong> – relative Fermat potential between two images from the same source in units arcsec^2</p></li>
 <li><p><strong>dt_measured</strong> – measured time delay between the same image pair in units of days</p></li>
+<li><p><strong>kappa_s</strong> – external convergence from observer to source</p></li>
+<li><p><strong>kappa_ds</strong> – external convergence from lens to source</p></li>
+<li><p><strong>kappa_d</strong> – external convergence form observer to lens</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -817,7 +822,7 @@ if set to None will be computed in this function with default settings that may 
         <li class="right" >
           <a href="lenstronomy.html" title="lenstronomy package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis package</a></li> 
       </ul>

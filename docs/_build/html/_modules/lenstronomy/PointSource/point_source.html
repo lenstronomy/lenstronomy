@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.PointSource.point_source &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource.point_source</a></li> 
       </ul>
@@ -56,8 +56,8 @@
 
 <span class="sd">        :param point_source_type_list: list of point source types</span>
 <span class="sd">        :param lensModel: instance of the LensModel() class</span>
-<span class="sd">        :param fixed_magnification_list: list of booleans (same length as point_source_type_list). If True, magnification</span>
-<span class="sd">        ratio of point sources is fixed to the one given by the lens model</span>
+<span class="sd">        :param fixed_magnification_list: list of booleans (same length as point_source_type_list).</span>
+<span class="sd">         If True, magnification ratio of point sources is fixed to the one given by the lens model</span>
 <span class="sd">        :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for</span>
 <span class="sd">        additional images of the same source is conducted.</span>
 <span class="sd">        :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions</span>
@@ -94,14 +94,16 @@
             <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;LENSED_POSITION&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.Types.lensed_position</span> <span class="kn">import</span> <span class="n">LensedPositions</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PointSourceCached</span><span class="p">(</span><span class="n">LensedPositions</span><span class="p">(</span><span class="n">lensModel</span><span class="p">,</span> <span class="n">fixed_magnification</span><span class="o">=</span><span class="n">fixed_magnification_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                               <span class="n">additional_image</span><span class="o">=</span><span class="n">additional_images_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span> <span class="n">save_cache</span><span class="o">=</span><span class="n">save_cache</span><span class="p">))</span>
+                                                                 <span class="n">additional_image</span><span class="o">=</span><span class="n">additional_images_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+                                                                 <span class="n">save_cache</span><span class="o">=</span><span class="n">save_cache</span><span class="p">))</span>
             <span class="k">elif</span> <span class="n">model</span> <span class="o">==</span> <span class="s1">&#39;SOURCE_POSITION&#39;</span><span class="p">:</span>
                 <span class="kn">from</span> <span class="nn">lenstronomy.PointSource.Types.source_position</span> <span class="kn">import</span> <span class="n">SourcePositions</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PointSourceCached</span><span class="p">(</span><span class="n">SourcePositions</span><span class="p">(</span><span class="n">lensModel</span><span class="p">,</span>
                                                                  <span class="n">fixed_magnification</span><span class="o">=</span><span class="n">fixed_magnification_list</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
                                                                  <span class="n">save_cache</span><span class="o">=</span><span class="n">save_cache</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available. Supported models are </span><span class="si">%s</span><span class="s2"> .&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">_SUPPORTED_MODELS</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Point-source model </span><span class="si">%s</span><span class="s2"> not available. Supported models are </span><span class="si">%s</span><span class="s2"> .&quot;</span>
+                                 <span class="o">%</span> <span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">_SUPPORTED_MODELS</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">kwargs_lens_eqn_solver</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">kwargs_lens_eqn_solver</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span> <span class="o">=</span> <span class="n">kwargs_lens_eqn_solver</span>
@@ -119,10 +121,11 @@
 <span class="sd">        :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set</span>
 <span class="sd">        :return: updated self instances</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">min_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s1">&#39;min_distance&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span> <span class="ow">and</span> <span class="n">only_from_unspecified</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">min_distance</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="s1">&#39;min_distance&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span> <span class="ow">and</span> <span class="n">only_from_unspecified</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">[</span><span class="s1">&#39;min_distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_distance</span>
         <span class="k">if</span> <span class="n">only_from_unspecified</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">[</span><span class="s1">&#39;search_window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search_window&#39;</span><span class="p">,</span> <span class="n">search_window</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">[</span><span class="s1">&#39;search_window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;search_window&#39;</span><span class="p">,</span>
+                                                                                             <span class="n">search_window</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">[</span><span class="s1">&#39;x_center&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;x_center&#39;</span><span class="p">,</span> <span class="n">x_center</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">[</span><span class="s1">&#39;y_center&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;y_center&#39;</span><span class="p">,</span> <span class="n">y_center</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -150,26 +153,26 @@
         <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="p">:</span>
             <span class="n">model</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="PointSource.set_save_cache"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.set_save_cache">[docs]</a>    <span class="k">def</span> <span class="nf">set_save_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+<div class="viewcode-block" id="PointSource.set_save_cache"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.set_save_cache">[docs]</a>    <span class="k">def</span> <span class="nf">set_save_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_cache</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set the save cache boolean to new value</span>
 
-<span class="sd">        :param bool: bool, if True, saves (or uses a previously saved) values</span>
+<span class="sd">        :param save_cache: bool, if True, saves (or uses a previously saved) values</span>
 <span class="sd">        :return: updated class and sub-class instances to either save or not save the point source information in cache</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_set_save_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span> <span class="o">=</span> <span class="nb">bool</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_save_cache</span><span class="p">(</span><span class="n">save_cache</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_save_cache</span> <span class="o">=</span> <span class="n">save_cache</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_save_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_save_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_cache</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        set the save cache boolean to new value. This function is for use within this class for temporarily set the</span>
 <span class="sd">        cache within a single routine.</span>
 
-<span class="sd">        :param bool: bool, if True, saves (or uses a previously saved) values</span>
+<span class="sd">        :param save_cache: bool, if True, saves (or uses a previously saved) values</span>
 <span class="sd">        :return: None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="p">:</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">set_save_cache</span><span class="p">(</span><span class="n">save_cache</span><span class="p">)</span>
 
 <div class="viewcode-block" id="PointSource.source_position"><a class="viewcode-back" href="../../../lenstronomy.PointSource.html#lenstronomy.PointSource.point_source.PointSource.source_position">[docs]</a>    <span class="k">def</span> <span class="nf">source_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -205,12 +208,13 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_point_source_list</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">k</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
                 <span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                        <span class="n">magnification_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnification_limit</span><span class="p">,</span>
+                                                        <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">original_position</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_source_type_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;LENSED_POSITION&#39;</span><span class="p">:</span>
-                    <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">image_position</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
-                                                            <span class="n">magnification_limit</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_magnification_limit</span><span class="p">,</span>
-                                                            <span class="n">kwargs_lens_eqn_solver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_lens_eqn_solver</span><span class="p">)</span>
+                    <span class="n">x_o</span><span class="p">,</span> <span class="n">y_o</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;ra_image&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
+                    <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">_sort_position_by_original</span><span class="p">(</span><span class="n">x_o</span><span class="p">,</span> <span class="n">y_o</span><span class="p">,</span> <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">)</span>
+
                 <span class="n">x_image_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_image</span><span class="p">)</span>
                 <span class="n">y_image_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_image</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x_image_list</span><span class="p">,</span> <span class="n">y_image_list</span></div>
@@ -424,6 +428,38 @@
                     <span class="n">pos_bool</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">break</span>
         <span class="k">return</span> <span class="n">pos_bool</span></div></div>
+
+
+<span class="k">def</span> <span class="nf">_sort_position_by_original</span><span class="p">(</span><span class="n">x_o</span><span class="p">,</span> <span class="n">y_o</span><span class="p">,</span> <span class="n">x_solved</span><span class="p">,</span> <span class="n">y_solved</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    sorting new image positions such that the old order is best preserved</span>
+
+<span class="sd">    :param x_o: numpy array; original image positions</span>
+<span class="sd">    :param y_o: numpy array; original image positions</span>
+<span class="sd">    :param x_solved: numpy array; solved image positions with potentially more or fewer images</span>
+<span class="sd">    :param y_solved: numpy array; solved image positions with potentially more or fewer images</span>
+<span class="sd">    :return: sorted new image positions with the order best matching the original positions first,</span>
+<span class="sd">     and then all other images in the same order as solved for</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_o</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">x_solved</span><span class="p">):</span>
+        <span class="c1"># if new images are less , then return the original images (no sorting required)</span>
+        <span class="n">x_solved_new</span><span class="p">,</span> <span class="n">y_solved_new</span> <span class="o">=</span> <span class="n">x_o</span><span class="p">,</span> <span class="n">y_o</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_solved_new</span><span class="p">,</span> <span class="n">y_solved_new</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_o</span><span class="p">)):</span>
+            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x_o</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_o</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">r2_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_solved</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_solved</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="c1"># index of minimum radios</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">r2_i</span><span class="p">)</span>
+            <span class="n">x_solved_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x_solved</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="n">y_solved_new</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_solved</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+            <span class="c1"># delete this index</span>
+            <span class="n">x_solved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">x_solved</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">y_solved</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">y_solved</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="c1"># now we append the remaining additional images in the same order behind the original ones</span>
+        <span class="n">x_solved_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x_solved_new</span><span class="p">),</span> <span class="n">x_solved</span><span class="p">)</span>
+        <span class="n">y_solved_new</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y_solved_new</span><span class="p">),</span> <span class="n">y_solved</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_solved_new</span><span class="p">,</span> <span class="n">y_solved_new</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -455,7 +491,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource.point_source</a></li> 
       </ul>

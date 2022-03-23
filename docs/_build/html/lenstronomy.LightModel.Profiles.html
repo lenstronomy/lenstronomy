@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" accesskey="U">lenstronomy.LightModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles package</a></li> 
@@ -133,6 +133,8 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>y</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
 <li><p><strong>ratio</strong> – </p></li>
 <li><p><strong>w_c1</strong> – </p></li>
@@ -208,6 +210,8 @@
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>y</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
 <li><p><strong>ratio12</strong> – ratio of first to second amplitude</p></li>
 <li><p><strong>ratio13</strong> – ratio of first to third amplitude</p></li>
@@ -449,8 +453,6 @@ The two-dimensional Gaussian profile amplitude is defined such that the 2D integ
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – coordinate on the sky</p></li>
-<li><p><strong>y</strong> – coordinate on the sky</p></li>
 <li><p><strong>amp</strong> – amplitude, such that 2D integral leads to this value</p></li>
 <li><p><strong>sigma</strong> – sigma of Gaussian in each direction</p></li>
 <li><p><strong>e1</strong> – eccentricity modulus</p></li>
@@ -718,11 +720,9 @@ The two-dimensional Gaussian profile amplitude is defined such that the 2D integ
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> – </p></li>
+<li><p><strong>r</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
 <li><p><strong>Rs</strong> – </p></li>
-<li><p><strong>center_x</strong> – </p></li>
-<li><p><strong>center_y</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -747,8 +747,9 @@ The two-dimensional Gaussian profile amplitude is defined such that the 2D integ
 <li><p><strong>x</strong> – </p></li>
 <li><p><strong>y</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
-<li><p><strong>a</strong> – </p></li>
-<li><p><strong>s</strong> – </p></li>
+<li><p><strong>Rs</strong> – </p></li>
+<li><p><strong>e1</strong> – </p></li>
+<li><p><strong>e2</strong> – </p></li>
 <li><p><strong>center_x</strong> – </p></li>
 <li><p><strong>center_y</strong> – </p></li>
 </ul>
@@ -765,11 +766,11 @@ The two-dimensional Gaussian profile amplitude is defined such that the 2D integ
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> – </p></li>
+<li><p><strong>r</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
 <li><p><strong>Rs</strong> – </p></li>
-<li><p><strong>center_x</strong> – </p></li>
-<li><p><strong>center_y</strong> – </p></li>
+<li><p><strong>e1</strong> – </p></li>
+<li><p><strong>e2</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1024,8 +1025,8 @@ radius ‘theta_E’</p>
 <li><p><strong>x</strong> – </p></li>
 <li><p><strong>y</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
-<li><p><strong>a</strong> – </p></li>
-<li><p><strong>s</strong> – </p></li>
+<li><p><strong>Ra</strong> – </p></li>
+<li><p><strong>Rs</strong> – </p></li>
 <li><p><strong>center_x</strong> – </p></li>
 <li><p><strong>center_y</strong> – </p></li>
 </ul>
@@ -1042,11 +1043,10 @@ radius ‘theta_E’</p>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> – </p></li>
+<li><p><strong>r</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
 <li><p><strong>Rs</strong> – </p></li>
-<li><p><strong>center_x</strong> – </p></li>
-<li><p><strong>center_y</strong> – </p></li>
+<li><p><strong>Ra</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1073,13 +1073,13 @@ radius ‘theta_E’</p>
 </dd></dl>
 
 <dl class="py class">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LightModel.Profiles.p_jaffe.</span></span><span class="sig-name descname"><span class="pre">PJaffe_Ellipse</span></span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LightModel.Profiles.p_jaffe.</span></span><span class="sig-name descname"><span class="pre">PJaffeEllipse</span></span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffeEllipse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>calss for elliptical pseudo Jaffe lens light</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function">
-<span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.function" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.function">
+<span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffeEllipse.function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.function" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1099,16 +1099,15 @@ radius ‘theta_E’</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d">
-<span class="sig-name descname"><span class="pre">light_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffe_Ellipse.light_3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.light_3d" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.light_3d">
+<span class="sig-name descname"><span class="pre">light_3d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ra</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Rs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/p_jaffe.html#PJaffeEllipse.light_3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.light_3d" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>y</strong> – </p></li>
+<li><p><strong>r</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
+<li><p><strong>Ra</strong> – </p></li>
 <li><p><strong>Rs</strong> – </p></li>
-<li><p><strong>center_x</strong> – </p></li>
-<li><p><strong>center_y</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1118,18 +1117,18 @@ radius ‘theta_E’</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.lower_limit_default">
-<span class="sig-name descname"><span class="pre">lower_limit_default</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Ra':</span> <span class="pre">0,</span> <span class="pre">'Rs':</span> <span class="pre">0,</span> <span class="pre">'amp':</span> <span class="pre">0,</span> <span class="pre">'center_x':</span> <span class="pre">-100,</span> <span class="pre">'center_y':</span> <span class="pre">-100,</span> <span class="pre">'e1':</span> <span class="pre">-0.5,</span> <span class="pre">'e2':</span> <span class="pre">-0.5}</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.lower_limit_default">
+<span class="sig-name descname"><span class="pre">lower_limit_default</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Ra':</span> <span class="pre">0,</span> <span class="pre">'Rs':</span> <span class="pre">0,</span> <span class="pre">'amp':</span> <span class="pre">0,</span> <span class="pre">'center_x':</span> <span class="pre">-100,</span> <span class="pre">'center_y':</span> <span class="pre">-100,</span> <span class="pre">'e1':</span> <span class="pre">-0.5,</span> <span class="pre">'e2':</span> <span class="pre">-0.5}</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.lower_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names">
-<span class="sig-name descname"><span class="pre">param_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['amp',</span> <span class="pre">'Ra',</span> <span class="pre">'Rs',</span> <span class="pre">'e1',</span> <span class="pre">'e2',</span> <span class="pre">'center_x',</span> <span class="pre">'center_y']</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.param_names" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.param_names">
+<span class="sig-name descname"><span class="pre">param_names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['amp',</span> <span class="pre">'Ra',</span> <span class="pre">'Rs',</span> <span class="pre">'e1',</span> <span class="pre">'e2',</span> <span class="pre">'center_x',</span> <span class="pre">'center_y']</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.param_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.upper_limit_default">
-<span class="sig-name descname"><span class="pre">upper_limit_default</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Ra':</span> <span class="pre">100,</span> <span class="pre">'Rs':</span> <span class="pre">100,</span> <span class="pre">'amp':</span> <span class="pre">100,</span> <span class="pre">'center_x':</span> <span class="pre">100,</span> <span class="pre">'center_y':</span> <span class="pre">100,</span> <span class="pre">'e1':</span> <span class="pre">0.5,</span> <span class="pre">'e2':</span> <span class="pre">0.5}</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffe_Ellipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.upper_limit_default">
+<span class="sig-name descname"><span class="pre">upper_limit_default</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Ra':</span> <span class="pre">100,</span> <span class="pre">'Rs':</span> <span class="pre">100,</span> <span class="pre">'amp':</span> <span class="pre">100,</span> <span class="pre">'center_x':</span> <span class="pre">100,</span> <span class="pre">'center_y':</span> <span class="pre">100,</span> <span class="pre">'e1':</span> <span class="pre">0.5,</span> <span class="pre">'e2':</span> <span class="pre">0.5}</span></em><a class="headerlink" href="#lenstronomy.LightModel.Profiles.p_jaffe.PJaffeEllipse.upper_limit_default" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1150,6 +1149,7 @@ radius ‘theta_E’</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – ra-coordinate</p></li>
 <li><p><strong>y</strong> – dec-coordinate</p></li>
+<li><p><strong>amp</strong> – amplitude of flux</p></li>
 <li><p><strong>gamma</strong> – projected power-law slope</p></li>
 <li><p><strong>e1</strong> – ellipticity</p></li>
 <li><p><strong>e2</strong> – ellipticity</p></li>
@@ -1267,7 +1267,7 @@ radius ‘theta_E’</p>
 \[I(R) = I_0 \exp \left[ -b_n (R/R_{\rm Sersic})^{\frac{1}{n}}\right]\]</div>
 <p>with <span class="math notranslate nohighlight">\(I_0 = amp\)</span>
 and
-with <span class="math notranslate nohighlight">\(b_{n}\approx 1.999\,n-0.327\)</span></p>
+with <span class="math notranslate nohighlight">\(b_{n}\approx 1.999n-0.327\)</span></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.sersic.Sersic.function">
 <span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_sersic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sersic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_R_frac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/sersic.html#Sersic.function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.sersic.Sersic.function" title="Permalink to this definition">¶</a></dt>
@@ -1551,7 +1551,7 @@ this should be faster and numerically stable</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> – The n’the basis function.</p></li>
+<li><p><strong>n</strong> (<em>int.</em>) – The n’the basis function.</p></li>
 <li><p><strong>x</strong> (<em>float</em><em> or </em><em>numpy array.</em>) – 1-dim position (dimensionless)</p></li>
 </ul>
 </dd>
@@ -1620,6 +1620,7 @@ this should be faster and numerically stable</p>
 <li><p><strong>x</strong> – </p></li>
 <li><p><strong>y</strong> – </p></li>
 <li><p><strong>amp</strong> – </p></li>
+<li><p><strong>n_max</strong> – </p></li>
 <li><p><strong>beta</strong> – </p></li>
 <li><p><strong>center_x</strong> – </p></li>
 <li><p><strong>center_y</strong> – </p></li>
@@ -1682,7 +1683,8 @@ this should be faster and numerically stable</p>
 <li><p><strong>amp</strong> – amplitude normalization</p></li>
 <li><p><strong>beta</strong> – shaplet scale</p></li>
 <li><p><strong>n</strong> – order of polynomial</p></li>
-<li><p><strong>m</strong> – roational invariance</p></li>
+<li><p><strong>m</strong> – rotational invariance</p></li>
+<li><p><strong>complex_bool</strong> – boolean; if True uses complex value of function _chi_n_m()</p></li>
 <li><p><strong>center_x</strong> – center of shapelet</p></li>
 <li><p><strong>center_y</strong> – center of shapelet</p></li>
 </ul>
@@ -1714,7 +1716,7 @@ this should be faster and numerically stable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.num_param">
-<span class="sig-name descname"><span class="pre">num_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.num_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.num_param" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.num_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.num_param" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n_max</strong> – maximal polynomial order</p>
@@ -1732,7 +1734,7 @@ this should be faster and numerically stable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.poly2index">
-<span class="sig-name descname"><span class="pre">poly2index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.poly2index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.poly2index" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poly2index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolar.poly2index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolar.poly2index" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1770,7 +1772,8 @@ this should be faster and numerically stable</p>
 <li><p><strong>amp</strong> – amplitude normalization</p></li>
 <li><p><strong>beta</strong> – shaplet scale</p></li>
 <li><p><strong>n</strong> – order of polynomial</p></li>
-<li><p><strong>m</strong> – roational invariance</p></li>
+<li><p><strong>m</strong> – rotational invariance</p></li>
+<li><p><strong>complex_bool</strong> – boolean; if True uses complex value of function _chi_n_m()</p></li>
 <li><p><strong>center_x</strong> – center of shapelet</p></li>
 <li><p><strong>center_y</strong> – center of shapelet</p></li>
 </ul>
@@ -1801,7 +1804,7 @@ this should be faster and numerically stable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.num_param">
-<span class="sig-name descname"><span class="pre">num_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.num_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.num_param" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_param</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.num_param"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.num_param" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n_max</strong> – maximal polynomial order</p>
@@ -1819,7 +1822,7 @@ this should be faster and numerically stable</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.poly2index">
-<span class="sig-name descname"><span class="pre">poly2index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.poly2index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.poly2index" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">poly2index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">m</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">complex_bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LightModel/Profiles/shapelets_polar.html#ShapeletsPolarExp.poly2index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LightModel.Profiles.shapelets_polar.ShapeletsPolarExp.poly2index" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1858,6 +1861,7 @@ name for profile: ‘UNIFORM’</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> – x-coordinate</p></li>
 <li><p><strong>y</strong> – y-coordinate</p></li>
+<li><p><strong>amp</strong> – surface brightness</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1960,7 +1964,7 @@ name for profile: ‘UNIFORM’</p>
         <li class="right" >
           <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LightModel.html" >lenstronomy.LightModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles package</a></li> 

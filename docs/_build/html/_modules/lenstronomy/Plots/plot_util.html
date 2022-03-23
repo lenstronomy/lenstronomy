@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Plots.plot_util &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Plots.plot_util &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Plots.plot_util</a></li> 
       </ul>
@@ -128,7 +128,8 @@
 
 
 <div class="viewcode-block" id="plot_line_set"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.plot_util.plot_line_set">[docs]</a><span class="nd">@export</span>
-<span class="k">def</span> <span class="nf">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">plot_line_set</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">points_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                  <span class="n">pixel_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    plotting a line set on a matplotlib instance where the coordinates are defined in pixel units with the lower left</span>
 <span class="sd">    corner (defined as origin) is by default (0, 0). The coordinates are moved by 0.5 pixels to be placed in the center</span>
@@ -144,6 +145,8 @@
 <span class="sd">    :param color: string with matplotlib color</span>
 <span class="sd">    :param flipped_x: bool, if True, flips x-axis</span>
 <span class="sd">    :param points_only: bool, if True, sets plotting keywords to plot single points without connecting lines</span>
+<span class="sd">    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with</span>
+<span class="sd">     the matshow() command to center the coordinates in the pixel center</span>
 <span class="sd">    :return: plot with line sets on matplotlib axis in pixel coordinates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -159,18 +162,23 @@
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;markersize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.01</span>
     <span class="k">if</span> <span class="n">flipped_x</span><span class="p">:</span>
         <span class="n">pixel_width_x</span> <span class="o">=</span> <span class="o">-</span><span class="n">pixel_width</span>
+    <span class="k">if</span> <span class="n">pixel_offset</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">)):</span>
             <span class="n">x_c</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">line_set_list_y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># &#39;,&#39;, color=color)</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">x_c</span><span class="p">,</span> <span class="n">y_c</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">line_set_list_x</span><span class="p">,</span> <span class="n">line_set_list_y</span><span class="p">)</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># &#39;,&#39;, color=color)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">((</span><span class="n">x_c</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">y_c</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
 
 
 <div class="viewcode-block" id="image_position_plot"><a class="viewcode-back" href="../../../lenstronomy.Plots.html#lenstronomy.Plots.plot_util.image_position_plot">[docs]</a><span class="nd">@export</span>
-<span class="k">def</span> <span class="nf">image_position_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">image_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">image_position_plot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">coords</span><span class="p">,</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">image_name_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flipped_x</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                        <span class="n">pixel_offset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">    :param ax: matplotlib axis instance</span>
@@ -181,6 +189,8 @@
 <span class="sd">    :param image_name_list: list of strings for names of the images in the same order as the positions</span>
 <span class="sd">    :param origin: [x0, y0], lower left pixel coordinate in the frame of the pixels</span>
 <span class="sd">    :param flipped_x: bool, if True, flips x-axis</span>
+<span class="sd">    :param pixel_offset: boolean; if True (default plotting), the coordinates are shifted a half a pixel to match with</span>
+<span class="sd">     the matshow() command to center the coordinates in the pixel center</span>
 <span class="sd">    :return: matplotlib axis instance with images plotted on</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -196,12 +206,16 @@
         <span class="n">ra_image_</span><span class="p">,</span> <span class="n">dec_image_</span> <span class="o">=</span> <span class="p">[</span><span class="n">ra_image</span><span class="p">],</span> <span class="p">[</span><span class="n">dec_image</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ra_image_</span><span class="p">,</span> <span class="n">dec_image_</span> <span class="o">=</span> <span class="n">ra_image</span><span class="p">,</span> <span class="n">dec_image</span>
+    <span class="k">if</span> <span class="n">pixel_offset</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">shift</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">ra</span><span class="p">,</span> <span class="n">dec</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ra_image_</span><span class="p">,</span> <span class="n">dec_image_</span><span class="p">):</span>
         <span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">map_coord2pix</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_image</span><span class="p">)):</span>
-            <span class="n">x_</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_image</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">y_</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_image</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">x_</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_image</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width_x</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y_</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_image</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">shift</span><span class="p">)</span> <span class="o">*</span> <span class="n">pixel_width</span> <span class="o">+</span> <span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
             <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">image_name_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ax</span></div>
@@ -236,7 +250,7 @@
 <span class="sd">    :param weights: weights of posteriors (optional)</span>
 <span class="sd">    :param title_fmt: format to what digit the results are presented</span>
 <span class="sd">    :param label: string of parameter label (optional)</span>
-<span class="sd">    :return: string with mean \pm quartile</span>
+<span class="sd">    :return: string with mean :math:`\\pm` quartile</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span> <span class="nn">corner</span> <span class="kn">import</span> <span class="n">quantile</span>
 
@@ -298,7 +312,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Plots.plot_util</a></li> 
       </ul>

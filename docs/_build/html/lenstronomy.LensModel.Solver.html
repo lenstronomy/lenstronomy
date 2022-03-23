@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Solver package &#8212; lenstronomy 1.10.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver package</a></li> 
@@ -133,8 +133,6 @@ abs(magnification) larger than this number</p></li>
 <li><p><strong>magnification_limit</strong> – None or float, if set will only return image positions that have an
 abs(magnification) larger than this number</p></li>
 <li><p><strong>kwargs_solver</strong> – additional kwargs to be supplied to the solver. Particularly relevant are Nmeas and Nmeas_extra</p></li>
-<li><p><strong>Nmeas</strong> – resolution with which to sample the angular grid, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</p></li>
-<li><p><strong>Nmeas_extra</strong> – resolution with which to additionally sample the angular grid at the low-shear end, higher means more reliable lens equation solving. For solving many positions at once, you may want to set this higher.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -303,6 +301,7 @@ non-linear solver.</p>
 <li><p><strong>x_pos</strong> – </p></li>
 <li><p><strong>y_pos</strong> – </p></li>
 <li><p><strong>kwargs_list</strong> – </p></li>
+<li><p><strong>xtol</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -418,7 +417,7 @@ position</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_pos</strong> – list of image positions (x-axis)</p></li>
 <li><p><strong>y_pos</strong> – list of image position (y-axis)</p></li>
-<li><p><strong>init</strong> – initial parameters</p></li>
+<li><p><strong>xtol</strong> – numerical tolerance level</p></li>
 <li><p><strong>kwargs_list</strong> – list of lens model kwargs</p></li>
 </ul>
 </dd>
@@ -503,7 +502,7 @@ position</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.QuadOptimizer.html" title="lenstronomy.LensModel.QuadOptimizer package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Solver package</a></li> 

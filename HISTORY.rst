@@ -267,6 +267,14 @@ History
 * magnification perturbations in point source amplitudes
 * analytic point source solver for SIE+shear
 
+
 1.9.3 (2020-12-22)
 ++++++++++++++++++
 * changed syntax to be compatible with python3 version <3.9
+
+
+1.10.0 (2022-03-23)
++++++++++++++++++++
+* schwimmbad dependency to pip version
+* ellipticity definition in lensing potential changed
+* Implemented Cored steep ellipsoid approximation of NFW and Hernquist profile

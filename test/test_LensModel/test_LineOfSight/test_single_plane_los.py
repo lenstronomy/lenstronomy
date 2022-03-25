@@ -3,10 +3,18 @@ __author__ = 'nataliehogg'
 import numpy as np
 import numpy.testing as npt
 import pytest
+import unittest
+
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.LineOfSight.single_plane_los import SinglePlaneLOS
+from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane
 from lenstronomy.LensModel.Profiles.sis import SIS
-import unittest
+# from lenstronomy.Cosmo import lcdm
+
+# is it ok to rely on astropy here? it makes the shear conversion less clunky
+# unless I don't understand how the lenstronomy cosmo works...
+from astropy.cosmology import default_cosmology
+cosmo = default_cosmology.get()
 
 try:
     import fastell4py
@@ -108,6 +116,138 @@ class TestSinglePlaneLOS(object):
         npt.assert_almost_equal(alphax_1_1_minimal + alphax_1_2_minimal, alphax_full_minimal, decimal=5)
         npt.assert_almost_equal(alphay_1_1_minimal + alphay_1_2_minimal, alphay_full_minimal, decimal=5)
 
+    def test_los_versus_multiplane(self):
+        """
+        this function asserts that the outcome from LOS and LOS MINIMAL is the same as MultiPlane
+        """
+        # set up the cosmology to convert between shears
+        # the exact numbers don't matter because we are just doing a comparison
+
+        z_o = 0.0 # redshift of observer
+        z_d = 0.5 # redshift of main lens
+        z_s = 2.0 # redshift of source
+
+        z_f = (z_o + z_d)/2
+        z_b = (z_d + z_s)/2
+
+        gamma1_od = 0.05
+        gamma2_od = 0.0
+        gamma1_os = 0.02
+        gamma2_os = 0.1
+        gamma1_ds = 0.0
+        gamma2_ds = 0.03
+
+        def d(z1, z2):
+            return cosmo.angular_diameter_distance_z1z2(z1, z2).to_value()
+
+        # conversion of linear LOS shears to lenstronomy convention
+        gamma1_f = gamma1_od*((d(z_o, z_d)*d(z_f, z_s))/(d(z_o, z_s)*d(z_f, z_d)))
+        gamma2_f = gamma2_od*((d(z_o, z_d)*d(z_f, z_s))/(d(z_o, z_s)*d(z_f, z_d)))
+
+        gamma1_b = gamma1_ds*((d(z_o, z_b)*d(z_d, z_s))/(d(z_o, z_s)*d(z_d, z_b)))
+        gamma2_b = gamma2_ds*((d(z_o, z_b)*d(z_d, z_s))/(d(z_o, z_s)*d(z_d, z_b)))
+
+        gamma1_d = gamma1_os - gamma1_f - gamma1_b
+        gamma2_d = gamma2_os - gamma2_f - gamma2_b
+
+        # compute non-linear correction to os term
+        Identity = np.identity(2)
+
+        Gamma_f = np.array([[gamma1_f, gamma2_f],
+                            [gamma2_f, -gamma1_f]])
+
+        Gamma_d = np.array([[gamma1_d, gamma2_d],
+                            [gamma2_d, -gamma1_d]])
+
+
+        Gamma_b = np.array([[gamma1_b, gamma2_b],
+                            [gamma2_b, -gamma1_b]])
+
+        Gamma_od = np.array([[gamma1_od, gamma2_od],
+                             [gamma2_od, -gamma1_od]])
+
+        Gamma_ofb = np.array(Gamma_f)*((d(z_o, z_s)*d(z_f, z_b))/(d(z_o, z_b)*d(z_f, z_s)))
+
+        Gamma_odb = np.array(Gamma_d)*((d(z_o, z_s)*d(z_d, z_b))/(d(z_o, z_b)*d(z_d, z_s)))
+
+        Gamma_os = Gamma_f + Gamma_d + Gamma_b - np.matmul(Gamma_d, Gamma_od) - np.matmul(Gamma_b, Gamma_ofb + np.matmul(Gamma_odb, Identity - Gamma_od))
+
+        kappa_os  = (Gamma_os[0, 0] + Gamma_os[1, 1])/2
+        omega_os  = (Gamma_os[1, 0] - Gamma_os[0, 1])/2
+        gamma1_os = (Gamma_os[0, 0] - Gamma_os[1, 1])/2
+        gamma2_os = (Gamma_os[0, 1] + Gamma_os[1, 0])/2
+
+        # test three image positions
+        x, y = np.array([3,4,5]), np.array([2,1,0])
+
+        lens_model_list = ['EPL', 'SHEAR', 'SHEAR', 'SHEAR']
+
+        redshift_list = [z_d, z_f, z_d, z_b]
+
+        kwargs_los = {'kappa_os': kappa_os, 'omega_os': omega_os, 'gamma1_os': gamma1_os, 'gamma2_os': gamma2_os,
+                      'kappa_od': 0.0, 'omega_od': 0.0, 'gamma1_od': gamma1_od, 'gamma2_od': gamma2_od,
+                      'kappa_ds': 0.0, 'omega_ds': 0.0, 'gamma1_ds': gamma1_ds, 'gamma2_ds': gamma2_ds}#,
+                      # 'kappa_los': 0.0, 'omega_los': 0.0, 'gamma1_los': gamma1_los, 'gamma2_los': gamma2_los}
+
+        kwargs_epl = {'theta_E': 0.8, 'gamma': 1.95, 'center_x': 0, 'center_y': 0, 'e1': 0.07, 'e2': -0.03}
+
+        kwargs_gamma_f = {'gamma1': gamma1_f, 'gamma2': gamma2_f}
+        kwargs_gamma_d = {'gamma1': gamma1_d, 'gamma2': gamma2_d}
+        kwargs_gamma_b = {'gamma1': gamma1_b, 'gamma2': gamma2_b}
+
+        kwargs_singleplane_los = [kwargs_los, kwargs_epl]
+
+        lens_model_los = SinglePlaneLOS(['LOS', 'EPL'], index_los = 0)
+
+        kwargs_multiplane = [kwargs_epl, kwargs_gamma_f, kwargs_gamma_d, kwargs_gamma_b]
+
+        lens_model_multiplane = MultiPlane(z_source = z_s,
+                                           lens_model_list = lens_model_list,
+                                           lens_redshift_list = redshift_list)
+        # set the tolerance
+        # ray shooting passes at 1e-16
+        # hessian around 1e-6
+        tolerance = 1e-5
+
+        # compare some different results from single_plane_los and multiplane
+
+        # ray_shooting
+        beta_multiplane_x, beta_multiplane_y = lens_model_multiplane.ray_shooting(x, y, kwargs_multiplane)
+        beta_los_x, beta_los_y = lens_model_los.ray_shooting(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(beta_multiplane_x, beta_los_x, rtol = tolerance)
+        npt.assert_allclose(beta_multiplane_y, beta_los_y, rtol = tolerance)
+
+        # hessian
+        hessian_multiplane_xx, hessian_multiplane_xy, hessian_multiplane_yx, hessian_multiplane_yy = lens_model_multiplane.hessian(x, y, kwargs_multiplane)
+        hessian_los_xx, hessian_los_xy, hessian_los_yx, hessian_los_yy = lens_model_los.hessian(x, y, kwargs_singleplane_los)
+        npt.assert_allclose(hessian_multiplane_xx, hessian_los_xx, rtol = tolerance)
+        npt.assert_allclose(hessian_multiplane_xy, hessian_los_xy, rtol = tolerance)
+        npt.assert_allclose(hessian_multiplane_yx, hessian_los_yx, rtol = tolerance)
+        npt.assert_allclose(hessian_multiplane_yy, hessian_los_yy, rtol = tolerance)
+
+        # now compare the same with LOS MINIMAL
+        # the corrections here aren't right, to be fixed
+
+        # kwargs_minimal_los = {'kappa_od': 0.0, 'kappa_los': kappa_os,
+        #                       'omega_od': 0.0, 'omega_los': omega_os,
+        #                       'gamma1_od': gamma1_od, 'gamma2_od': gamma1_od,
+        #                       'gamma1_los': gamma2_os, 'gamma2_los': gamma2_os}
+        #
+        # kwargs_singleplane_minimal = [kwargs_minimal_los, kwargs_epl]
+        #
+        # lens_model_minimal = SinglePlaneLOS(['LOS_MINIMAL', 'EPL'], index_los = 0)
+        # beta_minimal_x, beta_minimal_y = lens_model_minimal.ray_shooting(x, y, kwargs_singleplane_minimal)
+        # hessian_minimal_xx, hessian_minimal_xy, hessian_minimal_yx, hessian_minimal_yy = lens_model_minimal.hessian(x, y, kwargs_singleplane_minimal)
+        #
+        # npt.assert_allclose(beta_multiplane_x, beta_minimal_x, rtol = tolerance)
+        # npt.assert_allclose(beta_multiplane_y, beta_minimal_y , rtol = tolerance)
+        #
+        # npt.assert_allclose(hessian_multiplane_xx, hessian_minimal_xx, rtol = tolerance)
+        # npt.assert_allclose(hessian_multiplane_xy, hessian_minimal_xy, rtol = tolerance)
+        # npt.assert_allclose(hessian_multiplane_yx, hessian_minimal_yx, rtol = tolerance)
+        # npt.assert_allclose(hessian_multiplane_yy, hessian_minimal_yy, rtol = tolerance)
+
+
     def test_init(self):
         # need to do this for los minimal too?
         lens_model_list = ['LOS', 'TNFW', 'TRIPLE_CHAMELEON', 'SHEAR_GAMMA_PSI', 'CURVED_ARC_CONST',
@@ -134,6 +274,4 @@ class TestRaise(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # NH: note that I had to add the square brackets to get the test to run on my machine
-    # pytest.main(["-k TestLensModel"])
     pytest.main("-k TestLensModel")

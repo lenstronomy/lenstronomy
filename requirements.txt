@@ -6,7 +6,6 @@ emcee>=3.0.0
 matplotlib
 sklearn
 numba>=0.43.1
-future
 dynesty
 pymultinest
 nestcheck

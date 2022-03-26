@@ -66,12 +66,15 @@ class LikelihoodModule(object):
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
         images predicted than indicated in max_num_images, a punishment occurs
         :param max_num_images: int, see restrict_image_number
-        :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
+        :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the
+         fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
-        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
+        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes
+         (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
-        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
+         (see SLITronomy documentation)
         """
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -214,7 +217,8 @@ class LikelihoodModule(object):
                 penalty = 10.**5
                 bound_hit = True
                 if verbose is True:
-                    print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i], upperLimit[i]))
+                    print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i],
+                                                                                   upperLimit[i]))
                 return penalty, bound_hit
         return penalty, bound_hit
 
@@ -280,7 +284,8 @@ class LikelihoodModule(object):
             ra_image_list = []
         if dec_image_list is None:
             dec_image_list = []
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, \
+               flux_ratio_errors, ra_image_list, dec_image_list
 
     def _reset_point_source_cache(self, bool_input=True):
         self.PointSource.delete_lens_model_cache()

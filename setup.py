@@ -38,8 +38,25 @@ The full documentation can be generated with Sphinx"""
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
 desc = open("README.rst").read()
-requires = ['numpy>=1.13', 'scipy>=0.14.0', "configparser"]
-tests_require = ['pytest>=2.3', "mock"]
+requires = ['numpy>=1.13',
+            'scipy>=0.19.1',
+            'configparser',
+            'astropy',
+            'mpmath',
+            'matplotlib',
+            'sklearn',
+            'numba>=0.43.1',
+            'corner>=2.2.1',
+            'scikit-image',
+            'pyyaml',
+            'h5py',
+            'pyxdg',
+            'schwimmbad',
+            'multiprocess>=0.70.8',
+            ]
+tests_require = ['pytest>=2.3', "mock", 'colossus', 'slitronomy==0.3.2',
+                 'emcee>=3.0.0', 'dynesty', 'pymultinest', 'nestcheck',
+                 ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 

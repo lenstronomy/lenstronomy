@@ -46,19 +46,16 @@ requires = ['numpy>=1.13',
             'matplotlib',
             'sklearn',
             'numba>=0.43.1',
-            'emcee>=3.0.0',
-            'dynesty',
-            'pymultinest',
-            'nestcheck',
             'corner>=2.2.1',
-            'h5py',
             'scikit-image',
             'pyyaml',
             'pyxdg',
             'schwimmbad',
             'multiprocess>=0.70.8',
             ]
-tests_require = ['pytest>=2.3', "mock", 'colossus', 'slitronomy==0.3.2']
+tests_require = ['pytest>=2.3', "mock", 'colossus', 'slitronomy==0.3.2',
+                 'emcee>=3.0.0', 'dynesty', 'pymultinest', 'nestcheck',
+                 ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))
 

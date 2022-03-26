@@ -24,6 +24,3 @@ multiprocess>=0.70.8
 # fastell is not a direct requirement as it needs a fortran compiler and is optional
 #-e git://github.com/sibirrer/fastell4py.git#egg=fastell4py
 slitronomy==0.3.2
-
-# requirements for tests
-# colossus

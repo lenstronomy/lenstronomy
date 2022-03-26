@@ -55,7 +55,7 @@ requires = ['numpy>=1.13',
             'h5py',
             'scikit-image',
             'pyyaml',
-            'pyxdg'
+            'pyxdg',
             'schwimmbad',
             'multiprocess>=0.70.8',
             ]

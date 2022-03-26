@@ -278,3 +278,8 @@ History
 * schwimmbad dependency to pip version
 * ellipticity definition in lensing potential changed
 * Implemented Cored steep ellipsoid approximation of NFW and Hernquist profile
+
+
+1.10.1 (2022-03-26)
++++++++++++++++++++
+* install requirements changed

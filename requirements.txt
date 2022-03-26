@@ -13,6 +13,7 @@ corner>=2.2.1
 scikit-image
 pyyaml
 pyxdg
+h5py
 
 
 schwimmbad

@@ -283,3 +283,8 @@ History
 1.10.1 (2022-03-26)
 +++++++++++++++++++
 * install requirements changed
+
+
+1.10.2 (2022-03-27)
++++++++++++++++++++
+* requirement from sklearn changed to scikit-learn

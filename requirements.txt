@@ -4,7 +4,7 @@ scipy>=0.19.1
 mpmath
 emcee>=3.0.0
 matplotlib
-sklearn
+scikit-learn
 numba>=0.43.1
 dynesty
 pymultinest

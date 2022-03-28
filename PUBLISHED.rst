@@ -155,6 +155,11 @@ Dark Matter substructure
 * From Images to Dark Matter: End-To-End Inference of Substructure From Hundreds of Strong Gravitational Lenses; `Wagner-Carena et al. 2022 <https://arxiv.org/abs/2203.00690>`_
     *rendering sub- and line-of-sight halos and generating realistic training sets of images for substructure quantifications*
 
+* Interlopers speak out: Studying the dark universe using small-scale lensing anisotropies; `Dhanasingham et al. 2022 <https://arxiv.org/abs/2203.13775>`_
+    *rendering line of sight and subhalos with pyhalo on top of lenstronomy*
+
+
+
 
 
 Lens searches

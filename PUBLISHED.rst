@@ -104,6 +104,9 @@ Measuring the Hubble constant
 * TDCOSMO. IX. Systematic comparison between lens modelling software programs: time delay prediction for WGD 2038−4008 `Shajib et al. 2022a <https://arxiv.org/abs/2202.11101>`_
     *modeling of a time-delay lens and comprehensive analysis between two modeling codes.*
 
+* Forecast of observing time delay of the strongly lensed quasars with Muztagh-Ata 1.93m telescope `Zhu et al. 2022a <https://arxiv.org/abs/2203.15680>`_
+    *Using lenstronomy to reproduce a lens and simulate the observed images based on parameters fitted by other work.*
+
 
 
 

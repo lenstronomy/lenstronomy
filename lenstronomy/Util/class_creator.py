@@ -153,34 +153,41 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, len
 
 
 @export
-def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, likelihood_mask=None):
+def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, image_likelihood_mask=None):
     """
 
     :param kwargs_data: ImageData keyword arguments
     :param kwargs_psf: PSF keyword arguments
+    :param kwargs_numerics: numerics keyword arguments for Numerics() class
     :param kwargs_model: model keyword arguments
+    :param image_likelihood_mask: image likelihood mask
+     (same size as image_data with 1 indicating being evaluated and 0 being left out)
     :return: ImageLinearFit() instance
     """
     data_class = ImageData(**kwargs_data)
     psf_class = PSF(**kwargs_psf)
     lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = create_class_instances(**kwargs_model)
     imageModel = ImageLinearFit(data_class, psf_class, lens_model_class, source_model_class, lens_light_model_class,
-                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=likelihood_mask)
+                                point_source_class, extinction_class, kwargs_numerics, likelihood_mask=image_likelihood_mask)
     return imageModel
 
 
 @export
-def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, likelihood_mask_list=None,
+def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
                   band_index=0, kwargs_pixelbased=None):
     """
 
 
+    :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
     :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
-
     - 'multi-linear': linear amplitudes are inferred on single data set
     - 'linear-joint': linear amplitudes ae jointly inferred
     - 'single-band': single band
-
+    :param kwargs_model: model keyword arguments
+    :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
+    :param image_likelihood_mask_list: list of image likelihood mask
+     (same size as image_data with 1 indicating being evaluated and 0 being left out)
+    :param band_index: integer, index of the imaging band to model (only applied when using 'single-band' as option)
     :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
 
     :return: MultiBand class instance
@@ -188,13 +195,13 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
 
     if multi_band_type == 'multi-linear':
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
-        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
+        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
     elif multi_band_type == 'joint-linear':
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
-        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=likelihood_mask_list)
+        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
     elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
-        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
+        multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
                                          band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)

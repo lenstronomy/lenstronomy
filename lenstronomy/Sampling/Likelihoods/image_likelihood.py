@@ -29,7 +29,7 @@ class ImageLikelihood(object):
         """
         self.imSim = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                  bands_compute=bands_compute,
-                                                 likelihood_mask_list=image_likelihood_mask_list,
+                                                 image_likelihood_mask_list=image_likelihood_mask_list,
                                                  kwargs_pixelbased=kwargs_pixelbased)
         self._model_type = self.imSim.type
         self._source_marg = source_marg

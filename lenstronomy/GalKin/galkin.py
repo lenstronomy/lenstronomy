@@ -2,6 +2,7 @@ from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
+import scipy as sp
 
 __all__ = ['Galkin']
 
@@ -119,6 +120,107 @@ class Galkin(GalkinModel, GalkinObservation):
         # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
         self.numerics.delete_cache()
         return np.sqrt(sigma_s2_average) / 1000.  # in units of km/s
+
+    def dispersion_map_grid_convolved(self, kwargs_mass, kwargs_light,
+                                      kwargs_anisotropy,
+                                      supersampling_factor=1,
+                                      num_psf_sampling=100):
+        """
+        computes the velocity dispersion in each Integral Field Unit
+
+        :param kwargs_mass: keyword arguments of the mass model
+        :param kwargs_light: keyword argument of the light model
+        :param kwargs_anisotropy: anisotropy keyword arguments
+        :param supersampling_factor: sampling factor for the grid to do the 2D convolution on.
+        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :return: ordered array of velocity dispersions [km/s] for each unit
+        """
+        # draw from light profile (3d and 2d option)
+        # compute kinematics of it (analytic or numerical)
+        # displace it n-times
+        # add it and keep track of how many draws are added on each segment
+        # compute average in each segment
+        # return value per segment
+
+        num_segments = self.num_segments
+        x_grid = self._aperture._x_grid
+        y_grid = self._aperture._y_grid
+
+        delta_x = np.abs(x_grid[0, 1] - x_grid[0, 0])
+        delta_y = np.abs(y_grid[1, 0] - y_grid[0, 0])
+        assert delta_x == delta_y
+
+        x_start = x_grid[0, 0] - delta_x/2. * (1 - 1 / supersampling_factor)
+        x_end = x_grid[0, -1] + delta_x/2. * (1 - 1 / supersampling_factor)
+        y_start = y_grid[0, 0] - delta_y / 2. * (1 - 1 / supersampling_factor)
+        y_end = y_grid[-1, 0] + delta_y / 2. * (1 - 1 / supersampling_factor)
+
+        xs = np.arange(x_start, x_end + delta_x / (10 + supersampling_factor),
+                         delta_x / supersampling_factor)
+        ys = np.arange(y_start, y_end + delta_y / (10 + supersampling_factor),
+                         delta_y / supersampling_factor)
+
+        x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
+
+        R_max = np.sqrt(xs**2 + ys**2).max()
+
+        Rs = np.linspace(0., R_max, 1000)
+        sigma2_IRs = np.zeros_like(Rs)
+        IRs = np.zeros_like(Rs)
+
+        self.numerics._lum_weight_int_method = True
+
+        for i, R in enumerate(Rs):
+            sigma2_IRs[i], IRs[i] = self.numerics.sigma_s2(
+                    0, R,
+                    kwargs_mass,
+                    kwargs_light, kwargs_anisotropy)
+
+        sigma2_interp = sp.interpolate.interp1d(Rs, sigma2_IRs,
+                                                kind='cubic',
+                                                bounds_error=True,
+                                                assume_sorted=True
+                                                )
+        IR_interp = sp.interpolate.interp1d(Rs, IRs,
+                                            kind='cubic',
+                                            bounds_error=True,
+                                            assume_sorted=True
+                                            )
+
+        # sigma2_IR_grid = np.zeros_like(x_grid_supersampled)
+        # IR_grid = np.zeros_like(x_grid_supersampled)
+
+        sigma2_IR_grid = sigma2_interp(np.sqrt(x_grid_supersampled ** 2 +
+                                               y_grid_supersmapled ** 2))
+        IR_grid = IR_interp(np.sqrt(x_grid_supersampled ** 2 +
+                                    y_grid_supersmapled ** 2))
+        psf_x = np.arange(-3*self._psf._fwhm, -3*self._psf._fwhm+delta_x/(
+                supersampling_factor+1), delta_x/supersampling_factor)
+        psf_y = np.arange(-3 * self._psf._fwhm,
+                          -3 * self._psf._fwhm + delta_y / (
+                                  supersampling_factor + 1),
+                          delta_y / supersampling_factor)
+        psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
+        psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
+
+        sigma2_IR_convolved = sp.signal.convolve2d(sigma2_IR_grid,
+                                                   psf_kernel, mode='same')
+        IR_convolved = sp.signal.convolve2d(IR_grid, psf_kernel, mode='same')
+
+        sigma_IR_integrated = sigma2_IR_convolved.reshape(
+            len(x_grid), supersampling_factor,
+            len(y_grid), supersampling_factor
+        ).sum(3).sum(1)
+
+        IR_integrated = IR_convolved.reshape(
+            len(x_grid), supersampling_factor,
+            len(y_grid), supersampling_factor
+        ).sum(3).sum(1)
+
+        sigma2_grid = sigma_IR_integrated / IR_integrated
+
+        # apply unit conversion from arc seconds and deflections to physical velocity dispersion in (km/s)
+        return np.sqrt(sigma2_grid) / 1000.   # in units of km/s
 
     def _draw_one_sigma2(self, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """

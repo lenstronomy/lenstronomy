@@ -121,7 +121,8 @@ class KinematicsAPI(object):
         return sigma_v
 
     def velocity_dispersion_map(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
-                                gamma=None, kappa_ext=0):
+                                gamma=None, kappa_ext=0,
+                                direct_convolve=False, supersampling_factor=1):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion map with IFU data [km/s]
 
@@ -137,9 +138,21 @@ class KinematicsAPI(object):
         :return: velocity dispersion [km/s]
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
-                                                                    theta_E=theta_E, gamma=gamma)
-        sigma_v_map = galkin.dispersion_map(kwargs_profile, kwargs_light, kwargs_anisotropy,
-                                        num_kin_sampling=self._num_kin_sampling, num_psf_sampling=self._num_psf_sampling)
+                                                                    theta_E=theta_E, gamma=gamma
+                                                                    )
+        if direct_convolve:
+            sigma_v_map = galkin.dispersion_map_grid_convolved(
+                kwargs_profile, kwargs_light,
+                kwargs_anisotropy,
+                supersampling_factor=supersampling_factor
+                #num_kin_sampling=self._num_kin_sampling,
+                #num_psf_sampling=self._num_psf_sampling
+            )
+        else:
+            sigma_v_map = galkin.dispersion_map(
+                kwargs_profile, kwargs_light, kwargs_anisotropy,
+                num_kin_sampling=self._num_kin_sampling,
+                num_psf_sampling=self._num_psf_sampling)
         sigma_v_map = self.transform_kappa_ext(sigma_v_map, kappa_ext=kappa_ext)
         return sigma_v_map
 

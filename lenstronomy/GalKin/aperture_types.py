@@ -222,6 +222,67 @@ class IFUShells(object):
 
 
 @export
+class IFUGrid(object):
+    """
+    class for an Integral Field Unit spectrograph with rectangular grid where
+    the kinematics are measured
+    """
+    def __init__(self, x_grid, y_grid, center_ra, center_dec):
+        """
+
+        :param x_grid: x coordinates of the grid
+        :param y_grid: y coordinates of the grid
+        :param center_ra: ra of galaxy
+        :param center_dec: dec of galaxy
+        """
+        self._x_grid = x_grid
+        self._y_grid = y_grid
+        self._center_ra, self._center_dec = center_ra, center_dec
+
+    def aperture_select(self, ra, dec):
+        """
+
+        :param ra: angular coordinate of photon/ray
+        :param dec: angular coordinate of photon/ray
+        :return: bool, True if photon/ray is within the slit, False otherwise, index of shell
+        """
+        return grid_ifu_select(ra, dec, self._x_grid, self._y_grid,
+                               self._center_ra, self._center_dec)
+
+    @property
+    def num_segments(self):
+        """
+        number of segments with separate measurements of the velocity dispersion
+        :return: int
+        """
+        return len(self._x_grid) * len(self._y_grid)
+
+
+@export
+def grid_ifu_select(ra, dec, x_grid, y_grid, center_ra=0, center_dec=0):
+    """
+
+    :param ra: angular coordinate of photon/ray
+    :param dec: angular coordinate of photon/ray
+    :param r_bin: array of radial bins to average the dispersion spectra in ascending order.
+        It starts with the inner-most edge to the outermost edge.
+    :param center_ra: center of the sphere
+    :param center_dec: center of the sphere
+    :return: boolean, True if within the radial range, False otherwise
+    """
+    x_pixel_size = x_grid[1, 0] - x_grid[0, 0]
+    y_pixel_size = y_grid[0, 1] - y_grid[0, 0]
+
+    x = np.floor((ra - x_grid[0, 0] - x_pixel_size/2.) / x_pixel_size)
+    y = np.floor((dec - y_grid[0, 0] - y_pixel_size/2.) / y_pixel_size)
+
+    if (x > 0 and y > 0) and (x < len(x_grid) and y < len(y_grid[0])):
+        return True, y*len(x_grid) + x
+    else:
+        return False, None
+
+
+@export
 def shell_ifu_select(ra, dec, r_bin, center_ra=0, center_dec=0):
     """
 

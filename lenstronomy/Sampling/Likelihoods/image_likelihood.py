@@ -80,4 +80,3 @@ class ImageLikelihood(object):
         :return:
         """
         self.imSim.reset_point_source_cache(cache=cache)
-

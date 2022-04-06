@@ -18,7 +18,7 @@ def observation_constructor(instrument_name, observation_name):
     if instrument_name == 'LSST':
         kwargs_instrument = LSST_camera
     else:
-        raise ValueError("instrument name %s not supported! Choose among  %s " % (instrument_name, instrument_name_list))
+        raise ValueError("instrument name %s not supported! Choose among %s" % (instrument_name, instrument_name_list))
 
     if observation_name == 'LSST_g_band':
         kwargs_observation = LSST_g_band_obs

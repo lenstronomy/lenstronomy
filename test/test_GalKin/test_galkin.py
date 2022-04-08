@@ -285,6 +285,88 @@ class TestGalkin(object):
                                     kwargs_anisotropy=kwargs_anisotropy, sampling_number=1000)
         npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
 
+    def test_dispersion_map_grid_convolved(self):
+        """
+        tests whether the old and new version provide the same answer
+        """
+        # light profile
+        light_profile_list = ['HERNQUIST']
+        r_eff = 1.
+        kwargs_light = {'r_eff': r_eff,  # effective half light radius (2d
+                         # projected) in arcsec 0.551 * mass profile
+                         'amp': 1., 'center_x': 0., 'center_y': 0.}
+        mass_profile_list = ['PEMD']
+        theta_E = 1.
+        gamma = 2.
+        kwargs_mass = {'theta_E': theta_E, 'center_x': 0., 'center_y': 0.,
+                        'gamma': gamma}  # Einstein radius (arcsec) and power-law slope
+
+        # anisotropy profile
+        anisotropy_type = 'OM'
+        r_ani = 1.5
+        kwargs_anisotropy = {'r_ani': r_ani}  # anisotropy radius [arcsec]
+
+        # aperture as grid
+        # aperture_type = 'shell'
+        # kwargs_aperture_inner = {'r_in': 0., 'r_out': 0.2, 'center_dec': 0, 'center_ra': 0}
+
+        # kwargs_aperture_outer = {'r_in': 0., 'r_out': 1.5, 'center_dec': 0, 'center_ra': 0}
+
+        # aperture as slit
+        x_grid, y_grid = np.meshgrid(
+            np.arange(-1.9*2, 1.91*2, 0.4),
+            np.arange(-1.9*2, 1.91*2, 0.4)
+        )
+
+        kwargs_ifu = {'aperture_type': 'IFU_grid',
+                      'x_grid': x_grid,
+                      'y_grid': y_grid,
+                      'center_ra': 0, 'center_dec': 0,
+                      }
+        kwargs_aperture = {'aperture_type': 'slit',
+                           'width': 0.4, 'length': 0.4,
+                           'center_ra': 0, 'center_dec': 0
+                           }
+
+        psf_fwhm = .8  # Gaussian FWHM psf
+        kwargs_cosmo = {'d_d': 1000, 'd_s': 1500, 'd_ds': 800}
+        kwargs_numerics = {#'sampling_number': 1000,
+                           'interpol_grid_num': 1000,
+                           'log_integration': True,
+                           'max_integrate': 1000,
+                           'min_integrate': 0.001}
+        kwargs_model = {'mass_profile_list': mass_profile_list,
+                        'light_profile_list': light_profile_list,
+                        'anisotropy_model': anisotropy_type}
+        kwargs_psf = {'psf_type': 'GAUSSIAN', 'fwhm': psf_fwhm}
+
+        galkinIFU = Galkin(kwargs_aperture=kwargs_ifu, kwargs_psf=kwargs_psf,
+                           kwargs_cosmo=kwargs_cosmo,
+                           kwargs_model=kwargs_model,
+                           kwargs_numerics=kwargs_numerics,
+                           analytic_kinematics=True)
+
+        sigma_v_ifu = galkinIFU.dispersion_map_grid_convolved(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy, supersampling_factor=21)
+
+        for i in range(9, 12):
+            for j in range(9, 12):
+                kwargs_aperture['center_ra'] = x_grid[i, j]
+                kwargs_aperture['center_dec'] = y_grid[i, j]
+                print(kwargs_aperture)
+                galkin = Galkin(kwargs_model, kwargs_aperture, kwargs_psf,
+                                kwargs_cosmo, kwargs_numerics,
+                                analytic_kinematics=True)
+                sigma_v = galkin.dispersion(
+                    kwargs_mass=kwargs_mass, #{'theta_E': theta_E, 'gamma':
+                # gamma},
+                    kwargs_light=kwargs_light, #{'r_eff': r_eff},
+                    kwargs_anisotropy=kwargs_anisotropy, sampling_number=1000)
+
+                npt.assert_almost_equal(sigma_v, sigma_v_ifu[i, j], decimal=-1)
+
     def test_projected_integral_vs_3d_rendering(self):
 
         lum_weight_int_method = True

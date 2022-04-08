@@ -223,6 +223,21 @@ class NumericKinematics(Anisotropy):
         IR = self.lightProfile.light_2d_finite(R, kwargs_light)
         return IR_sigma2 * 2 * const.G / (const.arcsec * self.cosmo.dd * const.Mpc), IR
 
+    def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light,
+                           kwargs_anisotropy):
+        """
+        Return I(R)*sigma^2 equation A15 in Mamon&Lokas 2005 as interpolation
+        in log space, and I(R)
+
+        :param R: projected radius
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :return:
+        """
+        return self._I_R_sigma2_interp(R, kwargs_mass, kwargs_light,
+                           kwargs_anisotropy)
+
     def _I_R_sigma2_interp(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
         """
         equation A15 in Mamon&Lokas 2005 as interpolation in log space

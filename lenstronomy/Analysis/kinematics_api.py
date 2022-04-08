@@ -144,7 +144,7 @@ class KinematicsAPI(object):
             sigma_v_map = galkin.dispersion_map_grid_convolved(
                 kwargs_profile, kwargs_light,
                 kwargs_anisotropy,
-                supersampling_factor=supersampling_factor
+                supersampling_factor=supersampling_factor,
                 #num_kin_sampling=self._num_kin_sampling,
                 #num_psf_sampling=self._num_psf_sampling
             )

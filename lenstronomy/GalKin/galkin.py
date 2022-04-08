@@ -2,7 +2,8 @@ from lenstronomy.GalKin.observation import GalkinObservation
 from lenstronomy.GalKin.galkin_model import GalkinModel
 
 import numpy as np
-import scipy as sp
+from scipy.signal import convolve2d
+from scipy.interpolate import interp1d
 
 __all__ = ['Galkin']
 
@@ -141,6 +142,10 @@ class Galkin(GalkinModel, GalkinObservation):
         # add it and keep track of how many draws are added on each segment
         # compute average in each segment
         # return value per segment
+        if hasattr(self, 'lum_weight_int_method'):
+            if not self.lum_weight_int_method:
+                raise ValueError("False for 'lum_weight_int_method' is not "
+                                 "supported!")
 
         num_segments = self.num_segments
         x_grid = self._aperture._x_grid
@@ -164,28 +169,29 @@ class Galkin(GalkinModel, GalkinObservation):
 
         R_max = np.sqrt(xs**2 + ys**2).max()
 
-        Rs = np.linspace(0., R_max, 1000)
+        Rs = np.linspace(0, R_max, 50)
         sigma2_IRs = np.zeros_like(Rs)
         IRs = np.zeros_like(Rs)
 
         self.numerics._lum_weight_int_method = True
 
         for i, R in enumerate(Rs):
-            sigma2_IRs[i], IRs[i] = self.numerics.sigma_s2(
-                    0, R,
+            sigma2_IRs[i], IRs[i] = self.numerics.I_R_sigma2_and_IR(
+                    R,
                     kwargs_mass,
                     kwargs_light, kwargs_anisotropy)
 
-        sigma2_interp = sp.interpolate.interp1d(Rs, sigma2_IRs,
-                                                kind='cubic',
-                                                bounds_error=True,
-                                                assume_sorted=True
-                                                )
-        IR_interp = sp.interpolate.interp1d(Rs, IRs,
-                                            kind='cubic',
-                                            bounds_error=True,
-                                            assume_sorted=True
-                                            )
+
+        sigma2_interp = interp1d(Rs, sigma2_IRs,
+                                 kind='cubic',
+                                 bounds_error=True,
+                                 assume_sorted=True
+                                 )
+        IR_interp = interp1d(Rs, IRs,
+                             kind='cubic',
+                             bounds_error=True,
+                             assume_sorted=True
+                             )
 
         # sigma2_IR_grid = np.zeros_like(x_grid_supersampled)
         # IR_grid = np.zeros_like(x_grid_supersampled)
@@ -194,18 +200,20 @@ class Galkin(GalkinModel, GalkinObservation):
                                                y_grid_supersmapled ** 2))
         IR_grid = IR_interp(np.sqrt(x_grid_supersampled ** 2 +
                                     y_grid_supersmapled ** 2))
-        psf_x = np.arange(-3*self._psf._fwhm, -3*self._psf._fwhm+delta_x/(
+        fwhm_factor = 3
+        psf_x = np.arange(-fwhm_factor*self._psf._fwhm,
+                          fwhm_factor * self._psf._fwhm+delta_x/(
                 supersampling_factor+1), delta_x/supersampling_factor)
-        psf_y = np.arange(-3 * self._psf._fwhm,
-                          -3 * self._psf._fwhm + delta_y / (
+        psf_y = np.arange(-fwhm_factor * self._psf._fwhm,
+                          fwhm_factor * self._psf._fwhm + delta_y / (
                                   supersampling_factor + 1),
                           delta_y / supersampling_factor)
         psf_x_grid, psf_y_grid = np.meshgrid(psf_x, psf_y)
         psf_kernel = self.get_psf_kernel(psf_x_grid, psf_y_grid)
 
-        sigma2_IR_convolved = sp.signal.convolve2d(sigma2_IR_grid,
+        sigma2_IR_convolved = convolve2d(sigma2_IR_grid,
                                                    psf_kernel, mode='same')
-        IR_convolved = sp.signal.convolve2d(IR_grid, psf_kernel, mode='same')
+        IR_convolved = convolve2d(IR_grid, psf_kernel, mode='same')
 
         sigma_IR_integrated = sigma2_IR_convolved.reshape(
             len(x_grid), supersampling_factor,

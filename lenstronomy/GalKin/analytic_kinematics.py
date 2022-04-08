@@ -8,6 +8,7 @@ from lenstronomy.GalKin.anisotropy import Anisotropy
 from lenstronomy.LensModel.Profiles.spp import SPP
 import lenstronomy.Util.constants as const
 import math
+from lenstronomy.LightModel.Profiles.hernquist import Hernquist
 
 __all__ = ['AnalyticKinematics']
 
@@ -47,6 +48,7 @@ class AnalyticKinematics(Anisotropy):
 
         self._cosmo = Cosmo(**kwargs_cosmo)
         self._spp = SPP()
+        self.lightProfile = Hernquist()
         Anisotropy.__init__(self, anisotropy_type='OM')
 
     def _rho0_r0_gamma(self, theta_E, gamma):
@@ -162,6 +164,95 @@ class AnalyticKinematics(Anisotropy):
                 I_R_sigma2_array.append(self._sigma_r2(r_i, a, gamma, rho0_r0_gamma, r_ani))
             self._interp_sigma_r2 = interp1d(np.log(r_array), np.array(I_R_sigma2_array), fill_value="extrapolate")
         return self._interp_sigma_r2(np.log(r))
+
+    def _I_R_sigma2(self, R, kwargs_mass, kwargs_light, kwargs_anisotropy):
+        """
+        equation A15 in Mamon&Lokas 2005 as a logarithmic numerical integral (if option is chosen)
+
+        :param R: 2d projected radius (in angular units)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: integral of A15 in Mamon&Lokas 2005
+        """
+        R = max(R, self._min_integrate)
+        max_integrate = self._max_integrate  # make sure the integration of the Jeans equation is performed further out than the interpolation
+        # if False:
+        #    # linear integral near R
+        #    lin_max = min(2 * R_, self._max_interpolate)
+        #    lin_max = min(lin_max, R_+1)
+        #    r_array = np.linspace(start=R, stop=lin_max, num=int(self._interp_grid_num / 2))
+        #    dr = r_array[2] - r_array[1]
+        #    IR_sigma2_ = self._integrand_A15(r_array[1:] - dr/2, R, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        #    IR_sigma2_dr_lin = IR_sigma2_ * dr
+        #    # logarithmic integral for larger extent
+        #    max_log = np.log10(max_integrate)
+        #    r_array = np.logspace(np.log10(lin_max), max_log, int(self._interp_grid_num / 2))
+        #    dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+        #    IR_sigma2_ = self._integrand_A15(r_array, R_, kwargs_mass, kwargs_light, kwargs_anisotropy)
+        #    IR_sigma2_dr_log = IR_sigma2_ * dlog_r * r_array
+        #    IR_sigma2_dr = np.append(IR_sigma2_dr_lin, IR_sigma2_dr_log)
+        if self._log_int is True:
+            min_log = np.log10(R)
+            max_log = np.log10(max_integrate)
+            dlogr = (max_log - min_log) / (self._interp_grid_num - 1)
+            r_array = np.logspace(min_log + dlogr / 2., max_log + dlogr / 2., self._interp_grid_num)
+            dlog_r = (np.log10(r_array[2]) - np.log10(r_array[1])) * np.log(10)
+            IR_sigma2_ = self._integrand_suyu10_eq21(r_array, R, kwargs_mass,
+                                          kwargs_light, kwargs_anisotropy)
+            IR_sigma2_dr = IR_sigma2_ * dlog_r * r_array
+        else:
+            r_array = np.linspace(start=R, stop=self._max_interpolate, num=self._interp_grid_num)
+            dr = r_array[2] - r_array[1]
+            IR_sigma2_ = self._integrand_suyu10_eq21(r_array + dr / 2., R, kwargs_mass,
+                                       kwargs_light, kwargs_anisotropy)
+            IR_sigma2_dr = IR_sigma2_ * dr
+
+        IR_sigma2 = 2 * np.sum(IR_sigma2_dr)  # integral from angle to
+
+        if 'a' not in kwargs_light:
+            R_s = 0.551 * kwargs_light['r_eff']
+        else:
+            R_s = kwargs_light['a']
+
+        IR = self.lightProfile.lens.density_2d(R, 0, 1, R_s)
+
+        return IR_sigma2, IR
+
+    def _integrand_suyu10_eq21(self, r, R, kwargs_mass, kwargs_light,
+                            kwargs_anisotropy):
+        """
+        Compute the integrand of Eq. 21 from Suyu et al. (2010).
+
+        :param r: 3d radius (not needed for this calculation)
+        :param R: 2d projected radius (in angular units of arcsec)
+        :param kwargs_mass: mass model parameters (following lenstronomy lens model conventions)
+        :param kwargs_light: deflector light parameters (following lenstronomy light model conventions)
+        :param kwargs_anisotropy: anisotropy parameters, may vary according to anisotropy type chosen.
+            We refer to the Anisotropy() class for details on the parameters.
+        :return: integrand of Eq. 21 from Suyu et al. (2010)
+        """
+        a, gamma, rho0_r0_gamma, r_ani = self._read_out_params(kwargs_mass,
+                                                               kwargs_light,
+                                                               kwargs_anisotropy)
+        return self._sigma_s2(r, R, r_ani, a, gamma, rho0_r0_gamma) * r / \
+               np.sqrt(r**2 - R**2) * self.lightProfile.lens.density(r, 1, a)
+
+    def I_R_sigma2_and_IR(self, R, kwargs_mass, kwargs_light,
+                           kwargs_anisotropy):
+        """
+        Return I(R)*sigma^2 equation 20 in Suyu 2010 as interpolation
+        in log space, and I(R)
+
+        :param R: projected radius
+        :param kwargs_mass: mass profile keyword arguments
+        :param kwargs_light: light model keyword arguments
+        :param kwargs_anisotropy: stellar anisotropy keyword arguments
+        :return:
+        """
+        return self._I_R_sigma2(R, kwargs_mass, kwargs_light,
+                           kwargs_anisotropy)
 
     def grav_potential(self, r, kwargs_mass):
         """

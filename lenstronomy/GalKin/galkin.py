@@ -148,6 +148,20 @@ class Galkin(GalkinModel, GalkinObservation):
                 raise ValueError("False for 'lum_weight_int_method' is not "
                                  "supported!")
 
+        if 'center_x' in kwargs_mass:
+            mass_center_x = kwargs_mass['center_x']
+            mass_center_y = kwargs_mass['center_y']
+        else:
+            mass_center_x = 0
+            mass_center_y = 0
+
+        if 'center_y' in kwargs_light:
+            light_center_x = kwargs_mass['center_x']
+            light_center_y = kwargs_mass['center_y']
+        else:
+            light_center_x = 0
+            light_center_y = 0
+
         num_segments = self.num_segments
         x_grid = self._aperture._x_grid
         y_grid = self._aperture._y_grid
@@ -172,7 +186,8 @@ class Galkin(GalkinModel, GalkinObservation):
             supersampled_voronoi_bins = voronoi_bins.repeat(
                 supersampling_factor, axis=0).repeat(supersampling_factor,
                                                      axis=1)
-        R_max = np.sqrt(xs**2 + ys**2).max()
+        R_max = np.sqrt((xs - mass_center_x)**2 + (ys -
+                                                   mass_center_y)**2).max()
 
         Rs = np.linspace(0, R_max, 50)
         sigma2_IRs = np.zeros_like(Rs)
@@ -201,10 +216,12 @@ class Galkin(GalkinModel, GalkinObservation):
         # sigma2_IR_grid = np.zeros_like(x_grid_supersampled)
         # IR_grid = np.zeros_like(x_grid_supersampled)
 
-        sigma2_IR_grid = sigma2_interp(np.sqrt(x_grid_supersampled ** 2 +
-                                               y_grid_supersmapled ** 2))
-        IR_grid = IR_interp(np.sqrt(x_grid_supersampled ** 2 +
-                                    y_grid_supersmapled ** 2))
+        sigma2_IR_grid = sigma2_interp(
+            np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
+                    (y_grid_supersmapled-mass_center_y) ** 2))
+        IR_grid = IR_interp(
+            np.sqrt((x_grid_supersampled-mass_center_x) ** 2 +
+                    (y_grid_supersmapled-mass_center_y) ** 2))
         fwhm_factor = 3
         psf_x = np.arange(-fwhm_factor*self._psf._fwhm,
                           fwhm_factor * self._psf._fwhm+delta_x/(

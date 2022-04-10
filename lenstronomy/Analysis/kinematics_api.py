@@ -233,6 +233,14 @@ class KinematicsAPI(object):
             galkin = Galkin(kwargs_model=kwargs_model, kwargs_aperture=self._kwargs_aperture_kin,
                             kwargs_psf=self._kwargs_psf_kin, kwargs_cosmo=self._kwargs_cosmo,
                             kwargs_numerics=self._kwargs_numerics_kin, analytic_kinematics=self._analytic_kinematics)
+
+        if 'center_x' not in kwargs_profile and 'center_x' in kwargs_lens[0]:
+            kwargs_profile['center_x'] = kwargs_lens[0]['center_x']
+            kwargs_profile['center_y'] = kwargs_lens[0]['center_y']
+        if 'center_x' not in kwargs_light and 'center_x' in kwargs_lens_light[0]:
+            kwargs_light['center_x'] = kwargs_lens_light[0]['center_x']
+            kwargs_light['center_y'] = kwargs_lens_light[0]['center_y']
+
         return galkin, kwargs_profile, kwargs_light
 
     def kinematic_lens_profiles(self, kwargs_lens, MGE_fit=False, model_kinematics_bool=None, theta_E=None, gamma=None,

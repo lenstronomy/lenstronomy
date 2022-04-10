@@ -125,7 +125,8 @@ class Galkin(GalkinModel, GalkinObservation):
     def dispersion_map_grid_convolved(self, kwargs_mass, kwargs_light,
                                       kwargs_anisotropy,
                                       supersampling_factor=1,
-                                      num_psf_sampling=100):
+                                      voronoi_bins=None
+                                      ):
         """
         computes the velocity dispersion in each Integral Field Unit
 
@@ -133,7 +134,7 @@ class Galkin(GalkinModel, GalkinObservation):
         :param kwargs_light: keyword argument of the light model
         :param kwargs_anisotropy: anisotropy keyword arguments
         :param supersampling_factor: sampling factor for the grid to do the 2D convolution on.
-        :param num_psf_sampling: int, number of displacements/render from a spectra to be displaced on the IFU
+        :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
         :return: ordered array of velocity dispersions [km/s] for each unit
         """
         # draw from light profile (3d and 2d option)
@@ -167,6 +168,10 @@ class Galkin(GalkinModel, GalkinObservation):
 
         x_grid_supersampled, y_grid_supersmapled = np.meshgrid(xs, ys)
 
+        if voronoi_bins is not None:
+            supersampled_voronoi_bins = voronoi_bins.repeat(
+                supersampling_factor, axis=0).repeat(supersampling_factor,
+                                                     axis=1)
         R_max = np.sqrt(xs**2 + ys**2).max()
 
         Rs = np.linspace(0, R_max, 50)
@@ -215,15 +220,28 @@ class Galkin(GalkinModel, GalkinObservation):
                                                    psf_kernel, mode='same')
         IR_convolved = convolve2d(IR_grid, psf_kernel, mode='same')
 
-        sigma_IR_integrated = sigma2_IR_convolved.reshape(
-            len(x_grid), supersampling_factor,
-            len(y_grid), supersampling_factor
-        ).sum(3).sum(1)
+        if voronoi_bins is not None:
+            n_bins = int(np.max(voronoi_bins)) + 1
 
-        IR_integrated = IR_convolved.reshape(
-            len(x_grid), supersampling_factor,
-            len(y_grid), supersampling_factor
-        ).sum(3).sum(1)
+            sigma_IR_integrated = np.zeros(n_bins)
+            IR_integrated = np.zeros(n_bins)
+            for n in range(n_bins):
+                sigma_IR_integrated[n] = np.sum(
+                    sigma2_IR_convolved[supersampled_voronoi_bins == n]
+                )
+                IR_integrated[n] = np.sum(
+                    IR_convolved[supersampled_voronoi_bins == n]
+                )
+        else:
+            sigma_IR_integrated = sigma2_IR_convolved.reshape(
+                len(x_grid), supersampling_factor,
+                len(y_grid), supersampling_factor
+            ).sum(3).sum(1)
+
+            IR_integrated = IR_convolved.reshape(
+                len(x_grid), supersampling_factor,
+                len(y_grid), supersampling_factor
+            ).sum(3).sum(1)
 
         sigma2_grid = sigma_IR_integrated / IR_integrated
 

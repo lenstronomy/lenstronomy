@@ -367,6 +367,32 @@ class TestGalkin(object):
 
                 npt.assert_almost_equal(sigma_v, sigma_v_ifu[i, j], decimal=-1)
 
+        # test for voronoi bin
+        voronoi_bins = np.zeros_like(x_grid) - 1
+        voronoi_bins[8:12, 8:12] = 0
+        kwargs_aperture = {'aperture_type': 'slit',
+                           'width': 1.6, 'length': 1.6,
+                           'center_ra': 0, 'center_dec': 0
+                           }
+
+        sigma_v_ifu = galkinIFU.dispersion_map_grid_convolved(
+            kwargs_mass=kwargs_mass,
+            kwargs_light=kwargs_light,
+            kwargs_anisotropy=kwargs_anisotropy, supersampling_factor=21,
+            voronoi_bins=voronoi_bins
+        )
+
+        galkin = Galkin(kwargs_model, kwargs_aperture, kwargs_psf,
+                        kwargs_cosmo, kwargs_numerics,
+                        analytic_kinematics=True)
+        sigma_v = galkin.dispersion(
+            kwargs_mass=kwargs_mass,  # {'theta_E': theta_E, 'gamma':
+            # gamma},
+            kwargs_light=kwargs_light,  # {'r_eff': r_eff},
+            kwargs_anisotropy=kwargs_anisotropy, sampling_number=1000)
+
+        npt.assert_almost_equal(sigma_v, sigma_v_ifu[0], decimal=-1)
+
     def test_projected_integral_vs_3d_rendering(self):
 
         lum_weight_int_method = True

@@ -122,7 +122,8 @@ class KinematicsAPI(object):
 
     def velocity_dispersion_map(self, kwargs_lens, kwargs_lens_light, kwargs_anisotropy, r_eff=None, theta_E=None,
                                 gamma=None, kappa_ext=0,
-                                direct_convolve=False, supersampling_factor=1):
+                                direct_convolve=False,
+                                supersampling_factor=1, voronoi_bins=None):
         """
         API for both, analytic and numerical JAM to compute the velocity dispersion map with IFU data [km/s]
 
@@ -135,6 +136,9 @@ class KinematicsAPI(object):
          function with default settings or not required
         :param gamma: power-law slope at the Einstein radius, optional
         :param kappa_ext: external convergence
+        :param direct_convolve: bool, if True, compute the 2D integral numerically
+        :param supersampling_factor: supersampling factor for 2D integration grid
+        :param voronoi_bins: mapping of the voronoi bins, -1 values for  pixels not binned
         :return: velocity dispersion [km/s]
         """
         galkin, kwargs_profile, kwargs_light = self.galkin_settings(kwargs_lens, kwargs_lens_light, r_eff=r_eff,
@@ -145,6 +149,7 @@ class KinematicsAPI(object):
                 kwargs_profile, kwargs_light,
                 kwargs_anisotropy,
                 supersampling_factor=supersampling_factor,
+                voronoi_bins=voronoi_bins
                 #num_kin_sampling=self._num_kin_sampling,
                 #num_psf_sampling=self._num_psf_sampling
             )

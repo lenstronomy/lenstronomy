@@ -12,7 +12,7 @@ export, __all__ = exporter()
 class MultiBandImageReconstruction(object):
     """
     this class manages the output/results of a fitting process and can conveniently access image reconstruction
-    properties in multiband fitting.
+    properties in multi-band fitting.
     In particular, the fitting result does not come with linear inversion parameters (which may or may not be joint
     or different for multiple bands) and this class performs the linear inversion for the surface brightness amplitudes
     and stores them for each individual band to be accessible by the user.

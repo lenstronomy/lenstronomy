@@ -84,9 +84,9 @@ class FittingSequence(object):
                 self.fix_not_computed(**kwargs)
 
             elif fitting_type == 'psf_iteration':
-                #from lenstronomy.Sampling.Pool.pool import choose_pool
-                #pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
-                #if pool.is_master():
+                # from lenstronomy.Sampling.Pool.pool import choose_pool
+                # pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
+                # if pool.is_master():
                 #    self.psf_iteration(**kwargs)
                 self.psf_iteration(**kwargs)
 
@@ -104,7 +104,7 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
-                if not 'init_samples' in kwargs:
+                if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -113,13 +113,21 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
+            elif fitting_type == 'Nautilus':
+                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                nautilus = Nautilus(likelihood_module=self.likelihoodModule)
+                points, log_w, log_l, log_z = nautilus.nautilus_sampling(**kwargs)
+                chain_list.append([points, log_w, log_l, log_z])
+                kwargs_result = self.best_fit_from_samples(points, log_l)
+                self._updateManager.update_param_state(**kwargs_result)
+
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
 
             else:
                 raise ValueError("fitting_sequence %s is not supported. Please use: 'PSO', 'SIMPLEX', 'MCMC', "
-                                 "'psf_iteration', 'restart', 'update_settings' or ""'align_images'" % fitting_type)
+                                 "'psf_iteration', 'restart', 'update_settings', 'nested_sampling' or ""'align_images'" % fitting_type)
         return chain_list
 
     def best_fit(self, bijective=False):
@@ -508,10 +516,20 @@ class FittingSequence(object):
         :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
         """
         _, samples, _, logL_values = mcmc_output
+        return self.best_fit_from_samples(samples, logL_values)
+
+    def best_fit_from_samples(self, samples, logl):
+        """
+        return best fit (max likelihood) value of samples in lenstronomy conventions
+
+        :param samples: samples of multi-dimensional parameter space
+        :param logl: likelihood values for each sample
+        :return: kwargs_result in lenstronomy convention
+        """
         # get index of best logL sample
-        bestfit_idx = np.argmax(logL_values)
-        bestfit_sample = samples[bestfit_idx, :]
-        bestfit_result = bestfit_sample.tolist()
+        best_fit_index = np.argmax(logl)
+        best_fit_sample = samples[best_fit_index, :]
+        best_fit_result = best_fit_sample.tolist()
         # get corresponding kwargs
-        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result

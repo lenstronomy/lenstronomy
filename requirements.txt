@@ -15,6 +15,8 @@ pyyaml
 pyxdg
 h5py
 
+-e git+https://github.com/johannesulf/nautilus.git
+
 
 schwimmbad
 # schwimmbad version that is supporting dill, which was not implemented yet in the pip release version

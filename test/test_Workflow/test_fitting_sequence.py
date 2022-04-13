@@ -230,6 +230,22 @@ class TestFittingSequence(object):
             'remove_output_dir': True,
         }
         fitting_list2.append(['nested_sampling', kwargs_multinest])
+
+        chain_list2 = fittingSequence.fit_sequence(fitting_list2)
+        kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
+        npt.assert_almost_equal(kwargs_fixed[0][1]['gamma1'], 0.01, decimal=2)
+        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
+        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
+
+        kwargs_test = {'kwargs_lens': 1}
+        fittingSequence.update_state(kwargs_test)
+        kwargs_out = fittingSequence.best_fit(bijective=True)
+        assert kwargs_out['kwargs_lens'] == 1
+
+        fittingSequence = FittingSequence(kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, kwargs_params)
+
+        fitting_list3 = []
         kwargs_dynesty = {
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
@@ -239,7 +255,8 @@ class TestFittingSequence(object):
                 'maxbatch': 1,
             },
         }
-        fitting_list2.append(['nested_sampling', kwargs_dynesty])
+
+        fitting_list3.append(['nested_sampling', kwargs_dynesty])
         kwargs_dypolychord = {
             'sampler_type': 'DYPOLYCHORD',
             'kwargs_run': {
@@ -256,18 +273,8 @@ class TestFittingSequence(object):
             'dypolychord_dynamic_goal': 0.8, # 1 for posterior-only, 0 for evidence-only
             'remove_output_dir': True,
         }
-        fitting_list2.append(['nested_sampling', kwargs_dypolychord])
-
-        chain_list2 = fittingSequence.fit_sequence(fitting_list2)
-        kwargs_fixed = fittingSequence._updateManager.fixed_kwargs
-        npt.assert_almost_equal(kwargs_fixed[0][1]['gamma1'], 0.01, decimal=2)
-        assert fittingSequence._updateManager._lower_kwargs[1][0]['n_sersic'] == 2.9
-        assert fittingSequence._updateManager._upper_kwargs[1][0]['n_sersic'] == 3.1
-
-        kwargs_test = {'kwargs_lens': 1}
-        fittingSequence.update_state(kwargs_test)
-        kwargs_out = fittingSequence.best_fit(bijective=True)
-        assert kwargs_out['kwargs_lens'] == 1
+        fitting_list3.append(['nested_sampling', kwargs_dypolychord])
+        chain_list3 = fittingSequence.fit_sequence(fitting_list3)
 
     def test_minimizer(self):
         n_p = 2

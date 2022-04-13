@@ -508,10 +508,20 @@ class FittingSequence(object):
         :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
         """
         _, samples, _, logL_values = mcmc_output
+        return self.best_fit_from_samples(samples, logL_values)
+
+    def best_fit_from_samples(self, samples, logl):
+        """
+        return best fit (max likelihood) value of samples in lenstronomy conventions
+
+        :param samples: samples of multi-dimensional parameter space
+        :param logl: likelihood values for each sample
+        :return: kwargs_result in lenstronomy convention
+        """
         # get index of best logL sample
-        bestfit_idx = np.argmax(logL_values)
-        bestfit_sample = samples[bestfit_idx, :]
-        bestfit_result = bestfit_sample.tolist()
+        best_fit_index = np.argmax(logl)
+        best_fit_sample = samples[best_fit_index, :]
+        best_fit_result = best_fit_sample.tolist()
         # get corresponding kwargs
-        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result

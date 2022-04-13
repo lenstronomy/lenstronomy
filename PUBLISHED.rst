@@ -175,10 +175,13 @@ Lens searches
     *simulating training sets for lens searches*
 
 * DeepZipper: A Novel Deep Learning Architecture for Lensed Supernovae Identification; `Morgan et al. 2021b <https://arxiv.org/abs/2112.01541>`_
-    *simulating deeplenstronomy to simulate lensed supernovae data sets*
+    *Using deeplenstronomy to simulate lensed supernovae data sets*
 
 * Detecting gravitational lenses using machine learning: exploring interpretability and sensitivity to rare lensing configurations; `Wilde et al. 2021b <https://arxiv.org/abs/2202.12776>`_
     *Simulating compound lenses*
+
+* DeepZipper II: Searching for Lensed Supernovae in Dark Energy Survey Data with Deep Learning; `Morgan et al. 2022 <https://arxiv.org/abs/2204.05924>`_
+    *Using deeplenstronomy to simulate lensed supernovae training sets*
 
 
 

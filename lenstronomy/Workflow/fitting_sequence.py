@@ -486,7 +486,7 @@ class FittingSequence(object):
         if prior_type == 'gaussian':
             mean_start = self.param_class.kwargs2args(**self._updateManager.parameter_state)
             sigma_start = self.param_class.kwargs2args(**self._updateManager.sigma_kwargs)
-            mean_start  = np.array(mean_start)
+            mean_start = np.array(mean_start)
             sigma_start = np.array(sigma_start)
         else:
             mean_start, sigma_start = None, None

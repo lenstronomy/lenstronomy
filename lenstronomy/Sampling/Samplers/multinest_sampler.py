@@ -129,7 +129,7 @@ class MultiNestSampler(NestedSampler):
 
             analyzer = self._Analyzer(self.n_dims, outputfiles_basename=self.files_basename)
             samples = analyzer.get_equal_weighted_posterior()[:, :-1]
-            data  = analyzer.get_data()  # gets data from the *.txt output file
+            data = analyzer.get_data()  # gets data from the *.txt output file
             stats = analyzer.get_stats()
 
         else:

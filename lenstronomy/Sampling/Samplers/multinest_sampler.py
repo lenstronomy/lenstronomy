@@ -143,9 +143,9 @@ class MultiNestSampler(NestedSampler):
             }
 
         logL = -0.5 * data[:, 1]  # since the second data column is -2*logL
-        logZ     = stats['global evidence']
+        logZ = stats['global evidence']
         logZ_err = stats['global evidence error']
-        means    = stats['modes'][0]['mean']  # or better to use stats['marginals'][:]['median'] ???
+        means = stats['modes'][0]['mean']  # or better to use stats['marginals'][:]['median'] ???
 
         print("MultiNest output files have been saved to {}*"
               .format(self.files_basename))

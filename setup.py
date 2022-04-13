@@ -55,7 +55,7 @@ requires = ['numpy>=1.13',
             'multiprocess>=0.70.8',
             ]
 tests_require = ['pytest>=2.3', "mock", 'colossus', 'slitronomy==0.3.2',
-                 'emcee>=3.0.0', 'dynesty', 'pymultinest', 'nestcheck',
+                 'emcee>=3.0.0', 'dynesty', 'nestcheck',  # 'pymultinest',
                  ]
 
 PACKAGE_PATH = os.path.abspath(os.path.join(__file__, os.pardir))

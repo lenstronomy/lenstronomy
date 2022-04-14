@@ -3,9 +3,6 @@ lenstronomy - gravitational lensing software package
 ====================================================
 
 
-.. image:: https://badge.fury.io/py/lenstronomy.png
-    :target: https://badge.fury.io/py/lenstronomy
-
 .. image:: https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg
     :target: https://github.com/sibirrer/lenstronomy/actions
 

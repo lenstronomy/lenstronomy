@@ -132,7 +132,10 @@ class LikelihoodModule(object):
         :return: updated model instances of this class
         """
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        # TODO: in case lens model or point source models are only applied on partial images, then this current class
+        # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
+        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+                                                                                             **kwargs_model)
         self.PointSource = point_source_class
 
         if self._time_delay_likelihood is True:

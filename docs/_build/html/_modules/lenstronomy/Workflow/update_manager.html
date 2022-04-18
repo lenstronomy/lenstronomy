@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Workflow.update_manager &#8212; lenstronomy 1.10.0 documentation</title>
+    <title>lenstronomy.Workflow.update_manager &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.update_manager</a></li> 
       </ul>
@@ -107,7 +107,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_kwargs</span>
 
-    <span class="c1"># TODO: check compatibility with number of point sources provided as well as other parameter labelings</span>
+    <span class="c1"># TODO: check compatibility with number of point sources provided as well as other parameter labeling</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">init_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -196,7 +196,7 @@
                              <span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">:</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="s1">&#39;kwargs_ps&#39;</span><span class="p">:</span> <span class="n">kwargs_ps</span><span class="p">,</span>
                              <span class="s1">&#39;kwargs_special&#39;</span><span class="p">:</span> <span class="n">kwargs_special</span><span class="p">,</span> <span class="s1">&#39;kwargs_extinction&#39;</span><span class="p">:</span> <span class="n">kwargs_extinction</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="UpdateManager.update_param_value"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_param_value">[docs]</a>    <span class="k">def</span> <span class="nf">update_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="p">[],</span> <span class="n">source</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="UpdateManager.update_param_value"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_param_value">[docs]</a>    <span class="k">def</span> <span class="nf">update_param_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_light</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a model parameter to a specific value.</span>
 
@@ -206,6 +206,14 @@
 <span class="sd">        :param ps: [[i_model, [&#39;param1&#39;, &#39;param2&#39;,...], [...]]</span>
 <span class="sd">        :return: 0, the value of the param is overwritten</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">lens</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lens</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">source</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">lens_light</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lens_light</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">ps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ps</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">items</span><span class="p">,</span> <span class="n">kwargs_key</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">([</span><span class="n">lens</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">lens_light</span><span class="p">,</span> <span class="n">ps</span><span class="p">],</span>
             <span class="p">[</span><span class="s1">&#39;kwargs_lens&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_source&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_lens_light&#39;</span><span class="p">,</span> <span class="s1">&#39;kwargs_ps&#39;</span><span class="p">]):</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
@@ -267,13 +275,13 @@
 <span class="sd">        :param change_lens_upper_limit: [[i_model, [&#39;param_name&#39;, ...], [value1, value2, ...]]]</span>
 <span class="sd">        :return: updates internal state of lower and upper limits accessible from outside</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_lower_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">change_source_lower_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_lower</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_source_upper_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">change_source_upper_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_source_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_source_upper</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_lens_lower_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">change_lens_lower_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_lens_lower_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_lower</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">change_lens_upper_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">change_lens_upper_limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update_limit</span><span class="p">(</span><span class="n">change_lens_upper_limit</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_upper</span><span class="p">)</span></div>
 
     <span class="nd">@staticmethod</span>
@@ -293,9 +301,9 @@
                 <span class="n">kwargs_limit_updated</span><span class="p">[</span><span class="n">i_model</span><span class="p">][</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">kwargs_limit_updated</span>
 
-<div class="viewcode-block" id="UpdateManager.update_fixed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">update_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">source_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">ps_add_fixed</span><span class="o">=</span><span class="p">[],</span>
-                     <span class="n">special_add_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">source_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="p">[],</span>
-                     <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="p">[],</span> <span class="n">special_remove_fixed</span><span class="o">=</span><span class="p">[]):</span>
+<div class="viewcode-block" id="UpdateManager.update_fixed"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.update_manager.UpdateManager.update_fixed">[docs]</a>    <span class="k">def</span> <span class="nf">update_fixed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lens_add_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_add_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_light_add_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ps_add_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">special_add_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_remove_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_remove_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">lens_light_remove_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ps_remove_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">special_remove_fixed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        adds or removes the values of the keyword arguments that are stated in the _add_fixed to the existing fixed</span>
 <span class="sd">        arguments. convention for input arguments are:</span>
@@ -323,11 +331,15 @@
         <span class="n">ps_fixed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_fixed</span><span class="p">(</span><span class="n">ps_fixed</span><span class="p">,</span> <span class="n">ps_remove_fixed</span><span class="p">)</span>
         <span class="n">special_fixed</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_special_fixed</span><span class="p">)</span>
         <span class="n">special_temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_temp</span><span class="p">[</span><span class="s1">&#39;kwargs_special&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">special_add_fixed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">special_add_fixed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">special_add_fixed</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">special_fixed</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">special_fixed</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">special_temp</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">special_remove_fixed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">special_remove_fixed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">special_remove_fixed</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">param_name</span> <span class="ow">in</span> <span class="n">special_fixed</span><span class="p">:</span>
                 <span class="k">del</span> <span class="n">special_fixed</span><span class="p">[</span><span class="n">param_name</span><span class="p">]</span>
@@ -339,10 +351,13 @@
 
 <span class="sd">        :param kwargs_model: model parameters</span>
 <span class="sd">        :param kwargs_fixed: parameters that are held fixed (even before)</span>
-<span class="sd">        :param add_fixed: additional fixed parameters [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...], [value1, value2, ... (optional)], [], ...]</span>
+<span class="sd">        :param add_fixed: additional fixed parameters</span>
+<span class="sd">         [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...], [value1, value2, ... (optional)], [], ...]</span>
 <span class="sd">        :return: updated kwargs_fixed</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#fixed_kwargs = copy.deepcopy(kwargs_fixed)</span>
+        <span class="k">if</span> <span class="n">add_fixed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">add_fixed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># fixed_kwargs = copy.deepcopy(kwargs_fixed)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">add_fixed</span><span class="p">)):</span>
             <span class="n">i_model</span> <span class="o">=</span> <span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">fix_names</span> <span class="o">=</span> <span class="n">add_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
@@ -366,6 +381,8 @@
 <span class="sd">         kwargs_model [[i_model, [&#39;param_name1&#39;, &#39;param_name2&#39;, ...]], [], ...]</span>
 <span class="sd">        :return: updated kwargs fixed parameters</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">remove_fixed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">remove_fixed</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">remove_fixed</span><span class="p">)):</span>
             <span class="n">i_model</span> <span class="o">=</span> <span class="n">remove_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">fix_names</span> <span class="o">=</span> <span class="n">remove_fixed</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
@@ -414,7 +431,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.update_manager</a></li> 
       </ul>

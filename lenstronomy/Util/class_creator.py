@@ -28,8 +28,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
     :param lens_model_list: list of strings indicating the type of lens models
     :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
-    :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
-     models. If None, 'z_source' is used.
+    :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
+     If None, 'z_source' is used.
     :param lens_redshift_list:
     :param multi_plane:
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
@@ -183,9 +183,9 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
 
     :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
     :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
-    - 'multi-linear': linear amplitudes are inferred on single data set
-    - 'linear-joint': linear amplitudes ae jointly inferred
-    - 'single-band': single band
+     - 'multi-linear': linear amplitudes are inferred on single data set
+     - 'linear-joint': linear amplitudes ae jointly inferred
+     - 'single-band': single band
     :param kwargs_model: model keyword arguments
     :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
     :param image_likelihood_mask_list: list of image likelihood mask

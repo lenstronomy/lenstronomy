@@ -116,17 +116,17 @@ class NFW_ELLIPSE(LensProfileBase):
 
         return f_xx, f_xy, f_yx, f_yy
 
-    def mass_3d_lens(self, R, Rs, alpha_Rs, e1=1, e2=0):
+    def mass_3d_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
         """
 
-        :param R: radius (in angular units)
+        :param r: radius (in angular units)
         :param Rs:
         :param alpha_Rs:
         :param e1:
         :param e2:
         :return:
         """
-        return self.nfw.mass_3d_lens(R, Rs, alpha_Rs)
+        return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def density_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
         """

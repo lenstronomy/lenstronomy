@@ -133,6 +133,8 @@ class TestNumerics(object):
         rho0 = lensModel.alpha2rho0(alpha_Rs, Rs)
         kwargs_lens = {'alpha_Rs': alpha_Rs, 'Rs': Rs}
         kwargs_density = {'rho0': rho0, 'Rs': Rs}
+        self.assert_lens_integrals(Model, kwargs_lens)
+        self.assert_integrals(Model, kwargs_density)
         r = 2.
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r

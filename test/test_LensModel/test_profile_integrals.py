@@ -54,23 +54,27 @@ class TestNumerics(object):
         f_xx, f_xy, f_yx, f_yy = lensModel.hessian(r, 0, **kwargs)
         kappa = 1./2 * (f_xx + f_yy)
         npt.assert_almost_equal(kappa_num, kappa, decimal=2)
-        if hasattr(lensModel, 'mass_2d_lens'):
-            try:
-                del kwargs['center_x']
-                del kwargs['center_y']
-            except:
-                pass
+        try:
+            del kwargs['center_x']
+            del kwargs['center_y']
+        except:
+            pass
+        bool_mass_2d_lens = False
+        try:
             mass_2d = lensModel.mass_2d_lens(r, **kwargs)
+            bool_mass_2d_lens = True
+        except:
+            pass
+        if bool_mass_2d_lens:
             alpha_x, alpha_y = lensModel.derivatives(r, 0, **kwargs)
-            alpha = np.sqrt(alpha_x**2 + alpha_y**2)
-            npt.assert_almost_equal(alpha, mass_2d/ r / np.pi, decimal=5)
-        if hasattr(lensModel, 'mass_3d_lens'):
-            try:
-                del kwargs['center_x']
-                del kwargs['center_y']
-            except:
-                pass
+            alpha = np.sqrt(alpha_x ** 2 + alpha_y ** 2)
+            npt.assert_almost_equal(alpha, mass_2d / r / np.pi, decimal=5)
+        try:
             mass_3d = lensModel.mass_3d_lens(r, **kwargs)
+            bool_mass_3d_lens = True
+        except:
+            bool_mass_3d_lens = False
+        if bool_mass_3d_lens:
             mass_3d_num = int_profile.mass_enclosed_3d(r, kwargs_profile=kwargs, lens_param=True)
             print(mass_3d, mass_3d_num, 'test num')
             npt.assert_almost_equal(mass_3d / mass_3d_num, 1, decimal=2)

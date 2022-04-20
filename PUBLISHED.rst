@@ -265,7 +265,7 @@ Lensing of Gravitational Waves
     *solving the lens equation with lenstronomy using lensingGW*
 
 * Lensing magnification: gravitational wave from coalescing stellar-mass binary black holes; `Shan & Hu 2020 <https://arxiv.org/abs/2012.08381>`_
-    *lensing magnificatoin calculations*
+    *lensing magnification calculations*
 
 * Identifying Type-II Strongly-Lensed Gravitational-Wave Images in Third-Generation Gravitational-Wave Detectors; `Y. Wang et al. 2021 <https://arxiv.org/abs/2101.08264>`_
     *solving the lens equation*
@@ -273,6 +273,8 @@ Lensing of Gravitational Waves
 * Beyond the detector horizon: Forecasting gravitational-wave strong lensing; `Renske et al. 2021 <https://arxiv.org/abs/2106.06303>`_
     *computing image positions, time delays and magnifications for gravitational wave forecasting*
 
+* A lensing multi-messenger channel: Combining LIGO-Virgo-Kagra lensed gravitational-wave measurements with Euclid observations; `Wempe et al. 2022 <https://arxiv.org/abs/2204.08732>`_
+    *simulating Euclid-like simulations using lenstronomy and presenting a fast method to cacluate caustics for a PEMD+Shear model*
 
 
 

@@ -3,7 +3,7 @@ from lenstronomy.LensModel.profile_list_base import ProfileListBase
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
 import lenstronomy.Util.constants as const
 
-__all__ = ['MultiPlaneBaseRatios']
+__all__ = ['MultiPlaneFreeDistances']
 
 
 class MultiPlaneFreeDistances(MultiPlaneBase):
@@ -85,7 +85,7 @@ class MultiPlaneFreeDistances(MultiPlaneBase):
          See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
 
         """
-        super(MultiPlaneBaseRatios, self).__init__(lens_model_list,
+        super(MultiPlaneFreeDistances, self).__init__(lens_model_list,
                                                    numerical_alpha_class=numerical_alpha_class,
                                                    lens_redshift_list=lens_redshift_list,
                                                    z_source_convention=z_source_convention)
@@ -113,7 +113,7 @@ class MultiPlaneFreeDistances(MultiPlaneBase):
         self.b_coeffs_fiducial = []
 
         D_1_Pp1 = self._cosmo_bkg.d_xy(0, z_source_convention)
-        z_lens_convention = sorted_unique_redshifts[0]
+        z_lens_convention = self._sorted_unique_lens_redshifts[0]
         self.D_dt_eff_fiducial = (1 + z_lens_convention) * D_1_Pp1 \
                         * self._cosmo_bkg.d_xy(0, z_lens_convention) \
                         / self._cosmo_bkg.d_xy(z_lens_convention,

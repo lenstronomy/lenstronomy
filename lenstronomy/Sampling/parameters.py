@@ -78,6 +78,7 @@ class Param(object):
                  joint_lens_light_with_point_source=[], joint_extinction_with_lens_light=[],
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
+                 distance_ratio_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
                  source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
                  log_sampling_lens=[]):
@@ -133,6 +134,8 @@ class Param(object):
         :param solver_type: string, option for specific solver type
          see detailed instruction of the Solver4Point and Solver2Point classes
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
+        :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane,
+        will override redshift sampling through  `lens_redshift_sampling_indexes` and `source_redshift_sampling_indexes`
         :param source_size: bool, if True, samples a source size parameters to be evaluated in the flux ratio likelihood
         :param num_tau0: integer, number of different optical depth re-normalization factors
         :param lens_redshift_sampling_indexes: list of integers corresponding to the lens model components whose redshifts
@@ -165,6 +168,9 @@ class Param(object):
             num_z_source = int(np.max(source_redshift_sampling_indexes) + 1)
             num_z_sampling = max(num_z_sampling, num_z_source)
         self._num_z_sampling, self._lens_redshift_sampling_indexes, self._source_redshift_sampling_indexes = num_z_sampling, lens_redshift_sampling_indexes, source_redshift_sampling_indexes
+
+        # check how many lens planes
+        num_lens_planes = len(list(set(self._lens_redshift_list)))
 
         self._lens_model_class, self._source_model_class, _, _, _ = class_creator.create_class_instances(all_models=True, **kwargs_model)
         self._image2SourceMapping = Image2SourceMapping(lensModel=self._lens_model_class,
@@ -269,6 +275,8 @@ class Param(object):
                                            kwargs_lower=kwargs_lower_extinction, kwargs_upper=kwargs_upper_extinction,
                                            linear_solver=False)
         self.specialParams = SpecialParam(Ddt_sampling=Ddt_sampling, mass_scaling=self._mass_scaling,
+                                          distance_ratio_sampling=distance_ratio_sampling,
+                                          num_lens_planes=num_lens_planes,
                                           kwargs_fixed=kwargs_fixed_special, num_scale_factor=self._num_scale_factor,
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,

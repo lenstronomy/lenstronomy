@@ -11,7 +11,8 @@ class SpecialParam(object):
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0, source_grid_offset=False):
+                 num_z_sampling=0, source_grid_offset=False,
+                 distance_ratio_sampling=False, num_lens_planes=1):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -28,6 +29,9 @@ class SpecialParam(object):
         :param num_z_sampling: integer, number of different lens redshifts to be sampled
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source plane grid coordinates.
         Warning: this is only defined for pixel-based source modelluing (e.g. 'SLIT_STARLETS' light profile)
+        :param distance_ratio_sampling: bool, if True, the distance ratios will be sampled. Only applicable for multi-plane case, will turn-off Ddt_sampling by default as Ddt will be sampled as a ratio with a fiducial value in this option.
+        :param num_lens_planes: integer, number of lens planes when `distance_ratio_sampling` is True
+        sampled
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -37,10 +41,16 @@ class SpecialParam(object):
         self._num_images = num_images
         self._num_tau0 = num_tau0
         self._num_z_sampling = num_z_sampling
+        self._distance_ratio_sampling = distance_ratio_sampling
         if num_z_sampling > 0:
             self._z_sampling = True
         else:
             self._z_sampling = False
+
+        if self._distance_ratio_sampling:
+            self._D_dt_sampling = False
+            self._z_sampling = False
+            self._num_lens_planes = num_lens_planes
 
         if kwargs_fixed is None:
             kwargs_fixed = {}
@@ -65,6 +75,13 @@ class SpecialParam(object):
             if self._source_grid_offset:
                 kwargs_lower['delta_x_source_grid'] = -100
                 kwargs_lower['delta_y_source_grid'] = -100
+            if self._distance_ratio_sampling:
+                for i in range(self._num_lens_planes):
+                    kwargs_lower['a_{}'.format(i+1)] = 0.
+                for i in range(1, self._num_lens_planes-1):
+                    kwargs_lower['b_{}'.format(i + 1)] = 0.
+                kwargs_lower['D_dt_eff_ratio'] = 0.
+
         if kwargs_upper is None:
             kwargs_upper = {}
             if self._D_dt_sampling is True:
@@ -83,6 +100,12 @@ class SpecialParam(object):
             if self._source_grid_offset:
                 kwargs_upper['delta_x_source_grid'] = 100
                 kwargs_upper['delta_y_source_grid'] = 100
+            if self._distance_ratio_sampling is True:
+                for i in range(1, self._num_lens_planes+1):
+                    kwargs_upper['a_{}'.format(i)] = 10.
+                for i in range(2, self._num_lens_planes):
+                    kwargs_upper['b_{}'.format(i)] = 10.
+                kwargs_upper['D_dt_eff_ratio'] = 10.
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -146,6 +169,28 @@ class SpecialParam(object):
                 i += 1
             else:
                 kwargs_special['delta_y_source_grid'] = self._kwargs_fixed['delta_y_source_grid']
+
+        if self._distance_ratio_sampling is True:
+            for i in range(1, self._num_lens_planes+1):
+                param_name = 'a_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    kwargs_special[param_name] = args[i]
+                    i += 1
+                else:
+                    kwargs_special[param_name] = self._kwargs_fixed[param_name]
+            for i in range(2, self._num_lens_planes):
+                param_name = 'b_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    kwargs_special[param_name] = args[i]
+                    i += 1
+                else:
+                    kwargs_special[param_name] = self._kwargs_fixed[param_name]
+            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+                kwargs_special['D_dt_eff_ratio'] = args[i]
+                i += 1
+            else:
+                kwargs_special['D_dt_eff_ratio'] = self._kwargs_fixed['D_dt_eff_ratio']
+
         return kwargs_special, i
 
     def set_params(self, kwargs_special):
@@ -185,6 +230,18 @@ class SpecialParam(object):
                 args.append(kwargs_special['delta_x_source_grid'])
             if 'delta_y_source_grid' not in self._kwargs_fixed:
                 args.append(kwargs_special['delta_y_source_grid'])
+        if self._distance_ratio_sampling is True:
+            for i in range(1, self._num_lens_planes+1):
+                param_name = 'a_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    args.append(kwargs_special[param_name])
+            for i in range(2, self._num_lens_planes):
+                param_name = 'b_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    args.append(kwargs_special[param_name])
+            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+                args.append(kwargs_special['D_dt_eff_ratio'])
+
         return args
 
     def num_param(self):
@@ -233,4 +290,18 @@ class SpecialParam(object):
             if 'delta_y_source_grid' not in self._kwargs_fixed:
                 num += 1
                 string_list.append('delta_y_source_grid')
+        if self._distance_ratio_sampling is True:
+            for i in range(1, self._num_lens_planes+1):
+                param_name = 'a_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    num += 1
+                    string_list.append(param_name)
+            for i in range(2, self._num_lens_planes):
+                param_name = 'b_{}'.format(i)
+                if param_name not in self._kwargs_fixed:
+                    num += 1
+                    string_list.append(param_name)
+            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('D_dt_eff_ratio')
         return num, string_list

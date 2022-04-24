@@ -150,3 +150,39 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
     y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
     return x_, y_
+
+
+# def get_T_ij_list_from_a_b_D_dt_eff(a_coeff_factors, b_coeff_factors,
+#                                     D_dt_eff,
+#                                     sorted_redshift_index
+#                                     ):
+#     """
+#
+#     """
+#     z_before = 0
+#     # T_z = 0
+#     _T_ij_list = []
+#
+#     for idex in sorted_redshift_index:
+#         ab_fiducial_index = np.argwhere(
+#             sorted_unique_lens_redshifts
+#             == self._lens_redshift_list[idex])
+#
+#         z_lens = self._lens_redshift_list[idex]
+#         if z_before == z_lens:
+#             delta_T = 0
+#         else:
+#             # T_z = self._cosmo_bkg.T_xy(0, z_lens)
+#             delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
+#             a_i = a_coeff_factors[ab_fiducial_index] * \
+#                   self.a_coeffs_fiducial[ab_fiducial_index]
+#             b_i = b_coeff_factors[ab_fiducial_index] * \
+#                   self.b_coeffs_fiducial[ab_fiducial_index]
+#             D_i = self._T_z_list[idex-1] / (1 + z_before)
+#             D_ip1 = self._T_z_list[idex] / (1 + z_lens)
+#             D_ij = D_i * D_ip1 / a_i / self.D_dt_eff_fiducial
+#             delta_T = D_ij * (1 + z_lens)
+#
+#         self._T_ij_list.append(delta_T)
+#         # self._T_z_list.append(T_z)
+#         z_before = z_lens

@@ -12,7 +12,7 @@ class LensedPositions(PSBase):
     If fixed_magnification=True, than 'source_amp' is a parameter instead of 'point_amp'
 
     """
-    #def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
+    # def __init__(self, lens_model=None, fixed_magnification=False, additional_image=False):
     #    super(LensedPositions, self).__init__(lens_model=lens_model, fixed_magnification=fixed_magnification,
     #                                          additional_image=additional_image)
 
@@ -21,7 +21,8 @@ class LensedPositions(PSBase):
         on-sky image positions
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those
          images will be computed that exceed the lensing magnification (absolute value) limit
         :param kwargs_lens_eqn_solver: keyword arguments specifying the numerical settings for the lens equation solver
@@ -61,7 +62,8 @@ class LensedPositions(PSBase):
         image brightness amplitudes
 
         :param kwargs_ps: keyword arguments of the point source model
-        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation solver
+        :param kwargs_lens: keyword argument list of the lens model(s), only used when requiring the lens equation
+         solver
         :param x_pos: pre-computed image position (no lens equation solver applied)
         :param y_pos: pre-computed image position (no lens equation solver applied)
         :param magnification_limit: float >0 or None, if float is set and additional images are computed, only those

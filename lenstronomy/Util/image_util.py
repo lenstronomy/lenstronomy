@@ -95,7 +95,8 @@ def add_poisson(image, exp_time):
     adds a poison (or Gaussian) distributed noise with mean given by surface brightness
     """
 
-    sigma = np.sqrt(np.abs(image)/exp_time) # Gaussian approximation for Poisson distribution, normalized to exposure time
+    # Gaussian approximation for Poisson distribution, normalized to exposure time
+    sigma = np.sqrt(np.abs(image)/exp_time)
     nx, ny = np.shape(image)
     poisson = np.random.randn(nx, ny) * sigma
     return poisson
@@ -126,7 +127,7 @@ def re_size_array(x_in, y_in, input_values, x_out, y_out):
     :return:
     """
     interp_2d = interpolate.interp2d(x_in, y_in, input_values, kind='linear')
-    #interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)
+    # interp_2d = scipy.interpolate.RectBivariateSpline(x_in, y_in, input_values, kx=1, ky=1)
     out_values = interp_2d.__call__(x_out, y_out)
     return out_values
 
@@ -159,7 +160,7 @@ def findOverlap(x_mins, y_mins, min_distance):
             pass
         else:
             for j in range(0, i):
-                if (abs(x_mins[i] - x_mins[j]) < min_distance and abs(y_mins[i] - y_mins[j]) < min_distance):
+                if abs(x_mins[i] - x_mins[j] < min_distance and abs(y_mins[i] - y_mins[j]) < min_distance):
                     idex.append(i)
                     break
     x_mins = np.delete(x_mins, idex, axis=0)
@@ -168,7 +169,7 @@ def findOverlap(x_mins, y_mins, min_distance):
 
 
 @export
-def coordInImage(x_coord, y_coord, numPix, deltapix):
+def coordInImage(x_coord, y_coord, num_pix, deltapix):
     """
     checks whether image positions are within the pixel image in units of arcsec
     if not: remove it
@@ -177,11 +178,11 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
     :type imcoord: (n,4) numpy array
     :returns: image positions within the pixel image
     """
-    idex=[]
-    min = -deltapix*numPix/2
-    max = deltapix*numPix/2
-    for i in range(len(x_coord)): #sum over image positions
-        if (x_coord[i] < min or x_coord[i] > max or y_coord[i] < min or y_coord[i] > max):
+    idex = []
+    min_ = -deltapix * num_pix / 2
+    max_ = deltapix * num_pix / 2
+    for i in range(len(x_coord)):  # sum over image positions
+        if x_coord[i] < min_ or x_coord[i] > max_ or y_coord[i] < min_ or y_coord[i] > max_:
             idex.append(i)
     x_coord = np.delete(x_coord, idex, axis=0)
     y_coord = np.delete(y_coord, idex, axis=0)
@@ -192,6 +193,7 @@ def coordInImage(x_coord, y_coord, numPix, deltapix):
 def re_size(image, factor=1):
     """
     re-sizes image with nx x ny to nx/factor x ny/factor
+
     :param image: 2d image with shape (nx,ny)
     :param factor: integer >=1
     :return:
@@ -212,7 +214,8 @@ def re_size(image, factor=1):
 @export
 def rebin_image(bin_size, image, wht_map, sigma_bkg, ra_coords, dec_coords, idex_mask):
     """
-    rebins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
+    re-bins pixels, updates cutout image, wht_map, sigma_bkg, coordinates, PSF
+
     :param bin_size: number of pixels (per axis) to merge
     :return:
     """
@@ -277,25 +280,25 @@ def stack_images(image_list, wht_list, sigma_list):
 
 
 @export
-def cut_edges(image, numPix):
+def cut_edges(image, num_pix):
     """
     cuts out the edges of a 2d image and returns re-sized image to numPix
     center is well defined for odd pixel sizes.
     :param image: 2d numpy array
-    :param numPix: square size of cut out image
+    :param num_pix: square size of cut out image
     :return: cutout image with size numPix
     """
     nx, ny = image.shape
-    if nx < numPix or ny < numPix:
+    if nx < num_pix or ny < num_pix:
         raise ValueError('image can not be resized, in routine cut_edges with image shape (%s %s) '
-                         'and desired new shape (%s %s)' % (nx, ny, numPix, numPix))
+                         'and desired new shape (%s %s)' % (nx, ny, num_pix, num_pix))
     if (nx % 2 == 0 and ny % 2 == 1) or (nx % 2 == 1 and ny % 2 == 0):
         raise ValueError('image with odd and even axis (%s %s) not supported for re-sizeing' % (nx, ny))
-    if (nx % 2 == 0 and numPix % 2 == 1) or (nx % 2 == 1 and numPix % 2 == 0):
+    if (nx % 2 == 0 and num_pix % 2 == 1) or (nx % 2 == 1 and num_pix % 2 == 0):
         raise ValueError('image can only be re-sized from even to even or odd to odd number.')
 
-    x_min = int((nx - numPix) / 2)
-    y_min = int((ny - numPix) / 2)
+    x_min = int((nx - num_pix) / 2)
+    y_min = int((ny - num_pix) / 2)
     x_max = nx - x_min
     y_max = ny - y_min
     resized = image[x_min:x_max, y_min:y_max]
@@ -303,7 +306,7 @@ def cut_edges(image, numPix):
 
 
 @export
-def radial_profile(data, center=[0, 0]):
+def radial_profile(data, center=None):
     """
     computes radial profile
 
@@ -311,9 +314,11 @@ def radial_profile(data, center=[0, 0]):
     :param center: center [x, y] from where to compute the radial profile
     :return: radial profile (in units pixel)
     """
-    y, x = np.indices((data.shape))
+    if center is None:
+        center = np.array([0, 0])
+    y, x = np.indices(data.shape)
     r = np.sqrt((x - center[0])**2 + (y - center[1])**2)
-    r = r.astype(np.int)
+    r = r.astype(int)
 
     tbin = np.bincount(r.ravel(), data.ravel())
     nr = np.bincount(r.ravel())

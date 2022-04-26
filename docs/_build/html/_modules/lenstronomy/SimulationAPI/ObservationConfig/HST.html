@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.SimulationAPI.ObservationConfig.HST &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.SimulationAPI.ObservationConfig.HST &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI.ObservationConfig.HST</a></li> 
       </ul>
     </div>  
 
@@ -48,22 +47,24 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;HST&#39;</span><span class="p">]</span>
 
 <span class="c1"># F160W filter configs</span>
-<span class="n">WFC3_F160W_band_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="mf">5400.</span><span class="p">,</span>
-              <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.3</span><span class="p">,</span>
-              <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">25.96</span><span class="p">,</span>
-              <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-              <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span> <span class="c1"># set equal to the approx pixel size for drizzled PSF. Note that undrizzled PSF FWHM ~ 0.15&quot; (Windhorst et al 2011)</span>
-              <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;GAUSSIAN&#39;</span>
-              <span class="p">}</span>
+<span class="n">WFC3_F160W_band_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="mf">5400.</span><span class="p">,</span>  <span class="c1"># ~90mins orbit on HST, but this number corresponds to</span>
+                       <span class="c1"># approximately two HST orbits with overheads, guide star aquisition. ~2700s science exposure per orbit</span>
+                       <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.3</span><span class="p">,</span>
+                       <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">25.96</span><span class="p">,</span>
+                       <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span>  <span class="c1"># set equal to the approx pixel size for drizzled PSF. Note that undrizzled PSF FWHM ~ 0.15&quot; (Windhorst et al 2011)</span>
+                       <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;GAUSSIAN&#39;</span>
+                       <span class="p">}</span>
 
 <span class="c1"># configs meant to simulate images close to those provided as part of the Time Delay Lens Modeling Challenge</span>
-<span class="n">TDLMC_F160W_band_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="mf">5400.</span><span class="p">,</span>
-              <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.0</span><span class="p">,</span>
-              <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">25.9463</span><span class="p">,</span>
-              <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-              <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
-              <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;PIXEL&#39;</span> <span class="c1"># note kernel_point_source (the PSF map) must be provided separately</span>
-              <span class="p">}</span>
+<span class="n">TDLMC_F160W_band_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="mf">5400.</span><span class="p">,</span>  <span class="c1"># ~90mins orbit on HST, but this number corresponds to</span>
+                        <span class="c1"># approximately two HST orbits with overheads, guide star aquisition. ~2700s science exposure per orbit</span>
+                        <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.0</span><span class="p">,</span>
+                        <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">25.9463</span><span class="p">,</span>
+                        <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                        <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;PIXEL&#39;</span>  <span class="c1"># note kernel_point_source (the PSF map) must be provided separately</span>
+                        <span class="p">}</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">:keyword exposure_time: exposure time per image (in seconds)</span>
@@ -80,7 +81,7 @@
 <span class="sd">    class contains HST instrument and observation configurations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;TDLMC_F160W&#39;</span><span class="p">,</span> <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;PIXEL&#39;</span><span class="p">,</span> <span class="n">coadd_years</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">band</span><span class="o">=</span><span class="s1">&#39;TDLMC_F160W&#39;</span><span class="p">,</span> <span class="n">psf_type</span><span class="o">=</span><span class="s1">&#39;PIXEL&#39;</span><span class="p">,</span> <span class="n">coadd_years</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param band: string, &#39;WFC3_F160W&#39; or &#39;TDLMC_F160W&#39; supported. Determines obs dictionary.</span>
@@ -107,7 +108,7 @@
 
         <span class="c1"># WFC3 camera settings</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;read_noise&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                       <span class="s1">&#39;pixel_scale&#39;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span> <span class="c1"># approx pixel size for drizzled PSF</span>
+                       <span class="s1">&#39;pixel_scale&#39;</span><span class="p">:</span> <span class="mf">0.08</span><span class="p">,</span>  <span class="c1"># approx pixel size for drizzled PSF</span>
                        <span class="s1">&#39;ccd_gain&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
                        <span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -125,23 +126,22 @@
         <span class="k">return</span> <span class="n">kwargs</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -155,13 +155,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI.ObservationConfig.HST</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

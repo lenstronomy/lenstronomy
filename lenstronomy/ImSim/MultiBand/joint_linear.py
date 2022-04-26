@@ -14,8 +14,8 @@ class JointLinear(MultiLinear):
 
     """
     def __init__(self, multi_band_list, kwargs_model, compute_bool=None, likelihood_mask_list=None):
-        #TODO make this raise statement valid
-        #if kwargs_model.get('index_source_light_model_list', None) is not None or \
+        # TODO: make this raise statement valid
+        # if kwargs_model.get('index_source_light_model_list', None) is not None or \
         #        kwargs_model.get('index_lens_light_model_list', None) is not None or \
         #        kwargs_model.get('index_point_source_model_list', None) is not None:
         #    raise ValueError('You are not allowed to set partial surface brightness models to individual bands in the '
@@ -150,7 +150,7 @@ class JointLinear(MultiLinear):
             marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)
             logL += marg_const
         if check_positive_flux is True and self._num_bands > 0:
-            bool = self._imageModel_list[0].check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
-            if bool is False:
+            bool_ = self._imageModel_list[0].check_positive_flux(kwargs_source, kwargs_lens_light, kwargs_ps)
+            if bool_ is False:
                 logL -= 10 ** 5
         return logL

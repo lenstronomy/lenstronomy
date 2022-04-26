@@ -10,7 +10,6 @@ The class also extends with a ``is_master()`` definition
 
 # Standard library
 
-from __future__ import division, print_function, absolute_import, unicode_literals
 import signal
 import functools
 import multiprocess
@@ -116,8 +115,7 @@ class MultiPool(Pool):
 
         # The key magic is that we must call r.get() with a timeout, because
         # a Condition.wait() without a timeout swallows KeyboardInterrupts.
-        r = self.map_async(func, iterable, chunksize=chunksize,
-                           callback=callbackwrapper)
+        r = self.map_async(func, iterable, chunksize=chunksize, callback=callbackwrapper)
 
         while True:
             try:

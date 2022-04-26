@@ -192,6 +192,19 @@ class TestDyPolyChordSampler(object):
         #assert logL == -1e15
         assert phi == []
 
+    def test_write_equal_weights(self):
+        n_dims = 10
+        ns_run = {
+            'theta': np.zeros((1, n_dims)),
+            'logl': np.zeros(1),
+            'output': {
+                'logZ': np.zeros(n_dims),
+                'logZerr': np.zeros(n_dims),
+                'param_means': np.zeros(n_dims)
+            }
+        }
+        self.sampler._write_equal_weights(ns_run['theta'], ns_run['logl'])
+
 
 if __name__ == '__main__':
     pytest.main()

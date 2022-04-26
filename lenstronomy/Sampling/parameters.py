@@ -124,7 +124,7 @@ class Param(object):
         :param joint_lens_with_source_light: [[i_source, k_lens, ['param_name1', 'param_name2', ...]], [...], ...],
          joint parameter between lens model and source light model. Samples light model parameter only.
         :param mass_scaling_list: boolean list of length of lens model list (optional) models with identical integers
-         will be scaled with the same additional scaling factor
+         will be scaled with the same additional scaling factor. First integer starts with 1 (not 0)
         :param point_source_offset: bool, if True, adds relative offsets ot the modeled image positions relative to the
          time-delay and lens equation solver
         :param num_point_source_list: list of number of point sources per point source model class
@@ -261,10 +261,10 @@ class Param(object):
                                     num_images=self._num_images,
                                     solver_type=self._solver_type, kwargs_lower=kwargs_lower_lens,
                                     kwargs_upper=kwargs_upper_lens, num_shapelet_lens=num_shapelet_lens)
-        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, type='lens_light',
+        self.lensLightParams = LightParam(self._lens_light_model_list, kwargs_fixed_lens_light_updated, param_type='lens_light',
                                           linear_solver=linear_solver, kwargs_lower=kwargs_lower_lens_light,
                                           kwargs_upper=kwargs_upper_lens_light)
-        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, type='source_light',
+        self.souceParams = LightParam(self._source_light_model_list, kwargs_fixed_source_updated, param_type='source_light',
                                       linear_solver=linear_solver, kwargs_lower=kwargs_lower_source,
                                       kwargs_upper=kwargs_upper_source)
         self.pointSourceParams = PointSourceParam(self._point_source_model_list, kwargs_fixed_ps_updated,
@@ -307,7 +307,7 @@ class Param(object):
         kwargs_lens, i = self.lensParams.get_params(args, i)
         kwargs_source, i = self.souceParams.get_params(args, i)
         kwargs_lens_light, i = self.lensLightParams.get_params(args, i)
-        kwargs_ps, i = self.pointSourceParams.getParams(args, i)
+        kwargs_ps, i = self.pointSourceParams.get_params(args, i)
         kwargs_special, i = self.specialParams.get_params(args, i)
         kwargs_extinction, i = self.extinctionParams.get_params(args, i)
         self._update_lens_model(kwargs_special)
@@ -357,7 +357,7 @@ class Param(object):
         args = self.lensParams.set_params(kwargs_lens)
         args += self.souceParams.set_params(kwargs_source)
         args += self.lensLightParams.set_params(kwargs_lens_light)
-        args += self.pointSourceParams.setParams(kwargs_ps)
+        args += self.pointSourceParams.set_params(kwargs_ps)
         args += self.specialParams.set_params(kwargs_special)
         args += self.extinctionParams.set_params(kwargs_extinction)
         return np.array(args, dtype=float)

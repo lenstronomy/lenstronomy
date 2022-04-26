@@ -45,7 +45,8 @@ class GalkinModel(object):
         """
 
         :param kwargs_model: keyword arguments describing the model components
-        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved
+        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances
+         involved
         :param kwargs_numerics: numerics keyword arguments
         :param analytic_kinematics: bool, if True uses the analytic kinematic model
         """
@@ -71,10 +72,9 @@ class GalkinModel(object):
         https://arxiv.org/pdf/1006.2344.pdf
 
         :param r: 3d radius to check slope-anisotropy constraint
-        :param theta_E: Einstein radius in arc seconds
-        :param gamma: power-law slope
-        :param a_ani: scaled transition radius of the OM anisotropy distribution
-        :param r_eff: half-light radius in arc seconds
+        :param kwargs_mass: keyword arguments for mass (lens) profile
+        :param kwargs_light: keyword arguments for light profile
+        :param kwargs_anisotropy: keyword arguments for stellar anisotropy distribution
         :return: equation (10) >= 0 for physical interpretation
         """
         dr = 0.01  # finite differential in radial direction

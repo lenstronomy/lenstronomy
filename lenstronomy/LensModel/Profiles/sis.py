@@ -38,8 +38,8 @@ class SIS(LensProfileBase):
         if isinstance(R, int) or isinstance(R, float):
             a = theta_E / max(0.000001, R)
         else:
-            a=np.empty_like(R)
-            r = R[R > 0]  #in the SIS regime
+            a = np.empty_like(R)
+            r = R[R > 0]  # in the SIS regime
             a[R == 0] = 0
             a[R > 0] = theta_E / r
         f_x = a * x_shift
@@ -57,9 +57,9 @@ class SIS(LensProfileBase):
             prefac = theta_E / max(0.000001, R)
         else:
             prefac = np.empty_like(R)
-            r = R[R>0]  #in the SIS regime
-            prefac[R==0] = 0.
-            prefac[R>0] = theta_E / r
+            r = R[R > 0]  # in the SIS regime
+            prefac[R == 0] = 0.
+            prefac[R > 0] = theta_E / r
 
         f_xx = y_shift*y_shift * prefac
         f_yy = x_shift*x_shift * prefac
@@ -71,7 +71,6 @@ class SIS(LensProfileBase):
         """
         converts 3d density into 2d projected density parameter
         :param rho0:
-        :param gamma:
         :return:
         """
         theta_E = np.pi * 2 * rho0
@@ -110,13 +109,12 @@ class SIS(LensProfileBase):
         rho0 = self.theta2rho(theta_E)
         return self.mass_3d(r, rho0)
 
-    def mass_2d(self, r, rho0):
+    @staticmethod
+    def mass_2d(r, rho0):
         """
         mass enclosed projected 2d sphere of radius r
         :param r:
         :param rho0:
-        :param a:
-        :param s:
         :return:
         """
         alpha = np.pi * np.pi * 2 * rho0
@@ -139,8 +137,6 @@ class SIS(LensProfileBase):
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
         :param center_x:
         :param center_y:
         :return:

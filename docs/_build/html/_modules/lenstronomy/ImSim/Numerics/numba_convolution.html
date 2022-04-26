@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.ImSim.Numerics.numba_convolution &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.ImSim.Numerics.numba_convolution &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numba_convolution</a></li> 
       </ul>
     </div>  
 
@@ -41,9 +40,9 @@
   <h1>Source code for lenstronomy.ImSim.Numerics.numba_convolution</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">numba_util</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.partial_image</span> <span class="k">import</span> <span class="n">PartialImage</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">image_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">numba_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.ImSim.Numerics.partial_image</span> <span class="kn">import</span> <span class="n">PartialImage</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">image_util</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;NumbaConvolution&#39;</span><span class="p">]</span>
 
@@ -54,20 +53,23 @@
 
 <span class="sd">    the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLens</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">memory_raise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">memory_raise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kernel: convolution kernel in units of the image pixels provided, odd length per axis</span>
 <span class="sd">        :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred</span>
-<span class="sd">        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels</span>
+<span class="sd">        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other</span>
+<span class="sd">         pixels</span>
 <span class="sd">        :param nopython: bool, numba jit setting to use python or compiled.</span>
 <span class="sd">        :param cache: bool, numba jit setting to use cache</span>
 <span class="sd">        :param parallel: bool, numba jit setting to use parallel mode</span>
-<span class="sd">        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within certain bounds</span>
+<span class="sd">        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within</span>
+<span class="sd">         certain bounds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#numba_util.nopython = nopython</span>
-        <span class="c1">#numba_util.cache = cache</span>
-        <span class="c1">#numba_util.parallel = parallel</span>
+        <span class="c1"># numba_util.nopython = nopython</span>
+        <span class="c1"># numba_util.cache = cache</span>
+        <span class="c1"># numba_util.parallel = parallel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_memory_raise</span> <span class="o">=</span> <span class="n">memory_raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_conv_pixels</span> <span class="o">=</span> <span class="n">conv_pixels</span>
@@ -162,7 +164,6 @@
 
 <span class="sd">        :param image_array: selected subset of image in 1d array conventions</span>
 <span class="sd">        :param num_data: number of 1d data that get convolved light and are output</span>
-<span class="sd">        :param image_conv_indexes: indexes of image (in 1d convention) those pixels get convolved</span>
 <span class="sd">        :param image_frame_kernels: list of indexes that have a response for certain pixel (as a list</span>
 <span class="sd">        :param image_frame_lengths: length of image_frame_kernels</span>
 <span class="sd">        :return:</span>
@@ -186,7 +187,7 @@
 <span class="sd">    This makes use of the regualr NumbaConvolution class as a loop through the different sub-pixel positions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel_super</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kernel_super: convolution kernel in units of super sampled pixels provided, odd length per axis</span>
@@ -262,23 +263,22 @@
         <span class="k">return</span> <span class="n">kernel</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -292,13 +292,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numba_convolution</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

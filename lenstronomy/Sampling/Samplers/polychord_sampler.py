@@ -36,7 +36,6 @@ class DyPolyChordSampler(NestedSampler):
         :param sigma_scale: if prior_type is 'gaussian', scale the gaussian sigma by this factor
         :param output_dir: name of the folder that will contain output files
         :param output_basename: prefix for output files
-        :param seed_increment: seed increment for dypolychord RNG with MPI. Check dypolychord documentation for details.
         :param resume_dyn_run: if True, previous resume files will not be deleted so that previous run can be resumed
         :param polychord_settings: settings dictionary to send to pypolychord. Check dypolychord documentation for details.
         :param remove_output_dir: remove the output_dir folder after completion
@@ -104,6 +103,8 @@ class DyPolyChordSampler(NestedSampler):
         elif self.prior_type == 'uniform':
             p = utils.cube2args_uniform(cube, self.lowers, self.uppers, 
                                         self.n_dims, copy=True)
+        else:
+            raise ValueError("Variable prior_type with entry %s not supported!" % self.prior_type)
         return p
 
     def log_likelihood(self, args):
@@ -151,10 +152,10 @@ class DyPolyChordSampler(NestedSampler):
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
             ns_run = {
                 'theta': np.zeros((1, self.n_dims)),
-                'logl': np.zeros(self.n_dims),
+                'logl': np.zeros(1),
                 'output': {
-                    'logZ': np.zeros(self.n_dims),
-                    'logZerr': np.zeros(self.n_dims),
+                    'logZ': np.zeros(1),
+                    'logZerr': np.zeros(1),
                     'param_means': np.zeros(self.n_dims)
                 }
             }
@@ -164,9 +165,9 @@ class DyPolyChordSampler(NestedSampler):
             samples, logL = self._get_equal_weight_samples()
             # logL     = ns_run['logl']
             # samples_w = ns_run['theta']
-            logZ     = ns_run['output']['logZ']
+            logZ = ns_run['output']['logZ']
             logZ_err = ns_run['output']['logZerr']
-            means    = ns_run['output']['param_means']
+            means = ns_run['output']['param_means']
 
             print('The log evidence estimate using the first run is {}'
                   .format(logZ))
@@ -196,8 +197,8 @@ class DyPolyChordSampler(NestedSampler):
         # write fake output file for unit tests
         file_name = '{}_equal_weights.txt'.format(self._output_basename)
         file_path = os.path.join(self._output_dir, file_name)
-        data = np.zeros((samples.shape[0], 1+samples.shape[1]))
-        data[:, 0]  = -2. * logL
+        data = np.zeros((samples.shape[0], 1+samples.shape[1]), dtype=float)
+        data[:, 0] = -2. * logL
         data[:, 1:] = samples
         np.savetxt(file_path, data, fmt='% .14E')
 
@@ -205,9 +206,11 @@ class DyPolyChordSampler(NestedSampler):
         try:
             import dyPolyChord
             from dyPolyChord import pypolychord_utils
-        except:
+        except ImportError:
+            dyPolyChord = None
+            pypolychord_utils = None
             print("Warning : dyPolyChord not properly installed. \
-You can get it from : https://github.com/ejhigson/dyPolyChord")
+                   You can get it from : https://github.com/ejhigson/dyPolyChord")
             dypolychord_installed = False
         else:
             dypolychord_installed = True
@@ -216,9 +219,9 @@ You can get it from : https://github.com/ejhigson/dyPolyChord")
 
         try:
             from nestcheck import data_processing
-        except:
+        except ImportError:
             print("Warning : nestcheck not properly installed (results might be unexpected). \
-You can get it from : https://github.com/ejhigson/nestcheck")
+                   You can get it from : https://github.com/ejhigson/nestcheck")
             nestcheck_installed = False
         else:
             nestcheck_installed = True

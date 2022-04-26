@@ -19,7 +19,8 @@ class AlignmentFitting(object):
         """
         self.chain = AlignmentLikelihood(multi_band_list, kwargs_model, kwargs_params, band_index, likelihood_mask_list)
 
-    def pso(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1, mpi=False, print_key='default'):
+    def pso(self, n_particles=10, n_iterations=10, lowerLimit=-0.2, upperLimit=0.2, threadCount=1, mpi=False,
+            print_key='default'):
         """
         returns the best fit for the lense model on catalogue basis with particle swarm optimizer
         """
@@ -73,7 +74,7 @@ class AlignmentLikelihood(object):
         """
         routine to compute X2 given variable parameters for a MCMC/PSO chainF
         """
-        #generate image and computes likelihood
+        # generate image and computes likelihood
         multi_band_list = self.update_multi_band(args)
         image_model = SingleBandMultiModel(multi_band_list, self._kwargs_model,
                                            likelihood_mask_list=self._likelihood_mask_list, band_index=self._band_index)

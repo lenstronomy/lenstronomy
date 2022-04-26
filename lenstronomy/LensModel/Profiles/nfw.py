@@ -34,7 +34,7 @@ class NFW(LensProfileBase):
 
     The lens model calculation uses angular units as arguments! So to execute a deflection angle calculation one uses
 
-    >>> from lenstronomy.LensModel.Profiles.nfw import NFW
+    >>> from lenstronomy.LensModel.Profiles.hernquist import NFW
     >>> nfw = NFW()
     >>> alpha_x, alpha_y = nfw.derivatives(x=1, y=1, Rs=Rs_angle, alpha_Rs=alpha_Rs, center_x=0, center_y=0)
 
@@ -209,6 +209,18 @@ class NFW(LensProfileBase):
         gx = self.g_(x)
         m_2d = 4*rho0*Rs*R**2*gx/x**2 * np.pi
         return m_2d
+
+    def mass_2d_lens(self, R, Rs, alpha_Rs):
+        """
+
+        :param R: projected radius
+        :param Rs: scale radius
+        :param alpha_Rs: deflection (angular units) at projected Rs
+        :return: mass enclosed 2d cylinder <R
+        """
+
+        rho0 = self.alpha2rho0(alpha_Rs, Rs)
+        return self.mass_2d(R, Rs=Rs, rho0=rho0)
 
     def nfwPot(self, R, Rs, rho0):
         """

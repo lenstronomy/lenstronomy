@@ -1,20 +1,19 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.QuadOptimizer package &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>lenstronomy.LensModel.QuadOptimizer package &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -36,9 +35,10 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer package</a></li> 
       </ul>
     </div>  
 
@@ -47,176 +47,160 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="lenstronomy-lensmodel-quadoptimizer-package">
+  <section id="lenstronomy-lensmodel-quadoptimizer-package">
 <h1>lenstronomy.LensModel.QuadOptimizer package<a class="headerlink" href="#lenstronomy-lensmodel-quadoptimizer-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-lenstronomy.LensModel.QuadOptimizer.multi_plane_fast">
+</section>
+<section id="module-lenstronomy.LensModel.QuadOptimizer.multi_plane_fast">
 <span id="lenstronomy-lensmodel-quadoptimizer-multi-plane-fast-module"></span><h2>lenstronomy.LensModel.QuadOptimizer.multi_plane_fast module<a class="headerlink" href="#module-lenstronomy.LensModel.QuadOptimizer.multi_plane_fast" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.</code><code class="descname">MultiplaneFast</code><span class="sig-paren">(</span><em>x_image</em>, <em>y_image</em>, <em>z_lens</em>, <em>z_source</em>, <em>lens_model_list</em>, <em>redshift_list</em>, <em>astropy_instance</em>, <em>param_class</em>, <em>foreground_rays</em>, <em>tol_source=1e-05</em>, <em>numerical_alpha_class=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.</span></span><span class="sig-name descname"><span class="pre">MultiplaneFast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">astropy_instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">foreground_rays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerical_alpha_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class accelerates ray tracing computations in multi plane lensing for quadruple image lenses by only
 computing the deflection from objects in front of the main deflector at z_lens one time. The first ray tracing
 computation through the foreground is saved and re-used, but it will always have the same shape as the initial
 x_image, y_image arrays.</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.chi_square">
-<code class="descname">chi_square</code><span class="sig-paren">(</span><em>args_lens</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.chi_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
-param_class, see documentation in QuadOptimizer.param_manager</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">total chi^2 penalty (source chi^2 + param chi^2), where param chi^2 is computed by the specified
-param_class</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.chi_square">
+<span class="sig-name descname"><span class="pre">chi_square</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_lens</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.chi_square"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.chi_square" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
+param_class, see documentation in QuadOptimizer.param_manager</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>total chi^2 penalty (source chi^2 + param chi^2), where param chi^2 is computed by the specified
+param_class</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.logL">
-<code class="descname">logL</code><span class="sig-paren">(</span><em>args_lens</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.logL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.logL" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
-param_class, see documentation in QuadOptimizer.param_manager</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the log likelihood corresponding to the given chi^2</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.logL">
+<span class="sig-name descname"><span class="pre">logL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_lens</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.logL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.logL" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
+param_class, see documentation in QuadOptimizer.param_manager</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the log likelihood corresponding to the given chi^2</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.ray_shooting_fast">
-<code class="descname">ray_shooting_fast</code><span class="sig-paren">(</span><em>args_lens</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.ray_shooting_fast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.ray_shooting_fast" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.ray_shooting_fast">
+<span class="sig-name descname"><span class="pre">ray_shooting_fast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_lens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.ray_shooting_fast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.ray_shooting_fast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a ray tracing computation through observed coordinates on the sky (self._x_image, self._y_image)
 to the source plane, returning the final coordinates of each ray on the source plane</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args_lens</strong> – An array of parameters being optimized. The array is computed from a set of key word arguments
-by an instance of ParamClass (see documentation in QuadOptimizer.param_manager)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the xy coordinate of each ray traced back to the source plane</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args_lens</strong> – An array of parameters being optimized. The array is computed from a set of key word arguments
+by an instance of ParamClass (see documentation in QuadOptimizer.param_manager)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the xy coordinate of each ray traced back to the source plane</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.source_plane_chi_square">
-<code class="descname">source_plane_chi_square</code><span class="sig-paren">(</span><em>args_lens</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.source_plane_chi_square"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.source_plane_chi_square" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
-param_class, see documentation in QuadOptimizer.param_manager</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">chi2 penalty for the source position (all images must map to the same source coordinate)</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.source_plane_chi_square">
+<span class="sig-name descname"><span class="pre">source_plane_chi_square</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args_lens</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/multi_plane_fast.html#MultiplaneFast.source_plane_chi_square"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.multi_plane_fast.MultiplaneFast.source_plane_chi_square" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args_lens</strong> – array of lens model parameters being optimized, computed from kwargs_lens in a specified
+param_class, see documentation in QuadOptimizer.param_manager</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>chi2 penalty for the source position (all images must map to the same source coordinate)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.LensModel.QuadOptimizer.optimizer">
+</section>
+<section id="module-lenstronomy.LensModel.QuadOptimizer.optimizer">
 <span id="lenstronomy-lensmodel-quadoptimizer-optimizer-module"></span><h2>lenstronomy.LensModel.QuadOptimizer.optimizer module<a class="headerlink" href="#module-lenstronomy.LensModel.QuadOptimizer.optimizer" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.optimizer.</code><code class="descname">Optimizer</code><span class="sig-paren">(</span><em>x_image</em>, <em>y_image</em>, <em>lens_model_list</em>, <em>redshift_list</em>, <em>z_lens</em>, <em>z_source</em>, <em>parameter_class</em>, <em>astropy_instance=None</em>, <em>numerical_alpha_class=None</em>, <em>particle_swarm=True</em>, <em>re_optimize=False</em>, <em>re_optimize_scale=1.0</em>, <em>pso_convergence_mean=50000</em>, <em>foreground_rays=None</em>, <em>tol_source=1e-05</em>, <em>tol_simplex_func=0.001</em>, <em>simplex_n_iterations=400</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/optimizer.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.optimizer.</span></span><span class="sig-name descname"><span class="pre">Optimizer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">redshift_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameter_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">astropy_instance</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">numerical_alpha_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_swarm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re_optimize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">re_optimize_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pso_convergence_mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">foreground_rays</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol_simplex_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">simplex_n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">400</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/optimizer.html#Optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>class which executes the optimization routines. Currently implemented as a particle swarm optimization followed by
 a downhill simplex routine.</p>
 <p>Particle swarm optimizer is modified from the CosmoHammer particle swarm routine with different convergence criteria implemented.</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer.optimize">
-<code class="descname">optimize</code><span class="sig-paren">(</span><em>n_particles=50</em>, <em>n_iterations=250</em>, <em>verbose=False</em>, <em>threadCount=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/optimizer.html#Optimizer.optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer.optimize" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n_particles</strong> – number of PSO particles, will be ignored if self._particle_swarm is False</li>
-<li><strong>n_iterations</strong> – number of PSO iterations, will be ignored if self._particle_swarm is False</li>
-<li><strong>verbose</strong> – whether to print stuff</li>
-<li><strong>pool</strong> – instance of Pool with a map method for multiprocessing</li>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer.optimize">
+<span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_particles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_iterations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">250</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threadCount</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/optimizer.html#Optimizer.optimize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.optimizer.Optimizer.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_particles</strong> – number of PSO particles, will be ignored if self._particle_swarm is False</p></li>
+<li><p><strong>n_iterations</strong> – number of PSO iterations, will be ignored if self._particle_swarm is False</p></li>
+<li><p><strong>verbose</strong> – whether to print stuff</p></li>
+<li><p><strong>threadCount</strong> – integer; number of threads in multi-threading mode</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>keyword arguments that map (x_image, y_image) to the same source coordinate (source_x, source_y)</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.LensModel.QuadOptimizer.param_manager">
+</section>
+<section id="module-lenstronomy.LensModel.QuadOptimizer.param_manager">
 <span id="lenstronomy-lensmodel-quadoptimizer-param-manager-module"></span><h2>lenstronomy.LensModel.QuadOptimizer.param_manager module<a class="headerlink" href="#module-lenstronomy.LensModel.QuadOptimizer.param_manager" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.param_manager.</code><code class="descname">PowerLawFixedShear</code><span class="sig-paren">(</span><em>kwargs_lens_init</em>, <em>shear_strength</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawFixedShear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear_strength</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager" title="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager</span></code></a></p>
 <p>This class implements a fit of EPL + external shear with every parameter except the power law slope AND the
 shear strength allowed to vary. The user should specify shear_strengh in the args_param_class keyword when
 creating the Optimizer class</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear.args_to_kwargs">
-<code class="descname">args_to_kwargs</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShear.args_to_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – array of lens model parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of lens model parameters with fixed shear = shear_strength</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear.args_to_kwargs">
+<span class="sig-name descname"><span class="pre">args_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShear.args_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – array of lens model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of lens model parameters with fixed shear = shear_strength</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.param_manager.</code><code class="descname">PowerLawFixedShearMultipole</code><span class="sig-paren">(</span><em>kwargs_lens_init</em>, <em>shear_strength</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawFixedShearMultipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shear_strength</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear" title="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShear</span></code></a></p>
 <p>This class implements a fit of EPL + external shear + a multipole term with every parameter except the
-power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the multipole term are
-fixed to that of the EPL profile</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs">
-<code class="descname">args_to_kwargs</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole.args_to_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – array of lens model parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of lens model parameters with fixed shear = shear_strength</td>
-</tr>
-</tbody>
-</table>
+power law slope, shear strength, and multipole moment free to vary. The mass centroid and orientation of the
+multipole term are fixed to that of the EPL profile</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs">
+<span class="sig-name descname"><span class="pre">args_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFixedShearMultipole.args_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – array of lens model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of lens model parameters with fixed shear = shear_strength</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.to_vary_index">
-<code class="descname">to_vary_index</code><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.to_vary_index" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.to_vary_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_vary_index</span></span><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFixedShearMultipole.to_vary_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of lens models being varied in this routine. This is set to 3 because the first three lens models
 are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.</p>
 <p>The kwargs_list is split at to to_vary_index with indicies &lt; to_vary_index accessed in this class,
@@ -227,43 +211,41 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.param_manager.</code><code class="descname">PowerLawFreeShear</code><span class="sig-paren">(</span><em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawFreeShear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager" title="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager</span></code></a></p>
 <p>This class implements a fit of EPL + external shear with every parameter except the power law slope allowed to vary</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear.args_to_kwargs">
-<code class="descname">args_to_kwargs</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShear.args_to_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> – array of lens model parameters</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">dictionary of lens model parameters</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear.args_to_kwargs">
+<span class="sig-name descname"><span class="pre">args_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShear.args_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShear.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – array of lens model parameters</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary of lens model parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.param_manager.</code><code class="descname">PowerLawFreeShearMultipole</code><span class="sig-paren">(</span><em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShearMultipole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawFreeShearMultipole</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShearMultipole"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager" title="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager</span></code></a></p>
 <p>This class implements a fit of EPL + external shear + a multipole term with every parameter except the
 power law slope and multipole moment free to vary. The mass centroid and orientation of the multipole term are
 fixed to that of the EPL profile</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.args_to_kwargs">
-<code class="descname">args_to_kwargs</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShearMultipole.args_to_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.args_to_kwargs">
+<span class="sig-name descname"><span class="pre">args_to_kwargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawFreeShearMultipole.args_to_kwargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.args_to_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.to_vary_index">
-<code class="descname">to_vary_index</code><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.to_vary_index" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.to_vary_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_vary_index</span></span><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawFreeShearMultipole.to_vary_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of lens models being varied in this routine. This is set to 3 because the first three lens models
 are EPL, SHEAR, and MULTIPOLE, and their parameters are being optimized.</p>
 <p>The kwargs_list is split at to to_vary_index with indicies &lt; to_vary_index accessed in this class,
@@ -274,58 +256,52 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager">
-<em class="property">class </em><code class="descclassname">lenstronomy.LensModel.QuadOptimizer.param_manager.</code><code class="descname">PowerLawParamManager</code><span class="sig-paren">(</span><em>kwargs_lens_init</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager" title="Permalink to this definition">¶</a></dt>
+<dl class="py class">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.QuadOptimizer.param_manager.</span></span><span class="sig-name descname"><span class="pre">PowerLawParamManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_lens_init</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Base class for handling the translation between key word arguments and parameter arrays for
 EPL mass models. This class is intended for use in modeling galaxy-scale lenses</p>
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.bounds">
-<code class="descname">bounds</code><span class="sig-paren">(</span><em>re_optimize</em>, <em>scale=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.bounds"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.bounds" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.bounds">
+<span class="sig-name descname"><span class="pre">bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">re_optimize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.bounds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the low/high parameter bounds for the particle swarm optimization</p>
 <p>NOTE: The low/high values specified here are intended for galaxy-scale lenses. If you want to use this
 for a different size system you should create a new ParamClass with different settings</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>re_optimize</strong> – keep a narrow window around each parameter</li>
-<li><strong>scale</strong> – scales the size of the uncertainty window</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>re_optimize</strong> – keep a narrow window around each parameter</p></li>
+<li><p><strong>scale</strong> – scales the size of the uncertainty window</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.kwargs_to_args">
-<em class="property">static </em><code class="descname">kwargs_to_args</code><span class="sig-paren">(</span><em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.kwargs_to_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.kwargs_to_args" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>kwargs</strong> – keyword arguments corresponding to the lens model parameters being optimized</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array of lens model parameters</td>
-</tr>
-</tbody>
-</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.kwargs_to_args">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs_to_args</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.kwargs_to_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.kwargs_to_args" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments corresponding to the lens model parameters being optimized</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array of lens model parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
-<dl class="method">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.param_chi_square_penalty">
-<code class="descname">param_chi_square_penalty</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.param_chi_square_penalty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.param_chi_square_penalty" title="Permalink to this definition">¶</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.param_chi_square_penalty">
+<span class="sig-name descname"><span class="pre">param_chi_square_penalty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/QuadOptimizer/param_manager.html#PowerLawParamManager.param_chi_square_penalty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.param_chi_square_penalty" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="attribute">
-<dt id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.to_vary_index">
-<code class="descname">to_vary_index</code><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.to_vary_index" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.to_vary_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_vary_index</span></span><a class="headerlink" href="#lenstronomy.LensModel.QuadOptimizer.param_manager.PowerLawParamManager.to_vary_index" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of lens models being varied in this routine. This is set to 2 because the first three lens models
 are EPL and SHEAR, and their parameters are being optimized.</p>
 <p>The kwargs_list is split at to to_vary_index with indicies &lt; to_vary_index accessed in this class,
@@ -336,13 +312,14 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-lenstronomy.LensModel.QuadOptimizer">
+</section>
+<section id="module-lenstronomy.LensModel.QuadOptimizer">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LensModel.QuadOptimizer" title="Permalink to this headline">¶</a></h2>
-</div>
-</div>
+</section>
+</section>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -374,17 +351,15 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -404,14 +379,15 @@ and lens models with indicies &gt; to_vary_index kept fixed.</p>
         <li class="right" >
           <a href="lenstronomy.LensModel.Profiles.html" title="lenstronomy.LensModel.Profiles package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.QuadOptimizer package</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

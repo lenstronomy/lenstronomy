@@ -42,7 +42,8 @@ class MultiPlane(object):
         if z_interp_stop is None:
             z_interp_stop = max(z_source, z_source_convention)
         if z_interp_stop < max(z_source, z_source_convention):
-            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
+            raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
+                             'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
                                                 lens_redshift_list=lens_redshift_list, cosmo=cosmo,
                                                 numerical_alpha_class=numerical_alpha_class,
@@ -61,7 +62,8 @@ class MultiPlane(object):
 
     def update_source_redshift(self, z_source):
         """
-        update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift
+        update instance of this class to compute reduced lensing quantities and time delays to a specific source
+        redshift
 
         :param z_source: float; source redshift
         :return: self variables update to new redshift
@@ -97,7 +99,9 @@ class MultiPlane(object):
         ray-tracing (backwards light cone) to the default z_source redshift
 
         :param theta_x: angle in x-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param theta_y: angle in y-direction on the image
+         (usually arc seconds, in the same convention as lensing deflection angles)
         :param kwargs_lens: lens model keyword argument list
         :param check_convention: flag to check the image position convention (leave this alone)
         :return: angles in the source plane
@@ -151,8 +155,8 @@ class MultiPlane(object):
         ray-tracing through parts of the coin, starting with (x,y) co-moving distances and angles (alpha_x, alpha_y) at
         redshift z_start and then backwards to redshift z_stop
 
-        :param x: co-moving position [Mpc]
-        :param y: co-moving position [Mpc]
+        :param x: co-moving position [Mpc] / angle definition
+        :param y: co-moving position [Mpc] / angle definition
         :param alpha_x: ray angle at z_start [arcsec]
         :param alpha_y: ray angle at z_start [arcsec]
         :param z_start: redshift of start of computation
@@ -166,7 +170,7 @@ class MultiPlane(object):
          If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end. If not set,
          will compute the distance each time this function gets executed.
-        :return: co-moving position and angles at redshift z_stop
+        :return: co-moving position (modulo angle definition) and angles at redshift z_stop
         """
 
         if check_convention and not self.ignore_observed_positions:
@@ -215,7 +219,7 @@ class MultiPlane(object):
         if check_convention and not self.ignore_observed_positions:
             kwargs_lens = self._convention(kwargs_lens)
         return self._multi_plane_base.geo_shapiro_delay(theta_x, theta_y, kwargs_lens, z_stop=self._z_source,
-                                                   T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
+                                                        T_z_stop=self._T_z_source, T_ij_end=self._T_ij_stop)
 
     def alpha(self, theta_x, theta_y, kwargs_lens, check_convention=True, k=None):
         """

@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.Util.util &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.Util.util &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.util</a></li> 
       </ul>
     </div>  
 
@@ -46,10 +45,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">mpmath</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util.numba_util</span> <span class="k">import</span> <span class="n">jit</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.numba_util</span> <span class="kn">import</span> <span class="n">jit</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="kn">import</span> <span class="n">exporter</span>
 
 <span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
@@ -112,7 +110,7 @@
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_self</span><span class="p">[</span><span class="mi">0</span><span class="p">]))):</span>
             <span class="n">dr</span> <span class="o">+=</span> <span class="p">(</span><span class="n">x_self</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">xref</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_self</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">-</span> <span class="n">yref</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">**</span> <span class="mi">2</span>
 
-        <span class="n">delta_r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dr</span> <span class="o">**</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">delta_r</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dr</span> <span class="o">**</span> <span class="mf">.5</span><span class="p">)</span>
 
     <span class="n">min_indexes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">index_iterations</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">delta_r</span><span class="p">)])</span>
 
@@ -173,8 +171,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 2d array into an n*n 1d array</span>
 
-<span class="sd">    :param array: image values</span>
-<span class="sd">    :type array: array of size (n,n)</span>
+<span class="sd">    :param image: image values</span>
+<span class="sd">    :type image: array of size (n,n)</span>
 <span class="sd">    :returns:  1d array</span>
 <span class="sd">    :raises: AttributeError, KeyError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -191,9 +189,9 @@
 <span class="sd">    :param array: image values</span>
 <span class="sd">    :type array: 1d array</span>
 <span class="sd">    :param n_1: first dimension of returned array</span>
-<span class="sd">    :type int:</span>
+<span class="sd">    :type n_1: int</span>
 <span class="sd">    :param n_23: square of second and third dimensions of returned array</span>
-<span class="sd">    :type int:</span>
+<span class="sd">    :type n_23: int</span>
 <span class="sd">    :returns: 3d array</span>
 <span class="sd">    :raises ValueError: when n_23 is not a perfect square</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -210,8 +208,8 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    returns the information contained in a 3d array of shape (n_1, n_2, n_3) into 1d array with shape (n_1*n_2*n_3)</span>
 
-<span class="sd">    :param array: image values</span>
-<span class="sd">    :type array: 3d array</span>
+<span class="sd">    :param cube: image values</span>
+<span class="sd">    :type cube: 3d array</span>
 <span class="sd">    :returns: 1d array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n_1</span><span class="p">,</span> <span class="n">n_2</span><span class="p">,</span> <span class="n">n_3</span> <span class="o">=</span> <span class="n">cube</span><span class="o">.</span><span class="n">shape</span>
@@ -238,14 +236,14 @@
         <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">numPix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">numPix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;numPix contains non-integers: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">numPix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">numPix</span> <span class="o">!=</span> <span class="nb">round</span><span class="p">(</span><span class="n">numPix</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Attempt to specify non-int numPix: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">numPix</span><span class="p">)</span>
-        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+        <span class="n">numPix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">numPix</span><span class="p">,</span> <span class="n">numPix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
 
     <span class="c1"># Super-resolution sampling</span>
-    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+    <span class="n">numPix_eff</span> <span class="o">=</span> <span class="p">(</span><span class="n">numPix</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
 
     <span class="c1"># Compute unshifted grids.</span>
@@ -285,12 +283,12 @@
 
 <span class="sd">    :param numPix: number of pixels per axis</span>
 <span class="sd">    :param deltapix: pixel scale per axis</span>
-<span class="sd">    :param subgrid_res: supersampling resolution relative to the stated pixel size</span>
+<span class="sd">    :param subgrid_res: super-sampling resolution relative to the stated pixel size</span>
 <span class="sd">    :param center_ra: center of the grid</span>
 <span class="sd">    :param center_dec: center of the grid</span>
 <span class="sd">    :param left_lower: sets the zero point at the lower left corner of the pixels</span>
 <span class="sd">    :param inverse: bool, if true sets East as left, otherwise East is righrt</span>
-<span class="sd">    :return:</span>
+<span class="sd">    :return: ra_grid, dec_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">numPix_eff</span> <span class="o">=</span> <span class="n">numPix</span> <span class="o">*</span> <span class="n">subgrid_res</span>
     <span class="n">deltapix_eff</span> <span class="o">=</span> <span class="n">deltapix</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">subgrid_res</span><span class="p">)</span>
@@ -307,8 +305,8 @@
         <span class="n">ra_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">delta_x</span>
         <span class="n">dec_grid</span> <span class="o">=</span> <span class="p">(</span><span class="n">matrix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">numPix_eff</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltapix_eff</span>
     <span class="n">shift</span> <span class="o">=</span> <span class="p">(</span><span class="n">subgrid_res</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">subgrid_res</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltapix</span>
-    <span class="n">ra_grid</span> <span class="o">-=</span> <span class="n">shift</span> <span class="o">+</span> <span class="n">center_ra</span>
-    <span class="n">dec_grid</span> <span class="o">-=</span> <span class="n">shift</span> <span class="o">+</span> <span class="n">center_dec</span>
+    <span class="n">ra_grid</span> <span class="o">+=</span> <span class="o">-</span><span class="n">shift</span> <span class="o">+</span> <span class="n">center_ra</span>
+    <span class="n">dec_grid</span> <span class="o">+=</span> <span class="o">-</span><span class="n">shift</span> <span class="o">+</span> <span class="n">center_dec</span>
     <span class="n">ra_at_xy_0</span> <span class="o">=</span> <span class="n">ra_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">dec_at_xy_0</span> <span class="o">=</span> <span class="n">dec_grid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
@@ -380,10 +378,14 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    calculates a grid of distances to the observer in angel</span>
 
-<span class="sd">    :param mapped_cartcoord: mapped cartesian coordinates</span>
-<span class="sd">    :type mapped_cartcoord: numpy array (n,2)</span>
-<span class="sd">    :param sourcePos: source position</span>
-<span class="sd">    :type sourcePos: numpy vector [x0,y0]</span>
+<span class="sd">    :param x: cartesian coordinates</span>
+<span class="sd">    :type x: numpy array</span>
+<span class="sd">    :param y: cartesian coordinates</span>
+<span class="sd">    :type y: numpy array</span>
+<span class="sd">    :param sourcePos_x: source position</span>
+<span class="sd">    :type sourcePos_x: float</span>
+<span class="sd">    :param sourcePos_y: source position</span>
+<span class="sd">    :type sourcePos_y: float</span>
 <span class="sd">    :returns:  array of displacement</span>
 <span class="sd">    :raises: AttributeError, KeyError</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -607,6 +609,8 @@
 <span class="sd">    :param x:</span>
 <span class="sd">    :return:</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span> <span class="nn">mpmath</span>
+
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">mpmath</span><span class="o">.</span><span class="n">hyp2f2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -690,25 +694,42 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;input list k as </span><span class="si">%s</span><span class="s1"> not compatible&#39;</span> <span class="o">%</span> <span class="n">k</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">bool_list</span></div>
+
+
+<span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="n">vs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Use Green&#39;s theorem to compute the area enclosed by the given contour.</span>
+
+<span class="sd">    param vs: 2d array of vertices of a contour line</span>
+<span class="sd">    return: area within contour line</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">x0</span><span class="p">,</span> <span class="n">y0</span> <span class="o">=</span> <span class="n">vs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="p">[</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">vs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">x1</span> <span class="o">-</span> <span class="n">x0</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="n">y1</span> <span class="o">-</span> <span class="n">y0</span>
+        <span class="n">a</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">y0</span> <span class="o">*</span> <span class="n">dx</span> <span class="o">-</span> <span class="n">x0</span> <span class="o">*</span> <span class="n">dy</span><span class="p">)</span>
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">x1</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">y1</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -722,13 +743,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.util</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

@@ -210,7 +210,6 @@ class Radial(object):
         See e.g. A4 in Mamon & Lokas
 
         :param r: 3d radius
-        :param kwargs: parameters of the specified anisotropy model
         :return: f(r)
         """
         return r**2

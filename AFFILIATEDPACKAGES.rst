@@ -16,13 +16,16 @@ applications:
 - `h0rton <https://github.com/jiwoncpark/h0rton>`_: H0 inferences with Bayesian neural network lens modeling.
 - `deeplenstronomy <https://github.com/deepskies/deeplenstronomy>`_: Tool for simulating large datasets for applying deep learning to strong gravitational lensing.
 - `pyHalo <https://github.com/dangilman/pyHalo>`_: Tool for rendering full substructure mass distributions for gravitational lensing simulations.
+- `GaLight <https://github.com/dartoon/galight>`_: Tool to perform two-dimensional model fitting of optical and near-infrared images to characterize surface brightness distributions.
+- `paltas <https://github.com/swagnercarena/paltas>`_: Package for conducting simulation-based inference on strong gravitational lensing images.
+- `LensingETC <https://github.com/ajshajib/LensingETC>`_: A Python package to select an optimal observing strategy for multi-filter imaging campaigns of strong lensing systems. This package simulates imaging data corresponding to provided instrument specifications and extract lens model parameter uncertainties from the simulated images.
 
 
 These packages come with their own documentation and examples - so check them out!
 
 
 
-guidelines for affiliated packages
+Guidelines for affiliated packages
 ----------------------------------
 If you have a package/wrapper/analysis pipeline that is open source and you would like to have it advertised here, please let the developers know!
 Before you write your own wrapper and scripts in executing lenstronomy for your purpose check out the list

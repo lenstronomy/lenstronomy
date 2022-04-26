@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.elliptical_density_slice &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Profiles.elliptical_density_slice &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.elliptical_density_slice</a></li> 
       </ul>
     </div>  
 
@@ -43,10 +42,11 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">cmath</span> <span class="k">as</span> <span class="nn">c</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">param_util</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">param_util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ElliSLICE&#39;</span><span class="p">]</span>
+
 
 <div class="viewcode-block" id="ElliSLICE"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE">[docs]</a><span class="k">class</span> <span class="nc">ElliSLICE</span> <span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -71,17 +71,17 @@
 <span class="sd">    with</span>
 
 <span class="sd">    ..math::</span>
-<span class="sd">        x_{rot} = x_c \\cos \\psi + y_c \\sin \psi  \\</span>
-<span class="sd">        y_{rot} = - x_c \\sin \\psi + y_c \cos \\psi  \\</span>
+<span class="sd">        x_{rot} = x_c \\cos \\psi + y_c \\sin \\psi  \\</span>
+<span class="sd">        y_{rot} = - x_c \\sin \\psi + y_c \\cos \\psi  \\</span>
 <span class="sd">        x_c = x - center_x  \\</span>
 <span class="sd">        y_c = y - center_y</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span><span class="s1">&#39;b&#39;</span><span class="p">,</span><span class="s1">&#39;psi&#39;</span><span class="p">,</span><span class="s1">&#39;sigma_0&#39;</span><span class="p">,</span><span class="s1">&#39;center_x&#39;</span><span class="p">,</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
-    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.</span><span class="o">/</span><span class="mf">180.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span><span class="s1">&#39;center_x&#39;</span><span class="p">:</span><span class="o">-</span><span class="mf">100.</span><span class="p">,</span><span class="s1">&#39;center_y&#39;</span><span class="p">:</span><span class="o">-</span><span class="mf">100.</span><span class="p">}</span>
+    <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">,</span> <span class="s1">&#39;sigma_0&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
+    <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">90.</span><span class="o">/</span><span class="mf">180.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">100.</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;psi&#39;</span><span class="p">:</span> <span class="mf">90.</span> <span class="o">/</span> <span class="mf">180.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mf">100.</span><span class="p">}</span>
 
-<div class="viewcode-block" id="ElliSLICE.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
+<div class="viewcode-block" id="ElliSLICE.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">psi</span><span class="p">,</span> <span class="n">sigma_0</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        lensing potential</span>
 
@@ -163,7 +163,8 @@
         <span class="n">f_yy</span> <span class="o">=</span> <span class="p">(</span><span class="n">alpha_dec_dy</span> <span class="o">-</span> <span class="n">alpha_dec</span><span class="p">)</span> <span class="o">/</span> <span class="n">diff</span>
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
 
-<div class="viewcode-block" id="ElliSLICE.sign"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.sign">[docs]</a>    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+<div class="viewcode-block" id="ElliSLICE.sign"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.sign">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sign</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        sign function</span>
 
@@ -172,7 +173,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">real</span>
         <span class="n">y</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">imag</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span><span class="o">==</span><span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span><span class="o">&gt;=</span><span class="mi">0</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">):</span>
             <span class="k">return</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="o">-</span><span class="mi">1</span></div>
@@ -220,7 +221,7 @@
             <span class="n">median_op</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">e2ipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">2</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
         <span class="n">eipsi</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">psi</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">median_op</span> <span class="ow">is</span> <span class="kc">True</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">median_op</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">eps</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="o">-</span><span class="mi">10</span>
             <span class="n">z_minus_eps</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">),</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span> <span class="o">-</span> <span class="n">eps</span><span class="p">))</span>
             <span class="n">zb_minus_eps</span> <span class="o">=</span> <span class="n">z_minus_eps</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
@@ -232,9 +233,9 @@
                                            <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb_plus_eps</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
             <span class="n">I_out_mid</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span>
                                           <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
-            <span class="n">I_out_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">I_out_minus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">I_out_plus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span><span class="n">I_out_mid</span><span class="o">.</span><span class="n">real</span><span class="p">])</span>
+            <span class="n">I_out_real</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">I_out_minus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">I_out_plus</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">I_out_mid</span><span class="o">.</span><span class="n">real</span><span class="p">])</span>
             <span class="n">I_out_imag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">([</span><span class="n">I_out_minus</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">I_out_plus</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span> <span class="n">I_out_mid</span><span class="o">.</span><span class="n">imag</span><span class="p">])</span>
-        <span class="k">else</span> <span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="n">I_out</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="o">/</span> <span class="n">f2</span> <span class="o">*</span> <span class="p">(</span>
                         <span class="n">zb</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">eipsi</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">zb</span> <span class="o">*</span> <span class="n">eipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">zb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">e2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">*</span> <span class="n">sig_0</span>
             <span class="n">I_out_real</span> <span class="o">=</span> <span class="n">I_out</span><span class="o">.</span><span class="n">real</span>
@@ -248,7 +249,8 @@
 
         <span class="k">return</span> <span class="n">I_out_real</span><span class="p">,</span> <span class="n">I_out_imag</span></div>
 
-<div class="viewcode-block" id="ElliSLICE.pot_in"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_in">[docs]</a>    <span class="k">def</span> <span class="nf">pot_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+<div class="viewcode-block" id="ElliSLICE.pot_in"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_in">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">pot_in</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        lensing potential for (x,y) inside the elliptical slice</span>
 
@@ -266,7 +268,7 @@
         <span class="n">cst</span> <span class="o">=</span> <span class="n">sig_0</span> <span class="o">*</span> <span class="n">rE</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">rE</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pot_in</span> <span class="o">+</span> <span class="n">cst</span></div>
 
-<div class="viewcode-block" id="ElliSLICE.pot_ext"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_ext">[docs]</a>    <span class="k">def</span> <span class="nf">pot_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
+<div class="viewcode-block" id="ElliSLICE.pot_ext"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.elliptical_density_slice.ElliSLICE.pot_ext">[docs]</a>    <span class="k">def</span> <span class="nf">pot_ext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_slice</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        lensing potential for (x,y) outside the elliptical slice</span>
 
@@ -274,7 +276,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">z</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
-        <span class="n">zb</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">conjugate</span><span class="p">()</span>
+        <span class="c1"># zb = z.conjugate()</span>
         <span class="n">psi</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;psi&#39;</span><span class="p">]</span>
         <span class="n">a</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">kwargs_slice</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span>
@@ -314,29 +316,28 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">pot_ext</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">e</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
                         <span class="n">f2</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">))</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
-                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span> <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-                    <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+                        <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">z</span> <span class="o">*</span> <span class="n">emipsi</span> <span class="o">*</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span> <span class="o">-</span> <span class="n">f2</span><span class="p">)</span> <span class="o">+</span> <span class="n">z</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">em2ipsi</span><span class="p">)</span> <span class="o">*</span> <span class="n">sig_0</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
         <span class="k">return</span> <span class="n">pot_ext</span></div></div>
 
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -350,13 +351,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.elliptical_density_slice</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

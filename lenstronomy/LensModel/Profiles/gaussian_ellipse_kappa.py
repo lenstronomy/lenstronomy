@@ -58,7 +58,7 @@ class GaussianEllipseKappa(LensProfileBase):
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -125,25 +125,24 @@ class GaussianEllipseKappa(LensProfileBase):
         def pot_imag_line_integrand(_y):
             sig_func_re, sig_func_im = self.sigma_function(_p * x_, _p * _y, q)
 
-            alpha_y_ = -amp_*sigma_ * self.sgn(x_ + 1j*_y) * np.sqrt(2*np.pi /
-                        (1. - q ** 2)) * sig_func_im
+            alpha_y_ = -amp_*sigma_ * self.sgn(x_ + 1j*_y) * np.sqrt(2*np.pi / (1. - q ** 2)) * sig_func_im
 
             return alpha_y_
 
         pot_on_real_line = quad(pot_real_line_integrand, 0, x_)[0]
         pot_on_imag_parallel = quad(pot_imag_line_integrand, 0, y_)[0]
-        return (pot_on_real_line + pot_on_imag_parallel)
+        return pot_on_real_line + pot_on_imag_parallel
 
     def derivatives(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        Compute the derivatives of function angles :math:`\partial
-        f/\partial x`, :math:`\partial f/\partial y` at :math:`x,\ y`.
+        Compute the derivatives of function angles :math:`\\partial
+        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -155,8 +154,10 @@ class GaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Deflection angle :math:`\partial f/\partial x`, :math:`\partial f/\partial y` for elliptical Gaussian convergence.
-        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
+        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y`
+         for elliptical Gaussian convergence.
+        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal
+         to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
 
@@ -197,15 +198,15 @@ class GaussianEllipseKappa(LensProfileBase):
 
     def hessian(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        Compute Hessian matrix of function :math:`\partial^2f/\partial x^2`,
-        :math:`\partial^2 f/\partial y^2`, :math:`\partial^2/\partial
-        x\partial y`.
+        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,
+        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2/\\partial
+        x\\partial y`.
 
         :param x: x coordinate
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian
         :type sigma: ``float``
@@ -217,7 +218,8 @@ class GaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid
         :type center_y: ``float``
-        :return: Hessian :math:`A/(2 \pi \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)` for elliptical Gaussian convergence.
+        :return: Hessian :math:`A/(2 \\pi \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)` for elliptical Gaussian
+         convergence.
         :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy.array``'s shape equal to ``x.shape``.
         """
         phi_g, q = param_util.ellipticity2phi_q(e1, e2)
@@ -256,25 +258,22 @@ class GaussianEllipseKappa(LensProfileBase):
         f_xy_ = shear.imag
 
         # rotate back to the original frame
-        f_xx = f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 \
-               - 2 * sin_phi * cos_phi * f_xy_
-        f_yy = f_xx_ * sin_phi**2 + f_yy_ * cos_phi**2 \
-               + 2 * sin_phi * cos_phi * f_xy_
-        f_xy = sin_phi * cos_phi * (f_xx_ - f_yy_) \
-               + (cos_phi**2 - sin_phi**2) * f_xy_
+        f_xx = f_xx_ * cos_phi**2 + f_yy_ * sin_phi**2 - 2 * sin_phi * cos_phi * f_xy_
+        f_yy = f_xx_ * sin_phi**2 + f_yy_ * cos_phi**2 + 2 * sin_phi * cos_phi * f_xy_
+        f_xy = sin_phi * cos_phi * (f_xx_ - f_yy_) + (cos_phi**2 - sin_phi**2) * f_xy_
 
         return f_xx, f_xy, f_xy, f_yy
 
     def density_2d(self, x, y, amp, sigma, e1, e2, center_x=0, center_y=0):
         """
-        Compute the density of elliptical Gaussian :math:`A/(2 \pi
-        \sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`.
+        Compute the density of elliptical Gaussian :math:`A/(2 \\pi
+        \\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`.
 
         :param x: x coordinate.
         :type x: ``float`` or ``numpy.array``
         :param y: y coordinate.
         :type y: ``float`` or ``numpy.array``
-        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`
+        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`
         :type amp: ``float``
         :param sigma: Standard deviation of Gaussian.
         :type sigma: ``float``
@@ -286,7 +285,7 @@ class GaussianEllipseKappa(LensProfileBase):
         :type center_x: ``float``
         :param center_y: y coordianate of centroid.
         :type center_y: ``float``
-        :return: Density :math:`\kappa` for elliptical Gaussian convergence.
+        :return: Density :math:`\\kappa` for elliptical Gaussian convergence.
         :rtype: ``float``, or ``numpy.array`` with shape = ``x.shape``.
         """
         f_xx, f_xy, f_yx, f_yy = self.hessian(x, y, amp, sigma, e1, e2, center_x, center_y)
@@ -295,22 +294,22 @@ class GaussianEllipseKappa(LensProfileBase):
     @staticmethod
     def sgn(z):
         """
-        Compute the sign function :math:`\mathrm{sgn}(z)` factor for
+        Compute the sign function :math:`\\mathrm{sgn}(z)` factor for
         deflection as sugggested by Bray (1984). For current implementation, returning 1 is sufficient.
 
-        :param z: Complex variable :math:`z = x + \mathrm{i}y`
+        :param z: Complex variable :math:`z = x + \\mathrm{i}y`
         :type z: ``complex``
-        :return: :math:`\mathrm{sgn}(z)`
+        :return: :math:`\\mathrm{sgn}(z)`
         :rtype: ``float``
         """
         return 1.
         # np.sqrt(z*z)/z #np.sign(z.real*z.imag)
-        #return np.sign(z.real)
-        #if z.real != 0:
+        # return np.sign(z.real)
+        # if z.real != 0:
         #    return np.sign(z.real)
-        #else:
+        # else:
         #    return np.sign(z.imag)
-        #return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))
+        # return np.where(z.real == 0, np.sign(z.real), np.sign(z.imag))
 
     def sigma_function(self, x, y, q):
         r"""
@@ -345,12 +344,12 @@ class GaussianEllipseKappa(LensProfileBase):
     @staticmethod
     def w_f_approx(z):
         """
-        Compute the Faddeeva function :math:`w_{\mathrm F}(z)` using the
+        Compute the Faddeeva function :math:`w_{\\mathrm F}(z)` using the
         approximation given in Zaghloul (2017).
 
         :param z: complex number
         :type z: ``complex`` or ``numpy.array(dtype=complex)``
-        :return: :math:`w_\mathrm{F}(z)`
+        :return: :math:`w_\\mathrm{F}(z)`
         :rtype: ``complex``
         """
         sqrt_pi = 1 / np.sqrt(np.pi)

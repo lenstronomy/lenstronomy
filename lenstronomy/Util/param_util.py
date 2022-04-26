@@ -146,12 +146,14 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     y_shift = y - center_y
     cos_phi = np.cos(phi_G)
     sin_phi = np.sin(phi_G)
-    e = abs(1 - q)
+    #e = abs(1 - q)
+    e = q2e(q)
     x_ = (cos_phi * x_shift + sin_phi * y_shift) * np.sqrt(1 - e)
     y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
     return x_, y_
 
 
+<<<<<<< HEAD
 # def get_T_ij_list_from_a_b_D_dt_eff(a_coeff_factors, b_coeff_factors,
 #                                     D_dt_eff,
 #                                     sorted_redshift_index
@@ -186,3 +188,17 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
 #         self._T_ij_list.append(delta_T)
 #         # self._T_z_list.append(T_z)
 #         z_before = z_lens
+=======
+def q2e(q):
+    """
+    computes
+
+    .. math::
+        e = \\equic \\frac{1 - q^2}{1 + q^2}
+
+    :param q: axis ratio of minor to major axis
+    :return: ellipticity e
+    """
+    e = abs(1 - q ** 2) / (1 + q ** 2)
+    return e
+>>>>>>> ec49b148cf220f58a9482dd562d1e4a09abe70e9

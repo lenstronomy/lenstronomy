@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>lenstronomy.LensModel.Util package &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="lenstronomy.LightModel package" href="lenstronomy.LightModel.html" />
+    <link rel="prev" title="lenstronomy.LensModel.Solver package" href="lenstronomy.LensModel.Solver.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Util package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="lenstronomy-lensmodel-util-package">
+<h1>lenstronomy.LensModel.Util package<a class="headerlink" href="#lenstronomy-lensmodel-util-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-lenstronomy.LensModel.Util.epl_util">
+<span id="lenstronomy-lensmodel-util-epl-util-module"></span><h2>lenstronomy.LensModel.Util.epl_util module<a class="headerlink" href="#module-lenstronomy.LensModel.Util.epl_util" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.brentq_inline">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">brentq_inline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2e-14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.552713678800501e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.brentq_inline" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numba-compatible implementation of brentq (largely copied from scipy.optimize.brentq).
+Unfortunately, the scipy verison is not compatible with numba, hence this reimplementation :(
+:param f: function to optimize
+:param xa: left bound
+:param xb: right bound
+:param xtol: x-coord root tolerance
+:param rtol: x-coord relative tolerance
+:param maxiter: maximum num of iterations
+:param args: additional arguments to pass to function in the form f(x, args)
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.brentq_nojit">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">brentq_nojit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xa</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2e-14</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.552713678800501e-15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxiter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#brentq_nojit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.brentq_nojit" title="Permalink to this definition">¶</a></dt>
+<dd><p>A numba-compatible implementation of brentq (largely copied from scipy.optimize.brentq).
+Unfortunately, the scipy verison is not compatible with numba, hence this reimplementation :(
+:param f: function to optimize
+:param xa: left bound
+:param xb: right bound
+:param xtol: x-coord root tolerance
+:param rtol: x-coord relative tolerance
+:param maxiter: maximum num of iterations
+:param args: additional arguments to pass to function in the form f(x, args)
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.cart_to_pol">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">cart_to_pol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#cart_to_pol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.cart_to_pol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from cartesian to polar
+:param x: x-coordinate
+:param y: y-coordinate
+:return: tuple of (r, theta)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.cdot">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">cdot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#cdot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.cdot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates some complex dot-product that simplifies the math
+:param a: complex number
+:param b: complex number
+:return: dot-product</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.ell_to_pol">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">ell_to_pol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rell</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#ell_to_pol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.ell_to_pol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts from elliptical to polar coordinates</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.geomlinspace">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">geomlinspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#geomlinspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.geomlinspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructs a geomspace from a to b, with a linspace prepended to it from 0 to a, with the same spacing as the
+geomspace would have at a</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.min_approx">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">min_approx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#min_approx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.min_approx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the x-value of the minimum of the parabola through the points (x1,y1), …
+:param x1: x-coordinate point 1
+:param x2: x-coordinate point 2
+:param x3: x-coordinate point 3
+:param y1: y-coordinate point 1
+:param y2: y-coordinate point 2
+:param y3: y-coordinate point 3
+:return: x-location of the minimum</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.pol_to_cart">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">pol_to_cart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">th</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#pol_to_cart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.pol_to_cart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert from polar to cartesian
+:param r: r-coordinate
+:param th: theta-coordinate
+:return: tuple of (x,y)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.pol_to_ell">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">pol_to_ell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">theta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#pol_to_ell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.pol_to_ell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts from polar to elliptical coordinates</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.ps">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">ps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#ps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.ps" title="Permalink to this definition">¶</a></dt>
+<dd><p>A regularized power-law that gets rid of singularities, abs(x)**p*sign(x)
+:param x: x
+:param p: p
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.rotmat">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">rotmat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">th</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#rotmat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.rotmat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the rotation matrix
+:param th: angle
+:return: rotation matrix</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="lenstronomy.LensModel.Util.epl_util.solvequadeq">
+<span class="sig-prename descclassname"><span class="pre">lenstronomy.LensModel.Util.epl_util.</span></span><span class="sig-name descname"><span class="pre">solvequadeq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/Util/epl_util.html#solvequadeq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.Util.epl_util.solvequadeq" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves a quadratic equation. Care is taken for the numerics, see also <a class="reference external" href="https://en.wikipedia.org/wiki/Loss_of_significance">https://en.wikipedia.org/wiki/Loss_of_significance</a>
+:param a: a
+:param b: b
+:param c: c
+:return: tuple of two solutions</p>
+</dd></dl>
+
+</section>
+<section id="module-lenstronomy.LensModel.Util">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-lenstronomy.LensModel.Util" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">lenstronomy.LensModel.Util package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Util.epl_util">lenstronomy.LensModel.Util.epl_util module</a></li>
+<li><a class="reference internal" href="#module-lenstronomy.LensModel.Util">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="lenstronomy.LensModel.Solver.html"
+                        title="previous chapter">lenstronomy.LensModel.Solver package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="lenstronomy.LightModel.html"
+                        title="next chapter">lenstronomy.LightModel package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/lenstronomy.LensModel.Util.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LightModel.html" title="lenstronomy.LightModel package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="lenstronomy.LensModel.Solver.html" title="lenstronomy.LensModel.Solver package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Util package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2018, Simon Birrer and contributors.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
+    </div>
+  </body>
+</html>

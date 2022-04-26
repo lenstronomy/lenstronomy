@@ -40,11 +40,11 @@ def plot_chain_list(chain_list, index=0, num_average=100):
 
 @export
 def plot_chain(chain, param_list):
-    X2_list, pos_list, vel_list = chain
+    chi2_list, pos_list, vel_list = chain
 
     f, axes = plt.subplots(1, 3, figsize=(18, 6))
     ax = axes[0]
-    ax.plot(np.log10(-np.array(X2_list)))
+    ax.plot(np.log10(-np.array(chi2_list)))
     ax.set_title('-logL')
 
     ax = axes[1]
@@ -58,7 +58,7 @@ def plot_chain(chain, param_list):
     ax.legend()
 
     ax = axes[2]
-    for i in range(0,len(vel[0])):
+    for i in range(0, len(vel[0])):
         ax.plot(vel[:, i] / (pos[n_iter-1, i] + 1), label=param_list[i])
     ax.set_title('param velocity')
     ax.legend()
@@ -69,6 +69,8 @@ def plot_chain(chain, param_list):
 def plot_mcmc_behaviour(ax, samples_mcmc, param_mcmc, dist_mcmc=None, num_average=100):
     """
     plots the MCMC behaviour and looks for convergence of the chain
+
+    :param ax: matplotlib.axis instance
     :param samples_mcmc: parameters sampled 2d numpy array
     :param param_mcmc: list of parameters
     :param dist_mcmc: log likelihood of the chain
@@ -108,7 +110,7 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     delta_x = n_kernel/20.
     delta_y = n_kernel/10.
 
-    if not 'cmap' in kwargs:
+    if 'cmap' not in kwargs:
         kwargs['cmap'] = 'seismic'
 
     n = 3
@@ -118,16 +120,16 @@ def psf_iteration_compare(kwargs_psf, **kwargs):
     ax = axes[0]
     im = ax.matshow(np.log10(psf_in), origin='lower', **kwargs)
     v_min, v_max = im.get_clim()
-    if not 'vmin' in kwargs:
+    if 'vmin' not in kwargs:
         kwargs['vmin'] = v_min
-    if not 'vmax' in kwargs:
+    if 'vmax' not in kwargs:
         kwargs['vmax'] = v_max
     divider = make_axes_locatable(ax)
     cax = divider.append_axes("right", size="5%", pad=0.05)
     plt.colorbar(im, cax=cax)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
-    ax.text(delta_x, n_kernel-delta_y, "stacked stars", color="k", fontsize=20, backgroundcolor='w')
+    ax.text(delta_x, n_kernel-delta_y, "Initial PSF model", color="k", fontsize=20, backgroundcolor='w')
 
     ax = axes[1]
     im = ax.matshow(np.log10(psf_out), origin='lower', **kwargs)

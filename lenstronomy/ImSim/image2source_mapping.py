@@ -112,6 +112,7 @@ class Image2SourceMapping(object):
         :param y: coordinate in image plane
         :param kwargs_lens: lens model kwargs list
         :param kwargs_source: source model kwargs list
+        :param k: None or int or list of int for partial evaluation of light models
         :return: surface brightness of all joint light components at image position (x, y)
         """
         if self._multi_source_plane is False:

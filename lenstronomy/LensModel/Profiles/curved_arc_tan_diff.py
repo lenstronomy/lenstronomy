@@ -155,4 +155,3 @@ def center_deflector(curvature, direction, center_x, center_y):
     center_x_sis = center_x - np.cos(direction) / curvature
     center_y_sis = center_y - np.sin(direction) / curvature
     return center_x_sis, center_y_sis
-

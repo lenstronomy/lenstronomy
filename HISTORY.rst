@@ -257,3 +257,39 @@ History
 ++++++++++++++++++
 * re-defined amplitude normalization in NIE and CHAMELEON light profiles
 * bug fix in sky brightness errors (SimulationAPI)
+
+
+1.9.2 (2020-12-12)
+++++++++++++++++++
+* support for astropy v5
+* new PSF iteration procedure implemented
+* updated caustic plotting feature
+* magnification perturbations in point source amplitudes
+* analytic point source solver for SIE+shear
+
+
+1.9.3 (2020-12-22)
+++++++++++++++++++
+* changed syntax to be compatible with python3 version <3.9
+
+
+1.10.0 (2022-03-23)
++++++++++++++++++++
+* schwimmbad dependency to pip version
+* ellipticity definition in lensing potential changed
+* Implemented Cored steep ellipsoid approximation of NFW and Hernquist profile
+
+
+1.10.1 (2022-03-26)
++++++++++++++++++++
+* install requirements changed
+
+
+1.10.2 (2022-03-27)
++++++++++++++++++++
+* requirement from sklearn changed to scikit-learn
+
+1.10.3 (2022-04-18)
++++++++++++++++++++
+* class_creator update
+* conda-forge linked and installation updated

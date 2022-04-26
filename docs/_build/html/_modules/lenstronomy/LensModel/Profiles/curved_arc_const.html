@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.curved_arc_const &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Profiles.curved_arc_const &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_const</a></li> 
       </ul>
     </div>  
 
@@ -40,11 +39,11 @@
             
   <h1>Source code for lenstronomy.LensModel.Profiles.curved_arc_const</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="k">import</span> <span class="n">Convergence</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="k">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.convergence</span> <span class="kn">import</span> <span class="n">Convergence</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">util</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CurvedArcConstMST&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CurvedArcConstMST&#39;</span><span class="p">,</span> <span class="s1">&#39;CurvedArcConst&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="CurvedArcConstMST"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_const.CurvedArcConstMST">[docs]</a><span class="k">class</span> <span class="nc">CurvedArcConstMST</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
@@ -69,7 +68,7 @@
     <span class="n">lower_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tangential_stretch&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;radial_stretch&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;curvature&#39;</span><span class="p">:</span> <span class="mf">0.000001</span><span class="p">,</span> <span class="s1">&#39;direction&#39;</span><span class="p">:</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mi">100</span><span class="p">}</span>
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tangential_stretch&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;radial_stretch&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;curvature&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mst</span> <span class="o">=</span> <span class="n">Convergence</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_curve</span> <span class="o">=</span> <span class="n">CurvedArcConst</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CurvedArcConstMST</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -138,7 +137,7 @@
         <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div></div>
 
 
-<span class="k">class</span> <span class="nc">CurvedArcConst</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
+<div class="viewcode-block" id="CurvedArcConst"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_const.CurvedArcConst">[docs]</a><span class="k">class</span> <span class="nc">CurvedArcConst</span><span class="p">(</span><span class="n">LensProfileBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    curved arc lensing with orientation of curvature perpendicular to the x-axis with unity radial stretch</span>
 
@@ -149,7 +148,7 @@
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;tangential_stretch&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;curvature&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;direction&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span>
                            <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="CurvedArcConst.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_const.CurvedArcConst.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ATTENTION: there may not be a global lensing potential!</span>
 
@@ -162,9 +161,9 @@
 <span class="sd">        :param center_y: center of source in image plane</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;lensing potential for regularly curved arc is not implemented&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="bp">NotImplemented</span><span class="p">(</span><span class="s1">&#39;lensing potential for regularly curved arc is not implemented&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="CurvedArcConst.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_const.CurvedArcConst.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
@@ -205,9 +204,9 @@
 
         <span class="c1"># rotate back</span>
         <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">f__x</span><span class="p">,</span> <span class="n">f__y</span><span class="p">,</span> <span class="o">-</span><span class="n">direction</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span>
+        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 
-    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
+<div class="viewcode-block" id="CurvedArcConst.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.curved_arc_const.CurvedArcConst.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">curvature</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param x:</span>
@@ -262,7 +261,7 @@
 <span class="sd">        f_yx = -np.sin(2 * direction) * f__xy + np.cos(2 * direction) * f__yx</span>
 <span class="sd">        return f_xx, f_xy, f_yx, f_yy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span>
+        <span class="k">return</span> <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span></div>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_deflection</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">):</span>
@@ -281,26 +280,25 @@
         <span class="n">l</span> <span class="o">=</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">r</span>
         <span class="n">beta_y</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="n">tangential_stretch</span>
         <span class="n">f_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">beta_y</span>
-        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span>
+        <span class="k">return</span> <span class="n">f_x</span><span class="p">,</span> <span class="n">f_y</span></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -314,13 +312,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.curved_arc_const</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

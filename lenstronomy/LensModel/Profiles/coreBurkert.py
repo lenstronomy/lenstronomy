@@ -45,7 +45,7 @@ class CoreBurkert(LensProfileBase):
         :param x: x coordinate
         :param y: y coordinate
         :param Rs: scale radius
-        :param rho0: central core density
+        :param alpha_Rs: deflection angle at Rs
         :param r_core: core radius
         :param center_x:
         :param center_y:
@@ -70,7 +70,7 @@ class CoreBurkert(LensProfileBase):
         :param x: x coordinate
         :param y: y coordinate
         :param Rs: scale radius
-        :param rho0: central core density
+        :param alpha_Rs: deflection angle at Rs
         :param r_core: core radius
         :param center_x:
         :param center_y:
@@ -231,15 +231,18 @@ class CoreBurkert(LensProfileBase):
 
         return 0.5 * a * (ax_y ** 2 - ax_x ** 2) / R ** 2, -a * (ax_x * ax_y) / R ** 2
 
-    def _u(self, x):
+    @staticmethod
+    def _u(x):
 
         return np.sqrt(1 + x ** 2)
 
-    def _g(self, x, p):
+    @staticmethod
+    def _g(x, p):
 
         return np.sqrt(1 - x ** 2 * p ** 2)
 
-    def _f(self, x, p):
+    @staticmethod
+    def _f(x, p):
 
         return np.sqrt(x ** 2 * p ** 2 - 1)
 

@@ -255,9 +255,9 @@ class MultiPlaneBase(ProfileListBase):
         :return: indexes in ascending order to be evaluated (from z=0 to z=z_source)
         """
         redshift_list = np.array(redshift_list)
-        #sort_index = np.argsort(redshift_list[redshift_list < z_source])
+        # sort_index = np.argsort(redshift_list[redshift_list < z_source])
         sort_index = np.argsort(redshift_list)
-        #if len(sort_index) < 1:
+        # if len(sort_index) < 1:
         #    Warning("There is no lens object between observer at z=0 and source at z=%s" % z_source)
         return sort_index
 
@@ -375,7 +375,6 @@ class MultiPlaneBase(ProfileListBase):
         :param alpha_y: physical angle (radian) before the deflector plane
         :param kwargs_lens: lens model parameter kwargs
         :param index: index of the lens model to be added in sorted redshift list convention
-        :param idex_lens: redshift of the deflector plane
         :return: updated physical deflection after deflector plane (in a backwards ray-tracing perspective)
         """
         theta_x, theta_y = self._co_moving2angle(x, y, index)

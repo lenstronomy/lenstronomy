@@ -74,7 +74,8 @@ class MassSlice(object):
         self._mass_map = mass_map
         self._grid_spacing = grid_spacing
         self._redshift = redshift
-        self._f_x_mass, self._f_y_mass = convergence_integrals.deflection_from_kappa_grid(self._mass_map, self._grid_spacing)
+        self._f_x_mass, self._f_y_mass = convergence_integrals.deflection_from_kappa_grid(self._mass_map,
+                                                                                          self._grid_spacing)
         self._f_mass = convergence_integrals.potential_from_kappa_grid(self._mass_map, self._grid_spacing)
         x_grid, y_grid = util.make_grid(numPix=len(self._mass_map), deltapix=self._grid_spacing)
         self._x_axes_mpc, self._y_axes_mpc = util.get_axes(x_grid, y_grid)
@@ -92,7 +93,6 @@ class MassSlice(object):
         """
         lens_cosmo = LensCosmo(z_lens=self._redshift, z_source=z_source, cosmo=cosmo)
         mpc2arcsec = lens_cosmo.dd * const.arcsec
-        grid_arcsec = self._grid_spacing / mpc2arcsec
         x_axes = self._x_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing
         y_axes = self._y_axes_mpc / mpc2arcsec  # units of arc seconds in grid spacing
 

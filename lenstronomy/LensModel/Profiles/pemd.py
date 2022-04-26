@@ -47,7 +47,7 @@ class PEMD(LensProfileBase):
 
         :param suppress_fastell: bool, if True, does not raise if fastell4py is not installed
         """
-        self._s_scale = 0.0001  # smoothing scale as used to numerically compute a power-law profile
+        self._s_scale = 0.0000001  # smoothing scale as used to numerically compute a power-law profile
         self.spp = SPP()
         self.spemd_smooth = SPEMD(suppress_fastell=suppress_fastell)
         super(PEMD, self).__init__()

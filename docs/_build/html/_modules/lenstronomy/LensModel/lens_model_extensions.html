@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.lens_model_extensions &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.lens_model_extensions &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_model_extensions</a></li> 
       </ul>
     </div>  
 
@@ -41,8 +40,7 @@
   <h1>Source code for lenstronomy.LensModel.lens_model_extensions</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">lenstronomy.Util.util</span> <span class="k">as</span> <span class="nn">util</span>
-<span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="k">import</span> <span class="n">find_contours</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.Util.magnification_finite_util</span> <span class="k">import</span> <span class="n">setup_mag_finite</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.magnification_finite_util</span> <span class="kn">import</span> <span class="n">setup_mag_finite</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LensModelExtensions&#39;</span><span class="p">]</span>
 
@@ -51,7 +49,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    class with extension routines not part of the LensModel core routines</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lensModel</span><span class="p">):</span>
 
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param lensModel: instance of the LensModel() class, or with same functionalities.</span>
@@ -97,6 +95,8 @@
 
 <span class="sd">        :param x_image: a list or array of x coordinates [units arcsec]</span>
 <span class="sd">        :param y_image: a list or array of y coordinates [units arcsec]</span>
+<span class="sd">        :param source_x: float, source position</span>
+<span class="sd">        :param source_y: float, source position</span>
 <span class="sd">        :param kwargs_lens: keyword arguments for the lens model</span>
 <span class="sd">        :param source_fwhm_parsec: the size of the background source [units parsec]</span>
 <span class="sd">        :param z_source: the source redshift</span>
@@ -147,24 +147,27 @@
 
         <span class="k">for</span> <span class="n">xi</span><span class="p">,</span> <span class="n">yi</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">):</span>
 
-            <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">v11</span><span class="p">,</span> <span class="n">v12</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v22</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian_eigenvectors</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-            <span class="n">_v</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v11</span><span class="p">,</span> <span class="n">v12</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v21</span><span class="p">,</span> <span class="n">v22</span><span class="p">])]</span>
-            <span class="n">_w</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">w1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span><span class="p">)]</span>
-            <span class="k">if</span> <span class="n">use_largest_eigenvalue</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">_w</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">axis_ratio</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">grid_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">grid_x_0</span><span class="p">,</span> <span class="n">grid_y_0</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">_w</span><span class="p">))</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">v11</span><span class="p">,</span> <span class="n">v12</span><span class="p">,</span> <span class="n">v21</span><span class="p">,</span> <span class="n">v22</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hessian_eigenvectors</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+                <span class="n">_v</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v11</span><span class="p">,</span> <span class="n">v12</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v21</span><span class="p">,</span> <span class="n">v22</span><span class="p">])]</span>
+                <span class="n">_w</span> <span class="o">=</span> <span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">w1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">w2</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">use_largest_eigenvalue</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">_w</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">_w</span><span class="p">))</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">_v</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
-            <span class="n">rotation_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span>
-            <span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">grid_x_0</span><span class="p">,</span> <span class="n">grid_y_0</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">)</span>
+                <span class="n">rotation_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">grid_x_0</span><span class="p">,</span> <span class="n">grid_y_0</span><span class="p">,</span> <span class="n">rotation_angle</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">axis_ratio</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">_w</span><span class="p">)</span>
-                <span class="n">q</span> <span class="o">=</span> <span class="n">_w</span><span class="p">[</span><span class="n">sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">/</span> <span class="n">_w</span><span class="p">[</span><span class="n">sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
-                <span class="n">grid_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">/</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">grid_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">/</span> <span class="n">axis_ratio</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">axis_ratio</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">sort</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">_w</span><span class="p">)</span>
+                    <span class="n">q</span> <span class="o">=</span> <span class="n">_w</span><span class="p">[</span><span class="n">sort</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">/</span> <span class="n">_w</span><span class="p">[</span><span class="n">sort</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                    <span class="n">grid_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">/</span> <span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">grid_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hypot</span><span class="p">(</span><span class="n">grid_x</span><span class="p">,</span> <span class="n">grid_y</span> <span class="o">/</span> <span class="n">axis_ratio</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
 
             <span class="n">flux_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">grid_x_0</span><span class="p">)</span>
             <span class="n">step</span> <span class="o">=</span> <span class="n">step_size</span> <span class="o">*</span> <span class="n">grid_radius_arcsec</span>
@@ -249,14 +252,14 @@
 
         <span class="n">mag_finite</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)</span>
         <span class="n">deltaPix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span><span class="o">/</span><span class="n">grid_number</span>
-        <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
+        <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
         <span class="n">quasar</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
         <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_grid</span><span class="p">(</span><span class="n">numPix</span><span class="o">=</span><span class="n">grid_number</span><span class="p">,</span> <span class="n">deltapix</span><span class="o">=</span><span class="n">deltaPix</span><span class="p">,</span> <span class="n">subgrid_res</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">polar_grid</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="n">a</span> <span class="o">=</span> <span class="n">window_size</span><span class="o">*</span><span class="mf">0.5</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">window_size</span><span class="o">*</span><span class="mf">0.5</span><span class="o">*</span><span class="n">aspect_ratio</span>
-            <span class="n">ellipse_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_grid</span><span class="o">*</span><span class="n">a</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_grid</span><span class="o">*</span><span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+            <span class="n">ellipse_inds</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_grid</span><span class="o">*</span><span class="n">a</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_grid</span><span class="o">*</span><span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="mi">1</span>
             <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">[</span><span class="n">ellipse_inds</span><span class="p">],</span> <span class="n">y_grid</span><span class="p">[</span><span class="n">ellipse_inds</span><span class="p">]</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_pos</span><span class="p">)):</span>
@@ -265,7 +268,7 @@
             <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">ra</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">polar_grid</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dec</span><span class="p">,</span><span class="n">ra</span><span class="p">)</span>
+                <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">dec</span><span class="p">,</span> <span class="n">ra</span><span class="p">)</span>
                 <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">,</span> <span class="n">theta</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">xcoord</span><span class="p">,</span> <span class="n">ycoord</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span>
@@ -277,7 +280,7 @@
         <span class="k">return</span> <span class="n">mag_finite</span></div>
 
 <div class="viewcode-block" id="LensModelExtensions.zoom_source"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.zoom_source">[docs]</a>    <span class="k">def</span> <span class="nf">zoom_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_pos</span><span class="p">,</span> <span class="n">y_pos</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">source_sigma</span><span class="o">=</span><span class="mf">0.003</span><span class="p">,</span> <span class="n">window_size</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">grid_number</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                             <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;GAUSSIAN&quot;</span><span class="p">):</span>
+                    <span class="n">shape</span><span class="o">=</span><span class="s2">&quot;GAUSSIAN&quot;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        computes the surface brightness on an image with a zoomed window</span>
 
@@ -292,7 +295,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">deltaPix</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">window_size</span><span class="p">)</span> <span class="o">/</span> <span class="n">grid_number</span>
         <span class="k">if</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="k">import</span> <span class="n">Gaussian</span>
+            <span class="kn">from</span> <span class="nn">lenstronomy.LightModel.Profiles.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
             <span class="n">quasar</span> <span class="o">=</span> <span class="n">Gaussian</span><span class="p">()</span>
         <span class="k">elif</span> <span class="n">shape</span> <span class="o">==</span> <span class="s1">&#39;TORUS&#39;</span><span class="p">:</span>
             <span class="kn">import</span> <span class="nn">lenstronomy.LightModel.Profiles.ellipsoid</span> <span class="k">as</span> <span class="nn">quasar</span>
@@ -343,6 +346,32 @@
                 <span class="n">ra_crit_list</span> <span class="o">+=</span> <span class="n">ra_crit</span>  <span class="c1"># list addition</span>
                 <span class="n">dec_crit_list</span> <span class="o">+=</span> <span class="n">dec_crit</span>  <span class="c1"># list addition</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ra_crit_list</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dec_crit_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LensModelExtensions.caustic_area"><a class="viewcode-back" href="../../../lenstronomy.LensModel.html#lenstronomy.LensModel.lens_model_extensions.LensModelExtensions.caustic_area">[docs]</a>    <span class="k">def</span> <span class="nf">caustic_area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_caustic_num</span><span class="p">,</span> <span class="n">index_vertices</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        computes the area inside a connected caustic curve</span>
+
+<span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
+<span class="sd">        :param kwargs_caustic_num: keyword arguments for the numerical calculation of the caustics, as input of</span>
+<span class="sd">         self.critical_curve_caustics()</span>
+<span class="sd">        :param index_vertices: integer, index of connected vortex from the output of self.critical_curve_caustics()</span>
+<span class="sd">         of disconnected curves.</span>
+<span class="sd">        :return: area within the caustic curve selected</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">ra_crit_list</span><span class="p">,</span> <span class="n">dec_crit_list</span><span class="p">,</span> <span class="n">ra_caustic_list</span><span class="p">,</span> <span class="n">dec_caustic_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">critical_curve_caustics</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                                                      <span class="o">**</span><span class="n">kwargs_caustic_num</span><span class="p">)</span>
+
+        <span class="c1"># select specific vortex</span>
+        <span class="n">ra_caustic_inner</span> <span class="o">=</span> <span class="n">ra_caustic_list</span><span class="p">[</span><span class="n">index_vertices</span><span class="p">]</span>
+        <span class="n">dec_caustic_inner</span> <span class="o">=</span> <span class="n">dec_caustic_list</span><span class="p">[</span><span class="n">index_vertices</span><span class="p">]</span>
+
+        <span class="c1"># merge RA DEC to vertices</span>
+        <span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">ra_caustic_inner</span><span class="p">,</span> <span class="n">dec_caustic_inner</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># compute area</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">area</span><span class="p">(</span><span class="n">C</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">a</span></div>
 
     <span class="k">def</span> <span class="nf">_tiling_crit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge1</span><span class="p">,</span> <span class="n">edge2</span><span class="p">,</span> <span class="n">edge_90</span><span class="p">,</span> <span class="n">max_order</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -405,7 +434,10 @@
         <span class="n">ra_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">dec_caustic_list</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="c1"># Import moved here to avoid import-time exception if skimage is missing</span>
+        <span class="kn">from</span> <span class="nn">skimage.measure</span> <span class="kn">import</span> <span class="n">find_contours</span>
         <span class="n">paths</span> <span class="o">=</span> <span class="n">find_contours</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">mag_high_res</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paths</span><span class="p">):</span>
             <span class="c1"># x, y changed because of skimage conventions</span>
             <span class="n">ra_points</span> <span class="o">=</span> <span class="n">v</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">grid_scale</span> <span class="o">-</span> <span class="n">grid_scale</span> <span class="o">*</span> <span class="p">(</span><span class="n">numPix</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="n">center_x</span>
@@ -459,8 +491,6 @@
         <span class="n">prod_v2</span> <span class="o">=</span> <span class="n">v_x</span><span class="o">*</span><span class="n">v21</span> <span class="o">+</span> <span class="n">v_y</span><span class="o">*</span><span class="n">v22</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">coordinate_frame_definitions</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prod_v1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prod_v2</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">coordinate_frame_definitions</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">w1</span> <span class="o">&gt;=</span> <span class="n">w2</span><span class="p">):</span>
-            <span class="c1">#if w1 &gt; w2:</span>
-            <span class="c1">#if abs(prod_v1) &gt; abs(prod_v2):  # radial vector has larger scalar product to the zero point</span>
                 <span class="n">lambda_rad</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w1</span>
                 <span class="n">lambda_tan</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w2</span>
                 <span class="n">v1_rad</span><span class="p">,</span> <span class="n">v2_rad</span> <span class="o">=</span> <span class="n">v11</span><span class="p">,</span> <span class="n">v12</span>
@@ -483,7 +513,7 @@
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="p">(</span><span class="n">coordinate_frame_definitions</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prod_v1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&gt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">prod_v2</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="ow">or</span> <span class="p">(</span>
                         <span class="n">coordinate_frame_definitions</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">w1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">w2</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-                <span class="c1">#if w1[i] &gt; w2[i]:</span>
+                <span class="c1"># if w1[i] &gt; w2[i]:</span>
                     <span class="n">lambda_rad</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="n">lambda_tan</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">w2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
                     <span class="n">v1_rad</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">v2_rad</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v11</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">v12</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -525,7 +555,7 @@
         <span class="n">y0</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
 
         <span class="c1"># computing angle of tangential vector in regard to the defined coordinate center</span>
-        <span class="n">cos_angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">v1_tan</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">*</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x0</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y0</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v1_tan</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span><span class="c1"># * np.sign(v1_tan * y0 - v2_tan * x0)</span>
+        <span class="n">cos_angle</span> <span class="o">=</span> <span class="p">(</span><span class="n">v1_tan</span> <span class="o">*</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">*</span> <span class="n">y0</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">x0</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y0</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">v1_tan</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>  <span class="c1"># * np.sign(v1_tan * y0 - v2_tan * x0)</span>
         <span class="n">orientation_angle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cos_angle</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span>
 
         <span class="c1"># computing differentials in tangential and radial directions</span>
@@ -539,13 +569,13 @@
             <span class="n">dx_rad</span><span class="p">,</span> <span class="n">dy_rad</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="n">smoothing_2nd</span><span class="p">,</span> <span class="n">ra_0</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">dec_0</span><span class="o">=</span><span class="n">center_y</span><span class="p">,</span> <span class="n">coordinate_frame_definitions</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># eigenvalue differentials in tangential and radial direction</span>
-        <span class="n">dlambda_tan_dtan</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_tan_dtan</span> <span class="o">-</span> <span class="n">lambda_tan</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span><span class="c1"># * np.sign(v1_tan * y0 - v2_tan * x0)</span>
-        <span class="n">dlambda_tan_drad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_tan_drad</span> <span class="o">-</span> <span class="n">lambda_tan</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span><span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
-        <span class="n">dlambda_rad_drad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_rad_drad</span> <span class="o">-</span> <span class="n">lambda_rad</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span><span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
-        <span class="n">dlambda_rad_dtan</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_rad_dtan</span> <span class="o">-</span> <span class="n">lambda_rad</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span><span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
+        <span class="n">dlambda_tan_dtan</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_tan_dtan</span> <span class="o">-</span> <span class="n">lambda_tan</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>  <span class="c1"># * np.sign(v1_tan * y0 - v2_tan * x0)</span>
+        <span class="n">dlambda_tan_drad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_tan_drad</span> <span class="o">-</span> <span class="n">lambda_tan</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>  <span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
+        <span class="n">dlambda_rad_drad</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_rad_drad</span> <span class="o">-</span> <span class="n">lambda_rad</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>  <span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
+        <span class="n">dlambda_rad_dtan</span> <span class="o">=</span> <span class="p">(</span><span class="n">lambda_rad_dtan</span> <span class="o">-</span> <span class="n">lambda_rad</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>  <span class="c1"># * np.sign(v1_rad * x0 + v2_rad * y0)</span>
 
         <span class="c1"># eigenvector direction differentials in tangential and radial direction</span>
-        <span class="n">cos_dphi_tan_dtan</span> <span class="o">=</span> <span class="n">v1_tan</span> <span class="o">*</span> <span class="n">v1_tan_dtan</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">*</span> <span class="n">v2_tan_dtan</span> <span class="c1">#/ (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))</span>
+        <span class="n">cos_dphi_tan_dtan</span> <span class="o">=</span> <span class="n">v1_tan</span> <span class="o">*</span> <span class="n">v1_tan_dtan</span> <span class="o">+</span> <span class="n">v2_tan</span> <span class="o">*</span> <span class="n">v2_tan_dtan</span>  <span class="c1"># / (np.sqrt(v1_tan**2 + v2_tan**2) * np.sqrt(v1_tan_dtan**2 + v2_tan_dtan**2))</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_tan</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v2_tan</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_tan_dtan</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v2_tan_dtan</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">cos_dphi_tan_dtan</span> <span class="o">/=</span> <span class="n">norm</span>
         <span class="n">arc_cos_dphi_tan_dtan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">cos_dphi_tan_dtan</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
@@ -557,13 +587,13 @@
         <span class="n">arc_cos_dphi_tan_drad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">cos_dphi_tan_drad</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span>
         <span class="n">dphi_tan_drad</span> <span class="o">=</span> <span class="n">arc_cos_dphi_tan_drad</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>
 
-        <span class="n">cos_dphi_rad_drad</span> <span class="o">=</span> <span class="n">v1_rad</span> <span class="o">*</span> <span class="n">v1_rad_drad</span> <span class="o">+</span> <span class="n">v2_rad</span> <span class="o">*</span> <span class="n">v2_rad_drad</span> <span class="c1">#/ (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))</span>
+        <span class="n">cos_dphi_rad_drad</span> <span class="o">=</span> <span class="n">v1_rad</span> <span class="o">*</span> <span class="n">v1_rad_drad</span> <span class="o">+</span> <span class="n">v2_rad</span> <span class="o">*</span> <span class="n">v2_rad_drad</span>  <span class="c1"># / (np.sqrt(v1_rad**2 + v2_rad**2) * np.sqrt(v1_rad_drad**2 + v2_rad_drad**2))</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_rad</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v2_rad</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_rad_drad</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">v2_rad_drad</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">cos_dphi_rad_drad</span> <span class="o">/=</span> <span class="n">norm</span>
         <span class="n">cos_dphi_rad_drad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">cos_dphi_rad_drad</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">dphi_rad_drad</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">cos_dphi_rad_drad</span><span class="p">)</span> <span class="o">/</span> <span class="n">smoothing_3rd</span>
 
-        <span class="n">cos_dphi_rad_dtan</span> <span class="o">=</span> <span class="n">v1_rad</span> <span class="o">*</span> <span class="n">v1_rad_dtan</span> <span class="o">+</span> <span class="n">v2_rad</span> <span class="o">*</span> <span class="n">v2_rad_dtan</span> <span class="c1"># / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))</span>
+        <span class="n">cos_dphi_rad_dtan</span> <span class="o">=</span> <span class="n">v1_rad</span> <span class="o">*</span> <span class="n">v1_rad_dtan</span> <span class="o">+</span> <span class="n">v2_rad</span> <span class="o">*</span> <span class="n">v2_rad_dtan</span>  <span class="c1"># / (np.sqrt(v1_rad ** 2 + v2_rad ** 2) * np.sqrt(v1_rad_dtan ** 2 + v2_rad_dtan ** 2))</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_rad</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v2_rad</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">v1_rad_dtan</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">v2_rad_dtan</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">cos_dphi_rad_dtan</span> <span class="o">/=</span> <span class="n">norm</span>
         <span class="n">cos_dphi_rad_dtan</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">cos_dphi_rad_dtan</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -586,7 +616,7 @@
         <span class="n">radial_stretch</span><span class="p">,</span> <span class="n">tangential_stretch</span><span class="p">,</span> <span class="n">v_rad1</span><span class="p">,</span> <span class="n">v_rad2</span><span class="p">,</span> <span class="n">v_tang1</span><span class="p">,</span> <span class="n">v_tang2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_tangential_stretch</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">diff</span><span class="o">=</span><span class="n">smoothing</span><span class="p">)</span>
         <span class="n">dx_tang</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">smoothing_3rd</span> <span class="o">*</span> <span class="n">v_tang1</span>
         <span class="n">dy_tang</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">smoothing_3rd</span> <span class="o">*</span> <span class="n">v_tang2</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">v_tang1_dt</span><span class="p">,</span> <span class="n">v_tang2_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_tangential_stretch</span><span class="p">(</span><span class="n">dx_tang</span><span class="p">,</span> <span class="n">dy_tang</span><span class="p">,</span><span class="n">kwargs_lens</span><span class="p">,</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">v_tang1_dt</span><span class="p">,</span> <span class="n">v_tang2_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_tangential_stretch</span><span class="p">(</span><span class="n">dx_tang</span><span class="p">,</span> <span class="n">dy_tang</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
                                                                             <span class="n">diff</span><span class="o">=</span><span class="n">smoothing</span><span class="p">)</span>
         <span class="n">d_tang1</span> <span class="o">=</span> <span class="n">v_tang1_dt</span> <span class="o">-</span> <span class="n">v_tang1</span>
         <span class="n">d_tang2</span> <span class="o">=</span> <span class="n">v_tang2_dt</span> <span class="o">-</span> <span class="n">v_tang2</span>
@@ -689,23 +719,22 @@
         <span class="k">return</span> <span class="n">kwargs_arc</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -719,13 +748,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.lens_model_extensions</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

@@ -1,20 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>lenstronomy.LensModel.Profiles.gauss_decomposition &#8212; lenstronomy 1.9.1 documentation</title>
-    <link rel="stylesheet" href="../../../../_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lenstronomy.LensModel.Profiles.gauss_decomposition &#8212; lenstronomy 1.10.3 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
-    <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -28,8 +26,9 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.gauss_decomposition</a></li> 
       </ul>
     </div>  
 
@@ -49,14 +48,13 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="k">import</span> <span class="n">comb</span>
-<span class="kn">from</span> <span class="nn">future.utils</span> <span class="k">import</span> <span class="n">with_metaclass</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">comb</span>
 
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</span> <span class="k">import</span> <span class="n">GaussianEllipseKappa</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_utils</span> <span class="k">import</span> <span class="n">SersicUtil</span>
-<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="k">import</span> <span class="n">LensProfileBase</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.gaussian_ellipse_kappa</span> <span class="kn">import</span> <span class="n">GaussianEllipseKappa</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.sersic_utils</span> <span class="kn">import</span> <span class="n">SersicUtil</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.LensModel.Profiles.base_profile</span> <span class="kn">import</span> <span class="n">LensProfileBase</span>
 
-<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="k">import</span> <span class="n">exporter</span>
+<span class="kn">from</span> <span class="nn">lenstronomy.Util.package_util</span> <span class="kn">import</span> <span class="n">exporter</span>
 <span class="n">export</span><span class="p">,</span> <span class="n">__all__</span> <span class="o">=</span> <span class="n">exporter</span><span class="p">()</span>
 
 <span class="n">_SQRT_2PI</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
@@ -74,7 +72,7 @@
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;amp&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
                            <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_ellipticity</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_ellipticity</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param use_scipy_wofz: To initiate ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.</span>
@@ -96,7 +94,7 @@
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``numpy.array`` with ``dtype=float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``numpy.array`` with ``dtype=float``</span>
@@ -124,15 +122,15 @@
 
 <div class="viewcode-block" id="GaussianEllipseKappaSet.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussianEllipseKappaSet.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute the derivatives of function angles :math:`\partial</span>
-<span class="sd">        f/\partial x`, :math:`\partial f/\partial y` at :math:`x,\ y` for a</span>
+<span class="sd">        Compute the derivatives of function angles :math:`\\partial</span>
+<span class="sd">        f/\\partial x`, :math:`\\partial f/\\partial y` at :math:`x,\\ y` for a</span>
 <span class="sd">        set of concentric elliptic Gaussian convergence profiles.</span>
 
 <span class="sd">        :param x: x coordinate</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``numpy.array`` with ``dtype=float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``numpy.array`` with ``dtype=float``</span>
@@ -144,18 +142,15 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Deflection angle :math:`\partial f/\partial x`, :math:`\partial f/\partial y` for elliptical Gaussian convergence</span>
+<span class="sd">        :return: Deflection angle :math:`\\partial f/\\partial x`, :math:`\\partial f/\\partial y` for elliptical Gaussian convergence</span>
 <span class="sd">        :rtype: tuple ``(float, float)`` or ``(numpy.array, numpy.array)`` with each ``numpy`` array&#39;s shape equal to ``x.shape``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">f_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">amp</span><span class="p">)):</span>
-            <span class="n">f_x_i</span><span class="p">,</span> <span class="n">f_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_ellipse_kappa</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
-                                                <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e1</span><span class="o">=</span><span class="n">e1</span><span class="p">,</span>
-                                                <span class="n">e2</span><span class="o">=</span><span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span>
-                                                <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+            <span class="n">f_x_i</span><span class="p">,</span> <span class="n">f_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_ellipse_kappa</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e1</span><span class="o">=</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="n">e2</span><span class="p">,</span>
+                                                                   <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
             <span class="n">f_x</span> <span class="o">+=</span> <span class="n">f_x_i</span>
             <span class="n">f_y</span> <span class="o">+=</span> <span class="n">f_y_i</span>
 
@@ -163,16 +158,16 @@
 
 <div class="viewcode-block" id="GaussianEllipseKappaSet.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussianEllipseKappaSet.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Compute Hessian matrix of function :math:`\partial^2f/\partial x^2`,</span>
-<span class="sd">        :math:`\partial^2 f/\partial y^2`, :math:`\partial^2 f/\partial</span>
-<span class="sd">        x\partial y` for a set of concentric elliptic Gaussian convergence</span>
+<span class="sd">        Compute Hessian matrix of function :math:`\\partial^2f/\\partial x^2`,</span>
+<span class="sd">        :math:`\\partial^2 f/\\partial y^2`, :math:`\\partial^2 f/\\partial</span>
+<span class="sd">        x\\partial y` for a set of concentric elliptic Gaussian convergence</span>
 <span class="sd">        profiles.</span>
 
 <span class="sd">        :param x: x coordinate</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``numpy.array`` with ``dtype=float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``numpy.array`` with ``dtype=float``</span>
@@ -184,8 +179,10 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Hessian :math:`\partial^2f/\partial x^2`, :math:`\partial^2/\partial x\partial y`, :math:`\partial^2/\partial y\partial x`, :math:`\partial^2 f/\partial y^2` for elliptical Gaussian convergence.</span>
-<span class="sd">        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)`` with each ``numpy`` array&#39;s shape equal to ``x.shape``</span>
+<span class="sd">        :return: Hessian :math:`\\partial^2f/\\partial x^2`, :math:`\\partial^2/\\partial x\\partial y`,</span>
+<span class="sd">         :math:`\\partial^2/\\partial y\\partial x`, :math:`\\partial^2 f/\\partial y^2` for elliptical Gaussian convergence.</span>
+<span class="sd">        :rtype: tuple ``(float, float, float)`` , or ``(numpy.array, numpy.array, numpy.array)``</span>
+<span class="sd">         with each ``numpy`` array&#39;s shape equal to ``x.shape``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f_xx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">f_yy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
@@ -203,14 +200,14 @@
 <div class="viewcode-block" id="GaussianEllipseKappaSet.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussianEllipseKappaSet.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the density of a set of concentric elliptical Gaussian</span>
-<span class="sd">        convergence profiles :math:`\sum A/(2\pi \sigma^2) \exp(-(</span>
-<span class="sd">        x^2+y^2/q^2)/2\sigma^2)`.</span>
+<span class="sd">        convergence profiles :math:`\\sum A/(2\\pi \\sigma^2) \\exp(-(</span>
+<span class="sd">        x^2+y^2/q^2)/2\\sigma^2)`.</span>
 
 <span class="sd">        :param x: x coordinate</span>
 <span class="sd">        :type x: ``float`` or ``numpy.array``</span>
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \pi\sigma^2) \exp(-(x^2+y^2/q^2)/2\sigma^2)`</span>
+<span class="sd">        :param amp: Amplitude of Gaussian, convention: :math:`A/(2 \\pi\\sigma^2) \\exp(-(x^2+y^2/q^2)/2\\sigma^2)`</span>
 <span class="sd">        :type amp: ``numpy.array`` with ``dtype=float``</span>
 <span class="sd">        :param sigma: Standard deviation of Gaussian</span>
 <span class="sd">        :type sigma: ``numpy.array`` with ``dtype=float``</span>
@@ -222,29 +219,25 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordianate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :return: Density :math:`\kappa` for elliptical Gaussian convergence</span>
+<span class="sd">        :return: Density :math:`\\kappa` for elliptical Gaussian convergence</span>
 <span class="sd">        :rtype: ``float``, or ``numpy.array`` with shape equal to ``x.shape``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">density_2d</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">amp</span><span class="p">)):</span>
-            <span class="n">density_2d</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_ellipse_kappa</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
-                                                    <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                    <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                                    <span class="n">e1</span><span class="o">=</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="n">e2</span><span class="p">,</span>
-                                                    <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span>
-                                                    <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
+            <span class="n">density_2d</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_ellipse_kappa</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">e1</span><span class="o">=</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="n">e2</span><span class="p">,</span>
+                                                                 <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">density_2d</span></div></div>
 
 
 <div class="viewcode-block" id="GaussDecompositionAbstract"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract">[docs]</a><span class="nd">@export</span>
-<span class="k">class</span> <span class="nc">GaussDecompositionAbstract</span><span class="p">(</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">)):</span>
+<span class="k">class</span> <span class="nc">GaussDecompositionAbstract</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This abstract class sets up a template for computing lensing properties of</span>
 <span class="sd">    an elliptical convergence through Shajib (2019)&#39;s Gauss decomposition.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">15.</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">15.</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_ellipticity</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up settings for the Gaussian decomposition. For more details about</span>
@@ -287,8 +280,7 @@
             <span class="n">epsilons</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p</span> <span class="o">-</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">epsilons</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">p</span> <span class="o">-</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">2.</span> <span class="o">**</span> <span class="n">p</span> <span class="o">*</span> <span class="n">comb</span><span class="p">(</span>
                 <span class="n">p</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">etas</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="o">**</span> <span class="n">kes</span> <span class="o">*</span> <span class="n">epsilons</span> <span class="o">*</span> <span class="mf">10.</span> <span class="o">**</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> \
-                    <span class="n">_SQRT_2PI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">etas</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.</span><span class="p">)</span> <span class="o">**</span> <span class="n">kes</span> <span class="o">*</span> <span class="n">epsilons</span> <span class="o">*</span> <span class="mf">10.</span> <span class="o">**</span> <span class="p">(</span><span class="n">p</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">_SQRT_2PI</span>
 
 <div class="viewcode-block" id="GaussDecompositionAbstract.gauss_decompose"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract.gauss_decompose">[docs]</a>    <span class="k">def</span> <span class="nf">gauss_decompose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -296,23 +288,17 @@
 <span class="sd">        integral transform with Gaussian kernel from Shajib (2019). The</span>
 <span class="sd">        returned values are in the convention of eq. (2.13).</span>
 
-<span class="sd">        :param func: The function to decompose</span>
-<span class="sd">        :type func: ``function``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments to send to ``func``</span>
+<span class="sd">        :param kwargs: Keyword arguments to send to ``func``</span>
 <span class="sd">        :return: Amplitudes and standard deviations of the Gaussian components</span>
 <span class="sd">        :rtype: tuple ``(numpy.array, numpy.array)``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sigma_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_start_mult</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scale</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">sigma_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigma_end_mult</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">get_scale</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sigma_end</span><span class="p">),</span>
-                           <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma</span><span class="p">)</span>
+        <span class="n">sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">sigma_end</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_sigma</span><span class="p">)</span>
 
-        <span class="n">f_sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">etas</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kappa_1d</span><span class="p">(</span>
-                                <span class="n">sigmas</span><span class="p">[:,</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span>
-                                <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
-                          <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
-                          <span class="p">)</span>
+        <span class="n">f_sigmas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">etas</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_kappa_1d</span><span class="p">(</span><span class="n">sigmas</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">betas</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+                          <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="n">del_log_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">sigmas</span><span class="p">))</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
 
@@ -330,7 +316,7 @@
 <span class="sd">        Abstract method to identify the keyword argument for the scale size</span>
 <span class="sd">        among the profile parameters of the child class&#39; convergence profile.</span>
 
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 <span class="sd">        :return: Scale size</span>
 <span class="sd">        :rtype: ``float``</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
@@ -343,7 +329,7 @@
 
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float`` or ``numpy.array``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
+<span class="sd">        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
 <span class="sd">        &quot;&quot;&quot;</span></div>
 
 <div class="viewcode-block" id="GaussDecompositionAbstract.function"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract.function">[docs]</a>    <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
@@ -364,7 +350,7 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordinate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
+<span class="sd">        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
 <span class="sd">        :return: Deflection potential</span>
 <span class="sd">        :rtype: ``float``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -373,8 +359,7 @@
         <span class="c1"># converting the amplitude convention A -&gt; A/(2*pi*sigma^2)</span>
         <span class="n">amps</span> <span class="o">*=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">sigmas</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span>
-                                                    <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GaussDecompositionAbstract.derivatives"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract.derivatives">[docs]</a>    <span class="k">def</span> <span class="nf">derivatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                     <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -395,7 +380,7 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordinate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
+<span class="sd">        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
 <span class="sd">        :return: Derivatives of deflection potential</span>
 <span class="sd">        :rtype: tuple ``(type(x), type(x))``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -404,8 +389,7 @@
         <span class="c1"># converting the amplitude convention A -&gt; A/(2*pi*sigma^2)</span>
         <span class="n">amps</span> <span class="o">*=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">sigmas</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span>
-                                                    <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">derivatives</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GaussDecompositionAbstract.hessian"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract.hessian">[docs]</a>    <span class="k">def</span> <span class="nf">hessian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                 <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -427,7 +411,7 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordinate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
+<span class="sd">        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile</span>
 <span class="sd">        :return: Hessian of deflection potential</span>
 <span class="sd">        :rtype: tuple ``(type(x), type(x), type(x))``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -436,8 +420,7 @@
         <span class="c1"># converting the amplitude convention A -&gt; A/(2*pi*sigma^2)</span>
         <span class="n">amps</span> <span class="o">*=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">sigmas</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span>
-                                                <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GaussDecompositionAbstract.density_2d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.GaussDecompositionAbstract.density_2d">[docs]</a>    <span class="k">def</span> <span class="nf">density_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                    <span class="n">center_y</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -456,7 +439,7 @@
 <span class="sd">        :type center_x: ``float``</span>
 <span class="sd">        :param center_y: y coordinate of centroid</span>
 <span class="sd">        :type center_y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile in the child class.</span>
+<span class="sd">        :param kwargs: Keyword arguments that are defined by the child class that are particular for the convergence profile in the child class.</span>
 <span class="sd">        :return: Convergence profile</span>
 <span class="sd">        :rtype: ``type(x)``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -465,8 +448,7 @@
         <span class="c1"># converting the amplitude convention A -&gt; A/(2*pi*sigma^2)</span>
         <span class="n">amps</span> <span class="o">*=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigmas</span> <span class="o">*</span> <span class="n">sigmas</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span>
-                                                   <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gaussian_set</span><span class="o">.</span><span class="n">density_2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amps</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="SersicEllipseGaussDec"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.SersicEllipseGaussDec">[docs]</a><span class="nd">@export</span>
@@ -490,7 +472,7 @@
 
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **n_sersic** (``float``) --</span>
@@ -515,7 +497,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Identify the scale size from the keyword arguments.</span>
 
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **n_sersic** (``float``) --</span>
@@ -543,7 +525,7 @@
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Rs&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;alpha_Rs&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;e1&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;e2&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
                            <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">50.</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">min_ellipticity</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up settings for the Gaussian decomposition. For more details about</span>
@@ -575,7 +557,7 @@
 
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **alpha_Rs** (``float``) --</span>
@@ -589,7 +571,7 @@
         <span class="n">R_s</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;Rs&#39;</span><span class="p">]</span>
         <span class="n">alpha_Rs</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha_Rs&#39;</span><span class="p">]</span>
 
-        <span class="n">kappa_s</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">R_s</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span>  <span class="mf">0.30102999566</span><span class="p">))</span>
+        <span class="n">kappa_s</span> <span class="o">=</span> <span class="n">alpha_Rs</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">R_s</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mf">0.30102999566</span><span class="p">))</span>
         <span class="c1"># log2 = 0.30102999566</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">y</span><span class="o">/</span><span class="n">R_s</span>
@@ -618,7 +600,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Identify the scale size from the keyword arguments.</span>
 
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **alpha_Rs** (``float``) --</span>
@@ -645,9 +627,7 @@
 <span class="sd">        integral transform with Gaussian kernel from Shajib (2019). The</span>
 <span class="sd">        returned values are in the convention of eq. (2.13).</span>
 
-<span class="sd">        :param func: The function to decompose</span>
-<span class="sd">        :type func: ``function``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments to send to ``func``</span>
+<span class="sd">        :param kwargs: Keyword arguments to send to ``func``</span>
 <span class="sd">        :return: Amplitudes and standard deviations of the Gaussian components</span>
 <span class="sd">        :rtype: tuple ``(numpy.array, numpy.array)``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -672,7 +652,7 @@
     <span class="n">upper_limit_default</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;r_s&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;r_core&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;r_trunc&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mf">10.</span><span class="p">,</span>
                            <span class="s1">&#39;rho_s&#39;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_sigma</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">sigma_end_mult</span><span class="o">=</span><span class="mf">20.</span><span class="p">,</span>
                  <span class="n">precision</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set up settings for the Gaussian decomposition. For more details about</span>
@@ -688,13 +668,10 @@
 <span class="sd">        :type precision: ``int``</span>
 <span class="sd">        :param use_scipy_wofz: To be passed to ``class GaussianEllipseKappa``. If ``True``, Gaussian lensing will use ``scipy.special.wofz`` function. Set ``False`` for lower precision, but faster speed.</span>
 <span class="sd">        :type use_scipy_wofz: ``bool``</span>
-<span class="sd">        :param min_ellipticity: To be passed to ``class GaussianEllipseKappa``. Minimum ellipticity for Gaussian elliptical lensing calculation. For lower ellipticity than min_ellipticity the equations for the spherical case will be used.</span>
-<span class="sd">        :type min_ellipticity: ``float``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">CTNFWGaussDec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_sigma</span><span class="o">=</span><span class="n">n_sigma</span><span class="p">,</span>
-                            <span class="n">sigma_start_mult</span><span class="o">=</span><span class="n">sigma_start_mult</span><span class="p">,</span>
-                            <span class="n">sigma_end_mult</span><span class="o">=</span><span class="n">sigma_end_mult</span><span class="p">,</span>
-                            <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span> <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="n">use_scipy_wofz</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CTNFWGaussDec</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">n_sigma</span><span class="o">=</span><span class="n">n_sigma</span><span class="p">,</span> <span class="n">sigma_start_mult</span><span class="o">=</span><span class="n">sigma_start_mult</span><span class="p">,</span>
+                                            <span class="n">sigma_end_mult</span><span class="o">=</span><span class="n">sigma_end_mult</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="n">precision</span><span class="p">,</span>
+                                            <span class="n">use_scipy_wofz</span><span class="o">=</span><span class="n">use_scipy_wofz</span><span class="p">)</span>
 
 <div class="viewcode-block" id="CTNFWGaussDec.get_kappa_1d"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.gauss_decomposition.CTNFWGaussDec.get_kappa_1d">[docs]</a>    <span class="k">def</span> <span class="nf">get_kappa_1d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -702,7 +679,7 @@
 
 <span class="sd">        :param y: y coordinate</span>
 <span class="sd">        :type y: ``float``</span>
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **r_s** (``float``) --</span>
@@ -737,7 +714,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Identify the scale size from the keyword arguments.</span>
 
-<span class="sd">        :param \**kwargs: Keyword arguments</span>
+<span class="sd">        :param kwargs: Keyword arguments</span>
 
 <span class="sd">        :Keyword Arguments:</span>
 <span class="sd">            * **r_s** (``float``) --</span>
@@ -757,23 +734,22 @@
         <span class="k">return</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;r_s&#39;</span><span class="p">]</span></div></div>
 </pre></div>
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -787,13 +763,14 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.gauss_decomposition</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2018, Simon Birrer and contributors.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.1.
     </div>
   </body>
 </html>

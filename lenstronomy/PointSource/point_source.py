@@ -16,8 +16,8 @@ class PointSource(object):
 
         :param point_source_type_list: list of point source types
         :param lensModel: instance of the LensModel() class
-        :param fixed_magnification_list: list of booleans (same length as point_source_type_list). If True, magnification
-        ratio of point sources is fixed to the one given by the lens model
+        :param fixed_magnification_list: list of booleans (same length as point_source_type_list).
+         If True, magnification ratio of point sources is fixed to the one given by the lens model
         :param additional_images_list: list of booleans (same length as point_source_type_list). If True, search for
         additional images of the same source is conducted.
         :param flux_from_point_source_list: list of booleans (optional), if set, will only return image positions
@@ -54,14 +54,16 @@ class PointSource(object):
             elif model == 'LENSED_POSITION':
                 from lenstronomy.PointSource.Types.lensed_position import LensedPositions
                 self._point_source_list.append(PointSourceCached(LensedPositions(lensModel, fixed_magnification=fixed_magnification_list[i],
-                                                               additional_image=additional_images_list[i]), save_cache=save_cache))
+                                                                 additional_image=additional_images_list[i]),
+                                                                 save_cache=save_cache))
             elif model == 'SOURCE_POSITION':
                 from lenstronomy.PointSource.Types.source_position import SourcePositions
                 self._point_source_list.append(PointSourceCached(SourcePositions(lensModel,
                                                                  fixed_magnification=fixed_magnification_list[i]),
                                                                  save_cache=save_cache))
             else:
-                raise ValueError("Point-source model %s not available. Supported models are %s ." % (model, _SUPPORTED_MODELS))
+                raise ValueError("Point-source model %s not available. Supported models are %s ."
+                                 % (model, _SUPPORTED_MODELS))
         if kwargs_lens_eqn_solver is None:
             kwargs_lens_eqn_solver = {}
         self._kwargs_lens_eqn_solver = kwargs_lens_eqn_solver
@@ -79,10 +81,11 @@ class PointSource(object):
         :param only_from_unspecified: bool, if True, only sets keywords that previously have not been set
         :return: updated self instances
         """
-        if min_distance is not None and not 'min_distance' in self._kwargs_lens_eqn_solver and only_from_unspecified:
+        if min_distance is not None and 'min_distance' not in self._kwargs_lens_eqn_solver and only_from_unspecified:
             self._kwargs_lens_eqn_solver['min_distance'] = min_distance
         if only_from_unspecified:
-            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window', search_window)
+            self._kwargs_lens_eqn_solver['search_window'] = self._kwargs_lens_eqn_solver.get('search_window',
+                                                                                             search_window)
             self._kwargs_lens_eqn_solver['x_center'] = self._kwargs_lens_eqn_solver.get('x_center', x_center)
             self._kwargs_lens_eqn_solver['y_center'] = self._kwargs_lens_eqn_solver.get('y_center', y_center)
         else:
@@ -110,26 +113,26 @@ class PointSource(object):
         for model in self._point_source_list:
             model.delete_lens_model_cache()
 
-    def set_save_cache(self, bool):
+    def set_save_cache(self, save_cache):
         """
         set the save cache boolean to new value
 
-        :param bool: bool, if True, saves (or uses a previously saved) values
+        :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: updated class and sub-class instances to either save or not save the point source information in cache
         """
-        self._set_save_cache(bool)
-        self._save_cache = bool
+        self._set_save_cache(save_cache)
+        self._save_cache = save_cache
 
-    def _set_save_cache(self, bool):
+    def _set_save_cache(self, save_cache):
         """
         set the save cache boolean to new value. This function is for use within this class for temporarily set the
         cache within a single routine.
 
-        :param bool: bool, if True, saves (or uses a previously saved) values
+        :param save_cache: bool, if True, saves (or uses a previously saved) values
         :return: None
         """
         for model in self._point_source_list:
-            model.set_save_cache(bool)
+            model.set_save_cache(save_cache)
 
     def source_position(self, kwargs_ps, kwargs_lens):
         """
@@ -165,12 +168,13 @@ class PointSource(object):
         for i, model in enumerate(self._point_source_list):
             if k is None or k == i:
                 kwargs = kwargs_ps[i]
+                x_image, y_image = model.image_position(kwargs, kwargs_lens,
+                                                        magnification_limit=self._magnification_limit,
+                                                        kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
                 if original_position is True and self.point_source_type_list[i] == 'LENSED_POSITION':
-                    x_image, y_image = kwargs['ra_image'], kwargs['dec_image']
-                else:
-                    x_image, y_image = model.image_position(kwargs, kwargs_lens,
-                                                            magnification_limit=self._magnification_limit,
-                                                            kwargs_lens_eqn_solver=self._kwargs_lens_eqn_solver)
+                    x_o, y_o = kwargs['ra_image'], kwargs['dec_image']
+                    x_image, y_image = _sort_position_by_original(x_o, y_o, x_image, y_image)
+
                 x_image_list.append(x_image)
                 y_image_list.append(y_image)
         return x_image_list, y_image_list
@@ -384,3 +388,35 @@ class PointSource(object):
                     pos_bool = False
                     break
         return pos_bool
+
+
+def _sort_position_by_original(x_o, y_o, x_solved, y_solved):
+    """
+    sorting new image positions such that the old order is best preserved
+
+    :param x_o: numpy array; original image positions
+    :param y_o: numpy array; original image positions
+    :param x_solved: numpy array; solved image positions with potentially more or fewer images
+    :param y_solved: numpy array; solved image positions with potentially more or fewer images
+    :return: sorted new image positions with the order best matching the original positions first,
+     and then all other images in the same order as solved for
+    """
+    if len(x_o) > len(x_solved):
+        # if new images are less , then return the original images (no sorting required)
+        x_solved_new, y_solved_new = x_o, y_o
+    else:
+        x_solved_new, y_solved_new = [], []
+        for i in range(len(x_o)):
+            x, y = x_o[i], y_o[i]
+            r2_i = (x - x_solved) ** 2 + (y - y_solved) ** 2
+            # index of minimum radios
+            index = np.argmin(r2_i)
+            x_solved_new.append(x_solved[index])
+            y_solved_new.append(y_solved[index])
+            # delete this index
+            x_solved = np.delete(x_solved, index)
+            y_solved = np.delete(y_solved, index)
+        # now we append the remaining additional images in the same order behind the original ones
+        x_solved_new = np.append(np.array(x_solved_new), x_solved)
+        y_solved_new = np.append(np.array(y_solved_new), y_solved)
+    return x_solved_new, y_solved_new

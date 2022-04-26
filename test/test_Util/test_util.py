@@ -155,6 +155,13 @@ def test_grid_with_coords():
     assert ra_at_xy_0 == 0
     assert dec_at_xy_0 == 0
 
+    numPix = 11
+    deltaPix = .1
+    x_grid, y_grid, ra_at_xy_0, dec_at_xy_0, x_at_radec_0, y_at_radec_0, Mpix2coord, Mcoord2pix = util.make_grid_with_coordtransform(
+        numPix, deltaPix, subgrid_res=1, left_lower=True, center_ra=2, center_dec=3)
+    assert ra_at_xy_0 == 2
+    assert dec_at_xy_0 == 3
+
 def test_array2image():
     array = np.linspace(1, 100, 100)
     image = util.array2image(array)

@@ -1,6 +1,7 @@
 import numpy as np
 from copy import deepcopy
 from lenstronomy.LensModel.MultiPlane.multi_plane_base import MultiPlaneBase
+from lenstronomy.LensModel.MultiPlane.multi_plane_dev import MultiPlaneFreeDistances
 
 from lenstronomy.Util.package_util import exporter
 export, __all__ = exporter()
@@ -17,7 +18,8 @@ class MultiPlane(object):
 
     def __init__(self, z_source, lens_model_list, lens_redshift_list, cosmo=None, numerical_alpha_class=None,
                  observed_convention_index=None, ignore_observed_positions=False, z_source_convention=None,
-                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100, kwargs_interp=None):
+                 cosmo_interp=False, z_interp_stop=None, num_z_interp=100,
+                 kwargs_interp=None, distance_ratio_sampling=False):
         """
 
         :param z_source: source redshift for default computation of reduced lensing quantities
@@ -35,6 +37,8 @@ class MultiPlane(object):
         position of deflectors
         :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens
         models. If None, 'z_source' is used.
+        :param distance_ratio_sampling: bool, if True, will use sampled
+        distance ratios to update T_ij value in multi-lens plane computation.
         """
 
         if z_source_convention is None:
@@ -44,12 +48,24 @@ class MultiPlane(object):
         if z_interp_stop < max(z_source, z_source_convention):
             raise ValueError('z_interp_stop= %s needs to be larger or equal the maximum of z_source=%s and '
                              'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
-        self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
-                                                lens_redshift_list=lens_redshift_list, cosmo=cosmo,
-                                                numerical_alpha_class=numerical_alpha_class,
-                                                z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
-                                                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
-                                                kwargs_interp=kwargs_interp)
+
+        self.distance_ratio_sampling = distance_ratio_sampling
+        if not self.distance_ratio_sampling:
+            self._multi_plane_base = MultiPlaneBase(lens_model_list=lens_model_list,
+                                                    lens_redshift_list=lens_redshift_list, cosmo=cosmo,
+                                                    numerical_alpha_class=numerical_alpha_class,
+                                                    z_source_convention=z_source_convention, cosmo_interp=cosmo_interp,
+                                                    z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
+                                                    kwargs_interp=kwargs_interp)
+        else:
+            self._multi_plane_base = MultiPlaneFreeDistances(
+                lens_model_list=lens_model_list,
+                lens_redshift_list=lens_redshift_list, cosmo=cosmo,
+                numerical_alpha_class=numerical_alpha_class,
+                z_source_convention=z_source_convention,
+                cosmo_interp=cosmo_interp,
+                z_interp_stop=z_interp_stop, num_z_interp=num_z_interp,
+                kwargs_interp=kwargs_interp)
 
         self._set_source_distances(z_source)
         self._observed_convention_index = observed_convention_index

@@ -50,7 +50,7 @@ class SPP(LensProfileBase):
         a = np.maximum(r2, 0.000001)
         r = np.sqrt(a)
         alpha = theta_E * (r2/theta_E**2) ** (1 - gamma/2.)
-        fac = alpha/r
+        fac = alpha / r
         f_x = fac*xt1
         f_y = fac*xt2
         return f_x, f_y
@@ -65,12 +65,12 @@ class SPP(LensProfileBase):
 
         P2 = xt1**2+xt2**2
         if isinstance(P2, int) or isinstance(P2, float):
-            a = max(0.000001,P2)
+            a = max(0.000001, P2)
         else:
-            a=np.empty_like(P2)
-            p2 = P2[P2>0]  #in the SIS regime
-            a[P2==0] = 0.000001
-            a[P2>0] = p2
+            a = np.empty_like(P2)
+            p2 = P2[P2 > 0]  #in the SIS regime
+            a[P2 == 0] = 0.000001
+            a[P2 > 0] = p2
 
         kappa = 1./eta*(a/E**2)**(eta/2-1)*((eta-2)*(xt1**2+xt2**2)/a+(1+1))
         gamma1 = 1./eta*(a/E**2)**(eta/2-1)*((eta/2-1)*(2*xt1**2-2*xt2**2)/a)
@@ -140,7 +140,7 @@ class SPP(LensProfileBase):
         :param s:
         :return:
         """
-        alpha = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * r ** (2 - gamma)/(3 - gamma) *np.pi * 2 * rho0
+        alpha = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * r ** (2 - gamma)/(3 - gamma) * 2 * rho0
         mass_2d = alpha*r
         return mass_2d
 

@@ -209,6 +209,8 @@ Galaxy formation and evolution
 * The Near Infrared Imager and Slitless Spectrograph for the James Webb Space Telescope -- II. Wide Field Slitless Spectroscopy; `Willott et al. 2022 <https://arxiv.org/abs/2202.01714>`_
     *lensing calculations in cluster environments*
 
+* Inferences on relations between distant supermassive black holes and their hosts complemented by the galaxy fundamental plane; `Silverman et al. 2022 <https://arxiv.org/abs/2204.11948>`_
+    *galaxy size measurement with quasar decomposition*
 
 
 Automatized Lens Modeling

@@ -80,7 +80,7 @@ class SIS(LensProfileBase):
     def theta2rho(theta_E):
         """
         converts projected density parameter (in units of deflection) into 3d density parameter
-        :param theta_E:
+        :param theta_E: Einstein radius
         :return:
         """
         fac1 = np.pi * 2
@@ -117,7 +117,7 @@ class SIS(LensProfileBase):
         :param rho0:
         :return:
         """
-        alpha = np.pi * np.pi * 2 * rho0
+        alpha = 2 * rho0 * np.pi ** 2
         mass_2d = alpha*r
         return mass_2d
 

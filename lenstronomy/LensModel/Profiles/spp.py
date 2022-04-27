@@ -141,7 +141,7 @@ class SPP(LensProfileBase):
         :return:
         """
         alpha = np.sqrt(np.pi) * special.gamma(1. / 2 * (-1 + gamma)) / special.gamma(gamma / 2.) * r ** (2 - gamma)/(3 - gamma) * 2 * rho0
-        mass_2d = alpha*r
+        mass_2d = alpha*r * np.pi
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, gamma):

@@ -109,7 +109,7 @@ class SIE(LensProfileBase):
         :param theta_E:
         :return:
         """
-        fac1 = 2
+        fac1 = np.pi * 2
         rho0 = theta_E / fac1
         return rho0
 
@@ -144,8 +144,8 @@ class SIE(LensProfileBase):
         :param s:
         :return:
         """
-        alpha = 2 * rho0
-        mass_2d = alpha*r
+        alpha = 2 * rho0 * np.pi ** 2
+        mass_2d = alpha * r
         return mass_2d
 
     def mass_2d_lens(self, r, theta_E, e1=0, e2=0):

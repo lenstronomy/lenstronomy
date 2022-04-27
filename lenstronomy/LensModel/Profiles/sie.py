@@ -54,13 +54,13 @@ class SIE(LensProfileBase):
     def function(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
-        :param x:
-        :param y:
-        :param theta_E:
-        :param q:
-        :param phi_G:
-        :param center_x:
-        :param center_y:
+        :param x: x-coordinate (angular coordinates)
+        :param y: y-coordinate (angular coordinates)
+        :param theta_E: Einstein radius
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: centroid
+        :param center_y: centroid
         :return:
         """
         if self._nie:
@@ -71,13 +71,13 @@ class SIE(LensProfileBase):
     def derivatives(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
-        :param x:
-        :param y:
-        :param theta_E:
-        :param q:
-        :param phi_G:
-        :param center_x:
-        :param center_y:
+        :param x: x-coordinate (angular coordinates)
+        :param y: y-coordinate (angular coordinates)
+        :param theta_E: Einstein radius
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: centroid
+        :param center_y: centroid
         :return:
         """
         if self._nie:
@@ -88,13 +88,13 @@ class SIE(LensProfileBase):
     def hessian(self, x, y, theta_E, e1, e2, center_x=0, center_y=0):
         """
 
-        :param x:
-        :param y:
-        :param theta_E:
-        :param q:
-        :param phi_G:
-        :param center_x:
-        :param center_y:
+        :param x: x-coordinate (angular coordinates)
+        :param y: y-coordinate (angular coordinates)
+        :param theta_E: Einstein radius
+        :param e1: eccentricity
+        :param e2: eccentricity
+        :param center_x: centroid
+        :param center_y: centroid
         :return:
         """
         if self._nie:
@@ -140,8 +140,8 @@ class SIE(LensProfileBase):
         mass enclosed projected 2d sphere of radius r
         :param r:
         :param rho0:
-        :param a:
-        :param s:
+        :param e1:
+        :param e2:
         :return:
         """
         alpha = 2 * rho0 * np.pi ** 2
@@ -153,6 +153,8 @@ class SIE(LensProfileBase):
 
         :param r:
         :param theta_E:
+        :param e1:
+        :param e2:
         :return:
         """
         rho0 = self.theta2rho(theta_E)
@@ -164,8 +166,8 @@ class SIE(LensProfileBase):
         :param x:
         :param y:
         :param rho0:
-        :param a:
-        :param s:
+        :param e1:
+        :param e2:
         :param center_x:
         :param center_y:
         :return:
@@ -209,6 +211,8 @@ class SIE(LensProfileBase):
         :param x:
         :param y:
         :param rho0:
+        :param e1:
+        :param e2:
         :param center_x:
         :param center_y:
         :return:

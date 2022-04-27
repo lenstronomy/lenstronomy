@@ -126,8 +126,8 @@ class ImageModel(object):
                                                        kwargs_special=kwargs_special,
                                                        unconvolved=unconvolved, de_lensed=de_lensed, k=k)
 
-    def _source_surface_brightness_analytical(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None,
-                                              kwargs_special=None, unconvolved=False, de_lensed=False, k=None):
+    def _source_surface_brightness_analytical(self, kwargs_source, kwargs_lens=None, kwargs_extinction=None, kwargs_special=None,
+                                              unconvolved=False, de_lensed=False, k=None):
         """
 
         computes the source surface brightness distribution
@@ -161,7 +161,7 @@ class ImageModel(object):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed). 
+        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed).
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate
@@ -239,8 +239,7 @@ class ImageModel(object):
         return point_source_image
 
     def image(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
-              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True,
-              point_source_add=True):
+              kwargs_extinction=None, kwargs_special=None, unconvolved=False, source_add=True, lens_light_add=True, point_source_add=True):
         """
 
         make an image with a realisation of linear parameter values "param"

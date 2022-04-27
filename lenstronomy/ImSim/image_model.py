@@ -161,7 +161,7 @@ class ImageModel(object):
         :param unconvolved: if True: returns the unconvolved light distribution (prefect seeing)
         :param de_lensed: if True: returns the un-lensed source surface brightness profile, otherwise the lensed.
         :param k: integer, if set, will only return the model of the specific index
-        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed).
+        :param update_mapping: if False, prevent the pixelated lensing mapping to be updated (saves computation time if previously computed). 
         :return: 2d array of surface brightness pixels
         """
         ra_grid, dec_grid = self.SourceNumerics.coordinates_evaluate

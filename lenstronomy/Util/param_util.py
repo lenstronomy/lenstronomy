@@ -152,6 +152,7 @@ def transform_e1e2_square_average(x, y, e1, e2, center_x, center_y):
     y_ = (-sin_phi * x_shift + cos_phi * y_shift) * np.sqrt(1 + e)
     return x_, y_
 
+
 def q2e(q):
     """
     computes

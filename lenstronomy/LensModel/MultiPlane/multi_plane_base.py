@@ -76,6 +76,30 @@ class MultiPlaneBase(ProfileListBase):
             self._T_z_list.append(T_z)
             z_before = z_lens
 
+    @property
+    def z_source_convention(self):
+        return self._z_source_convention
+
+    @property
+    def sorted_redshift_index(self):
+        return self._sorted_redshift_index
+
+    @property
+    def T_z_list(self):
+        return self._T_z_list
+
+    @T_z_list.setter
+    def T_z_list(self, T_z_list):
+        self._T_z_list = T_z_list
+
+    @property
+    def T_ij_list(self):
+        return self._T_ij_list
+
+    @T_ij_list.setter
+    def T_ij_list(self, T_ij_list):
+        self._T_ij_list = T_ij_list
+
     def ray_shooting_partial_comoving(self, x, y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
                                       include_z_start=False, T_ij_start=None, T_ij_end=None):
         """
@@ -135,7 +159,8 @@ class MultiPlaneBase(ProfileListBase):
         return x, y, alpha_x, alpha_y
 
     def ray_shooting_partial(self, theta_x, theta_y, alpha_x, alpha_y, z_start, z_stop, kwargs_lens,
-                             include_z_start=False, T_ij_start=None, T_ij_end=None):
+                             include_z_start=False, T_ij_start=None,
+                             T_ij_end=None, T_z_start=None, T_z_stop=None):
         """
         ray-tracing through parts of the coin, starting with (x,y) in angular units as seen on the sky without lensing
          and angles (alpha_x, alpha_y) as seen at redshift z_start and then backwards to redshift z_stop
@@ -154,16 +179,22 @@ class MultiPlaneBase(ProfileListBase):
          If not set, will compute the distance each time this function gets executed.
         :param T_ij_end: transverse angular distance between the last lens plane being computed and z_end.
          If not set, will compute the distance each time this function gets executed.
+        :param T_z_start: transverse angular distance up to z_start.
+        If not set, will compute the distance each time this function gets executed.
+        :param T_z_stop: transverse angular distance up to z_stop.
+        If not set, will compute the distance each time this function gets executed.
         :return: angular position and angles at redshift z_stop
         """
-        T_z_start = self._cosmo_bkg.T_xy(0, z_start)
+        if T_z_start is None:
+            T_z_start = self._cosmo_bkg.T_xy(0, z_start)
         x = np.array(theta_x, dtype=float) * T_z_start
         y = np.array(theta_y, dtype=float) * T_z_start
 
         x, y, alpha_x, alpha_y = self.ray_shooting_partial_comoving(x, y, alpha_x, alpha_y, z_start, z_stop,
                                                                     kwargs_lens, include_z_start=include_z_start,
                                                                     T_ij_start=T_ij_start, T_ij_end=T_ij_end)
-        T_z_stop = self._cosmo_bkg.T_xy(0, z_stop)
+        if T_z_stop is None:
+            T_z_stop = self._cosmo_bkg.T_xy(0, z_stop)
         beta_x = x / T_z_stop
         beta_y = y / T_z_stop
         return beta_x, beta_y, alpha_x, alpha_y

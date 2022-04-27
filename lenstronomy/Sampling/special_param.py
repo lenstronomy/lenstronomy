@@ -80,7 +80,7 @@ class SpecialParam(object):
                     kwargs_lower['a_{}'.format(i+1)] = 0.
                 for i in range(1, self._num_lens_planes-1):
                     kwargs_lower['b_{}'.format(i + 1)] = 0.
-                kwargs_lower['D_dt_eff_ratio'] = 0.
+                # kwargs_lower['D_dt_eff_ratio'] = 0.
 
         if kwargs_upper is None:
             kwargs_upper = {}
@@ -105,7 +105,7 @@ class SpecialParam(object):
                     kwargs_upper['a_{}'.format(i)] = 10.
                 for i in range(2, self._num_lens_planes):
                     kwargs_upper['b_{}'.format(i)] = 10.
-                kwargs_upper['D_dt_eff_ratio'] = 10.
+                # kwargs_upper['D_dt_eff_ratio'] = 10.
         self.lower_limit = kwargs_lower
         self.upper_limit = kwargs_upper
 
@@ -185,11 +185,11 @@ class SpecialParam(object):
                     i += 1
                 else:
                     kwargs_special[param_name] = self._kwargs_fixed[param_name]
-            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
-                kwargs_special['D_dt_eff_ratio'] = args[i]
-                i += 1
-            else:
-                kwargs_special['D_dt_eff_ratio'] = self._kwargs_fixed['D_dt_eff_ratio']
+            # if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+            #     kwargs_special['D_dt_eff_ratio'] = args[i]
+            #     i += 1
+            # else:
+            #     kwargs_special['D_dt_eff_ratio'] = self._kwargs_fixed['D_dt_eff_ratio']
 
         return kwargs_special, i
 
@@ -239,8 +239,8 @@ class SpecialParam(object):
                 param_name = 'b_{}'.format(i)
                 if param_name not in self._kwargs_fixed:
                     args.append(kwargs_special[param_name])
-            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
-                args.append(kwargs_special['D_dt_eff_ratio'])
+            # if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+            #     args.append(kwargs_special['D_dt_eff_ratio'])
 
         return args
 
@@ -301,7 +301,7 @@ class SpecialParam(object):
                 if param_name not in self._kwargs_fixed:
                     num += 1
                     string_list.append(param_name)
-            if 'D_dt_eff_ratio' not in self._kwargs_fixed:
-                num += 1
-                string_list.append('D_dt_eff_ratio')
+            # if 'D_dt_eff_ratio' not in self._kwargs_fixed:
+            #     num += 1
+            #     string_list.append('D_dt_eff_ratio')
         return num, string_list

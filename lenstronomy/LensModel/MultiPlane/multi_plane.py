@@ -397,7 +397,7 @@ class LensedLocation(object):
             x, y, _, _ = self._multiplane.ray_shooting_partial(0, 0, theta_x,
                                                                theta_y, 0, zstop, new_kwargs, T_ij_start=None, T_ij_end=None)
 
-            T = self._multiplane._D_z_list_fiducial[ind]
+            T = self._multiplane.T_z_list[ind]
             new_kwargs[ind]['center_x'] = x / T
             new_kwargs[ind]['center_y'] = y / T
         return new_kwargs

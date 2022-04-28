@@ -84,10 +84,6 @@ class FittingSequence(object):
                 self.fix_not_computed(**kwargs)
 
             elif fitting_type == 'psf_iteration':
-                #from lenstronomy.Sampling.Pool.pool import choose_pool
-                #pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
-                #if pool.is_master():
-                #    self.psf_iteration(**kwargs)
                 self.psf_iteration(**kwargs)
 
             elif fitting_type == 'align_images':
@@ -423,10 +419,10 @@ class FittingSequence(object):
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 
-    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
-                        source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[],
-                        lens_remove_fixed=[],
-                        source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
+    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
+                        ps_remove_fixed=None, cosmo_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None):
         """

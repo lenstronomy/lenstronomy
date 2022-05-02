@@ -128,49 +128,19 @@ class MultiPlaneOrganizer(object):
         """
 
         """
-        a_factors, b_factors = self.extract_a_b_factors(kwargs_special)
         T_ij_list = []
         T_z_list = []
         z_before = 0
 
         for idex in self._sorted_lens_redshift_index:
-            ab_fiducial_index = self._get_element_index(
-                self._sorted_joint_unique_redshift_list,
-                self._lens_redshift_list[idex])
-
             z_lens = self._lens_redshift_list[idex]
             if z_before == z_lens:
                 delta_T = 0
             else:
                 #T_z = self._cosmo_bkg.T_xy(0, z_lens)
                 # delta_T = self._cosmo_bkg.T_xy(z_before, z_lens)
-
-                b_i = b_factors[ab_fiducial_index] * \
-                      self.b_coeffs_fiducial[ab_fiducial_index]
-                D_i = b_i * self._D_is_list_fiducial[ab_fiducial_index+1] * \
-                      self.D_dt_eff_fiducial / self._D_is_list_fiducial[0]
-                if ab_fiducial_index == 0:
-                    delta_T = D_i * (1 + z_lens)
-                    T_z = D_i * (1 + z_lens)
-                else:
-                    # if ab_fiducial_index+2 == len(
-                    #         self._sorted_joint_unique_redshift_list):
-                    #     D_im1 = self._D_is_list_fiducial[-1]
-                    # else:
-                    a_i = a_factors[ab_fiducial_index] * \
-                          self.a_coeffs_fiducial[ab_fiducial_index]
-                    a_im1 = a_factors[ab_fiducial_index - 1] * \
-                            self.a_coeffs_fiducial[ab_fiducial_index - 1]
-
-                    b_im1 = b_factors[ab_fiducial_index-1] * \
-                            self.b_coeffs_fiducial[ab_fiducial_index-1]
-                    D_im1 = b_im1 * self._D_is_list_fiducial[ab_fiducial_index] \
-                        * self.D_dt_eff_fiducial / self._D_is_list_fiducial[0]
-
-                    D_ij = D_i * D_im1 / a_im1 / self.D_dt_eff_fiducial
-
-                    T_z = D_i * (1 + z_lens)
-                    delta_T = D_ij * (1 + z_lens)
+                T_z = self._get_D_i(z_lens, kwargs_special) * (1 + z_lens)
+                delta_T = self._get_D_ij(z_before, z_lens, kwargs_special) * (1 + z_lens)
 
             T_ij_list.append(delta_T)
             T_z_list.append(T_z)
@@ -201,9 +171,13 @@ class MultiPlaneOrganizer(object):
               self.D_dt_eff_fiducial / self._D_is_list_fiducial[0]
 
         if ab_fiducial_index == 0:
-            raise ValueError('Should not come here!')
-            return D_j
+            raise ValueError('The code should not come here!')
+            # return D_j
         else:
+            ab_fiducial_index_m1 = self._get_element_index(
+                self._sorted_joint_unique_redshift_list, z_i)
+            assert ab_fiducial_index_m1 == ab_fiducial_index - 1
+
             a_j = a_factors[ab_fiducial_index] * \
                   self.a_coeffs_fiducial[ab_fiducial_index]
             a_i = a_factors[ab_fiducial_index - 1] * \
@@ -241,13 +215,38 @@ class MultiPlaneOrganizer(object):
 
         return D_i
 
+    def _transverse_distance_start_stop(self, z_start, z_stop, kwargs_special,
+                                       include_z_start=False):
+        """
+        computes the transverse distance (T_ij) that is required by the ray-tracing between the starting redshift and
+        the first deflector afterwards and the last deflector before the end of the ray-tracing.
+
+        :param z_start: redshift of the start of the ray-tracing
+        :param z_stop: stop of ray-tracing
+        :param include_z_start: boolean, if True includes the computation of the starting position if the first
+         deflector is at z_start
+        :return: T_ij_start, T_ij_end
+        """
+        z_lens_last = z_start
+        first_deflector = True
+        T_ij_start = None
+        for i, idex in enumerate(self._sorted_lens_redshift_index):
+            z_lens = self._lens_redshift_list[idex]
+            if self._start_condition(include_z_start, z_lens, z_start) and z_lens <= z_stop:
+                if first_deflector is True:
+                    T_ij_start = self._get_D_ij(z_start, z_lens,
+                                                kwargs_special) * (1 + z_lens)
+                    first_deflector = False
+                z_lens_last = z_lens
+        T_ij_end = self._get_D_ij(z_lens_last, z_stop, kwargs_special)\
+                                                        * (1 + z_stop)
+        return T_ij_start, T_ij_end
+
     def get_source_T_start_end_lists(self, kwargs_special,
                                      include_z_start=False):
         """
 
         """
-        a_factors, b_factors = self.extract_a_b_factors(kwargs_special)
-
         #self._sorted_source_redshift_index
         z_start = 0
         T_ij_start_list = []
@@ -255,73 +254,9 @@ class MultiPlaneOrganizer(object):
 
         for i, index_source in enumerate(self._sorted_source_redshift_index):
             z_stop = self._source_redshift_list[index_source]
-            # T_ij_start, T_ij_end = self._lensModel.lens_model.transverse_distance_start_stop(
-            #     z_start, z_stop,
-            #     include_z_start=False)
-            z_lens_last = z_start
-            first_deflector = True
-            T_ij_start = None
-            for i, idex in enumerate(self._sorted_lens_redshift_index):
-                z_lens = self._lens_redshift_list[idex]
-                ab_fiducial_index = self._get_element_index(
-                                    self._sorted_joint_unique_redshift_list,
-                                    z_lens)
-
-                if self._start_condition(include_z_start, z_lens,
-                                         z_start) and z_lens <= z_stop:
-                    if first_deflector is True:
-                        if z_start == 0:
-                            a_i = a_factors[ab_fiducial_index] * \
-                                  self.a_coeffs_fiducial[ab_fiducial_index]
-                            b_i = b_factors[ab_fiducial_index] * \
-                                  self.b_coeffs_fiducial[ab_fiducial_index]
-                            D_i = b_i * self._D_is_list_fiducial[
-                                ab_fiducial_index + 1] * \
-                                  self.D_dt_eff_fiducial / \
-                                  self._D_is_list_fiducial[0]
-
-                            T_ij_start = D_i * (1 + z_lens)
-                        first_deflector = False
-                    z_lens_last = z_lens
-
-            if z_lens_last == z_stop:
-                T_ij_end = 0
-            else:
-                ab_fiducial_index_last = self._get_element_index(
-                                    self._sorted_joint_unique_redshift_list,
-                                    z_lens_last)
-                ab_fiducial_index_stop = self._get_element_index(
-                                    self._sorted_joint_unique_redshift_list,
-                                    z_stop)
-                assert ab_fiducial_index_last + 1 == ab_fiducial_index_stop
-
-                a_i = a_factors[ab_fiducial_index_last] * \
-                      self.a_coeffs_fiducial[ab_fiducial_index_last]
-                b_i = b_factors[ab_fiducial_index_last] * \
-                      self.b_coeffs_fiducial[ab_fiducial_index_last]
-                D_i = b_i * self._D_is_list_fiducial[
-                    ab_fiducial_index_last + 1] * \
-                      self.D_dt_eff_fiducial / \
-                      self._D_is_list_fiducial[0]
-
-                if ab_fiducial_index_last+1 == len(self._sorted_joint_unique_redshift_list):
-                    D_ip1 = self._D_is_list_fiducial[-1]
-                else:
-                    if ab_fiducial_index_stop+1 == len(\
-                            self._sorted_joint_unique_redshift_list):
-                        D_ip1 = self._D_is_list_fiducial[-1]
-                    else:
-                        b_ip1 = b_factors[ab_fiducial_index_stop] * \
-                                self.b_coeffs_fiducial[ab_fiducial_index_stop]
-                        D_ip1 = b_ip1 * self._D_is_list_fiducial[
-                            ab_fiducial_index_stop+1] \
-                            * self.D_dt_eff_fiducial / self._D_is_list_fiducial[0]
-
-                D_ij = D_i * D_ip1 / a_i / self.D_dt_eff_fiducial
-                T_ij_end = D_ij * (1 + z_stop)
-
-            print('T_ij_start', z_start, z_lens_last, T_ij_start)
-            print('T_ij_end:', z_lens_last, z_stop, T_ij_end)
+            T_ij_start, T_ij_end = self._transverse_distance_start_stop(
+                z_start, z_stop, kwargs_special,
+                include_z_start=False)
             T_ij_start_list.append(T_ij_start)
             T_ij_end_list.append(T_ij_end)
             z_start = z_stop

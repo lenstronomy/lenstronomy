@@ -53,7 +53,7 @@ class MultiPlane(object):
                              'z_source_convention=%s' % (z_interp_stop, z_source, z_source_convention))
         self._z_source_convention = z_source_convention
         if z_lens_convention is None:
-            self._z_lens_convention = lens_redshift_list[0]
+            self._z_lens_convention = np.min(lens_redshift_list)
         else:
             self._z_lens_convention = z_lens_convention
         self.distance_ratio_sampling = distance_ratio_sampling

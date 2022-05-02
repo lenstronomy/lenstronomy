@@ -419,7 +419,7 @@ class FittingSequence(object):
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 
-    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=None,
+    def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
                         source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
                         lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
                         ps_remove_fixed=None, cosmo_remove_fixed=None,

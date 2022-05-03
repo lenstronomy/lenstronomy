@@ -11,14 +11,10 @@ class SinglePlaneLOS(SinglePlane):
     """
     This class is based on the 'SinglePlane' class, modified to include
     line-of-sight effects as presented by Fleury et al. in 2104.08883.
-
-    Are added:
-    - effective potential
-    - effective alpha
-
+    
     Are modified:
     - init (to include a new attribute, self.los)
-    - fermat potential
+    - fermat potential                 #DJMod
     - alpha
     - hessian
 
@@ -73,106 +69,69 @@ class SinglePlaneLOS(SinglePlane):
             kwargs_los['gamma2_ds'] = kwargs_los['gamma2_od']
             kwargs_los['omega_ds'] = kwargs_los['omega_od']
 
-        kwargs_lens = [kwarg for i, kwarg in enumerate(kwargs)
+        kwargs_dominant = [kwarg for i, kwarg in enumerate(kwargs)                                          #DJMod
                        if i != self.index_los]
 
-        return kwargs_lens, kwargs_los
+        return kwargs_dominant, kwargs_los                                                                  #DJMod
 
-    def effective_potential(self, x, y, kwargs, k=None):                    #DJMod
+
+    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None, k=None):         #DJMod
         """
-        the lensing potential of the main lens, evaluated at a position which is modified by LOS effects
-        between the observer and the lens(equation 3.14 in Fleury et al.)
-
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: lensing potential in units of arcsec^2
-        """
-
-        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
-
-        # Angular position where the ray hits the deflector's plane
-        x_d, y_d = self.los.distort_vector(x, y,
-                                           kappa=kwargs_los['kappa_od'],
-                                           omega=kwargs_los['omega_od'],
-                                           gamma1=kwargs_los['gamma1_od'],
-                                           gamma2=kwargs_los['gamma2_od'])
-
-        #Evaluating the potential of the main lens at this position
-        effective_potential = super().potential(x_d, y_d, kwargs=kwargs_lens, k=k)
-
-        return effective_potential
-
-    def effective_alpha(self, x, y, kwargs, k=None):                    #DJMod
-        """
-        the effective displacement angle (equation 3.15 in Fleury et al.)
-
-        :param x: x-position (preferentially arcsec)
-        :type x: numpy array
-        :param y: y-position (preferentially arcsec)
-        :type y: numpy array
-        :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
-        :param k: only evaluate the k-th lens model
-        :return: effective deflection angles in units of arcsec
-        """
-
-        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
-
-        # Angular position where the ray hits the deflector's plane
-        x_d, y_d = self.los.distort_vector(x, y,
-                                           kappa=kwargs_los['kappa_od'],
-                                           omega=kwargs_los['omega_od'],
-                                           gamma1=kwargs_los['gamma1_od'],
-                                           gamma2=kwargs_los['gamma2_od'])
-
-        #the displacement due to the main lens only is then evaluated at this position
-        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
-
-        #these angles are then further modified as follows
-        f_x_d, f_y_d = self.los.distort_vector(f_x, f_y,
-                                           kappa=kwargs_los['kappa_od'],
-                                           omega=kwargs_los['omega_od'],
-                                           gamma1=kwargs_los['gamma1_od'],
-                                           gamma2=kwargs_los['gamma2_od'])
-
-        #f_x_d and f_y_d are the components of alpha_eff
-
-        return f_x_d, f_y_d
-
-
-    def fermat_potential(self, x_image, y_image, kwargs, x_source=None, y_source=None, k=None):         #DJMod
-        """
-        Calculates the Fermat Potential with LOS corrections in the tidal regime (equation 3.12 in Fleury et. al.)
+        Calculates the Fermat Potential with LOS corrections in the tidal regime
 
         :param x_image: image position
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
         :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
-        :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
+        :return: fermat potential in arcsec**2 as a list
         """
+        
+        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs_lens)
 
-        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
+        #the amplification matrices
+        A_od = np.array([[1-kwargs_los['kappa_od']-kwargs_los['gamma1_od'],-kwargs_los['gamma2_od']+kwargs_los['omega_od']],[-kwargs_los['gamma2_od']-kwargs_los['omega_od'],1-kwargs_los['kappa_od']+kwargs_los['gamma1_od']]])
+        A_os = np.array([[1-kwargs_los['kappa_os']-kwargs_los['gamma1_os'],-kwargs_los['gamma2_os']+kwargs_los['omega_os']],[-kwargs_los['gamma2_os']-kwargs_los['omega_os'],1-kwargs_los['kappa_os']+kwargs_los['gamma1_os']]])
+        A_ds = np.array([[1-kwargs_los['kappa_ds']-kwargs_los['gamma1_ds'],-kwargs_los['gamma2_ds']+kwargs_los['omega_ds']],[-kwargs_los['gamma2_ds']-kwargs_los['omega_ds'],1-kwargs_los['kappa_ds']+kwargs_los['gamma1_ds']]])
 
-        #calculating the effective potential
-        effective_potential = self.effective_potential(x_image, y_image, kwargs, k=k)
+        #the inverse and transposed amplification matrices
+        A_od_tsp = np.transpose(A_od)
+        A_ds_inv = np.linalg.inv(A_ds)
+        A_os_inv = np.linalg.inv(A_os)
 
-        #the effective displacement angles
-        f_x, f_y = self.effective_alpha(x_image, y_image, kwargs, k=k)
+        #the composite amplification matrices
+        A_LOS = np.dot(np.dot(A_od_tsp,A_ds_inv),A_os)
+        
+        # Angular position where the ray hits the deflector's plane
+        x_d, y_d = self.los.distort_vector(x_image, y_image,
+                                           kappa=kwargs_los['kappa_od'],
+                                           omega=kwargs_los['omega_od'],
+                                           gamma1=kwargs_los['gamma1_od'],
+                                           gamma2=kwargs_los['gamma2_od'])
 
-        #deflection angle distorted by \Gamma_LOS matrix
-        a_x, a_y = self.los.distort_vector(f_x, f_y,
-                                           kappa=-kwargs_los['kappa_od']-kwargs_los['kappa_os']+kwargs_los['kappa_ds'],
-                                           omega=-kwargs_los['omega_od']-kwargs_los['omega_os']+kwargs_los['omega_ds'],
-                                           gamma1=-kwargs_los['gamma1_od']-kwargs_los['gamma1_os']+kwargs_los['gamma1_ds'],
-                                           gamma2=-kwargs_los['gamma2_od']-kwargs_los['gamma2_os']+kwargs_los['gamma2_ds'])
+        #Evaluating the potential of the main lens at this position
+        effective_potential = super().potential(x_d, y_d, kwargs=kwargs_dominant, k=k)
 
+        #obtaining the source position
+        if x_source is None or y_source is None:
+            x_source, y_source = self.ray_shooting(x_image, y_image, kwargs_lens, k=k)
+
+        #the source position, modified by A_os_inv
+        b_x = A_os_inv[0][0]*x_source + A_os_inv[0][1]*y_source
+        b_y = A_os_inv[1][0]*x_source + A_os_inv[1][1]*y_source   
+
+        #alpha'
+        f_x = x_image - b_x
+        f_y = y_image - b_y       
+
+        #alpha' must then be further distorted by A_LOS
+        a_x = A_LOS[0][0]*f_x + A_LOS[0][1]*f_y
+        a_y = A_LOS[1][0]*f_x + A_LOS[1][1]*f_y
+        
         #we can then obtain the geometrical term
-        geometry = (f_x*a_x + f_y*a_y) / 2.
-
+        geometry = (f_x*a_x + f_y*a_y) / 2
+        
+        #return geometry - effective_potential
         return geometry - effective_potential
 
     def alpha(self, x, y, kwargs, k=None):
@@ -187,8 +146,8 @@ class SinglePlaneLOS(SinglePlane):
         :param k: only evaluate the k-th lens model
         :return: deflection angles in units of arcsec
         """
-
-        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
+        
+        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)                          #DJMod
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -198,7 +157,7 @@ class SinglePlaneLOS(SinglePlane):
                                            gamma2=kwargs_los['gamma2_od'])
 
         # Displacement due to the main lens only
-        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_lens, k=k)
+        f_x, f_y = super().alpha(x_d, y_d, kwargs=kwargs_dominant, k=k)                     #DJMod
 
         # Correction due to the background convergence, shear and rotation
         f_x, f_y = self.los.distort_vector(f_x, f_y,
@@ -233,7 +192,7 @@ class SinglePlaneLOS(SinglePlane):
         :return: f_xx, f_xy, f_yx, f_yy components
         """
 
-        kwargs_lens, kwargs_los = self.split_lens_los(kwargs)
+        kwargs_dominant, kwargs_los = self.split_lens_los(kwargs)                          #DJMod
 
         # Angular position where the ray hits the deflector's plane
         x_d, y_d = self.los.distort_vector(x, y,
@@ -244,7 +203,7 @@ class SinglePlaneLOS(SinglePlane):
 
         # Hessian matrix of the main lens only
         f_xx, f_xy, f_yx, f_yy = super().hessian(x_d, y_d,
-                                                 kwargs=kwargs_lens, k=k)
+                                                 kwargs=kwargs_dominant, k=k)              #DJMod
 
         # Multiply on the left by (1 - Gamma_ds)
         f_xx, f_xy, f_yx, f_yy = self.los.left_multiply(

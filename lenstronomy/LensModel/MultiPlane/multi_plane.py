@@ -102,6 +102,22 @@ class MultiPlane(object):
     def z_lens_convention(self):
         return self._z_lens_convention
 
+    @property
+    def T_ij_start(self):
+        return self._T_ij_start
+
+    @T_ij_start.setter
+    def T_ij_start(self, T_ij_start):
+        self._T_ij_start = T_ij_start
+
+    @property
+    def T_ij_stop(self):
+        return self._T_ij_stop
+
+    @T_ij_stop.setter
+    def T_ij_stop(self, T_ij_stop):
+        self._T_ij_stop = T_ij_stop
+
     def _set_source_distances(self, z_source):
         """
         compute the relevant angular diameter distances to a specific source redshift

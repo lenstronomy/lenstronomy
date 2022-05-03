@@ -81,7 +81,7 @@ class MultiPlaneOrganizer(object):
         self._D_z_list_fiducial.append(self._cosmo_bkg.d_xy(0,
                                             self.z_source_convention))
 
-    def extract_a_b_factors(self, kwargs_special):
+    def _extract_a_b_factors(self, kwargs_special):
         """
 
         """
@@ -104,16 +104,21 @@ class MultiPlaneOrganizer(object):
         """
 
         """
-        T_z_list, T_ij_list = self.get_lens_T_lists(kwargs_special)
+        T_z_list, T_ij_list = self._get_lens_T_lists(kwargs_special)
+        T_ij_start, T_ij_stop = self._transverse_distance_start_stop(0,
+                                lens_model.lens_model.z_source,
+                                kwargs_special, include_z_start=False)
         lens_model.lens_model.multi_plane_base.T_z_list = T_z_list
         lens_model.lens_model.multi_plane_base.T_ij_list = T_ij_list
+        lens_model.lens_model.T_ij_start = T_ij_start
+        lens_model.lens_model._T_ij_stop = T_ij_stop
 
     def update_source_mapping_T_lists(self, source_mapping_class,
                                       kwargs_special):
         """
 
         """
-        T_ij_start_list, T_ij_end_list = self.get_source_T_start_end_lists(
+        T_ij_start_list, T_ij_end_list = self._get_source_T_start_end_lists(
             kwargs_special)
         source_mapping_class.T_ij_start_list = T_ij_start_list
         source_mapping_class.T_ij_end_list = T_ij_end_list
@@ -124,7 +129,7 @@ class MultiPlaneOrganizer(object):
         """
         return int(np.where(np.array(arr) == element)[0][0])
 
-    def get_lens_T_lists(self, kwargs_special):
+    def _get_lens_T_lists(self, kwargs_special):
         """
 
         """
@@ -161,7 +166,7 @@ class MultiPlaneOrganizer(object):
                 self._sorted_joint_unique_redshift_list, z_i)
             return self._D_is_list_fiducial[ab_fiducial_index+1]
 
-        a_factors, b_factors = self.extract_a_b_factors(kwargs_special)
+        a_factors, b_factors = self._extract_a_b_factors(kwargs_special)
         ab_fiducial_index = self._get_element_index(
             self._sorted_joint_unique_redshift_list, z_j)
 
@@ -201,7 +206,7 @@ class MultiPlaneOrganizer(object):
         elif z_i == self._sorted_joint_unique_redshift_list[-1]:
             return self._D_is_list_fiducial[0]
 
-        a_factors, b_factors = self.extract_a_b_factors(kwargs_special)
+        a_factors, b_factors = self._extract_a_b_factors(kwargs_special)
 
         ab_fiducial_index = self._get_element_index(
             self._sorted_joint_unique_redshift_list, z_i)
@@ -242,7 +247,7 @@ class MultiPlaneOrganizer(object):
                                                         * (1 + z_stop)
         return T_ij_start, T_ij_end
 
-    def get_source_T_start_end_lists(self, kwargs_special,
+    def _get_source_T_start_end_lists(self, kwargs_special,
                                      include_z_start=False):
         """
 

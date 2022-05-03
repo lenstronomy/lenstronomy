@@ -183,6 +183,9 @@ Lens searches
 * DeepZipper II: Searching for Lensed Supernovae in Dark Energy Survey Data with Deep Learning; `Morgan et al. 2022 <https://arxiv.org/abs/2204.05924>`_
     *Using deeplenstronomy to simulate lensed supernovae training sets*
 
+* DeepGraviLens: a Multi-Modal Architecture for Classifying Gravitational Lensing Data; `Oreste Pinciroli Vago et al. 2022 <https://arxiv.org/abs/2205.00701>`_
+    *Using deeplenstronomy to simulate lensed supernovae training sets*
+
 
 
 Galaxy formation and evolution

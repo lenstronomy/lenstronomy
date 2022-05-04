@@ -44,6 +44,9 @@ class LensProfileBase(object):
         The integral in the LOS projection of this quantity results in the convergence quantity.
         (optional definition)
 
+        .. math::
+            \\kappa(x, y) = \\int_{-\\infty}^{\\infty} \\rho(x, y, z) dz
+
         :param kwargs: keywords of the profile
         :return: raise as definition is not defined
         """

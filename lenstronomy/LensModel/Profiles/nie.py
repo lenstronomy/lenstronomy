@@ -13,7 +13,7 @@ class NIE(LensProfileBase):
     Non-singular isothermal ellipsoid (NIE)
 
     .. math::
-     \\kappa = \\theta_E/2 \\left[s_{scale} + qx^2 + y^2/q]−1/2
+     \\kappa = \\theta_E/2 \\left[s^2_{scale} + qx^2 + y^2/q]−1/2
 
     """
     param_names = ['theta_E', 'e1', 'e2', 's_scale', 'center_x', 'center_y']

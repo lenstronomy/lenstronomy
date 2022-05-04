@@ -410,8 +410,14 @@ class LensedLocation(object):
             theta_x = kwargs_lens[ind]['center_x']
             theta_y = kwargs_lens[ind]['center_y']
             zstop = self._multiplane._lens_redshift_list[ind]
-            x, y, _, _ = self._multiplane.ray_shooting_partial(0, 0, theta_x,
-                                                               theta_y, 0, zstop, new_kwargs, T_ij_start=None, T_ij_end=None)
+            x, y, _, _ = self._multiplane.ray_shooting_partial_comoving(0, 0,
+                                                                theta_x,
+                                                                theta_y,
+                                                                0,
+                                                                zstop,
+                                                                new_kwargs,
+                                                                T_ij_start=None,
+                                                                T_ij_end=None)
 
             T = self._multiplane.T_z_list[ind]
             new_kwargs[ind]['center_x'] = x / T

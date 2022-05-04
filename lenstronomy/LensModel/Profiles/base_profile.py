@@ -68,6 +68,11 @@ class LensProfileBase(object):
         two-dimensional enclosed mass at radius r
         (optional definition)
 
+        .. math::
+            M_{2d}(R) = \int_{0}^{R} \\rho_{2d}(r) 2\\pi r dr
+
+        with :math:`\\rho_{2d}(r)` is the density_2d_lens() definition
+
         The mass definition is such that:
 
         .. math::

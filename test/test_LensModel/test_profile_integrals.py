@@ -105,7 +105,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_nfw(self):
         kwargs = {'rho0': 1.,  'Rs': 5., 'center_x': 0, 'center_y': 0}
@@ -142,7 +142,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_hernquist(self):
         from lenstronomy.LensModel.Profiles.hernquist import Hernquist as Model
@@ -175,14 +175,14 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_sis(self):
         from lenstronomy.LensModel.Profiles.sis import SIS as Model
         kwargs = {'rho0': 1.}
         self.assert_integrals(Model, kwargs)
         kwargs_lens = {'theta_E': 1.}
-        self.assert_lens_integrals(Model, kwargs_lens)
+        self.assert_lens_integrals(Model, kwargs_lens, pi_convention=True)
 
     def test_sis_density_deflection(self):
         """
@@ -200,7 +200,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
         lensModel.density_2d(1, 1, rho0=1)
 
     def test_sie(self):
@@ -231,7 +231,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_spp(self):
         from lenstronomy.LensModel.Profiles.spp import SPP as Model
@@ -260,7 +260,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_gaussian(self):
         from lenstronomy.LensModel.Profiles.gaussian_kappa import GaussianKappa as Model
@@ -284,7 +284,7 @@ class TestNumerics(object):
         mass_2d = lensModel.mass_2d(r, **kwargs_density)
         alpha_mass = mass_2d/r
         alpha_r, _ = lensModel.derivatives(r, 0, **kwargs_lens)
-        npt.assert_almost_equal(alpha_mass/np.pi, alpha_r, decimal=5)
+        npt.assert_almost_equal(alpha_mass / np.pi, alpha_r, decimal=5)
 
     def test_coreBurk(self):
         from lenstronomy.LensModel.Profiles.coreBurkert import CoreBurkert as Model

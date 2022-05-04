@@ -1,7 +1,7 @@
 __author__ = 'nataliehogg', 'pierrefleury', 'danjohnson98'
 
 from lenstronomy.LensModel.single_plane import SinglePlane
-#import numpy as np
+import numpy as np
 import copy
 
 __all__ = ['SinglePlaneLOS']

@@ -39,7 +39,7 @@ class TestNumerics(object):
         mass_3d = lensModel.mass_3d(r, **kwargs)
         npt.assert_almost_equal(mass_3d/mass_3d_num, 1, decimal=2)
 
-    def assert_lens_integrals(self, Model, kwargs):
+    def assert_lens_integrals(self, Model, kwargs, pi_convention=True):
         """
         checks whether the integral in projection of the density_lens() function is the convergence
 
@@ -68,7 +68,10 @@ class TestNumerics(object):
         if bool_mass_2d_lens:
             alpha_x, alpha_y = lensModel.derivatives(r, 0, **kwargs)
             alpha = np.sqrt(alpha_x ** 2 + alpha_y ** 2)
-            npt.assert_almost_equal(alpha, mass_2d / r / np.pi, decimal=5)
+            if pi_convention:
+                npt.assert_almost_equal(alpha, mass_2d / r / np.pi, decimal=5)
+            else:
+                npt.assert_almost_equal(alpha, mass_2d / r, decimal=5)
         try:
             mass_3d = lensModel.mass_3d_lens(r, **kwargs)
             bool_mass_3d_lens = True

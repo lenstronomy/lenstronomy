@@ -13,7 +13,8 @@ export, __all__ = exporter()
 @export
 def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_source_convention=None,
                            lens_redshift_list=None, kwargs_interp=None,
-                           multi_plane=False, observed_convention_index=None, source_light_model_list=None,
+                           multi_plane=False, distance_ratio_sampling=False,
+                           observed_convention_index=None, source_light_model_list=None,
                            lens_light_model_list=None, point_source_model_list=None, fixed_magnification_list=None,
                            flux_from_point_source_list=None,
                            additional_images_list=None, kwargs_lens_eqn_solver=None,
@@ -32,6 +33,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
      If None, 'z_source' is used.
     :param lens_redshift_list:
     :param multi_plane:
+    :param distance_ratio_sampling: bool, if True, samples the distance ratios in multi-lens-plane
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
      See description in the Interpolate() class. Only applicable for 'INTERPOL' and 'INTERPOL_SCALED' models.
     :param observed_convention_index:
@@ -99,6 +101,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_s
                                  z_source_convention=z_source_convention,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
+                                 distance_ratio_sampling=distance_ratio_sampling,
                                  observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
 
     if index_source_light_model_list is None or all_models is True:

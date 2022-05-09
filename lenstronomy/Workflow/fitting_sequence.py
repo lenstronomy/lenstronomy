@@ -96,6 +96,7 @@ class FittingSequence(object):
             elif fitting_type == 'PSO':
                 kwargs_result, chain, param = self.pso(**kwargs)
                 self._updateManager.update_param_state(**kwargs_result)
+
                 chain_list.append([fitting_type, chain, param])
 
             elif fitting_type == 'SIMPLEX':

@@ -134,7 +134,8 @@ class UpdateManager(object):
                                                                          self._kwargs_temp['kwargs_extinction']
         if bijective is False:
             lens_temp = self.param_class.update_lens_scaling(special_temp, lens_temp, inverse=False)
-            source_temp = self.param_class.image2source_plane(source_temp, lens_temp)
+            source_temp = self.param_class.image2source_plane(source_temp,
+                                                              lens_temp, special_temp)
         return {'kwargs_lens': lens_temp, 'kwargs_source': source_temp, 'kwargs_lens_light': lens_light_temp,
                 'kwargs_ps': ps_temp, 'kwargs_special': special_temp, 'kwargs_extinction': extinction_temp}
 

@@ -213,7 +213,6 @@ class ImageLinearFit(ImageModel):
                                                                           inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
-
         if self._pixelbased_bool is False:
             if cov_matrix is not None and source_marg:
                 marg_const = de_lens.marginalization_new(cov_matrix, d_prior=linear_prior)

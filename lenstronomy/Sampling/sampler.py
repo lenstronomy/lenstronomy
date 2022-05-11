@@ -14,7 +14,7 @@ __all__ = ['Sampler']
 class Sampler(object):
     """
     class which executes the different sampling  methods
-    Available are: MCMC with emcee and comsoHammer and a Particle Swarm Optimizer.
+    Available are: MCMC with emcee a Particle Swarm Optimizer.
     This are examples and depending on your problem, you might find other/better solutions.
     Feel free to sample with your convenient sampler!
 
@@ -37,8 +37,6 @@ class Sampler(object):
         """
         print('Performing the optimization using algorithm:', method)
         time_start = time.time()
-
-        #negativelogL = lambda x: -1 * self.chain.logL(x)
 
         result = minimize(self.chain.negativelogL, x0=init_pos, method=method,
                           options={'maxiter': n_iterations, 'disp': True})
@@ -84,7 +82,8 @@ class Sampler(object):
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
         
-        if mpi is True and pool.is_master(): print('MPI option chosen for PSO.')
+        if mpi is True and pool.is_master():
+            print('MPI option chosen for PSO.')
 
         pso = ParticleSwarmOptimizer(self.chain.logL,
                                      lower_start, upper_start, n_particles,

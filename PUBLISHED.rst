@@ -215,6 +215,9 @@ Galaxy formation and evolution
 * Inferences on relations between distant supermassive black holes and their hosts complemented by the galaxy fundamental plane; `Silverman et al. 2022 <https://arxiv.org/abs/2204.11948>`_
     *galaxy size measurement with quasar decomposition*
 
+* Concordance between observations and simulations in the evolution of the mass relation between supermassive black holes and their host galaxies; `Ding et al. 2022 <https://arxiv.org/abs/2205.04481>`_
+    *galaxy size measurement with quasar decomposition*
+
 
 Automatized Lens Modeling
 -------------------------

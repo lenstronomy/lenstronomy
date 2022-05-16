@@ -177,8 +177,7 @@ class Sampler(object):
 
         time_start = time.time()
 
-        sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL,
-                                        pool=pool, backend=backend)
+        sampler = emcee.EnsembleSampler(n_walkers, num_param, self.chain.logL, pool=pool, backend=backend)
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress)
         flat_samples = sampler.get_chain(discard=n_burn, thin=1, flat=True)

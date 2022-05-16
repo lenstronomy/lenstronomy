@@ -17,7 +17,8 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
-    The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
+    The user can take this module as an example of how to create their own workflows or build their own around the
+    FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
@@ -228,7 +229,7 @@ class FittingSequence(object):
         if n_walkers is None:
             n_walkers = num_param * walkerRatio
         # run MCMC
-        if not init_samples is None and re_use_samples is True:
+        if init_samples is not None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")

@@ -14,8 +14,13 @@ export, __all__ = exporter()
 @export
 def potential_from_kappa_grid(kappa, grid_spacing):
     """
-    lensing potential on the convergence grid
-    the computation is performed as a convolution of the Green's function with the convergence map using FFT
+    Lensing potential :math:`\\psi ({\\vec {\\theta }})` on the convergence grid :math:`\\kappa`.
+
+    .. math::
+        \\psi ({\\vec {\\theta }})={\\frac {1}{\\pi }}\\int d^{2}\\theta ^{\\prime }
+        \\kappa ({\\vec {\\theta }}^{\\prime })\\ln |{\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime }|
+
+    The computation is performed as a convolution of the Green's function with the convergence map using FFT.
 
     :param kappa: 2d grid of convergence values
     :param grid_spacing: scale of an individual pixel (per axis) of grid
@@ -59,12 +64,18 @@ def potential_from_kappa_grid_adaptive(kappa_high_res, grid_spacing, low_res_fac
 @export
 def deflection_from_kappa_grid(kappa, grid_spacing):
     """
-    deflection angles on the convergence grid
-    the computation is performed as a convolution of the Green's function with the convergence map using FFT
+    Deflection angle :math:`\\vec {\\alpha }}` from a convergence grid :math:`\\kappa`.
+
+    .. math::
+        {\\vec {\\alpha }}({\\vec {\\theta }})={\\frac {1}{\\pi }}
+        \\int d^{2}\\theta ^{\\prime }{\\frac {({\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime })
+        \\kappa ({\\vec {\\theta }}^{\\prime })}{|{\\vec {\\theta }}-{\\vec {\\theta }}^{\\prime }|^{2}}}
+
+    The computation is performed as a convolution of the Green's function with the convergence map using FFT.
 
     :param kappa: convergence values for each pixel (2-d array)
     :param grid_spacing: scale of an individual pixel (per axis) of grid
-    :return: numerical deflection angles in x- and y- direction
+    :return: numerical deflection angles in x- and y- direction over the convergence grid points
     """
     num_pix = len(kappa) * 2
     if num_pix % 2 == 0:

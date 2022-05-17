@@ -75,7 +75,8 @@ class NFW_ELLIPSE(LensProfileBase):
         phi_G, q = param_util.ellipticity2phi_q(e1, e2)
         cos_phi = np.cos(phi_G)
         sin_phi = np.sin(phi_G)
-        e = abs(1 - q)
+        e = param_util.q2e(q)
+        # e = abs(1 - q)
         R_ = np.sqrt(x_ ** 2 + y_ ** 2)
         rho0_input = self.nfw.alpha2rho0(alpha_Rs=alpha_Rs, Rs=Rs)
         if Rs < 0.0000001:
@@ -115,17 +116,17 @@ class NFW_ELLIPSE(LensProfileBase):
 
         return f_xx, f_xy, f_yx, f_yy
 
-    def mass_3d_lens(self, R, Rs, alpha_Rs, e1=1, e2=0):
+    def mass_3d_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
         """
 
-        :param R: radius (in angular units)
+        :param r: radius (in angular units)
         :param Rs:
         :param alpha_Rs:
         :param e1:
         :param e2:
         :return:
         """
-        return self.nfw.mass_3d_lens(R, Rs, alpha_Rs)
+        return self.nfw.mass_3d_lens(r, Rs, alpha_Rs)
 
     def density_lens(self, r, Rs, alpha_Rs, e1=1, e2=0):
         """

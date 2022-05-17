@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Sampling.Likelihoods.position_likelihood &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Sampling.Likelihoods.position_likelihood &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods.position_likelihood</a></li> 
       </ul>
@@ -49,9 +49,10 @@
 <span class="sd">    likelihood of positions of multiply imaged point sources</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">image_position_uncertainty</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">astrometric_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">image_position_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="o">=</span><span class="p">[],</span> <span class="n">dec_image_list</span><span class="o">=</span><span class="p">[],</span>
+                 <span class="n">image_position_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dec_image_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">source_position_likelihood</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_matched_source_position</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">source_position_tolerance</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
-                 <span class="n">source_position_sigma</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">force_no_add_image</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">restrict_image_number</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_num_images</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">source_position_sigma</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">force_no_add_image</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">restrict_image_number</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">max_num_images</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param point_source_class: Instance of PointSource() class</span>
@@ -59,14 +60,17 @@
 <span class="sd">        this is applicable for astrometric uncertainties as well as if image positions are provided as data</span>
 <span class="sd">        :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled</span>
 <span class="sd">        image positions with an offset &#39;delta_x_image&#39; and &#39;delta_y_image&#39;</span>
-<span class="sd">        :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position given the data/measured image positions</span>
+<span class="sd">        :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position</span>
+<span class="sd">         given the data/measured image positions</span>
 <span class="sd">        :param ra_image_list: list or RA image positions per model component</span>
 <span class="sd">        :param dec_image_list: list or DEC image positions per model component</span>
 <span class="sd">        :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates</span>
 <span class="sd">        relative errors in respect ot the position_uncertainties in the image plane</span>
-<span class="sd">        :param check_matched_source_position: bool, if True, checks whether multiple images are a solution of the same source</span>
+<span class="sd">        :param check_matched_source_position: bool, if True, checks whether multiple images are a solution of the same</span>
+<span class="sd">         source</span>
 <span class="sd">        :param source_position_tolerance: tolerance level (in arc seconds in the source plane) of the different images</span>
-<span class="sd">        :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model precision in matching the source position</span>
+<span class="sd">        :param source_position_sigma: r.m.s. value corresponding to a 1-sigma Gaussian likelihood accepted by the model</span>
+<span class="sd">         precision in matching the source position</span>
 <span class="sd">        :param force_no_add_image: bool, if True, will punish additional images appearing in the frame of the modelled</span>
 <span class="sd">        image(first calculate them)</span>
 <span class="sd">        :param restrict_image_number: bool, if True, searches for all appearing images in the frame of the data and</span>
@@ -89,6 +93,10 @@
         <span class="k">if</span> <span class="n">max_num_images</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">restrict_image_number</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;max_num_images needs to be provided when restrict_number_images is True!&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_image_position_likelihood</span> <span class="o">=</span> <span class="n">image_position_likelihood</span>
+        <span class="k">if</span> <span class="n">ra_image_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ra_image_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">dec_image_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dec_image_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ra_image_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dec_image_list</span> <span class="o">=</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span>
 
 <div class="viewcode-block" id="PositionLikelihood.logL"><a class="viewcode-back" href="../../../../lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.logL">[docs]</a>    <span class="k">def</span> <span class="nf">logL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_special</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -113,8 +121,8 @@
             <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Source scatter punishing likelihood = </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">logL_source_scatter</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_no_add_image</span><span class="p">:</span>
-            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_additional_images</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">additional_image_bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_additional_images</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">additional_image_bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                 <span class="n">logL</span> <span class="o">-=</span> <span class="mf">10.</span><span class="o">**</span><span class="mi">5</span>
                 <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;force no additional image penalty as additional images are found!&#39;</span><span class="p">)</span>
@@ -138,7 +146,8 @@
 
 <div class="viewcode-block" id="PositionLikelihood.check_additional_images"><a class="viewcode-back" href="../../../../lenstronomy.Sampling.Likelihoods.html#lenstronomy.Sampling.Likelihoods.position_likelihood.PositionLikelihood.check_additional_images">[docs]</a>    <span class="k">def</span> <span class="nf">check_additional_images</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        checks whether additional images have been found and placed in kwargs_ps</span>
+<span class="sd">        checks whether additional images have been found and placed in kwargs_ps of the first point source model</span>
+<span class="sd">        #TODO check for all point source models</span>
 <span class="sd">        :param kwargs_ps: point source kwargs</span>
 <span class="sd">        :return: bool, True if more image positions are found than originally been assigned</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -214,8 +223,10 @@
                 <span class="n">x_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;ra_image&#39;</span><span class="p">]</span>
                 <span class="n">y_image</span> <span class="o">=</span> <span class="n">kwargs_ps</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="s1">&#39;dec_image&#39;</span><span class="p">]</span>
                 <span class="c1"># calculating the individual source positions from the image positions</span>
+                <span class="c1"># TODO: have option for ray-shooting back to specific redshift in multi-plane lensing</span>
                 <span class="n">x_source</span><span class="p">,</span> <span class="n">y_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">ray_shooting</span><span class="p">(</span><span class="n">x_image</span><span class="p">,</span> <span class="n">y_image</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_image</span><span class="p">)):</span>
+                    <span class="c1"># TODO: add redshift information in computation</span>
                     <span class="n">f_xx</span><span class="p">,</span> <span class="n">f_xy</span><span class="p">,</span> <span class="n">f_yx</span><span class="p">,</span> <span class="n">f_yy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lensModel</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x_image</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y_image</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kwargs_lens</span><span class="p">)</span>
                     <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span> <span class="o">-</span> <span class="n">f_xx</span><span class="p">,</span> <span class="o">-</span><span class="n">f_xy</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="n">f_yx</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">f_yy</span><span class="p">]])</span>
                     <span class="n">Sigma_theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">**</span> <span class="mi">2</span>
@@ -224,8 +235,8 @@
                     <span class="k">if</span> <span class="n">hard_bound_rms</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">&gt;</span> <span class="n">hard_bound_rms</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image positions do not match to the same source position to the required precision. &#39;</span>
-                                      <span class="s1">&#39;Achieved: </span><span class="si">%s</span><span class="s1">, Required: </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">hard_bound_rms</span><span class="p">))</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Image positions do not match to the same source position to the required &#39;</span>
+                                      <span class="s1">&#39;precision. Achieved: </span><span class="si">%s</span><span class="s1">, Required: </span><span class="si">%s</span><span class="s1">.&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">hard_bound_rms</span><span class="p">))</span>
                             <span class="n">logL</span> <span class="o">-=</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">3</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">Sigma_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">Sigma_beta</span><span class="p">)</span>
@@ -239,7 +250,7 @@
     <span class="k">def</span> <span class="nf">num_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :return: integer, number of data points assocated with the class instance</span>
+<span class="sd">        :return: integer, number of data points associated with the class instance</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_position_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -288,7 +299,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Likelihoods.position_likelihood</a></li> 
       </ul>

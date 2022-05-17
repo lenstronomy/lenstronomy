@@ -145,6 +145,13 @@ class SinglePlane(ProfileListBase):
         """
         computes the mass enclosed a projected (2d) radius r
 
+        The mass definition is such that:
+
+        .. math::
+            \\alpha = mass_2d / r / \\pi
+
+        with alpha is the deflection angle
+
         :param r: radius (in angular units)
         :param kwargs: list of keyword arguments of lens model parameters matching the lens model classes
         :param bool_list: list of bools that are part of the output

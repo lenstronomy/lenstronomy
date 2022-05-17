@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LightModel.Profiles.shapelets &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.shapelets &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.shapelets</a></li> 
       </ul>
@@ -67,21 +67,21 @@
 <span class="sd">    This basis is orthonormal. The dimensional basis function is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        B_n(x;\\beta) \equiv \\beta^{-1/2} \\phi_n(\\beta^{-1}x)</span>
+<span class="sd">        B_n(x;\\beta) \\equiv \\beta^{-1/2} \\phi_n(\\beta^{-1}x)</span>
 
 <span class="sd">    which are orthonormal as well.</span>
 
 <span class="sd">    The two-dimensional basis function is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        \\phi_{\\bf n}({\bf x}) \equiv \\phi_{n1}(x1) \\phi_{n2}(x2)</span>
+<span class="sd">        \\phi_{\\bf n}({\bf x}) \\equiv \\phi_{n1}(x1) \\phi_{n2}(x2)</span>
 
 <span class="sd">    where :math:`{\\bf n} \\equiv (n1, n2)` and :math:`{\\bf x} \\equiv (x1, x2)`.</span>
 
 <span class="sd">    The dimensional two-dimentional basis function is</span>
 
 <span class="sd">    .. math::</span>
-<span class="sd">        B_{\\bf n}({\\bf x};\\beta) \equiv \\beta^{-1/2} \\phi_{\\bf n}(\\beta^{-1}{\\bf x}).</span>
+<span class="sd">        B_{\\bf n}({\\bf x};\\beta) \\equiv \\beta^{-1/2} \\phi_{\\bf n}(\\beta^{-1}{\\bf x}).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">param_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;beta&#39;</span><span class="p">,</span> <span class="s1">&#39;n1&#39;</span><span class="p">,</span> <span class="s1">&#39;n2&#39;</span><span class="p">,</span> <span class="s1">&#39;center_x&#39;</span><span class="p">,</span> <span class="s1">&#39;center_y&#39;</span><span class="p">]</span>
@@ -106,7 +106,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_cut_scale</span> <span class="o">=</span> <span class="n">cut_scale</span>
         <span class="k">if</span> <span class="n">interpolation</span><span class="p">:</span>
             <span class="n">n_order</span> <span class="o">=</span> <span class="mi">50</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">H_interp</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="p">)]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">H_interp</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">x_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">6000</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_order</span><span class="p">):</span>
                 <span class="n">n_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
@@ -156,17 +156,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_precalc</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">n2</span><span class="p">]</span><span class="c1"># / beta</span>
+            <span class="k">return</span> <span class="n">amp</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">n1</span><span class="p">]</span> <span class="o">*</span> <span class="n">y</span><span class="p">[</span><span class="n">n2</span><span class="p">]</span>  <span class="c1"># / beta</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">amp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">))</span><span class="c1">#/beta</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span><span class="n">amp</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n1</span><span class="p">,</span> <span class="n">x_</span><span class="o">/</span><span class="n">beta</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">phi_n</span><span class="p">(</span><span class="n">n2</span><span class="p">,</span> <span class="n">y_</span><span class="o">/</span><span class="n">beta</span><span class="p">))</span>  <span class="c1"># /beta</span></div>
 
 <div class="viewcode-block" id="Shapelets.H_n"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.shapelets.Shapelets.H_n">[docs]</a>    <span class="k">def</span> <span class="nf">H_n</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        constructs the Hermite polynomial of order n at position x (dimensionless)</span>
 
 <span class="sd">        :param n: The n&#39;the basis function.</span>
-<span class="sd">        :type name: int.</span>
 <span class="sd">        :param x: 1-dim position (dimensionless)</span>
 <span class="sd">        :type x: float or numpy array.</span>
 <span class="sd">        :returns:  array-- H_n(x).</span>
@@ -183,7 +182,7 @@
 <span class="sd">        constructs the 1-dim basis function (formula (1) in Refregier et al. 2001)</span>
 
 <span class="sd">        :param n: The n&#39;the basis function.</span>
-<span class="sd">        :type name: int.</span>
+<span class="sd">        :type n: int.</span>
 <span class="sd">        :param x: 1-dim position (dimensionless)</span>
 <span class="sd">        :type x: float or numpy array.</span>
 <span class="sd">        :returns:  array-- phi_n(x).</span>
@@ -383,7 +382,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.shapelets</a></li> 
       </ul>

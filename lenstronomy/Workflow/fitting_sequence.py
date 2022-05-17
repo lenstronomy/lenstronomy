@@ -17,7 +17,8 @@ class FittingSequence(object):
     """
     class to define a sequence of fitting applied, inherit the Fitting class
     this is a Workflow manager that allows to update model configurations before executing another step in the modelling
-    The user can take this module as an example of how to create their own workflows or build their own around the FittingSequence
+    The user can take this module as an example of how to create their own workflows or build their own around the
+    FittingSequence
     """
     def __init__(self, kwargs_data_joint, kwargs_model, kwargs_constraints, kwargs_likelihood, kwargs_params, mpi=False,
                  verbose=True):
@@ -84,10 +85,6 @@ class FittingSequence(object):
                 self.fix_not_computed(**kwargs)
 
             elif fitting_type == 'psf_iteration':
-                #from lenstronomy.Sampling.Pool.pool import choose_pool
-                #pool = choose_pool(mpi=self._mpi, processes=1, use_dill=True)
-                #if pool.is_master():
-                #    self.psf_iteration(**kwargs)
                 self.psf_iteration(**kwargs)
 
             elif fitting_type == 'align_images':
@@ -232,7 +229,7 @@ class FittingSequence(object):
         if n_walkers is None:
             n_walkers = num_param * walkerRatio
         # run MCMC
-        if not init_samples is None and re_use_samples is True:
+        if init_samples is not None and re_use_samples is True:
             num_samples, num_param_prev = np.shape(init_samples)
             if num_param_prev == num_param:
                 print("re-using previous samples to initialize the next MCMC run.")
@@ -423,10 +420,10 @@ class FittingSequence(object):
                 self.multi_band_list[i][0] = kwargs_data
         return 0
 
-    def update_settings(self, kwargs_model={}, kwargs_constraints={}, kwargs_likelihood={}, lens_add_fixed=[],
-                        source_add_fixed=[], lens_light_add_fixed=[], ps_add_fixed=[], cosmo_add_fixed=[],
-                        lens_remove_fixed=[],
-                        source_remove_fixed=[], lens_light_remove_fixed=[], ps_remove_fixed=[], cosmo_remove_fixed=[],
+    def update_settings(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None, lens_add_fixed=None,
+                        source_add_fixed=None, lens_light_add_fixed=None, ps_add_fixed=None, cosmo_add_fixed=None,
+                        lens_remove_fixed=None, source_remove_fixed=None, lens_light_remove_fixed=None,
+                        ps_remove_fixed=None, cosmo_remove_fixed=None,
                         change_source_lower_limit=None, change_source_upper_limit=None,
                         change_lens_lower_limit=None, change_lens_upper_limit=None):
         """
@@ -486,7 +483,7 @@ class FittingSequence(object):
         if prior_type == 'gaussian':
             mean_start = self.param_class.kwargs2args(**self._updateManager.parameter_state)
             sigma_start = self.param_class.kwargs2args(**self._updateManager.sigma_kwargs)
-            mean_start  = np.array(mean_start)
+            mean_start = np.array(mean_start)
             sigma_start = np.array(sigma_start)
         else:
             mean_start, sigma_start = None, None
@@ -508,10 +505,20 @@ class FittingSequence(object):
         :return: kwargs_result like returned by self.pso(), from best logL MCMC sample
         """
         _, samples, _, logL_values = mcmc_output
+        return self.best_fit_from_samples(samples, logL_values)
+
+    def best_fit_from_samples(self, samples, logl):
+        """
+        return best fit (max likelihood) value of samples in lenstronomy conventions
+
+        :param samples: samples of multi-dimensional parameter space
+        :param logl: likelihood values for each sample
+        :return: kwargs_result in lenstronomy convention
+        """
         # get index of best logL sample
-        bestfit_idx = np.argmax(logL_values)
-        bestfit_sample = samples[bestfit_idx, :]
-        bestfit_result = bestfit_sample.tolist()
+        best_fit_index = np.argmax(logl)
+        best_fit_sample = samples[best_fit_index, :]
+        best_fit_result = best_fit_sample.tolist()
         # get corresponding kwargs
-        kwargs_result = self.param_class.args2kwargs(bestfit_result, bijective=True)
+        kwargs_result = self.param_class.args2kwargs(best_fit_result, bijective=True)
         return kwargs_result

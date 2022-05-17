@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.chameleon &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.chameleon &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.chameleon</a></li> 
       </ul>
@@ -178,7 +178,7 @@
 <span class="sd">        :param w_c: see Suyu+2014</span>
 <span class="sd">        :param w_t: see Suyu+2014</span>
 <span class="sd">        :param e1: eccentricity modulus</span>
-<span class="sd">        :param ee: eccentricity modulus</span>
+<span class="sd">        :param e2: eccentricity modulus</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_static</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -514,7 +514,7 @@
         <span class="k">return</span> <span class="n">f_1</span> <span class="o">+</span> <span class="n">f_2</span> <span class="o">+</span> <span class="n">f_3</span></div>
 
 <div class="viewcode-block" id="TripleChameleon.mass_3d_lens"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.mass_3d_lens">[docs]</a>    <span class="k">def</span> <span class="nf">mass_3d_lens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">alpha_1</span><span class="p">,</span> <span class="n">ratio12</span><span class="p">,</span> <span class="n">ratio13</span><span class="p">,</span> <span class="n">w_c1</span><span class="p">,</span> <span class="n">w_t1</span><span class="p">,</span> <span class="n">e11</span><span class="p">,</span> <span class="n">e21</span><span class="p">,</span> <span class="n">w_c2</span><span class="p">,</span> <span class="n">w_t2</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">w_c3</span><span class="p">,</span> <span class="n">w_t3</span><span class="p">,</span> <span class="n">e13</span><span class="p">,</span> <span class="n">e23</span><span class="p">,</span>
-                 <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                     <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param r: 3d radius</span>
@@ -540,7 +540,7 @@
         <span class="k">return</span> <span class="n">m_1</span> <span class="o">+</span> <span class="n">m_2</span> <span class="o">+</span> <span class="n">m_3</span></div>
 
 <div class="viewcode-block" id="TripleChameleon.set_static"><a class="viewcode-back" href="../../../../lenstronomy.LensModel.Profiles.html#lenstronomy.LensModel.Profiles.chameleon.TripleChameleon.set_static">[docs]</a>    <span class="k">def</span> <span class="nf">set_static</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha_1</span><span class="p">,</span> <span class="n">ratio12</span><span class="p">,</span> <span class="n">ratio13</span><span class="p">,</span> <span class="n">w_c1</span><span class="p">,</span> <span class="n">w_t1</span><span class="p">,</span> <span class="n">e11</span><span class="p">,</span> <span class="n">e21</span><span class="p">,</span> <span class="n">w_c2</span><span class="p">,</span> <span class="n">w_t2</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">w_c3</span><span class="p">,</span> <span class="n">w_t3</span><span class="p">,</span> <span class="n">e13</span><span class="p">,</span> <span class="n">e23</span><span class="p">,</span>
-                 <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                   <span class="n">center_x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="n">amp1</span><span class="p">,</span> <span class="n">amp2</span><span class="p">,</span> <span class="n">amp3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ratio_definition</span><span class="p">(</span><span class="n">alpha_1</span><span class="p">,</span> <span class="n">ratio12</span><span class="p">,</span> <span class="n">ratio13</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chameleon_1</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">amp1</span><span class="p">,</span> <span class="n">w_c1</span><span class="p">,</span> <span class="n">w_t1</span><span class="p">,</span> <span class="n">e11</span><span class="p">,</span> <span class="n">e21</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chameleon_2</span><span class="o">.</span><span class="n">set_static</span><span class="p">(</span><span class="n">amp2</span><span class="p">,</span> <span class="n">w_c2</span><span class="p">,</span> <span class="n">w_t2</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
@@ -647,7 +647,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f_xx1</span><span class="p">,</span> <span class="n">f_xy1</span><span class="p">,</span> <span class="n">f_yx1</span><span class="p">,</span> <span class="n">f_yy1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointMass</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_1</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">ratio_pointmass</span><span class="p">),</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="n">f_xx2</span><span class="p">,</span> <span class="n">f_xy2</span><span class="p">,</span> <span class="n">f_yx2</span><span class="p">,</span> <span class="n">f_yy2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chameleon</span><span class="o">.</span><span class="n">hessian</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha_1</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">+</span> <span class="n">ratio_pointmass</span><span class="p">),</span> <span class="n">ratio_chameleon</span><span class="p">,</span> <span class="n">w_c1</span><span class="p">,</span> <span class="n">w_t1</span><span class="p">,</span>
-                                                     <span class="n">e11</span><span class="p">,</span> <span class="n">e21</span><span class="p">,</span> <span class="n">w_c2</span><span class="p">,</span> <span class="n">w_t2</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
+                                                            <span class="n">e11</span><span class="p">,</span> <span class="n">e21</span><span class="p">,</span> <span class="n">w_c2</span><span class="p">,</span> <span class="n">w_t2</span><span class="p">,</span> <span class="n">e12</span><span class="p">,</span> <span class="n">e22</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f_xx1</span> <span class="o">+</span> <span class="n">f_xx2</span><span class="p">,</span> <span class="n">f_xy1</span> <span class="o">+</span> <span class="n">f_xy2</span><span class="p">,</span> <span class="n">f_yx1</span> <span class="o">+</span> <span class="n">f_yx2</span><span class="p">,</span> <span class="n">f_yy1</span> <span class="o">+</span> <span class="n">f_yy2</span></div></div>
 </pre></div>
 
@@ -680,7 +680,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.chameleon</a></li> 
       </ul>

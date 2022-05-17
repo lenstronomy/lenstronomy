@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.GalKin.galkin_model &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.GalKin.galkin_model &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.galkin_model</a></li> 
       </ul>
@@ -85,7 +85,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kwargs_model: keyword arguments describing the model components</span>
-<span class="sd">        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances involved</span>
+<span class="sd">        :param kwargs_cosmo: keyword arguments that define the cosmology in terms of the angular diameter distances</span>
+<span class="sd">         involved</span>
 <span class="sd">        :param kwargs_numerics: numerics keyword arguments</span>
 <span class="sd">        :param analytic_kinematics: bool, if True uses the analytic kinematic model</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -111,10 +112,9 @@
 <span class="sd">        https://arxiv.org/pdf/1006.2344.pdf</span>
 
 <span class="sd">        :param r: 3d radius to check slope-anisotropy constraint</span>
-<span class="sd">        :param theta_E: Einstein radius in arc seconds</span>
-<span class="sd">        :param gamma: power-law slope</span>
-<span class="sd">        :param a_ani: scaled transition radius of the OM anisotropy distribution</span>
-<span class="sd">        :param r_eff: half-light radius in arc seconds</span>
+<span class="sd">        :param kwargs_mass: keyword arguments for mass (lens) profile</span>
+<span class="sd">        :param kwargs_light: keyword arguments for light profile</span>
+<span class="sd">        :param kwargs_anisotropy: keyword arguments for stellar anisotropy distribution</span>
 <span class="sd">        :return: equation (10) &gt;= 0 for physical interpretation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">dr</span> <span class="o">=</span> <span class="mf">0.01</span>  <span class="c1"># finite differential in radial direction</span>
@@ -157,7 +157,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.GalKin.galkin_model</a></li> 
       </ul>

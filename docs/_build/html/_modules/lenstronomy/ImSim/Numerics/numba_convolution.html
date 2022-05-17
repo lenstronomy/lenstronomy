@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.ImSim.Numerics.numba_convolution &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.ImSim.Numerics.numba_convolution &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numba_convolution</a></li> 
       </ul>
@@ -53,20 +53,23 @@
 
 <span class="sd">    the convolution is inspired by pyautolens: https://github.com/Jammy2211/PyAutoLens</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">memory_raise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">conv_pixels</span><span class="p">,</span> <span class="n">compute_pixels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">memory_raise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        :param kernel: convolution kernel in units of the image pixels provided, odd length per axis</span>
 <span class="sd">        :param conv_pixels: bool array same size as data, pixels to be convolved and their light to be blurred</span>
-<span class="sd">        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other pixels</span>
+<span class="sd">        :param compute_pixels: bool array of size of image, these pixels (if True) will get blurred light from other</span>
+<span class="sd">         pixels</span>
 <span class="sd">        :param nopython: bool, numba jit setting to use python or compiled.</span>
 <span class="sd">        :param cache: bool, numba jit setting to use cache</span>
 <span class="sd">        :param parallel: bool, numba jit setting to use parallel mode</span>
-<span class="sd">        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within certain bounds</span>
+<span class="sd">        :param memory_raise: bool, if True, checks whether memory required to store the convolution kernel is within</span>
+<span class="sd">         certain bounds</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#numba_util.nopython = nopython</span>
-        <span class="c1">#numba_util.cache = cache</span>
-        <span class="c1">#numba_util.parallel = parallel</span>
+        <span class="c1"># numba_util.nopython = nopython</span>
+        <span class="c1"># numba_util.cache = cache</span>
+        <span class="c1"># numba_util.parallel = parallel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_memory_raise</span> <span class="o">=</span> <span class="n">memory_raise</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kernel</span> <span class="o">=</span> <span class="n">kernel</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_conv_pixels</span> <span class="o">=</span> <span class="n">conv_pixels</span>
@@ -161,7 +164,6 @@
 
 <span class="sd">        :param image_array: selected subset of image in 1d array conventions</span>
 <span class="sd">        :param num_data: number of 1d data that get convolved light and are output</span>
-<span class="sd">        :param image_conv_indexes: indexes of image (in 1d convention) those pixels get convolved</span>
 <span class="sd">        :param image_frame_kernels: list of indexes that have a response for certain pixel (as a list</span>
 <span class="sd">        :param image_frame_lengths: length of image_frame_kernels</span>
 <span class="sd">        :return:</span>
@@ -290,7 +292,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.numba_convolution</a></li> 
       </ul>

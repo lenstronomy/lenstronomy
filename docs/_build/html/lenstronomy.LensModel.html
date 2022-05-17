@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.LensModel package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel package &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel package</a></li> 
       </ul>
@@ -718,6 +718,8 @@ eigenvectors, you can just set axis_ratio = 1.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x_image</strong> – a list or array of x coordinates [units arcsec]</p></li>
 <li><p><strong>y_image</strong> – a list or array of y coordinates [units arcsec]</p></li>
+<li><p><strong>source_x</strong> – float, source position</p></li>
+<li><p><strong>source_y</strong> – float, source position</p></li>
 <li><p><strong>kwargs_lens</strong> – keyword arguments for the lens model</p></li>
 <li><p><strong>source_fwhm_parsec</strong> – the size of the background source [units parsec]</p></li>
 <li><p><strong>z_source</strong> – the source redshift</p></li>
@@ -902,11 +904,20 @@ grid_radius_arcsec</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LensModel.profile_integrals.ProfileIntegrals.density_2d">
 <span class="sig-name descname"><span class="pre">density_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs_profile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_param</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/profile_integrals.html#ProfileIntegrals.density_2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.profile_integrals.ProfileIntegrals.density_2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>computes the projected density along the line-of-sight
-:param r: radius (arcsec)
-:param kwargs_profile: keyword argument list with lens model parameters
-:param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention and the return is the convergence
-:return: 2d projected density at projected radius r</p>
+<dd><p>computes the projected density along the line-of-sight</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> – radius (arcsec)</p></li>
+<li><p><strong>kwargs_profile</strong> – keyword argument list with lens model parameters</p></li>
+<li><p><strong>lens_param</strong> – boolean, if True uses the lens model parameterization in computing the 3d density convention
+and the return is the convergence</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>2d projected density at projected radius r</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1027,6 +1038,7 @@ The integral in the LOS projection of this quantity results in the convergence q
 <li><p><strong>x_source</strong> – source position</p></li>
 <li><p><strong>y_source</strong> – source position</p></li>
 <li><p><strong>kwargs_lens</strong> – list of keyword arguments of lens model parameters matching the lens model classes</p></li>
+<li><p><strong>k</strong> – </p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1187,7 +1199,7 @@ grav_pot = -const.G * mass_dim / (r * const.arcsec * self._cosmo.dd * const.Mpc)
         <li class="right" >
           <a href="lenstronomy.ImSim.Numerics.html" title="lenstronomy.ImSim.Numerics package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel package</a></li> 
       </ul>

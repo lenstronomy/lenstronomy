@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.ImSim.image_linear_solve &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.ImSim.image_linear_solve &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.image_linear_solve</a></li> 
       </ul>
@@ -56,7 +56,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_class</span><span class="p">,</span> <span class="n">psf_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">lens_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">source_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">lens_light_model_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">point_source_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">extinction_class</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-                 <span class="n">kwargs_numerics</span><span class="o">=</span><span class="p">{},</span> <span class="n">likelihood_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">kwargs_numerics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">likelihood_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">psf_error_map_bool_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwargs_pixelbased</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
@@ -76,7 +76,7 @@
             <span class="n">likelihood_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">data_class</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">likelihood_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">likelihood_mask</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mask1d</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">image2array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">likelihood_mask</span><span class="p">)</span>
-        <span class="c1">#kwargs_numerics[&#39;compute_indexes&#39;] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask</span>
+        <span class="c1"># kwargs_numerics[&#39;compute_indexes&#39;] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ImageLinearFit</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data_class</span><span class="p">,</span> <span class="n">psf_class</span><span class="o">=</span><span class="n">psf_class</span><span class="p">,</span> <span class="n">lens_model_class</span><span class="o">=</span><span class="n">lens_model_class</span><span class="p">,</span>
                                              <span class="n">source_model_class</span><span class="o">=</span><span class="n">source_model_class</span><span class="p">,</span>
                                              <span class="n">lens_light_model_class</span><span class="o">=</span><span class="n">lens_light_model_class</span><span class="p">,</span>
@@ -259,8 +259,8 @@
                 <span class="n">marg_const</span> <span class="o">=</span> <span class="n">de_lens</span><span class="o">.</span><span class="n">marginalization_new</span><span class="p">(</span><span class="n">cov_matrix</span><span class="p">,</span> <span class="n">d_prior</span><span class="o">=</span><span class="n">linear_prior</span><span class="p">)</span>
                 <span class="n">logL</span> <span class="o">+=</span> <span class="n">marg_const</span>
         <span class="k">if</span> <span class="n">check_positive_flux</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_positive_flux</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">bool_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_positive_flux</span><span class="p">(</span><span class="n">kwargs_source</span><span class="p">,</span> <span class="n">kwargs_lens_light</span><span class="p">,</span> <span class="n">kwargs_ps</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">bool_</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
                 <span class="n">logL</span> <span class="o">-=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">8</span>
         <span class="k">return</span> <span class="n">logL</span>
 
@@ -360,8 +360,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># in case the source plane grid size has changed, update the kwargs accordingly</span>
         <span class="n">ss_factor_source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SourceNumerics</span><span class="o">.</span><span class="n">grid_supersampling_factor</span>
-        <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;n_pixels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel</span> <span class="o">*</span> <span class="n">ss_factor_source</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># effective number of pixels in source plane</span>
-        <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_width</span> <span class="o">/</span> <span class="n">ss_factor_source</span>        <span class="c1"># effective pixel size of source plane grid</span>
+        <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;n_pixels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel</span> <span class="o">*</span> <span class="n">ss_factor_source</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>  <span class="c1">#  effective number of pixels in source plane</span>
+        <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">pixel_width</span> <span class="o">/</span> <span class="n">ss_factor_source</span>  <span class="c1"># effective pixel size of source plane grid</span>
         <span class="c1"># pixelated reconstructions have no well-defined center, we put it arbitrarily at (0, 0), center of the image</span>
         <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">kwargs_source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center_y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
@@ -440,10 +440,10 @@
 <span class="sd">        :param kwargs_ps:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">))</span>
+        <span class="n">error_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Data</span><span class="o">.</span><span class="n">num_pixel_axes</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="nb">bool</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map_bool_list</span><span class="p">):</span>
-                <span class="k">if</span> <span class="nb">bool</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">bool_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_psf_error_map_bool_list</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">bool_</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
                     <span class="n">ra_pos</span><span class="p">,</span> <span class="n">dec_pos</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">point_source_list</span><span class="p">(</span><span class="n">kwargs_ps</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="o">=</span><span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
                                                                             <span class="n">with_amp</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ra_pos</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -566,7 +566,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.image_linear_solve</a></li> 
       </ul>

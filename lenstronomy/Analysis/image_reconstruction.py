@@ -49,7 +49,7 @@ class MultiBandImageReconstruction(object):
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
                                                        bands_compute=bands_compute,
-                                                       likelihood_mask_list=image_likelihood_mask_list)
+                                                       image_likelihood_mask_list=image_likelihood_mask_list)
 
         # here we perform the (joint) linear inversion with all data
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)

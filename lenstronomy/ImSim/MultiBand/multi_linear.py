@@ -28,8 +28,8 @@ class MultiLinear(MultiDataBase):
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
         :param kwargs_model: model option keyword arguments
-        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
-        :param compute_bool: (optinal), bool list to indicate which band to be included in the modeling
+        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images)
+        :param compute_bool: (optional), bool list to indicate which band to be included in the modeling
         """
         self.type = 'multi-linear'
         imageModel_list = []

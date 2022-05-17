@@ -18,7 +18,8 @@ class LikelihoodModule(object):
     - imSim_class: an instance of a class that simulates one (or more) images and returns the likelihood, such as
     ImageModel(), Multiband(), MultiExposure()
     - param_class: instance of a Param() class that can cast the sorted list of parameters that are sampled into the
-     conventionsof the imSim_class
+
+    conventions of the imSim_class
 
     Additional arguments are supported for adding a time-delay likelihood etc (see __init__ definition)
     """
@@ -66,12 +67,15 @@ class LikelihoodModule(object):
         :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more
         images predicted than indicated in max_num_images, a punishment occurs
         :param max_num_images: int, see restrict_image_number
-        :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the fitting
+        :param bands_compute: list of bools with same length as data objects, indicates which "band" to include in the
+         fitting
         :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source
-        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)
+        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes
+         (see FluxRatioLikeliood)
         :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
-        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
+         (see SLITronomy documentation)
         """
         multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
@@ -129,7 +133,10 @@ class LikelihoodModule(object):
         :return: updated model instances of this class
         """
 
-        lens_model_class, source_model_class, lens_light_model_class, point_source_class, extinction_class = class_creator.create_class_instances(**kwargs_model)
+        # TODO: in case lens model or point source models are only applied on partial images, then this current class
+        # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
+        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+                                                                                             **kwargs_model)
         self.PointSource = point_source_class
 
         if self._time_delay_likelihood is True:
@@ -214,7 +221,8 @@ class LikelihoodModule(object):
                 penalty = 10.**5
                 bound_hit = True
                 if verbose is True:
-                    print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i], upperLimit[i]))
+                    print('parameter %s with value %s hit the bounds [%s, %s] ' % (i, args[i], lowerLimit[i],
+                                                                                   upperLimit[i]))
                 return penalty, bound_hit
         return penalty, bound_hit
 
@@ -280,7 +288,8 @@ class LikelihoodModule(object):
             ra_image_list = []
         if dec_image_list is None:
             dec_image_list = []
-        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list
+        return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, \
+               flux_ratio_errors, ra_image_list, dec_image_list
 
     def _reset_point_source_cache(self, bool_input=True):
         self.PointSource.delete_lens_model_cache()

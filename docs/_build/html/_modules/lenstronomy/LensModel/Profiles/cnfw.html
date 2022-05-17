@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LensModel.Profiles.cnfw &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.Profiles.cnfw &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cnfw</a></li> 
       </ul>
@@ -64,7 +64,6 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param interpol: bool, if True, interpolates the functions F(), g() and h()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nfw</span> <span class="o">=</span> <span class="n">NFW</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CNFW</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -172,14 +171,12 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        projected two dimenstional NFW profile (kappa*Sigma_crit)</span>
 
-<span class="sd">        :param R: radius of interest</span>
-<span class="sd">        :type R: float/numpy array</span>
+<span class="sd">        :param x: radius of interest</span>
+<span class="sd">        :type x: float/numpy array</span>
 <span class="sd">        :param Rs: scale radius</span>
 <span class="sd">        :type Rs: float</span>
 <span class="sd">        :param rho0: density normalization (characteristic density)</span>
 <span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
 <span class="sd">        :return: Epsilon(R) projected density at radius R</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
@@ -195,9 +192,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        mass enclosed a 3d sphere or radius r</span>
 
-<span class="sd">        :param r:</span>
-<span class="sd">        :param Ra:</span>
+<span class="sd">        :param R:</span>
 <span class="sd">        :param Rs:</span>
+<span class="sd">        :param rho0:</span>
+<span class="sd">        :param r_core:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">r_core</span> <span class="o">*</span> <span class="n">Rs</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span>
@@ -247,10 +245,6 @@
 <span class="sd">        :type Rs: float</span>
 <span class="sd">        :param rho0: density normalization (characteristic density)</span>
 <span class="sd">        :type rho0: float</span>
-<span class="sd">        :param r200: radius of (sub)halo</span>
-<span class="sd">        :type r200: float&gt;0</span>
-<span class="sd">        :param axis: projection to either x- or y-axis</span>
-<span class="sd">        :type axis: same as R</span>
 <span class="sd">        :return: Epsilon(R) projected density at radius R</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">c</span> <span class="o">=</span> <span class="mf">0.000001</span>
@@ -272,8 +266,6 @@
 <span class="sd">        analytic solution of the projection integral</span>
 <span class="sd">        (convergence)</span>
 
-<span class="sd">        :param x: R/Rs</span>
-<span class="sd">        :type x: float &gt;0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="n">R</span> <span class="o">/</span> <span class="n">Rs</span>
@@ -332,8 +324,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        analytic solution of the projection integral</span>
 
-<span class="sd">        :param x: a dimensionless quantity, either r/rs or r/rc</span>
-<span class="sd">        :type x: float &gt;0</span>
+<span class="sd">        :param X: a dimensionless quantity, either r/rs or r/rc</span>
+<span class="sd">        :type X: float &gt;0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -353,8 +345,8 @@
             <span class="n">inds2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span><span class="o">&gt;=</span><span class="n">c</span><span class="p">)</span>
 
             <span class="n">output</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">((</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span>
-                                    <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]))</span> <span class="o">-</span> \
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                                    <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]))</span> <span class="o">-</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
         <span class="k">else</span><span class="p">:</span>
 
@@ -366,8 +358,7 @@
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">output</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">((</span><span class="n">X</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">-</span>
-                                    <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">-</span> \
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">b</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                                    <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">*</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">))</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">b</span> <span class="o">**</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">output</span>
 
@@ -376,8 +367,8 @@
 
 <span class="sd">        analytic solution of integral for NFW profile to compute deflection angel and gamma</span>
 
-<span class="sd">        :param x: R/Rs</span>
-<span class="sd">        :type x: float &gt;0</span>
+<span class="sd">        :param X: R/Rs</span>
+<span class="sd">        :type X: float &gt;0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="mi">1</span><span class="o">+</span><span class="n">c</span>
@@ -397,19 +388,19 @@
 
             <span class="n">output</span><span class="p">[</span><span class="n">inds1</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">b</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="n">fac</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.38692</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span> <span class="o">-</span> <span class="n">b2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span>
 
-            <span class="n">output</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="n">fac</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">])</span> <span class="o">-</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span> <span class="o">+</span> \
-                <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span><span class="o">*</span>
-                             <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]))</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="n">fac</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">])</span> <span class="o">-</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span> <span class="o">+</span>
+                                      <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">*</span> <span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span>
+                                      <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span><span class="p">[</span><span class="n">inds2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">inds2</span><span class="p">]))</span>
             <span class="k">return</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">output</span>
 
         <span class="k">else</span><span class="p">:</span>
 
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">X</span> <span class="o">-</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">c</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">b</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> \
-                            <span class="n">fac</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.38692</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span> <span class="o">-</span> <span class="n">b2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">b</span><span class="o">+</span><span class="n">b</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span>
+                                   <span class="n">fac</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.38692</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span> <span class="o">-</span> <span class="n">b2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="n">fac</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span> <span class="o">-</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span> <span class="o">+</span> \
-                <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span><span class="o">*</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">prefac</span> <span class="o">*</span> <span class="p">(</span><span class="n">fac</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">0.25</span> <span class="o">*</span> <span class="n">x2</span><span class="p">)</span> <span class="o">-</span> <span class="n">b2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">b2</span><span class="p">)</span> <span class="o">+</span>
+                                   <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">b2</span> <span class="o">-</span> <span class="n">x2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span> <span class="o">*</span> <span class="n">b</span><span class="o">**-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="p">(</span><span class="n">x2</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span><span class="o">*</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">_nfw_func</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
 
             <span class="k">return</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">output</span></div>
@@ -444,7 +435,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.Profiles.cnfw</a></li> 
       </ul>

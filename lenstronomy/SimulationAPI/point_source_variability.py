@@ -37,17 +37,18 @@ class PointSourceVariability(object):
         sim_api_bkg = SimAPI(numpix, kwargs_single_band, kwargs_model)
         image_model_bkg = sim_api_bkg.image_model_class(kwargs_numerics)
         kwargs_lens_light, kwargs_source, kwargs_ps = sim_api_bkg.magnitude2amplitude(kwargs_lens_light_mag,
-                                                                                           kwargs_source_mag,
-                                                                                           kwargs_ps_mag)
+                                                                                      kwargs_source_mag,
+                                                                                      kwargs_ps_mag)
         self._image_bkg = image_model_bkg.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps)
         # compute image positions of point source
         x_center, y_center = sim_api_bkg.data_class.center
         search_window = np.max(sim_api_bkg.data_class.width)
         lensModel = image_model_bkg.LensModel
         solver = LensEquationSolver(lensModel=lensModel)
-        image_x, image_y = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.1, search_window=search_window,
-                                          precision_limit=10**(-10), num_iter_max=100, arrival_time_sort=True,
-                                          x_center=x_center, y_center=y_center)
+        image_x, image_y = solver.image_position_from_source(source_x, source_y, kwargs_lens, min_distance=0.1,
+                                                             search_window=search_window, precision_limit=10**(-10),
+                                                             num_iter_max=100, arrival_time_sort=True,
+                                                             x_center=x_center, y_center=y_center)
         mag = lensModel.magnification(image_x, image_y, kwargs_lens)
         dt_days = lensModel.arrival_time(image_x, image_y, kwargs_lens)
         dt_days -= np.min(dt_days)  # shift the arrival times such that the first image arrives at t=0 and the other
@@ -63,8 +64,8 @@ class PointSourceVariability(object):
         self._variability_func = variability_func
         # save the computed image position of the lensed point source in cache such that the solving the lens equation
         # only needs to be applied once.
-        #self.sim_api_bkg.reset_point_source_cache(bool=True)
-        #self.sim_api_ps.reset_point_source_cache(bool=True)
+        # self.sim_api_bkg.reset_point_source_cache(bool=True)
+        # self.sim_api_ps.reset_point_source_cache(bool=True)
 
     @property
     def delays(self):

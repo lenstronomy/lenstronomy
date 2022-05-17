@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Analysis.lens_profile &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Analysis.lens_profile &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis.lens_profile</a></li> 
       </ul>
@@ -85,13 +85,23 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">lens_model_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INTERPOL&#39;</span><span class="p">,</span> <span class="s1">&#39;INTERPOL_SCALED&#39;</span><span class="p">]:</span>
             <span class="n">center_x</span> <span class="o">=</span> <span class="n">x_grid</span><span class="p">[</span><span class="n">kappa</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">kappa</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">center_y</span> <span class="o">=</span> <span class="n">y_grid</span><span class="p">[</span><span class="n">kappa</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">kappa</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1">#kappa = util.array2image(kappa)</span>
+
         <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">grid_num</span><span class="o">*</span><span class="n">grid_spacing</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">grid_num</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">inner_most_bin</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">r_array</span><span class="p">:</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">mask_util</span><span class="o">.</span><span class="n">mask_center_2d</span><span class="p">(</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">x_grid</span><span class="p">,</span> <span class="n">y_grid</span><span class="p">))</span>
             <span class="n">sum_mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">sum_mask</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">kappa_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kappa</span><span class="o">*</span><span class="n">mask</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">inner_most_bin</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">kappa_mean</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="ne">Warning</span><span class="p">(</span>
+                            <span class="s2">&quot;Central convergence value is subcritical &lt;1 and hence an Einstein radius is ill defined.&quot;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">get_precision</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+                    <span class="n">inner_most_bin</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="n">kappa_mean</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">get_precision</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">r_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -125,6 +135,8 @@
 
 <span class="sd">        :param kwargs_lens: lens model keyword argument list</span>
 <span class="sd">        :param radius: radius from the center where to compute the logarithmic slope (angular units</span>
+<span class="sd">        :param center_x: center of profile from where to compute the slope</span>
+<span class="sd">        :param center_y: center of profile from where to compute the slope</span>
 <span class="sd">        :param model_list_bool: bool list, indicate which part of the model to consider</span>
 <span class="sd">        :param num_points: number of estimates around the Einstein radius</span>
 <span class="sd">        :return: logarithmic power-law slope</span>
@@ -136,7 +148,8 @@
 
         <span class="n">alpha_E_x_i</span><span class="p">,</span> <span class="n">alpha_E_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">center_x</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">model_list_bool</span><span class="p">)</span>
         <span class="n">alpha_E_r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha_E_x_i</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">alpha_E_y_i</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">alpha_E_dr_x_i</span><span class="p">,</span> <span class="n">alpha_E_dr_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">center_x</span> <span class="o">+</span> <span class="n">x_dr</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">+</span> <span class="n">y_dr</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">model_list_bool</span><span class="p">)</span>
+        <span class="n">alpha_E_dr_x_i</span><span class="p">,</span> <span class="n">alpha_E_dr_y_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lens_model</span><span class="o">.</span><span class="n">alpha</span><span class="p">(</span><span class="n">center_x</span> <span class="o">+</span> <span class="n">x_dr</span><span class="p">,</span> <span class="n">center_y</span> <span class="o">+</span> <span class="n">y_dr</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span>
+                                                                <span class="n">k</span><span class="o">=</span><span class="n">model_list_bool</span><span class="p">)</span>
         <span class="n">alpha_E_dr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">alpha_E_dr_x_i</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">alpha_E_dr_y_i</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">slope</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">alpha_E_dr</span> <span class="o">/</span> <span class="n">alpha_E_r</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="n">radius</span> <span class="o">+</span> <span class="n">dr</span><span class="p">)</span> <span class="o">/</span> <span class="n">radius</span><span class="p">))</span>
         <span class="n">gamma</span> <span class="o">=</span> <span class="o">-</span><span class="n">slope</span> <span class="o">+</span> <span class="mi">2</span>
@@ -199,7 +212,7 @@
         <span class="n">theta_E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_einstein_radius</span><span class="p">(</span><span class="n">kwargs_lens</span><span class="p">)</span>
         <span class="n">r_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span> <span class="o">*</span> <span class="n">theta_E</span>
         <span class="n">kappa_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radial_lens_profile</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kwargs_lens</span><span class="p">,</span> <span class="n">center_x</span><span class="o">=</span><span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="o">=</span><span class="n">center_y</span><span class="p">,</span>
-                                                <span class="n">model_bool_list</span><span class="o">=</span><span class="n">model_bool_list</span><span class="p">)</span>
+                                           <span class="n">model_bool_list</span><span class="o">=</span><span class="n">model_bool_list</span><span class="p">)</span>
         <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">norm</span> <span class="o">=</span> <span class="n">mge</span><span class="o">.</span><span class="n">mge_1d</span><span class="p">(</span><span class="n">r_array</span><span class="p">,</span> <span class="n">kappa_s</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">n_comp</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">amplitudes</span><span class="p">,</span> <span class="n">sigmas</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span></div>
 
@@ -273,7 +286,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Analysis.lens_profile</a></li> 
       </ul>

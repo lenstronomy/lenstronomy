@@ -9,7 +9,7 @@ __all__ = ['PEMD']
 
 class PEMD(LensProfileBase):
     """
-    class for power law ellipse mass density profile.
+    class for power law ellipse mass density profile (PEMD).
     This class effectively calls the class SPEMD_SMOOTH with a fixed and very small central smoothing scale
     to perform the numerical integral using the FASTELL code by Renan Barkana.
 

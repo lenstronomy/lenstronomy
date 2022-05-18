@@ -86,7 +86,7 @@ class LensModel(object):
                                          kwargs_interp=kwargs_interp)
         else:
             if los_effects is True:
-                print('Adding '+los_model+' to the main lens.')
+                # print('Adding '+los_model+' to the main lens.')
                 self.lens_model = SinglePlaneLOS(lens_model_list,
                     index_los=index_los,
                     numerical_alpha_class=numerical_alpha_class,
@@ -94,7 +94,7 @@ class LensModel(object):
                     z_source_convention=z_source_convention,
                     kwargs_interp=kwargs_interp)
             else:
-                print('No line-of-sight effects being added.')
+                # print('No line-of-sight effects being added.')
                 self.lens_model = SinglePlane(lens_model_list,
                     numerical_alpha_class=numerical_alpha_class,
                     lens_redshift_list=lens_redshift_list,
@@ -118,7 +118,7 @@ class LensModel(object):
         """
         return self.lens_model.ray_shooting(x, y, kwargs, k=k)
 
-    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None): 
+    def fermat_potential(self, x_image, y_image, kwargs_lens, x_source=None, y_source=None):
         """
         fermat potential (negative sign means earlier arrival time)
         for Multi-plane lensing, it computes the effective Fermat potential (derived from the arrival time and
@@ -128,11 +128,11 @@ class LensModel(object):
         :param y_image: image position
         :param x_source: source position
         :param y_source: source position
-        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes              
+        :param kwargs_lens: list of keyword arguments of lens model parameters matching the lens model classes
         :return: fermat potential in arcsec**2 without geometry term (second part of Eqn 1 in Suyu et al. 2013) as a list
         """
         if hasattr(self.lens_model, 'fermat_potential'):
-            return self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source, y_source) 
+            return self.lens_model.fermat_potential(x_image, y_image, kwargs_lens, x_source, y_source)
         elif hasattr(self.lens_model, 'arrival_time') and hasattr(self, '_lensCosmo'):
             dt = self.lens_model.arrival_time(x_image, y_image, kwargs_lens)
             fermat_pot_eff = dt * const.c / self._lensCosmo.ddt / const.Mpc * const.day_s / const.arcsec ** 2

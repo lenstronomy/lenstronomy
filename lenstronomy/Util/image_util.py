@@ -114,6 +114,17 @@ def rotateImage(img, angle):
     imgR = ndimage.rotate(img, angle, reshape=False)
     return imgR
 
+@export
+def shiftImage(img, shift):
+    """
+
+    querries scipy.ndimage.rotate routine
+    :param img: image to be rotated
+    :param shift: sequence containing x and y shift in pixels
+    :return: shifted image
+    """
+    imgS = ndimage.shift(img, shift)
+    return imgS
 
 @export
 def re_size_array(x_in, y_in, input_values, x_out, y_out):

@@ -196,6 +196,12 @@ def test_shiftImage():
     npt.assert_almost_equal(im_shift[3, 2], 1., decimal=10)
     npt.assert_almost_equal(im_shift[2, 1], 0., decimal=10)
 
+    img = np.zeros((5, 5))
+    img[2,2] = 1
+    shift = [0.5,0.5]
+    im_shift = image_util.shiftImage(img, shift)
+    npt.assert_almost_equal(np.sum(im_shift), np.sum(img), decimal=10)
+
 
 def test_re_size_array():
     numPix = 9

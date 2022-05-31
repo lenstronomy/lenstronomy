@@ -118,8 +118,8 @@ def rotateImage(img, angle):
 def shiftImage(img, shift):
     """
 
-    querries scipy.ndimage.rotate routine
-    :param img: image to be rotated
+    querries scipy.ndimage.shift routine
+    :param img: image to be shifted
     :param shift: sequence containing x and y shift in pixels
     :return: shifted image
     """

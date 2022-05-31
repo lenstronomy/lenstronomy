@@ -179,6 +179,23 @@ def test_rotateImage():
     npt.assert_almost_equal(im_rot[2, 2], 1., decimal=10)
     npt.assert_almost_equal(im_rot[2, 1], 0.23931518624017073, decimal=10)
 
+def test_shiftImage():
+    img = np.zeros((5, 5))
+    img[2, 2] = 1
+    img[1, 2] = 0.5
+
+    shift = [1, 1]
+    im_shift = image_util.shiftImage(img, shift)
+    npt.assert_almost_equal(im_shift[2, 3], 0.5, decimal=10)
+    npt.assert_almost_equal(im_shift[3, 3], 1., decimal=10)
+    npt.assert_almost_equal(im_shift[2, 1], 0., decimal=10)
+
+    shift = [1, 0]
+    im_shift = image_util.shiftImage(img, shift)
+    npt.assert_almost_equal(im_shift[2, 2], 0.5, decimal=10)
+    npt.assert_almost_equal(im_shift[3, 2], 1., decimal=10)
+    npt.assert_almost_equal(im_shift[2, 1], 0., decimal=10)
+
 
 def test_re_size_array():
     numPix = 9

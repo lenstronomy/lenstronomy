@@ -144,7 +144,9 @@ class ImageModel(object):
         if de_lensed is True:
             source_light = self.SourceModel.surface_brightness(ra_grid, dec_grid, kwargs_source, k=k)
         else:
-            source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source, k=k)
+            source_light = self.source_mapping.image_flux_joint(ra_grid, dec_grid, kwargs_lens, kwargs_source,
+                                                                kwargs_special=kwargs_special,
+                                                                k=k)
             source_light *= self._extinction.extinction(ra_grid, dec_grid, kwargs_extinction=kwargs_extinction,
                                                         kwargs_special=kwargs_special)
         source_light_final = self.ImageNumerics.re_size_convolve(source_light, unconvolved=unconvolved)

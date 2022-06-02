@@ -72,14 +72,15 @@ def test_ellipticity2phi_q_symmetry():
     phi,q = 1.5, 0.8
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
-    assert phi == phi_new
-    assert q == q_new
+    npt.assert_almost_equal(phi, phi_new, decimal=8)
+    npt.assert_almost_equal(q, q_new, decimal=8)
 
     phi,q = -1.5, 0.8
     e1,e2 = param_util.phi_q2_ellipticity(phi, q)
     phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
-    assert phi == phi_new
-    assert q == q_new
+    npt.assert_almost_equal(phi, phi_new, decimal=8)
+    npt.assert_almost_equal(q, q_new, decimal=8)
+
 
     e1, e2 = 0.1, -0.1
     phi, q = param_util.ellipticity2phi_q(e1, e2)
@@ -94,8 +95,8 @@ def test_ellipticity2phi_q_symmetry():
     phi_new, q_new = param_util.ellipticity2phi_q(e1_new, e2_new)
     npt.assert_almost_equal(phi, phi_new, decimal=10)
     npt.assert_almost_equal(q, q_new, decimal=10)
-    #npt.assert_almost_equal(e1, e1_new, decimal=10)
-    #npt.assert_almost_equal(e2, e2_new, decimal=10)
+    # npt.assert_almost_equal(e1, e1_new, decimal=10)
+    # npt.assert_almost_equal(e2, e2_new, decimal=10)
 
 
 def test_transform_e1e2():

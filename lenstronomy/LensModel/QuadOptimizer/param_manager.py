@@ -113,7 +113,7 @@ class CurvedArcBase(object):
 
     def __init__(self, kwargs_lens_init):
         """
-
+        # ['tangential_stretch', 'radial_stretch', 'curvature', 'dtan_dtan', 'direction', 'center_x', 'center_y']
         :param kwargs_lens_init: the initial kwargs_lens before optimizing
         """
 
@@ -151,9 +151,10 @@ class CurvedArcFixedCurvature(CurvedArcBase):
 
         radial_stretch = kwargs[0]['radial_stretch']
         tangential_stretch = kwargs[0]['tangential_stretch']
+        dtan_dtan = kwargs[0]['dtan_dtan']
         direction = kwargs[0]['direction']
 
-        args = (radial_stretch, tangential_stretch, direction)
+        args = (tangential_stretch, radial_stretch, dtan_dtan, direction)
 
         return args
 
@@ -176,13 +177,15 @@ class CurvedArcFixedCurvature(CurvedArcBase):
             d_radial_stretch = 2.
             d_tangential_stretch = 2.
             d_direction = np.pi / 10
+            d_dtan_dtan = 0.5
 
         else:
             d_radial_stretch = 10
             d_tangential_stretch = 10
             d_direction = np.pi / 2
+            d_dtan_dtan = 10.0
 
-        shifts = np.array([d_radial_stretch, d_tangential_stretch, d_direction]) * scale
+        shifts = np.array([d_tangential_stretch, d_radial_stretch, d_dtan_dtan, d_direction]) * scale
 
         low, high = np.empty_like(shifts), np.empty_like(shifts)
 
@@ -200,12 +203,12 @@ class CurvedArcFixedCurvature(CurvedArcBase):
         :return: dictionary of lens model parameters
         """
 
-        (radial_stretch, tangential_stretch, direction) = args
+        (tangential_stretch, radial_stretch, dtan_dtan, direction) = args
         curvature = self.kwargs_lens[0]['curvature']
         center_x = self.kwargs_lens[0]['center_x']
         center_y = self.kwargs_lens[0]['center_y']
 
-        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch,
+        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch, 'dtan_dtan': dtan_dtan,
          'curvature': curvature, 'direction': direction, 'center_x': center_x, 'center_y': center_y}
 
         self.kwargs_lens[0] = kwargs
@@ -227,8 +230,9 @@ class CurvedArcFree(CurvedArcBase):
         tangential_stretch = kwargs[0]['tangential_stretch']
         curvature = kwargs[0]['curvature']
         direction = kwargs[0]['direction']
+        dtan_dtan = kwargs[0]['dtan_dtan']
 
-        args = (radial_stretch, tangential_stretch, curvature, direction)
+        args = (radial_stretch, tangential_stretch, curvature, direction, dtan_dtan)
 
         return args
 
@@ -252,14 +256,16 @@ class CurvedArcFree(CurvedArcBase):
             d_tangential_stretch = 2.
             d_direction = np.pi / 10
             d_curvature = 2.
+            d_dtan_dtan = 0.5
 
         else:
             d_radial_stretch = 10
             d_tangential_stretch = 10
             d_direction = np.pi / 2
             d_curvature = 10.
+            d_dtan_dtan = 10.
 
-        shifts = np.array([d_radial_stretch, d_tangential_stretch, d_curvature, d_direction]) * scale
+        shifts = np.array([d_radial_stretch, d_tangential_stretch, d_curvature, d_direction, d_dtan_dtan]) * scale
 
         low, high = np.empty_like(shifts), np.empty_like(shifts)
 
@@ -277,12 +283,12 @@ class CurvedArcFree(CurvedArcBase):
         :return: dictionary of lens model parameters
         """
 
-        (radial_stretch, tangential_stretch, curvature, direction) = args
+        (radial_stretch, tangential_stretch, curvature, direction, dtan_dtan) = args
 
         center_x = self.kwargs_lens[0]['center_x']
         center_y = self.kwargs_lens[0]['center_y']
 
-        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch,
+        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch, 'dtan_dtan': dtan_dtan,
          'curvature': curvature, 'direction': direction, 'center_x': center_x, 'center_y': center_y}
 
         self.kwargs_lens[0] = kwargs
@@ -302,8 +308,9 @@ class CurvedArcFixedCurvatureDirection(CurvedArcBase):
 
         radial_stretch = kwargs[0]['radial_stretch']
         tangential_stretch = kwargs[0]['tangential_stretch']
+        dtan_dtan = kwargs[0]['dtan_dtan']
 
-        args = (radial_stretch, tangential_stretch)
+        args = (radial_stretch, tangential_stretch, dtan_dtan)
 
         return args
 
@@ -325,12 +332,14 @@ class CurvedArcFixedCurvatureDirection(CurvedArcBase):
         if re_optimize:
             d_radial_stretch = 2.
             d_tangential_stretch = 2.
+            d_dtan_dtan = 0.5
 
         else:
             d_radial_stretch = 10
             d_tangential_stretch = 10
+            d_dtan_dtan = 10
 
-        shifts = np.array([d_radial_stretch, d_tangential_stretch]) * scale
+        shifts = np.array([d_radial_stretch, d_tangential_stretch, d_dtan_dtan]) * scale
         low, high = np.empty_like(shifts), np.empty_like(shifts)
         for i in range(0, len(shifts)):
             low[i] = args[i] / shifts[i]
@@ -350,8 +359,9 @@ class CurvedArcFixedCurvatureDirection(CurvedArcBase):
         center_x = self.kwargs_lens[0]['center_x']
         center_y = self.kwargs_lens[0]['center_y']
         direction = self.kwargs_lens[0]['direction']
+        dtan_dtan = self.kwargs_lens[0]['dtan_dtan']
 
-        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch,
+        kwargs = {'radial_stretch': radial_stretch, 'tangential_stretch': tangential_stretch, 'dtan_dtan': dtan_dtan,
          'curvature': curvature, 'direction': direction, 'center_x': center_x, 'center_y': center_y}
 
         self.kwargs_lens[0] = kwargs

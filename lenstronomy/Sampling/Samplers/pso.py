@@ -205,17 +205,27 @@ class ParticleSwarmOptimizer(object):
         pos_list = []
 
         num_iter = 0
-        for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance):
-            chi2_list.append(self.global_best.fitness * 2)
-            vel_list.append(self.global_best.velocity)
-            pos_list.append(self.global_best.position)
-            num_iter += 1
+        try:
+            for _ in self.sample(max_iter, c1, c2, p, m, n, early_stop_tolerance):
+                chi2_list.append(self.global_best.fitness * 2)
+                vel_list.append(self.global_best.velocity)
+                pos_list.append(self.global_best.position)
+                num_iter += 1
 
-            if verbose and self.is_master():
-                if num_iter % 10 == 0:
-                    print(num_iter)
+                if verbose and self.is_master():
+                    if num_iter % 10 == 0:
+                        print(num_iter)
 
-        return self.global_best.position, [chi2_list, pos_list, vel_list]
+            return self.global_best.position, [chi2_list, pos_list, vel_list]
+        except:
+            print('global best:')
+            print(self.global_best)
+            print('low/high initial positions: ')
+            print(self.low)
+            print(self.high)
+            for particle in self.swarm:
+                print(particle.position, particle.fitness)
+            raise Exception('error in PSO')
 
     def _get_fitness(self, swarm):
         """

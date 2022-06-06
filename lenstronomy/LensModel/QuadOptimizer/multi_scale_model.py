@@ -168,7 +168,7 @@ class MultiScaleModel(object):
 
         kwargs_shift = self.compute_kwargs_shift()
 
-        lens_model_list = ['CURVED_ARC', 'SHIFT'] + self._lens_model_list_other
+        lens_model_list = ['CURVED_ARC_TAN_DIFF', 'SHIFT'] + self._lens_model_list_other
 
         # we have to make sure the center of the curved arc model is at the coordinate where
         # the ray hits the image plane, not necessarily = to the observed image position!

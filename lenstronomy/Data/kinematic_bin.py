@@ -8,7 +8,7 @@ class KinBin(object):
     """
     Class that summarizes the binned kinematic data.
 
-    The KinBin() class is initialize with :
+    The KinBin() class is initialized with :
      - The information about the bins (bin positions, bin value, and bin signal-to-noise): bin_pos_ra, bin_pos_dec,
     bin_data, bin_SNR.
      - The information about the associated intial shape of the unbinned kinematic map: bin_mask gives the index of

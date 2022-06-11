@@ -101,7 +101,7 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
-                if not 'init_samples' in kwargs:
+                if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -122,7 +122,8 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are
+         inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 
@@ -160,7 +161,7 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data,num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
         return bic
 
     @property

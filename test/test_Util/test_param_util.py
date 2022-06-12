@@ -6,25 +6,25 @@ import lenstronomy.Util.param_util as param_util
 
 
 def test_cart2polar():
-    #singel 2d coordinate transformation
+    # singel 2d coordinate transformation
     center_x, center_y = 0, 0
     x = 1
     y = 1
     r, phi = param_util.cart2polar(x, y, center_x, center_y)
-    assert r == np.sqrt(2) #radial part
+    assert r == np.sqrt(2)  # radial part
     assert phi == np.arctan(1)
-    #array of 2d coordinates
+    # array of 2d coordinates
     x = np.array([1, 2])
     y = np.array([1, 1])
 
     r, phi = param_util.cart2polar(x, y, center_x, center_y)
-    assert r[0] == np.sqrt(2) #radial part
+    assert r[0] == np.sqrt(2)  # radial part
     assert phi[0] == np.arctan(1)
 
 
 def test_polar2cart():
-    #singel 2d coordinate transformation
-    center = np.array([0,0])
+    # singel 2d coordinate transformation
+    center = np.array([0, 0])
     r = 1
     phi = np.pi
     x, y = param_util.polar2cart(r, phi, center)
@@ -34,53 +34,52 @@ def test_polar2cart():
 
 def test_phi_q2_ellipticity():
     phi, q = 0, 1
-    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == 0
     assert e2 == 0
 
     phi, q = 1, 1
-    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
     assert e1 == 0
     assert e2 == 0
 
-    phi, q = 2.,0.95
+    phi, q = 2., 0.95
     e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-    assert e1 == -0.016760092842656733
-    assert e2 == -0.019405192187382792
+    npt.assert_almost_equal(e1, -0.016760092842656733, decimal=8)
+    npt.assert_almost_equal(e2, -0.019405192187382792, decimal=8)
 
     phi, q = 0, 0.9
     e1, e2 = param_util.phi_q2_ellipticity(phi, q)
-    assert e1 == 0.05263157894736841
+    npt.assert_almost_equal(e1, 0.05263157894736841, decimal=8)
     assert e2 == 0
 
 
 def test_ellipticity2phi_q():
-    e1, e2 = 0.3,0
-    phi,q = param_util.ellipticity2phi_q(e1, e2)
+    e1, e2 = 0.3, 0
+    phi, q = param_util.ellipticity2phi_q(e1, e2)
     assert phi == 0
-    assert q == 0.53846153846153844
+    npt.assert_almost_equal(q, 0.53846153846153844, decimal=8)
 
     # Works on np arrays as well
     e1 = np.array([0.3, 0.9])
-    e2 = np.array([0.0, 0.9 ])
+    e2 = np.array([0.0, 0.9])
     phi, q = param_util.ellipticity2phi_q(e1, e2)
     assert np.allclose(phi, [0.0, 0.39269908], atol=1.e-08)
     assert np.allclose(q, [0.53846153, 5.00025001e-05], atol=1.e-08)
 
 
 def test_ellipticity2phi_q_symmetry():
-    phi,q = 1.5, 0.8
-    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
-    phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
+    phi, q = 1.5, 0.8
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+    phi_new, q_new = param_util.ellipticity2phi_q(e1, e2)
     npt.assert_almost_equal(phi, phi_new, decimal=8)
     npt.assert_almost_equal(q, q_new, decimal=8)
 
-    phi,q = -1.5, 0.8
-    e1,e2 = param_util.phi_q2_ellipticity(phi, q)
-    phi_new,q_new = param_util.ellipticity2phi_q(e1, e2)
+    phi, q = -1.5, 0.8
+    e1, e2 = param_util.phi_q2_ellipticity(phi, q)
+    phi_new, q_new = param_util.ellipticity2phi_q(e1, e2)
     npt.assert_almost_equal(phi, phi_new, decimal=8)
     npt.assert_almost_equal(q, q_new, decimal=8)
-
 
     e1, e2 = 0.1, -0.1
     phi, q = param_util.ellipticity2phi_q(e1, e2)
@@ -108,7 +107,6 @@ def test_transform_e1e2():
     x_new = (1-e1) * x - e2 * y
     y_new = -e2 * x + (1 + e1) * y
     det = np.sqrt((1 - e1) * (1 + e1) + e2 ** 2)
-    print(det)
     npt.assert_almost_equal(x_, x_new / det, decimal=5)
     npt.assert_almost_equal(y_, y_new / det, decimal=5)
 
@@ -119,8 +117,8 @@ def test_phi_gamma_ellipticity():
     e1, e2 = param_util.shear_polar2cartesian(phi, gamma)
     print(e1, e2, 'e1, e2')
     phi_out, gamma_out = param_util.shear_cartesian2polar(e1, e2)
-    assert phi == phi_out
-    assert gamma == gamma_out
+    npt.assert_almost_equal(phi_out, phi, decimal=8)
+    npt.assert_almost_equal(gamma_out, gamma_out, decimal=8)
 
 
 def test_phi_gamma_ellipticity_2():
@@ -133,10 +131,9 @@ def test_phi_gamma_ellipticity_2():
 
 
 def test_displace_eccentricity():
-    #x, y = np.array([1, 0]), np.array([0, 1])
     x, y = util.make_grid(numPix=10, deltapix=1)
-    e1 = 0.1#.1
-    e2 = -0#.1
+    e1 = 0.1
+    e2 = -0
     center_x, center_y = 0, 0
     x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=center_x, center_y=center_y)
 
@@ -156,7 +153,7 @@ def test_displace_eccentricity():
     npt.assert_almost_equal(y_, xt2, decimal=8)
 
     x, y = np.array([1, 0]), np.array([0, 1])
-    e1 = 0.1#.1#.1
+    e1 = 0.1
     e2 = 0
     center_x, center_y = 0, 0
     x_, y_ = param_util.transform_e1e2_product_average(x, y, e1, e2, center_x=center_x, center_y=center_y)
@@ -179,12 +176,12 @@ def test_displace_eccentricity():
 
 def test_transform_e1e2_square_average():
     x, y = np.array([1, 0]), np.array([0, 1])
-    e1 = 0.1  # .1#.1
+    e1 = 0.1
     e2 = 0
     center_x, center_y = 0, 0
 
     x_, y_ = param_util.transform_e1e2_square_average(x, y, e1, e2, center_x=center_x, center_y=center_y)
-    npt.assert_almost_equal(np.sum(x**2 +y**2), np.sum(x_**2+y_**2), decimal=8)
+    npt.assert_almost_equal(np.sum(x**2 + y**2), np.sum(x_**2+y_**2), decimal=8)
 
 
 if __name__ == '__main__':

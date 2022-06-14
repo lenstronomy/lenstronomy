@@ -1,7 +1,7 @@
 import numpy as np
 
 from lenstronomy.Data.psf import PSF
-from lenstronomy.Data.kinematic_bin import KinBin
+from lenstronomy.Data.kinematic_bin_2D import KinBin
 
 __all__ = ['KinData']
 

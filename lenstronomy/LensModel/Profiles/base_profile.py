@@ -69,7 +69,7 @@ class LensProfileBase(object):
         (optional definition)
 
         .. math::
-            M_{2d}(R) = \int_{0}^{R} \\rho_{2d}(r) 2\\pi r dr
+            M_{2d}(R) = \\int_{0}^{R} \\rho_{2d}(r) 2\\pi r dr
 
         with :math:`\\rho_{2d}(r)` is the density_2d_lens() definition
 

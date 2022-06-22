@@ -34,7 +34,8 @@ class LikelihoodModule(object):
                  prior_source_kde=None, prior_lens_light_kde=None, prior_ps_kde=None, prior_special_kde=None,
                  prior_extinction_kde=None, prior_lens_lognormal=None, prior_source_lognormal=None,
                  prior_extinction_lognormal=None, prior_lens_light_lognormal=None, prior_ps_lognormal=None,
-                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None):
+                 prior_special_lognormal=None, custom_logL_addition=None, kwargs_pixelbased=None,
+                 kinematic_2D_likelihood=False):
         """
         initializing class
 
@@ -75,11 +76,12 @@ class LikelihoodModule(object):
          kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation)
+        :param kinematic_2D_likelihood: bool, option to compute the kinematic likelihood
         """
-        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list = self._unpack_data(**kwargs_data_joint)
+        multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, flux_ratio_errors, ra_image_list, dec_image_list, kinematic_data = self._unpack_data(**kwargs_data_joint)
         if len(multi_band_list) == 0:
             image_likelihood = False
-
+        self.kinematic_class = kinematic_data
         self.param = param_class
         self._lower_limit, self._upper_limit = self.param.param_limits()
         self._prior_likelihood = PriorLikelihood(prior_lens, prior_source, prior_lens_light, prior_ps, prior_special,
@@ -93,6 +95,7 @@ class LikelihoodModule(object):
         self._time_delay_likelihood = time_delay_likelihood
         self._image_likelihood = image_likelihood
         self._flux_ratio_likelihood = flux_ratio_likelihood
+        self._kinematic_2D_likelihood = kinematic_2D_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
         self._kwargs_flux_compute = kwargs_flux_compute
@@ -119,9 +122,9 @@ class LikelihoodModule(object):
         self._kwargs_flux.update(self._kwargs_flux_compute)
         self._class_instances(kwargs_model=kwargs_model, kwargs_imaging=self._kwargs_imaging,
                               kwargs_position=self._kwargs_position, kwargs_flux=self._kwargs_flux,
-                              kwargs_time_delay=self._kwargs_time_delay)
+                              kwargs_time_delay=self._kwargs_time_delay, kinematic_data = self.kinematic_class)
 
-    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay):
+    def _class_instances(self, kwargs_model, kwargs_imaging, kwargs_position, kwargs_flux, kwargs_time_delay, kinematic_data):
         """
 
         :param kwargs_model: lenstronomy model keyword arguments
@@ -134,7 +137,7 @@ class LikelihoodModule(object):
 
         # TODO: in case lens model or point source models are only applied on partial images, then this current class
         # has ambiguities when it comes to time-delay likelihood and flux ratio likelihood
-        lens_model_class, _, _, point_source_class, _ = class_creator.create_class_instances(all_models=True,
+        lens_model_class, _,  lens_light_model_class, point_source_class, _ = class_creator.create_class_instances(all_models=True,
                                                                                              **kwargs_model)
         self.PointSource = point_source_class
 
@@ -148,6 +151,8 @@ class LikelihoodModule(object):
         self._position_likelihood = PositionLikelihood(point_source_class, **kwargs_position)
         if self._flux_ratio_likelihood is True:
             self.flux_ratio_likelihood = FluxRatioLikelihood(lens_model_class, **kwargs_flux)
+        if self._kinematic_2D_likelihood is True:
+            self.kinematic_2D_likelihood = KinLikelihood(kinematic_data, lens_model_class, lens_light_model_class)
 
     def __call__(self, a):
         return self.logL(a)
@@ -194,6 +199,11 @@ class LikelihoodModule(object):
             logL += logL_flux_ratios
             if verbose is True:
                 print('flux ratio logL = %s' % logL_flux_ratios)
+        if self._kinematic_2D_likelihood is True:
+            logL_kinematic_2D = self.kinematic_2D_likelihood.logL(kwargs_lens,kwargs_lens_light,kwargs_special)
+            logL += logL_kinematic_2D
+            if verbose is True:
+                print('kinematic logL = %s' %logL_kinematic_2D)
         logL += self._position_likelihood.logL(kwargs_lens, kwargs_ps, kwargs_special, verbose=verbose)
         logL_prior = self._prior_likelihood.logL(**kwargs_return)
         logL += logL_prior
@@ -270,7 +280,7 @@ class LikelihoodModule(object):
     @staticmethod
     def _unpack_data(multi_band_list=None, multi_band_type='multi-linear', time_delays_measured=None,
                      time_delays_uncertainties=None, flux_ratios=None, flux_ratio_errors=None, ra_image_list=None,
-                     dec_image_list=None):
+                     dec_image_list=None, kinematic_data=None):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ...]
@@ -288,7 +298,7 @@ class LikelihoodModule(object):
         if dec_image_list is None:
             dec_image_list = []
         return multi_band_list, multi_band_type, time_delays_measured, time_delays_uncertainties, flux_ratios, \
-               flux_ratio_errors, ra_image_list, dec_image_list
+               flux_ratio_errors, ra_image_list, dec_image_list, kinematic_data
 
     def _reset_point_source_cache(self, bool_input=True):
         self.PointSource.delete_lens_model_cache()

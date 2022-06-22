@@ -17,12 +17,10 @@ class KinBin(object):
 
     """
 
-    def __init__(self, bin_pos_ra, bin_pos_dec, bin_data, bin_SNR, bin_mask, ra_at_xy_0=0, dec_at_xy_0=0,
+    def __init__(self, bin_data, bin_SNR, bin_mask, ra_at_xy_0=0, dec_at_xy_0=0,
                  transform_pix2angle=None, ra_shift=0, dec_shift=0):
 
         """
-        :param bin_pos_ra: list, weighted ra center of each bin, ordered by bin index.
-        :param bin_pos_dec: list, weighted dec center of each bin, ordered by bin index.
         :param bin_data: list, kinematic value of each bin, ordered by bin index.
         :param bin_SNR: list, signal-to-noise ratio associated to each bin, ordered by bin index.
         :param bin_mask: 2D array, mapping from the unbinned image to the binned one, each pixel value is the

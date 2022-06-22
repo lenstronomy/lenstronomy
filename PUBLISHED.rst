@@ -107,6 +107,10 @@ Measuring the Hubble constant
 * Forecast of observing time delay of the strongly lensed quasars with Muztagh-Ata 1.93m telescope `Zhu et al. 2022a <https://arxiv.org/abs/2203.15680>`_
     *Using lenstronomy to reproduce a lens and simulate the observed images based on parameters fitted by other work.*
 
+* Consequences of the lack of azimuthal freedom in the modeling of lensing galaxies `van de Vyvere et al. 2022 <https://arxiv.org/abs/2206.00022>`_
+    *Implemented a model ’ElliSLICE’ to describe radial changes in ellipticities and investigating assumptiosn on azimuthal freedom in the reconstruction.
+
+
 
 
 
@@ -233,6 +237,9 @@ Automatized Lens Modeling
 
 * GIGA-Lens: Fast Bayesian Inference for Strong Gravitational Lens Modeling; `Gu et al. 2022 <https://arxiv.org/abs/2202.07663>`_
     *lenstronomy-inspired GPU lensing code with PEMD+shear and Sersic modeling, and tested against lenstronomy.*
+
+* STRIDES: Automated uniform models for 30 quadruply imaged quasars; `Schmidt et al. 2022 <https://arxiv.org/abs/2206.04696>`_
+    *Automated and uniform modeling of 30 quadruply lensed quasars.*
 
 
 

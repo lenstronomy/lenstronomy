@@ -101,7 +101,7 @@ class FittingSequence(object):
                 chain_list.append([fitting_type, kwargs_result])
 
             elif fitting_type == 'MCMC':
-                if not 'init_samples' in kwargs:
+                if 'init_samples' not in kwargs:
                     kwargs['init_samples'] = self._mcmc_init_samples
                 elif kwargs['init_samples'] is None:
                     kwargs['init_samples'] = self._mcmc_init_samples
@@ -122,7 +122,8 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are
+         inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 
@@ -160,7 +161,7 @@ class FittingSequence(object):
         num_param_nonlinear = self.param_class.num_param()[0]
         num_param_linear = self.param_class.num_param_linear()
         num_param = num_param_nonlinear + num_param_linear
-        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data,num_param)
+        bic = analysis_util.bic_model(self.best_fit_likelihood, num_data, num_param)
         return bic
 
     @property
@@ -201,7 +202,7 @@ class FittingSequence(object):
         return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backup_filename=None, start_from_backup=False):
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False):
         """
         MCMC routine
 
@@ -212,10 +213,17 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
         :param init_samples: initial sample from where to start the MCMC process
-        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from scratch.
+        :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
+         scratch.
         :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
         :param progress: boolean, if True shows progress bar in EMCEE
-        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified by the specific sampler used
+        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :type backend_filename: string
+        :param start_from_backend: if True, start from the state saved in `backup_filename`.
+         Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
+        :type start_from_backend: bool
+        :return: list of output arguments, e.g. MCMC samples, parameter names, logL distances of all samples specified
+         by the specific sampler used
         """
 
         param_class = self.param_class
@@ -243,7 +251,8 @@ class FittingSequence(object):
         if sampler_type == 'EMCEE':
             samples, dist = mcmc_class.mcmc_emcee(n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=self._mpi,
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
-                                                  backup_filename=backup_filename, start_from_backup=start_from_backup)
+                                                  backend_filename=backend_filename,
+                                                  start_from_backend=start_from_backend)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -259,7 +268,8 @@ class FittingSequence(object):
         :param sigma_scale: scaling of the initial parameter spread relative to the width in the initial settings
         :param print_key: string, printed text when executing this routine
         :param threadCount: number of CPU threads. If MPI option is set, threadCount=1
-        :return: result of the best fit, the chain of the best fit parameter after each iteration, list of parameters in same order
+        :return: result of the best fit, the PSO chain of the best fit parameter after each iteration
+         [lnlikelihood, parameters, velocities], list of parameters in same order as in chain
         """
 
         param_class = self.param_class
@@ -274,7 +284,7 @@ class FittingSequence(object):
         # run PSO
         sampler = Sampler(likelihoodModule=self.likelihoodModule)
         result, chain = sampler.pso(n_particles, n_iterations, lowerLimit, upperLimit, init_pos=init_pos,
-                                       threadCount=threadCount, mpi=self._mpi, print_key=print_key)
+                                    threadCount=threadCount, mpi=self._mpi, print_key=print_key)
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result, chain, param_list
 

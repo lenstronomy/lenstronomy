@@ -54,7 +54,7 @@ requires = ['numpy>=1.13',
             'schwimmbad',
             'multiprocess>=0.70.8',
             ]
-tests_require = ['pytest>=2.3', "mock", 'colossus', 'slitronomy==0.3.2',
+tests_require = ['pytest>=2.3', "mock", 'colossus==1.3.0', 'slitronomy==0.3.2',
                  'emcee>=3.0.0', 'dynesty', 'nestcheck', 'pymultinest',
                  ]
 

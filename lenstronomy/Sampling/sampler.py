@@ -71,7 +71,7 @@ class Sampler(object):
         :param init_pos: numpy array, position of the initial best guess model
         :param mpi: bool, if True, makes instance of MPIPool to allow for MPI execution
         :param print_key: string, prints the process name in the progress bar (optional)
-        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of sampels)
+        :return: kwargs_result (of best fit), [lnlikelihood of samples, positions of samples, velocity of samples])
         """
         if lower_start is None or upper_start is None:
             lower_start, upper_start = np.array(self.lower_limit), np.array(self.upper_limit)
@@ -119,7 +119,7 @@ class Sampler(object):
         return result, [chi2_list, pos_list, vel_list]
 
     def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
-                   initpos=None, backup_filename=None, start_from_backup=False):
+                   initpos=None, backend_filename=None, start_from_backend=False):
         """
         Run MCMC with emcee.
         For details, please have a look at the documentation of the emcee packager.
@@ -142,11 +142,11 @@ class Sampler(object):
         :type threadCount: integer
         :param initpos: initial walker position to start sampling (optional)
         :type initpos: numpy array of size num param x num walkser
-        :param backup_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
-        :type backup_filename: string
-        :param start_from_backup: if True, start from the state saved in `backup_filename`.
+        :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
+        :type backend_filename: string
+        :param start_from_backend: if True, start from the state saved in `backup_filename`.
          Otherwise, create a new backup file with name `backup_filename` (any already existing file is overwritten!).
-        :type start_from_backup: bool
+        :type start_from_backend: bool
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
@@ -159,18 +159,18 @@ class Sampler(object):
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
 
-        if backup_filename is not None:
-            backend = emcee.backends.HDFBackend(backup_filename, name="lenstronomy_mcmc_emcee")
+        if backend_filename is not None:
+            backend = emcee.backends.HDFBackend(backend_filename, name="lenstronomy_mcmc_emcee")
             if pool.is_master():
-                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backup_filename))
-            if start_from_backup:
+                print("Warning: All samples (including burn-in) will be saved in backup file '{}'.".format(backend_filename))
+            if start_from_backend:
                 initpos = None
                 n_run_eff = n_run
             else:
                 n_run_eff = n_burn + n_run
                 backend.reset(n_walkers, num_param)
                 if pool.is_master():
-                    print("Warning: backup file '{}' has been reset!".format(backup_filename))
+                    print("Warning: backup file '{}' has been reset!".format(backend_filename))
         else:
             backend = None
             n_run_eff = n_burn + n_run

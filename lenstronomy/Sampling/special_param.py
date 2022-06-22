@@ -11,7 +11,7 @@ class SpecialParam(object):
 
     def __init__(self, Ddt_sampling=False, mass_scaling=False, num_scale_factor=1, kwargs_fixed=None, kwargs_lower=None,
                  kwargs_upper=None, point_source_offset=False, source_size=False, num_images=0, num_tau0=0,
-                 num_z_sampling=0, source_grid_offset=False):
+                 num_z_sampling=0, source_grid_offset=False, kinematic_sampling=False):
         """
 
         :param Ddt_sampling: bool, if True, samples the time-delay distance D_dt (in units of Mpc)
@@ -30,6 +30,7 @@ class SpecialParam(object):
         :param source_grid_offset: bool, if True, samples two parameters (x, y) for the offset of the pixelated source
          plane grid coordinates.
          Warning: this is only defined for pixel-based source modelling (e.g. 'SLIT_STARLETS' light profile)
+        :param kinematic_sampling: bool, if True, samples the kinematic parameters b_ani, incli
         """
 
         self._D_dt_sampling = Ddt_sampling
@@ -39,6 +40,7 @@ class SpecialParam(object):
         self._num_images = num_images
         self._num_tau0 = num_tau0
         self._num_z_sampling = num_z_sampling
+        self._kinematic_sampling = kinematic_sampling
         if num_z_sampling > 0:
             self._z_sampling = True
         else:
@@ -148,6 +150,17 @@ class SpecialParam(object):
                 i += 1
             else:
                 kwargs_special['delta_y_source_grid'] = self._kwargs_fixed['delta_y_source_grid']
+        if self._kinematic_sampling is True:
+            if 'b_ani' not in self._kwargs_fixed:
+                kwargs_special['b_ani'] = args[i]
+                i += 1
+            else:
+                kwargs_special['b_ani'] = self._kwargs_fixed['b_ani']
+            if 'incli' not in self._kwargs_fixed:
+                kwargs_special['incli'] = args[i]
+                i += 1
+            else:
+                kwargs_special['incli'] = self._kwargs_fixed['incli']
         return kwargs_special, i
 
     def set_params(self, kwargs_special):
@@ -187,6 +200,11 @@ class SpecialParam(object):
                 args.append(kwargs_special['delta_x_source_grid'])
             if 'delta_y_source_grid' not in self._kwargs_fixed:
                 args.append(kwargs_special['delta_y_source_grid'])
+        if self._kinematic_sampling is True:
+            if 'b_ani' not in self._kwargs_fixed:
+                args.append(kwargs_special['b_ani'])
+            if 'incli' not in self._kwargs_fixed:
+                args.append(kwargs_special['incli'])
         return args
 
     def num_param(self):
@@ -235,4 +253,11 @@ class SpecialParam(object):
             if 'delta_y_source_grid' not in self._kwargs_fixed:
                 num += 1
                 string_list.append('delta_y_source_grid')
+        if self._kinematic_sampling is True:
+            if 'b_ani' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('b_ani')
+            if 'incli' not in self._kwargs_fixed:
+                num += 1
+                string_list.append('incli')
         return num, string_list

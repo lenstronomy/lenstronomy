@@ -79,7 +79,7 @@ class Param(object):
                  joint_lens_with_source_light=[], mass_scaling_list=None, point_source_offset=False,
                  num_point_source_list=None, image_plane_source_list=None, solver_type='NONE', Ddt_sampling=None,
                  source_size=False, num_tau0=0, lens_redshift_sampling_indexes=None,
-                 source_redshift_sampling_indexes=None, source_grid_offset=False, num_shapelet_lens=0,
+                 source_redshift_sampling_indexes=None, source_grid_offset=False, kinematic_sampling=None, num_shapelet_lens=0,
                  log_sampling_lens=[]):
         """
 
@@ -273,7 +273,7 @@ class Param(object):
                                           kwargs_lower=kwargs_lower_special, kwargs_upper=kwargs_upper_special,
                                           point_source_offset=self._point_source_offset, num_images=self._num_images,
                                           source_size=source_size, num_tau0=num_tau0, num_z_sampling=num_z_sampling,
-                                          source_grid_offset=source_grid_offset)
+                                          source_grid_offset=source_grid_offset,kinematic_sampling=kinematic_sampling)
         for lens_source_joint in self._joint_lens_with_source_light:
             i_source = lens_source_joint[0]
             if i_source in self._image_plane_source_list:

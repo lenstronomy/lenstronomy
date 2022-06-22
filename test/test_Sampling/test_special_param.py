@@ -10,10 +10,11 @@ class TestParam(object):
 
     def setup(self):
         self.param = SpecialParam(Ddt_sampling=True, kwargs_fixed=None, point_source_offset=True, num_images=2,
-                                  source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True)
+                                  source_size=True, num_tau0=2, num_z_sampling=3, source_grid_offset=True,
+                                  kinematic_sampling=True)
         self.kwargs = {'D_dt': 1988, 'delta_x_image': [0, 0], 'delta_y_image': [0, 0], 'source_size': 0.1,
                        'tau0_list': [0, 1], 'z_sampling': np.array([0.1, 0.5, 2]),
-                       'delta_x_source_grid': 0, 'delta_y_source_grid': 0}
+                       'delta_x_source_grid': 0, 'delta_y_source_grid': 0, 'b_ani':0.1, 'incli':0.}
 
     def test_get_setParams(self):
         args = self.param.set_params(self.kwargs)
@@ -23,13 +24,15 @@ class TestParam(object):
             npt.assert_almost_equal(args[k], args_new[k], decimal=8)
 
         param_fixed = SpecialParam(Ddt_sampling=True, kwargs_fixed=self.kwargs, point_source_offset=True, num_images=2,
-                                   source_size=True, num_z_sampling=3, num_tau0=2)
+                                   source_size=True, num_z_sampling=3, num_tau0=2,kinematic_sampling=True)
         kwargs_new, i = param_fixed.get_params(args=[], i=0)
         kwargs_new['D_dt'] = self.kwargs['D_dt']
+        kwargs_new['b_ani'] = self.kwargs['b_ani']
+        kwargs_new['incli'] = self.kwargs['incli']
 
     def test_num_params(self):
         num, list = self.param.num_param()
-        assert num == 13
+        assert num == 15
 
     def test_mass_scaling(self):
         kwargs_fixed = {}

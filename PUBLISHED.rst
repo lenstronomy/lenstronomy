@@ -165,7 +165,8 @@ Dark Matter substructure
 * Interlopers speak out: Studying the dark universe using small-scale lensing anisotropies; `Dhanasingham et al. 2022 <https://arxiv.org/abs/2203.13775>`_
     *rendering line of sight and subhalos with pyhalo on top of lenstronomy*
 
-
+* Probing Dark Matter with Strong Gravitational Lensing through an Effective Density Slope; `Senguel & Dvorkin 2022 <https://arxiv.org/abs/2206.10635>`_
+    *measuring an effective slope of a subhalo in HST data and tests on mock data from N-body simulations*
 
 
 

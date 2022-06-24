@@ -168,6 +168,10 @@ Dark Matter substructure
 * Probing Dark Matter with Strong Gravitational Lensing through an Effective Density Slope; `Senguel & Dvorkin 2022 <https://arxiv.org/abs/2206.10635>`_
     *measuring an effective slope of a subhalo in HST data and tests on mock data from N-body simulations*
 
+* Quantum fluctuations masquerade as halos: Bounds on ultra-light dark matter from quadruply-imaged quasars; `Laroche et al. 2022 <https://arxiv.org/abs/2206.11269>`_
+    *using lenstronomy for flux ratio statistics calculation with pyHalo*
+
+
 
 
 Lens searches

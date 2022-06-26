@@ -56,7 +56,8 @@ class ModelPlot(object):
 
         n_data = self._imageModel.num_data_evaluate
         if n_data > 0:
-            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined.')
+            print(log_l * 2 / n_data, 'reduced X^2 of all evaluated imaging data combined '
+                                      '(without degrees of freedom subtracted).')
 
         self._band_plot_list = []
         self._index_list = []

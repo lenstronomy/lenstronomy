@@ -5,49 +5,72 @@ https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZ
 sources. """
 import lenstronomy.Util.util as util
 
+# magnitude_zero_point: table 1 from https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf
+# ccd_gain found right under table 1 in paper
+# seeing, read_noise, pixel_scale (labelled as plate_scale on website): https://roman.gsfc.nasa.gov/science/WFI_technical.html
+# sky brightness calculated using count rates per pixel given in website above
+# exposure time, number of exposures for F146 and F087: table 1 from https://iopscience.iop.org/article/10.3847/1538-4365/aafb69/meta#apjsaafb69t1fnd
+# need to: find exposure time and num_exposures for all but F146 and F087
+# currently exposure_time set at 46.8 (same as F146), num_exposures set at 860, same as F087
+
+
 __all__ = ['Roman']
 
-u_band_obs = {'exposure_time': 15.,
+F062_band_obs = {'exposure_time': 46.8,
+              'sky_brightness': 23.19,
+              'magnitude_zero_point': 26.56,
+              'num_exposures': 860,
+              'seeing': 0.058,
+              'psf_type': 'GAUSSIAN'}
+
+F087_band_obs = {'exposure_time': 286.,
+              'sky_brightness': 22.93,
+              'magnitude_zero_point': 26.30,
+              'num_exposures': 860,
+              'seeing': 0.073,
+              'psf_type': 'GAUSSIAN'}
+
+F106_band_obs = {'exposure_time': 46.8,
               'sky_brightness': 22.99,
-              'magnitude_zero_point': 26.5,
-              'num_exposures': 140,
-              'seeing': 0.81,
+              'magnitude_zero_point': 26.44,
+              'num_exposures': 860,
+              'seeing': 0.087,
               'psf_type': 'GAUSSIAN'}
 
-g_band_obs = {'exposure_time': 15.,
-              'sky_brightness': 22.26,
-              'magnitude_zero_point': 28.30,
-              'num_exposures': 200,
-              'seeing': 0.77,
+F129_band_obs = {'exposure_time': 46.8,
+              'sky_brightness': 22.99,
+              'magnitude_zero_point': 26.40,
+              'num_exposures': 860,
+              'seeing': 0.105,
               'psf_type': 'GAUSSIAN'}
 
-r_band_obs = {'exposure_time': 15.,
-              'sky_brightness': 21.2,
-              'magnitude_zero_point': 28.13,
-              'num_exposures': 460,
-              'seeing': 0.73,
+F158_band_obs = {'exposure_time': 46.8,
+              'sky_brightness': 23.10,
+              'magnitude_zero_point': 26.43,
+              'num_exposures': 860,
+              'seeing': 0.127,
               'psf_type': 'GAUSSIAN'}
 
-i_band_obs = {'exposure_time': 15.,
-              'sky_brightness': 20.48,
-              'magnitude_zero_point': 27.79,
-              'num_exposures': 460,
-              'seeing': 0.71,
+F184_band_obs = {'exposure_time': 46.8,
+              'sky_brightness': 23.22,
+              'magnitude_zero_point': 25.95,
+              'num_exposures': 860,
+              'seeing': 0.151,
               'psf_type': 'GAUSSIAN'}
 
-z_band_obs = {'exposure_time': 15.,
-              'sky_brightness': 19.6,
-              'magnitude_zero_point': 27.40,
-              'num_exposures': 400,
-              'seeing': 0.69,
+F146_band_obs = {'exposure_time': 46.8,
+              'sky_brightness': 22.03,
+              'magnitude_zero_point': 26.65,
+              'num_exposures': 41000,
+              'seeing': 0.105,
               'psf_type': 'GAUSSIAN'}
 
-y_band_obs = {'exposure_time': 15.,
-              'sky_brightness': 18.61,
-              'magnitude_zero_point': 26.58,
-              'num_exposures': 400,
-              'seeing': 0.68,
-              'psf_type': 'GAUSSIAN'}
+# F213_band_obs = {'exposure_time': 46.8,
+#               'sky_brightness': 18.61,
+#               'magnitude_zero_point': ,
+#               'num_exposures': 860,
+#               'seeing': 0.175,
+#               'psf_type': 'GAUSSIAN'}
 
 
 """
@@ -66,41 +89,43 @@ class Roman(object):
     class contains Roman instrument and observation configurations
     """
 
-    def __init__(self, band='g', psf_type='GAUSSIAN', coadd_years=10):
+    def __init__(self, band='F062', psf_type='GAUSSIAN', coadd_years=None):
         """
 
-        :param band: string, 'u', 'g', 'r', 'i', 'z' or 'y' supported. Determines obs dictionary.
+        :param band: string, 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' , 'F213' or 'F146' supported. Determines obs dictionary.
         :param psf_type: string, type of PSF ('GAUSSIAN' supported).
         :param coadd_years: int, number of years corresponding to num_exposures in obs dict. Currently supported: 1-10.
         """
-        if band.isalpha():
-            band = band.lower()
-        if band == 'g':
-            self.obs = g_band_obs
-        elif band == 'r':
-            self.obs = r_band_obs
-        elif band == 'i':
-            self.obs = i_band_obs
-        elif band == 'u':
-            self.obs = u_band_obs
-        elif band == 'z':
-            self.obs = z_band_obs
-        elif band == 'y':
-            self.obs = y_band_obs
+        
+        if band == 'F062':
+            self.obs = F062_band_obs
+        elif band == 'F087':
+            self.obs = F087_band_obs
+        elif band == 'F106':
+            self.obs = F106_band_obs
+        elif band == 'F129':
+            self.obs = F129_band_obs
+        elif band == 'F158':
+            self.obs = F158_band_obs
+        elif band == 'F184':
+            self.obs = F184_band_obs
+        # elif band == 'F213':
+        #     self.obs = F213_band_obs
+        elif band == 'F146':
+            self.obs = F146_band_obs
         else:
-            raise ValueError("band %s not supported! Choose 'u', 'g', 'r', 'i', 'z' or 'y'." % band)
+            raise ValueError("band %s not supported! Choose 'F062', 'F087', 'F106', 'F129', 'F158' , 'F184' or 'F146'" % band) # , 'F213'
 
         if psf_type != 'GAUSSIAN':
             raise ValueError("psf_type %s not supported!" % psf_type)
 
-        if coadd_years > 10 or coadd_years < 1:
-            raise ValueError(" %s coadd_years not supported! Choose an integer between 1 and 10." % coadd_years)
-        elif coadd_years != 10:
-            self.obs['num_exposures'] = coadd_years*self.obs['num_exposures']//10
+        if coadd_years is not None:
+            raise ValueError(" %s coadd_years not supported! "
+                             "You may manually adjust num_exposures in obs dict if required." % coadd_years)
 
-        self.camera = {'read_noise': 10,  # will be <10
-                       'pixel_scale': 0.2,
-                       'ccd_gain': 2.3,
+        self.camera = {'read_noise': 15.5,
+                       'pixel_scale': 0.11, 
+                       'ccd_gain': 1,
                        }
         """
         :keyword read_noise: std of noise generated by read-out (in units of electrons)

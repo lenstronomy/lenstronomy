@@ -27,8 +27,10 @@ class ImageLinearFit(ImageModel):
         :param lens_light_model_class: LightModel() instance
         :param point_source_class: PointSource() instance
         :param kwargs_numerics: keyword arguments passed to the Numerics module
-        :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
-        :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
+        :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear
+         optimization
+        :param psf_error_map_bool_list: list of boolean of length of point source models.
+         Indicates whether PSF error map is used for the point source model stated as the index.
         :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
          (see SLITronomy documentation) being applied to the point sources.
         """
@@ -158,11 +160,12 @@ class ImageLinearFit(ImageModel):
         """
         returns the 1d array of the error estimate corresponding to the data response
 
-        :return: 1d numpy array of response, 2d array of additonal errors (e.g. point source uncertainties)
+        :return: 1d numpy array of response, 2d array of additional errors (e.g. point source uncertainties)
         """
-        psf_model_error = self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
-        C_D_response = self.image2array_masked(self.Data.C_D + psf_model_error)
-        return C_D_response, psf_model_error
+        model_error = self._error_map_model(kwargs_lens, kwargs_ps, kwargs_special=kwargs_special)
+        # adding the uncertainties estimated from the data with the ones from the model
+        C_D_response = self.image2array_masked(self.Data.C_D + model_error)
+        return C_D_response, model_error
 
     def likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                     kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
@@ -209,9 +212,16 @@ class ImageLinearFit(ImageModel):
         :return: log likelihood (natural logarithm)
         """
         # generate image
-        im_sim, model_error, cov_matrix, param = self._image_linear_solve(kwargs_lens, kwargs_source, kwargs_lens_light,
-                                                                          kwargs_ps, kwargs_extinction, kwargs_special,
-                                                                          inv_bool=source_marg)
+        if linear_solver is False:
+            im_sim = self.image(kwargs_lens, kwargs_source, kwargs_lens_light, kwargs_ps, kwargs_extinction,
+                                kwargs_special)
+            cov_matrix = None
+            model_error = self._error_map_model(kwargs_lens, kwargs_ps=kwargs_ps, kwargs_special=kwargs_special)
+        else:
+            im_sim, model_error, cov_matrix, param = self._image_linear_solve(kwargs_lens, kwargs_source,
+                                                                              kwargs_lens_light, kwargs_ps,
+                                                                              kwargs_extinction, kwargs_special,
+                                                                              inv_bool=source_marg)
         # compute X^2
         logL = self.Data.log_likelihood(im_sim, self.likelihood_mask, model_error)
 
@@ -394,12 +404,26 @@ class ImageLinearFit(ImageModel):
         grid2d = util.array2image(grid1d, nx, ny)
         return grid2d
 
+    def _error_map_model(self, kwargs_lens, kwargs_ps, kwargs_special=None):
+        """
+        noise estimate (variances as diagonal of the pixel covariance matrix) resulted from inherent model uncertainties
+        This term is currently the psf error map
+
+        :param kwargs_lens: lens model keyword arguments
+        :param kwargs_ps: point source keyword arguments
+        :param kwargs_special: special parameter keyword arguments
+        :return: 2d array corresponding to the pixels in terms of variance in noise
+        """
+        return self._error_map_psf(kwargs_lens, kwargs_ps, kwargs_special)
+
     def _error_map_psf(self, kwargs_lens, kwargs_ps, kwargs_special=None):
         """
+        map of image with error terms (sigma**2) expected from inaccuracies in the PSF modeling
 
-        :param kwargs_lens:
-        :param kwargs_ps:
-        :return:
+        :param kwargs_lens: lens model keyword arguments
+        :param kwargs_ps: point source keyword arguments
+        :param kwargs_special: special parameter keyword arguments
+        :return: 2d array of size of the image
         """
         error_map = np.zeros(self.Data.num_pixel_axes)
         if self._psf_error_map is True:

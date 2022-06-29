@@ -279,10 +279,24 @@ class Param(object):
             if i_source in self._image_plane_source_list:
                 raise ValueError("linking a source light model with a lens model AND simultaneously parameterizing the"
                                  " source position in the image plane is not valid!")
+        self._linear_solver = linear_solver
 
     @property
     def num_point_source_images(self):
+        """
+
+        :return: total number of point source images
+        """
         return self._num_images
+
+    @property
+    def linear_solver(self):
+        """
+        boolean to state whether linear solver is activated or not
+
+        :return: boolean
+        """
+        return self._linear_solver
 
     def args2kwargs(self, args, bijective=False):
         """

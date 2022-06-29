@@ -29,14 +29,13 @@ class ImageLinearFit(ImageModel):
         :param kwargs_numerics: keyword arguments passed to the Numerics module
         :param likelihood_mask: 2d boolean array of pixels to be counted in the likelihood calculation/linear optimization
         :param psf_error_map_bool_list: list of boolean of length of point source models. Indicates whether PSF error map
-        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
-        being applied to the point sources.
+        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver
+         (see SLITronomy documentation) being applied to the point sources.
         """
         if likelihood_mask is None:
             likelihood_mask = np.ones_like(data_class.data)
         self.likelihood_mask = np.array(likelihood_mask, dtype=bool)
         self._mask1d = util.image2array(self.likelihood_mask)
-        # kwargs_numerics['compute_indexes'] = self.likelihood_mask  # here we overwrite the indexes to be computed with the likelihood mask
         super(ImageLinearFit, self).__init__(data_class, psf_class=psf_class, lens_model_class=lens_model_class,
                                              source_model_class=source_model_class,
                                              lens_light_model_class=lens_light_model_class,
@@ -191,7 +190,7 @@ class ImageLinearFit(ImageModel):
 
     def _likelihood_data_given_model(self, kwargs_lens=None, kwargs_source=None, kwargs_lens_light=None, kwargs_ps=None,
                                      kwargs_extinction=None, kwargs_special=None, source_marg=False, linear_prior=None,
-                                     check_positive_flux=False):
+                                     check_positive_flux=False, linear_solver=True):
         """
 
         computes the likelihood of the data given a model
@@ -205,6 +204,8 @@ class ImageLinearFit(ImageModel):
         :param linear_prior: linear prior width in eigenvalues
         :param check_positive_flux: bool, if True, checks whether the linear inversion resulted in non-negative flux
          components and applies a punishment in the likelihood if so.
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         :return: log likelihood (natural logarithm)
         """
         # generate image

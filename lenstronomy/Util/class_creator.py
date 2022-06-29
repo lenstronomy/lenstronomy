@@ -177,7 +177,7 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, i
 
 @export
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                  band_index=0, kwargs_pixelbased=None):
+                  band_index=0, kwargs_pixelbased=None, linear_solver=True):
     """
 
 
@@ -192,9 +192,12 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
      (same size as image_data with 1 indicating being evaluated and 0 being left out)
     :param band_index: integer, index of the imaging band to model (only applied when using 'single-band' as option)
     :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
-
+    :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+     that they get overwritten by the linear solver solution.
     :return: MultiBand class instance
     """
+    if linear_solver is False and multi_band_type is not 'single-band':
+        raise ValueError('setting "linear_solver" to False is only supported in "single-band" mode.')
 
     if multi_band_type == 'multi-linear':
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
@@ -205,7 +208,8 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
     elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
         multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
-                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
+                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
+                                         linear_solver=linear_solver)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

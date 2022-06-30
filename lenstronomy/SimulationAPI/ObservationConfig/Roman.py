@@ -93,12 +93,12 @@ class Roman(object):
             # a full pass of the High Latitude Wide Area Survey is 155 sectors
             exp_per_tile = 0
 
-            if band in ['F106','F158','F184']:
+            if band in ['F106','F158','F184', 'F062']:
                 exp_per_tile = 3
             elif band == 'F129':
                 exp_per_tile = 4
             else:
-                raise ValueError("band %s is not supported with the microlensing survey mode! Choose 'F106', 'F158', 'F184' or F129" % band)
+                raise ValueError("band %s is not supported with the wide area survey mode! Choose 'F106', 'F158', 'F184' or F129" % band)
             
             self.obs.update({'exposure_time': 146, 'num_exposures': 32*exp_per_tile})
         elif survey_mode == 'microlensing':

@@ -58,6 +58,15 @@ class TestRoman(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             bad_psf = Roman(psf_type='blah')
+        
+        with self.assertRaises(ValueError):
+            bad_band_wide = Roman(band='F087')
+
+        with self.assertRaises(ValueError):
+            bad_band_microlensing = Roman(band='F062', survey_mode='microlensing')
+
+        with self.assertRaises(ValueError):
+            bad_survey_mode = Roman(survey_mode='blah')
 
     def test_Roman_camera(self):
         # comparing camera settings in Roman instance with those in Instrument instance

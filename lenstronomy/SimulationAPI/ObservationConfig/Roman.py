@@ -98,7 +98,7 @@ class Roman(object):
             elif band == 'F129':
                 exp_per_tile = 4
             else:
-                raise ValueError("band %s is not supported with the wide area survey mode! Choose 'F106', 'F158', 'F184' or F129" % band)
+                raise ValueError("band %s is not supported with the wide_area survey mode! Choose 'F106', 'F062, 'F158', 'F184' or F129" % band)
             
             self.obs.update({'exposure_time': 146, 'num_exposures': 32*exp_per_tile})
         elif survey_mode == 'microlensing':
@@ -111,7 +111,7 @@ class Roman(object):
             else:
                 raise ValueError("band %s is not supported with the microlensing survey mode! Choose 'F146' or 'F087'" % band)
         else:
-            raise ValueError("survey mode %s not supported! Choose 'wide area' or 'microlensing'" % survey_mode)
+            raise ValueError("survey mode %s not supported! Choose 'wide_area' or 'microlensing'" % survey_mode)
 
         if psf_type != 'GAUSSIAN':
             raise ValueError("psf_type %s not supported!" % psf_type)

@@ -1,8 +1,5 @@
 # %%
-"""Provisional Roman instrument and observational settings.
-See Optics and Observation Conditions spreadsheet at
-https://docs.google.com/spreadsheets/d/1pMUB_OOZWwXON2dd5oP8PekhCT5MBBZJO1HV7IMZg4Y/edit?usp=sharing for list of
-sources. """
+"""Provisional Roman instrument and observational settings."""
 import lenstronomy.Util.util as util
 
 # magnitude_zero_point: table 1 from https://iopscience.iop.org/article/10.3847/1538-4357/aac08b/pdf

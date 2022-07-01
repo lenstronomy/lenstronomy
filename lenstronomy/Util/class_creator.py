@@ -196,15 +196,18 @@ def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=
      that they get overwritten by the linear solver solution.
     :return: MultiBand class instance
     """
-    if linear_solver is False and multi_band_type is not 'single-band':
-        raise ValueError('setting "linear_solver" to False is only supported in "single-band" mode.')
+    if linear_solver is False and multi_band_type not in ['single-band', 'multi-linear']:
+        raise ValueError('setting "linear_solver" to False is only supported in "single-band" mode '
+                         'or if "multi-linear" model has only one band.')
 
     if multi_band_type == 'multi-linear':
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
-        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
+        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
+                                likelihood_mask_list=image_likelihood_mask_list, linear_solver=linear_solver)
     elif multi_band_type == 'joint-linear':
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
-        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
+        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
+                                likelihood_mask_list=image_likelihood_mask_list)
     elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
         multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,

@@ -19,7 +19,7 @@ class ModelPlot(object):
     """
     def __init__(self, multi_band_list, kwargs_model, kwargs_params, image_likelihood_mask_list=None,
                  bands_compute=None, multi_band_type='multi-linear', source_marg=False, linear_prior=None,
-                 arrow_size=0.02, cmap_string="gist_heat", fast_caustic=True):
+                 arrow_size=0.02, cmap_string="gist_heat", fast_caustic=True, linear_solver=True):
         """
 
         :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
@@ -39,13 +39,15 @@ class ModelPlot(object):
         :param arrow_size:
         :param cmap_string:
         :param fast_caustic: boolean; if True, uses fast (but less accurate) caustic calculation method
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
         if bands_compute is None:
             bands_compute = [True] * len(multi_band_list)
         if multi_band_type == 'single-band':
             multi_band_type = 'multi-linear'  # this makes sure that the linear inversion outputs are coming in a list
         self._imageModel = class_creator.create_im_sim(multi_band_list, multi_band_type, kwargs_model,
-                                                       bands_compute=bands_compute,
+                                                       bands_compute=bands_compute, linear_solver=linear_solver,
                                                        image_likelihood_mask_list=image_likelihood_mask_list)
 
         model, error_map, cov_param, param = self._imageModel.image_linear_solve(inv_bool=True, **kwargs_params)

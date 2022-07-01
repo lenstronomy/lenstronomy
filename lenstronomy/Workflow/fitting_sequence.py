@@ -201,7 +201,7 @@ class FittingSequence(object):
         kwargs_result = param_class.args2kwargs(result, bijective=True)
         return kwargs_result
 
-    def mcmc(self, n_burn, n_run, walkerRatio, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
+    def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
              re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False):
         """
         MCMC routine
@@ -235,6 +235,8 @@ class FittingSequence(object):
         sigma_start = np.array(param_class.kwargs2args(**kwargs_sigma)) * sigma_scale
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
+            if walkerRatio is None:
+                raise ValueError('MCMC sampler needs either n_walkser or walkerRatio as input argument')
             n_walkers = num_param * walkerRatio
         # run MCMC
         if init_samples is not None and re_use_samples is True:

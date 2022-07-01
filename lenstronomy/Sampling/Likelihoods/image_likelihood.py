@@ -79,6 +79,6 @@ class ImageLikelihood(object):
         """
 
         :param cache: boolean
-        :return:
+        :return: None
         """
         self.imSim.reset_point_source_cache(cache=cache)

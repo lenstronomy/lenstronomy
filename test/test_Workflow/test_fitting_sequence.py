@@ -240,7 +240,7 @@ class TestFittingSequence(object):
 
     def test_dynesty(self):
         kwargs_params = copy.deepcopy(self.kwargs_params)
-        kwargs_params['lens_model'][0][0]['theta_E'] += 0.1
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.01
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, kwargs_params)
 
@@ -249,8 +249,8 @@ class TestFittingSequence(object):
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
-                'nlive_init': 3,
-                'nlive_batch': 3,
+                'nlive_init': 6,
+                'nlive_batch': 6,
                 'maxbatch': 1,
             },
         }

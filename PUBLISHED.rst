@@ -271,6 +271,8 @@ Quasar-host galaxy decomposition
 * Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021b <https://arxiv.org/abs/2109.02751>`_
     *Quasar-host decomposition of SDSS quasars with HSC data*
 
+* Evidence for a milli-parsec separation Supermassive Black Hole Binary with quasar microlensing; `Millon et al. 2022 <https://arxiv.org/abs/2207.00598>`_
+    *Using lenstronomy to generate the microlensed images of the accretion disk*
 
 
 

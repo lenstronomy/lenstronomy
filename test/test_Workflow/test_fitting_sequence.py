@@ -1,5 +1,7 @@
 __author__ = 'sibirrer'
 
+import copy
+
 import pytest
 import numpy.testing as npt
 import numpy as np
@@ -130,7 +132,7 @@ class TestFittingSequence(object):
         npt.assert_almost_equal(self.data_class.data[4, 4], 0.1, decimal=0)
 
     def test_simulationAPI_psf(self):
-        npt.assert_almost_equal(np.sum(self.psf_class.kernel_point_source),1, decimal=6)
+        npt.assert_almost_equal(np.sum(self.psf_class.kernel_point_source), 1, decimal=6)
 
     def test_fitting_sequence(self):
 
@@ -237,16 +239,18 @@ class TestFittingSequence(object):
         assert kwargs_out['kwargs_lens'] == 1
 
     def test_dynesty(self):
+        kwargs_params = copy.deepcopy(self.kwargs_params)
+        kwargs_params['lens_model'][0][0]['theta_E'] += 0.01
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
-                                          self.kwargs_likelihood, self.kwargs_params)
+                                          self.kwargs_likelihood, kwargs_params)
 
         fitting_list = []
         kwargs_dynesty = {
             'sampler_type': 'DYNESTY',
             'kwargs_run': {
                 'dlogz_init': 0.01,
-                'nlive_init': 3,
-                'nlive_batch': 3,
+                'nlive_init': 6,
+                'nlive_batch': 6,
                 'maxbatch': 1,
             },
         }

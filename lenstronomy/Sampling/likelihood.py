@@ -98,6 +98,7 @@ class LikelihoodModule(object):
         self._kinematic_2D_likelihood = kinematic_2D_likelihood
         if kwargs_flux_compute is None:
             kwargs_flux_compute = {}
+        linear_solver = self.param.linear_solver
         self._kwargs_flux_compute = kwargs_flux_compute
         self._check_bounds = check_bounds
         self._custom_logL_addition = custom_logL_addition
@@ -107,7 +108,7 @@ class LikelihoodModule(object):
                                 'bands_compute': bands_compute,
                                 'image_likelihood_mask_list': image_likelihood_mask_list, 'source_marg': source_marg,
                                 'linear_prior': linear_prior, 'check_positive_flux': check_positive_flux,
-                                'kwargs_pixelbased': kwargs_pixelbased}
+                                'kwargs_pixelbased': kwargs_pixelbased, 'linear_solver': linear_solver}
         self._kwargs_position = {'astrometric_likelihood': astrometric_likelihood,
                                  'image_position_likelihood': image_position_likelihood,
                                  'source_position_likelihood': source_position_likelihood,

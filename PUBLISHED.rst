@@ -165,6 +165,11 @@ Dark Matter substructure
 * Interlopers speak out: Studying the dark universe using small-scale lensing anisotropies; `Dhanasingham et al. 2022 <https://arxiv.org/abs/2203.13775>`_
     *rendering line of sight and subhalos with pyhalo on top of lenstronomy*
 
+* Probing Dark Matter with Strong Gravitational Lensing through an Effective Density Slope; `Senguel & Dvorkin 2022 <https://arxiv.org/abs/2206.10635>`_
+    *measuring an effective slope of a subhalo in HST data and tests on mock data from N-body simulations*
+
+* Quantum fluctuations masquerade as halos: Bounds on ultra-light dark matter from quadruply-imaged quasars; `Laroche et al. 2022 <https://arxiv.org/abs/2206.11269>`_
+    *using lenstronomy for flux ratio statistics calculation with pyHalo*
 
 
 
@@ -266,6 +271,8 @@ Quasar-host galaxy decomposition
 * Synchronized Co-evolution between Supermassive Black Holes and Galaxies Over the Last Seven Billion Years as Revealed by the Hyper Suprime-Cam; `Li et al. 2021b <https://arxiv.org/abs/2109.02751>`_
     *Quasar-host decomposition of SDSS quasars with HSC data*
 
+* Evidence for a milli-parsec separation Supermassive Black Hole Binary with quasar microlensing; `Millon et al. 2022 <https://arxiv.org/abs/2207.00598>`_
+    *Using lenstronomy to generate the microlensed images of the accretion disk*
 
 
 

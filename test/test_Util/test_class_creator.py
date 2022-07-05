@@ -85,6 +85,9 @@ class TestRaise(unittest.TestCase):
         with self.assertRaises(ValueError):
             class_creator.create_im_sim(multi_band_list=None, multi_band_type='WRONG', kwargs_model=None,
                                         bands_compute=None, image_likelihood_mask_list=None, band_index=0)
+        with self.assertRaises(ValueError):
+            class_creator.create_im_sim(multi_band_list=[[], []], multi_band_type='multi-linear', linear_solver=False,
+                                        kwargs_model=None, bands_compute=None, image_likelihood_mask_list=None, band_index=0)
 
 
 if __name__ == '__main__':

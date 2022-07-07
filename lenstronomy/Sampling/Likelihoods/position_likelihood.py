@@ -17,7 +17,7 @@ class PositionLikelihood(object):
 
         :param point_source_class: Instance of PointSource() class
         :param image_position_uncertainty: uncertainty in image position uncertainty (1-sigma Gaussian radially),
-        this is applicable for astrometric uncertainties as well as if image positions are provided as data
+         this is applicable for astrometric uncertainties as well as if image positions are provided as data
         :param astrometric_likelihood: bool, if True, evaluates the astrometric uncertainty of the predicted and modeled
         image positions with an offset 'delta_x_image' and 'delta_y_image'
         :param image_position_likelihood: bool, if True, evaluates the likelihood of the model predicted image position
@@ -25,7 +25,7 @@ class PositionLikelihood(object):
         :param ra_image_list: list or RA image positions per model component
         :param dec_image_list: list or DEC image positions per model component
         :param source_position_likelihood: bool, if True, ray-traces image positions back to source plane and evaluates
-        relative errors in respect ot the position_uncertainties in the image plane
+         relative errors in respect ot the position_uncertainties in the image plane (image_position_uncertainty)
         :param check_matched_source_position: bool, if True, checks whether multiple images are a solution of the same
          source
         :param source_position_tolerance: tolerance level (in arc seconds in the source plane) of the different images
@@ -76,7 +76,9 @@ class PositionLikelihood(object):
             if verbose is True:
                 print('Astrometric likelihood = %s' % logL_astrometry)
         if self._check_matched_source_position is True:
-            logL_source_scatter = self.source_position_likelihood(kwargs_lens, kwargs_ps, self._source_position_sigma, hard_bound_rms=self._bound_source_position_scatter, verbose=verbose)
+            logL_source_scatter = self.source_position_likelihood(kwargs_lens, kwargs_ps, self._source_position_sigma,
+                                                                  hard_bound_rms=self._bound_source_position_scatter,
+                                                                  verbose=verbose)
             logL += logL_source_scatter
             if verbose is True:
                 print('Source scatter punishing likelihood = %s' % logL_source_scatter)
@@ -87,18 +89,21 @@ class PositionLikelihood(object):
                 if verbose is True:
                     print('force no additional image penalty as additional images are found!')
         if self._restrict_number_images is True:
-            ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens)
+            ra_image_list, dec_image_list = self._pointSource.image_position(kwargs_ps=kwargs_ps,
+                                                                             kwargs_lens=kwargs_lens)
             if len(ra_image_list[0]) > self._max_num_images:
                 logL -= 10.**5
                 if verbose is True:
-                    print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]), self._max_num_images))
+                    print('Number of images found %s exceeded the limited number allowed %s' % (len(ra_image_list[0]),
+                                                                                                self._max_num_images))
         if self._source_position_likelihood is True:
             logL_source_pos = self.source_position_likelihood(kwargs_lens, kwargs_ps, sigma=self._image_position_sigma)
             logL += logL_source_pos
             if verbose is True:
                 print('source position likelihood %s' % logL_source_pos)
         if self._image_position_likelihood is True:
-            logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens, sigma=self._image_position_sigma)
+            logL_image_pos = self.image_position_likelihood(kwargs_ps=kwargs_ps, kwargs_lens=kwargs_lens,
+                                                            sigma=self._image_position_sigma)
             logL += logL_image_pos
             if verbose is True:
                 print('image position likelihood %s' % logL_image_pos)
@@ -127,7 +132,8 @@ class PositionLikelihood(object):
         :param kwargs_ps: point source model kwargs list
         :param kwargs_special: kwargs list, should include the astrometric corrections 'delta_x', 'delta_y'
         :param sigma: 1-sigma Gaussian uncertainty in the astrometry
-        :return: log likelihood of the astrometirc correction between predicted image positions and model placement of the point sources
+        :return: log likelihood of the astrometirc correction between predicted image positions and model placement of
+         the point sources
         """
         if not len(kwargs_ps) > 0:
             return 0
@@ -145,7 +151,8 @@ class PositionLikelihood(object):
 
     def image_position_likelihood(self, kwargs_ps, kwargs_lens, sigma):
         """
-        computes the likelihood of the model predicted image position relative to measured image positions with an astrometric error.
+        computes the likelihood of the model predicted image position relative to measured image positions with an
+        astrometric error.
         This routine requires the 'ra_image_list' and 'dec_image_list' being declared in the initiation of the class
 
         :param kwargs_ps: point source keyword argument list
@@ -169,7 +176,8 @@ class PositionLikelihood(object):
         :param kwargs_lens: lens model keyword argument list
         :param kwargs_ps: point source keyword argument list
         :param sigma: 1-sigma Gaussian uncertainty in the image plane
-        :param hard_bound_rms: hard bound deviation between the mapping of the images back to the source plane (in source frame)
+        :param hard_bound_rms: hard bound deviation between the mapping of the images back to the source plane
+         (in source frame)
         :param verbose: bool, if True provides print statements with useful information.
         :return: log likelihood of the model reproducing the correct image positions given an image position uncertainty
         """

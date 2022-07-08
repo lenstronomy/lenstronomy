@@ -14,8 +14,7 @@ scikit-image
 pyyaml
 pyxdg
 h5py
-
--e git+https://github.com/johannesulf/nautilus.git
+nautilus-sampler
 
 
 schwimmbad

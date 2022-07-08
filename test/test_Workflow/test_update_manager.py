@@ -57,8 +57,11 @@ class TestUpdateManager(object):
         assert kwargs_result['kwargs_lens'][0]['e1'] == 0
 
     def test_update_options(self):
-        self.manager.update_options(kwargs_model={}, kwargs_constraints={'test': 'test'}, kwargs_likelihood={})
+        self.manager.update_options(kwargs_model=None, kwargs_constraints={'test': 'test'}, kwargs_likelihood=None)
         assert self.manager.kwargs_constraints['test'] == 'test'
+
+        self.manager.update_options(kwargs_model={'test': 'test'}, kwargs_constraints=None, kwargs_likelihood=None)
+        assert self.manager.kwargs_model['test'] == 'test'
 
     def test_update_limits(self):
         self.manager.update_limits(change_source_lower_limit=[[0, ['test'], [-1]]], change_source_upper_limit=[[0, ['test'], [1]]])

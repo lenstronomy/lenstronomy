@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation &#8212; lenstronomy 1.10.0 documentation</title>
+    <title>Installation &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>  
@@ -47,6 +47,11 @@
             
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>This page outlines how to install one of the officially distributed lenstronomy releases and its dependencies,
+or install and test the latest development version.</p>
+<section id="from-pypi">
+<h2>From PyPI<a class="headerlink" href="#from-pypi" title="Permalink to this headline">¶</a></h2>
+<p>All lenstronomy releases are distributed through the Python Package Index (PyPI). To install the latest version use pip:</p>
 <p>At the command line with pip:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install lenstronomy
 </pre></div>
@@ -56,7 +61,15 @@
 $ pip install lenstronomy
 </pre></div>
 </div>
+</section>
+<section id="from-conda-forge">
+<h2>From conda-forge<a class="headerlink" href="#from-conda-forge" title="Permalink to this headline">¶</a></h2>
+<p>All lenstronomy releases are also distributed for conda through the conda-forge channel. To install the latest version for your active conda environment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c conda-forge lenstronomy
+</pre></div>
+</div>
 <p>You can also clone the github repository for development purposes.</p>
+</section>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>Make sure the standard python libraries as specified in the <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/requirements.txt">requirements</a>.
@@ -123,6 +136,8 @@ $ tox
   <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#from-pypi">From PyPI</a></li>
+<li><a class="reference internal" href="#from-conda-forge">From conda-forge</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#mpi">MPI</a></li>
 <li><a class="reference internal" href="#numba">NUMBA</a></li>
@@ -174,7 +189,7 @@ $ tox
         <li class="right" >
           <a href="index.html" title="lenstronomy - gravitational lensing software package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Installation</a></li> 
       </ul>
     </div>

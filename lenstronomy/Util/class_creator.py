@@ -11,8 +11,8 @@ export, __all__ = exporter()
 
 
 @export
-def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, lens_redshift_list=None,
-                           kwargs_interp=None,
+def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, z_source_convention=None,
+                           lens_redshift_list=None, kwargs_interp=None,
                            multi_plane=False, observed_convention_index=None, source_light_model_list=None,
                            lens_light_model_list=None, point_source_model_list=None, fixed_magnification_list=None,
                            flux_from_point_source_list=None,
@@ -28,6 +28,8 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, len
     :param lens_model_list: list of strings indicating the type of lens models
     :param z_lens: redshift of the deflector (for single lens plane mode, but only relevant when computing physical quantities)
     :param z_source: redshift of source (for single source plane mode, or for multiple source planes the redshift of the point source). In regard to this redshift the reduced deflection angles are defined in the lens model.
+    :param z_source_convention: float, redshift of a source to define the reduced deflection angles of the lens models.
+     If None, 'z_source' is used.
     :param lens_redshift_list:
     :param multi_plane:
     :param kwargs_interp: interpolation keyword arguments specifying the numerics.
@@ -94,6 +96,7 @@ def create_class_instances(lens_model_list=None, z_lens=None, z_source=None, len
         else:
             observed_convention_index_i = observed_convention_index
     lens_model_class = LensModel(lens_model_list=lens_model_list_i, z_lens=z_lens, z_source=z_source,
+                                 z_source_convention=z_source_convention,
                                  lens_redshift_list=lens_redshift_list_i,
                                  multi_plane=multi_plane, cosmo=cosmo,
                                  observed_convention_index=observed_convention_index_i, kwargs_interp=kwargs_interp)
@@ -174,35 +177,42 @@ def create_image_model(kwargs_data, kwargs_psf, kwargs_numerics, kwargs_model, i
 
 @export
 def create_im_sim(multi_band_list, multi_band_type, kwargs_model, bands_compute=None, image_likelihood_mask_list=None,
-                  band_index=0, kwargs_pixelbased=None):
+                  band_index=0, kwargs_pixelbased=None, linear_solver=True):
     """
 
 
     :param multi_band_list: list of [[kwargs_data, kwargs_psf, kwargs_numerics], [], ..]
     :param multi_band_type: string, option when having multiple imaging data sets modelled simultaneously. Options are:
-    - 'multi-linear': linear amplitudes are inferred on single data set
-    - 'linear-joint': linear amplitudes ae jointly inferred
-    - 'single-band': single band
+     - 'multi-linear': linear amplitudes are inferred on single data set
+     - 'linear-joint': linear amplitudes ae jointly inferred
+     - 'single-band': single band
     :param kwargs_model: model keyword arguments
     :param bands_compute: (optional), bool list to indicate which band to be included in the modeling
     :param image_likelihood_mask_list: list of image likelihood mask
      (same size as image_data with 1 indicating being evaluated and 0 being left out)
     :param band_index: integer, index of the imaging band to model (only applied when using 'single-band' as option)
     :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)
-
+    :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+     that they get overwritten by the linear solver solution.
     :return: MultiBand class instance
     """
+    if linear_solver is False and multi_band_type not in ['single-band', 'multi-linear']:
+        raise ValueError('setting "linear_solver" to False is only supported in "single-band" mode '
+                         'or if "multi-linear" model has only one band.')
 
     if multi_band_type == 'multi-linear':
         from lenstronomy.ImSim.MultiBand.multi_linear import MultiLinear
-        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
+        multiband = MultiLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
+                                likelihood_mask_list=image_likelihood_mask_list, linear_solver=linear_solver)
     elif multi_band_type == 'joint-linear':
         from lenstronomy.ImSim.MultiBand.joint_linear import JointLinear
-        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute, likelihood_mask_list=image_likelihood_mask_list)
+        multiband = JointLinear(multi_band_list, kwargs_model, compute_bool=bands_compute,
+                                likelihood_mask_list=image_likelihood_mask_list)
     elif multi_band_type == 'single-band':
         from lenstronomy.ImSim.MultiBand.single_band_multi_model import SingleBandMultiModel
         multiband = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=image_likelihood_mask_list,
-                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
+                                         band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
+                                         linear_solver=linear_solver)
     else:
         raise ValueError("type %s is not supported!" % multi_band_type)
     return multiband

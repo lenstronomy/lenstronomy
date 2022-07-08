@@ -288,3 +288,8 @@ History
 1.10.2 (2022-03-27)
 +++++++++++++++++++
 * requirement from sklearn changed to scikit-learn
+
+1.10.3 (2022-04-18)
++++++++++++++++++++
+* class_creator update
+* conda-forge linked and installation updated

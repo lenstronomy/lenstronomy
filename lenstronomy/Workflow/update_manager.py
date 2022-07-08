@@ -208,7 +208,7 @@ class UpdateManager(object):
                             kwargs_lens_init=lens_temp, **kwargs_constraints)
         return param_class
 
-    def update_options(self, kwargs_model, kwargs_constraints, kwargs_likelihood):
+    def update_options(self, kwargs_model=None, kwargs_constraints=None, kwargs_likelihood=None):
         """
         updates the options by overwriting the kwargs with the new ones being added/changed
         WARNING: some updates may not be valid depending on the model options. Use carefully!
@@ -219,6 +219,12 @@ class UpdateManager(object):
         :param kwargs_likelihood:
         :return: kwargs_model, kwargs_constraints, kwargs_likelihood
         """
+        if kwargs_model is None:
+            kwargs_model = {}
+        if kwargs_constraints is None:
+            kwargs_constraints = {}
+        if kwargs_likelihood is None:
+            kwargs_likelihood = []
         kwargs_model_updated = self.kwargs_model.update(kwargs_model)
         kwargs_constraints_updated = self.kwargs_constraints.update(kwargs_constraints)
         kwargs_likelihood_updated = self.kwargs_likelihood.update(kwargs_likelihood)

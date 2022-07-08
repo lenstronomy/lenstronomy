@@ -152,10 +152,10 @@ class DyPolyChordSampler(NestedSampler):
             # in case DyPolyChord or NestCheck was not compiled properly, for unit tests
             ns_run = {
                 'theta': np.zeros((1, self.n_dims)),
-                'logl': np.zeros(self.n_dims),
+                'logl': np.zeros(1),
                 'output': {
-                    'logZ': np.zeros(self.n_dims),
-                    'logZerr': np.zeros(self.n_dims),
+                    'logZ': np.zeros(1),
+                    'logZerr': np.zeros(1),
                     'param_means': np.zeros(self.n_dims)
                 }
             }
@@ -165,9 +165,9 @@ class DyPolyChordSampler(NestedSampler):
             samples, logL = self._get_equal_weight_samples()
             # logL     = ns_run['logl']
             # samples_w = ns_run['theta']
-            logZ     = ns_run['output']['logZ']
+            logZ = ns_run['output']['logZ']
             logZ_err = ns_run['output']['logZerr']
-            means    = ns_run['output']['param_means']
+            means = ns_run['output']['param_means']
 
             print('The log evidence estimate using the first run is {}'
                   .format(logZ))
@@ -197,8 +197,8 @@ class DyPolyChordSampler(NestedSampler):
         # write fake output file for unit tests
         file_name = '{}_equal_weights.txt'.format(self._output_basename)
         file_path = os.path.join(self._output_dir, file_name)
-        data = np.zeros((samples.shape[0], 1+samples.shape[1]))
-        data[:, 0]  = -2. * logL
+        data = np.zeros((samples.shape[0], 1+samples.shape[1]), dtype=float)
+        data[:, 0] = -2. * logL
         data[:, 1:] = samples
         np.savetxt(file_path, data, fmt='% .14E')
 

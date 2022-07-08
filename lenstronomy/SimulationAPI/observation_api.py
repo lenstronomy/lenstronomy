@@ -99,12 +99,11 @@ class Observation(object):
         return self._exposure_time * self._num_exposures
 
     @property
-    def psf_class(self):
+    def kwargs_psf(self):
         """
-        creates instance of PSF() class based on knowledge of the observations
-        For the full possibility of how to create such an instance, see the PSF() class documentation
+        keyword arguments to initiate a PSF() class
 
-        :return: instance of PSF() class
+        :return: kwargs_psf
         """
         if self._psf_type == 'GAUSSIAN':
             psf_type = "GAUSSIAN"
@@ -121,7 +120,17 @@ class Observation(object):
             kwargs_psf = {'psf_type': "NONE"}
         else:
             raise ValueError("psf_type %s not supported!" % self._psf_type)
-        psf_class = PSF(**kwargs_psf)
+        return kwargs_psf
+
+    @property
+    def psf_class(self):
+        """
+        creates instance of PSF() class based on knowledge of the observations
+        For the full possibility of how to create such an instance, see the PSF() class documentation
+
+        :return: instance of PSF() class
+        """
+        psf_class = PSF(**self.kwargs_psf)
         return psf_class
 
 

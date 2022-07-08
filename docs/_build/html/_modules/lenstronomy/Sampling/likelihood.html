@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 1.10.0 documentation</title>
+    <title>lenstronomy.Sampling.likelihood &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.likelihood</a></li> 
       </ul>
@@ -106,12 +106,15 @@
 <span class="sd">        :param restrict_image_number: bool, if True: computes ALL image positions of the point source. If there are more</span>
 <span class="sd">        images predicted than indicated in max_num_images, a punishment occurs</span>
 <span class="sd">        :param max_num_images: int, see restrict_image_number</span>
-<span class="sd">        :param bands_compute: list of bools with same length as data objects, indicates which &quot;band&quot; to include in the fitting</span>
+<span class="sd">        :param bands_compute: list of bools with same length as data objects, indicates which &quot;band&quot; to include in the</span>
+<span class="sd">         fitting</span>
 <span class="sd">        :param time_delay_likelihood: bool, if True computes the time-delay likelihood of the FIRST point source</span>
-<span class="sd">        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes (see FluxRatioLikeliood)</span>
+<span class="sd">        :param kwargs_flux_compute: keyword arguments of how to compute the image position fluxes</span>
+<span class="sd">         (see FluxRatioLikeliood)</span>
 <span class="sd">        :param custom_logL_addition: a definition taking as arguments (kwargs_lens, kwargs_source, kwargs_lens_light,</span>
 <span class="sd">         kwargs_ps, kwargs_special, kwargs_extinction) and returns a logL (punishing) value.</span>
-<span class="sd">        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver (see SLITronomy documentation)</span>
+<span class="sd">        :param kwargs_pixelbased: keyword arguments with various settings related to the pixel-based solver</span>
+<span class="sd">         (see SLITronomy documentation)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="p">,</span> <span class="n">flux_ratio_errors</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_data_joint</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -169,7 +172,10 @@
 <span class="sd">        :return: updated model instances of this class</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">source_model_class</span><span class="p">,</span> <span class="n">lens_light_model_class</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">extinction_class</span> <span class="o">=</span> <span class="n">class_creator</span><span class="o">.</span><span class="n">create_class_instances</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
+        <span class="c1"># TODO: in case lens model or point source models are only applied on partial images, then this current class</span>
+        <span class="c1"># has ambiguities when it comes to time-delay likelihood and flux ratio likelihood</span>
+        <span class="n">lens_model_class</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">point_source_class</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">class_creator</span><span class="o">.</span><span class="n">create_class_instances</span><span class="p">(</span><span class="n">all_models</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                                                                             <span class="o">**</span><span class="n">kwargs_model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span> <span class="o">=</span> <span class="n">point_source_class</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_delay_likelihood</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -254,7 +260,8 @@
                 <span class="n">penalty</span> <span class="o">=</span> <span class="mf">10.</span><span class="o">**</span><span class="mi">5</span>
                 <span class="n">bound_hit</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="k">if</span> <span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;parameter </span><span class="si">%s</span><span class="s1"> with value </span><span class="si">%s</span><span class="s1"> hit the bounds [</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">] &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;parameter </span><span class="si">%s</span><span class="s1"> with value </span><span class="si">%s</span><span class="s1"> hit the bounds [</span><span class="si">%s</span><span class="s1">, </span><span class="si">%s</span><span class="s1">] &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lowerLimit</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                                   <span class="n">upperLimit</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
                 <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span>
         <span class="k">return</span> <span class="n">penalty</span><span class="p">,</span> <span class="n">bound_hit</span></div>
 
@@ -320,7 +327,8 @@
             <span class="n">ra_image_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="n">dec_image_list</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dec_image_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="p">,</span> <span class="n">flux_ratio_errors</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span>
+        <span class="k">return</span> <span class="n">multi_band_list</span><span class="p">,</span> <span class="n">multi_band_type</span><span class="p">,</span> <span class="n">time_delays_measured</span><span class="p">,</span> <span class="n">time_delays_uncertainties</span><span class="p">,</span> <span class="n">flux_ratios</span><span class="p">,</span> \
+               <span class="n">flux_ratio_errors</span><span class="p">,</span> <span class="n">ra_image_list</span><span class="p">,</span> <span class="n">dec_image_list</span>
 
     <span class="k">def</span> <span class="nf">_reset_point_source_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bool_input</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">PointSource</span><span class="o">.</span><span class="n">delete_lens_model_cache</span><span class="p">()</span>
@@ -373,7 +381,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.likelihood</a></li> 
       </ul>

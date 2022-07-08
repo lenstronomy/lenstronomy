@@ -117,8 +117,32 @@ class TestSampler(object):
                                                     backend_filename=backup_filename, start_from_backend=True)
         assert len(samples_2) == len(samples_1) + n_walkers * n_run
         assert len(dist_2) == len(samples_2)
-        
+
         os.remove(backup_filename)  # just remove the backup file created above
+
+    def test_mcmc_zeus(self): # NHmod
+        n_walkers = 44
+        n_run = 2
+        n_burn = 2
+        mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,
+                                                  kwargs_lens_light=self.kwargs_lens_light)
+        sigma_start = np.ones_like(mean_start) * 0.1
+        samples, dist = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start)
+        assert len(samples) == n_walkers * n_run
+        assert len(dist) == len(samples)
+
+        # test of backup file
+        # 1) run a chain specifiying a backup file name
+        backup_filename = 'test_mcmc_zeus.h5'
+        samples_1, dist_1 = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                    backend_filename=backup_filename)
+        assert len(samples_1) == n_walkers * n_run
+
+        # todo:
+        # add test starting from backup of previous run, if that functionality is available in zeus
+        # do we need to add a fitting sequence test for zeus too?
+
+        os.remove(backup_filename)
 
 
 if __name__ == '__main__':

@@ -215,7 +215,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
          scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
         :param progress: boolean, if True shows progress bar in EMCEE
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
@@ -256,6 +256,11 @@ class FittingSequence(object):
                                                   backend_filename=backend_filename,
                                                   start_from_backend=start_from_backend)
             output = [sampler_type, samples, param_list, dist]
+
+        elif sampler_type == 'ZEUS': # NHmod
+            samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                 progress=progress, initpos = initpos, backend_filename = backend_filename)
+            output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
         self._mcmc_init_samples = samples  # overwrites previous samples to continue from there in the next MCMC run
@@ -291,8 +296,8 @@ class FittingSequence(object):
         return kwargs_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
-                        prior_type='uniform', width_scale=1, sigma_scale=1, 
-                        output_basename='chain', remove_output_dir=True, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1,
+                        output_basename='chain', remove_output_dir=True,
                         dypolychord_dynamic_goal=0.8,
                         polychord_settings={},
                         dypolychord_seed_increment=200,
@@ -356,7 +361,7 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      width_scale=width_scale,
                                      sigma_scale=sigma_scale,
-                                     bound=dynesty_bound, 
+                                     bound=dynesty_bound,
                                      sample=dynesty_sample,
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
@@ -366,7 +371,7 @@ class FittingSequence(object):
         # update current best fit values
         self._update_state(samples[-1])
 
-        output = [sampler_type, samples, sampler.param_names, logL, 
+        output = [sampler_type, samples, sampler.param_names, logL,
                   logZ, logZ_err, results_object]
         return output
 

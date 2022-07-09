@@ -113,7 +113,7 @@ class FittingSequence(object):
             elif fitting_type == 'Nautilus':
                 from lenstronomy.Sampling.Samplers.nautilus import Nautilus
                 nautilus = Nautilus(likelihood_module=self.likelihoodModule)
-                points, log_w, log_l, log_z = nautilus.nautilus_sampling(**kwargs)
+                points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
                 chain_list.append([points, log_w, log_l, log_z])
                 kwargs_result = self.best_fit_from_samples(points, log_l)
                 self._updateManager.update_param_state(**kwargs_result)

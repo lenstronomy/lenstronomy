@@ -428,6 +428,22 @@ class TestNumericsProfile(object):
         lens_model = ['SPL_CORE']
         self.assert_differentials(lens_model, kwargs, potential=False)
 
+    def test_gnfw(self):
+
+        kwargs = {'alpha_Rs': 1.5, 'Rs': 2.0, 'gamma_inner': 0.2, 'gamma_outer': 3.3,
+                  'center_x': 0., 'center_y': 0.}
+        lens_model = ['GNFW']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 1.5, 'Rs': 2.0, 'gamma_inner': 1.5, 'gamma_outer': 3.2,
+                  'center_x': 0., 'center_y': 0.}
+        lens_model = ['GNFW']
+        self.assert_differentials(lens_model, kwargs, potential=False)
+
+        kwargs = {'alpha_Rs': 1.5, 'Rs': 2.0, 'gamma_inner': 2.1, 'gamma_outer': 3.3,
+                  'center_x': 0., 'center_y': 0.}
+        lens_model = ['GNFW']
+        self.assert_differentials(lens_model, kwargs, potential=False)
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

@@ -3,6 +3,7 @@ __author__ = 'dgilman'
 import unittest
 from lenstronomy.LensModel.Profiles.general_nfw import GNFW
 from lenstronomy.LensModel.lens_model import LensModel
+from scipy.integrate import quad
 
 import numpy.testing as npt
 import pytest
@@ -33,6 +34,15 @@ class TestGNFW(object):
         npt.assert_almost_equal(f_xx, f_xx_, 5)
         npt.assert_almost_equal(f_yy, f_yy_, 5)
         npt.assert_almost_equal(f_xy, f_xy_, 5)
+
+    def test_mass2d(self):
+
+        m2d = self.gnfw.mass_2d(10.0, self.kwargs_lens['Rs'], self.rho0, self.kwargs_lens['gamma_inner'],
+                                self.kwargs_lens['gamma_outer'])
+        integrand = lambda x: 2 * 3.14159265 * x * self.gnfw.density_2d(x, 0.0, self.kwargs_lens['Rs'], self.rho0, self.kwargs_lens['gamma_inner'],
+                                self.kwargs_lens['gamma_outer'])
+        m2d_num = quad(integrand, 0, 10.)[0]
+        npt.assert_almost_equal(m2d_num/m2d, 1.0, 5)
 
 if __name__ == '__main__':
     pytest.main()

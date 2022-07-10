@@ -42,6 +42,7 @@ class ProfileIntegrals(object):
     def density_2d(self, r, kwargs_profile, lens_param=False):
         """
         computes the projected density along the line-of-sight
+
         :param r: radius (arcsec)
         :param kwargs_profile: keyword argument list with lens model parameters
         :param lens_param: boolean, if True uses the lens model parameterization in computing the 3d density convention

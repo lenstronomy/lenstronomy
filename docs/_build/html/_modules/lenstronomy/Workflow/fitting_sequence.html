@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Workflow.fitting_sequence &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.fitting_sequence</a></li> 
       </ul>
@@ -526,7 +526,7 @@
         <span class="k">if</span> <span class="n">prior_type</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
             <span class="n">mean_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">parameter_state</span><span class="p">)</span>
             <span class="n">sigma_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">kwargs2args</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_updateManager</span><span class="o">.</span><span class="n">sigma_kwargs</span><span class="p">)</span>
-            <span class="n">mean_start</span>  <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span>
+            <span class="n">mean_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">mean_start</span><span class="p">)</span>
             <span class="n">sigma_start</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sigma_start</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">mean_start</span><span class="p">,</span> <span class="n">sigma_start</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
@@ -548,13 +548,23 @@
 <span class="sd">        :return: kwargs_result like returned by self.pso(), from best logL MCMC sample</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">logL_values</span> <span class="o">=</span> <span class="n">mcmc_output</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">best_fit_from_samples</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">logL_values</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FittingSequence.best_fit_from_samples"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.fitting_sequence.FittingSequence.best_fit_from_samples">[docs]</a>    <span class="k">def</span> <span class="nf">best_fit_from_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">logl</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return best fit (max likelihood) value of samples in lenstronomy conventions</span>
+
+<span class="sd">        :param samples: samples of multi-dimensional parameter space</span>
+<span class="sd">        :param logl: likelihood values for each sample</span>
+<span class="sd">        :return: kwargs_result in lenstronomy convention</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># get index of best logL sample</span>
-        <span class="n">bestfit_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logL_values</span><span class="p">)</span>
-        <span class="n">bestfit_sample</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">bestfit_idx</span><span class="p">,</span> <span class="p">:]</span>
-        <span class="n">bestfit_result</span> <span class="o">=</span> <span class="n">bestfit_sample</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+        <span class="n">best_fit_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">logl</span><span class="p">)</span>
+        <span class="n">best_fit_sample</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="n">best_fit_index</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">best_fit_result</span> <span class="o">=</span> <span class="n">best_fit_sample</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="c1"># get corresponding kwargs</span>
-        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">bestfit_result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">kwargs_result</span></div>
+        <span class="n">kwargs_result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">param_class</span><span class="o">.</span><span class="n">args2kwargs</span><span class="p">(</span><span class="n">best_fit_result</span><span class="p">,</span> <span class="n">bijective</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">kwargs_result</span></div></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -586,7 +596,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.fitting_sequence</a></li> 
       </ul>

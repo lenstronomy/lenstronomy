@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Workflow.alignment_matching &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Workflow.alignment_matching &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.alignment_matching</a></li> 
       </ul>
@@ -59,7 +59,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chain</span> <span class="o">=</span> <span class="n">AlignmentLikelihood</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="n">kwargs_model</span><span class="p">,</span> <span class="n">kwargs_params</span><span class="p">,</span> <span class="n">band_index</span><span class="p">,</span> <span class="n">likelihood_mask_list</span><span class="p">)</span>
 
-<div class="viewcode-block" id="AlignmentFitting.pso"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso">[docs]</a>    <span class="k">def</span> <span class="nf">pso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">upperLimit</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="AlignmentFitting.pso"><a class="viewcode-back" href="../../../lenstronomy.Workflow.html#lenstronomy.Workflow.alignment_matching.AlignmentFitting.pso">[docs]</a>    <span class="k">def</span> <span class="nf">pso</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_particles</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_iterations</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">lowerLimit</span><span class="o">=-</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">upperLimit</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">threadCount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">print_key</span><span class="o">=</span><span class="s1">&#39;default&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        returns the best fit for the lense model on catalogue basis with particle swarm optimizer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -113,7 +114,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        routine to compute X2 given variable parameters for a MCMC/PSO chainF</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1">#generate image and computes likelihood</span>
+        <span class="c1"># generate image and computes likelihood</span>
         <span class="n">multi_band_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_multi_band</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
         <span class="n">image_model</span> <span class="o">=</span> <span class="n">SingleBandMultiModel</span><span class="p">(</span><span class="n">multi_band_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs_model</span><span class="p">,</span>
                                            <span class="n">likelihood_mask_list</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_likelihood_mask_list</span><span class="p">,</span> <span class="n">band_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_band_index</span><span class="p">)</span>
@@ -204,7 +205,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Workflow.alignment_matching</a></li> 
       </ul>

@@ -23,19 +23,25 @@ class MultiLinear(MultiDataBase):
 
     """
 
-    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None, kwargs_pixelbased=None):
+    def __init__(self, multi_band_list, kwargs_model, likelihood_mask_list=None, compute_bool=None,
+                 kwargs_pixelbased=None, linear_solver=True):
         """
 
         :param multi_band_list: list of imaging band configurations [[kwargs_data, kwargs_psf, kwargs_numerics],[...], ...]
         :param kwargs_model: model option keyword arguments
-        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images
-        :param compute_bool: (optinal), bool list to indicate which band to be included in the modeling
+        :param likelihood_mask_list: list of likelihood masks (booleans with size of the individual images)
+        :param compute_bool: (optional), bool list to indicate which band to be included in the modeling
+        :param linear_solver: bool, if True (default) fixes the linear amplitude parameters 'amp' (avoid sampling) such
+         that they get overwritten by the linear solver solution.
         """
         self.type = 'multi-linear'
         imageModel_list = []
+        if linear_solver is False and len(multi_band_list) > 1:
+            raise ValueError('Multi-linear mode with more than one band does not support "linear_solver" = False.')
         for band_index in range(len(multi_band_list)):
             imageModel = SingleBandMultiModel(multi_band_list, kwargs_model, likelihood_mask_list=likelihood_mask_list,
-                                              band_index=band_index, kwargs_pixelbased=kwargs_pixelbased)
+                                              band_index=band_index, kwargs_pixelbased=kwargs_pixelbased,
+                                              linear_solver=linear_solver)
             imageModel_list.append(imageModel)
         super(MultiLinear, self).__init__(imageModel_list, compute_bool=compute_bool)
 

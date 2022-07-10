@@ -12,7 +12,7 @@ __all__ = ['EPL', 'EPLMajorAxis']
 
 
 class EPL(LensProfileBase):
-    """"
+    """
     Elliptical Power Law mass profile
 
     .. math::

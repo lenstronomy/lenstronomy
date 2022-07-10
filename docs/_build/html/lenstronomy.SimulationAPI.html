@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.SimulationAPI package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.SimulationAPI package &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI package</a></li> 
       </ul>
@@ -105,7 +105,7 @@ options are available. Have a look in the specific modules if you are interested
 <span id="lenstronomy-simulationapi-model-api-module"></span><h2>lenstronomy.SimulationAPI.model_api module<a class="headerlink" href="#module-lenstronomy.SimulationAPI.model_api" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="lenstronomy.SimulationAPI.model_api.ModelAPI">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.SimulationAPI.model_api.</span></span><span class="sig-name descname"><span class="pre">ModelAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/model_api.html#ModelAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.model_api.ModelAPI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lenstronomy.SimulationAPI.model_api.</span></span><span class="sig-name descname"><span class="pre">ModelAPI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lens_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_lens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lens_light_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_source_model_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_redshift_list</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cosmo</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_source_convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/SimulationAPI/model_api.html#ModelAPI"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.SimulationAPI.model_api.ModelAPI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class manages the model choices. The role is to return instances of the lenstronomy LightModel, LensModel,
 PointSource modules according to the options chosen by the user.
@@ -137,7 +137,8 @@ The current options of the class instance only describe a subset of possibilitie
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>kwargs_mass</strong> – list of keyword arguments of all the lens models. Einstein radius ‘theta_E’ are replaced by
-‘sigma_v’, velocity dispersion in km/s, ‘alpha_Rs’ and ‘Rs’ of NFW profiles are replaced by ‘M200’ and ‘concentration’</p>
+‘sigma_v’, velocity dispersion in km/s, ‘alpha_Rs’ and ‘Rs’ of NFW profiles are replaced by ‘M200’ and
+‘concentration’</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>kwargs_lens in reduced deflection angles compatible with the lensModel instance of this module</p>
@@ -217,7 +218,8 @@ For the full possibility of how to create such an instance, see the PSF() class 
 <li><p><strong>seeing</strong> – full width at half maximum of the PSF (if not specific psf_model is specified)</p></li>
 <li><p><strong>num_exposures</strong> – number of exposures that are combined</p></li>
 <li><p><strong>psf_type</strong> – string, type of PSF (‘GAUSSIAN’ and ‘PIXEL’ supported)</p></li>
-<li><p><strong>kernel_point_source</strong> – 2d numpy array, model of PSF centered with odd number of pixels per axis (optional when psf_type=’PIXEL’ is chosen)</p></li>
+<li><p><strong>kernel_point_source</strong> – 2d numpy array, model of PSF centered with odd number of pixels per axis
+(optional when psf_type=’PIXEL’ is chosen)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -312,7 +314,8 @@ m = -2.5 x log10(DN / EXPTIME) + ZEROPOINT</p>
 <li><p><strong>model</strong> – 2d numpy array of modelled image (with pixels in units of data specified in class)</p></li>
 <li><p><strong>background_noise</strong> – bool, if True, adds background noise</p></li>
 <li><p><strong>poisson_noise</strong> – bool, if True, adds Poisson noise of modelled flux</p></li>
-<li><p><strong>seed</strong> – int, seed number to be used to render the noise properties. If None, then uses the current numpy.random seed to render the noise properties.</p></li>
+<li><p><strong>seed</strong> – int, seed number to be used to render the noise properties.
+If None, then uses the current numpy.random seed to render the noise properties.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -533,7 +536,7 @@ magnitude for all the light models. These keyword arguments conform with the len
         <li class="right" >
           <a href="lenstronomy.Sampling.Samplers.html" title="lenstronomy.Sampling.Samplers package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI package</a></li> 
       </ul>

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.LensModel.MultiPlane package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LensModel.MultiPlane package &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.LensModel.LightConeSim.html" title="lenstronomy.LensModel.LightConeSim package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" accesskey="U">lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.MultiPlane package</a></li> 
@@ -187,8 +187,10 @@ conventions are satisfied.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>theta_x</strong> – angle in x-direction on the image</p></li>
-<li><p><strong>theta_y</strong> – angle in y-direction on the image</p></li>
+<li><p><strong>theta_x</strong> – angle in x-direction on the image
+(usually arc seconds, in the same convention as lensing deflection angles)</p></li>
+<li><p><strong>theta_y</strong> – angle in y-direction on the image
+(usually arc seconds, in the same convention as lensing deflection angles)</p></li>
 <li><p><strong>kwargs_lens</strong> – lens model keyword argument list</p></li>
 <li><p><strong>check_convention</strong> – flag to check the image position convention (leave this alone)</p></li>
 </ul>
@@ -207,8 +209,8 @@ redshift z_start and then backwards to redshift z_stop</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – co-moving position [Mpc]</p></li>
-<li><p><strong>y</strong> – co-moving position [Mpc]</p></li>
+<li><p><strong>x</strong> – co-moving position [Mpc] / angle definition</p></li>
+<li><p><strong>y</strong> – co-moving position [Mpc] / angle definition</p></li>
 <li><p><strong>alpha_x</strong> – ray angle at z_start [arcsec]</p></li>
 <li><p><strong>alpha_y</strong> – ray angle at z_start [arcsec]</p></li>
 <li><p><strong>z_start</strong> – redshift of start of computation</p></li>
@@ -225,7 +227,7 @@ will compute the distance each time this function gets executed.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>co-moving position and angles at redshift z_stop</p>
+<dd class="field-even"><p>co-moving position (modulo angle definition) and angles at redshift z_stop</p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,7 +277,8 @@ the first deflector afterwards and the last deflector before the end of the ray-
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.update_source_redshift">
 <span class="sig-name descname"><span class="pre">update_source_redshift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z_source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/LensModel/MultiPlane/multi_plane.html#MultiPlane.update_source_redshift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.LensModel.MultiPlane.multi_plane.MultiPlane.update_source_redshift" title="Permalink to this definition">¶</a></dt>
-<dd><p>update instance of this class to compute reduced lensing quantities and time delays to a specific source redshift</p>
+<dd><p>update instance of this class to compute reduced lensing quantities and time delays to a specific source
+redshift</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>z_source</strong> – float; source redshift</p>
@@ -445,7 +448,7 @@ deflector is at z_start</p></li>
         <li class="right" >
           <a href="lenstronomy.LensModel.LightConeSim.html" title="lenstronomy.LensModel.LightConeSim package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="lenstronomy.LensModel.html" >lenstronomy.LensModel package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LensModel.MultiPlane package</a></li> 

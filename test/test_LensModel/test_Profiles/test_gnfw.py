@@ -15,6 +15,13 @@ class TestGNFW(object):
         self.kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'gamma_inner': 1.0, 'gamma_outer': 3.0,'center_x': 0.04, 'center_y': -1.0}
         self.rho0 = self.gnfw.alpha2rho0(self.kwargs_lens['alpha_Rs'], self.kwargs_lens['Rs'],
                                          self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])
+
+    def test_alphaRs(self):
+
+        alpha_rs = self.gnfw.derivatives(self.kwargs_lens['Rs'], 0.0, self.kwargs_lens['Rs'], self.kwargs_lens['alpha_Rs'],
+                                         self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])[0]
+        npt.assert_almost_equal(alpha_rs, self.kwargs_lens['alpha_Rs'], 8)
+
     def test_alphaRs_rho0_conversion(self):
 
         alpha_Rs = self.gnfw.rho02alpha(self.rho0, self.kwargs_lens['Rs'], self.kwargs_lens['gamma_inner'],

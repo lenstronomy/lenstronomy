@@ -18,6 +18,8 @@ class GNFW(LensProfileBase):
 
     For g = 1.0 and n=3, it is approximately the same as an NFW profile
     The original reference is here: https://ui.adsabs.harvard.edu/abs/2001ApJ...558..657M/abstract
+
+    TODO: implement the gravitational potential for this profile
     """
     profile_name = 'GNFW'
     param_names = ['Rs', 'alpha_Rs', 'center_x', 'center_y', 'gamma_inner', 'gamma_outer']
@@ -39,8 +41,7 @@ class GNFW(LensProfileBase):
         :return: deflection angle in x, deflection angle in y
         """
         rho0_input = self.alpha2rho0(alpha_Rs, Rs, gamma_inner, gamma_outer)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
+        Rs = np.maximum(Rs, 0.00000001)
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
@@ -61,11 +62,10 @@ class GNFW(LensProfileBase):
         :return: Hessian matrix of function d^2f/dx^2, d^2/dxdy, d^2/dydx, d^f/dy^2
         """
         rho0_input = self.alpha2rho0(alpha_Rs, Rs, gamma_inner, gamma_outer)
-        if Rs < 0.0000001:
-            Rs = 0.0000001
         x_ = x - center_x
         y_ = y - center_y
         R = np.sqrt(x_ ** 2 + y_ ** 2)
+        R = np.maximum(R, 0.00000001)
         kappa = self.density_2d(R, 0, Rs, rho0_input,gamma_inner, gamma_outer)
         gamma1, gamma2 = self.nfwGamma(R, Rs, rho0_input,gamma_inner, gamma_outer, x_, y_)
         f_xx = kappa + gamma1
@@ -169,6 +169,7 @@ class GNFW(LensProfileBase):
         :param gamma_outer: logarithmic profile slope outside Rs
         :return: mass in cylinder
         """
+        R = np.maximum(R, 0.00000001)
         x = R / Rs
         gx = self._g(x, gamma_inner, gamma_outer)
         m_2d = 4 * rho0 * Rs * R ** 2 * gx / x ** 2 * np.pi
@@ -208,8 +209,7 @@ class GNFW(LensProfileBase):
         :param ax_y: y coordinate relative to center
         :return: Epsilon(R) projected density at radius R
         """
-        c = 0.000001
-        R = np.maximum(R, c)
+        R = np.maximum(R, 0.00000001)
         x = R / Rs
         gx = self._g(x, gamma_inner, gamma_outer)
         Fx = self._f(x, gamma_inner, gamma_outer)

@@ -4,6 +4,7 @@ import unittest
 from lenstronomy.LensModel.Profiles.general_nfw import GNFW
 from lenstronomy.LensModel.lens_model import LensModel
 from scipy.integrate import quad
+from lenstronomy.LensModel.Profiles.splcore import SPLCORE
 
 import numpy.testing as npt
 import pytest
@@ -12,6 +13,7 @@ class TestGNFW(object):
 
     def setup(self):
         self.gnfw = GNFW()
+        self.splcore = SPLCORE()
         self.kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'gamma_inner': 1.0, 'gamma_outer': 3.0,'center_x': 0.04, 'center_y': -1.0}
 
     def test_alphaRs(self):
@@ -52,6 +54,17 @@ class TestGNFW(object):
                                 self.kwargs_lens['gamma_outer'])
         m2d_num = quad(integrand, 0, 10.)[0]
         npt.assert_almost_equal(m2d_num/m2d, 1.0, 5)
+
+    def test_spl_core_match(self):
+
+        rs = 1.5
+        kwargs_spl = {'sigma0': 1e13, 'gamma': 3.0, 'r_core': 0.00000001}
+        alpha_rs = self.splcore.derivatives(rs, 0.0, **kwargs_spl)[0]
+        kwargs_gnfw = {'alpha_Rs': alpha_rs, 'Rs':rs, 'gamma_inner': 2.99999, 'gamma_outer': 3.00001}
+        m3d_gnfw = self.gnfw.mass_3d_lens(5*rs,**kwargs_gnfw)
+        m3d_splcore = self.splcore.mass_3d_lens(5*rs, **kwargs_spl)
+        npt.assert_almost_equal(m3d_gnfw/m3d_splcore, 0.935, 3)
+        # approximate match to splcore with similar properties
 
 if __name__ == '__main__':
     pytest.main()

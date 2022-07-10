@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy.PointSource package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.PointSource package &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" accesskey="U">lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource package</a></li> 
       </ul>
@@ -231,11 +231,11 @@ currently only used in SimAPI to transform magnitudes to amplitudes in the lenst
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.PointSource.point_source.PointSource.set_save_cache">
-<span class="sig-name descname"><span class="pre">set_save_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.set_save_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.set_save_cache" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_save_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_cache</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source.html#PointSource.set_save_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source.PointSource.set_save_cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>set the save cache boolean to new value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bool</strong> – bool, if True, saves (or uses a previously saved) values</p>
+<dd class="field-odd"><p><strong>save_cache</strong> – bool, if True, saves (or uses a previously saved) values</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>updated class and sub-class instances to either save or not save the point source information in cache</p>
@@ -353,7 +353,8 @@ Attention: cache needs to be deleted before calling functions with different len
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kwargs_ps</strong> – keyword arguments of the point source model</p></li>
-<li><p><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</p></li>
+<li><p><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation
+solver</p></li>
 <li><p><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
 images will be computed that exceed the lensing magnification (absolute value) limit</p></li>
 <li><p><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
@@ -374,7 +375,8 @@ see LensEquationSolver() class for details</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kwargs_ps</strong> – keyword arguments of the point source model</p></li>
-<li><p><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation solver</p></li>
+<li><p><strong>kwargs_lens</strong> – keyword argument list of the lens model(s), only used when requiring the lens equation
+solver</p></li>
 <li><p><strong>magnification_limit</strong> – float &gt;0 or None, if float is set and additional images are computed, only those
 images will be computed that exceed the lensing magnification (absolute value) limit</p></li>
 <li><p><strong>kwargs_lens_eqn_solver</strong> – keyword arguments specifying the numerical settings for the lens equation solver
@@ -389,7 +391,7 @@ see LensEquationSolver() class for details</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="lenstronomy.PointSource.point_source_cached.PointSourceCached.set_save_cache">
-<span class="sig-name descname"><span class="pre">set_save_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_cached.html#PointSourceCached.set_save_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_cached.PointSourceCached.set_save_cache" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set_save_cache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_cached.html#PointSourceCached.set_save_cache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_cached.PointSourceCached.set_save_cache" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -456,8 +458,8 @@ plane and have to be ray-traced back</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.PointSource.point_source_param.PointSourceParam.getParams">
-<span class="sig-name descname"><span class="pre">getParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_param.html#PointSourceParam.getParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_param.PointSourceParam.getParams" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.PointSource.point_source_param.PointSourceParam.get_params">
+<span class="sig-name descname"><span class="pre">get_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_param.html#PointSourceParam.get_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_param.PointSourceParam.get_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -493,8 +495,8 @@ plane and have to be ray-traced back</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lenstronomy.PointSource.point_source_param.PointSourceParam.setParams">
-<span class="sig-name descname"><span class="pre">setParams</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_param.html#PointSourceParam.setParams"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_param.PointSourceParam.setParams" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lenstronomy.PointSource.point_source_param.PointSourceParam.set_params">
+<span class="sig-name descname"><span class="pre">set_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kwargs_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lenstronomy/PointSource/point_source_param.html#PointSourceParam.set_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lenstronomy.PointSource.point_source_param.PointSourceParam.set_params" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>kwargs_list</strong> – keyword argument list</p>
@@ -575,7 +577,7 @@ plane and have to be ray-traced back</p></li>
         <li class="right" >
           <a href="lenstronomy.Plots.html" title="lenstronomy.Plots package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="lenstronomy.html" >lenstronomy package</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.PointSource package</a></li> 
       </ul>

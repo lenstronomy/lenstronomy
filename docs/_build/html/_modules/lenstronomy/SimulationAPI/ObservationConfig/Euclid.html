@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.SimulationAPI.ObservationConfig.Euclid &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.SimulationAPI.ObservationConfig.Euclid &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI.ObservationConfig.Euclid</a></li> 
       </ul>
@@ -47,11 +47,11 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Euclid&#39;</span><span class="p">]</span>
 
 <span class="n">VIS_obs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;exposure_time&#39;</span><span class="p">:</span> <span class="mf">565.</span><span class="p">,</span>
-                   <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.35</span><span class="p">,</span>
-                   <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">24.0</span><span class="p">,</span>
-                   <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
-                   <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="mf">0.16</span><span class="p">,</span>
-                   <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">}</span>
+           <span class="s1">&#39;sky_brightness&#39;</span><span class="p">:</span> <span class="mf">22.35</span><span class="p">,</span>
+           <span class="s1">&#39;magnitude_zero_point&#39;</span><span class="p">:</span> <span class="mf">24.0</span><span class="p">,</span>
+           <span class="s1">&#39;num_exposures&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+           <span class="s1">&#39;seeing&#39;</span><span class="p">:</span> <span class="mf">0.16</span><span class="p">,</span>
+           <span class="s1">&#39;psf_type&#39;</span><span class="p">:</span> <span class="s1">&#39;GAUSSIAN&#39;</span><span class="p">}</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">:keyword exposure_time: exposure time per image (in seconds)</span>
@@ -61,6 +61,7 @@
 <span class="sd">:keyword seeing: Full-Width-at-Half-Maximum (FWHM) of PSF</span>
 <span class="sd">:keyword psf_type: string, type of PSF (&#39;GAUSSIAN&#39; supported) </span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 
 <div class="viewcode-block" id="Euclid"><a class="viewcode-back" href="../../../../lenstronomy.SimulationAPI.ObservationConfig.html#lenstronomy.SimulationAPI.ObservationConfig.Euclid.Euclid">[docs]</a><span class="k">class</span> <span class="nc">Euclid</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -86,9 +87,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;num_exposures&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">coadd_years</span> <span class="o">*</span> <span class="n">VIS_obs</span><span class="p">[</span><span class="s2">&quot;num_exposures&quot;</span><span class="p">])</span> <span class="o">//</span> <span class="mi">6</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">camera</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;read_noise&#39;</span><span class="p">:</span> <span class="mf">4.2</span><span class="p">,</span>
-               <span class="s1">&#39;pixel_scale&#39;</span><span class="p">:</span> <span class="mf">0.101</span><span class="p">,</span>
-               <span class="s1">&#39;ccd_gain&#39;</span><span class="p">:</span> <span class="mf">3.1</span><span class="p">,</span>
-          <span class="p">}</span>
+                       <span class="s1">&#39;pixel_scale&#39;</span><span class="p">:</span> <span class="mf">0.101</span><span class="p">,</span>
+                       <span class="s1">&#39;ccd_gain&#39;</span><span class="p">:</span> <span class="mf">3.1</span><span class="p">}</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :keyword read_noise: std of noise generated by read-out (in units of electrons)</span>
 <span class="sd">        :keyword pixel_scale: scale (in arcseconds) of pixels</span>
@@ -133,7 +133,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.SimulationAPI.ObservationConfig.Euclid</a></li> 
       </ul>

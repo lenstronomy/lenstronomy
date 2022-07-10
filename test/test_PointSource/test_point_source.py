@@ -125,6 +125,19 @@ class TestPointSource(object):
         assert point_source._kwargs_lens_eqn_solver['x_center'] == x_center
         assert point_source._kwargs_lens_eqn_solver['x_center'] == y_center
 
+    def test__sort_position_by_original(self):
+        from lenstronomy.PointSource.point_source import _sort_position_by_original
+        x_o, y_o = np.array([1, 2]), np.array([0, 0])
+        x_solved, y_solved = np.array([2]), np.array([0])
+        x_new, y_new = _sort_position_by_original(x_o, y_o, x_solved, y_solved)
+        npt.assert_almost_equal(x_new, x_o, decimal=7)
+        npt.assert_almost_equal(y_new, y_o, decimal=7)
+
+        x_solved, y_solved = np.array([2, 1]), np.array([0, 0.01])
+        x_new, y_new = _sort_position_by_original(x_o, y_o, x_solved, y_solved)
+        npt.assert_almost_equal(x_new, x_o, decimal=7)
+        npt.assert_almost_equal(y_new, np.array([0.01, 0]), decimal=7)
+
 
 class TestPointSourceFixedMag(object):
 

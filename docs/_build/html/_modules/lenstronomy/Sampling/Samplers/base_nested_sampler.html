@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Sampling.Samplers.base_nested_sampler &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Sampling.Samplers.base_nested_sampler &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers.base_nested_sampler</a></li> 
       </ul>
@@ -72,7 +72,7 @@
         <span class="k">if</span> <span class="n">prior_type</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">prior_means</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">prior_sigmas</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;For gaussian prior type, means and sigmas are required&quot;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span>  <span class="o">=</span> <span class="n">prior_means</span><span class="p">,</span> <span class="n">prior_sigmas</span> <span class="o">*</span> <span class="n">sigma_scale</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">means</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sigmas</span> <span class="o">=</span> <span class="n">prior_means</span><span class="p">,</span> <span class="n">prior_sigmas</span> <span class="o">*</span> <span class="n">sigma_scale</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">lowers</span><span class="p">,</span> <span class="n">uppers</span>
         <span class="k">elif</span> <span class="n">prior_type</span> <span class="o">!=</span> <span class="s1">&#39;uniform&#39;</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sampling type </span><span class="si">{}</span><span class="s2"> not supported&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prior_type</span><span class="p">))</span>
@@ -83,7 +83,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compute the mapping between the unit cube and parameter cube</span>
 
-<span class="sd">        :param u: unit hypercube, sampled by the algorithm</span>
 <span class="sd">        :return: hypercube in parameter space</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method not be implemented in base class&quot;</span><span class="p">)</span></div>
@@ -92,7 +91,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        compute the log-likelihood given list of parameters</span>
 
-<span class="sd">        :param x: parameter values</span>
 <span class="sd">        :return: log-likelihood (from the likelihood module)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Method not be implemented in base class&quot;</span><span class="p">)</span></div>
@@ -131,7 +129,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Sampling.Samplers.base_nested_sampler</a></li> 
       </ul>

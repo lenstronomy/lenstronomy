@@ -71,9 +71,9 @@ class TestNumericsProfile(object):
         pass
 
     def assert_differentials(self, lens_model, kwargs, potential=True):
-        #lensModelNum = NumericLens(lens_model)
+        # lensModelNum = NumericLens(lens_model)
         diff = 0.000001
-        #x, y = 1., 2.
+        # x, y = 1., 2.
 
         x = np.linspace(start=0.1, stop=5.5, num=10)
         y = np.zeros_like(x)
@@ -437,6 +437,49 @@ class TestNumericsProfile(object):
         kwargs = {'alpha_Rs': 1.2, 'Rs': 0.8, 'gamma_inner': 0.3, 'gamma_outer': 3.15}
         lens_model = ['GNFW']
         self.assert_differentials(lens_model, kwargs, potential=False)
+
+    def test_cse(self):
+        kwargs = {'a': 2, 's': 1., 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': 0.3, 'e2': 0, 'center_x': 1., 'center_y': 2.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': -0.3, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'a': 2, 's': 1., 'e1': 0., 'e2': 0.3, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+    def test_nfw_cse(self):
+        kwargs = {'alpha_Rs': 1, 'Rs': 1, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'alpha_Rs': 1, 'Rs': .5, 'e1': 0.2, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'alpha_Rs': 2, 'Rs': .5, 'e1': 0, 'e2': 0.4, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['NFW_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+    def test_hernquist_cse(self):
+        kwargs = {'sigma0': 1, 'Rs': 1, 'e1': 0, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['HERNQUIST_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'sigma0': 1, 'Rs': .5, 'e1': 0.2, 'e2': 0, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['HERNQUIST_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
+
+        kwargs = {'sigma0': 2, 'Rs': .5, 'e1': 0, 'e2': 0.4, 'center_x': 0., 'center_y': 0.}
+        lens_model = ['HERNQUIST_ELLIPSE_CSE']
+        self.assert_differentials(lens_model, kwargs, potential=True)
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

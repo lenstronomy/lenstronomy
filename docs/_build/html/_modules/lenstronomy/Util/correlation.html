@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.correlation &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util.correlation &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.correlation</a></li> 
       </ul>
@@ -57,12 +57,12 @@
 <span class="sd">    :return: 2d fourier transform</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Take the fourier transform of the image.</span>
-    <span class="n">F1</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fft2</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
 
     <span class="c1"># Now shift the quadrants around so that low spatial frequencies are in</span>
     <span class="c1"># the center of the 2D fourier transformed image.</span>
-    <span class="n">F2</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">F1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">F2</span><span class="p">)</span></div>
+    <span class="n">f2</span> <span class="o">=</span> <span class="n">fftpack</span><span class="o">.</span><span class="n">fftshift</span><span class="p">(</span><span class="n">f1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">f2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="power_spectrum_2d"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.correlation.power_spectrum_2d">[docs]</a><span class="nd">@export</span>
@@ -119,7 +119,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.correlation</a></li> 
       </ul>

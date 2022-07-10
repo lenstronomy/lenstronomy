@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.ImSim.Numerics.adaptive_numerics &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.ImSim.Numerics.adaptive_numerics &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.adaptive_numerics</a></li> 
       </ul>
@@ -88,12 +88,13 @@
                                                  <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">memory_raise</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hig_res_partial</span> <span class="o">=</span> <span class="n">SubgridNumbaConvolution</span><span class="p">(</span><span class="n">kernel_super_cut</span><span class="p">,</span> <span class="n">supersampling_factor</span><span class="p">,</span> <span class="n">conv_supersample_pixels</span><span class="p">,</span>
                                                         <span class="n">compute_pixels</span><span class="o">=</span><span class="n">compute_pixels</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span>
-                                                        <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">)</span><span class="c1">#, kernel_size=len(kernel_cut))</span>
+                                                        <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">)</span>  <span class="c1"># , kernel_size=len(kernel_cut))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_supersampling_factor</span> <span class="o">=</span> <span class="n">supersampling_factor</span>
 
 <div class="viewcode-block" id="AdaptiveConvolution.re_size_convolve"><a class="viewcode-back" href="../../../../lenstronomy.ImSim.Numerics.html#lenstronomy.ImSim.Numerics.adaptive_numerics.AdaptiveConvolution.re_size_convolve">[docs]</a>    <span class="k">def</span> <span class="nf">re_size_convolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_low_res</span><span class="p">,</span> <span class="n">image_high_res</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="sd">        :param image_low_res: regular sampled image/model</span>
 <span class="sd">        :param image_high_res: supersampled image/model to be convolved on a regular pixel grid</span>
 <span class="sd">        :return: convolved and re-sized image</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -141,7 +142,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.ImSim.Numerics.adaptive_numerics</a></li> 
       </ul>

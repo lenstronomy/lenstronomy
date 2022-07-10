@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LightModel.Profiles.hernquist &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.hernquist &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.hernquist</a></li> 
       </ul>
@@ -71,11 +71,9 @@
 <div class="viewcode-block" id="Hernquist.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.Hernquist.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Rs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param y:</span>
+<span class="sd">        :param r:</span>
 <span class="sd">        :param amp:</span>
 <span class="sd">        :param Rs:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
@@ -101,8 +99,9 @@
 <span class="sd">        :param x:</span>
 <span class="sd">        :param y:</span>
 <span class="sd">        :param amp:</span>
-<span class="sd">        :param a:</span>
-<span class="sd">        :param s:</span>
+<span class="sd">        :param Rs:</span>
+<span class="sd">        :param e1:</span>
+<span class="sd">        :param e2:</span>
 <span class="sd">        :param center_x:</span>
 <span class="sd">        :param center_y:</span>
 <span class="sd">        :return:</span>
@@ -113,11 +112,11 @@
 <div class="viewcode-block" id="HernquistEllipse.light_3d"><a class="viewcode-back" href="../../../../lenstronomy.LightModel.Profiles.html#lenstronomy.LightModel.Profiles.hernquist.HernquistEllipse.light_3d">[docs]</a>    <span class="k">def</span> <span class="nf">light_3d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">Rs</span><span class="p">,</span> <span class="n">e1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">e2</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="sd">        :param y:</span>
+<span class="sd">        :param r:</span>
 <span class="sd">        :param amp:</span>
 <span class="sd">        :param Rs:</span>
-<span class="sd">        :param center_x:</span>
-<span class="sd">        :param center_y:</span>
+<span class="sd">        :param e1:</span>
+<span class="sd">        :param e2:</span>
 <span class="sd">        :return:</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">rho0</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lens</span><span class="o">.</span><span class="n">sigma2rho</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">Rs</span><span class="p">)</span>
@@ -153,7 +152,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.hernquist</a></li> 
       </ul>

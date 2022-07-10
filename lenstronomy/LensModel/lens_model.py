@@ -1,4 +1,3 @@
-from __future__ import print_function, division, absolute_import, unicode_literals
 __author__ = 'sibirrer'
 from lenstronomy.LensModel.single_plane import SinglePlane
 from lenstronomy.LensModel.MultiPlane.multi_plane import MultiPlane

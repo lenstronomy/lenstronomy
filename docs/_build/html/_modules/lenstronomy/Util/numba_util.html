@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.Util.numba_util &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.Util.numba_util &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.numba_util</a></li> 
       </ul>
@@ -64,24 +64,31 @@
         <span class="kn">import</span> <span class="nn">numba</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="n">numba_enabled</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">numba</span> <span class="o">=</span> <span class="kc">None</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jit&#39;</span><span class="p">,</span> <span class="s1">&#39;generated_jit&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;jit&#39;</span><span class="p">,</span> <span class="s1">&#39;generated_jit&#39;</span><span class="p">,</span> <span class="s1">&#39;nan_to_num&#39;</span><span class="p">,</span> <span class="s1">&#39;nan_to_num_arr&#39;</span><span class="p">,</span> <span class="s1">&#39;nan_to_num_single&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="jit"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.jit">[docs]</a><span class="k">def</span> <span class="nf">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span><span class="n">inline</span><span class="o">=</span><span class="s1">&#39;never&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="jit"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.jit">[docs]</a><span class="k">def</span> <span class="nf">jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="s1">&#39;never&#39;</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">numba_enabled</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="n">inline</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span>
+                             <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">,</span> <span class="n">inline</span><span class="o">=</span><span class="n">inline</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span>
     <span class="k">return</span> <span class="n">wrapper</span></div>
+
 
 <div class="viewcode-block" id="generated_jit"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.generated_jit">[docs]</a><span class="k">def</span> <span class="nf">generated_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type - see the Numba docs for more info&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrapper around numba.generated_jit. Allows you to redirect a function to another based on its type</span>
+<span class="sd">     - see the Numba docs for more info</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">numba_enabled</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">numba</span><span class="o">.</span><span class="n">generated_jit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span> <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">numba</span><span class="o">.</span><span class="n">generated_jit</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">nopython</span><span class="o">=</span><span class="n">nopython</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span> <span class="n">fastmath</span><span class="o">=</span><span class="n">fastmath</span><span class="p">,</span>
+                                       <span class="n">error_model</span><span class="o">=</span><span class="n">error_model</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -89,20 +96,22 @@
     <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
-<span class="nd">@generated_jit</span><span class="p">()</span>
+<div class="viewcode-block" id="nan_to_num"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.nan_to_num">[docs]</a><span class="nd">@generated_jit</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=-</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implements a Numba equivalent to np.nan_to_num (with copy=False!) array or scalar in Numba.</span>
-<span class="sd">    Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and scalar inputs.</span>
+<span class="sd">    Behaviour is the same as np.nan_to_num with copy=False, although it only supports 1-dimensional arrays and</span>
+<span class="sd">    scalar inputs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># The generated_jit part is necessary because of the need to support both arrays and scalars for all input functions.</span>
+    <span class="c1"># The generated_jit part is necessary because of the need to support both arrays and scalars for all input</span>
+    <span class="c1"># functions.</span>
     <span class="k">if</span> <span class="p">((</span><span class="n">numba_enabled</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">numba</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">Array</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">nan_to_num_arr</span> <span class="k">if</span> <span class="n">numba_enabled</span> <span class="k">else</span> <span class="n">nan_to_num_arr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="p">,</span> <span class="n">nan</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">nan_to_num_single</span> <span class="k">if</span> <span class="n">numba_enabled</span> <span class="k">else</span> <span class="n">nan_to_num_single</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="p">,</span> <span class="n">nan</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nan_to_num_single</span> <span class="k">if</span> <span class="n">numba_enabled</span> <span class="k">else</span> <span class="n">nan_to_num_single</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="p">,</span> <span class="n">nan</span><span class="p">)</span></div>
 
 
-<span class="nd">@jit</span><span class="p">()</span>
+<div class="viewcode-block" id="nan_to_num_arr"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.nan_to_num_arr">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">nan_to_num_arr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=-</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Part of the Numba implementation of np.nan_to_num - see nan_to_num&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)):</span>
@@ -110,13 +119,13 @@
             <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nan</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
             <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">posinf</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">posinf</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">neginf</span>
-    <span class="k">return</span> <span class="n">x</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">neginf</span>
+    <span class="k">return</span> <span class="n">x</span></div>
 
 
-<span class="nd">@jit</span><span class="p">()</span>
+<div class="viewcode-block" id="nan_to_num_single"><a class="viewcode-back" href="../../../lenstronomy.Util.html#lenstronomy.Util.numba_util.nan_to_num_single">[docs]</a><span class="nd">@jit</span><span class="p">()</span>
 <span class="k">def</span> <span class="nf">nan_to_num_single</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=-</span><span class="mf">1e10</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Part of the Numba implementation of np.nan_to_num - see nan_to_num&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -127,7 +136,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">neginf</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>
 
             <div class="clearer"></div>
@@ -159,7 +168,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.Util.numba_util</a></li> 
       </ul>

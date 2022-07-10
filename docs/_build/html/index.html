@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy - gravitational lensing software package &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -31,7 +31,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.10.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy - gravitational lensing software package</a></li> 
       </ul>
     </div>  
@@ -43,7 +43,6 @@
             
   <section id="lenstronomy-gravitational-lensing-software-package">
 <h1>lenstronomy - gravitational lensing software package<a class="headerlink" href="#lenstronomy-gravitational-lensing-software-package" title="Permalink to this headline">¶</a></h1>
-<a class="reference external image-reference" href="https://badge.fury.io/py/lenstronomy"><img alt="https://badge.fury.io/py/lenstronomy.png" src="https://badge.fury.io/py/lenstronomy.png" /></a>
 <a class="reference external image-reference" href="https://github.com/sibirrer/lenstronomy/actions"><img alt="https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg" src="https://github.com/sibirrer/lenstronomy/workflows/Tests/badge.svg" /></a>
 <a class="reference external image-reference" href="http://lenstronomy.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/lenstronomy/badge/?version=latest" /></a>
 <a class="reference external image-reference" href="https://coveralls.io/github/sibirrer/lenstronomy?branch=main"><img alt="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=main" src="https://coveralls.io/repos/github/sibirrer/lenstronomy/badge.svg?branch=main" /></a>
@@ -60,15 +59,16 @@ quasar-host galaxy decomposition and much more.
 A (incomplete) list of publications making use of lenstronomy can be found <a class="reference external" href="https://github.com/sibirrer/lenstronomy/blob/main/PUBLISHED.rst">at this link</a>.</p>
 <p>The development is coordinated on <a class="reference external" href="https://github.com/sibirrer/lenstronomy">GitHub</a> and contributions are welcome.
 The documentation of <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is available at <a class="reference external" href="http://lenstronomy.readthedocs.org/">readthedocs.org</a> and
-the package is distributed over <a class="reference external" href="https://pypi.python.org/pypi/lenstronomy">PyPI</a>.
+the package is distributed through <a class="reference external" href="https://pypi.org/project/lenstronomy/">PyPI</a> and <a class="reference external" href="https://anaconda.org/conda-forge/lenstronomy">conda-forge</a>.
 <code class="docutils literal notranslate"><span class="pre">lenstronomy</span></code> is an <a class="reference external" href="https://www.astropy.org/affiliated/">affiliated package</a> of <a class="reference external" href="https://www.astropy.org/">astropy</a>.</p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install lenstronomy --user
-</pre></div>
-</div>
-<p>Specific instructions for settings and installation requirements for special cases that can provide speed-ups,
-we refer to the <a class="reference external" href="https://lenstronomy.readthedocs.io/en/latest/installation.html">documentation</a> page.</p>
+<p><a class="reference external" href="https://pypi.python.org/pypi/lenstronomy"><img alt="PyPI" src="https://img.shields.io/pypi/v/lenstronomy?label=PyPI&amp;logo=pypi" /></a> <a class="reference external" href="https://anaconda.org/conda-forge/lenstronomy"><img alt="conda-forge" src="https://img.shields.io/conda/vn/conda-forge/lenstronomy?logo=conda-forge" /></a></p>
+<p>lenstronomy releases are distributed through <a class="reference external" href="https://pypi.org/project/lenstronomy/">PyPI</a> and <a class="reference external" href="https://anaconda.org/conda-forge/lenstronomy">conda-forge</a>. Instructions for
+installing lenstronomy and its dependencies can be found in the <a class="reference external" href="https://lenstronomy.readthedocs.io/en/stable/installation.html">Installation</a>
+section of the documentation.
+Specific instructions for settings and installation requirements for special cases that can provide speed-ups,
+we also refer to the <a class="reference external" href="https://lenstronomy.readthedocs.io/en/stable/installation.html">Installation</a> page.</p>
 </section>
 <section id="getting-started">
 <h2>Getting started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
@@ -146,6 +146,8 @@ Don’t hesitate to reach out to the developers if you have questions!</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-pypi">From PyPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#from-conda-forge">From conda-forge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#mpi">MPI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#numba">NUMBA</a></li>
@@ -233,6 +235,12 @@ Don’t hesitate to reach out to the developers if you have questions!</p>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id36">1.8.2 (2020-06-08)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id37">1.9.0 (2020-07-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="history.html#id38">1.9.1 (2020-08-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id39">1.9.2 (2020-12-12)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id40">1.9.3 (2020-12-22)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id41">1.10.0 (2022-03-23)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id42">1.10.1 (2022-03-26)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id43">1.10.2 (2022-03-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="history.html#id44">1.10.3 (2022-04-18)</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">lenstronomy</a><ul>
@@ -313,7 +321,7 @@ at <a class="reference external" href="mailto:sibirrer&#37;&#52;&#48;gmail&#46;c
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="#">lenstronomy 1.10.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy - gravitational lensing software package</a></li> 
       </ul>
     </div>

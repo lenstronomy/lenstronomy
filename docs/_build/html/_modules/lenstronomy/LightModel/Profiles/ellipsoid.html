@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>lenstronomy.LightModel.Profiles.ellipsoid &#8212; lenstronomy 1.9.1 documentation</title>
+    <title>lenstronomy.LightModel.Profiles.ellipsoid &#8212; lenstronomy 1.10.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css" />
     
@@ -26,7 +26,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.ellipsoid</a></li> 
       </ul>
@@ -40,7 +40,7 @@
   <h1>Source code for lenstronomy.LightModel.Profiles.ellipsoid</h1><div class="highlight"><pre>
 <span></span><span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;sibirrer&#39;</span>
 
-<span class="c1">#this file contains a class to make a moffat profile</span>
+<span class="c1"># this file contains a class to make an Ellipsoid</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">lenstronomy.Util</span> <span class="kn">import</span> <span class="n">param_util</span>
 
@@ -73,8 +73,8 @@
         <span class="n">r2</span> <span class="o">=</span> <span class="n">x_</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y_</span><span class="o">**</span><span class="mi">2</span>
         <span class="n">flux</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">flux</span><span class="p">[</span><span class="n">r2</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="o">**</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">**</span> <span class="mi">2</span>
-        <span class="k">return</span> <span class="n">amp</span> <span class="o">/</span> <span class="n">A</span> <span class="o">*</span> <span class="n">flux</span></div></div>
+        <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">amp</span> <span class="o">/</span> <span class="n">area</span> <span class="o">*</span> <span class="n">flux</span></div></div>
 
 
 <span class="k">def</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">center_x</span><span class="p">,</span> <span class="n">center_y</span><span class="p">):</span>
@@ -83,11 +83,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_shift</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">center_x</span>
     <span class="n">y_shift</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="n">center_y</span>
-    <span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
     <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">x_shift</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_shift</span> <span class="o">/</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">torus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">torus</span><span class="p">[</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="k">return</span> <span class="n">amp</span><span class="o">/</span><span class="n">A</span> <span class="o">*</span> <span class="n">torus</span>
+    <span class="k">return</span> <span class="n">amp</span><span class="o">/</span><span class="n">area</span> <span class="o">*</span> <span class="n">torus</span>
 </pre></div>
 
             <div class="clearer"></div>
@@ -119,7 +119,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.9.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">lenstronomy 1.10.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">lenstronomy.LightModel.Profiles.ellipsoid</a></li> 
       </ul>

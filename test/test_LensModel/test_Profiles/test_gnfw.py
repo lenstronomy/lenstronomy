@@ -48,7 +48,7 @@ class TestGNFW(object):
                                     self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])
         m2d = self.gnfw.mass_2d(10.0, self.kwargs_lens['Rs'], rho0, self.kwargs_lens['gamma_inner'],
                                 self.kwargs_lens['gamma_outer'])
-        integrand = lambda x: 2 * 3.14159265 * x * self.gnfw.density_2d(x, 0.0, self.kwargs_lens['Rs'], self.rho0, self.kwargs_lens['gamma_inner'],
+        integrand = lambda x: 2 * 3.14159265 * x * self.gnfw.density_2d(x, 0.0, self.kwargs_lens['Rs'], rho0, self.kwargs_lens['gamma_inner'],
                                 self.kwargs_lens['gamma_outer'])
         m2d_num = quad(integrand, 0, 10.)[0]
         npt.assert_almost_equal(m2d_num/m2d, 1.0, 5)

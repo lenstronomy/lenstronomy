@@ -13,8 +13,6 @@ class TestGNFW(object):
     def setup(self):
         self.gnfw = GNFW()
         self.kwargs_lens = {'alpha_Rs': 2.1, 'Rs': 1.5, 'gamma_inner': 1.0, 'gamma_outer': 3.0,'center_x': 0.04, 'center_y': -1.0}
-        self.rho0 = self.gnfw.alpha2rho0(self.kwargs_lens['alpha_Rs'], self.kwargs_lens['Rs'],
-                                         self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])
 
     def test_alphaRs(self):
 
@@ -24,7 +22,9 @@ class TestGNFW(object):
 
     def test_alphaRs_rho0_conversion(self):
 
-        alpha_Rs = self.gnfw.rho02alpha(self.rho0, self.kwargs_lens['Rs'], self.kwargs_lens['gamma_inner'],
+        rho0 = self.gnfw.alpha2rho0(self.kwargs_lens['alpha_Rs'], self.kwargs_lens['Rs'],
+                                    self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])
+        alpha_Rs = self.gnfw.rho02alpha(rho0, self.kwargs_lens['Rs'], self.kwargs_lens['gamma_inner'],
                                         self.kwargs_lens['gamma_outer'])
         npt.assert_almost_equal(alpha_Rs, self.kwargs_lens['alpha_Rs'], 5)
 
@@ -44,7 +44,9 @@ class TestGNFW(object):
 
     def test_mass2d(self):
 
-        m2d = self.gnfw.mass_2d(10.0, self.kwargs_lens['Rs'], self.rho0, self.kwargs_lens['gamma_inner'],
+        rho0 = self.gnfw.alpha2rho0(self.kwargs_lens['alpha_Rs'], self.kwargs_lens['Rs'],
+                                    self.kwargs_lens['gamma_inner'], self.kwargs_lens['gamma_outer'])
+        m2d = self.gnfw.mass_2d(10.0, self.kwargs_lens['Rs'], rho0, self.kwargs_lens['gamma_inner'],
                                 self.kwargs_lens['gamma_outer'])
         integrand = lambda x: 2 * 3.14159265 * x * self.gnfw.density_2d(x, 0.0, self.kwargs_lens['Rs'], self.rho0, self.kwargs_lens['gamma_inner'],
                                 self.kwargs_lens['gamma_outer'])

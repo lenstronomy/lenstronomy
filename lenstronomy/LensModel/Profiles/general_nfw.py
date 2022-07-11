@@ -17,7 +17,11 @@ class GNFW(LensProfileBase):
         \\rho = \\rho_0 (x^g (1+x^2)^((n-g)/2))^{-1}
 
     For g = 1.0 and n=3, it is approximately the same as an NFW profile
-    The original reference is here: https://ui.adsabs.harvard.edu/abs/2001ApJ...558..657M/abstract
+    The original reference is [1]_
+
+    References
+    ----------
+    .. [1] Munoz, Kochanek and Keeton, (2001), astro-ph/0103009, doi:10.1086/322314
 
     TODO: implement the gravitational potential for this profile
     """

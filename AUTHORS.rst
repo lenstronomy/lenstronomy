@@ -21,7 +21,7 @@ Contributors (alphabetic)
 * Jelle Aalbers `JelleAalbers <https://github.com/JelleAalbers>`_
 * Joel Akeret `jakeret <https://github.com/jakeret/>`_
 * Adam Amara `aamara <https://github.com/aamara/>`_
-* Vikram Bhamre `vikramb1 <https://github.com/vikramb1/>`
+* Vikram Bhamre `vikramb1 <https://github.com/vikramb1/>`_
 * Xuheng Ding `dartoon <https://github.com/dartoon/>`_
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Kevin Fusshoeller

@@ -232,7 +232,7 @@ class Sampler(object):
                                                           size=n_walkers)
 
         if backend_filename is not None:
-            backend = zeus.callbacks.SaveProgressCallback(backend_filename)
+            backend = zeus.callbacks.SaveProgressCallback(filename= backend_filename, ncheck = 1)
             n_run_eff = n_burn + n_run
         else:
             backend = None

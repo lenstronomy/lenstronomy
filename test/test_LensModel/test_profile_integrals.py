@@ -376,6 +376,16 @@ class TestNumerics(object):
                   'w_c3': 2, 'w_t3': 5, 'e13': 0, 'e23': 0}
         self.assert_lens_integrals(Model, kwargs)
 
+    def test_gnfw(self):
+
+        from lenstronomy.LensModel.Profiles.general_nfw import GNFW as Model
+        kwargs = {'alpha_Rs': 0.7, 'Rs': 0.3, 'gamma_inner': 1., 'gamma_outer': 3.2}
+        self.assert_lens_integrals(Model, kwargs)
+        kwargs = {'alpha_Rs': 0.7, 'Rs': 0.3, 'gamma_inner': 2.5, 'gamma_outer': 3.0}
+        self.assert_lens_integrals(Model, kwargs)
+        kwargs = {'alpha_Rs': 0.7, 'Rs': 0.3, 'gamma_inner': 0.5, 'gamma_outer': 2.6}
+        self.assert_lens_integrals(Model, kwargs)
+
 
     """
     def test_sis(self):
@@ -389,7 +399,6 @@ class TestNumerics(object):
         self.assert_integrals(Model, kwargs)
 
     """
-
 
 if __name__ == '__main__':
     pytest.main("-k TestLensModel")

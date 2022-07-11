@@ -191,9 +191,11 @@ class Sampler(object):
             print(time_end - time_start, 'time taken for MCMC sampling')
         return flat_samples, dist
 
-    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start, progress=False, initpos=None, backend_filename=None): # NHmod
+    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start, progress=False, initpos=None, backend_filename=None):
         """
-        Lightning fast MCMC with zeus.
+        Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
+
+        If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212
 
         :param n_walkers: number of walkers per parameter
         :type n_walkers: integer
@@ -218,7 +220,6 @@ class Sampler(object):
         # check that it's ok to pass the truncated sample ball from sampling_util as initpos
         # add the MPI functionality
         # add any other options present in zeus like light_mode
-        # add ability to plot zeus chains to chain_plot
 
         import zeus
 

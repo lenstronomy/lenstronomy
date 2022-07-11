@@ -236,7 +236,7 @@ class FittingSequence(object):
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
             if walkerRatio is None:
-                raise ValueError('MCMC sampler needs either n_walkser or walkerRatio as input argument')
+                raise ValueError('MCMC sampler needs either n_walkers or walkerRatio as input argument')
             n_walkers = num_param * walkerRatio
         # run MCMC
         if init_samples is not None and re_use_samples is True:
@@ -257,7 +257,7 @@ class FittingSequence(object):
                                                   start_from_backend=start_from_backend)
             output = [sampler_type, samples, param_list, dist]
 
-        elif sampler_type == 'ZEUS': # NHmod
+        elif sampler_type == 'ZEUS':
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                  progress=progress, initpos = initpos, backend_filename = backend_filename)
             output = [sampler_type, samples, param_list, dist]

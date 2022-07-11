@@ -120,8 +120,8 @@ class TestSampler(object):
 
         os.remove(backup_filename)  # just remove the backup file created above
 
-    def test_mcmc_zeus(self): # NHmod
-        n_walkers = 44
+    def test_mcmc_zeus(self):
+        n_walkers = 36
         n_run = 2
         n_burn = 2
         mean_start = self.param_class.kwargs2args(kwargs_lens=self.kwargs_lens, kwargs_source=self.kwargs_source,

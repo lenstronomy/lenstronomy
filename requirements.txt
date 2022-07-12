@@ -14,7 +14,7 @@ scikit-image
 pyyaml
 pyxdg
 h5py
-
+zeus-mcmc
 
 schwimmbad
 # schwimmbad version that is supporting dill, which was not implemented yet in the pip release version

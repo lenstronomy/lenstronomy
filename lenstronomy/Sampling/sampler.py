@@ -1,4 +1,4 @@
-__author__ = ['sibirrer', 'ajshajib', 'dgilman']
+__author__ = ['sibirrer', 'ajshajib', 'dgilman', 'nataliehogg']
 
 import time
 
@@ -81,7 +81,7 @@ class Sampler(object):
             upper_start = np.minimum(upper_start, self.upper_limit)
 
         pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
-        
+
         if mpi is True and pool.is_master():
             print('MPI option chosen for PSO.')
 
@@ -118,7 +118,8 @@ class Sampler(object):
             print('===================')
         return result, [chi2_list, pos_list, vel_list]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
+                   mpi=False, progress=False, threadCount=1,
                    initpos=None, backend_filename=None, start_from_backend=False):
         """
         Run MCMC with emcee.
@@ -189,4 +190,71 @@ class Sampler(object):
             print('Sampling iterations (in current run):', n_run_eff)
             time_end = time.time()
             print(time_end - time_start, 'time taken for MCMC sampling')
+        return flat_samples, dist
+
+    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
+                  mpi=False, threadCount=1,
+                  progress=False, initpos=None, backend_filename=None,
+                  moves=None, tune=True, tolerance=0.05, patience=5,
+                  maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
+                  vectorize=False, blobs_dtype=None, verbose=True,
+                  check_walkers=True, shuffle_ensemble=True, light_mode=False):
+
+        """
+        Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
+
+        For the full list of arguments for the EnsembleSampler, see see `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
+
+        If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212.
+
+        :param n_walkers: number of walkers per parameter
+        :type n_walkers: integer
+        :param n_run: number of sampling steps
+        :type n_run: integer
+        :param n_burn: number of burn-in steps
+        :type n_burn: integer
+        :param mean_start: mean of the parameter position of the initialising sample
+        :type mean_start: numpy array of length the number of parameters
+        :param sigma_start: spread of the parameter values (uncorrelated in each dimension) of the initialising sample
+        :type sigma_start: numpy array of length the number of parameters
+        :param progress:
+        :type progress: bool
+        :param initpos: initial walker position to start sampling (optional)
+        :type initpos: numpy array of size num param x num walkser
+        :param backup_filename: name of the HDF5 file where sampling state is saved (through zeus callback function)
+        :type backup_filename: string
+        :return: samples, ln likelihood value of samples
+        :rtype: numpy 2d array, numpy 1d array
+        """
+        import zeus
+
+        print('Using zeus to perform the MCMC.')
+
+        num_param, _ = self.chain.param.num_param()
+
+        if initpos is None:
+            initpos = sampling_util.sample_ball_truncated(mean_start, sigma_start, self.lower_limit, self.upper_limit,
+                                                          size=n_walkers)
+
+        if backend_filename is not None:
+            backend = zeus.callbacks.SaveProgressCallback(filename= backend_filename, ncheck = 1)
+            n_run_eff = n_burn + n_run
+        else:
+            backend = None
+            n_run_eff = n_burn + n_run
+
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+
+        sampler = zeus.EnsembleSampler(nwalkers=n_walkers, ndim=num_param, logprob_fn=self.chain.logL,
+                                       moves=moves, tune=tune, tolerance=tolerance, patience=patience,
+                                       maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool, vectorize=vectorize,
+                                       blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
+                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
+
+        sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks = backend)
+
+        flat_samples = sampler.get_chain(flat=True, thin=1, discard=n_burn)
+
+        dist = sampler.get_log_prob(flat=True, thin=1, discard=n_burn)
+
         return flat_samples, dist

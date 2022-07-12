@@ -202,7 +202,12 @@ class FittingSequence(object):
         return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False):
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
+             # zeus specific kwargs
+             moves=None, tune=True, tolerance=0.05, patience=5,
+             maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
+             vectorize=False, blobs_dtype=None, verbose=True,
+             check_walkers=True, shuffle_ensemble=True, light_mode=False):
         """
         MCMC routine
 
@@ -215,7 +220,7 @@ class FittingSequence(object):
         :param init_samples: initial sample from where to start the MCMC process
         :param re_use_samples: bool, if True, re-uses the samples described in init_samples.nOtherwise starts from
          scratch.
-        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE'
+        :param sampler_type: string, which MCMC sampler to be used. Options are: 'EMCEE', 'ZEUS'
         :param progress: boolean, if True shows progress bar in EMCEE
         :param backend_filename: name of the HDF5 file where sampling state is saved (through emcee backend engine)
         :type backend_filename: string
@@ -236,7 +241,7 @@ class FittingSequence(object):
         num_param, param_list = param_class.num_param()
         if n_walkers is None:
             if walkerRatio is None:
-                raise ValueError('MCMC sampler needs either n_walkser or walkerRatio as input argument')
+                raise ValueError('MCMC sampler needs either n_walkers or walkerRatio as input argument')
             n_walkers = num_param * walkerRatio
         # run MCMC
         if init_samples is not None and re_use_samples is True:
@@ -255,6 +260,16 @@ class FittingSequence(object):
                                                   threadCount=threadCount, progress=progress, initpos=initpos,
                                                   backend_filename=backend_filename,
                                                   start_from_backend=start_from_backend)
+            output = [sampler_type, samples, param_list, dist]
+
+        elif sampler_type == 'ZEUS':
+            samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
+                                                 mpi=self._mpi, threadCount=threadCount,
+                                                 progress=progress, initpos = initpos, backend_filename = backend_filename,
+                                                 moves=moves, tune=tune, tolerance=tolerance, patience=patience,
+                                                 maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool,
+                                                 vectorize=vectorize, blobs_dtype=blobs_dtype, verbose=verbose,
+                                                 check_walkers=check_walkers, shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)
@@ -291,8 +306,8 @@ class FittingSequence(object):
         return kwargs_result, chain, param_list
 
     def nested_sampling(self, sampler_type='MULTINEST', kwargs_run={},
-                        prior_type='uniform', width_scale=1, sigma_scale=1, 
-                        output_basename='chain', remove_output_dir=True, 
+                        prior_type='uniform', width_scale=1, sigma_scale=1,
+                        output_basename='chain', remove_output_dir=True,
                         dypolychord_dynamic_goal=0.8,
                         polychord_settings={},
                         dypolychord_seed_increment=200,
@@ -356,7 +371,7 @@ class FittingSequence(object):
                                      prior_sigmas=sigma_start,
                                      width_scale=width_scale,
                                      sigma_scale=sigma_scale,
-                                     bound=dynesty_bound, 
+                                     bound=dynesty_bound,
                                      sample=dynesty_sample,
                                      use_mpi=self._mpi)
             samples, means, logZ, logZ_err, logL, results_object = sampler.run(kwargs_run)
@@ -366,7 +381,7 @@ class FittingSequence(object):
         # update current best fit values
         self._update_state(samples[-1])
 
-        output = [sampler_type, samples, sampler.param_names, logL, 
+        output = [sampler_type, samples, sampler.param_names, logL,
                   logZ, logZ_err, results_object]
         return output
 

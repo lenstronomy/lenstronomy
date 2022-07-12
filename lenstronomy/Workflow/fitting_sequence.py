@@ -202,7 +202,12 @@ class FittingSequence(object):
         return kwargs_result
 
     def mcmc(self, n_burn, n_run, walkerRatio=None, n_walkers=None, sigma_scale=1, threadCount=1, init_samples=None,
-             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False):
+             re_use_samples=True, sampler_type='EMCEE', progress=True, backend_filename=None, start_from_backend=False,
+             # zeus specific kwargs
+             moves=None, tune=True, tolerance=0.05, patience=5,
+             maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
+             vectorize=False, blobs_dtype=None, verbose=True,
+             check_walkers=True, shuffle_ensemble=True, light_mode=False):
         """
         MCMC routine
 
@@ -259,7 +264,12 @@ class FittingSequence(object):
 
         elif sampler_type == 'ZEUS':
             samples, dist = mcmc_class.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
-                                                 progress=progress, initpos = initpos, backend_filename = backend_filename)
+                                                 mpi=self._mpi, threadCount=threadCount,
+                                                 progress=progress, initpos = initpos, backend_filename = backend_filename,
+                                                 moves=moves, tune=tune, tolerance=tolerance, patience=patience,
+                                                 maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool,
+                                                 vectorize=vectorize, blobs_dtype=blobs_dtype, verbose=verbose,
+                                                 check_walkers=check_walkers, shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
             output = [sampler_type, samples, param_list, dist]
         else:
             raise ValueError('sampler_type %s not supported!' % sampler_type)

@@ -118,7 +118,8 @@ class Sampler(object):
             print('===================')
         return result, [chi2_list, pos_list, vel_list]
 
-    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start, mpi=False, progress=False, threadCount=1,
+    def mcmc_emcee(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
+                   mpi=False, progress=False, threadCount=1,
                    initpos=None, backend_filename=None, start_from_backend=False):
         """
         Run MCMC with emcee.
@@ -191,11 +192,20 @@ class Sampler(object):
             print(time_end - time_start, 'time taken for MCMC sampling')
         return flat_samples, dist
 
-    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start, progress=False, initpos=None, backend_filename=None):
+    def mcmc_zeus(self, n_walkers, n_run, n_burn, mean_start, sigma_start,
+                  mpi=False, threadCount=1,
+                  progress=False, initpos=None, backend_filename=None,
+                  moves=None, tune=True, tolerance=0.05, patience=5,
+                  maxsteps=10000, mu=1.0, maxiter=10000, pool=None,
+                  vectorize=False, blobs_dtype=None, verbose=True,
+                  check_walkers=True, shuffle_ensemble=True, light_mode=False):
+
         """
         Lightning fast MCMC with zeus: https://github.com/minaskar/zeus
 
-        If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212
+        For the full list of arguments for the EnsembleSampler, see see `the zeus docs <https://zeus-mcmc.readthedocs.io/en/latest/api/sampler.html>`_.
+
+        If you use the zeus sampler, you should cite the following papers: 2105.03468, 2002.06212.
 
         :param n_walkers: number of walkers per parameter
         :type n_walkers: integer
@@ -216,11 +226,6 @@ class Sampler(object):
         :return: samples, ln likelihood value of samples
         :rtype: numpy 2d array, numpy 1d array
         """
-        # todo:
-        # check that it's ok to pass the truncated sample ball from sampling_util as initpos
-        # add the MPI functionality
-        # add any other options present in zeus like light_mode
-
         import zeus
 
         print('Using zeus to perform the MCMC.')
@@ -238,7 +243,13 @@ class Sampler(object):
             backend = None
             n_run_eff = n_burn + n_run
 
-        sampler = zeus.EnsembleSampler(n_walkers, num_param, self.chain.logL)
+        pool = choose_pool(mpi=mpi, processes=threadCount, use_dill=True)
+
+        sampler = zeus.EnsembleSampler(nwalkers=n_walkers, ndim=num_param, logprob_fn=self.chain.logL,
+                                       moves=moves, tune=tune, tolerance=tolerance, patience=patience,
+                                       maxsteps=maxsteps, mu=mu, maxiter=maxiter, pool=pool, vectorize=vectorize,
+                                       blobs_dtype=blobs_dtype, verbose=verbose, check_walkers=check_walkers,
+                                       shuffle_ensemble=shuffle_ensemble, light_mode=light_mode)
 
         sampler.run_mcmc(initpos, n_run_eff, progress=progress, callbacks = backend)
 

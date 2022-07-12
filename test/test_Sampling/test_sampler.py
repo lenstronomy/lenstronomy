@@ -132,15 +132,10 @@ class TestSampler(object):
         assert len(dist) == len(samples)
 
         # test of backup file
-        # 1) run a chain specifiying a backup file name
         backup_filename = 'test_mcmc_zeus.h5'
         samples_1, dist_1 = self.sampler.mcmc_zeus(n_walkers, n_run, n_burn, mean_start, sigma_start,
                                                     backend_filename=backup_filename)
         assert len(samples_1) == n_walkers * n_run
-
-        # todo:
-        # add test starting from backup of previous run, if that functionality is available in zeus
-        # do we need to add a fitting sequence test for zeus too?
 
         os.remove(backup_filename)
 

@@ -26,6 +26,7 @@ Contributors (alphabetic)
 * Sydney Erickson `smericks <https://github.com/smericks/>`_
 * Kevin Fusshoeller
 * Matthew R. Gomer `mattgomer <https://github.com/mattgomer>`_
+* Natalie B. Hogg `nataliehogg <https://github.com/nataliehogg>`_
 * Felix A. Kuhn
 * Felix Mayor
 * Martin Millon `martin-millon <https://github.com/martin-millon/>`_

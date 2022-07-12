@@ -110,6 +110,14 @@ class FittingSequence(object):
                 self._updateManager.update_param_state(**kwargs_result)
                 chain_list.append(mcmc_output)
 
+            elif fitting_type == 'Nautilus':
+                from lenstronomy.Sampling.Samplers.nautilus import Nautilus
+                nautilus = Nautilus(likelihood_module=self.likelihoodModule)
+                points, log_w, log_l, log_z = nautilus.nautilus_sampling(mpi=self._mpi, **kwargs)
+                chain_list.append([points, log_w, log_l, log_z])
+                kwargs_result = self.best_fit_from_samples(points, log_l)
+                self._updateManager.update_param_state(**kwargs_result)
+
             elif fitting_type == 'nested_sampling':
                 ns_output = self.nested_sampling(**kwargs)
                 chain_list.append(ns_output)
@@ -122,8 +130,7 @@ class FittingSequence(object):
     def best_fit(self, bijective=False):
         """
 
-        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are
-         inverted. If you do not use those options, there is no effect.
+        :param bijective: bool, if True, the mapping of image2source_plane and the mass_scaling parameterisation are inverted. If you do not use those options, there is no effect.
         :return: best fit model of the current state of the FittingSequence class
         """
 

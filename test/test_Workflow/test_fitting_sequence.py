@@ -340,6 +340,26 @@ class TestFittingSequence(object):
         fitting_list.append(['nested_sampling', kwargs_dynesty])
         chain_list = fittingSequence.fit_sequence(fitting_list)
 
+
+    def test_nautilus(self):
+        kwargs_params = copy.deepcopy(self.kwargs_params)
+        fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
+                                          self.kwargs_likelihood, kwargs_params)
+
+        fitting_list = []
+        kwargs_nautilus = {
+            'prior_type': 'uniform',
+            'thread_count': 1,
+            'verbose': True,
+            'one_step': True,
+            'n_live': 2,
+            'random_state': 42
+        }
+
+        fitting_list.append(['Nautilus', kwargs_nautilus])
+        chain_list = fittingSequence.fit_sequence(fitting_list)
+
+
     def test_dypolychord(self):
         fittingSequence = FittingSequence(self.kwargs_data_joint, self.kwargs_model, self.kwargs_constraints,
                                           self.kwargs_likelihood, self.kwargs_params)
@@ -374,7 +394,7 @@ class TestFittingSequence(object):
         fitting_list.append(['SIMPLEX', kwargs_simplex])
         kwargs_pso = {'sigma_scale': 1, 'n_particles': n_p, 'n_iterations': n_i}
         fitting_list.append(['PSO', kwargs_pso])
-        kwargs_mcmc = {'sigma_scale': 0.1, 'n_burn': 1, 'n_run': 1, 'walkerRatio': 2, 'sampler_type': 'EMCEE'}
+        kwargs_mcmc = {'sigma_scale': 1, 'n_burn': 1, 'n_run': 1, 'n_walkers': 10, 'sampler_type': 'EMCEE'}
         fitting_list.append(['MCMC', kwargs_mcmc])
         kwargs_mcmc['re_use_samples'] = True
         kwargs_mcmc['init_samples'] = np.array([[np.random.normal(1, 0.001)] for i in range(100)])

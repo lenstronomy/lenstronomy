@@ -10,6 +10,15 @@ __all__ = ['Nautilus']
 class Nautilus(object):
 
     def __init__(self, likelihood_module):
+        """
+        sampling with Nautilus [1]_
+
+        References:
+        -----------
+        .. [1] Johannes Lange, in prep, https://github.com/johannesulf/nautilus
+
+        :param likelihood_module: LikelihoodModule() instance
+        """
         self._likelihood_module = likelihood_module
         self._num_param, _ = self._likelihood_module.param.num_param()
         self._lower_limit, self._upper_limit = self._likelihood_module.param.param_limits()
